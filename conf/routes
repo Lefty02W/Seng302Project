@@ -3,9 +3,32 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.LoginController.show
+GET     /                           controllers.LoginController.show(request: Request)
 
-
+GET     /destinations/edit/:id      controllers.DestinationsController.edit(request: Request, id: Integer)
+POST    /destinations/:id      controllers.DestinationsController.update(request: Request, id: Integer)
+POST    /destinations               controllers.DestinationsController.save(request: Request)
+POST    /destinations/delete/:id    controllers.DestinationsController.delete(id: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+# save the new destination
+
+
+GET     /login                       controllers.LoginController.show(request: Request)
+POST     /login                       controllers.LoginController.login(request: Request)
+GET     /trips                       controllers.TripsController.show(request: Request)
+GET     /destinations                controllers.DestinationsController.show(request: Request)
+GET     /destinations/create                controllers.DestinationsController.showCreate(request: Request)
+GET     /travellers                  controllers.TravellersController.show
+GET     /profile                     controllers.ProfileController.show
+GET     /profile/edit                controllers.ProfileController.showEdit(request: Request)
+POST    /profile                     controllers.ProfileController.update(request: Request)
+
+GET     /trips/create               controllers.TripsController.showCreate(request: Request)
+GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)
+
+POST    /trips                       controllers.TripsController.save(request: Request)
+POST    /trips/create                controllers.TripsController.addDestination(request: Request)
+GET     /user/create                 controllers.CreateUserController.show(request: Request)
+POST    /user/create                 controllers.CreateUserController.save(request: Request)

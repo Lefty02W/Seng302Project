@@ -1,0 +1,32 @@
+@import play.mvc.Http
+@import views.html.helper.form
+@import views.html.helper.CSRF
+@(loginForm : Form[User])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TravelEA</title>
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/login.css")">
+    </head>
+    <body>
+        <div id="startUpBox" class="startUpBox">
+                <!--  Login Scene  -->
+            @form(routes.LoginController.login()){
+                @CSRF.formField
+
+                <input type="text" id="email" placeholder="Username" name="email" required required oninvalid="this.setCustomValidity('Email required')" oninput="setCustomValidity('')">
+                <input type="password" id="password" placeholder="Password" name="password" required required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
+
+                <a href="@routes.CreateUserController.show()"><button type="button" id="createUserButton" class="redButton" >Create User</button></a>
+                <button type="submit" id="loginButton" class="loginButton">Login</button>
+
+            }
+
+
+        </div>
+
+    </body>
+</html>

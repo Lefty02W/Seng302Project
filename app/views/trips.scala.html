@@ -1,0 +1,205 @@
+@import play.mvc.Http
+@import views.html.helper.CSRF
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@import helper._
+
+
+
+<!DOCTYPE html>
+<html>
+
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/dataTables.bootstrap4.css")">
+
+
+    <script src="@routes.Assets.at("javascripts/jquery-3.3.1.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap.bundle.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap-select.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/jquery.dataTables.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/dataTables.bootstrap4.js")" type="text/javascript"></script>
+
+
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/trips.css")">
+    <head>
+        <title>TravelEA | Trips</title>
+    </head>
+    <body>
+        <div class="d-flex" id="wrapper">
+
+                <!-- Sidebar -->
+            <div class="bg-light border-right" id="sidebar-wrapper">
+                <div class="sidebar-heading"><h2>TravelEA</h2></div>
+                <div id="sidebar">
+                    <a href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
+                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
+                    <a style="color: #ca6636" href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
+                    <a href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                </div>
+            </div>
+
+            <div id="page-content-wrapper">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div id="viewCard" class="card-large">
+                                <table id="tripsTable">
+                                    <thead>
+                                        <tr><th>Trip Name</th><th>Travel Time (Days)</th><th>Number of Destinations</th><th>Destinations Visited</th><th>Actions</th>
+                                    </thead>
+                                    @for(trip <- trips) {
+                                        <tr>
+                                            <td>@trip.getName</td>
+                                            <td>@trip.getTravelTime</td>
+                                            <td>@trip.getDestinations.size()</td>
+                                            <td>@trip.getDestinationNames()</td>
+                                            @helper.form(routes.TripsController.showEdit(trip.getId)) {
+                                                @CSRF.formField
+                                                <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button> <button class="button-delete" onclick="deleteTripRow(this)" style="height:4vh">Delete</button></td>
+                                            }
+
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <a href="@routes.TripsController.showCreate()"> <button id="addTripButton" type="button" class="button-add">
+                                Add New Trip
+                            </button> </a>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+    </body>
+
+    <script type="text/javascript">
+            //Setup for the user table
+            $(document).ready(function() {
+                $('#tripsTable').DataTable({
+                    "lengthChange": false,
+                    "pagingType": "full",
+                    "pageLength": 13,
+                    dom: '<l<"toolbar">f>rtip',
+                    language: {
+                        search: "_INPUT_", //To remove Search Label
+                        searchPlaceholder: "Search..."
+                    },
+                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
+                    "autoWidth": false
+                });
+
+                $('#destinations').DataTable({
+                    searching: false,
+                    paging: false,
+                    info: false,
+                    "language": {
+                        "emptyTable": "Please add at least two destinations"
+                    },
+                    "ordering": false,
+                    "scrollY": "20vh",
+                    "scrollCollapse": true
+                });
+            });
+
+
+            $('#addDest').on( 'click', function () {
+                var table = $('#destinations').DataTable();
+                var dest = $('#destsPicker').val();
+                var arrive = $("#arrival").val();
+                var depart = $("#departure").val();
+                var valid = true;
+
+
+                if (arrive.length === 0 || dest.length === 0 || depart.length === 0) {
+                    alert("Please fill in destination all fields");
+                    valid = false;
+                } else if (table.rows().data().length > 0){
+                    var last_row = table.row(':last').data();
+                    if (last_row[0] === dest) {
+                        alert("The next destination cannot be the same as the previous destination");
+                        valid = false;
+                    }
+                }
+
+                if (valid) {
+                    table.row.add( [
+                                dest,
+                                arrive,
+                                depart,
+                        '<button id="deleteButton" onclick="deleteDestRow()">Delete</button>'
+                            ]
+                    ).draw( false );
+                    $('#destForm').get(0).reset();
+                    $("#destsPicker").val('default');
+                    $("#destsPicker").selectpicker("refresh");
+                }
+            } );
+
+            $('#saveButton').on( 'click',  function () {
+                var table = $('#destinations').DataTable();
+                var tripName = $('#tripNameEntry').val();
+
+                if (table.rows().data().length < 2) {
+                    alert("Please enter at least 2 destinations");
+                } else if (tripName.length === 0) {
+                    alert("Please enter a trip name");
+                } else {
+                    // Send data to controller here to create te trip and add to table
+
+                    table
+                            .clear()
+                            .draw();
+                    $("#createModal").modal("hide");
+                    document.getElementById('tripNameEntry').value = "";
+                    $("#destination").val('default');
+                    $("#destination").selectpicker("refresh");
+                }
+            });
+
+        $('#closeIcon, #closeButton').on( 'click', function() {
+            var table = $('#destinations').DataTable();
+            $('#destForm').get(0).reset()
+            table
+                    .clear()
+                    .draw();
+            $("#createModal").modal("hide");
+            document.getElementById('tripNameEntry').value = "";
+            $("#destination").val('default');
+            $("#destination").selectpicker("refresh");
+        });
+
+
+
+        function deleteTripRow(r) {
+            var i = r.parentNode.parentNode.rowIndex;
+            document.getElementById("tripsTable").deleteRow(i)
+        }
+
+        function deleteDestRow() {
+            $('#destsTable').DataTable().row().remove().draw();
+        }
+
+    </script>
+
+
+
+</html>

@@ -1,0 +1,81 @@
+@import play.mvc.Http
+@import views.html.helper.form
+@import views.html.helper.CSRF
+@(userForm : Form[User])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TravelEA | Create User</title>
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/createUser.css")">
+    </head>
+    <body>
+
+            <div id="startUpBox" class="startUpBox">
+                @form(routes.CreateUserController.save()){
+                    @CSRF.formField
+
+                    <!--  Create User Scene  -->
+                    <input type="text" id="first_name" placeholder="First Name" name="first_name" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')">
+                    <input type="text" id="middle_name" placeholder="Middle Name" name="middle_name">
+                    <input type="text" id="last_name" placeholder="Last Name" name="last_name" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')">
+                    <input type="text" id="email" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" >
+                    <input type="text" id="password" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
+
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="birth_date"  name="birth_date" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
+                    <input type="text" id="gender" placeholder="Gender" name="gender" required oninvalid="this.setCustomValidity('Gender required')" oninput="setCustomValidity('')">
+
+
+                    <!-- user.nantionalities & passport needs to be on the list not on the inpute text -->
+                    <input type="text" id="nationality" placeholder="Nationality" name="nationality" required>
+                    <button type="button" id="goButton" onclick="addNat()">Go</button>
+
+                    <input type="text" id="passport_country" placeholder="Passport" name="passport_country">
+                    <button type="button" id="goButton" onclick="addPas()">Go</button>
+
+                    <div id = nationalityList>
+                        <table id="natList">
+                        </table>
+                    </div>
+                    <div id="passportList">
+                        <table id = "pasList">
+                        </table>
+                    </div>
+
+
+                    <a href="@routes.LoginController.show()"><button type="button" id="cancelNewUser" class="redButton">Cancel</button></a>
+                    <button type="submit" id="okButton" class="loginButton">OK</button>
+                }
+
+
+
+
+
+            <script type="text/javascript">
+
+                function addNat() {
+                    var table = document.getElementById("natList");
+                    var row = table.insertRow(0);
+                    var cell1 = row.insertCell(0);
+                    var text = document.getElementById("nationality").value;
+                    cell1.innerHTML = text;
+                }
+
+
+                function addPas() {
+                    var table = document.getElementById("pasList");
+                    var row = table.insertRow(0);
+                    var cell1 = row.insertCell(0);
+                    var text = document.getElementById("passport").value;
+                    cell1.innerHTML = text;
+                }
+
+            </script>
+
+
+
+        </div>
+    </body>
+</html>
