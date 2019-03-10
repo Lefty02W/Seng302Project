@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Profile;
 import models.User;
 import play.data.*;
 import play.data.Form;
@@ -23,12 +24,12 @@ import javax.inject.Inject;
  */
 public class CreateUserController extends Controller{
 
-    private final Form<User> form;
+    private final Form<Profile> form;
     private MessagesApi messagesApi;
 
     @Inject
     public CreateUserController(FormFactory formFactory, MessagesApi messagesApi){
-        this.form = formFactory.form(User.class);
+        this.form = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
     }
 
@@ -37,8 +38,8 @@ public class CreateUserController extends Controller{
     public Result save(Http.Request request){
         //TODO timestamp1
 
-        Form<User> userForm = form.bindFromRequest(request);
-        User user = userForm.get();
+        Form<Profile> userForm = form.bindFromRequest(request);
+        Profile profile = userForm.get();
         //user.save();
 
 
