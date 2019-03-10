@@ -2,7 +2,7 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-import org.mindrot.jbcrypt.BCrypt;
+//import org.mindrot.jbcrypt.BCrypt;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import javax.persistence.Entity;
@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.Id;
 import java.util.ArrayList;
+
 
 @Entity
 public class Profile extends Model {
@@ -120,8 +121,8 @@ public class Profile extends Model {
 
     public void setPassword(String password) {
         //Hash the password for added security
-        String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
-        this.password = passwordHash;
+       // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
+        this.password = password;
     }
 
     public void setGender(String gender) {
@@ -252,7 +253,9 @@ public class Profile extends Model {
     }
 
     public boolean checkPassword(String password) {
-        return BCrypt.checkpw(password, this.password);
+        // TODO FIX THIS
+        return false;
+        //BCrypt.checkpw(password, this.password);
     }
 
     public boolean getGroupie() {

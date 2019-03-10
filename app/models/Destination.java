@@ -29,6 +29,10 @@ public class Destination extends Model {
     @Constraints.Required
     private double longitude;
 
+    public Destination() {
+
+    }
+
     /**
      * Create a destination
      * @param destination_id The ID of this destination

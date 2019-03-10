@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Destination;
 import play.data.Form;
 import play.i18n.MessagesApi;
 import com.google.inject.Inject;
@@ -17,8 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class
-TripsController extends Controller {
+public class TripsController extends Controller {
 
     private final ArrayList<Destination> destinationsList;
     private final ArrayList<TripDestination> currentDestinationsList;
