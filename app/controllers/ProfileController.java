@@ -1,7 +1,6 @@
 package controllers;
 
 
-import models.Destination;
 import models.Trip;
 import models.TripDestination;
 import models.User;
@@ -12,10 +11,8 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import views.html.*;
-import views.html.helper.form;
 
 import javax.inject.Inject;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

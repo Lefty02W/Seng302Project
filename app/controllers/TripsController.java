@@ -2,10 +2,7 @@ package controllers;
 
 import play.data.Form;
 import play.i18n.MessagesApi;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
-import models.Destination;
 import models.Trip;
 import models.TripDestination;
 import play.data.FormFactory;
@@ -16,9 +13,6 @@ import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

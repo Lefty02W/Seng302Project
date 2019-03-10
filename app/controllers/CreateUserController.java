@@ -40,15 +40,6 @@ public class CreateUserController extends Controller{
         Form<User> userForm = form.bindFromRequest(request);
         User user = userForm.get();
         //user.save();
-        System.out.println(user.getFirst_name() + " " + user.getMiddle_name() + " " + user.getLast_name());
-        System.out.println("Login Cridentials:");
-        System.out.println(user.getEmail() + " " + user.getPassword());
-        System.out.println("DOB: " + user.getBirth_date());
-        System.out.println("Gender: " + user.getGender());
-        System.out.println("Nationality: " + user.getNationality());
-        System.out.println("Passport country: " + user.getPassport_country());
-        Date createDate = new Date();
-        System.out.println("Date of creation: " + createDate);
 
 
 

@@ -1,117 +1,184 @@
 package models;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import play.libs.Json;
+import io.ebean.Finder;
+import io.ebean.Model;
+import play.data.validation.Constraints;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-/**
- * This class holds the data for a destination
- */
-public class Destination {
-
-    private Integer id;
+@Entity
+public class Destination extends Model {
+    @Id
+//    @Constraints.Required
+    @GeneratedValue
+    private int destination_id;
+    //    @Constraints.Required
+    private String member_email;
+    @Constraints.Required
     private String name;
+    @Constraints.Required
     private String type;
-    private String district;
-    private double latitude;
-    private double longitude;
+    @Constraints.Required
     private String country;
+    @Constraints.Required
+    private String district;
+    @Constraints.Required
+    private double latitude;
+    @Constraints.Required
+    private double longitude;
 
-    public Destination(String name, String type, String district, double latitude, double longitude, String country) {
+    /**
+     * Create a destination
+     * @param destination_id The ID of this destination
+     * @param member_email The ID of the member corresponding to this destination
+     * @param name The name of this destination
+     * @param type The type this destination is
+     * @param country The country this destination is from
+     * @param district The district this destination is from
+     * @param latitude The latitude of this destination
+     * @param longitude the longitude of this destination
+     */
+    public Destination(int destination_id, String member_email, String name, String type, String country, String district, double latitude, double longitude) {
+        this.destination_id = destination_id;
+        this.member_email = member_email;
         this.name = name;
         this.type = type;
+        this.country = country;
         this.district = district;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.country = country;
     }
 
-    public Destination() {
-
-     }
+    // Finder for profile
+    public static final Finder<String, Destination> find = new Finder<>(Destination.class);
 
     /**
-     * Converting a Destination object into a JsonNode
-     *
-     * @param toConvert the destination to convert
-     * @return the JsonNode created
+     * Returns the destination ID
+     * @return
      */
-    public static JsonNode toJson(Destination toConvert) {
-        JsonNode converted = Json.toJson(toConvert);
-        return converted;
+    public int getDestination_id() {
+        return destination_id;
     }
 
     /**
-     * Converting a passed JsonNode into a Destination object
-     *
-     * @param toConvert the JsonNode to convert
-     * @return the converted Destination object
+     * Sets the destination_id
+     * @param destination_id
      */
-    public static Destination fromJson(JsonNode toConvert) {
-        Destination converted = Json.fromJson(toConvert, Destination.class);
-        return converted;
+    public void setDestination_id(int destination_id) {
+        this.destination_id = destination_id;
     }
 
-    public Integer getId() {
-        return id;
+    /**
+     * Returns the member ID
+     * @return
+     */
+    public String getMember_email() {
+        return member_email;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    /**
+     * Sets the member_email
+     * @param member_email
+     */
+    public void setMember_email(String member_email) {
+        this.member_email = member_email;
     }
 
+    /**
+     * Returns the name of the destination
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets the name of the destination
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Returns the type of the destination
+     * @return
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets the type of the destination
+     * @param type
+     */
     public void setType(String type) {
         this.type = type;
     }
 
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
+    /**
+     * Returns the country of the destination
+     * @return
+     */
     public String getCountry() {
         return country;
     }
 
+    /**
+     * Sets the country of the destination
+     * @param country
+     */
     public void setCountry(String country) {
         this.country = country;
     }
 
+    /**
+     * Returns the district of the destination
+     * @return
+     */
+    public String getDistrict() {
+        return district;
+    }
 
+    /**
+     * Sets the district of the destination
+     * @param district
+     */
+    public void setDistrict(String district) {
+        this.district = district;
+    }
 
+    /**
+     * Returns the latitude of the destination
+     * @return
+     */
+    public double getLatitude() {
+        return latitude;
+    }
+
+    /**
+     * Sets the latitude of the destination
+     * @param latitude
+     */
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    /**
+     * Returns the longitude of the destination
+     * @return
+     */
+    public double getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * Sets the longitude of the destination
+     * @param longitude
+     */
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
 }

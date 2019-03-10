@@ -5,11 +5,10 @@ import io.ebean.Model;
 import org.mindrot.jbcrypt.BCrypt;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
-
 import javax.persistence.Entity;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.Id;
-import javax.validation.Constraint;
 import java.util.ArrayList;
 
 @Entity
@@ -65,6 +64,11 @@ public class Profile extends Model {
     private boolean backpacker;
 
     private ArrayList<TravellerType> travellerTypes;
+
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
+    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+
 
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
@@ -289,7 +293,8 @@ public class Profile extends Model {
 
     /**
      * needs to set traveller types first
-     * @return all enum traveller types in a string format so that it can be printed to a webpage
+     * @return all enum traveller types in a string
+import java.sql.Timestamp; format so that it can be printed to a webpage
      */
     public String getTravellerTypesString() {
         setTravellerTypes();
@@ -350,7 +355,7 @@ public class Profile extends Model {
     public ArrayList<Destination> searchDestinations(String searchTerm) {
         ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
         for (Destination dest : destinations) {
-            if (dest.getName().contains(searchTerm) || dest.getClassification().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
+            if (dest.getName().contains(searchTerm) || dest.getType().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
                 resultDestinations.add(dest);
             }
         }

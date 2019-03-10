@@ -1,13 +1,15 @@
 package models;
 
-import java.sql.Timestamp;
+
+import io.ebean.Model;
+
 import java.util.Date;
 
 
 /**
  * This class holds the data for a destination within a trip
  */
-public class TripDestination {
+public class TripDestination extends Model {
 
     private String destination;
     private Date arrival;

@@ -3,13 +3,9 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
-import io.ebean.Transaction;
-import models.Destination;
-import models.Profile;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 

@@ -117,7 +117,16 @@ public class HomeController extends Controller {
     public CompletionStage<Result> save(Http.Request request) {
         Form<Profile> profileForm = formFactory.form(Profile.class).bindFromRequest(request);
         if (profileForm.hasErrors()) {
-            return CompletableFuture.completedFuture(
+            return CompletableFuture.completedFuSystem.out.println(user.getFirst_name() + " " + user.getMiddle_name() + " " + user.getLast_name());
+        System.out.println("Login Cridentials:");
+        System.out.println(user.getEmail() + " " + user.getPassword());
+        System.out.println("DOB: " + user.getBirth_date());
+        System.out.println("Gender: " + user.getGender());
+        System.out.println("Nationality: " + user.getNationality());
+        System.out.println("Passport country: " + user.getPassport_country());
+        Date createDate = new Date();
+        System.out.println("Date of creation: " + createDate);
+ture(
                     badRequest(views.html.signUpForm.render(profileForm, request, messagesApi.preferred(request))));
         }
 

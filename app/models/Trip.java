@@ -1,6 +1,8 @@
 package models;
 
 
+import io.ebean.Model;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -8,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This class holds the data for a profile trip
  */
-public class Trip {
+public class Trip extends Model {
 
 
     private ArrayList<TripDestination> destinations;
