@@ -17,14 +17,14 @@
                     @CSRF.formField
 
                     <!--  Create User Scene  -->
-                    <input type="text" id="first_name" placeholder="First Name" name="first_name" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')">
+                    <input type="text" id="firstName" placeholder="First Name" name="firstName" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')">
                     <input type="text" id="middle_name" placeholder="Middle Name" name="middle_name">
-                    <input type="text" id="last_name" placeholder="Last Name" name="last_name" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')">
+                    <input type="text" id="lastName" placeholder="Last Name" name="lastName" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')">
                     <input type="text" id="email" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" >
                     <input type="text" id="password" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
 
                     <label for="dob">Date of Birth</label>
-                    <input type="date" id="birth_date"  name="birth_date" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
+                    <input type="date" id="birthDate"  name="birthDate" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
                     <input type="text" id="gender" placeholder="Gender" name="gender" required oninvalid="this.setCustomValidity('Gender required')" oninput="setCustomValidity('')">
 
 
@@ -32,7 +32,7 @@
                     <input type="text" id="nationality" placeholder="Nationality" name="nationality" required>
                     <button type="button" id="goButton" onclick="addNat()">Go</button>
 
-                    <input type="text" id="passport_country" placeholder="Passport" name="passport_country">
+                    <input type="text" id="passports" placeholder="Passport" name="passports">
                     <button type="button" id="goButton" onclick="addPas()">Go</button>
 
                     <div id = nationalityList>
