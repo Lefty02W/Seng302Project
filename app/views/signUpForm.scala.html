@@ -1,0 +1,73 @@
+@(profileForm: Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@import helper._
+
+@main {
+
+    <h1>Sign up to TravelEA</h1>
+
+    @form(routes.HomeController.save()) {
+
+        <fieldset>
+            @CSRF.formField
+            @inputText(profileForm("email"), '_label -> "Email", '_help -> "")
+            @inputPassword(profileForm("password"), '_label -> "Password", '_help -> "")
+            @inputText(profileForm("firstName"), '_label -> "First Name", '_help -> "")
+            @inputText(profileForm("lastName"), '_label -> "Last Name", '_help -> "")
+            @inputDate(profileForm("birthDate"), '_label -> "Date of Birth", '_help -> "Format dd-MM-yyyy")
+            @select(
+                profileForm("gender"),
+                options = Seq(
+                    "Other" -> "Other",
+                    "Male" -> "Male",
+                    "Female" -> "Female"),
+                '_label -> "Choose gender",
+                '_showConstraints -> false
+            )
+            @inputText(profileForm("passports"), '_label -> "Passports", '_help -> "Seperate by comma (,) if multiple")
+            @inputText(profileForm("nationality"), '_label -> "Nationalities", '_help -> "Seperate by comma (,) if multiple")
+            <p>What type of traveller are you, Please select one or more</p>
+            @checkbox(profileForm("groupie"), '_label -> "groupie", '_help -> "")
+            @checkbox(profileForm("thrillseeker"), '_label -> "thrillseeker", '_help -> "")
+            @checkbox(profileForm("gapYear"), '_label -> "gapYear", '_help -> "")
+            @checkbox(profileForm("weekender"), '_label -> "weekender", '_help -> "")
+            @checkbox(profileForm("holidaymaker"), '_label -> "holidaymaker", '_help -> "")
+            @checkbox(profileForm("buisness"), '_label -> "buisness", '_help -> "")
+            @checkbox(profileForm("backpacker"), '_label -> "backpacker", '_help -> "")
+
+                @* @select(
+                profileForm("profile.id"),
+                options(companies),
+                '_label -> "Profile", '_default -> "-- Sign Up to TravelEA for improved Travel Experience--",
+                '_showConstraints -> false
+                ) *@
+        </fieldset>
+
+            <fieldset>
+
+            </fieldset>
+
+            @*
+            <h6>What type of traveller are you? (hold ctr to select multipe options</h6>
+
+            <select name="TravellerType" multiple>
+                <option value="GROUPIE">Groupie</option>
+                <option value="TRILLSEEKER">trillseeker</option>
+                <option value="GAP_YEAR">Gap year</option>
+                <option value="WEEKENEDER">Weekender</option>
+                <option value="HOLIDAYMAKER">Holidaymaker</option>
+                <option value="BUISNESS">Buisness</option>
+                <option value="BACKPACKER">Backpacker</option>
+            </select>
+        </fieldset>*@
+
+
+
+        <div class="actions">
+            <input type="submit" value="Sign me up" class="btn primary"> or
+            <a href="@routes.HomeController.index()" class="btn">Cancel</a>
+        </div>
+
+    }
+
+}

@@ -1,0 +1,30 @@
+@(destinationForm: Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@import helper._
+
+@main {
+
+    <h1>Create Destination</h1>
+
+    @form(routes.HomeController.saveDestination()) {
+
+        <fieldset>
+            @CSRF.formField
+            @inputText(destinationForm("name"), '_label -> "Name", '_help -> "")
+            @inputText(destinationForm("classification"), '_label -> "Classification", '_help -> "")
+            @inputText(destinationForm("country"), '_label -> "Country", '_help -> "")
+            @inputText(destinationForm("district"), '_label -> "District", '_help -> "")
+            @inputText(destinationForm("latitude"), '_label -> "Latitude", '_help -> "")
+            @inputText(destinationForm("longitude"), '_label -> "Longitude", '_help -> "")
+
+        </fieldset>
+
+
+        <div class="actions">
+            <input type="submit" value="Add Destination" class="btn primary"> or
+            <a href="@routes.HomeController.index()" class="btn">Cancel</a>
+        </div>
+
+    }
+
+}

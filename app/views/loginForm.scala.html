@@ -1,0 +1,25 @@
+@(loginForm: Form[HomeController.Login])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@import helper._
+
+@main {
+
+    <h1>Log in to TravelEA</h1>
+
+    @form(routes.HomeController.validate()) {
+
+        <fieldset>
+            @CSRF.formField
+            @inputText(loginForm("email"), '_label -> "Email", '_help -> "")
+            @inputPassword(loginForm("password"), '_label -> "Password", '_help -> "")
+
+        </fieldset>
+
+        <div class="actions">
+            <input type="submit" value="Log in" class="btn primary"> or
+            <a href="@routes.HomeController.index()" class="btn">Cancel</a>
+        </div>
+
+    }
+
+}

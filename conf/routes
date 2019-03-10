@@ -32,3 +32,37 @@ POST    /trips                       controllers.TripsController.save(request: R
 POST    /trips/create                controllers.TripsController.addDestination(request: Request)
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
+
+
+
+
+
+POST /                              controllers.HomeController.save(request: Request)
+GET /index                          controllers.HomeController.index
+
+
+
+GET /user                           controllers.HomeController.showCurrentUser(request: Request)
+GET /logout                         controllers.HomeController.logout(request: Request)
+
+#GET /user/deletedestination         controllers.HomeController.deleteDestination(request: Request)
+
+# Profiles
+GET     /profiles                   controllers.HomeController.listProfile
+GET     /profile/search             controllers.HomeController.listOne(request: Request)
+GET     /partner/                   controllers.HomeController.searchPartner(request: Request)
+GET     /partner/search             controllers.HomeController.listPartners(request: Request)
+
+# Destinations
+
+
+#Destinations
+GET     /profile/create_destination controllers.HomeController.createDestination(request: Request)
+POST    /profile/create_destination controllers.HomeController.saveDestination(request: Request)
+
+# Delete a computer
+#POST    /computers/:id/delete       controllers.HomeController.delete(id:Long)
+
+# Edit profile
+GET     /profiles/edit/:email        controllers.HomeController.editProfile(request: Request, email:String)
+POST    /profiles/edit/              controllers.HomeController.updateProfile(request: Request)

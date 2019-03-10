@@ -1,0 +1,25 @@
+@(destinations: List[Destination])
+
+@import helper._
+
+@if(destinations.isEmpty) {
+    @main {
+        <h2>No destinations in database</h2>
+    }
+} else {
+    @main {
+        <div>
+            <h1>All destinations</h1>
+            @for(destination <- destinations) {
+                <p>ID : @destination.getDestination_id</p>
+                <p>Email : @destination.getMember_email</p>
+                <p>Name : @destination.getName</p>
+                <p>Classification : @destination.getClassification</p>
+                <p>Country : @destination.getCountry</p>
+                <p>District : @destination.getDistrict</p>
+                <p>Latitude : @destination.getLatitude</p>
+                <p>Longitude : @destination.getLongitude</p>
+            }
+        </div>
+    }
+}

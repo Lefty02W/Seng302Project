@@ -1,0 +1,39 @@
+@(profiles: List[Profile])
+@if(profiles.isEmpty) {
+    @main {
+        <h2>No profiles in database</h2>
+    }
+} else {
+    @main {
+        <div>
+            <h1>All Profiles</h1>
+            @for(profile <- profiles) {
+                <p>Email : @profile.getEmail</p>
+                <p>First Name : @profile.getFirstName</p>
+                <p>Last Name : @profile.getLastName</p>
+                <p>Date of Birth : @profile.getBirthDate</p>
+                <p>Gender  : @profile.getGender</p>
+                <p>Time Created  : @profile.getTimeCreated</p>
+                @if(profile.passportToList().isEmpty) {
+                    <p>There are no Passports associated with this account!</p>
+                } else {
+                    <p>Passports : </p>
+                    @for(passports <- profile.passportToList()) {
+                        <p>@passports</p>
+                    }
+                }
+                @if(profile.nationalityToList().isEmpty) {
+                    <p>There are no Nationalities associated with this account!</p>
+                } else {
+                    <p>Nationality: </p>
+                    @for(nationalities <- profile.nationalityToList()) {
+                        <p>@nationalities</p>
+                    }
+                }
+                <p>Traveller Types : @profile.getTravellerTypesString</p>
+                @*<td><a href="@routes.HomeController.edit(profile.email)">Edit this profile</a></td>*@
+                <p><br></p>
+            }
+        </div>
+    }
+}
