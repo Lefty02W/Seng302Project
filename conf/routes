@@ -16,16 +16,16 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 
 GET     /login                       controllers.LoginController.show(request: Request)
-POST     /login                       controllers.LoginController.login(request: Request)
+POST     /login                      controllers.LoginController.login(request: Request)
 GET     /trips                       controllers.TripsController.show(request: Request)
 GET     /destinations                controllers.DestinationsController.show(request: Request)
-GET     /destinations/create                controllers.DestinationsController.showCreate(request: Request)
+GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
 GET     /travellers                  controllers.TravellersController.show
 GET     /profile                     controllers.ProfileController.show
-GET     /profile/edit                controllers.ProfileController.showEdit(request: Request)
+GET     /profile/edit/:email         controllers.ProfileController.showEdit(email: String)
 POST    /profile                     controllers.ProfileController.update(request: Request)
 
-GET     /trips/create               controllers.TripsController.showCreate(request: Request)
+GET     /trips/create                controllers.TripsController.showCreate(request: Request)
 GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)
 
 POST    /trips                       controllers.TripsController.save(request: Request)

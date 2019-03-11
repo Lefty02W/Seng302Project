@@ -1,7 +1,7 @@
 package controllers;
 
 
-import models.User;
+import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -19,19 +19,19 @@ import javax.inject.Inject;
  */
 public class LoginController extends Controller {
 
-    private final Form<User> form;
+    private final Form<Profile> form;
     private MessagesApi messagesApi;
 
     @Inject
     public LoginController(FormFactory formFactory, MessagesApi messagesApi){
-        this.form = formFactory.form(User.class);
+        this.form = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
     }
 
     public Result login(Http.Request request){
-        Form<User> loginForm = form.bindFromRequest(request);
-        User user = loginForm.get();
-        if (checkUser(user.getEmail(), user.getPassword())){
+        Form<Profile> loginForm = form.bindFromRequest(request);
+        Profile profile = loginForm.get();
+        if (checkUser(profile.getEmail(), profile.getPassword())){
             return redirect(routes.ProfileController.show());
         } else {
             //TODO show incorrect user information error message

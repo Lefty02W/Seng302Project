@@ -1,8 +1,6 @@
 package controllers;
 
 import models.Profile;
-import models.User;
-import play.data.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -12,11 +10,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 
 import views.html.*;
-import views.html.helper.form;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
 import javax.inject.Inject;
 
 /**

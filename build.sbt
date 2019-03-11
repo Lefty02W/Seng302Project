@@ -19,3 +19,4 @@ testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
 
+libraryDependencies += evolutions

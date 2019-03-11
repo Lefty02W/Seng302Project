@@ -21,6 +21,7 @@ public class DestinationRepository {
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
 
+
     @Inject
     public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());

@@ -1,15 +1,15 @@
 package controllers;
 
 
-import models.Trip;
-import models.TripDestination;
-import models.User;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
+import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.ProfileRepository;
 import views.html.*;
 
 import javax.inject.Inject;
@@ -17,38 +17,60 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.Date;
+import java.util.concurrent.CompletionStage;
 
 
 public class ProfileController extends Controller {
 
-    private final Form<User> form;
+    private final Form<Profile> form;
     private MessagesApi messagesApi;
-    User testUser = new User("John", "James", "Smith", "yes@gmail.com", "123", "08/03/1989", "NewZealand", "newzealand", "ThrillSeeker");
+    private final HttpExecutionContext httpExecutionContext;
+
+    private final ProfileRepository profileRepository;
+
+    Profile testUser = new Profile("John", "James", "Smith", "yes@gmail.com", new Date(),
+            "08/03/1989", "NewZealand", new Date(), "ThrillSeeker", new ArrayList<Destination>(),
+            true, true, true, true, true, true , true);
 
 
     @Inject
-    public ProfileController(FormFactory formFactory, MessagesApi messagesApi){
-        this.form = formFactory.form(User.class);
+    public ProfileController(FormFactory formFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository){
+        this.form = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
+        this.httpExecutionContext = httpExecutionContext;
+        this.profileRepository = profileRepository;
     }
 
-    public Result showEdit(Http.Request request){
-        return ok(editProfile.render(testUser, form, request, messagesApi.preferred(request)));
+
+    public CompletionStage<Result> showEdit(String email) {
+
+        return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
+            if (optionalProfile.isPresent()) {
+                Profile toEditProfile = optionalProfile.get();
+                Form<Profile> profileForm = form.fill(toEditProfile);
+
+                return ok(editProfile.render(profileForm));
+
+            } else {
+                return notFound("Profile not found.");
+            }
+        }, httpExecutionContext.current());
     }
 
     public Result update(Http.Request request){
-        Form<User> updateForm = form.bindFromRequest(request);
-        User user = updateForm.get();
+        Form<Profile> profileForm = form.bindFromRequest(request);
+        Profile profile = profileForm.get();
+        //TODO get profile email
         System.out.println("**********************************");
         System.out.println("User update data ready for SQL update...");
-        System.out.println("Full name: " + user.getFirst_name() + " " + user.getMiddle_name() + " " + user.getLast_name());
+        System.out.println("Full name: " + profile.getFirstName() + " " + profile.getMiddleName() + " " + profile.getFirstName());
         System.out.println("Login info:");
-        System.out.println(user.getEmail() + " " + user.getPassword());
-        System.out.println("DOB: " + user.getBirth_date());
-        System.out.println("Nationality: " + user.getNationality());
-        System.out.println("Passport country: " + user.getPassport_country());
-        System.out.println("Travler type: " + user.getTraveller_type());
+        System.out.println(profile.getEmail() + " " + profile.getPassword());
+        System.out.println("DOB: " + profile.getBirthDate());
+        System.out.println("Nationality: " + profile.getNationality());
+        System.out.println("Passport country: " + profile.getPassports());
+        System.out.println("Travler type: " + profile.getTravellerTypesString());
         System.out.println("**********************************");
 
 
@@ -81,7 +103,7 @@ public class ProfileController extends Controller {
         Trip trip1 = new Trip(dests, "Trip 2");
         Trip[] trips = {trip, trip1};
 
-        return ok(profile.render("John", "James", "Smith", "1989-03-08", Arrays.asList(nationalities), Arrays.asList(passports), Arrays.asList(types), "yes@gmail.com", Arrays.asList(trips)));
+        return ok(profile.render(testUser, Arrays.asList(trips), Arrays.asList(types)));
     }
 
 }

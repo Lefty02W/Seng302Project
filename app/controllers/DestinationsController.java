@@ -9,6 +9,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
+import repository.DestinationRepository;
 import views.html.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,18 +19,20 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 
-@Singleton
 public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;
     private final List<Destination> destinationsList;
     private final Form<Destination> form;
+    private final DestinationRepository destinationRepository;
+
 
     @Inject
-    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi) {
+    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationsList = Destination.find.all();
+        this.destinationRepository = destinationRepository;
     }
 
     /**

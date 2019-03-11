@@ -1,6 +1,7 @@
 package repository;
 
 import io.ebean.*;
+import models.Destination;
 import models.Profile;
 import play.db.ebean.EbeanConfig;
 
