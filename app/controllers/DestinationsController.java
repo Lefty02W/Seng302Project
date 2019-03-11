@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;
-    private final List<Destination> destinationsList;
+    private final List<Destination> destinationsList = new ArrayList<>();
     private final Form<Destination> form;
     private final DestinationRepository destinationRepository;
 
@@ -31,7 +31,7 @@ public class DestinationsController extends Controller {
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
-        this.destinationsList = Destination.find.all();
+        //this.destinationsList = Destination.find.all();
         this.destinationRepository = destinationRepository;
     }
 
