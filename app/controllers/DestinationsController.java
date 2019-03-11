@@ -1,5 +1,6 @@
 package controllers;
 import models.Destination;
+import models.Profile;
 import play.i18n.MessagesApi;
 
 import play.data.FormFactory;
@@ -7,9 +8,12 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Results;
 import views.html.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -102,4 +106,44 @@ public class DestinationsController extends Controller {
         //destinationsList.remove(id*0);
         return redirect(routes.DestinationsController.show());
     }
+
+
+
+    /**
+     * Display the 'create destination form'.
+
+    public Result createDestination(Http.Request request) {
+        Form<Destination> destinationForm = formFactory.form(Destination.class);
+        return ok(views.html.createDestinationForm.render(destinationForm, request, messagesApi.preferred(request)));
+
+    }
+
+
+    /**
+     * Handle the 'Create Destination Form' submission
+
+    public CompletionStage<Result> saveDestination(Http.Request request) {
+
+        Profile user = getCurrentUser(request);
+        if (user == null) {
+            return CompletableFuture.completedFuture(redirectToLogin);
+        }
+        Form<Destination> destinationForm = formFactory.form(Destination.class).bindFromRequest(request);
+        if (destinationForm.hasErrors()) {
+
+            // This is the HTTP rendering thread context
+            return CompletableFuture.completedFuture(
+                    badRequest(views.html.createDestinationForm.render(
+                            destinationForm, request, messagesApi.preferred(request))
+                    )
+            );
+        }
+
+        Destination destination = destinationForm.get();
+        destination.setMember_email(user.getEmail());
+        // Run insert db operation, then redirect
+        return destinationRepository.insert(destination).thenApplyAsync(data -> {
+            return Results.redirect(routes.HomeController.index());
+        }, httpExecutionContext.current());
+    }*/
 }

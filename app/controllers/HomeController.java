@@ -45,32 +45,7 @@ public class HomeController extends Controller {
         this.destinationRepository = destinationRepository;
     }
 
-    /**
-     * Handle default path requests
-     */
-    public Result index() {
-        return ok(views.html.index.render());
-    }
 
-
-    /**
-     * Display the 'edit profile' form for the current profile, filled with the user's info.
-     *
-     * @param email Email of the profile to edit
-     */
-    public CompletionStage<Result> editProfile(Http.Request request, String email) {
-
-        return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
-            if (optionalProfile.isPresent()) {
-                Profile toEditProfile = optionalProfile.get();
-                Form<Profile> profileForm = formFactory.form(Profile.class).fill(toEditProfile);
-
-                return ok(views.html.editProfileForm.render(profileForm, email));
-            } else {
-                return notFound("Profile not found.");
-            }
-        }, httpExecutionContext.current());
-    }
 
     /**
      * Handle the 'edit profile form' submission
@@ -150,43 +125,7 @@ ture(
     );
 
 
-    /**
-     * Display the 'create destination form'.
-     */
-    public Result createDestination(Http.Request request) {
-        Form<Destination> destinationForm = formFactory.form(Destination.class);
-        return ok(views.html.createDestinationForm.render(destinationForm, request, messagesApi.preferred(request)));
 
-    }
-
-
-    /**
-     * Handle the 'Create Destination Form' submission
-     */
-    public CompletionStage<Result> saveDestination(Http.Request request) {
-
-        Profile user = getCurrentUser(request);
-        if (user == null) {
-            return CompletableFuture.completedFuture(redirectToLogin);
-        }
-        Form<Destination> destinationForm = formFactory.form(Destination.class).bindFromRequest(request);
-        if (destinationForm.hasErrors()) {
-
-                // This is the HTTP rendering thread context
-            return CompletableFuture.completedFuture(
-                    badRequest(views.html.createDestinationForm.render(
-                            destinationForm, request, messagesApi.preferred(request))
-                    )
-            );
-        }
-
-        Destination destination = destinationForm.get();
-        destination.setMember_email(user.getEmail());
-        // Run insert db operation, then redirect
-        return destinationRepository.insert(destination).thenApplyAsync(data -> {
-            return Results.redirect(routes.HomeController.index());
-        }, httpExecutionContext.current());
-    }
 
     /**
      * Login in form
@@ -196,24 +135,6 @@ ture(
         return ok(views.html.loginForm.render(loginForm, request, messagesApi.preferred(request)));
     }
 
-
-    /**
-     * Display all the profiles and their attributes
-     * @return a rendered view displaying all the profiles in the ebean server
-     */
-    public Result listProfile() {
-        List<Profile> profiles = Profile.find.all();
-        return ok(views.html.profileForm.render(profiles)); // pass in profiles parameter wherever it needs to be displayed
-    }
-
-    /**
-     * Display all the destinations and their attributes
-     * @return  a rendered view displaying all the profiles in the ebean server
-    */
-    public Result listDestinations() {
-        List<Destination> destinations = Destination.find.all();
-        return ok(views.html.DisplayDestination.render(destinations));
-    }
 
     /**
      * Validate login submission
@@ -304,65 +225,4 @@ ture(
     }
 
 
-    /**
-     * Method to load up search form page and pass through the input form and https request for use in the listOne method
-     * @param request an HTTP request that will be sent with the function call
-     * @return a rendered view of the search profile form
-     */
-    public Result searchProfile(Http.Request request) {
-        Form<SearchFormData> profileForm = formFactory.form(SearchFormData.class);
-        return ok(views.html.searchProfileForm.render(profileForm, request));
-    }
-
-    /**
-     * Method to load up search form page and pass through the input form and https request for use in the listPartner method
-     * @param request an HTTP request that will be sent with the function call
-     * @return
-     */
-    public Result searchPartner(Http.Request request) {
-        Form<PartnerFormData> partnerForm = formFactory.form(PartnerFormData.class);
-        return ok(views.html.searchPartnerForm.render(partnerForm, request));
-    }
-
-    /**
-     * Display one profile based on user input (email)
-     * @param request an HTTP request that will be sent with the function call
-     * @return a rendered view of one profile and all its attributes
-     */
-    public Result listOne(Http.Request request) {
-        Form<SearchFormData> profileForm = formFactory.form(SearchFormData.class).bindFromRequest(request);
-        SearchFormData profileData = profileForm.get();
-        Profile userProfile = Profile.find.byId(profileData.email);
-
-        if (userProfile == null) {
-            return notFound("Profile not found!");
-        }
-        return ok(views.html.displayProfile.render(userProfile));
-    }
-
-    /**
-     * Method to search for travel partners (profiles) with a search term. The search term can be any of the following attributes:
-     * nationality, gender, age range, type of traveller.
-     * @param request an HTTP request that will be sent with the function call
-     * @return
-     */
-    public Result listPartners(Http.Request request) {
-        List<Profile> profiles = Profile.find.all();
-        List<Profile> resultProfiles = new ArrayList<>();
-
-        Form<PartnerFormData> partnerForm = formFactory.form(PartnerFormData.class).bindFromRequest(request);
-        PartnerFormData partnerData = partnerForm.get();
-        String genderTerm = partnerData.gender;
-
-        if (!genderTerm.equals("noGender")) {
-            for (Profile profile : profiles) {
-                if (profile.getGender().contains(genderTerm)) {
-                    resultProfiles.add(profile);
-                }
-            }
-        } else {
-            resultProfiles = profiles;
-        }
-        return ok(views.html.displayPartners.render(resultProfiles));
-    }
 }
