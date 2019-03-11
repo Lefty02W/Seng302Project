@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.form
 @import views.html.helper.CSRF
-@(testUser: User, updateForm : Form[User])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(profileForm: Profile, updateForm : Form[User])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -39,43 +39,43 @@
                                     @CSRF.formField
                                     <div class="row">
                                         <div class="col">
-                                            <input type="text" id="first_name" placeholder="First Name" name="first_name" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@testUser.first_name>
+                                            <input type="text" id="firstName" placeholder="First Name" name="firstName" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@profileForm.getFirstName>
 
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="middle_name" placeholder="Middle Name" name="middle_name" value=@testUser.middle_name>
+                                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName" value=@profileForm.getMiddleName>
 
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="last_name" placeholder="Last Name" name="last_name" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@testUser.last_name>
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <input type="text" id="email" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@testUser.email>
-
-                                        </div>
-                                        <div class="col">
-                                            <input type="text" id="password" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')" value=@testUser.password>
-
-                                        </div>
-                                        <div class="col">
-                                            <input type="date" id="birth_date"  name="birth_date" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')" value=@testUser.getDate_of_birth>
+                                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@profileForm.getLastName>
 
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <input type="text" id="nationality" placeholder="Nationality" name="nationality" required value=@testUser.getNationality>
+                                            <input type="text" id="email" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@profileForm.getEmail>
 
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="passport_country" placeholder="Passport" name="passport_country" value=@testUser.getPassport_country>
+                                            <input type="text" id="password" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')" value=@profileForm.getPassword>
 
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="traveller_type" placeholder="travlertype1, type2" name="traveller_type" value=@testUser.getTraveller_type>
+                                            <input type="date" id="birthDate"  name="birthDate" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')" value=@profileForm.getBirthDate>
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="text" id="nationality" placeholder="Nationality" name="nationality" required value=@profileForm.getNationality>
+
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" id="passports" placeholder="Passport" name="passports" value=@profileForm.getPassports>
+
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" id="traveller_type" placeholder="travlertype1, type2" name="traveller_type" value=@profileForm.getTravellerTypesString>
 
                                         </div>
                                     </div>

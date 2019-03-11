@@ -12,6 +12,8 @@ import play.mvc.Result;
 import play.mvc.Results;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
+import views.html.editProfile;
+
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -66,6 +68,8 @@ public class HomeController extends Controller {
                 Form<Profile> profileForm = formFactory.form(Profile.class).fill(toEditProfile);
 
                 return ok(views.html.editProfileForm.render(profileForm, email));
+                return ok(editProfile.render(toEditProfile, profileForm, email));
+
             } else {
                 return notFound("Profile not found.");
             }

@@ -23,6 +23,9 @@ public class Profile extends Model {
     private String firstName;
 
     @Constraints.Required
+    private String middleName;
+
+    @Constraints.Required
     private String lastName;
 
     @Constraints.Required
@@ -218,6 +221,14 @@ public class Profile extends Model {
 
     public String getFirstName() {
         return firstName;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
     public String getLastName() {
