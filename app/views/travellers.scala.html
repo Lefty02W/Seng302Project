@@ -42,24 +42,50 @@
             <div id="page-content-wrapper">
                 <div class="container-fluid">
                     <div id="table-card" class="card-large table-hover">
-                            <!-- Table of users -->
-                        <table id="userTable">
-                            <thead>
-                                <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
-                            </thead>
-                            @for(user <- users) {
-                                <tr>
-                                    <td>@user.getFirstName</td>
-                                    <td>@user.getMiddleName</td>
-                                    <td>@user.getLastName</td>
-                                    <td>@user.getGender</td>
-                                    <td><span>@user.getBirthDate.getTime</span>@user.getBirthDate</td>
-                                    <td>@user.getNationalities</td>
-                                    <td>@user.getPassports</td>
-                                    <td>@user.getTravellerTypes</td>
-                                </tr>
-                            }
-                        </table>
+                        <div class="col">
+                            <form>
+                                <input type="search" placeholder="Name">
+                                <select class="selectpicker" multiple title="Gender" >
+                                    <option hidden disabled>Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <input type="date">
+                                <input type="search" placeholder="Nationality">
+                                <input type="search" placeholder="Passport">
+                                <select class="selectpicker" multiple title="Traveller Type">
+                                    <option value="ThrillSeeker">ThrillSeeker</option>
+                                    <option value="Backpacker">Backpacker</option>
+                                    <option value="GapYear">Gap Year</option>
+                                    <option value="Groupie">Groupie</option>
+                                    <option value="FrequentWeekender">Frequent Weekender</option>
+                                    <option value="business">functional/business Traveller</option>
+                                    <option value="Holidaymaker">Holidaymaker</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="col">
+                                <!-- Table of users -->
+                            <table id="userTable">
+                                <thead>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
+                                </thead>
+                                @for(user <- users) {
+                                    <tr>
+                                        <td>@user.getFirstName</td>
+                                        <td>@user.getMiddleName</td>
+                                        <td>@user.getLastName</td>
+                                        <td>@user.getGender</td>
+                                        <td><span>@user.getBirthDate.getTime</span>@user.getBirthDate</td>
+                                        <td>@user.getNationalities</td>
+                                        <td>@user.getPassports</td>
+                                        <td>@user.getTravellerTypes</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -78,12 +104,13 @@
                     "pageLength": 13,
                     dom: '<l<"toolbar">f>rtip>',
                     "searching": false,
-                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
+                    "sDom": 'rt<"bottom"p>',
                     "autoWidth": false
                 });
 
-
             });
+
+
 
 
     </script>
