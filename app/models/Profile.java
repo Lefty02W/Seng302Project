@@ -22,7 +22,6 @@ public class Profile extends Model {
     @Constraints.Required
     private String firstName;
 
-    @Constraints.Required
     private String middleName;
 
     @Constraints.Required
@@ -42,7 +41,6 @@ public class Profile extends Model {
 
     @Constraints.Required
     private String gender;
-
 
     @Constraints.Required
     private String nationality;
