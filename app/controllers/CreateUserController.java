@@ -1,8 +1,6 @@
 package controllers;
 
 import models.Profile;
-import models.User;
-import play.data.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -11,12 +9,9 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 
+import repository.ProfileRepository;
 import views.html.*;
-import views.html.helper.form;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+
 import javax.inject.Inject;
 
 /**
@@ -26,26 +21,22 @@ public class CreateUserController extends Controller{
 
     private final Form<Profile> form;
     private MessagesApi messagesApi;
+    private final ProfileRepository profileRepository;
 
     @Inject
-    public CreateUserController(FormFactory formFactory, MessagesApi messagesApi){
+    public CreateUserController(FormFactory formFactory, ProfileRepository profileRepository, MessagesApi messagesApi){
         this.form = formFactory.form(Profile.class);
+        this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
     }
 
     //to create user
 
     public Result save(Http.Request request){
-        //TODO timestamp1
-
         Form<Profile> userForm = form.bindFromRequest(request);
         Profile profile = userForm.get();
-        //user.save();
-
-
-
+        profileRepository.insert(profile);
         return redirect(routes.LoginController.show());
-
     }
 
     //renders the createUser scene

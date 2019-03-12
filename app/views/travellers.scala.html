@@ -1,4 +1,4 @@
-@(users : List[User])
+@(users : List[Profile])
 
 <!DOCTYPE html>
 <html>
@@ -45,18 +45,17 @@
                             <!-- Table of users -->
                         <table id="userTable">
                             <thead>
-                                <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
+                       user         <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
                             </thead>
                             @for(user <- users) {
                                 <tr>
-                                    <td>@user.getFirst_name</td>
-                                    <td>@user.getMiddle_name</td>
-                                    <td>@user.getLast_name</td>
+                                    <td>@user.getFirstName</td>
+                                    <td>@user.getLastName</td>
                                     <td>@user.getGender</td>
-                                    <td><span>@user.getBirth_date.getTime</span>@user.getDate_of_birth</td>
+                                    <td><span>@user.getBirthDate.getTime</span>@user.getBirthDate</td>
                                     <td>@user.getNationality</td>
-                                    <td>@user.getPassport_country</td>
-                                    <td>@user.getTraveller_type</td>
+                                    <td>@user.getPassports</td>
+                                    <td>@user.getTravellerTypesString</td>
                                 </tr>
                             }
                         </table>
