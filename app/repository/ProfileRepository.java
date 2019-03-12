@@ -27,6 +27,25 @@ public class ProfileRepository {
         this.executionContext = executionContext;
     }
 
+    public boolean checkProfileExists(String email) {
+        Profile existingEmail = ebeanServer.find(Profile.class).where().like("email", email).findOne();
+        System.out.println(existingEmail);
+        System.out.println(ebeanServer.find(Profile.class).findList());
+        if (existingEmail == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public boolean validate(String email, String password) {
+        Profile profile = ebeanServer.find(Profile.class).where().like("email", email).findOne();
+        if (profile.getEmail().equals(email) && profile.getPassword().equals(password)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public CompletionStage<Optional<Profile>> lookup(String email) {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Profile.class).setId(email).findOne()), executionContext);

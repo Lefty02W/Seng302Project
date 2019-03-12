@@ -72,7 +72,7 @@
                                     </div>
                                 } else {
                                     <div class="container columns-2">
-                                    @for(index <- 0 until trips.size) {
+                                    @for(index <- 0 until trips.size - 1) {
                                         <div class="card-small trip-card">
                                             <h6>@testUser.nationalityToList.get(index)</h6>
                                             <p style="margin: 0;">Destinations visited: @trips(index).getDestinations.size()</p>
