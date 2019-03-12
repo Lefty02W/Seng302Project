@@ -50,6 +50,7 @@
                             @for(user <- users) {
                                 <tr>
                                     <td>@user.getFirstName</td>
+                                    <td>@user.getMiddleName</td>
                                     <td>@user.getLastName</td>
                                     <td>@user.getGender</td>
                                     <td><span>@user.getBirthDate.getTime</span>@user.getBirthDate</td>
