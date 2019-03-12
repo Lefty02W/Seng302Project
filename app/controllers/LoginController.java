@@ -46,14 +46,12 @@ public class LoginController extends Controller {
             //TODO create profile cookie
             return redirect(routes.ProfileController.show());
         } else {
-            //TODO show incorrect user information error message
-            System.out.println("Incorrect login Data please try again");
-            //return ok(login.render(form, request, messagesApi.preferred(request)));
+            //TODO show error message on this redirect
             return redirect(routes.LoginController.show());
         }
     }
 
-    public boolean checkUser(String email, String password){
+    private boolean checkUser(String email, String password){
         if (profileRepository.checkProfileExists(email)) {
             return profileRepository.validate(email, password);
         } else {

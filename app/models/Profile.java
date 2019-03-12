@@ -46,6 +46,12 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
+    private String passports;
+
+
+    private String nationalities;
+
+    private String travellerTypes;
 
 
 
@@ -53,13 +59,10 @@ public class Profile extends Model {
     private Date timeCreated;
 
     private ArrayList<Destination> destinations = new ArrayList<Destination>();
-    private ArrayList<String> nationality;
-    private ArrayList<String> passports;
 
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
 
-    private ArrayList<String> travellerTypes;
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
     private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
@@ -68,8 +71,8 @@ public class Profile extends Model {
 
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
-                   ArrayList<String> passports, String gender, Date timeCreated, ArrayList<String> nationality, ArrayList<Destination> destinations,
-                   ArrayList<String> travellerTypes) {
+                   String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,
+                   String travellerTypes) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -78,7 +81,7 @@ public class Profile extends Model {
         this.passports = passports;
         this.gender = gender;
         this.timeCreated = timeCreated;
-        this.nationality = nationality;
+        this.nationalities = nationalities;
         this.destinations = destinations;
         this.travellerTypes = travellerTypes;
     }
@@ -117,9 +120,6 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-    public void setPassports(ArrayList<String> passports) {
-        this.passports = passports;
-    }
 
     public void setDestinations(ArrayList<Destination> destinations) {
         this.destinations = destinations;
@@ -127,9 +127,6 @@ public class Profile extends Model {
 
 
 
-    public void setNationality(ArrayList<String> nationalities) {
-        this.nationality = nationalities;
-    }
 
     //Getters
     public String getEmail() {
@@ -168,16 +165,26 @@ public class Profile extends Model {
         return gender;
     }
 
-    public ArrayList<String> getPassports() {
-        return passports;
+    public String getTravellerTypes() {
+        return travellerTypes;
+    }
+
+    public void setTravellerTypes(String travellerTypes) {
+        this.travellerTypes = travellerTypes;
+    }
+
+    public ArrayList<String> getPassportsList() {
+        ArrayList<String> passportsList = new ArrayList<>(Arrays.asList(passports.split(",")));
+        return passportsList;
     }
 
     public ArrayList<Destination> getDestinations() {
         return destinations;
     }
 
-    public ArrayList<String> getNationality() {
-        return nationality;
+    public ArrayList<String> getNationalityList() {
+        ArrayList<String> nationalityList = new ArrayList<>(Arrays.asList(nationalities.split(",")));
+        return nationalityList;
     }
 
     public boolean checkPassword(String password) {
@@ -185,6 +192,7 @@ public class Profile extends Model {
         return false;
         //BCrypt.checkpw(password, this.password);
     }
+
 
 
     /**
@@ -220,10 +228,6 @@ public class Profile extends Model {
         return toReturn;
     }
 
-    //TODO FIX THIS PLS AND THANK
-    public String getTravellerTypesString() {
-        return travellerTypes.get(0);
-    }
 
 
     /**
@@ -237,5 +241,22 @@ public class Profile extends Model {
                 return;
             }
         }
+    }
+
+
+    public void setPassports(String passports) {
+        this.passports = passports;
+    }
+
+    public String getPassports() {
+        return passports;
+    }
+
+    public String getNationalities() {
+        return nationalities;
+    }
+
+    public void setNationalities(String nationalities) {
+        this.nationalities = nationalities;
     }
 }

@@ -73,6 +73,9 @@ create table profile (
   password                      varchar(255),
   birth_date                    datetime(6),
   gender                        varchar(255),
+  passports                     varchar(255),
+  nationalities                 varchar(255),
+  traveller_types               varchar(255),
   time_created                  datetime(6),
   constraint pk_profile primary key (user_id)
 );

@@ -74,7 +74,7 @@
                                     <div class="container columns-2">
                                     @for(index <- 0 until trips.size - 1) {
                                         <div class="card-small trip-card">
-                                            <h6>@testUser.getNationality.get(index)</h6>
+                                            <h6>@testUser.getNationalityList.get(index)</h6>
                                             <p style="margin: 0;">Destinations visited: @trips(index).getDestinations.size()</p>
                                             <p style="margin: 0;">Days Travelling: @trips(index).getTravelTime</p>
                                         </div>
@@ -118,15 +118,15 @@
                             <div id="nationCard" class="card-large lower-card center-col">
                                 <h3>Your Nationalities</h3>
 
-                                @if(testUser.getNationality.isEmpty) {
+                                @if(testUser.getNationalityList.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no nationalities associated with your profile
                                     </div>
                                 } else {
                                     <div class="container columns-2">
-                                    @for(index <- 0 until testUser.getNationality.size) {
+                                    @for(index <- 0 until testUser.getNationalityList.size) {
                                         <div class="card-small card-small-tall">
-                                            <a>@testUser.getNationality.get(index)</a>
+                                            <a>@testUser.getNationalityList.get(index)</a>
                                         </div>
                                     }
                                     </div>
@@ -149,9 +149,9 @@
                                     <div class="container columns-2">
 
 
-                                    @for(index <- 0 until testUser.getPassports.size) {
+                                    @for(index <- 0 until testUser.getPassportsList.size) {
                                         <div class="card-small card-small-tall">
-                                            <a>@testUser.getPassports.get(index)</a>
+                                            <a>@testUser.getPassportsList.get(index)</a>
                                         </div>
                                     }
                                     </div>

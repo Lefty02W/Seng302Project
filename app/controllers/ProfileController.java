@@ -30,8 +30,8 @@ public class ProfileController extends Controller {
     private final ProfileRepository profileRepository;
 
     Profile testUser = new Profile("John", "James", "yes@gmail.com", "noot", new Date(),
-            new ArrayList<String>(), "NewZealand", new Date(), new ArrayList<String>(), new ArrayList<Destination>(),
-            new ArrayList<String>());
+            "NZ, EU", "NewZealand", new Date(), "NZ", new ArrayList<Destination>(),
+            "ThrillSeeker");
 
 
     @Inject
@@ -68,9 +68,9 @@ public class ProfileController extends Controller {
         System.out.println("Login info:");
         System.out.println(profile.getEmail() + " " + profile.getPassword());
         System.out.println("DOB: " + profile.getBirthDate());
-        System.out.println("Nationality: " + profile.getNationality());
+        System.out.println("Nationality: " + profile.getNationalities());
         System.out.println("Passport country: " + profile.getPassports());
-        System.out.println("Travler type: " + profile.getTravellerTypesString());
+        System.out.println("Travler type: " + profile.getTravellerTypes());
         System.out.println("**********************************");
 
 

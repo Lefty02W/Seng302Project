@@ -66,11 +66,11 @@
                                     <td>@destination.getLatitude() <input type="hidden" name="destinationLatitude" value="@destination.getLatitude()" /></td>
                                     <td>@destination.getLongitude() <input type="hidden" name="destinationLongitude" value="@destination.getLongitude()" /></td>
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
-                                    @helper.form(routes.DestinationsController.edit(destination.getDestination_id())) {
+                                    @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                         @CSRF.formField
                                         <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button> </td>
                                     }
-                                    @helper.form(routes.DestinationsController.delete(destination.getDestination_id())) {
+                                    @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                         @CSRF.formField
                                         <td> <button type="button" class="button-delete" onclick="deleteRow(this)" style="height:4vh">Delete</button></td>
                                     }

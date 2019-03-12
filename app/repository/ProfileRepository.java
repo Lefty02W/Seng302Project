@@ -84,7 +84,8 @@ public class ProfileRepository {
                     targetProfile.setBirthDate(newProfile.getBirthDate());
                     targetProfile.setGender(newProfile.getGender());
                     targetProfile.setPassports(newProfile.getPassports());
-                    targetProfile.setNationality(newProfile.getNationality());
+                    targetProfile.setNationalities(newProfile.getNationalities());
+                    targetProfile.setTravellerTypes(newProfile.getTravellerTypes());
 
                     targetProfile.update();
                     txn.commit();
