@@ -4,7 +4,6 @@ import io.ebean.*;
 import models.Destination;
 import models.Profile;
 import play.db.ebean.EbeanConfig;
-
 import javax.inject.Inject;
 import java.util.Date;
 import java.util.Optional;
@@ -86,13 +85,6 @@ public class ProfileRepository {
                     targetProfile.setGender(newProfile.getGender());
                     targetProfile.setPassports(newProfile.getPassports());
                     targetProfile.setNationality(newProfile.getNationality());
-                    targetProfile.setGroupie(newProfile.getGroupie());
-                    targetProfile.setThrillseeker((newProfile.getThrillseeker()));
-                    targetProfile.setGapYear(newProfile.getGapYear());
-                    targetProfile.setWeekender(newProfile.getWeekender());
-                    targetProfile.setHolidaymaker(newProfile.getHolidaymaker());
-                    targetProfile.setBusiness(newProfile.getBusiness());
-                    targetProfile.setBackpacker(newProfile.getBackpacker());
 
                     targetProfile.update();
                     txn.commit();

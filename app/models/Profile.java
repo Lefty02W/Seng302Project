@@ -6,6 +6,8 @@ import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 import javax.persistence.Entity;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.Id;
@@ -19,6 +21,9 @@ public class Profile extends Model {
 
     private static final int WORKLOAD = 12;
 
+    @Id
+    private int userId;
+
     @Constraints.Required
     private String firstName;
 
@@ -28,7 +33,6 @@ public class Profile extends Model {
     private String lastName;
 
     @Constraints.Required
-    @Id
     private String email;
 
     @Constraints.Required
@@ -37,35 +41,25 @@ public class Profile extends Model {
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
-    private String passports;
+
 
     @Constraints.Required
     private String gender;
 
-    @Constraints.Required
-    private String nationality;
+
+
 
     //@Formats.DateTime(pattern="dd-MM-yyyy")
-    private Date timeCreated = new Date();
+    private Date timeCreated;
 
     private ArrayList<Destination> destinations = new ArrayList<Destination>();
+    private ArrayList<String> nationality;
+    private ArrayList<String> passports;
 
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
-    private boolean groupie;
 
-    private boolean thrillseeker;
 
-    private boolean gapYear;
-
-    private boolean weekender;
-
-    private boolean holidaymaker;
-
-    private boolean business;
-
-    private boolean backpacker;
-
-    private ArrayList<TravellerType> travellerTypes;
+    private ArrayList<String> travellerTypes;
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
     private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
@@ -74,9 +68,8 @@ public class Profile extends Model {
 
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
-                   String passports, String gender, Date timeCreated, String nationality, ArrayList<Destination> destinations,
-                   boolean groupie, boolean thrillseeker, boolean gapYear, boolean weekender, boolean holidaymaker,
-                   boolean business, boolean backpacker) {
+                   ArrayList<String> passports, String gender, Date timeCreated, ArrayList<String> nationality, ArrayList<Destination> destinations,
+                   ArrayList<String> travellerTypes) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -87,13 +80,7 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationality = nationality;
         this.destinations = destinations;
-        this.groupie = groupie;
-        this.thrillseeker = thrillseeker;
-        this.gapYear = gapYear;
-        this.weekender = weekender;
-        this.holidaymaker = holidaymaker;
-        this.business = business;
-        this.backpacker = backpacker;
+        this.travellerTypes = travellerTypes;
     }
 
     // Finder for profile
@@ -130,7 +117,7 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-    public void setPassports(String passports) {
+    public void setPassports(ArrayList<String> passports) {
         this.passports = passports;
     }
 
@@ -138,77 +125,9 @@ public class Profile extends Model {
         this.destinations = destinations;
     }
 
-    /**
-     * updates travellerTypes with the appropriate enum
-     */
-    public void setGroupie(boolean groupie) {
-        this.groupie = groupie;
-    }
 
-    public void setThrillseeker(boolean thrillseeker) {
-        this.thrillseeker = thrillseeker;
-    }
 
-    public void setGapYear(boolean gapYear) {
-        this.gapYear = gapYear;
-    }
-
-    public void setWeekender(boolean weekender) {
-        this.weekender = weekender;
-    }
-
-    public void setHolidaymaker(boolean holidaymaker) {
-        this.holidaymaker = holidaymaker;
-    }
-
-    public void setBusiness(boolean business) {
-        this.business = business;
-    }
-
-    public void setBackpacker(boolean backpacker) {
-        this.backpacker = backpacker;
-    }
-
-    private void setTravellerTypes() {
-        travellerTypes = new ArrayList<TravellerType>();
-        if (this.groupie) {
-            this.travellerTypes.add(TravellerType.GROUPIE);
-        } else if (this.travellerTypes.contains(TravellerType.GROUPIE)) {
-            this.travellerTypes.remove(TravellerType.GROUPIE);
-        }
-        if (this.thrillseeker) {
-            this.travellerTypes.add(TravellerType.THRILLSEEKER);
-        } else if (this.travellerTypes.contains(TravellerType.THRILLSEEKER)) {
-            this.travellerTypes.remove(TravellerType.THRILLSEEKER);
-        }
-        if (this.gapYear) {
-            travellerTypes.add(TravellerType.GAP_YEAR);
-        } else if (travellerTypes.contains(TravellerType.GAP_YEAR)) {
-            travellerTypes.remove(TravellerType.GROUPIE);
-        }
-        if (this.weekender) {
-            travellerTypes.add(TravellerType.WEEKENDER);
-        } else if (travellerTypes.contains(TravellerType.WEEKENDER)) {
-            travellerTypes.remove(TravellerType.WEEKENDER);
-        }
-        if (this.holidaymaker) {
-            travellerTypes.add(TravellerType.HOLIDAYMAKER);
-        } else if (travellerTypes.contains(TravellerType.HOLIDAYMAKER)) {
-            travellerTypes.remove(TravellerType.HOLIDAYMAKER);
-        }
-        if (this.business) {
-            travellerTypes.add(TravellerType.BUSINESS);
-        } else if (travellerTypes.contains(TravellerType.BUSINESS)) {
-            travellerTypes.remove(TravellerType.BUSINESS);
-        }
-        if (this.backpacker) {
-            travellerTypes.add(TravellerType.BACKPACKER);
-        } else if (travellerTypes.contains(TravellerType.BACKPACKER)) {
-            travellerTypes.remove(TravellerType.BACKPACKER);
-        }
-    }
-
-    public void setNationality(String nationalities) {
+    public void setNationality(ArrayList<String> nationalities) {
         this.nationality = nationalities;
     }
 
@@ -249,7 +168,7 @@ public class Profile extends Model {
         return gender;
     }
 
-    public String getPassports() {
+    public ArrayList<String> getPassports() {
         return passports;
     }
 
@@ -257,7 +176,7 @@ public class Profile extends Model {
         return destinations;
     }
 
-    public String getNationality() {
+    public ArrayList<String> getNationality() {
         return nationality;
     }
 
@@ -265,96 +184,6 @@ public class Profile extends Model {
         // TODO FIX THIS
         return false;
         //BCrypt.checkpw(password, this.password);
-    }
-
-    public boolean getGroupie() {
-        return groupie;
-    }
-
-    public boolean getThrillseeker() {
-        return thrillseeker;
-    }
-
-    public boolean getGapYear() {
-        return gapYear;
-    }
-
-    public boolean getWeekender() {
-        return weekender;
-    }
-
-    public boolean getHolidaymaker() {
-        return holidaymaker;
-    }
-
-    public boolean getBusiness() {
-        return business;
-    }
-
-    public boolean getBackpacker() {
-        return backpacker;
-    }
-
-    /**
-     * needs to set traveller types first
-     */
-    public ArrayList<TravellerType> getTravellerTypes() {
-        setTravellerTypes();
-        return travellerTypes;
-    }
-
-    /**
-     * needs to set traveller types first
-     * @return all enum traveller types in a string
-import java.sql.Timestamp; format so that it can be printed to a webpage
-     */
-    public String getTravellerTypesString() {
-        setTravellerTypes();
-        String temporary = "";
-        for (int i = 0; i < travellerTypes.size(); i++) {
-            temporary += travellerTypes.get(i).name() + " ";
-        }
-        return temporary;
-    }
-
-    /**
-     *this method is called from homecontroller save to make sure a traveller type has been picked
-     * @return boolean which is true if a traveller type has been picked
-     */
-    public boolean travellerTypeIsPicked() {
-        boolean isPicked = false;
-        if (groupie) {
-            isPicked = true;
-        } else if (thrillseeker) {
-            isPicked = true;
-        } else if (gapYear) {
-            isPicked = true;
-        } else if (weekender) {
-            isPicked = true;
-        } else if (holidaymaker) {
-            isPicked = true;
-        } else if (business) {
-            isPicked = true;
-        } else if (backpacker) {
-            isPicked = true;
-        }
-        return isPicked;
-    }
-
-    /**
-     * Method to convert a nationality string seperated by commas to a list for display in frontend
-     * @return a list of nationalities belonging to a profile
-     */
-    public ArrayList<String> nationalityToList() {
-        return new ArrayList<>(Arrays.asList(nationality.split("\\s*,\\s*")));
-    }
-
-    /**
-     * Method to convert a passport string seperated by commas to a list for display in frontend
-     * @return a list of passports belonging to a profile
-     */
-    public ArrayList<String> passportToList() {
-        return new ArrayList<>(Arrays.asList(passports.split("\\s*,\\s*")));
     }
 
 
@@ -383,12 +212,17 @@ import java.sql.Timestamp; format so that it can be printed to a webpage
     public Destination returnDestination(int destinationID) {
         Destination toReturn = null;
         for (Destination dest : destinations) {
-            if (dest.getDestination_id() == destinationID) {
+            if (dest.getDestinationId() == destinationID) {
                 toReturn = dest;
                 break;
             }
         }
         return toReturn;
+    }
+
+    //TODO FIX THIS PLS AND THANK
+    public String getTravellerTypesString() {
+        return travellerTypes.get(0);
     }
 
 
@@ -398,7 +232,7 @@ import java.sql.Timestamp; format so that it can be printed to a webpage
      */
     public void deleteDestination(int destinationID) {
         for(Destination dest : destinations) {
-            if (dest.getDestination_id() == destinationID) {
+            if (dest.getDestinationId() == destinationID) {
                 destinations.remove(dest);
                 return;
             }

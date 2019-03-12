@@ -74,7 +74,7 @@
                                     <div class="container columns-2">
                                     @for(index <- 0 until trips.size - 1) {
                                         <div class="card-small trip-card">
-                                            <h6>@testUser.nationalityToList.get(index)</h6>
+                                            <h6>@testUser.getNationality.get(index)</h6>
                                             <p style="margin: 0;">Destinations visited: @trips(index).getDestinations.size()</p>
                                             <p style="margin: 0;">Days Travelling: @trips(index).getTravelTime</p>
                                         </div>
@@ -118,15 +118,15 @@
                             <div id="nationCard" class="card-large lower-card center-col">
                                 <h3>Your Nationalities</h3>
 
-                                @if(testUser.nationalityToList.isEmpty) {
+                                @if(testUser.getNationality.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no nationalities associated with your profile
                                     </div>
                                 } else {
                                     <div class="container columns-2">
-                                    @for(index <- 0 until testUser.nationalityToList.size) {
+                                    @for(index <- 0 until testUser.getNationality.size) {
                                         <div class="card-small card-small-tall">
-                                            <a>@testUser.nationalityToList.get(index)</a>
+                                            <a>@testUser.getNationality.get(index)</a>
                                         </div>
                                     }
                                     </div>
@@ -141,7 +141,7 @@
                             <div id="passportCard" class="card-large lower-card center-col">
                                 <h3>Your Passports</h3>
 
-                                @if(testUser.passportToList.isEmpty) {
+                                @if(testUser.getPassports.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no passports associated with your profile
                                     </div>
@@ -149,9 +149,9 @@
                                     <div class="container columns-2">
 
 
-                                    @for(index <- 0 until testUser.passportToList.size) {
+                                    @for(index <- 0 until testUser.getPassports.size) {
                                         <div class="card-small card-small-tall">
-                                            <a>@testUser.passportToList.get(index)</a>
+                                            <a>@testUser.getPassports.get(index)</a>
                                         </div>
                                     }
                                     </div>
@@ -186,7 +186,7 @@
     <script>
 
             var closebtns = document.getElementsByClassName("close");
-            var i;<a href="@routes.LoginController.show()">
+            var i;
 
             for (i = 0; i < closebtns.length; i++) {
                 closebtns[i].addEventListener("click", function() {

@@ -29,9 +29,9 @@ public class ProfileController extends Controller {
 
     private final ProfileRepository profileRepository;
 
-    Profile testUser = new Profile("John", "James", "Smith", "yes@gmail.com", new Date(),
-            "08/03/1989", "NewZealand", new Date(), "ThrillSeeker", new ArrayList<Destination>(),
-            true, true, true, true, true, true , true);
+    Profile testUser = new Profile("John", "James", "yes@gmail.com", "noot", new Date(),
+            new ArrayList<String>(), "NewZealand", new Date(), new ArrayList<String>(), new ArrayList<Destination>(),
+            new ArrayList<String>());
 
 
     @Inject

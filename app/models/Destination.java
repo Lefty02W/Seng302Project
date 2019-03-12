@@ -5,28 +5,25 @@ import io.ebean.Model;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
 public class Destination extends Model {
+
     @Id
-//    @Constraints.Required
-    @GeneratedValue
-    private int destination_id;
-    //    @Constraints.Required
-    private String member_email;
+    private int destinationId;
+    private int userId;
     @Constraints.Required
     private String name;
     @Constraints.Required
     private String type;
     @Constraints.Required
     private String country;
-    @Constraints.Required
+
     private String district;
-    @Constraints.Required
+
     private double latitude;
-    @Constraints.Required
+
     private double longitude;
 
     public Destination() {
@@ -35,8 +32,7 @@ public class Destination extends Model {
 
     /**
      * Create a destination
-     * @param destination_id The ID of this destination
-     * @param member_email The ID of the member corresponding to this destination
+
      * @param name The name of this destination
      * @param type The type this destination is
      * @param country The country this destination is from
@@ -44,9 +40,9 @@ public class Destination extends Model {
      * @param latitude The latitude of this destination
      * @param longitude the longitude of this destination
      */
-    public Destination(int destination_id, String member_email, String name, String type, String country, String district, double latitude, double longitude) {
-        this.destination_id = destination_id;
-        this.member_email = member_email;
+    public Destination(int destinationId, int userId, String name, String type, String country, String district, double latitude, double longitude) {
+        this.destinationId = destinationId;
+        this.userId = userId;
         this.name = name;
         this.type = type;
         this.country = country;
@@ -62,8 +58,8 @@ public class Destination extends Model {
      * Returns the destination ID
      * @return
      */
-    public int getDestination_id() {
-        return destination_id;
+    public int getDestinationId() {
+        return destinationId;
     }
 
     /**
@@ -71,24 +67,9 @@ public class Destination extends Model {
      * @param destination_id
      */
     public void setDestination_id(int destination_id) {
-        this.destination_id = destination_id;
+        this.destinationId = destination_id;
     }
 
-    /**
-     * Returns the member ID
-     * @return
-     */
-    public String getMember_email() {
-        return member_email;
-    }
-
-    /**
-     * Sets the member_email
-     * @param member_email
-     */
-    public void setMember_email(String member_email) {
-        this.member_email = member_email;
-    }
 
     /**
      * Returns the name of the destination

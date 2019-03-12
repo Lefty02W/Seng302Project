@@ -2,7 +2,12 @@ package models;
 
 
 import io.ebean.Model;
+import org.checkerframework.checker.signedness.qual.Constant;
+import play.data.validation.Constraints;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.validation.Constraint;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -10,12 +15,16 @@ import java.util.concurrent.TimeUnit;
 /**
  * This class holds the data for a profile trip
  */
+@Entity
 public class Trip extends Model {
 
 
     private ArrayList<TripDestination> destinations;
+    @Constraints.Required
     private String name;
-    private Integer id;
+    @Id
+    private int tripId;
+    private int userId;
     public Trip() {}
 
 
@@ -54,11 +63,11 @@ public class Trip extends Model {
     public void setDestinations(ArrayList<TripDestination> destinations) {
         this.destinations = destinations;
     }
-    public Integer getId() { return id; }
+    public Integer getId() { return tripId; }
     public String getName() {
         return name;
     }
-    public void setId(Integer id){ this.id = id;
+    public void setId(int id){ this.tripId = id;
   }
     public void setName(String name) {
         this.name = name;
