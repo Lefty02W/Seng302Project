@@ -10,7 +10,9 @@
     display: none;
 }
 
-
+input[type=text], input[type=date], input[type=search], input[type=datetime-local] {
+    width: 10vw;
+}
 
 
 
