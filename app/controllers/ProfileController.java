@@ -103,6 +103,8 @@ public class ProfileController extends Controller {
         Trip trip1 = new Trip(dests, "Trip 2");
         Trip[] trips = {trip, trip1};
 
+//        Profile profile = Profile.find.byId(email);
+
         return ok(profile.render(testUser, Arrays.asList(trips), Arrays.asList(types)));
     }
 
