@@ -11,6 +11,7 @@ import javax.persistence.Id;
 public class Destination extends Model {
 
     @Id
+    @Constraints.Required
     private int destinationId;
     private int userId;
     @Constraints.Required
@@ -60,14 +61,6 @@ public class Destination extends Model {
      */
     public int getDestinationId() {
         return destinationId;
-    }
-
-    /**
-     * Sets the destination_id
-     * @param destination_id
-     */
-    public void setDestination_id(int destination_id) {
-        this.destinationId = destination_id;
     }
 
 
@@ -165,5 +158,17 @@ public class Destination extends Model {
      */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public void setDestinationId(int destinationId) {
+        this.destinationId = destinationId;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

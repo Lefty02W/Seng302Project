@@ -1,22 +1,17 @@
 package controllers;
-import models.Destination;
-import models.Profile;
-import play.i18n.MessagesApi;
 
+import models.Destination;
+import play.i18n.MessagesApi;
 import play.data.FormFactory;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.Results;
 import repository.DestinationRepository;
 import views.html.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 
 public class DestinationsController extends Controller {

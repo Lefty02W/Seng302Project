@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Destination;
+import models.Profile;
 import play.data.Form;
 import play.i18n.MessagesApi;
 import com.google.inject.Inject;
@@ -37,8 +38,8 @@ public class TripsController extends Controller {
         this.tripList = new ArrayList<>();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-        TripDestination dest1 = new TripDestination("Example dest1", dateFormat.parse("05-03-18"), dateFormat.parse("15-03-18"));
-        TripDestination dest2 = new TripDestination("Example dest2", dateFormat.parse("15-03-18"), dateFormat.parse("05-04-18"));
+        TripDestination dest1 = new TripDestination(1, dateFormat.parse("05-03-18"), dateFormat.parse("15-03-18"));
+        TripDestination dest2 = new TripDestination(2, dateFormat.parse("15-03-18"), dateFormat.parse("05-04-18"));
         ArrayList<TripDestination> dest = new ArrayList<>();
         dest.add(dest1);
         dest.add(dest2);
@@ -49,21 +50,42 @@ public class TripsController extends Controller {
     }
 
     public Result show(Http.Request request) {
+        //TODO Handle null dates
         return ok(trips.render(form, formTrip, destinationsList, tripList, request, messagesApi.preferred(request)));
     }
 
     public Result showCreate(Http.Request request) {
-        return ok(tripsCreate.render(form, formTrip, currentDestinationsList, request, messagesApi.preferred(request)));
+        Profile currentUser = ProfileController.getCurrentUser(request);
+        // Testing only
+        Destination dest = new Destination(1, 1, "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
+        Destination dest1 = new Destination(2, 1, "dest 2", "yought", "USA", "Beans", 12, 23);
+        ArrayList<Destination> destinations = new ArrayList<>();
+        destinations.add(dest1);
+        destinations.add(dest);
+        currentUser.setDestinations(destinations);
+        // -------
+        //TODO destiantions need to be read from db when a user is
+        return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, request, messagesApi.preferred(request)));
     }
 
     public Result showEdit(Http.Request request, Integer id) {
+        Profile currentUser = ProfileController.getCurrentUser(request);
+        // Testing only
+        Destination dest = new Destination(1, 1, "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
+        Destination dest1 = new Destination(2, 1, "dest 2", "yought", "USA", "Beans", 12, 23);
+        ArrayList<Destination> destinations = new ArrayList<>();
+        destinations.add(dest1);
+        destinations.add(dest);
+        currentUser.setDestinations(destinations);
         Form<Trip> tripForm = form.fill(tripList.get(id));
-        return ok(tripsEdit.render(tripForm, formTrip, tripList.get(id).getDestinations(), request, messagesApi.preferred(request)));
+        return ok(tripsEdit.render(tripForm, formTrip, tripList.get(id).getDestinations(), currentUser, request, messagesApi.preferred(request)));
     }
 
     public Result addDestination(Http.Request request){
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
+        System.out.println(tripDestForm);
         TripDestination trip = tripDestForm.get();
+        //TODO set trips `destination` field by using destinationId field to get the destination name
         currentDestinationsList.add(trip);
         return redirect(routes.TripsController.showCreate());
     }

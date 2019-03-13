@@ -2,6 +2,7 @@ package models;
 
 
 import io.ebean.Model;
+import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -14,13 +15,15 @@ import java.util.Date;
 @Entity
 public class TripDestination extends Model {
 
-    private String destination; //TODO Get out plos
+
     private Date arrival;
     private Date departure;
     @Id
     private int tripDestinationId;
+    @Constraints.Required
     private int destinationId;
     private int tripId;
+    private String destination;
 
 
     public TripDestination() {
@@ -33,19 +36,12 @@ public class TripDestination extends Model {
      * @param arrival the arrival timestamp
      * @param departure the departure timestamp
      */
-    public TripDestination(String destination, Date arrival, Date departure) {
-        this.destination = destination;
+    public TripDestination(int destinationId, Date arrival, Date departure) {
+        this.destinationId = destinationId;
         this.arrival = arrival;
         this.departure = departure;
     }
 
-    public String getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String destination) {
-        this.destination = destination;
-    }
 
     public Date getArrival() {
         return arrival;
@@ -63,4 +59,35 @@ public class TripDestination extends Model {
         this.departure = departure;
     }
 
+    public int getTripDestinationId() {
+        return tripDestinationId;
+    }
+
+    public void setTripDestinationId(int tripDestinationId) {
+        this.tripDestinationId = tripDestinationId;
+    }
+
+    public int getDestinationId() {
+        return destinationId;
+    }
+
+    public void setDestinationId(int destinationId) {
+        this.destinationId = destinationId;
+    }
+
+    public int getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(int tripId) {
+        this.tripId = tripId;
+    }
+
+    public String getDestination() {
+        return destination;
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
 }

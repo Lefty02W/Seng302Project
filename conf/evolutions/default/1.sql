@@ -88,7 +88,6 @@ create table trip (
 
 create table trip_destination (
   trip_destination_id           integer auto_increment not null,
-  destination                   varchar(255),
   arrival                       datetime(6),
   departure                     datetime(6),
   destination_id                integer not null,

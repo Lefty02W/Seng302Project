@@ -71,7 +71,7 @@ public class ProfileController extends Controller {
      * @param request
      * @return Web page showing connected user's email
      */
-    public Profile getCurrentUser(Http.Request request) {
+    public static Profile getCurrentUser(Http.Request request) {
         Optional<String> connected = request.session().getOptional("connected");
         String email;
         if (connected.isPresent()) {

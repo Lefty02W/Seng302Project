@@ -76,14 +76,18 @@ public class Trip extends Model {
     public long getTravelTime() {
         TripDestination startDest = destinations.get(0);
         TripDestination endDest = destinations.get(destinations.size() - 1);
+        if (startDest.getArrival() == null || endDest.getDeparture() == null) {
+            return 0; //TODO fix this or remove this
+        }
         long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     public String getDestinationNames() {
-        String names = destinations.get(0).getDestination();
+        //TODO fix this to get name not id
+        String names = "" + destinations.get(0).getDestinationId();
         for (int i = 1; i < destinations.size(); i++) {
-            names += ", " + destinations.get(i).getDestination();
+            names += ", " + destinations.get(i).getDestinationId();
         }
         return names;
     }
