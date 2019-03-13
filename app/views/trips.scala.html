@@ -49,12 +49,13 @@
                             <div id="viewCard" class="card-large">
                                 <table id="tripsTable">
                                     <thead>
-                                        <tr><th>Trip Name</th><th>Travel Time (Days)</th><th>Number of Destinations</th><th>Destinations Visited</th><th>Actions</th>
+                                        <tr><th>Trip Name</th><th>Travel Time (Days)</th><th>Start Date</th><th>Number of Destinations</th><th>Destinations Visited</th><th>Actions</th>
                                     </thead>
                                     @for(trip <- trips) {
                                         <tr>
                                             <td>@trip.getName</td>
                                             <td>@trip.getTravelTime</td>
+                                            <td>@trip.getStartDate</td>
                                             <td>@trip.getDestinations.size()</td>
                                             <td>@trip.getDestinationNames()</td>
                                             @helper.form(routes.TripsController.showEdit(trip.getId)) {

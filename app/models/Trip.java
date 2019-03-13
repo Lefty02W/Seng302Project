@@ -10,7 +10,8 @@ import javax.persistence.Id;
 import javax.validation.Constraint;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  * This class holds the data for a profile trip
@@ -79,6 +80,20 @@ public class Trip extends Model {
         long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
+
+    public Date getStartDate(){
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-YYYY");
+        Date startDate = new Date();
+        try{
+            startDate =  format.parse(format.format(destinations.get(0).getArrival()));
+        } catch (Exception e){
+            System.out.println(e);
+        }
+        System.out.println(startDate);
+        return startDate;
+
+    }
+
 
     public String getDestinationNames() {
         String names = destinations.get(0).getDestination();
