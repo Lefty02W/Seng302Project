@@ -1,0 +1,3 @@
+input[type=text], input[type=date], input[type=search], input[type=datetime-local], input[type=password] {
+    width: 20vw;
+}

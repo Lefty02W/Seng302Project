@@ -79,15 +79,3 @@ th, td {
     font-size: small;
     padding: 0;
 }
-
-.hidden-div {
-    z-index: 1;
-    position: absolute;
-    top: 0;
-    left: 2vw;
-}
-
-.hidden-field {
-    height: 4vh;
-    opacity: 0;
-}

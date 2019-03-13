@@ -246,3 +246,16 @@ div.dataTables_filter {
 #profileEditCancel:hover{
     font-weight: bold;
 }
+
+
+.hidden-div {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 2vw;
+}
+
+.hidden-field {
+    height: 4vh;
+    opacity: 100;
+}

@@ -46,8 +46,8 @@ public class ProfileController extends Controller {
         return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
+                //TODO Form is not auto filling
                 Form<Profile> profileForm = form.fill(toEditProfile);
-
                 return ok(editProfile.render(profileForm));
 
             } else {
@@ -58,10 +58,11 @@ public class ProfileController extends Controller {
 
     public Result update(Http.Request request){
         Form<Profile> profileForm = form.bindFromRequest(request);
-        System.out.println(profileForm);
         Profile profile = profileForm.get();
-        //TODO get profile email
 
+        profileRepository.update(profile, profile.getPassword());
+
+        //TODO redirect does not update profile displayed, have to refresh to get updated info
         return redirect(routes.ProfileController.show());
 
     }
@@ -83,11 +84,8 @@ public class ProfileController extends Controller {
     }
 
     public Result show(Http.Request request) {
-
-
-
         Profile currentProfile = getCurrentUser(request);
-        //TODO xhange to read from db
+        //TODO change to read from db (the trips)
         currentProfile.setTrips(new ArrayList<Trip>());
         return ok(profile.render(currentProfile));
     }
