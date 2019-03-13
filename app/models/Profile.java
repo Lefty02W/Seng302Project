@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.persistence.Id;
+import javax.validation.Constraint;
 import java.util.ArrayList;
 
 
@@ -46,7 +47,7 @@ public class Profile extends Model {
 
     private String passports;
 
-
+    @Constraints.Required
     private String nationalities;
 
     private String travellerTypes;
