@@ -257,5 +257,5 @@ div.dataTables_filter {
 
 .hidden-field {
     height: 4vh;
-    opacity: 100;
+    opacity: 0;
 }

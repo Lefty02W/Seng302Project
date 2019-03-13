@@ -34,7 +34,6 @@ public class Profile extends Model {
     @Constraints.Required
     private String email;
 
-    @Constraints.Required
     private String password;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")

@@ -60,7 +60,7 @@ public class ProfileController extends Controller {
         Form<Profile> profileForm = form.bindFromRequest(request);
         Profile profile = profileForm.get();
 
-        profileRepository.update(profile, profile.getPassword());
+        profileRepository.update(profile, getCurrentUser(request).getPassword());
 
         //TODO redirect does not update profile displayed, have to refresh to get updated info
         return redirect(routes.ProfileController.show());
