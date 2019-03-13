@@ -57,7 +57,8 @@ public class Profile extends Model {
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
-    private ArrayList<Destination> destinations = new ArrayList<Destination>();
+    private ArrayList<Destination> destinations = new ArrayList<>();
+    private ArrayList<Trip> trips = new ArrayList<>();
 
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
@@ -71,7 +72,7 @@ public class Profile extends Model {
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,
-                   String travellerTypes) {
+                   String travellerTypes, ArrayList<Trip> trips) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -83,6 +84,7 @@ public class Profile extends Model {
         this.nationalities = nationalities;
         this.destinations = destinations;
         this.travellerTypes = travellerTypes;
+        this.trips = trips;
     }
 
     // Finder for profile
@@ -189,6 +191,14 @@ public class Profile extends Model {
     public ArrayList<String> getTravellerTypesList() {
         ArrayList<String> travelerTypesList = new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
         return travelerTypesList;
+    }
+
+    public ArrayList<Trip> getTrips() {
+        return trips;
+    }
+
+    public void setTrips(ArrayList<Trip> trips) {
+        this.trips = trips;
     }
 
     public boolean checkPassword(String password) {

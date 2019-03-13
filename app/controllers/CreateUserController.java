@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Profile;
+import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -13,6 +14,7 @@ import repository.ProfileRepository;
 import views.html.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 
 /**
  *
@@ -36,6 +38,7 @@ public class CreateUserController extends Controller{
         Form<Profile> userForm = form.bindFromRequest(request);
         System.out.println(userForm);
         Profile profile = userForm.get();
+        profile.setTrips(new ArrayList<Trip>());
         profileRepository.insert(profile);
         return redirect(routes.LoginController.show());
     }

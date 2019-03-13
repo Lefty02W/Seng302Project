@@ -3,8 +3,10 @@ package repository;
 import io.ebean.*;
 import models.Destination;
 import models.Profile;
+import models.Trip;
 import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -86,6 +88,8 @@ public class ProfileRepository {
                     targetProfile.setPassports(newProfile.getPassports());
                     targetProfile.setNationalities(newProfile.getNationalities());
                     targetProfile.setTravellerTypes(newProfile.getTravellerTypes());
+                    //TODO get actual trips out of the database
+                    targetProfile.setTrips(new ArrayList<Trip>());
 
                     targetProfile.update();
                     txn.commit();
