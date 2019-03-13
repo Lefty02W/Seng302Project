@@ -3,25 +3,36 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.HomeController.index
+GET     /                           controllers.LoginController.show(request: Request)
 
-# Widgets
-GET     /widgets                    controllers.WidgetController.listWidgets(request: Request)
-POST    /widgets                    controllers.WidgetController.createWidget(request: Request)
-
-# Computers list (look at the default values for pagination parameters)
-GET     /computers                  controllers.HomeController.list(request: Request, p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "")
-
-# Add computer
-GET     /computers/new              controllers.HomeController.create(request: Request)
-POST    /computers                  controllers.HomeController.save(request: Request)
-
-# Edit existing computer
-GET     /computers/:id              controllers.HomeController.edit(request: Request, id:Long)
-POST    /computers/:id              controllers.HomeController.update(request: Request, id:Long)
-
-# Delete a computer
-POST    /computers/:id/delete       controllers.HomeController.delete(id:Long)
+GET     /destinations/edit/:id      controllers.DestinationsController.edit(request: Request, id: Integer)
+POST    /destinations/:id      controllers.DestinationsController.update(request: Request, id: Integer)
+POST    /destinations               controllers.DestinationsController.save(request: Request)
+POST    /destinations/delete/:id    controllers.DestinationsController.delete(id: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+# save the new destination
+
+
+GET     /login                       controllers.LoginController.show(request: Request)
+POST     /login                      controllers.LoginController.login(request: Request)
+GET     /trips                       controllers.TripsController.show(request: Request)
+GET     /destinations                controllers.DestinationsController.show(request: Request)
+GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
+GET     /travellers                  controllers.TravellersController.show
+
+# Profile
+GET     /profile                     controllers.ProfileController.show(request: Request)
+GET     /profile/edit/:email         controllers.ProfileController.showEdit(email: String)
+POST    /profile                     controllers.ProfileController.update(request: Request)
+
+GET     /trips/create                controllers.TripsController.showCreate(request: Request)
+GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)
+
+POST    /trips                       controllers.TripsController.save(request: Request)
+POST    /trips/create                controllers.TripsController.addDestination(request: Request)
+GET     /user/create                 controllers.CreateUserController.show(request: Request)
+POST    /user/create                 controllers.CreateUserController.save(request: Request)
+
+

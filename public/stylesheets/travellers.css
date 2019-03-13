@@ -1,0 +1,22 @@
+#table-card {
+    height: 95vh;
+}
+
+#userTable {
+    height: 10vh;
+}
+
+#userTable span {
+    display: none;
+}
+
+input[type=text], input[type=date], input[type=search], input[type=datetime-local] {
+    width: 10vw;
+}
+
+
+
+
+
+
+

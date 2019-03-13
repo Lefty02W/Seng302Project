@@ -1,0 +1,24 @@
+#table-card {
+    height: 85vh;
+}
+
+#destTable {
+    height: 10vh;
+}
+
+#destTable span {
+    display: none;
+}
+
+div.dataTables_wrapper div.dataTables_paginate {
+    float:right;
+}
+
+div.dataTables_filter {
+    float:left;
+}
+
+#addDestButton {
+    float: right;
+    width: 15vw;
+}
