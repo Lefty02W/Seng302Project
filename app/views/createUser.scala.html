@@ -54,7 +54,7 @@
                         </table>
                     </div>
 
-                    <select class="selectpicker" multiple title="Traveller Type" name="travellerTypes" id="travellerTypes">
+                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown">
                         <option value="ThrillSeeker">ThrillSeeker</option>
                         <option value="Backpacker">Backpacker</option>
                         <option value="GapYear">Gap Year</option>
@@ -64,9 +64,12 @@
                         <option value="Holidaymaker">Holidaymaker</option>
                     </select>
 
+                    <!-- This is hte only way I could do it -->
+                    <input type="hidden" id="travellerTypes" name="travellerTypes">
+
 
                     <a href="@routes.LoginController.show()"><button type="button" id="cancelNewUser" class="redButton">Cancel</button></a>
-                    <button type="submit" id="okButton" class="loginButton">OK</button>
+                    <button type="submit" id="okButton" onclick="fillVals()" class="loginButton">OK</button>
                 }
 
 
@@ -91,10 +94,11 @@
                     var text = document.getElementById("passport").value;
                     cell1.innerHTML = text;
                 }
-                
 
 
-
+                function fillVals() {
+                    $('#travellerTypes').val($('#typeDropdown').val());
+                }
 
             </script>
 

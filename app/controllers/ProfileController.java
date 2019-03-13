@@ -61,6 +61,7 @@ public class ProfileController extends Controller {
 
     public Result update(Http.Request request){
         Form<Profile> profileForm = form.bindFromRequest(request);
+        System.out.println(profileForm);
         Profile profile = profileForm.get();
         //TODO get profile email
         System.out.println("**********************************");
