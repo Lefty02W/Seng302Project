@@ -120,7 +120,7 @@ public class ProfileController extends Controller {
         Trip[] trips = {trip, trip1};
 
         Profile currentProfile = getCurrentUser(request);
-        return ok(profile.render(currentProfile, Arrays.asList(trips), Arrays.asList(types)));
+        return ok(profile.render(currentProfile, Arrays.asList(trips)));
     }
 
 }

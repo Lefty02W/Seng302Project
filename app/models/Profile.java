@@ -186,6 +186,11 @@ public class Profile extends Model {
         return nationalityList;
     }
 
+    public ArrayList<String> getTravellerTypesList() {
+        ArrayList<String> travelerTypesList = new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
+        return travelerTypesList;
+    }
+
     public boolean checkPassword(String password) {
         // TODO FIX THIS
         return true;

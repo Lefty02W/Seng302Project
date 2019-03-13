@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.form
-@(testUser: Profile, trips: List[Trip], types: List[String])
+@(testUser: Profile, trips: List[Trip])
 
 <!DOCTYPE html>
 <html>
@@ -97,15 +97,15 @@
                             <div id="typesCard" class="card-large lower-card center-col">
                                 <h3>Your Traveller Types</h3>
 
-                                @if(types.isEmpty) {
+                                @if(testUser.getTravellerTypesList.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no traveller types associated with your profile
                                     </div>
                                 } else {
                                     <div class="container">
-                                    @for(index <- 0 until types.size) {
+                                    @for(index <- 0 until testUser.getTravellerTypesList.size) {
                                         <div class="card-small card-small-tall">
-                                            <a>@types(index)</a>
+                                            <a>@testUser.getTravellerTypesList.get(index)</a>
                                         </div>
                                     }
                                     </div>
