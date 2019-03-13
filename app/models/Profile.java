@@ -49,7 +49,7 @@ public class Profile extends Model {
 
     @Constraints.Required
     private String nationalities;
-
+    @Constraints.Required
     private String travellerTypes;
 
 
