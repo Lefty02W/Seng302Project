@@ -21,9 +21,6 @@ public class Profile extends Model {
 
     private static final int WORKLOAD = 12;
 
-    @Id
-    private int userId;
-
     @Constraints.Required
     private String firstName;
 
@@ -32,6 +29,7 @@ public class Profile extends Model {
     @Constraints.Required
     private String lastName;
 
+    @Id
     @Constraints.Required
     private String email;
 
@@ -189,10 +187,9 @@ public class Profile extends Model {
 
     public boolean checkPassword(String password) {
         // TODO FIX THIS
-        return false;
+        return true;
         //BCrypt.checkpw(password, this.password);
     }
-
 
 
     /**

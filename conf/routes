@@ -21,7 +21,9 @@ GET     /trips                       controllers.TripsController.show(request: R
 GET     /destinations                controllers.DestinationsController.show(request: Request)
 GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
 GET     /travellers                  controllers.TravellersController.show
-GET     /profile                     controllers.ProfileController.show
+
+# Profile
+GET     /profile                     controllers.ProfileController.show(request: Request)
 GET     /profile/edit/:email         controllers.ProfileController.showEdit(email: String)
 POST    /profile                     controllers.ProfileController.update(request: Request)
 

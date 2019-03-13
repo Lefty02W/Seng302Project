@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 
@@ -78,9 +79,24 @@ public class ProfileController extends Controller {
 
     }
 
+    /**
+     * Get the currently logged in user
+     * @param request
+     * @return Web page showing connected user's email
+     */
+    public Profile getCurrentUser(Http.Request request) {
+        Optional<String> connected = request.session().getOptional("connected");
+        String email;
+        if (connected.isPresent()) {
+            email = connected.get();
+            return Profile.find.byId(email);
+        } else {
+            return null;
+        }
+    }
 
+    public Result show(Http.Request request) {
 
-    public Result show() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
 
         // Bellow is for testing
@@ -103,9 +119,8 @@ public class ProfileController extends Controller {
         Trip trip1 = new Trip(dests, "Trip 2");
         Trip[] trips = {trip, trip1};
 
-//        Profile profile = Profile.find.byId(email);
-
-        return ok(profile.render(testUser, Arrays.asList(trips), Arrays.asList(types)));
+        Profile currentProfile = getCurrentUser(request);
+        return ok(profile.render(currentProfile, Arrays.asList(trips), Arrays.asList(types)));
     }
 
 }
