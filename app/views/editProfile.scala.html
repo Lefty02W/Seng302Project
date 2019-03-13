@@ -5,12 +5,16 @@
 
 <!DOCTYPE html>
 <html>
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
 
     <script src="@routes.Assets.at("javascripts/jquery-3.3.1.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap.bundle.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap-select.js")" type="text/javascript"></script>
+
+
     <head>
         <title>TravelEA | editProfile</title>
     </head>
@@ -75,8 +79,15 @@
 
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="traveller_type" placeholder="travlertype1, type2" name="traveller_type">
-
+                                            <select class="selectpicker" multiple title="Traveller Type" name="travellerTypes" id="travellerTypes">
+                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                                <option value="Backpacker">Backpacker</option>
+                                                <option value="GapYear">Gap Year</option>
+                                                <option value="Groupie">Groupie</option>
+                                                <option value="FrequentWeekender">Frequent Weekender</option>
+                                                <option value="business">functional/business Traveller</option>
+                                                <option value="Holidaymaker">Holidaymaker</option>
+                                            </select>
                                         </div>
                                     </div>
 
