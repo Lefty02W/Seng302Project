@@ -10,14 +10,15 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 import repository.DestinationRepository;
+import repository.ProfileRepository;
 import views.html.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 
 public class DestinationsController extends Controller {
 
@@ -25,14 +26,17 @@ public class DestinationsController extends Controller {
     private final List<Destination> destinationsList = new ArrayList<>();
     private final Form<Destination> form;
     private final DestinationRepository destinationRepository;
+    private final SessionController sessionController = new SessionController();
+    private final ProfileRepository profileRepository;
 
 
     @Inject
-    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository) {
+    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository, ProfileRepository profileRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         //this.destinationsList = Destination.find.all();
         this.destinationRepository = destinationRepository;
+        this.profileRepository = profileRepository;
     }
 
     /**
@@ -102,13 +106,13 @@ public class DestinationsController extends Controller {
      * @param id
      * @return
      */
-    public Result delete(Integer id) {
-        //System.out.println(id);
-        //for (int i = id; i < destinationsList.size(); i++) {
-        //       destinationsList.get(i).setId(i-1);
-        //}
-        //destinationsList.remove(id*0);
+    public Result delete(Http.Request request, Integer id) {
+        System.out.println("DELETED");
+        Profile profile = sessionController.getCurrentUser(request);
+        destinationRepository.delete(id);
+        profileRepository.deleteDestination(profile.getEmail(), id);
         return redirect(routes.DestinationsController.show());
+
     }
 
 
