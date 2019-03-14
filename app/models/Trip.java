@@ -81,19 +81,14 @@ public class Trip extends Model {
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
-    public Date getStartDate(){
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-YYYY");
-        Date startDate = new Date();
-        try{
-            startDate =  format.parse(format.format(destinations.get(0).getArrival()));
-        } catch (Exception e){
-            System.out.println(e);
-        }
-        System.out.println(startDate);
-        return startDate;
+    /**
+     * Get the date of arrival at the first destination in the trip, as a string.
+     */
+    public String getStartDateString(){
+        Date startDate = destinations.get(0).getArrival();
+        return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
 
     }
-
 
     public String getDestinationNames() {
         String names = destinations.get(0).getDestination();
