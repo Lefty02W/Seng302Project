@@ -33,10 +33,10 @@ public class DestinationRepository {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Destination.class).setId(destID).findOne()), executionContext);
     }
 
-    public CompletionStage<String> insert(Destination destination) {
+    public CompletionStage<String> insert(Destination dest) {
         return supplyAsync(() -> {
-            ebeanServer.insert(destination);
-            return String.format("Destination %s added", destination.getName());
+            ebeanServer.insert(dest);
+            return String.format("Destination %s added", dest.getName());
         }, executionContext);
     }
 

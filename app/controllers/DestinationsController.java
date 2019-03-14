@@ -48,14 +48,14 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     public Result show(Http.Request request) {
-        Profile user = getCurrentUser(request);
+        Profile user = sessionController.getCurrentUser(request);
         Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
         try {
             destinationsList = destListTemp.get();
         } catch(NoSuchElementException e) {
             destinationsList = new ArrayList<Destination>();
         }
-
+        System.out.println("hi"+destinationsList+user.getEmail());
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
 
@@ -112,19 +112,8 @@ public class DestinationsController extends Controller {
         return redirect(routes.DestinationsController.show());
     }
 
-    public Profile getCurrentUser(Http.Request request) {
-        Optional<String> connected = request.session().getOptional("connected");
-        String email;
-        if (connected.isPresent()) {
-            email = connected.get();
-            return Profile.find.byId(email);
-        } else {
-            return null;
-        }
-    }
-
     public Result saveDestination(Http.Request request) {
-        Profile user = getCurrentUser(request);
+        Profile user = sessionController.getCurrentUser(request);
         if (user == null) {
             // redirect to log in
             return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
@@ -136,8 +125,6 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
-        Optional<ArrayList<Destination>> destinationsListTemp = profileRepository.getDestinations(user.getEmail());
-        destinationsList = destinationsListTemp.get();
         // Run insert db operation, then redirect
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
@@ -151,7 +138,6 @@ public class DestinationsController extends Controller {
         System.out.println("DELETED");
         Profile profile = sessionController.getCurrentUser(request);
         destinationRepository.delete(id);
-        profileRepository.deleteDestination(profile.getEmail(), id);
         return redirect(routes.DestinationsController.show());
 
     }

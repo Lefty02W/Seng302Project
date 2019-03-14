@@ -90,7 +90,7 @@ public class ProfileRepository {
                     targetProfile.setNationalities(newProfile.getNationalities());
                     targetProfile.setTravellerTypes(newProfile.getTravellerTypes());
                     //TODO get actual trips out of the database
-                    targetProfile.setTrips(new ArrayList<Trip>());
+                    //targetProfile.setTrips(new ArrayList<Trip>());
 
                     targetProfile.update();
                     txn.commit();
@@ -115,26 +115,13 @@ public class ProfileRepository {
         }, executionContext);
     }
 
-    public CompletionStage<Optional<String>> deleteDestination(String email, int destID) {
-        return supplyAsync(() -> {
-            try {
-                final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class)
-                        .setId(email).findOne());
-                Profile profile = profileOptional.get();
-                profile.deleteDestination(destID);
-                profile.update();
-                return Optional.of("Successfully deleted destination");
-            } catch (Exception e) {
-                return Optional.empty();
-            }
-        }, executionContext);
-    }
-
     public Optional<ArrayList<Destination>> getDestinations(String email) {
             try {
-                Optional<List<Destination>> toReturnOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
-                        .where().like("user_email", email).findList());
-                ArrayList<Destination> toReturn = (ArrayList<Destination>) toReturnOptional.get();
+                List<Destination> toReturnOptional = ebeanServer.find(Destination.class)
+                        .where().eq("user_email", email)
+                        .findList();
+                ArrayList<Destination> toReturn = (ArrayList<Destination>) toReturnOptional;
+                System.out.println("yo yo yo"+toReturn);
                 return Optional.of(toReturn);
             } catch (Exception e) {
                 return Optional.empty();

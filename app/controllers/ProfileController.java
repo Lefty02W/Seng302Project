@@ -72,7 +72,7 @@ public class ProfileController extends Controller {
 
         Profile currentProfile = sessionController.getCurrentUser(request);
         //TODO xhange to read from db
-        currentProfile.setTrips(new ArrayList<Trip>());
+        //currentProfile.setTrips(new ArrayList<Trip>());
         return ok(profile.render(currentProfile));
     }
 

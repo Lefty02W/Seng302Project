@@ -19,7 +19,7 @@ public class TripRepository {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
     }
-
+    /**
     public CompletionStage<String> insert(Trip trip) {
 
     }
@@ -31,5 +31,5 @@ public class TripRepository {
     public CompletionStage<Optional<String>> delete(int tripId) {
 
     }
-
+    */
 }

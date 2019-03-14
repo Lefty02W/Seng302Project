@@ -38,7 +38,6 @@ public class CreateUserController extends Controller{
         Form<Profile> userForm = form.bindFromRequest(request);
         System.out.println(userForm);
         Profile profile = userForm.get();
-        profile.setTrips(new ArrayList<Trip>());
         profileRepository.insert(profile);
         return redirect(routes.LoginController.show());
     }

@@ -6,7 +6,8 @@
 GET     /                           controllers.LoginController.show(request: Request)
 
 GET     /destinations/edit/:id      controllers.DestinationsController.edit(request: Request, id: Integer)
-POST    /destinations/:id      controllers.DestinationsController.update(request: Request, id: Integer)
+POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
+POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
 POST    /destinations               controllers.DestinationsController.save(request: Request)
 POST    /destinations/delete/:id    controllers.DestinationsController.delete(request: Request, id: Integer)
 
@@ -20,6 +21,7 @@ POST     /login                      controllers.LoginController.login(request: 
 GET     /trips                       controllers.TripsController.show(request: Request)
 GET     /destinations                controllers.DestinationsController.show(request: Request)
 GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
+POST     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
 GET     /travellers                  controllers.TravellersController.show
 
 # Profile
