@@ -57,9 +57,6 @@ public class Profile extends Model {
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
-    private ArrayList<Destination> destinations = new ArrayList<>();
-    private ArrayList<Trip> trips = new ArrayList<>();
-
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
 
@@ -82,9 +79,7 @@ public class Profile extends Model {
         this.gender = gender;
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
-        this.destinations = destinations;
         this.travellerTypes = travellerTypes;
-        this.trips = trips;
     }
 
     // Finder for profile
@@ -120,12 +115,6 @@ public class Profile extends Model {
     public void setGender(String gender) {
         this.gender = gender;
     }
-
-
-    public void setDestinations(ArrayList<Destination> destinations) {
-        this.destinations = destinations;
-    }
-
 
 
 
@@ -179,10 +168,6 @@ public class Profile extends Model {
         return passportsList;
     }
 
-    public ArrayList<Destination> getDestinations() {
-        return destinations;
-    }
-
     public ArrayList<String> getNationalityList() {
         ArrayList<String> nationalityList = new ArrayList<>(Arrays.asList(nationalities.split(",")));
         return nationalityList;
@@ -191,14 +176,6 @@ public class Profile extends Model {
     public ArrayList<String> getTravellerTypesList() {
         ArrayList<String> travelerTypesList = new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
         return travelerTypesList;
-    }
-
-    public ArrayList<Trip> getTrips() {
-        return trips;
-    }
-
-    public void setTrips(ArrayList<Trip> trips) {
-        this.trips = trips;
     }
 
     public boolean checkPassword(String password) {
@@ -214,6 +191,7 @@ public class Profile extends Model {
      * @param searchTerm The term that will be searched for.
      * @return A arraylists of the destinations that contain the search term.
      */
+    /**
     public ArrayList<Destination> searchDestinations(String searchTerm) {
         ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
         for (Destination dest : destinations) {
@@ -223,6 +201,7 @@ public class Profile extends Model {
         }
         return resultDestinations;
     }
+    */
 
     /**
      * Returns a single destination.
@@ -230,6 +209,7 @@ public class Profile extends Model {
      * @param destinationID The id of the required destination.
      * @return The destination required.
      */
+    /**
     public Destination returnDestination(int destinationID) {
         Destination toReturn = null;
         for (Destination dest : destinations) {
@@ -241,12 +221,13 @@ public class Profile extends Model {
         return toReturn;
     }
 
-
+    */
 
     /**
      * Delete a destination from the profile
      * @param destinationID ID of destination to delete
      */
+    /**
     public void deleteDestination(int destinationID) {
         for(Destination dest : destinations) {
             if (dest.getDestinationId() == destinationID) {
@@ -255,7 +236,22 @@ public class Profile extends Model {
             }
         }
     }
+     */
 
+    /**
+     * Delete a destination from the profile
+     * @param dest ID of destination to delete
+     */
+    /**
+    public void addDestination(Destination dest) {
+        try {
+            destinations.add(dest);
+        } catch(NullPointerException e) {
+            destinations = new ArrayList<Destination>();
+            destinations.add(dest);
+        }
+    }
+    */
 
     public void setPassports(String passports) {
         this.passports = passports;

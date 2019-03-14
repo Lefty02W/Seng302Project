@@ -10,9 +10,12 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Results;
 import repository.DestinationRepository;
+import repository.ProfileRepository;
 import views.html.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
@@ -22,17 +25,20 @@ import javax.inject.Singleton;
 public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;
-    private final List<Destination> destinationsList = new ArrayList<>();
+    private List<Destination> destinationsList = new ArrayList<>();
     private final Form<Destination> form;
+    private final Form<Profile> userForm;
     private final DestinationRepository destinationRepository;
+    private final ProfileRepository profileRepository;
 
 
     @Inject
-    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository) {
+    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository, ProfileRepository profileRepository) {
         this.form = formFactory.form(Destination.class);
+        this.userForm = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
-        //this.destinationsList = Destination.find.all();
         this.destinationRepository = destinationRepository;
+        this.profileRepository = profileRepository;
     }
 
     /**
@@ -41,6 +47,14 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     public Result show(Http.Request request) {
+        Profile user = getCurrentUser(request);
+        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
+        try {
+            destinationsList = destListTemp.get();
+        } catch(NoSuchElementException e) {
+            destinationsList = new ArrayList<Destination>();
+        }
+
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
 
@@ -91,9 +105,40 @@ public class DestinationsController extends Controller {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.get();
 
-       // dest.setId(destinationsList.size()+1); TODO Jade fix this
+        // dest.setId(destinationsList.size()+1); TODO Jade fix this
+        // don't need to, ebeans automatically increments variables with the tag @id
         destinationsList.add(0, dest);
         return redirect(routes.DestinationsController.show());
+    }
+
+    public Profile getCurrentUser(Http.Request request) {
+        Optional<String> connected = request.session().getOptional("connected");
+        String email;
+        if (connected.isPresent()) {
+            email = connected.get();
+            return Profile.find.byId(email);
+        } else {
+            return null;
+        }
+    }
+
+    public Result saveDestination(Http.Request request) {
+        Profile user = getCurrentUser(request);
+        if (user == null) {
+            // redirect to log in
+            return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
+        }
+        Form<Destination> destinationForm = form.bindFromRequest(request);
+        if (destinationForm.hasErrors()) {
+            // show on UI
+        }
+        Destination destination = destinationForm.get();
+        destination.setUserEmail(user.getEmail());
+        destinationRepository.insert(destination);
+        Optional<ArrayList<Destination>> destinationsListTemp = profileRepository.getDestinations(user.getEmail());
+        destinationsList = destinationsListTemp.get();
+        // Run insert db operation, then redirect
+        return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
 
     /**

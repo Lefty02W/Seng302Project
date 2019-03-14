@@ -8,6 +8,7 @@ import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -130,6 +131,17 @@ public class ProfileRepository {
                 return Optional.empty();
             }
         }, executionContext);
+    }
+
+    public Optional<ArrayList<Destination>> getDestinations(String email) {
+            try {
+                Optional<List<Destination>> toReturnOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
+                        .where().like("user_email", email).findList());
+                ArrayList<Destination> toReturn = (ArrayList<Destination>) toReturnOptional.get();
+                return Optional.of(toReturn);
+            } catch (Exception e) {
+                return Optional.empty();
+            }
     }
 
 }
