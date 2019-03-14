@@ -119,12 +119,9 @@ public class ProfileRepository {
             try {
                 final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class)
                         .setId(email).findOne());
-                final Optional<Destination> destOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
-                        .setId(destID).findOne());
                 Profile profile = profileOptional.get();
                 profile.deleteDestination(destID);
                 profile.update();
-                destOptional.ifPresent(Model::delete);
                 return Optional.of("Successfully deleted destination");
             } catch (Exception e) {
                 return Optional.empty();
