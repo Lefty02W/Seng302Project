@@ -48,7 +48,7 @@ public class ProfileController extends Controller {
                 Profile toEditProfile = optionalProfile.get();
                 //TODO Form is not auto filling
                 Form<Profile> profileForm = form.fill(toEditProfile);
-                return ok(editProfile.render(profileForm));
+                return ok(editProfile.render(toEditProfile, profileForm));
 
             } else {
                 return notFound("Profile not found.");
