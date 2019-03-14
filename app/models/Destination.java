@@ -40,9 +40,9 @@ public class Destination extends Model {
      * @param latitude The latitude of this destination
      * @param longitude the longitude of this destination
      */
-    public Destination(int destinationId, int userId, String name, String type, String country, String district, double latitude, double longitude) {
+    public Destination(int destinationId, String userEmail, String name, String type, String country, String district, double latitude, double longitude) {
         this.destinationId = destinationId;
-        this.userId = userId;
+        this.userEmail = userEmail;
         this.name = name;
         this.type = type;
         this.country = country;
@@ -112,6 +112,12 @@ public class Destination extends Model {
     }
 
     /**
+     * Returns the user email of the destination
+     * @return
+     */
+    public String getUserEmail() { return userEmail; }
+
+    /**
      * Sets the country of the destination
      * @param country
      */
@@ -165,5 +171,13 @@ public class Destination extends Model {
      */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    /**
+     * Sets the userEmail of the destination
+     * @param userEmail
+     */
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }
