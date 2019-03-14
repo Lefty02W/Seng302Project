@@ -40,8 +40,6 @@ public class Profile extends Model {
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
-
-
     @Constraints.Required
     private String gender;
 
@@ -52,8 +50,6 @@ public class Profile extends Model {
 
     private String travellerTypes;
 
-
-
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
@@ -62,13 +58,9 @@ public class Profile extends Model {
 
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
-
-
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
     private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-
-
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,
@@ -121,13 +113,62 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-
     public void setDestinations(ArrayList<Destination> destinations) {
         this.destinations = destinations;
     }
 
+    public boolean checkPassword(String password) {
+        // TODO FIX THIS
+        return true;
+        //BCrypt.checkpw(password, this.password);
+    }
 
 
+    /**
+     * Searches the users destinations for the given search term.
+     *
+     * @param searchTerm The term that will be searched for.
+     * @return A arraylists of the destinations that contain the search term.
+     */
+    public ArrayList<Destination> searchDestinations(String searchTerm) {
+        ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
+        for (Destination dest : destinations) {
+            if (dest.getName().contains(searchTerm) || dest.getType().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
+                resultDestinations.add(dest);
+            }
+        }
+        return resultDestinations;
+    }
+
+    /**
+     * Returns a single destination.
+     *
+     * @param destinationID The id of the required destination.
+     * @return The destination required.
+     */
+    public Destination returnDestination(int destinationID) {
+        Destination toReturn = null;
+        for (Destination dest : destinations) {
+            if (dest.getDestinationId() == destinationID) {
+                toReturn = dest;
+                break;
+            }
+        }
+        return toReturn;
+    }
+
+    /**
+     * Delete a destination from the profile
+     * @param destinationID ID of destination to delete
+     */
+    public void deleteDestination(int destinationID) {
+        for(Destination dest : destinations) {
+            if (dest.getDestinationId() == destinationID) {
+                destinations.remove(dest);
+                return;
+            }
+        }
+    }
 
     //Getters
     public String getEmail() {
@@ -199,61 +240,6 @@ public class Profile extends Model {
 
     public void setTrips(ArrayList<Trip> trips) {
         this.trips = trips;
-    }
-
-    public boolean checkPassword(String password) {
-        // TODO FIX THIS
-        return true;
-        //BCrypt.checkpw(password, this.password);
-    }
-
-
-    /**
-     * Searches the users destinations for the given search term.
-     *
-     * @param searchTerm The term that will be searched for.
-     * @return A arraylists of the destinations that contain the search term.
-     */
-    public ArrayList<Destination> searchDestinations(String searchTerm) {
-        ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
-        for (Destination dest : destinations) {
-            if (dest.getName().contains(searchTerm) || dest.getType().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
-                resultDestinations.add(dest);
-            }
-        }
-        return resultDestinations;
-    }
-
-    /**
-     * Returns a single destination.
-     *
-     * @param destinationID The id of the required destination.
-     * @return The destination required.
-     */
-    public Destination returnDestination(int destinationID) {
-        Destination toReturn = null;
-        for (Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                toReturn = dest;
-                break;
-            }
-        }
-        return toReturn;
-    }
-
-
-
-    /**
-     * Delete a destination from the profile
-     * @param destinationID ID of destination to delete
-     */
-    public void deleteDestination(int destinationID) {
-        for(Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                destinations.remove(dest);
-                return;
-            }
-        }
     }
 
 

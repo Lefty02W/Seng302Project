@@ -20,7 +20,8 @@ POST     /login                      controllers.LoginController.login(request: 
 GET     /trips                       controllers.TripsController.show(request: Request)
 GET     /destinations                controllers.DestinationsController.show(request: Request)
 GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
-GET     /travellers                  controllers.TravellersController.show
+GET     /travellers                  controllers.TravellersController.show(request: Request)
+GET     /travellers                  controllers.TravellersController.search(request: Request)
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)
