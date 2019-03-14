@@ -98,9 +98,9 @@
                             @for(trip <- currentDestinationsList) {
                                 <tr>
                                     <td>@trip.getDestinationId</td> <!-- TODO need to grab destination name not id here -->
-                                    <td>@trip.getDeparture</td>
-                                    <td>@trip.getArrival</td>
-                                    <td><button id="button-edit">Edit</button></td>
+                                    <td>@trip.getFormattedDate(trip.getDeparture)</td>
+                                    <td>@trip.getFormattedDate(trip.getArrival)</td>
+                                    <td><button id="button-edit" data-toggle="modal" data-target="#editModal">Edit</button></td>
                                 </tr>
                             }
                         </table>
@@ -111,13 +111,61 @@
             </div>
         </div>
 
+        <div class="modal" id="editModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                        <!-- Modal Header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Trip Destination</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+
+                        <!-- Modal body -->
+                    <div class="modal-body">
+                        @helper.form(routes.TripsController.updateDestination()) {
+                            @CSRF.formField
+
+                            <div class="col">
+                                <h5>Destination</h5>
+                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
+                                @for(destination <- currentUser.getDestinations) {
+                                    <option value=@destination.getDestinationId>@destination.getName</option>
+                                }
+                                </select>
+
+
+                                <h5>Arrival Time</h5>
+                                <input type="datetime-local" id="arrival" name="arrival">
+
+                                <h5>Departure Time</h5>
+                                <input type="datetime-local" id="departure" name="departure"></div>
+                            </div>
+
+
+                            <div class="modal-footer">
+                                <button type="submit" class="button-add">save</button>
+                                <button type="button" class="button-delete" data-dismiss="modal">Close</button>
+                            </div>
+
+                        }
+                            <!-- Modal footer -->
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
 
     </body>
+
 
     <script type="text/javascript">
             //Setup for the user table
             $(document).ready(function() {
-                $('#tripsTable').DataTable({
+                var tripsTable = $('#tripsTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
                     "pageLength": 13,
@@ -129,6 +177,13 @@
                     "sDom": '<"top"pfl>rt<"bottom"><"clear">',
                     "autoWidth": false
                 });
+
+                $('#tripsTable tbody').on( 'click', 'button', function () {
+                    var data = tripsTable.row( $(this).parents('tr') ).data();
+                    $('select[name=destinationId]').val(data[0]);
+                    $('.selectpicker').selectpicker('refresh');
+
+                } );
 
             });
 
@@ -172,6 +227,19 @@
         function deleteDestRow() {
             $('#destsTable').DataTable().row().remove().draw();
         }
+
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+
+
+        function fillModal(row) {
+            alert(row);
+        }
+
+
+
 
 
 

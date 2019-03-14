@@ -107,6 +107,8 @@ public class DestinationsController extends Controller {
 
 
 
+
+
     /**
      * Display the 'create destination form'.
 

@@ -6,6 +6,8 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -89,5 +91,10 @@ public class TripDestination extends Model {
 
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public String getFormattedDate(Date toFormat) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY mm:hh");
+        return dateFormat.format(toFormat);
     }
 }

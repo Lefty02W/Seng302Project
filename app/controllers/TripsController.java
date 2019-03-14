@@ -128,5 +128,10 @@ public class TripsController extends Controller {
         return redirect(routes.TripsController.show());
     }
 
+    public Result updateDestination() {
+        return redirect(routes.TripsController.showCreate());
+    }
+
+
 
 }

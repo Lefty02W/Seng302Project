@@ -29,3 +29,6 @@ label {
     overflow: auto;
     width: 100%;
 }
+
+input[type=datetime-local] {
+}
