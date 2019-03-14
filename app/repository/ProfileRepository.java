@@ -128,4 +128,15 @@ public class ProfileRepository {
             }
     }
 
+    public Optional<ArrayList<Destination>> getDestinations(String email) {
+            try {
+                Optional<List<Destination>> toReturnOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
+                        .where().like("user_email", email).findList());
+                ArrayList<Destination> toReturn = (ArrayList<Destination>) toReturnOptional.get();
+                return Optional.of(toReturn);
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+    }
+
 }
