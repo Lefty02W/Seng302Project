@@ -41,6 +41,7 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     public Result show(Http.Request request) {
+        // to do set destinationList as get from current user query
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
 
