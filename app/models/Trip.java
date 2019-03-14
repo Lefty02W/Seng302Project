@@ -87,7 +87,10 @@ public class Trip extends Model {
     public String getStartDateString(){
         Date startDate = destinations.get(0).getArrival();
         return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
+    }
 
+    public Date getStartDate(){
+        return destinations.get(0).getArrival();
     }
 
     public String getDestinationNames() {

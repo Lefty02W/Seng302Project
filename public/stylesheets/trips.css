@@ -29,3 +29,6 @@ label {
     overflow: auto;
     width: 100%;
 }
+#tripsTable span {
+    display: none;
+}

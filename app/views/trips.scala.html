@@ -55,7 +55,7 @@
                                         <tr>
                                             <td>@trip.getName</td>
                                             <td>@trip.getTravelTime</td>
-                                            <td>@trip.getStartDateString</td>
+                                            <td><span>@trip.getStartDate().getTime</span>@trip.getStartDateString</td>
                                             <td>@trip.getDestinations.size()</td>
                                             <td>@trip.getDestinationNames()</td>
                                             @helper.form(routes.TripsController.showEdit(trip.getId)) {
