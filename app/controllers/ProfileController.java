@@ -83,9 +83,6 @@ public class ProfileController extends Controller {
     }
 
     public Result show(Http.Request request) {
-
-
-
         Profile currentProfile = getCurrentUser(request);
         //TODO xhange to read from db
         currentProfile.setTrips(new ArrayList<Trip>());

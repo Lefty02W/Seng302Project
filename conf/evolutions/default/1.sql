@@ -92,6 +92,7 @@ create table trip_destination (
   departure                     datetime(6),
   destination_id                integer not null,
   trip_id                       integer not null,
+  destination                   varchar(255),
   constraint pk_trip_destination primary key (trip_destination_id)
 );
 
