@@ -87,7 +87,23 @@ public class TravellersController extends Controller {
      * @return queried list including traveller types search
      */
     public List<Profile> searchTravelTypes(List<Profile> resultData, PartnerFormData searchData){
-        return null;
+        List<Profile> resultProfiles = new ArrayList<>();
+
+        System.out.println("Partner Data " + searchData.searchTravellerTypes);
+        String travellerTypeTerm = searchData.searchTravellerTypes;
+
+        System.out.println("Traveller search String " + travellerTypeTerm);
+
+        if (!travellerTypeTerm.equals("")) {
+            for (Profile profile : resultData) {
+                if (profile.getTravellerTypes().contains(travellerTypeTerm)) {
+                    resultProfiles.add(profile);
+                }
+            }
+        } else {
+            resultProfiles = resultData;
+        }
+        return resultProfiles;
     }
 
     /**

@@ -1,6 +1,5 @@
 package models;
 
-
 public class PartnerFormData {
     public String searchNationality = "";
     public String searchGender = "";

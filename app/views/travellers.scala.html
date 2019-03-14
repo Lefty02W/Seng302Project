@@ -66,8 +66,11 @@
                                 <option value="business">functional/business Traveller</option>
                                 <option value="Holidaymaker">Holidaymaker</option>
                             </select>
-                            <button type="submit">Search</button>
+                            <button type="submit" onclick="fillVals()">Search</button>
                             <button type="button">Clear</button>
+
+                            @*TODO*@
+                            <input type="hidden" id="travellerTypes" name="travellerTypes">
                             }
                         </div>
                         <div class="col">
@@ -115,9 +118,9 @@
 
             });
 
-
-
-
+            function fillVals() {
+                $('#travellerTypes').val($('#searchTravellerTypes').val());
+            }
     </script>
 
 </html>
