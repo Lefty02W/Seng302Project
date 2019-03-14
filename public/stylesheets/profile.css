@@ -68,14 +68,10 @@
     display:block;
 }
 
-.upper-card {
-    width: 80%;
-}
-
 
 
 .lower-card {
-    width: 70%;
+    width: 80%;
 }
 
 .center-col {
@@ -85,7 +81,8 @@
 }
 
 .upper-card {
-    width: 80%;
+    width: 87%;
+    height: 95%;
 }
 
 
