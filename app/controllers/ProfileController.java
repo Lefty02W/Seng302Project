@@ -43,6 +43,9 @@ public class ProfileController extends Controller {
 
     public CompletionStage<Result> showEdit(String email) {
 
+
+
+
         return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();

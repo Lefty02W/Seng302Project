@@ -125,6 +125,11 @@ public class Profile extends Model {
         this.destinations = destinations;
     }
 
+    public String getEntryDate() {
+        String date = dateFormatEntry.format(birthDate);
+        return date;
+    }
+
 
 
 
@@ -168,6 +173,11 @@ public class Profile extends Model {
     public String getTravellerTypes() {
         return travellerTypes;
     }
+    public String[] getTravellerTypesArray() {
+        String[] typesArray = travellerTypes.split(",");
+        return typesArray;
+    }
+
 
     public void setTravellerTypes(String travellerTypes) {
         this.travellerTypes = travellerTypes;
