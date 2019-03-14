@@ -66,9 +66,10 @@
                                             <td>@trip.getDestinationNames()</td>
                                             @helper.form(routes.TripsController.showEdit(trip.getId)) {
                                                 @CSRF.formField
-                                                <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button> <button class="button-delete" onclick="deleteTripRow(this)" style="height:4vh">Delete</button></td>
-                                            }
+                                                <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
 
+                                            }
+                                            <a href="@routes.TripsController.delete(trip.getId)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>
                                         </tr>
                                     }
                                 </table>
@@ -196,14 +197,7 @@
 
 
 
-        function deleteTripRow(r) {
-            var i = r.parentNode.parentNode.rowIndex;
-            document.getElementById("tripsTable").deleteRow(i)
-        }
 
-        function deleteDestRow() {
-            $('#destsTable').DataTable().row().remove().draw();
-        }
 
     </script>
 

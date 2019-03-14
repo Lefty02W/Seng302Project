@@ -15,6 +15,7 @@ import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
 
+import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -107,6 +108,24 @@ public class TripsController extends Controller {
             currentDestinationsList.clear();
             return redirect(routes.TripsController.show());
         }
+    }
+
+    /**
+     * Deletes a trip in the database
+     * @param tripId
+     * @return
+     */
+    public Result delete(Integer tripId) {
+        System.out.println(tripId);
+        //find the trip using the trip ID
+        boolean found = false;
+        for (int i = 0; !found && i < tripList.size(); i++) {
+            if (tripList.get(i).getId().equals(tripId)) {
+                found = true;
+                tripList.remove(i);
+            }
+        }
+        return redirect(routes.TripsController.show());
     }
 
 
