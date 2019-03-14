@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-
 public class ProfileController extends Controller {
 
     private final Form<Profile> form;
@@ -29,7 +28,7 @@ public class ProfileController extends Controller {
     private final HttpExecutionContext httpExecutionContext;
 
     private final ProfileRepository profileRepository;
-
+    private final SessionController sessionController = new SessionController();
 
 
     @Inject
@@ -66,27 +65,12 @@ public class ProfileController extends Controller {
 
     }
 
-    /**
-     * Get the currently logged in user
-     * @param request
-     * @return Web page showing connected user's email
-     */
-    public Profile getCurrentUser(Http.Request request) {
-        Optional<String> connected = request.session().getOptional("connected");
-        String email;
-        if (connected.isPresent()) {
-            email = connected.get();
-            return Profile.find.byId(email);
-        } else {
-            return null;
-        }
-    }
 
     public Result show(Http.Request request) {
 
 
 
-        Profile currentProfile = getCurrentUser(request);
+        Profile currentProfile = sessionController.getCurrentUser(request);
         //TODO xhange to read from db
         currentProfile.setTrips(new ArrayList<Trip>());
         return ok(profile.render(currentProfile));
