@@ -24,7 +24,11 @@ public class TripRepository {
 
     }
 
-    public CompletionStage<Optional<String>> delete(int tripID) {
+    public CompletionStage<Optional<String>> update(Trip trip, int tripId){
+
+    }
+
+    public CompletionStage<Optional<String>> delete(int tripId) {
 
     }
 
