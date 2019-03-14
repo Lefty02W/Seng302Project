@@ -11,6 +11,7 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.TripRepository;
 import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
@@ -25,15 +26,19 @@ public class TripsController extends Controller {
     private final ArrayList<Destination> destinationsList;
     private final ArrayList<TripDestination> currentDestinationsList;
     private final ArrayList<Trip> tripList;
+
     private MessagesApi messagesApi;
     private final Form<Trip> form;
     private final Form<TripDestination> formTrip;
+    private final TripRepository tripRepository;
 
     @Inject
-    public TripsController(FormFactory formFactory, MessagesApi messagesApi) throws ParseException {
+    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi) throws ParseException {
         this.form = formFactory.form(Trip.class);
-        this.formTrip = formFactory.form(TripDestination.class);
+        this.tripRepository = tripRepository;
         this.messagesApi = messagesApi;
+        this.formTrip = formFactory.form(TripDestination.class);
+
         this.destinationsList = new ArrayList<>();
         this.currentDestinationsList = new ArrayList<>();
         this.tripList = new ArrayList<>();
@@ -52,6 +57,7 @@ public class TripsController extends Controller {
 
     public Result show(Http.Request request) {
         //TODO Handle null dates
+
         return ok(trips.render(form, formTrip, destinationsList, tripList, request, messagesApi.preferred(request)));
     }
 
@@ -94,17 +100,15 @@ public class TripsController extends Controller {
 
     public Result save(Http.Request request) {
         Form<Trip> tripForm = form.bindFromRequest(request);
-        String tripName = tripForm.get().getName();
-        if (currentDestinationsList.size() <= 1){
+        if (destinationsList.size() <= 1){
             return redirect(routes.TripsController.showCreate());
         } else {
             ArrayList<TripDestination> destList = new ArrayList<>();
             for (int i = 0; i < currentDestinationsList.size(); i++) {
                 destList.add(currentDestinationsList.get(i));
             }
-            Trip trip = new Trip(destList, tripName);
-            trip.setId(tripList.size());
-            tripList.add(trip);
+            Trip trip = tripForm.get();
+            tripRepository.insert(trip);
             currentDestinationsList.clear();
             return redirect(routes.TripsController.show());
         }
