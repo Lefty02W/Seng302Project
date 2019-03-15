@@ -273,14 +273,6 @@
             });
 
             function viewTrip(tripIndex) {
-                var startDate;
-                var numDests;
-                var timeTravelled;
-                @for(index <- 0 until currentUser.getTrips.size) {
-                    if(@index == tripIndex) {
-                        alert(@currentUser.getTrips.get(index).getName);
-                    }
-                }
                 $('#viewTripModal').modal('show');
             }
         </script>
