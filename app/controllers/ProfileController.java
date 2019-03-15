@@ -15,10 +15,7 @@ import views.html.*;
 import javax.inject.Inject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 
@@ -27,7 +24,7 @@ public class ProfileController extends Controller {
     private final Form<Profile> form;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
-
+    private final FormFactory formFactory;
     private final ProfileRepository profileRepository;
 
 
@@ -37,6 +34,7 @@ public class ProfileController extends Controller {
         this.form = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
         this.httpExecutionContext = httpExecutionContext;
+        this.formFactory = formFactory;
         this.profileRepository = profileRepository;
     }
 
@@ -91,5 +89,4 @@ public class ProfileController extends Controller {
         currentProfile.setTrips(new ArrayList<Trip>());
         return ok(profile.render(currentProfile));
     }
-
 }
