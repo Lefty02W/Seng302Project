@@ -50,14 +50,23 @@
                             @CSRF.formField
 
                             <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
-                            <select id= "searchGender" class="selectpicker" multiple title="Gender" name="searchGender">
+                            <select id= "searchGender" class="selectpicker" title="Gender" name="searchGender">
                                 <option hidden disabled>Gender</option>
                                 <option value="Male">Male</option>
                                 <option value="Female">Female</option>
                                 <option value="Other">Other</option>
                             </select>
-                            <input type="date" id="dateSearch" name="dateSearch">
-                            <select id= "searchTravellerTypes" class="selectpicker" multiple title="Traveller Type" name="searchTravellerTypes">
+                            @*<input type="date" id="dateSearch" name="dateSearch">*@
+                           <select id="searchAgeRange" class="selectpicker" title="Age Range" name="searchAgeRange">
+                                <option hidden disabled>Age Range</option>
+                                <option value=1><18</option>
+                                <option value=2>18-25</option>
+                                <option value=3>25-35</option>
+                                <option value=4>35-50</option>
+                                <option value=5>50-65</option>
+                                <option value=6>65+</option>
+                            </select>
+                            <select id= "searchTravellerTypesId" class="selectpicker" multiple title="Traveller Type" name="searchTravellerTypes">
                                 <option value="ThrillSeeker">ThrillSeeker</option>
                                 <option value="Backpacker">Backpacker</option>
                                 <option value="GapYear">Gap Year</option>
@@ -70,7 +79,7 @@
                             <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">Clear</button></a>
 
                             @*TODO*@
-                            <input type="hidden" id="travellerTypes" name="travellerTypes">
+                            <input type="hidden" id="searchTravellerTypes" name="searchTravellerTypes">
                             }
                         </div>
                         <div class="col">
@@ -119,7 +128,7 @@
             });
 
             function fillVals() {
-                $('#travellerTypes').val($('#searchTravellerTypes').val());
+                $('#searchTravellerTypes').val($('#searchTravellerTypesId').val());
             }
     </script>
 
