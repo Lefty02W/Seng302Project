@@ -12,8 +12,9 @@ import views.html.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
+import java.util.Calendar;
 
 /**
  * This class is the controller for the travellers.scala.html file, it provides the route to the
@@ -78,47 +79,88 @@ public class TravellersController extends Controller {
         return resultProfiles;
     }
 
-
     /**
      * Removes ages from result list
      * @param resultData current list to return
      * @param searchData Form holding search terms
      * @return queried list including age search
      */
-    public List<Profile> searchAge(List<Profile> resultData, PartnerFormData searchData){
+    public List<Profile> searchAge(List<Profile> resultData, PartnerFormData searchData) {
         List<Profile> resultProfiles = new ArrayList<>();
 
         System.out.println("Partner (Age) " + searchData.searchAgeRange);
         int travellerTypeTerm = searchData.searchAgeRange;
 
         System.out.println("Age range type " + travellerTypeTerm);
+        Date range1;
+        Date range2;
 
-        switch (travellerTypeTerm) {
-            case 1: // < 18
-                break;
-            case 2: // 18-25
-                break;
-            case 3: // 25-35
-                break;
-            case 4: // 35-50
-                break;
-            case 5: // 50-60
-                break;
-            case 6: // 65+
-                break;
+        for (Profile profile : resultData) {
+
+            switch (travellerTypeTerm) {
+                case 1: // < 18
+                    Calendar calendar11 = Calendar.getInstance();
+                    calendar11.add(Calendar.YEAR, -18);
+                    range1 = calendar11.getTime();
+                    if (profile.getBirthDate().getTime() > range1.getTime()) {
+                        resultProfiles.add(profile);
+                    }
+                    break;
+                case 2: // 18-25
+                    Calendar calendar21 = Calendar.getInstance();
+                    Calendar calendar22 = Calendar.getInstance();
+                    calendar21.add(Calendar.YEAR, -18);
+                    calendar22.add(Calendar.YEAR, -25);
+                    range1 = calendar21.getTime();
+                    range2 = calendar22.getTime();
+                    if ((profile.getBirthDate().getTime() > range2.getTime()) && (profile.getBirthDate().getTime() < range1.getTime())) {
+                        resultProfiles.add(profile);
+                    }
+                    break;
+                case 3: // 25-35
+                    Calendar calendar31 = Calendar.getInstance();
+                    Calendar calendar32 = Calendar.getInstance();
+                    calendar31.add(Calendar.YEAR, -25);
+                    calendar32.add(Calendar.YEAR, -35);
+                    range1 = calendar31.getTime();
+                    range2 = calendar32.getTime();
+                    if ((profile.getBirthDate().getTime() > range2.getTime()) && (profile.getBirthDate().getTime() < range1.getTime())) {
+                        resultProfiles.add(profile);
+                    }
+                    break;
+                case 4: // 35-50
+                    Calendar calendar41 = Calendar.getInstance();
+                    Calendar calendar42 = Calendar.getInstance();
+                    calendar41.add(Calendar.YEAR, -35);
+                    calendar42.add(Calendar.YEAR, -50);
+                    range1 = calendar41.getTime();
+                    range2 = calendar42.getTime();
+                    if ((profile.getBirthDate().getTime() > range2.getTime()) && (profile.getBirthDate().getTime() < range1.getTime())) {
+                        resultProfiles.add(profile);
+                    }
+                    break;
+                case 5: // 50-65
+                    Calendar calendar51 = Calendar.getInstance();
+                    Calendar calendar52 = Calendar.getInstance();
+                    calendar51.add(Calendar.YEAR, -50);
+                    calendar52.add(Calendar.YEAR, -65);
+                    range1 = calendar51.getTime();
+                    range2 = calendar52.getTime();
+                    if ((profile.getBirthDate().getTime() < range2.getTime()) && (profile.getBirthDate().getTime() > range1.getTime())) {
+                        resultProfiles.add(profile);
+                    }
+                    break;
+                case 6: // 65+
+                    Calendar calendar61 = Calendar.getInstance();
+                    calendar61.add(Calendar.YEAR, -65);
+                    range1 = calendar61.getTime();
+                    if (profile.getBirthDate().getTime() < range1.getTime()) {
+                        resultProfiles.add(profile);
+                    }
+                    break;
+            }
         }
-
-//        if (!travellerTypeTerm.equals("")) {
-//            for (Profile profile : resultData) {
-//                if (profile.getTravellerTypes().contains(travellerTypeTerm)) {
-//                    resultProfiles.add(profile);
-//                }
-//            }
-//        } else {
-//            resultProfiles = resultData;
-//        }
-//        return resultProfiles;
-        return resultData;
+        return resultProfiles;
     }
 
     /**
@@ -129,20 +171,12 @@ public class TravellersController extends Controller {
      */
     public List<Profile> searchTravelTypes(List<Profile> resultData, PartnerFormData searchData){
         List<Profile> resultProfiles = new ArrayList<>();
-
-        System.out.println("Partner Data " + searchData.searchTravellerTypes);
         String travellerTypeTerm = searchData.searchTravellerTypes;
 
-        System.out.println("Traveller search String " + travellerTypeTerm);
-
-        if (!travellerTypeTerm.equals("")) {
-            for (Profile profile : resultData) {
-                if (profile.getTravellerTypes().contains(travellerTypeTerm)) {
-                    resultProfiles.add(profile);
-                }
+        for (Profile profile : resultData) {
+            if (profile.getTravellerTypes().contains(travellerTypeTerm)) {
+                resultProfiles.add(profile);
             }
-        } else {
-            resultProfiles = resultData;
         }
         return resultProfiles;
     }
