@@ -40,8 +40,6 @@ public class Profile extends Model {
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date birthDate;
 
-
-
     @Constraints.Required
     private String gender;
 
@@ -52,7 +50,7 @@ public class Profile extends Model {
 
     private String travellerTypes;
 
-
+    private boolean admin;
 
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
@@ -72,7 +70,7 @@ public class Profile extends Model {
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,
-                   String travellerTypes, ArrayList<Trip> trips) {
+                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -85,12 +83,13 @@ public class Profile extends Model {
         this.destinations = destinations;
         this.travellerTypes = travellerTypes;
         this.trips = trips;
+        this.admin = isAdmin;
     }
 
     // Finder for profile
     public static final Finder<String, Profile> find = new Finder<>(Profile.class);
 
-    //Setters
+    //--------------Setters----------------------
     public void setEmail(String email) {
         this.email = email;
     }
@@ -126,10 +125,11 @@ public class Profile extends Model {
         this.destinations = destinations;
     }
 
+    public void setAdmin(boolean isAdmin){
+        this.admin = isAdmin;
+    }
 
-
-
-    //Getters
+    //----------------Getters------------------------
     public String getEmail() {
         return email;
     }
@@ -201,12 +201,15 @@ public class Profile extends Model {
         this.trips = trips;
     }
 
+    //--------------------Utilities--------------------
+
     public boolean checkPassword(String password) {
         // TODO FIX THIS
         return true;
         //BCrypt.checkpw(password, this.password);
     }
 
+    public boolean isAdmin() { return this.admin; }
 
     /**
      * Searches the users destinations for the given search term.
@@ -241,8 +244,6 @@ public class Profile extends Model {
         return toReturn;
     }
 
-
-
     /**
      * Delete a destination from the profile
      * @param destinationID ID of destination to delete
@@ -255,7 +256,6 @@ public class Profile extends Model {
             }
         }
     }
-
 
     public void setPassports(String passports) {
         this.passports = passports;
