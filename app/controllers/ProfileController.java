@@ -10,6 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repository.ProfileRepository;
+import repository.TripRepository;
 import views.html.*;
 
 import javax.inject.Inject;
@@ -29,15 +30,17 @@ public class ProfileController extends Controller {
     private final HttpExecutionContext httpExecutionContext;
 
     private final ProfileRepository profileRepository;
+    private final TripRepository tripRepository;
 
 
 
     @Inject
-    public ProfileController(FormFactory formFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository){
+    public ProfileController(FormFactory formFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, TripRepository tripRepository){
         this.form = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
         this.httpExecutionContext = httpExecutionContext;
         this.profileRepository = profileRepository;
+        this.tripRepository = tripRepository;
     }
 
 
@@ -66,26 +69,11 @@ public class ProfileController extends Controller {
 
     }
 
-    /**
-     * Get the currently logged in user
-     * @param request
-     * @return Web page showing connected user's email
-     */
-    public static Profile getCurrentUser(Http.Request request) {
-        Optional<String> connected = request.session().getOptional("connected");
-        String email;
-        if (connected.isPresent()) {
-            email = connected.get();
-            return Profile.find.byId(email);
-        } else {
-            return null;
-        }
-    }
-
     public Result show(Http.Request request) {
-        Profile currentProfile = getCurrentUser(request);
+        Profile currentProfile = SessionController.getCurrentUser(request);
         //TODO xhange to read from db
-        currentProfile.setTrips(new ArrayList<Trip>());
+        currentProfile.setTrips(tripRepository.getUsersTrips(currentProfile));
+        System.out.println(currentProfile.getTrips().size());
         return ok(profile.render(currentProfile));
     }
 

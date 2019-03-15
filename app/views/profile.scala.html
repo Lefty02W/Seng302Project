@@ -75,7 +75,7 @@
 
 
                         <div class="col">
-                            <div id="trips-card" class="card-large upper-card center-col"">
+                            <div id="trips-card" class="card-large upper-card center-col">
                                 <h3>Your Trips</h3>
 
                                 @if(currentUser.getTrips.isEmpty) {
@@ -83,13 +83,14 @@
                                         You have no trips associated with your profile
                                     </div>
                                 } else {
-                                    <div class="container columns-2">
-                                    @for(index <- 0 until currentUser.getTrips.size - 1) {
-                                        <div class="card-small trip-card">
-                                            <h6>@currentUser.getTrips.get(index).getName</h6>
-                                            <p style="margin: 0;">Destinations visited: @currentUser.getTrips().get(index).getDestinations.size()</p>
-                                            <p style="margin: 0;">Days Travelling: @currentUser.getTrips().get(index).getTravelTime</p>
+                                    <div class="row">
+                                    @for(index <- 0 until currentUser.getTrips.size) {
+                                        <div class="col">
+                                            <div class="card-small trip-card ">
+                                                <h6>@currentUser.getTrips.get(index).getName</h6>
+                                            </div>
                                         </div>
+
                                     }
                                     </div>
                                 }
@@ -114,11 +115,14 @@
                                         You have no traveller types associated with your profile
                                     </div>
                                 } else {
-                                    <div class="container">
+                                    <div class="row">
                                     @for(index <- 0 until currentUser.getTravellerTypesList.size) {
-                                        <div class="card-small card-small-tall">
-                                            <a>@currentUser.getTravellerTypesList.get(index)</a>
+                                        <div class="col">
+                                            <div class="card-small card-small-tall">
+                                                <a>@currentUser.getTravellerTypesList.get(index)</a>
+                                            </div>
                                         </div>
+
                                     }
                                     </div>
                                 }
@@ -135,15 +139,17 @@
                                         You have no nationalities associated with your profile
                                     </div>
                                 } else {
-                                    <div class="container columns-2">
+                                    <div class="row">
                                     @for(index <- 0 until currentUser.getNationalityList.size) {
-                                        <div class="card-small card-small-tall">
-                                            <a>@currentUser.getNationalityList.get(index)</a>
+                                        <div class="col">
+                                            <div class="card-small card-small-tall">
+                                                <a>@currentUser.getNationalityList.get(index)</a>
+                                            </div>
                                         </div>
+
                                     }
                                     </div>
                                 }
-
 
 
                             </div>
@@ -158,13 +164,16 @@
                                         You have no passports associated with your profile
                                     </div>
                                 } else {
-                                    <div class="container columns-2">
+                                    <div class="row">
 
 
                                     @for(index <- 0 until currentUser.getPassportsList.size) {
-                                        <div class="card-small card-small-tall">
-                                            <a>@currentUser.getPassportsList.get(index)</a>
+                                        <div class="col">
+                                            <div class="card-small card-small-tall">
+                                                <a>@currentUser.getPassportsList.get(index)</a>
+                                            </div>
                                         </div>
+
                                     }
                                     </div>
                                 }

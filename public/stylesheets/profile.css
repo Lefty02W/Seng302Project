@@ -48,6 +48,7 @@
     background: white;
     margin-top: 10px;
     border-radius: 0.25rem;
+
 }
 
 .trip-button {
@@ -55,7 +56,7 @@
 }
 
 .trip-card {
-    height: 10vh;
+    height: 5vh;
 }
 
 .lower-card {

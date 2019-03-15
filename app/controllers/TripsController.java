@@ -64,7 +64,7 @@ public class TripsController extends Controller {
     }
 
     public Result showCreate(Http.Request request) {
-        Profile currentUser = ProfileController.getCurrentUser(request);
+        Profile currentUser = SessionController.getCurrentUser(request);
         // Testing only
         Destination dest = new Destination(1, 1, "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
         Destination dest1 = new Destination(2, 1, "dest 2", "yought", "USA", "Beans", 12, 23);
@@ -78,7 +78,7 @@ public class TripsController extends Controller {
     }
 
     public Result showEdit(Http.Request request, Integer id) {
-        Profile currentUser = ProfileController.getCurrentUser(request);
+        Profile currentUser = SessionController.getCurrentUser(request);
         // Testing only
         Destination dest = new Destination(1, 1, "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
         Destination dest1 = new Destination(2, 1, "dest 2", "yought", "USA", "Beans", 12, 23);
