@@ -66,8 +66,8 @@
                                 <option value="business">functional/business Traveller</option>
                                 <option value="Holidaymaker">Holidaymaker</option>
                             </select>
-                            <button type="submit" onclick="fillVals()">Search</button>
-                            <button type="button">Clear</button>
+                            <button type="submit" id="searchBttn" onclick="fillVals()">Search</button>
+                            <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">Clear</button></a>
 
                             @*TODO*@
                             <input type="hidden" id="travellerTypes" name="travellerTypes">
