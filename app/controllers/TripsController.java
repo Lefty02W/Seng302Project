@@ -58,7 +58,7 @@ public class TripsController extends Controller {
 
     public Result show(Http.Request request) {
         //TODO Handle null dates
-        ArrayList<Trip> tripsList = tripRepository.getUsersTrips();
+        ArrayList<Trip> tripsList = tripRepository.getUsersTrips(SessionController.getCurrentUser(request));
 
 
 

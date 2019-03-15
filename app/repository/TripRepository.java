@@ -1,11 +1,14 @@
 package repository;
 
+import controllers.SessionController;
 import io.ebean.*;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import models.Destination;
+import models.Profile;
 import models.Trip;
 import models.TripDestination;
+import play.api.mvc.Request;
 import play.db.ebean.EbeanConfig;
 import scala.None;
 import javax.inject.Inject;
@@ -48,13 +51,12 @@ public class TripRepository {
     }
 
 
-    public ArrayList<Trip> getUsersTrips() {
+    public ArrayList<Trip> getUsersTrips(Profile currentUser) {
         //TODO pass current user to this or grab user id from here
         ArrayList<Trip> trips = new ArrayList<>();
 
         List<Trip> result = Trip.find.query().where()
-                // TODO once merged with branch that has getCurrent User uncomment -> .eq("email", currentUser.getEmail)
-                .eq("email", "bender@momcorp.com") // Delete once current user can be
+                .eq("email", currentUser.getEmail())
                 .findList();
 
         for (Trip trip : result) {
