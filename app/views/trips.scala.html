@@ -62,7 +62,13 @@
                                         <tr>
                                             <td>@trip.getName</td>
                                             <td>@trip.getTravelTime</td>
-                                            <td><span>@trip.getStartDate().getTime</span>@trip.getStartDateString</td>
+                                            <td>
+                                                @if(trip.getStartDate != null) {
+                                                    <span>@trip.getStartDate().getTime</span>
+                                                } else {
+                                                    <span>0</span>
+                                                }
+                                                @trip.getStartDateString</td>
                                             <td>@trip.getDestinations.size()</td>
                                             <td>@trip.getDestinationNames()</td>
                                             @helper.form(routes.TripsController.showEdit(trip.getId)) {
