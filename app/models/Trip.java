@@ -11,7 +11,8 @@ import javax.persistence.Id;
 import javax.validation.Constraint;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 /**
  * This class holds the data for a profile trip
@@ -84,6 +85,18 @@ public class Trip extends Model {
         }
         long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+    }
+
+    /**
+     * Get the date of arrival at the first destination in the trip, as a string.
+     */
+    public String getStartDateString(){
+        Date startDate = destinations.get(0).getArrival();
+        return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
+    }
+
+    public Date getStartDate(){
+        return destinations.get(0).getArrival();
     }
 
     public String getDestinationNames() {

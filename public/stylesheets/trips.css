@@ -29,6 +29,10 @@ label {
     overflow: auto;
     width: 100%;
 }
+#tripsTable span {
+    display: none;
+}
+
 
 input[type=datetime-local] {
 }
