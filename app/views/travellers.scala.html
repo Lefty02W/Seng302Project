@@ -1,4 +1,4 @@
-@(users : List[Profile])
+@(users : List[Profile], current: Profile)
 
 <!DOCTYPE html>
 <html>
@@ -70,7 +70,7 @@
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Admin</th>
                                 </thead>
                                 @for(user <- users) {
                                     <tr>
@@ -82,6 +82,7 @@
                                         <td>@user.getNationalities</td>
                                         <td>@user.getPassports</td>
                                         <td>@user.getTravellerTypes</td>
+                                        <td>@user.isAdmin</td>
                                     </tr>
                                 }
                             </table>
@@ -110,6 +111,22 @@
                 });
 
             });
+
+
+            @*valid = @current.isAdmin();*@
+
+            @*if (valid) {*@
+                @*table.column.add( [*@
+                            @*dest,*@
+                            @*arrive,*@
+                            @*depart,*@
+                            @*'<button id="addAdminButton" onclick="updateAdmin(false)">Remove Admin</button>'*@
+                        @*]*@
+                @*).draw( false );*@
+                @*$('#destForm').get(0).reset();*@
+                @*$("#destsPicker").val('default');*@
+                @*$("#destsPicker").selectpicker("refresh");*@
+            @*}*@
 
 
 
