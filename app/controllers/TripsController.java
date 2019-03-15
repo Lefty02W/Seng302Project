@@ -20,6 +20,7 @@ import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TripsController extends Controller {
 
@@ -57,8 +58,11 @@ public class TripsController extends Controller {
 
     public Result show(Http.Request request) {
         //TODO Handle null dates
+        ArrayList<Trip> tripsList = tripRepository.getUsersTrips();
 
-        return ok(trips.render(form, formTrip, destinationsList, tripList, request, messagesApi.preferred(request)));
+
+
+        return ok(trips.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
     }
 
     public Result showCreate(Http.Request request) {
@@ -135,6 +139,8 @@ public class TripsController extends Controller {
     public Result updateDestination() {
         return redirect(routes.TripsController.showCreate());
     }
+
+
 
 
 

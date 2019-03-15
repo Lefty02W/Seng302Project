@@ -1,6 +1,7 @@
 package models;
 
 
+import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.validation.Constraints;
 
@@ -25,7 +26,9 @@ public class TripDestination extends Model {
     @Constraints.Required
     private int destinationId;
     private int tripId;
-    private String destination;
+    private Destination destination;
+    public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
+
 
 
     public TripDestination() {
@@ -85,11 +88,11 @@ public class TripDestination extends Model {
         this.tripId = tripId;
     }
 
-    public String getDestination() {
+    public Destination getDestination() {
         return destination;
     }
 
-    public void setDestination(String destination) {
+    public void setDestination(Destination destination) {
         this.destination = destination;
     }
 

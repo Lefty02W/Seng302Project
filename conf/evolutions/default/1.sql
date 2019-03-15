@@ -82,7 +82,7 @@ create table profile (
 create table trip (
   trip_id                       integer auto_increment not null,
   name                          varchar(255),
-  user_id                       integer not null,
+  email                         varchar(255),
   constraint pk_trip primary key (trip_id)
 );
 
@@ -92,7 +92,6 @@ create table trip_destination (
   departure                     datetime(6),
   destination_id                integer not null,
   trip_id                       integer not null,
-  destination                   varchar(255),
   constraint pk_trip_destination primary key (trip_destination_id)
 );
 

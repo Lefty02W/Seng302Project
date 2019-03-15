@@ -1,6 +1,7 @@
 package models;
 
 
+import io.ebean.Finder;
 import io.ebean.Model;
 import org.checkerframework.checker.signedness.qual.Constant;
 import play.data.validation.Constraints;
@@ -24,7 +25,9 @@ public class Trip extends Model {
     private String name;
     @Id
     private int tripId;
-    private int userId;
+    private String email;
+    public static final Finder<String, Trip> find = new Finder<>(Trip.class);
+
     public Trip() {}
 
 

@@ -52,7 +52,7 @@ public class Destination extends Model {
         this.longitude = longitude;
     }
 
-    // Finder for profile
+    // Finder for destination
     public static final Finder<String, Destination> find = new Finder<>(Destination.class);
 
     /**
