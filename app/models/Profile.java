@@ -34,7 +34,6 @@ public class Profile extends Model {
     @Constraints.Required
     private String email;
 
-    @Constraints.Required
     private String password;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
@@ -47,7 +46,7 @@ public class Profile extends Model {
 
     @Constraints.Required
     private String nationalities;
-
+    @Constraints.Required
     private String travellerTypes;
 
     //@Formats.DateTime(pattern="dd-MM-yyyy")
@@ -117,6 +116,10 @@ public class Profile extends Model {
         this.destinations = destinations;
     }
 
+    public String getEntryDate() {
+        String date = dateFormatEntry.format(birthDate);
+        return date;
+    }
     public boolean checkPassword(String password) {
         // TODO FIX THIS
         return true;
@@ -139,6 +142,7 @@ public class Profile extends Model {
         }
         return resultDestinations;
     }
+
 
     /**
      * Returns a single destination.
@@ -210,6 +214,11 @@ public class Profile extends Model {
     public String getTravellerTypes() {
         return travellerTypes;
     }
+    public String[] getTravellerTypesArray() {
+        String[] typesArray = travellerTypes.split(",");
+        return typesArray;
+    }
+
 
     public void setTravellerTypes(String travellerTypes) {
         this.travellerTypes = travellerTypes;
