@@ -13,10 +13,13 @@ import repository.ProfileRepository;
 import views.html.*;
 
 import javax.inject.Inject;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
+
+import play.libs.Files.TemporaryFile;
 
 
 public class ProfileController extends Controller {
@@ -81,6 +84,21 @@ public class ProfileController extends Controller {
             return Profile.find.byId(email);
         } else {
             return null;
+        }
+    }
+
+    public Result uploadPhoto(Http.Request request) {
+        Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("picture");
+        if (picture != null) {
+            String fileName = picture.getFilename();
+            long fileSize = picture.getFileSize();
+            String contentType = picture.getContentType();
+            TemporaryFile file = picture.getRef();
+            file.copyTo(Paths.get("/tmp/picture/destination.jpg"), true);
+            return ok("File uploaded");
+        } else {
+            return badRequest().flashing("error", "Missing file");
         }
     }
 

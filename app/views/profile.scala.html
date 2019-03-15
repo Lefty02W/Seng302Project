@@ -163,12 +163,12 @@
                         <div class="col">
                             <div id="photosCard" class="card-large lower-card">
                                 <h3>Personal Photos</h3>
-                                <button type="button" class="viewButton">View Photos</button>
-                                <button type="button" class="addButton">Add Photos</button>
+                                <button type="button" class="viewButton" data-toggle="modal" data-target="#viewPhotoModal">View Photos</button>
+                                <button type="button" class="addButton" data-toggle="modal" data-target="#addPhotoModal">Add Photos</button>
                             </div>
                         </div>
 
-                        </div>
+                    </div>
 
                     <div class="row">
                         <div class="col">
@@ -179,9 +179,40 @@
 
                     </div>
 
+                </div>
+
+
+
+            </div>
+            <div class="modal fade" id="addPhotoModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h2 class="modal-title">Add Photo</h2>
+                        </div>
+                        <div class="modal-body">
+                            <input type="file" name="picture">
+                            <button type="submit">Submit</button>
+                        </div>
                     </div>
+                </div>
 
+            </div>
 
+            <div class="modal fade" id="viewPhotoModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h2 class="modal-title">View Photos</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p>test</p>
+                            <button type="submit">Back</button>
+                        </div>
+                    </div>
+                </div>
 
             </div>
 
