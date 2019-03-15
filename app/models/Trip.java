@@ -31,9 +31,6 @@ public class Trip extends Model {
 
     public Trip() {}
 
-
-
-
     /**
      * Constructor for a Trip
      * @param destinations The destinations in the trip
@@ -67,15 +64,18 @@ public class Trip extends Model {
     public void setDestinations(ArrayList<TripDestination> destinations) {
         this.destinations = destinations;
     }
+
     public Integer getId() { return tripId; }
     public String getName() {
         return name;
     }
-    public void setId(int id){ this.tripId = id;
-  }
+    public void setId(int id){ this.tripId = id; }
     public void setName(String name) {
         this.name = name;
     }
+    public void setEmail(String email) { this.email = email; }
+    public String getEmail() { return email; }
+
 
     public long getTravelTime() {
         TripDestination startDest = destinations.get(0);
