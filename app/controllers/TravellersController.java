@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Calendar;
-
+//TODO Fix table in html - types field needs to wrap
+//TODO Fix data format in table
+//TODO Stop fields from clearing when you press search
 /**
  * This class is the controller for the travellers.scala.html file, it provides the route to the
  * travellers page

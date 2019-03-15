@@ -40,14 +40,11 @@ public class ProfileController extends Controller {
 
 
     public CompletionStage<Result> showEdit(String email) {
-
-
-
+        //TODO data not updating until refresh after edit
 
         return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
-                //TODO Form is not auto filling
                 Form<Profile> profileForm = form.fill(toEditProfile);
                 return ok(editProfile.render(toEditProfile, profileForm));
 
