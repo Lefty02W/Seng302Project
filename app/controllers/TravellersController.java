@@ -69,8 +69,15 @@ public class TravellersController extends Controller {
      * @return queried list including nationality search
      */
     public List<Profile> searchNat(List<Profile> resultData, PartnerFormData searchData){
-        return null;
+        List<Profile> resultProfiles = new ArrayList<>();
+        for (Profile profile: resultData){
+            if (profile.getNationalities().contains(searchData.searchNationality)){
+                resultProfiles.add(profile);
+            }
+        }
+        return resultProfiles;
     }
+
 
     /**
      * Removes ages from result list
