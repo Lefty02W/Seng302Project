@@ -86,8 +86,9 @@
                                     <div class="row">
                                     @for(index <- 0 until currentUser.getTrips.size) {
                                         <div class="col">
-                                            <div class="card-small trip-card ">
-                                                <h6>@currentUser.getTrips.get(index).getName</h6>
+                                            <div class="card-small trip-card" onclick="viewTrip(this)">
+                                                <h6 id="tripName">@currentUser.getTrips.get(index).getName</h6>
+                                                <a id="tripIndex">@index</a> <!-- This will get hidden later -->
                                             </div>
                                         </div>
 
@@ -195,17 +196,90 @@
 
                 </div>
             </div>
-                <!-- /#page-content-wrapper -->
+
+            <div class="modal fade " id="viewTripModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                            <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h2 class="modal-title">View Trip</h2>
+                        </div>
+
+                            <!-- Modal body -->
+                        <div class="modal-body">
+                            <h3 id="tripTitle">Trip Title</h3>
+
+                            <table id="tripTable">
+                                <thead>
+                                    <tr><th>Start Date</th><th>N.O. Destinations</th><th>Travel Time (Days)</th>
+                                </thead>
+                            </table>
+                            <h4>Destinations</h4>
+                            <table id="destsTable">
+                                <thead>
+                                    <tr><th>Destination Name</th><th>Departure Time</th><th>Arrival Time</th>
+                                </thead>
+                            </table>
+                        </div>
+
+
+                        <div class="modal-footer">
+                            <button type="button" class="button-delete" data-dismiss="modal">Close</button>
+                        </div>
+
+                            <!-- Modal footer -->
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
 
         </div>
 
 
             <!-- Menu Toggle Script -->
         <script>
-                $("#menu-toggle").click(function(e) {
-                    e.preventDefault();
-                    $("#wrapper").toggleClass("toggled");
+            $(document).ready(function() {
+                $('#destsTable').DataTable({
+                    "lengthChange": false,
+                    "pagingType": "full",
+                    "pageLength": 13,
+                    dom: '<l<"toolbar">f>rtip',
+                    language: {
+                        search: "_INPUT_", //To remove Search Label
+                        searchPlaceholder: "Search..."
+                    },
+                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
+                    "autoWidth": false
                 });
+
+                $('#tripTable').DataTable({
+                    "lengthChange": false,
+                    "pagingType": "full",
+                    "pageLength": 13,
+                    dom: '<l<"toolbar">f>rtip',
+                    language: {
+                        search: "_INPUT_", //To remove Search Label
+                        searchPlaceholder: "Search..."
+                    },
+                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
+                    "autoWidth": false
+                });
+            });
+
+
+            $("#menu-toggle").click(function(e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+
+            function viewTrip(card) {
+                alert(card.querySelector("#tripIndex"));
+                $('#viewTripModal').modal('show');
+            }
         </script>
 
     </body>
