@@ -23,8 +23,10 @@ public class TripDestination extends Model {
     private Date departure;
     @Id
     private int tripDestinationId;
+
     @Constraints.Required
     private int destinationId;
+
     private int tripId;
     private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);

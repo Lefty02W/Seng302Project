@@ -61,6 +61,7 @@
                                     @for(trip <- trips) {
                                         <tr>
                                             <td>@trip.getName</td>
+@*
                                             <td>@trip.getTravelTime</td>
                                             <td>
                                                 @if(trip.getStartDate != null) {
@@ -70,7 +71,7 @@
                                                 }
                                                 @trip.getStartDateString</td>
                                             <td>@trip.getDestinations.size()</td>
-                                            <td>@trip.getDestinationNames()</td>
+*@
                                             @helper.form(routes.TripsController.showEdit(trip.getId)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>

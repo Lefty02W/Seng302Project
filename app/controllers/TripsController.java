@@ -11,16 +11,21 @@ import play.data.FormFactory;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.TripDestinationsRepository;
 import repository.TripRepository;
+import scala.xml.Null;
 import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
+import java.util.Optional;
 
 import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.CompletionStage;
 
 public class TripsController extends Controller {
 
@@ -32,13 +37,16 @@ public class TripsController extends Controller {
     private final Form<Trip> form;
     private final Form<TripDestination> formTrip;
     private final TripRepository tripRepository;
+    private final TripDestinationsRepository tripDestinationRepository;
 
     @Inject
-    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi) throws ParseException {
+    public TripsController(FormFactory formFactory, TripRepository tripRepository, TripDestinationsRepository tripDestinationRepository, MessagesApi messagesApi) throws ParseException {
         this.form = formFactory.form(Trip.class);
         this.tripRepository = tripRepository;
+        this.tripDestinationRepository = tripDestinationRepository;
         this.messagesApi = messagesApi;
         this.formTrip = formFactory.form(TripDestination.class);
+
 
         this.destinationsList = new ArrayList<>();
         this.currentDestinationsList = new ArrayList<>();
@@ -102,14 +110,24 @@ public class TripsController extends Controller {
 
     public Result save(Http.Request request) {
         Form<Trip> tripForm = form.bindFromRequest(request);
-        if (destinationsList.size() <= 1){
+        Trip trip = tripForm.get();
+        if (currentDestinationsList.size() <= 1){
             return redirect(routes.TripsController.showCreate());
         } else {
             ArrayList<TripDestination> destList = new ArrayList<>();
             for (int i = 0; i < currentDestinationsList.size(); i++) {
-                destList.add(currentDestinationsList.get(i));
+                TripDestination tripDestination = currentDestinationsList.get(i);
+                tripDestination.setTripId(trip.getId());
+                tripDestination.setTripId(1);
+//              System.out.println(currentDestinationsList.get(i).getDestinationId());
+//              System.out.println(currentDestinationsList.get(i).getTripId());
+                tripDestinationRepository.insert(tripDestination);
+                //TODO save tripdestinations to a repository
             }
-            Trip trip = tripForm.get();
+
+            Profile currentUser = SessionController.getCurrentUser(request);
+            trip.setEmail(currentUser.getEmail());
+            trip.setDestinations(currentDestinationsList);
             tripRepository.insert(trip);
             currentDestinationsList.clear();
             return redirect(routes.TripsController.show());
@@ -121,24 +139,28 @@ public class TripsController extends Controller {
      * @param tripId
      * @return
      */
-    public Result delete(Integer tripId) {
-        System.out.println(tripId);
+    public CompletionStage<Result> delete(Integer tripId) {
         //find the trip using the trip ID
-        boolean found = false;
-        for (int i = 0; !found && i < tripList.size(); i++) {
-            if (tripList.get(i).getId().equals(tripId)) {
-                found = true;
-                tripList.remove(i);
-            }
-        }
-        return redirect(routes.TripsController.show());
+        //find the trip using the trip ID
+        return tripRepository.delete(tripId).thenApplyAsync(v -> {
+            return redirect(routes.TripsController.show());
+        });
     }
+
+
+
+//        for (int i = 0; !found && i < tripList.size(); i++) {
+//            if (tripList.get(i).getId().equals(tripId)) {
+//                found = true;
+//                tripList.remove(i);
+//            }
+//        }
+//        return redirect(routes.TripsController.show());
+//    }
 
     public Result updateDestination() {
         return redirect(routes.TripsController.showCreate());
     }
-
-
 
 
 

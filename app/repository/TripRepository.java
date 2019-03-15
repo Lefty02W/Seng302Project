@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -33,9 +36,21 @@ public class TripRepository {
 
     public CompletionStage<Integer> insert(Trip trip) {
         return supplyAsync(() -> {
+
             ebeanServer.insert(trip);
             return trip.getId();
         }, executionContext);
+    }
+
+    //TODO change this to get just the trips from a profile
+    public Optional<ArrayList<Trip>> getAllTrips() {
+        try {
+            Optional<List<Trip>> toReturnOptional = Optional.ofNullable(ebeanServer.find(Trip.class).findList());
+            ArrayList<Trip> toReturn = (ArrayList<Trip>) toReturnOptional.get();
+            return Optional.of(toReturn);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public CompletionStage<Optional<Integer>> delete(int tripID) {

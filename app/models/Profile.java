@@ -57,7 +57,7 @@ public class Profile extends Model {
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
-    private ArrayList<Destination> destinations = new ArrayList<>();
+    private ArrayList<Destination> destinations = new ArrayList<Destination>();
     private ArrayList<Trip> trips = new ArrayList<>();
 
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
