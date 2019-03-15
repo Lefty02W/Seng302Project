@@ -60,8 +60,6 @@ public class TripsController extends Controller {
         //TODO Handle null dates
         ArrayList<Trip> tripsList = tripRepository.getUsersTrips(SessionController.getCurrentUser(request));
 
-
-
         return ok(trips.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
     }
 

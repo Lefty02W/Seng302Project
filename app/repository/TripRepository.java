@@ -51,21 +51,28 @@ public class TripRepository {
     }
 
 
+    /**
+     * Gets an ArrayList of trips from the database that related to a passed profile
+     * @param currentUser the profile to get rips for
+     * @return the trips found for the passed profile
+     */
     public ArrayList<Trip> getUsersTrips(Profile currentUser) {
-        //TODO pass current user to this or grab user id from here
         ArrayList<Trip> trips = new ArrayList<>();
 
+        // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
                 .eq("email", currentUser.getEmail())
                 .findList();
 
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();
+            // Getting the tripDestinations out of the database for each trip returned
             List<TripDestination> tripDests = TripDestination.find.query()
                     .where()
                     .eq("trip_id", trip.getId())
                     .findList();
             for (TripDestination tripDest : tripDests) {
+                // Getting the destinations for each tripDestination
                 Destination destination = Destination.find.query()
                         .where()
                         .eq("destination_id", tripDest.getDestinationId())
@@ -76,7 +83,7 @@ public class TripRepository {
             trip.setDestinations(tripDestinations);
             trips.add(trip);
         }
-
+        // Returning the trips found
         return trips;
     }
 
