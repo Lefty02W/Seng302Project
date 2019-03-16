@@ -28,7 +28,6 @@ public class TripDestination extends Model {
     private int destinationId;
 
     private int tripId;
-    private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
 
 
@@ -39,7 +38,7 @@ public class TripDestination extends Model {
 
     /**
      * Constructor for a destination within a trip
-     * @param destination the destination
+     * @param destinationId the destination
      * @param arrival the arrival timestamp
      * @param departure the departure timestamp
      */
@@ -88,14 +87,6 @@ public class TripDestination extends Model {
 
     public void setTripId(int tripId) {
         this.tripId = tripId;
-    }
-
-    public Destination getDestination() {
-        return destination;
-    }
-
-    public void setDestination(Destination destination) {
-        this.destination = destination;
     }
 
     public String getFormattedDate(Date toFormat) {

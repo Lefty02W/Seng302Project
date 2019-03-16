@@ -92,7 +92,7 @@ public class TripRepository {
                         .where()
                         .eq("destination_id", tripDest.getDestinationId())
                         .findSingleAttribute();
-                tripDest.setDestination(destination);
+                //tripDest.setDestination(destination);
                 tripDestinations.add(tripDest);
             }
             trip.setDestinations(tripDestinations);
