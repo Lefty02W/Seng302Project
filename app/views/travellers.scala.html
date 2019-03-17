@@ -70,7 +70,7 @@
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Admin</th>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Admin: @current.isAdmin</th>
                                 </thead>
                                 @for(user <- users) {
                                     <tr>
@@ -112,6 +112,10 @@
 
             });
 
+            function removeAdmin(r) {
+            var i = r.parentNode.parentNode.rowIndex;
+            document.getElementById("tripsTable").deleteRow(i)
+            }
 
             @*valid = @current.isAdmin();*@
 
