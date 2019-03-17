@@ -13,6 +13,10 @@ import java.util.*;
 import javax.persistence.Id;
 import javax.validation.Constraint;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.reverseOrder;
 
 
 @Entity
@@ -256,6 +260,28 @@ public class Profile extends Model {
                 return;
             }
         }
+    }
+
+    /**
+     * This method sorts the users current list of trips by date
+     * @return the sorted
+     */
+    public void sortedTrips() {
+        Map<Long, Integer> tripsMap = new TreeMap<Long, Integer>();
+        for (int index = 0; index < trips.size(); index++) {
+            tripsMap.put(trips.get(index).getTimeVal(), index);
+        }
+        List<Map.Entry<Long, Integer>> sortedMap =
+                tripsMap.entrySet()
+                        .stream()
+                        .sorted(reverseOrder(Map.Entry.comparingByKey()))
+                        .collect(Collectors.toList());
+
+        ArrayList<Trip> sortedTrips = new ArrayList<>();
+        for (Map.Entry<Long, Integer> tripEntry : sortedMap) {
+            sortedTrips.add(trips.get(tripEntry.getValue()));
+        }
+        trips = sortedTrips;
     }
 
 

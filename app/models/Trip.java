@@ -98,6 +98,15 @@ public class Trip extends Model {
         return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
     }
 
+    public long getTimeVal() {
+        Date startDate = destinations.get(0).getArrival();
+        if (startDate != null) {
+            return startDate.getTime();
+        } else {
+            return 0;
+        }
+    }
+
     public Date getStartDate(){
         return destinations.get(0).getArrival();
     }

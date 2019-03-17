@@ -120,4 +120,5 @@ public class TripDestination extends Model {
     public void setDestination(Destination destination) {
         this.destination = destination;
     }
+
 }
