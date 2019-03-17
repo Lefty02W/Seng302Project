@@ -115,16 +115,28 @@ public class ProfileRepository {
         }, executionContext);
     }
 
-    
+    /**
+     * Function to get all the destinations created by the signed in user.
+     * @param email user email
+     * @return destList arrayList of destinations registered by the user
+     */
     public Optional<ArrayList<Destination>> getDestinations(String email) {
-            try {
-                Optional<List<Destination>> toReturnOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
-                        .where().like("user_email", email).findList());
-                ArrayList<Destination> toReturn = (ArrayList<Destination>) toReturnOptional.get();
-                return Optional.of(toReturn);
-            } catch (Exception e) {
-                return Optional.empty();
-            }
+        String sql = ("select * from destination where user_email = ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, email).findList();
+        ArrayList<Destination> destList = new ArrayList<>();
+        Destination dest = new Destination();
+        for (int i = 0; i < rowList.size(); i++) {
+            dest.setDestination_id(rowList.get(i).getInteger("destination_id"));
+            dest.setUserEmail(rowList.get(i).getString("user_email"));
+            dest.setName(rowList.get(i).getString("name"));
+            dest.setType(rowList.get(i).getString("type"));
+            dest.setCountry(rowList.get(i).getString("country"));
+            dest.setDistrict(rowList.get(i).getString("district"));
+            dest.setLatitude(rowList.get(i).getDouble("latitude"));
+            dest.setLongitude(rowList.get(i).getDouble("longitude"));
+            destList.add(dest);
+        }
+        return Optional.of(destList);
     }
 
 }

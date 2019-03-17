@@ -51,9 +51,9 @@ public class DestinationsController extends Controller {
         Profile user = sessionController.getCurrentUser(request);
         Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
         try {
-            destinationsList = destListTemp.get();
+          destinationsList = destListTemp.get();
         } catch(NoSuchElementException e) {
-            destinationsList = new ArrayList<Destination>();
+           destinationsList = new ArrayList<Destination>();
         }
         System.out.println("hi"+destinationsList+user.getEmail());
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
@@ -119,14 +119,14 @@ public class DestinationsController extends Controller {
             return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
-        if (destinationForm.hasErrors()) {
+       // if (destinationForm.hasErrors()) {
             // show on UI
-        }
+        //}
         Destination destination = destinationForm.get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
         // Run insert db operation, then redirect
-        return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
+        return redirect(routes.DestinationsController.show());
     }
 
     /**

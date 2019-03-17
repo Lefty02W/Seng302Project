@@ -12,7 +12,7 @@ public class Destination extends Model {
 
     @Id
     private int destinationId;
-    @Constraints.Required
+
     private String userEmail;
     @Constraints.Required
     private String name;
