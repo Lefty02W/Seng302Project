@@ -3,6 +3,7 @@ package controllers;
 import models.Profile;
 import play.data.FormFactory;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Result;
 import views.html.*;
 
@@ -25,12 +26,14 @@ public class TravellersController extends Controller {
     }
 
     /**
-     * This method shows the travellers page on the screen
+     * This method shows the travellers page on the screen.
+     * It uses the http request object to determine if the current user is an admin to change how
+     * the page renders, showing admin options.
      * @return
      */
-    public Result show() {
+    public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
-        return ok(travellers.render(profiles));
+        return ok(travellers.render(profiles, ProfileController.getCurrentUser(request)));
     }
 }
 /**
