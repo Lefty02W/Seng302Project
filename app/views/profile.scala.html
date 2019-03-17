@@ -44,8 +44,8 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <button class="button-add" id="menu-toggle">Toggle Menu</button>
-                    <h2>Profile</h2> <!-- TODO align this in the center -->
+                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                    <h2> Profile</h2> <!-- TODO align this in the center -->
                 </nav>
 
                 <div class="container-fluid">
@@ -91,7 +91,8 @@
                                     @for(index <- 0 until currentUser.getTrips.size) {
                                         <div class="row">
                                             <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@index">
-                                                <h6 id="tripName">@currentUser.getTrips.get(index).getName</h6>
+                                                <h5 id="tripName">@currentUser.getTrips.get(index).getName</h5>
+                                                <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
                                             </div>
                                         </div>
                                         <div class="row">

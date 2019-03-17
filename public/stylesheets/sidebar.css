@@ -59,3 +59,10 @@ body {
     height: 3vh;
     width: 1.5vw;
 }
+
+.expand-icon {
+    height: 4vh;
+    width: 2vw;
+    cursor: pointer;
+}
+

@@ -21,36 +21,6 @@
 }
 
 
-#passportList {
-    overflow: auto;
-    height: 15vh;
-}
-
-
-#nationalityList {
-    overflow: auto;
-    height: 15vh;
-}
-
-
-
-.card-trip {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    background-clip: border-box;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    text-align: center;
-    background: white;
-    margin-top: 10px;
-    border-radius: 0.25rem;
-
-}
-
 .trip-button {
     width: 100%;
 }
@@ -58,6 +28,8 @@
 .trip-card {
     height: 5vh;
     width: 100%;
+    padding: 1%;
+    cursor: copy;
 }
 
 .lower-card {
@@ -70,17 +42,10 @@
     display:block;
 }
 
-
-
 .lower-card {
     width: 80%;
 }
 
-.center-col {
-    margin-left:auto;
-    margin-right:auto;
-    display:block;
-}
 
 .upper-card {
     width: 87%;
@@ -99,5 +64,15 @@
 
 #destsTable span, #tripTable span {
     display: none;
+}
+
+#tripName {
+    float: left;
+}
+
+.trip-icon {
+    float: right;
+    height: 3vh;
+    width: 1.5vw;
 }
 
