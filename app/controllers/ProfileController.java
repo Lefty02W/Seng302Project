@@ -28,7 +28,6 @@ public class ProfileController extends Controller {
     private final Form<Profile> form;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
-
     private final ProfileRepository profileRepository;
     private final TripRepository tripRepository;
 

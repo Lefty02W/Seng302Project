@@ -12,7 +12,6 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/profile.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accordian.css")">
 
 
         <script src="@routes.Assets.at("javascripts/jquery.dataTables.js")" type="text/javascript"></script>
@@ -71,7 +70,7 @@
                                     </div>
 
                                     <div id="dobCard" class="card-small">
-                                        <a>Date Of Birth: @currentUser.getBirthDate</a>
+                                        <a>Date Of Birth: @currentUser.getBirthString</a>
                                     </div>
                                 </div>
                             </div>

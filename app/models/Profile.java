@@ -284,6 +284,14 @@ public class Profile extends Model {
         trips = sortedTrips;
     }
 
+    /**
+     * This method creates a formatted date string of the profiles birth date
+     * @return the formatted date string
+     */
+    public String getBirthString() {
+        return dateFormatSort.format(birthDate);
+    }
+
 
     public void setPassports(String passports) {
         this.passports = passports;
