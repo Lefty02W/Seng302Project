@@ -79,7 +79,14 @@ public class DestinationsController extends Controller {
      * @return
      */
     public Result edit(Http.Request request, Integer id) {
-        Destination destination = destinationsList.get(id);
+        Destination destination =  new Destination();
+        for (Destination dest : destinationsList) {
+            if (dest.getDestinationId() == id) {
+                destination = dest;
+                break;
+            }
+        }
+        //System.out.println("yo: "+destination.getName());
         Form<Destination> destinationForm = form.fill(destination);
         return ok(edit.render(id, destinationForm, request, messagesApi.preferred(request)));
     }
@@ -93,7 +100,7 @@ public class DestinationsController extends Controller {
     public Result update(Http.Request request, Integer id){
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.get();
-        destinationsList.set(id, dest);
+        destinationsList.add(dest);
         return redirect(routes.DestinationsController.show());
     }
 
