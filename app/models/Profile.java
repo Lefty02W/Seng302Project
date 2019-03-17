@@ -292,6 +292,23 @@ public class Profile extends Model {
         return dateFormatSort.format(birthDate);
     }
 
+    public String getFormattedTravellerTypes() {
+        ArrayList<String> types = getTravellerTypesList();
+        if (types.size() <= 3) {
+            return travellerTypes;
+        } else {
+            String typeString = types.get(0);
+            for (int i = 1; i < types.size(); i++) {
+                if (i % 3 == 0) {
+                    typeString += "\n";
+                }
+                typeString += ", " + types.get(i);
+            }
+
+            return typeString;
+        }
+    }
+
 
     public void setPassports(String passports) {
         this.passports = passports;
