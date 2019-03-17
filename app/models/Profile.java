@@ -18,6 +18,8 @@ import java.util.ArrayList;
 @Entity
 public class Profile extends Model {
 
+    //TODO Ordered trip list to display on the profile page
+
     //private static final long serialVersionUID = 1L;
 
     private static final int WORKLOAD = 12;

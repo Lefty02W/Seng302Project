@@ -73,8 +73,8 @@ public class TripsController extends Controller {
     public Result showCreate(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
         // Testing only
-        Destination dest = new Destination(1, 1, "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
-        Destination dest1 = new Destination(2, 1, "dest 2", "yought", "USA", "Beans", 12, 23);
+        Destination dest = new Destination(1, "ree", "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
+        Destination dest1 = new Destination(2, "ree", "dest 2", "yought", "USA", "Beans", 12, 23);
         ArrayList<Destination> destinations = new ArrayList<>();
         destinations.add(dest1);
         destinations.add(dest);
@@ -87,8 +87,8 @@ public class TripsController extends Controller {
     public Result showEdit(Http.Request request, Integer id) {
         Profile currentUser = SessionController.getCurrentUser(request);
         // Testing only
-        Destination dest = new Destination(1, 1, "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
-        Destination dest1 = new Destination(2, 1, "dest 2", "yought", "USA", "Beans", 12, 23);
+        Destination dest = new Destination(1, "noot", "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
+        Destination dest1 = new Destination(2, "noot", "dest 2", "yought", "USA", "Beans", 12, 23);
         ArrayList<Destination> destinations = new ArrayList<>();
         destinations.add(dest1);
         destinations.add(dest);

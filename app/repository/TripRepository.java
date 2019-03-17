@@ -88,11 +88,11 @@ public class TripRepository {
                     .findList();
             for (TripDestination tripDest : tripDests) {
                 // Getting the destinations for each tripDestination
-                Destination destination = Destination.find.query()
+                List<Destination> destinations = Destination.find.query()
                         .where()
                         .eq("destination_id", tripDest.getDestinationId())
-                        .findSingleAttribute();
-                //tripDest.setDestination(destination);
+                        .findList();
+                tripDest.setDestination(destinations.get(0));
                 tripDestinations.add(tripDest);
             }
             trip.setDestinations(tripDestinations);

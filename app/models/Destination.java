@@ -13,7 +13,7 @@ public class Destination extends Model {
     @Id
     @Constraints.Required
     private int destinationId;
-    private int userId;
+    private String userEmail;
     @Constraints.Required
     private String name;
     @Constraints.Required
@@ -41,9 +41,9 @@ public class Destination extends Model {
      * @param latitude The latitude of this destination
      * @param longitude the longitude of this destination
      */
-    public Destination(int destinationId, int userId, String name, String type, String country, String district, double latitude, double longitude) {
+    public Destination(int destinationId, String userEmail, String name, String type, String country, String district, double latitude, double longitude) {
         this.destinationId = destinationId;
-        this.userId = userId;
+        this.userEmail = userEmail;
         this.name = name;
         this.type = type;
         this.country = country;
@@ -164,11 +164,11 @@ public class Destination extends Model {
         this.destinationId = destinationId;
     }
 
-    public int getUserId() {
-        return userId;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }
