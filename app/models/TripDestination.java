@@ -29,6 +29,7 @@ public class TripDestination extends Model {
 
     private int tripId;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY mm:hh");
 
 
 
@@ -90,7 +91,14 @@ public class TripDestination extends Model {
     }
 
     public String getFormattedDate(Date toFormat) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY mm:hh");
         return dateFormat.format(toFormat);
+    }
+
+    public String getArrivalString() {
+        return dateFormat.format(arrival);
+    }
+
+    public String getDepartureString() {
+        return dateFormat.format(departure);
     }
 }

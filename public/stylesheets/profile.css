@@ -57,6 +57,7 @@
 
 .trip-card {
     height: 5vh;
+    width: 100%;
 }
 
 .lower-card {
@@ -83,7 +84,20 @@
 
 .upper-card {
     width: 87%;
-    height: 95%;
 }
 
+.collapse-body {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    text-align: center;
+    overflow:auto;
+    border-radius: 0.25rem;
+    padding-left: 25px;
+    padding-right: 25px;
+    width: 100%;
+}
+
+#destsTable span, #tripTable span {
+    display: none;
+}
 

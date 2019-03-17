@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/profile.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/accordian.css")">
 
 
         <script src="@routes.Assets.at("javascripts/jquery.dataTables.js")" type="text/javascript"></script>
@@ -78,7 +79,7 @@
 
 
                         <div class="col">
-                            <div id="trips-card" class="card-large upper-card center-col">
+                            <div id="trips-card" class="card-large upper-card">
                                 <h3>Your Trips</h3>
 
                                 @if(currentUser.getTrips.isEmpty) {
@@ -86,11 +87,56 @@
                                         You have no trips associated with your profile
                                     </div>
                                 } else {
-                                    <div class="row">
+                                    <div class="col">
                                     @for(index <- 0 until currentUser.getTrips.size) {
-                                        <div class="col">
-                                            <div class="card-small trip-card" onclick="viewTrip(@index)">
+                                        <div class="row">
+                                            <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@index">
                                                 <h6 id="tripName">@currentUser.getTrips.get(index).getName</h6>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div id="tripInfo@index" class="collapse collapse-body">
+                                                <table id="tripTable">
+                                                    <thead>
+                                                        <tr><th>Start Date</th><th>N.O. Destinations</th><th>Travel Time (Days)</th>
+                                                    </thead>
+                                                    <tr>
+                                                        <td>
+                                                            @if(currentUser.getTrips.get(index).getStartDate != null) {
+                                                                <span>@currentUser.getTrips.get(index).getStartDate.getTime</span>
+                                                            } else {
+                                                                <span>0</span>
+                                                            }
+                                                            @currentUser.getTrips.get(index).getStartDateString</td>
+                                                        <td>@currentUser.getTrips.get(index).getDestinations.size()</td>
+                                                        <td>@currentUser.getTrips.get(index).getTravelTime</td>
+                                                    </tr>
+                                                </table>
+                                                <h4>Destinations</h4>
+                                                <table id="destsTable">
+                                                    <thead>
+                                                        <tr><th>Destination Name</th><th>Departure Time</th><th>Arrival Time</th>
+                                                    </thead>
+                                                    @for(destIndex <- 0 until currentUser.getTrips.get(index).getDestinations.size) {
+                                                        <tr>
+                                                            <td>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDestinationId</td> <!-- TODO Change this to destination name not id -->
+                                                            <td>
+                                                                @if(currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival != null) {
+                                                                    <span>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival.getTime</span>
+                                                                } else {
+                                                                    <span></span>
+                                                                }
+                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrivalString</td>
+                                                            <td>
+                                                                @if(currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture != null) {
+                                                                    <span>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture.getTime</span>
+                                                                } else {
+                                                                    <span></span>
+                                                                }
+                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getDepartureString</td>
+                                                        </tr>
+                                                    }
+                                                </table>
                                             </div>
                                         </div>
                                     }
