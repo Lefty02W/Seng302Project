@@ -72,7 +72,7 @@
                                     }
                                     @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                         @CSRF.formField
-                                        <td> <button type="submit" class="button-delete" onclick="deleteRow(this)" style="height:4vh">Delete</button></td>
+                                        <td> <button type="submit" class="button-delete" style="height:4vh">Delete</button></td>
                                     }
                                 </tr>
                             }
@@ -111,10 +111,6 @@
 
             });
 
-            function deleteRow(r) {
-                var i = r.parentNode.parentNode.rowIndex;
-                document.getElementById("destTable").deleteRow(i);
-            }
 
     </script>
 
