@@ -102,4 +102,31 @@ public class TripRepository {
         return trips;
     }
 
+    public Trip getTrip(int tripId) {
+        // Getting the trips out of the database
+        List<Trip> result = Trip.find.query().where()
+                .eq("trip_id", tripId)
+                .findList();
+
+        Trip trip = result.get(0);
+
+        ArrayList<TripDestination> tripDestinations = new ArrayList<>();
+        List<TripDestination> tripDests = TripDestination.find.query()
+                .where()
+                .eq("trip_id", tripId)
+                .findList();
+
+        for (TripDestination tripDest : tripDests) {
+            // Getting the destinations for each tripDestination
+            List<Destination> destinations = Destination.find.query()
+                    .where()
+                    .eq("destination_id", tripDest.getDestinationId())
+                    .findList();
+            tripDest.setDestination(destinations.get(0));
+            tripDestinations.add(tripDest);
+        }
+        trip.setDestinations(tripDestinations);
+        return trip;
+    }
+
 }

@@ -67,7 +67,6 @@ public class TripsController extends Controller {
         //TODO Handle null dates
         ArrayList<Trip> tripsList = tripRepository.getUsersTrips(SessionController.getCurrentUser(request));
 
-
         return ok(trips.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
     }
 
@@ -82,7 +81,6 @@ public class TripsController extends Controller {
         ArrayList<Destination> tempArraylist = new ArrayList<Destination>();
         for (int i = 0; i < tempDestinationList.size(); i++) {
             tempArraylist.add(tempDestinationList.get(i));
-            System.out.println(tempDestinationList.get(i).getName());
         }
         currentUser.setDestinations(tempArraylist);
         //if current user has no destinations
@@ -99,15 +97,31 @@ public class TripsController extends Controller {
 
     public Result showEdit(Http.Request request, Integer id) {
         Profile currentUser = SessionController.getCurrentUser(request);
-        // Testing only
-        Destination dest = new Destination(1, "noot", "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
-        Destination dest1 = new Destination(2, "noot", "dest 2", "yought", "USA", "Beans", 12, 23);
-        ArrayList<Destination> destinations = new ArrayList<>();
-        destinations.add(dest1);
-        destinations.add(dest);
-        currentUser.setDestinations(destinations);
-        Form<Trip> tripForm = form.fill(tripList.get(id));
-        return ok(tripsEdit.render(tripForm, formTrip, tripList.get(id).getDestinations(), currentUser, request, messagesApi.preferred(request)));
+
+        //following code only resets the users destinations to their actual destinations
+        List<Destination> tempDestinationList = Destination.find.query()
+                .where()
+                .eq("user_email", currentUser.getEmail())
+                .findList();
+        ArrayList<Destination> tempArraylist = new ArrayList<Destination>();
+        for (int i = 0; i < tempDestinationList.size(); i++) {
+            tempArraylist.add(tempDestinationList.get(i));
+        }
+        currentUser.setDestinations(tempArraylist);
+        //if current user has no destinations
+        if (currentUser.getDestinations().size() == 0) {
+            Destination dest = new Destination(1, "noot", "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
+            Destination dest1 = new Destination(2, "noot", "dest 2", "yought", "USA", "Beans", 12, 23);
+            ArrayList<Destination> destinations = new ArrayList<>();
+            destinations.add(dest1);
+            destinations.add(dest);
+            currentUser.setDestinations(destinations);
+        }
+
+        System.out.println(id);
+        Trip trip = tripRepository.getTrip(id);
+        Form<Trip> tripForm = form.fill(trip);
+        return ok(tripsEdit.render(tripForm, formTrip, trip.getDestinations(), currentUser, request, messagesApi.preferred(request)));
     }
 
     public Result addDestination(Http.Request request){
@@ -153,8 +167,7 @@ public class TripsController extends Controller {
             for (int i = 0; i < currentDestinationsList.size(); i++) {
                 TripDestination tripDestination = currentDestinationsList.get(i);
                 tripDestination.setTripId(newTripId);
-                //TODO set destinationId to be the correct destinationID
-                tripDestination.setDestinationId(2);
+                tripDestination.setDestinationId(currentDestinationsList.get(i).getDestinationId());
                 tripDestinationRepository.insert(tripDestination);
             }
             currentDestinationsList.clear();
@@ -172,7 +185,6 @@ public class TripsController extends Controller {
             return redirect(routes.TripsController.show());
         });
     }
-
 
 
 
