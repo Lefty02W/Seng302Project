@@ -79,6 +79,15 @@ create table profile (
   constraint pk_profile primary key (email)
 );
 
+create table images (
+  email                         varchar(255) not null,
+  image_id                      integer auto_increment not null,
+  image                         longblob not null,
+  time_created                  datetime(6),
+  private                       boolean,
+  constraint pk_imageId primary key (image_id)
+);
+
 create table trip (
   trip_id                       integer auto_increment not null,
   name                          varchar(255),
@@ -102,6 +111,8 @@ create table trip_destination (
 drop table if exists destination;
 
 drop table if exists profile;
+
+drop table if exists images;
 
 drop table if exists trip;
 
