@@ -24,6 +24,7 @@ import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 
 public class TripsController extends Controller {
 
@@ -72,15 +73,27 @@ public class TripsController extends Controller {
 
     public Result showCreate(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
-        // Testing only
-        Destination dest = new Destination(1, "ree", "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
-        Destination dest1 = new Destination(2, "ree", "dest 2", "yought", "USA", "Beans", 12, 23);
-        ArrayList<Destination> destinations = new ArrayList<>();
-        destinations.add(dest1);
-        destinations.add(dest);
-        currentUser.setDestinations(destinations);
-        // -------
-        //TODO destiantions need to be read from db when a user is
+
+        //following code only resets the users destinations to their actual destinations
+        List<Destination> tempDestinationList = Destination.find.query()
+                .where()
+                .eq("user_email", currentUser.getEmail())
+                .findList();
+        ArrayList<Destination> tempArraylist = new ArrayList<Destination>();
+        for (int i = 0; i < tempDestinationList.size(); i++) {
+            tempArraylist.add(tempDestinationList.get(i));
+            System.out.println(tempDestinationList.get(i).getName());
+        }
+        currentUser.setDestinations(tempArraylist);
+        //if current user has no destinations
+        if (currentUser.getDestinations().size() == 0) {
+            Destination dest = new Destination(1, "noot", "dest 1", "yeet", "NZ", "Bean Land", 12, 23);
+            Destination dest1 = new Destination(2, "noot", "dest 2", "yought", "USA", "Beans", 12, 23);
+            ArrayList<Destination> destinations = new ArrayList<>();
+            destinations.add(dest1);
+            destinations.add(dest);
+            currentUser.setDestinations(destinations);
+        }
         return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, request, messagesApi.preferred(request)));
     }
 
@@ -108,31 +121,39 @@ public class TripsController extends Controller {
 
 
     public Result save(Http.Request request) {
-
-        System.out.println("hye fuckers");
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
         Profile currentUser = SessionController.getCurrentUser(request);
         trip.setEmail(currentUser.getEmail());
-        tripRepository.insert(trip);
         if (currentDestinationsList.size() <= 1){
             return redirect(routes.TripsController.showCreate());
         } else {
+            tripRepository.insert(trip);
+            //just waits for a bit while the trip is inserted into the database
+            try
+            {
+                Thread.sleep(1000);
+            }
+            catch(InterruptedException ex)
+            {
+                Thread.currentThread().interrupt();
+            }
+            List<Trip> tempTripList = Trip.find.query()
+                    .where()
+                    .eq("email", trip.getEmail())
+                    .findList();
+
+            int newTripId = 0;
+            for (int x = 0; x < tempTripList.size(); x++) {
+                if (tempTripList.get(x).getId() > newTripId) {
+                    newTripId = tempTripList.get(x).getId();
+                }
+            }
+
             for (int i = 0; i < currentDestinationsList.size(); i++) {
                 TripDestination tripDestination = currentDestinationsList.get(i);
-
-                List<Trip> tempTripList = Trip.find.query()
-                        .where()
-                        .eq("email", trip.getEmail())
-                        .findList();
-                for (int x = 0; x < tempTripList.size(); x++) {
-                    try {
-                        tempTripList.get(x).getDestinations().size();
-                    }
-                    catch (NullPointerException e) {
-                        tripDestination.setTripId(trip.getId());
-                    }
-                }
+                tripDestination.setTripId(newTripId);
+                //TODO set destinationId to be the correct destinationID
                 tripDestination.setDestinationId(2);
                 tripDestinationRepository.insert(tripDestination);
             }
@@ -147,7 +168,6 @@ public class TripsController extends Controller {
      * @return
      */
     public CompletionStage<Result> delete(Integer tripId) {
-        //TODO delete the TripDestinations for a trip aswell as a trip
         return tripRepository.delete(tripId).thenApplyAsync(v -> {
             return redirect(routes.TripsController.show());
         });

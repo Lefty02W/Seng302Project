@@ -28,14 +28,9 @@ public class TripDestinationsRepository {
         this.executionContext = executionContext;
     }
 
-
     public CompletionStage<Integer> insert(TripDestination tripDestination) {
         return supplyAsync(() -> {
-            System.out.println("here");
-            System.out.println(tripDestination.getDestinationId());
-            System.out.println(tripDestination.getTripId());
             ebeanServer.insert(tripDestination);
-            System.out.println("boi");
             return tripDestination.getTripId();
         }, executionContext);
     }

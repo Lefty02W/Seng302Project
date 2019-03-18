@@ -42,7 +42,7 @@ public class TripRepository {
         }, executionContext);
     }
 
-    //TODO change this to get just the trips from a profile
+    //TODO change this to add tripdests to the trip such as getUsersTrips
     public Optional<ArrayList<Trip>> getAllTrips() {
         try {
             Optional<List<Trip>> toReturnOptional = Optional.ofNullable(ebeanServer.find(Trip.class).findList());
