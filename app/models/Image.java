@@ -1,17 +1,26 @@
 package models;
 
 import io.ebean.Model;
+import play.data.validation.Constraints;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.File;
 
+@Entity
 public class Image extends Model {
 
+    @Constraints.Required
     private String email;
 
+    @Constraints.Required
+    @Id
     private Integer imageId;
 
+    @Constraints.Required
     private File image;
 
+    @Constraints.Required
     private Boolean visible;
 
     public  Image(String email, Integer imageId, File image, Boolean visable){
