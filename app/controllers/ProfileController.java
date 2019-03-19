@@ -102,28 +102,21 @@ public class ProfileController extends Controller {
     }
 
     public Result uploadPhoto(Http.Request request) {
-        File file = request.body().asRaw().asFile();
-        System.out.print(file);
-        return ok("File uploaded");
-//        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
-//        System.out.println("In uploadPhoto");
-//        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
-//        System.out.println("In uploadPhoto2");
-//
-//        if (picture != null) {
-//            String fileName = picture.getFilename();
-//            //long fileSize = picture.getFileSize();
-//            //String contentType = picture.getContentType();
-//            Files.TemporaryFile file = picture.getRef();
-//            file.copyTo(Paths.get("../../public/images/temp.png"), true);
-//            System.out.println("In uploadPhoto3");
-//
-//            return ok("File uploaded");
-//        } else {
-//            System.out.println("In uploadPhoto4");
-//
-//            return badRequest().flashing("error", "Missing file");
-//        }
+        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
+
+        if (picture != null) {
+            String fileName = picture.getFilename();
+            long fileSize = picture.getFileSize();
+            String contentType = picture.getContentType();
+            TemporaryFile file = picture.getRef();
+            file.copyTo(Paths.get("public/images/" + fileName), true); // Can change to appropriate folder
+
+            return ok("File uploaded");
+        } else {
+
+            return badRequest().flashing("error", "Missing file");
+        }
     }
 
     public Result show(Http.Request request) {
