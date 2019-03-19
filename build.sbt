@@ -18,9 +18,6 @@ libraryDependencies += "org.mockito" % "mockito-core" % "2.1.0" % Test
 
 libraryDependencies += javaJdbc
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
-libraryDependencies ++= Seq(
-  "be.objectify" %% "deadbolt-java" % "2.6.1"
-)
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
