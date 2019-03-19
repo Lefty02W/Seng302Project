@@ -51,40 +51,55 @@ public class TripsController extends Controller {
 
     }
 
+    /**
+     *
+     * @param request
+     * @return
+     */
     public Result show(Http.Request request) {
+        currentDestinationsList.clear();
         ArrayList<Trip> tripsList = tripRepository.getUsersTrips(SessionController.getCurrentUser(request));
         return ok(trips.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
     }
 
+
+    /**
+     * Shows the create destination scene to tthe user on click of the "Create Destination" button
+     * @param request the http request
+     * @return the result
+     */
     public Result showCreate(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
-        System.out.println(currentUser.getDestinations().size());
-        //setUsersDestinations(currentUser);
         return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, request, messagesApi.preferred(request)));
     }
 
     public Result showEdit(Http.Request request, Integer id) {
         Profile currentUser = SessionController.getCurrentUser(request);
-        setUsersDestinations(currentUser);
         Trip trip = tripRepository.getTrip(id);
         Form<Trip> tripForm = form.fill(trip);
         return ok(tripsEdit.render(tripForm, formTrip, trip.getDestinations(), currentUser, id, request, messagesApi.preferred(request)));
     }
 
     /**
-     * adds a destination for the create a trip page
+     * Adds a destination to the trip being created
+     * @param request the http request
+     * @return the result
      */
     public Result addDestination(Http.Request request) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
-        //TODO set trips `destination` field by using destinationId field to get the destination name
-        //TODO Crashes when no info present
+        tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         currentDestinationsList.add(tripDestination);
+        tripDestination.setTripId(1);
+        tripRepository.insertTripDestination(tripDestination);
         return redirect(routes.TripsController.showCreate());
     }
 
     /**
-     * adds a destination for the edit a trip page
+     *
+     * @param request
+     * @param id
+     * @return
      */
     public Result addDestinationEditTrip(Http.Request request, int id) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
@@ -110,15 +125,7 @@ public class TripsController extends Controller {
         if (currentDestinationsList.size() < 2){
             return redirect(routes.TripsController.showCreate());
         } else {
-
             tripRepository.insert(trip, currentDestinationsList);
-
-
-            for (int i = 0; i < currentDestinationsList.size(); i++) {
-                TripDestination tripDestination = currentDestinationsList.get(i);
-                tripDestination.setTripId(trip.getId());
-            }
-
 
             return redirect(routes.TripsController.show());
         }
@@ -157,18 +164,5 @@ public class TripsController extends Controller {
         return redirect(routes.TripsController.showCreate());
     }
 
-    public void setUsersDestinations(Profile currentUser) {
-
-        //following code only resets the users destinations to their actual destinations
-        List<Destination> tempDestinationList = Destination.find.query()
-                .where()
-                .eq("user_email", currentUser.getEmail())
-                .findList();
-        ArrayList<Destination> tempArraylist = new ArrayList<Destination>();
-        for (int i = 0; i < tempDestinationList.size(); i++) {
-            tempArraylist.add(tempDestinationList.get(i));
-        }
-        currentUser.setDestinations(tempArraylist);
-    }
 
 }

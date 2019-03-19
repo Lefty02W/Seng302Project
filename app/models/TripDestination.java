@@ -4,7 +4,9 @@ package models;
 import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.validation.Constraints;
+import repository.DestinationRepository;
 
+import javax.inject.Inject;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.text.DateFormat;
@@ -126,6 +128,10 @@ public class TripDestination extends Model {
 
     public void setDestination(Destination destination) {
         this.destination = destination;
+    }
+
+    public String getDestinationName() {
+        return Destination.find.byId(Integer.toString(destinationId)).getName();
     }
 
 }

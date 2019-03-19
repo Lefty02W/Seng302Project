@@ -93,14 +93,14 @@
                             <thead>
                                 <tr><th>Destination Name</th><th>Departure Time</th><th>Arrival Time</th><th>Actions</th>
                             </thead>
-                            @for(trip <- currentDestinationsList) {
+                            @for(tripDestination <- currentDestinationsList) {
                                 <tr>
-                                    <td>@trip.getDestinationId</td> <!-- TODO need to grab destination name not id here -->
-                                    <td>@trip.getFormattedDate(trip.getDeparture)</td>
-                                    <td>@trip.getFormattedDate(trip.getArrival)</td>
+                                    <td>@tripDestination.getDestinationName</td>
+                                    <td>@tripDestination.getFormattedDate(tripDestination.getDeparture)</td>
+                                    <td>@tripDestination.getFormattedDate(tripDestination.getArrival)</td>
                                     <td><button id="button-edit" data-toggle="modal" data-target="#editModal">Edit</button></td>
 
-                                    @helper.form(routes.TripsController.deleteDestination(trip.getDestinationId)) {
+                                    @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestinationId)) {
                                         @CSRF.formField
                                         <td> <button type="submit" class="button-delete"style="height:4vh">Delete</button></td>
                                     }

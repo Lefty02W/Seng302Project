@@ -41,6 +41,11 @@ public class DestinationRepository {
     }
 
 
+    public Destination getDestById(int destId) {
+        return Destination.find.byId(Integer.toString(destId));
+    }
+
+
     public CompletionStage<Optional<String>> delete(int destID) {
         return supplyAsync(() -> {
             try {

@@ -43,22 +43,15 @@ public class TripRepository {
 
 
 
-    public CompletionStage<Integer> insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
-        return supplyAsync(() -> {
-            Transaction transaction = ebeanServer.beginTransaction();
-            try {
-                ebeanServer.insert(trip);
-                for (int i = 0; i < tripDestinations.size(); i++) {
-                    TripDestination tripDestination = tripDestinations.get(i);
-                    tripDestination.setTripId(trip.getId());
-                    insertTripDestination(tripDestination);
-                }
-            } finally {
-                transaction.end();
-            }
-            tripDestinations.clear();
-            return trip.getId();
-        }, executionContext);
+    public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
+        //TODO maybe look into async again
+        //TODO transactions pls
+        ebeanServer.insert(trip);
+        for (TripDestination tripDestination : tripDestinations) {
+            tripDestination.setTripId(trip.getId());
+            ebeanServer.insert(tripDestination);
+        }
+
     }
 
     public CompletionStage<Optional<String>> updateName(int tripId, String name) {
