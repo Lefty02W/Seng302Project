@@ -33,6 +33,8 @@ GET     /trips/edit/:id              controllers.TripsController.showEdit(reques
 
 POST    /trips                       controllers.TripsController.save(request: Request)
 POST    /trips/create                controllers.TripsController.addDestination(request: Request)
+POST    /trips/edit                  controllers.TripsController.updateName(request: Request, id: Integer)
+POST    /trips/edit                controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer)
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
 GET    /trips/delete/:id            controllers.TripsController.delete(id: Integer)

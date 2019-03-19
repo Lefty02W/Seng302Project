@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], currentUser: Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], currentUser: Profile, id: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import helper._
 
@@ -53,12 +53,12 @@
                 <div class="container-fluid">
                     <div id="viewCard" class="card-large">
                         <h2>Edit Trip</h2>
-                            @helper.form(routes.TripsController.show()) {
+                            @helper.form(routes.TripsController.updateName(id)) {
                                 @CSRF.formField
                                 @helper.inputText(tripForm("name"), '_label -> "Trip Name", '_help -> "")
                                 <button type="submit" class="button-edit" style="width: 20vw" id="save">Save Trip</button>
                             }
-                            @helper.form(routes.TripsController.show()) {
+                            @helper.form(routes.TripsController.addDestinationEditTrip(id)) {
                                 @CSRF.formField
                                 <div class="row">
 
@@ -72,10 +72,10 @@
                                     </div>
 
                                     <div class="col"><h5>Arrival Time</h5>
-                                        <input type="datetime-local" id="arrival" name="arrival" required></div>
+                                        <input type="date" id="arrival" name="arrival" required></div>
 
                                     <div class="col"><h5>Departure Time</h5>
-                                        <input type="datetime-local" id="departure" name="departure" required></div>
+                                        <input type="date" id="departure" name="departure" required></div>
                                     <div class="col"><button type="submit" class="button-add" id="addDest">Add Destination</button></div>
 
                                 </div>
@@ -87,11 +87,11 @@
                             <thead>
                                 <tr><th>Destination Name</th><th>Departure Time</th><th>Arrival Time</th><th>Actions</th>
                             </thead>
-                            @for(trip <- currentDestinationsList) {
+                            @for(destination <- currentTripDestinationsList) {
                                 <tr>
-                                    <td>@trip.getDestinationId</td>
-                                    <td>@trip.getDeparture</td>
-                                    <td>@trip.getArrival</td>
+                                    <td>@destination.getDestinationId</td>
+                                    <td>@destination.getDeparture</td>
+                                    <td>@destination.getArrival</td>
                                     @helper.form(routes.TripsController.show()) {
                                         @CSRF.formField
                                         <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button> </td>

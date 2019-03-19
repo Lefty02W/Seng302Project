@@ -42,6 +42,25 @@ public class TripRepository {
         }, executionContext);
     }
 
+    public CompletionStage<Optional<String>> updateName(int tripId, String name) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<String> value = Optional.empty();
+            try {
+                Trip targetTrip = ebeanServer.find(Trip.class).setId(tripId).findOne();
+                if (targetTrip != null) {
+                    targetTrip.setName(name);
+                }
+                targetTrip.update();
+                txn.commit();
+                value = Optional.of(targetTrip.getName());
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
     //TODO change this to add tripdests to the trip such as getUsersTrips
     public Optional<ArrayList<Trip>> getAllTrips() {
         try {
