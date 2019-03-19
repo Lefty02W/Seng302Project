@@ -94,11 +94,10 @@ public class DestinationsController extends Controller {
     /**
      * This method updates destination in the database
      * @param request
-     * @param id
+     * @param id The ID of the destination to edit.
      * @return
      */
     public Result update(Http.Request request, Integer id){
-        System.out.println("hellooo" + id);
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.get();
         destinationRepository.update(dest, id);
@@ -107,17 +106,10 @@ public class DestinationsController extends Controller {
     }
 
     /**
-     * Creates a new destination in the database
+     * Adds a new destination to the database
      * @param request
      * @return
      */
-    public Result save(Http.Request request){
-        Form<Destination> destinationForm = form.bindFromRequest(request);
-        Destination dest = destinationForm.get();
-        destinationsList.add(0, dest);
-        return redirect(routes.DestinationsController.show());
-    }
-
     public Result saveDestination(Http.Request request) {
         Profile user = sessionController.getCurrentUser(request);
         if (user == null) {
@@ -137,7 +129,7 @@ public class DestinationsController extends Controller {
 
     /**
      * Deletes a destination in the database
-     * @param id
+     * @param id ID of the destination to delete
      * @return
      */
     public Result delete(Http.Request request, Integer id) {
@@ -148,43 +140,4 @@ public class DestinationsController extends Controller {
 
     }
 
-
-
-    /**
-     * Display the 'create destination form'.
-
-    public Result createDestination(Http.Request request) {
-        Form<Destination> destinationForm = formFactory.form(Destination.class);
-        return ok(views.html.createDestinationForm.render(destinationForm, request, messagesApi.preferred(request)));
-
-    }
-
-
-    /**
-     * Handle the 'Create Destination Form' submission
-
-    public CompletionStage<Result> saveDestination(Http.Request request) {
-
-        Profile user = getCurrentUser(request);
-        if (user == null) {
-            return CompletableFuture.completedFuture(redirectToLogin);
-        }
-        Form<Destination> destinationForm = formFactory.form(Destination.class).bindFromRequest(request);
-        if (destinationForm.hasErrors()) {
-
-            // This is the HTTP rendering thread context
-            return CompletableFuture.completedFuture(
-                    badRequest(views.html.createDestinationForm.render(
-                            destinationForm, request, messagesApi.preferred(request))
-                    )
-            );
-        }
-
-        Destination destination = destinationForm.get();
-        destination.setMember_email(user.getEmail());
-        // Run insert db operation, then redirect
-        return destinationRepository.insert(destination).thenApplyAsync(data -> {
-            return Results.redirect(routes.HomeController.index());
-        }, httpExecutionContext.current());
-    }*/
 }

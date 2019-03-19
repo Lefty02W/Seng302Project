@@ -54,7 +54,11 @@ public class ProfileRepository {
     }
 
 
-
+    /**
+     *
+     * @param profile
+     * @return
+     */
     public CompletionStage<String> insert(Profile profile) {
         return supplyAsync(() -> {
             profile.setTimeCreated(new Date());

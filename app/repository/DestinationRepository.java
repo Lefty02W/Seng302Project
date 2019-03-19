@@ -29,11 +29,20 @@ public class                                                                    
         this.executionContext = executionContext;
     }
 
-
+    /**
+     * Returns a specific destination
+     * @param destID The ID of the destination to return
+     * @return
+     */
     public CompletionStage<Optional<Destination>> lookup(int destID) {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Destination.class).setId(destID).findOne()), executionContext);
     }
 
+    /**
+     * Inserts a new destination to the database.
+     * @param dest The destination to insert
+     * @return
+     */
     public CompletionStage<String> insert(Destination dest) {
         return supplyAsync(() -> {
             ebeanServer.insert(dest);
@@ -41,7 +50,11 @@ public class                                                                    
         }, executionContext);
     }
 
-
+    /**
+     * Deletes a destination from the database
+     * @param destID The ID of the destination to delete
+     * @return
+     */
     public CompletionStage<Optional<String>> delete(int destID) {
         return supplyAsync(() -> {
             try {
@@ -55,6 +68,12 @@ public class                                                                    
         }, executionContext);
     }
 
+    /**
+     * Updates a destination in the database
+     * @param newDestination The new info to change the destination to
+     * @param Id The ID of the destination to edit
+     * @return
+     */
     public CompletionStage<Optional<String>> update(Destination newDestination, Integer Id) {
         System.out.println("hello");
         return supplyAsync(() -> {
