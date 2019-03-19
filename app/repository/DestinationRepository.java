@@ -22,7 +22,11 @@ public class                                                                    
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
 
-
+    /**
+     * A Constructor which links to the ebeans database
+     * @param ebeanConfig
+     * @param executionContext
+     */
     @Inject
     public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
@@ -75,14 +79,12 @@ public class                                                                    
      * @return
      */
     public CompletionStage<Optional<String>> update(Destination newDestination, Integer Id) {
-        System.out.println("hello");
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<String> value = Optional.empty();
             try {
                 Destination targetDestination = ebeanServer.find(Destination.class).setId(Id).findOne();
                 if (targetDestination != null) {
-                    System.out.println("hello dood");
                     targetDestination.setName(newDestination.getName());
                     targetDestination.setType(newDestination.getType());
                     targetDestination.setCountry(newDestination.getCountry());

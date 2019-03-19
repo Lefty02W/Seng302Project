@@ -128,7 +128,7 @@ public class ProfileRepository {
         String sql = ("select * from destination where user_email = ?");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, email).findList();
         ArrayList<Destination> destList = new ArrayList<>();
-        Destination dest = new Destination();
+        Destination dest;
         for (int i = 0; i < rowList.size(); i++) {
             dest = new Destination();
             dest.setDestination_id(rowList.get(i).getInteger("destination_id"));

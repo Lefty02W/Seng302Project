@@ -32,7 +32,13 @@ public class DestinationsController extends Controller {
     private final ProfileRepository profileRepository;
     private final SessionController sessionController = new SessionController();
 
-
+    /**
+     * Constructor for the destination controller class
+     * @param formFactory
+     * @param messagesApi
+     * @param destinationRepository
+     * @param profileRepository
+     */
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository, ProfileRepository profileRepository) {
         this.form = formFactory.form(Destination.class);
@@ -55,7 +61,6 @@ public class DestinationsController extends Controller {
         } catch(NoSuchElementException e) {
            destinationsList = new ArrayList<Destination>();
         }
-        System.out.println("hi"+destinationsList+user.getEmail());
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
 
@@ -86,7 +91,6 @@ public class DestinationsController extends Controller {
                 break;
             }
         }
-        //System.out.println("yo: "+destination.getName());
         Form<Destination> destinationForm = form.fill(destination);
         return ok(edit.render(id, destinationForm, request, messagesApi.preferred(request)));
     }
@@ -133,7 +137,6 @@ public class DestinationsController extends Controller {
      * @return
      */
     public Result delete(Http.Request request, Integer id) {
-        System.out.println("DELETED");
         Profile profile = sessionController.getCurrentUser(request);
         destinationRepository.delete(id);
         return redirect(routes.DestinationsController.show());

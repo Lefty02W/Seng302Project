@@ -72,7 +72,7 @@ th {
 }
 
 /* Text input style */
-input[type=text], input[type=date], input[type=search], input[type=datetime-local] {
+input[type=text], input[type=date], input[type=search], input[type=datetime-local], input[type=number] {
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
