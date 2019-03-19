@@ -1,5 +1,7 @@
-
-@(currentUser: Profile)
+@import play.mvc.Http
+@import views.html.helper.form
+@import views.html.helper.CSRF
+@(currentUser: Profile, imageForm: Form[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -185,19 +187,24 @@
 
             </div>
             <div class="modal fade" id="addPhotoModal">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+                @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data"){
+                    @CSRF.formField
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
 
-                        <div class="modal-header">
-                            <h2 class="modal-title">Add Photo</h2>
-                        </div>
-                        <div class="modal-body">
-                            <input type="file" name="picture">
-                            <button type="submit">Submit</button>
+                            <div class="modal-header">
+                                <h2 class="modal-title">Add Photo</h2>
+                            </div>
+                            <div class="modal-body">
+                                <input type="text" id="email" name="email" value="@currentUser.getEmail">
+                                <input type="file" id="image"name="image">
+                                <input type="checkbox" id="visible" name="visible" value="Public" checked>
+                                <a href="@routes.ProfileController.show()"><button type="button">Cancel</button></a>
+                                <button type="submit">Submit</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                }
             </div>
 
             <div class="modal fade" id="viewPhotoModal">
@@ -209,7 +216,7 @@
                         </div>
                         <div class="modal-body">
                             <p>test</p>
-                            <button type="submit">Back</button>
+                            <a href="@routes.ProfileController.show()"><button type="button">Back</button></a>
                         </div>
                     </div>
                 </div>

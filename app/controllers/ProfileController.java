@@ -5,6 +5,7 @@ import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
+import play.libs.Files;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -13,6 +14,7 @@ import repository.ProfileRepository;
 import views.html.*;
 
 import javax.inject.Inject;
+import java.io.File;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,20 +26,24 @@ import play.libs.Files.TemporaryFile;
 
 public class ProfileController extends Controller {
 
-    private final Form<Profile> form;
+    private final Form<Profile> profileForm;
+    private final Form<Image> imageForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
-    private final FormFactory formFactory;
+    private final FormFactory profileFormFactory;
+    private final FormFactory imageFormFactory;
     private final ProfileRepository profileRepository;
 
 
 
     @Inject
-    public ProfileController(FormFactory formFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository){
-        this.form = formFactory.form(Profile.class);
+    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository){
+        this.profileForm = profileFormFactory.form(Profile.class);
+        this.imageForm = imageFormFactory.form(Image.class);
         this.messagesApi = messagesApi;
         this.httpExecutionContext = httpExecutionContext;
-        this.formFactory = formFactory;
+        this.profileFormFactory = profileFormFactory;
+        this.imageFormFactory = imageFormFactory;
         this.profileRepository = profileRepository;
     }
 
@@ -51,8 +57,8 @@ public class ProfileController extends Controller {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
                 //TODO Form is not auto filling
-                Form<Profile> profileForm = form.fill(toEditProfile);
-                return ok(editProfile.render(toEditProfile, profileForm));
+                Form<Profile> currentProfileForm = profileForm.fill(toEditProfile);
+                return ok(editProfile.render(toEditProfile, currentProfileForm));
 
             } else {
                 return notFound("Profile not found.");
@@ -61,8 +67,8 @@ public class ProfileController extends Controller {
     }
 
     public Result update(Http.Request request){
-        Form<Profile> profileForm = form.bindFromRequest(request);
-        Profile profile = profileForm.get();
+        Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
+        Profile profile = currentProfileForm.get();
 
         profileRepository.update(profile, getCurrentUser(request).getPassword());
 
@@ -87,25 +93,43 @@ public class ProfileController extends Controller {
         }
     }
 
+    public void savePhoto(){
+        //todo
+    }
+
+    public void displayPhotos(){
+        //Todo
+    }
+
     public Result uploadPhoto(Http.Request request) {
-        Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
-        Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("picture");
-        if (picture != null) {
-            String fileName = picture.getFilename();
-            long fileSize = picture.getFileSize();
-            String contentType = picture.getContentType();
-            TemporaryFile file = picture.getRef();
-            file.copyTo(Paths.get("/tmp/picture/destination.jpg"), true);
-            return ok("File uploaded");
-        } else {
-            return badRequest().flashing("error", "Missing file");
-        }
+        File file = request.body().asRaw().asFile();
+        System.out.print(file);
+        return ok("File uploaded");
+//        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
+//        System.out.println("In uploadPhoto");
+//        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
+//        System.out.println("In uploadPhoto2");
+//
+//        if (picture != null) {
+//            String fileName = picture.getFilename();
+//            //long fileSize = picture.getFileSize();
+//            //String contentType = picture.getContentType();
+//            Files.TemporaryFile file = picture.getRef();
+//            file.copyTo(Paths.get("../../public/images/temp.png"), true);
+//            System.out.println("In uploadPhoto3");
+//
+//            return ok("File uploaded");
+//        } else {
+//            System.out.println("In uploadPhoto4");
+//
+//            return badRequest().flashing("error", "Missing file");
+//        }
     }
 
     public Result show(Http.Request request) {
         Profile currentProfile = getCurrentUser(request);
         //TODO change to read from db (the trips)
         currentProfile.setTrips(new ArrayList<Trip>());
-        return ok(profile.render(currentProfile));
+        return ok(profile.render(currentProfile, imageForm, request, messagesApi.preferred(request)));
     }
 }
