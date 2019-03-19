@@ -56,13 +56,14 @@ public class                                                                    
     }
 
     public CompletionStage<Optional<String>> update(Destination newDestination, Integer Id) {
+        System.out.println("hello");
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<String> value = Optional.empty();
             try {
                 Destination targetDestination = ebeanServer.find(Destination.class).setId(Id).findOne();
                 if (targetDestination != null) {
-                    targetDestination.setUserEmail(newDestination.getUserEmail());
+                    System.out.println("hello dood");
                     targetDestination.setName(newDestination.getName());
                     targetDestination.setType(newDestination.getType());
                     targetDestination.setCountry(newDestination.getCountry());

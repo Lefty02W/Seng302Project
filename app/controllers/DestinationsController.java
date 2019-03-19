@@ -98,9 +98,11 @@ public class DestinationsController extends Controller {
      * @return
      */
     public Result update(Http.Request request, Integer id){
+        System.out.println("hellooo" + id);
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.get();
-        destinationsList.add(dest);
+        destinationRepository.update(dest, id);
+        //destinationsList.add(dest);
         return redirect(routes.DestinationsController.show());
     }
 
@@ -112,9 +114,6 @@ public class DestinationsController extends Controller {
     public Result save(Http.Request request){
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.get();
-
-        // dest.setId(destinationsList.size()+1); TODO Jade fix this
-        // don't need to, ebeans automatically increments variables with the tag @id
         destinationsList.add(0, dest);
         return redirect(routes.DestinationsController.show());
     }

@@ -29,7 +29,7 @@
                 <div class="container-fluid">
                     <div id="table-card" class="card-large">
                         <h3>Edit destination</h3>
-                        @helper.form(routes.DestinationsController.save()){
+                        @helper.form(routes.DestinationsController.update(id)) {
                             <fieldset>
                                 @CSRF.formField
                                 <div class="row">

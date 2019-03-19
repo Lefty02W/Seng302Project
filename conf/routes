@@ -8,7 +8,6 @@ GET     /                           controllers.LoginController.show(request: Re
 GET     /destinations/edit/:id      controllers.DestinationsController.edit(request: Request, id: Integer)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
-POST    /destinations               controllers.DestinationsController.save(request: Request)
 POST    /destinations/delete/:id    controllers.DestinationsController.delete(request: Request, id: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
