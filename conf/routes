@@ -38,5 +38,5 @@ POST    /trips/edit                controllers.TripsController.addDestinationEdi
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
 GET    /trips/delete/:id            controllers.TripsController.delete(id: Integer)
-
+POST   /trips/create/:id      controllers.TripsController.deleteDestination(request: Request, id: Integer)
 

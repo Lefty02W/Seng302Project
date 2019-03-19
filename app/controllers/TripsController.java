@@ -174,6 +174,14 @@ public class TripsController extends Controller {
         return redirect(routes.TripsController.showCreate());
     }
 
+    public Result deleteDestination(Http.Request request, Integer id) {
+        //remove destination from list
+        System.out.println("Destination id is == "+id);
+        //for currentDestinationsList
+        //if id = id
+        //.remove(currentIndex)
+        return redirect(routes.TripsController.showCreate());
+    }
 
     public void setUsersDestinations(Profile currentUser) {
 

@@ -99,8 +99,15 @@
                                     <td>@trip.getFormattedDate(trip.getDeparture)</td>
                                     <td>@trip.getFormattedDate(trip.getArrival)</td>
                                     <td><button id="button-edit" data-toggle="modal" data-target="#editModal">Edit</button></td>
+
+                                    @helper.form(routes.TripsController.deleteDestination(trip.getDestinationId)) {
+                                        @CSRF.formField
+                                        <td> <button type="submit" class="button-delete"style="height:4vh">Delete</button></td>
+                                    }
+
                                 </tr>
                             }
+
                         </table>
 
                             </div>
