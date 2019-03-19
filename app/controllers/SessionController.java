@@ -1,13 +1,17 @@
 package controllers;
 
+import models.Destination;
 import models.Profile;
 import play.mvc.Http;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * This class manages sessions cookies
- * @author George
+ * @author George, ajl190
  */
 public class SessionController {
 
@@ -21,7 +25,15 @@ public class SessionController {
         String email;
         if (connected.isPresent()) {
             email = connected.get();
-            return Profile.find.byId(email);
+            Profile profile = Profile.find.byId(email);
+
+            ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+                    .where()
+                    .eq("user_email", email)
+                    .findList());
+
+            profile.setDestinations(destinations);
+            return profile;
         } else {
             return null;
         }
