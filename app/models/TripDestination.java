@@ -93,7 +93,11 @@ public class TripDestination extends Model {
         this.tripId = tripId;
     }
 
-    public String getFormattedDate(Date toFormat) {
+    public String getFormattedDate(Date toFormat)
+    {
+        if (toFormat == null) {
+            return "";
+        }
         return dateFormat.format(toFormat);
     }
 
@@ -110,7 +114,10 @@ public class TripDestination extends Model {
      * @return the date string
      */
     public String getDepartureString() {
-        return dateFormat.format(departure);
+
+        if (departure == null) {
+            return "";
+        }return dateFormat.format(departure);
     }
 
     public Destination getDestination() {

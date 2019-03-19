@@ -70,7 +70,6 @@ public class ProfileController extends Controller {
 
     public Result show(Http.Request request) {
         Profile currentProfile = SessionController.getCurrentUser(request);
-        //TODO xhange to read from db
         currentProfile.setTrips(tripRepository.getUsersTrips(currentProfile));
         //currentProfile.sortedTrips();
         System.out.println(currentProfile.getTrips().size());

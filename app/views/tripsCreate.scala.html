@@ -55,7 +55,7 @@
                         <h2>Create Trip</h2>
                             @helper.form(routes.TripsController.save()) {
                                 @CSRF.formField
-                                @helper.inputText(tripForm("name"), '_label -> "Trip Name", '_help -> "")
+                                <input type="text" id="name" name="name" required placeholder="Trip Name">
                                 <button type="submit" class="button-edit" style="width: 20vw" id="save">Save Trip</button>
                             }
                             @helper.form(routes.TripsController.addDestination()) {
@@ -69,7 +69,7 @@
                                         </div>-->
 
                                         <h5>Destination</h5>
-                                        <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
+                                        <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                         @for(destination <- currentUser.getDestinations) {
                                             <option value=@destination.getDestinationId>@destination.getName</option>
                                         }

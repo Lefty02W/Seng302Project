@@ -34,10 +34,29 @@ public class TripRepository {
     }
 
 
-    public CompletionStage<Integer> insert(Trip trip) {
+    public CompletionStage<Integer> insertTripDestination(TripDestination tripDestination) {
         return supplyAsync(() -> {
+            ebeanServer.insert(tripDestination);
+            return tripDestination.getTripId();
+        }, executionContext);
+    }
 
-            ebeanServer.insert(trip);
+
+
+    public CompletionStage<Integer> insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
+        return supplyAsync(() -> {
+            Transaction transaction = ebeanServer.beginTransaction();
+            try {
+                ebeanServer.insert(trip);
+                for (int i = 0; i < tripDestinations.size(); i++) {
+                    TripDestination tripDestination = tripDestinations.get(i);
+                    tripDestination.setTripId(trip.getId());
+                    insertTripDestination(tripDestination);
+                }
+            } finally {
+                transaction.end();
+            }
+            tripDestinations.clear();
             return trip.getId();
         }, executionContext);
     }
@@ -72,6 +91,11 @@ public class TripRepository {
         }
     }
 
+    /**
+     * Removes a trip from the database
+     * @param tripID the id of the trip to remove
+     * @return the completionStage
+     */
     public CompletionStage<Optional<Integer>> delete(int tripID) {
         return supplyAsync(() -> {
             try {
@@ -146,6 +170,13 @@ public class TripRepository {
         }
         trip.setDestinations(tripDestinations);
         return trip;
+    }
+
+
+    public int getLatestId() {
+        String query = ("SELECT MAX(trip_id) FROM trip");
+        SqlRow row = ebeanServer.createSqlQuery(query).findOne();
+        return row.getInteger("max(trip_id)");
     }
 
 }

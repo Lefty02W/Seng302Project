@@ -91,6 +91,7 @@ public class TripsController extends Controller {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         //TODO set trips `destination` field by using destinationId field to get the destination name
+        //TODO Crashes when no info present
         currentDestinationsList.add(tripDestination);
         return redirect(routes.TripsController.showCreate());
     }
@@ -114,38 +115,19 @@ public class TripsController extends Controller {
         Trip trip = tripForm.get();
         Profile currentUser = SessionController.getCurrentUser(request);
         trip.setEmail(currentUser.getEmail());
-        if (currentDestinationsList.size() <= 1){
+        if (currentDestinationsList.size() < 2){
             return redirect(routes.TripsController.showCreate());
         } else {
-            tripRepository.insert(trip);
-            //just waits for a bit while the trip is inserted into the database
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch(InterruptedException ex)
-            {
-                Thread.currentThread().interrupt();
-            }
-            List<Trip> tempTripList = Trip.find.query()
-                    .where()
-                    .eq("email", trip.getEmail())
-                    .findList();
 
-            int newTripId = 0;
-            for (int x = 0; x < tempTripList.size(); x++) {
-                if (tempTripList.get(x).getId() > newTripId) {
-                    newTripId = tempTripList.get(x).getId();
-                }
-            }
+            tripRepository.insert(trip, currentDestinationsList);
+
 
             for (int i = 0; i < currentDestinationsList.size(); i++) {
                 TripDestination tripDestination = currentDestinationsList.get(i);
-                tripDestination.setTripId(newTripId);
-                tripDestination.setDestinationId(currentDestinationsList.get(i).getDestinationId());
-                tripDestinationRepository.insert(tripDestination);
+                tripDestination.setTripId(trip.getId());
             }
-            currentDestinationsList.clear();
+
+
             return redirect(routes.TripsController.show());
         }
     }
