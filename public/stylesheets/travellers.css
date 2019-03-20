@@ -14,6 +14,14 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     width: 10vw;
 }
 
+#cancelBttn{
+    background-color: #ca6636;
+}
+
+#searchBttn:hover, #cancelBttn:hover {
+    font-weight: bold;
+}
+
 
 
 

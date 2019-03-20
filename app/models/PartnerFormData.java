@@ -1,10 +1,11 @@
 package models;
 
-import java.util.ArrayList;
-
+/**
+ * Class for getting form inputs for search functionality of Find a traveller partner story
+ */
 public class PartnerFormData {
-    public String nationality = "";
-    public String gender = "";
-//    public Integer ageRange = 0;
-    public ArrayList<TravellerType> travellerTypes = new ArrayList<TravellerType>();
+    public String searchNationality = "";
+    public String searchGender = "";
+    public Integer searchAgeRange ;
+    public String searchTravellerTypes = "";
 }

@@ -15,13 +15,20 @@ POST    /trips/update    controllers.TripsController.updateDestination()
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 # save the new destination
 
-
+# Login
 GET     /login                       controllers.LoginController.show(request: Request)
 POST     /login                      controllers.LoginController.login(request: Request)
+
+# Trips
 GET     /trips                       controllers.TripsController.show(request: Request)
+
+# Destinations
 GET     /destinations                controllers.DestinationsController.show(request: Request)
 GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
-GET     /travellers                  controllers.TravellersController.show
+
+# Travellers
+GET     /travellers                  controllers.TravellersController.show(request: Request)
+GET     /travellers/search                  controllers.TravellersController.search(request: Request)
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)

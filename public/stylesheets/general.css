@@ -73,7 +73,7 @@ th {
 }
 
 /* Text input style */
-input[type=text], input[type=date], input[type=search], input[type=datetime-local] {
+input[type=text], input[type=date], input[type=search], input[type=datetime-local], input[type=password] {
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
@@ -82,7 +82,6 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     border-width: 0 0 2px;
     outline: 0;
 }
-
 
 
 
@@ -249,11 +248,12 @@ div.dataTables_filter {
     font-weight: bold;
 }
 
+
 .hidden-div {
     z-index: 1;
     position: absolute;
     top: 0;
-    left: 2vw;
+    left: 8vw;
 }
 
 .hidden-field {
