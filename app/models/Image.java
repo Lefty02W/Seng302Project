@@ -5,7 +5,9 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import java.io.File;
+import java.sql.Blob;
 
 @Entity
 public class Image extends Model {
@@ -17,13 +19,14 @@ public class Image extends Model {
     @Id
     private Integer imageId;
 
+    @Lob
     @Constraints.Required
-    private File image;
+    private byte[] image;
 
     @Constraints.Required
     private Boolean visible;
 
-    public  Image(String email, Integer imageId, File image, Boolean visable){
+    public Image(String email, Integer imageId, byte[] image, Boolean visable){
         this.email = email;
         this.imageId = imageId;
         this.image = image;
@@ -46,11 +49,11 @@ public class Image extends Model {
         this.imageId = imageId;
     }
 
-    public File getImage() {
+    public byte[] getImage() {
         return image;
     }
 
-    public void setImage(File image) {
+    public void setImage(byte[] image) {
         this.image = image;
     }
 

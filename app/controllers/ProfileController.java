@@ -1,21 +1,22 @@
 package controllers;
 
-
 import models.*;
+import play.api.mvc.MultipartFormData;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
-import play.libs.Files;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.ImageRepository;
 import repository.ProfileRepository;
 import views.html.*;
 
 import javax.inject.Inject;
-import java.io.File;
+import java.io.*;
 import java.nio.file.Paths;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,11 +34,11 @@ public class ProfileController extends Controller {
     private final FormFactory profileFormFactory;
     private final FormFactory imageFormFactory;
     private final ProfileRepository profileRepository;
-
-
+    private final ImageRepository imageRepository;
+    private byte[] imageBytes;
 
     @Inject
-    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository){
+    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, ImageRepository imageRepository){
         this.profileForm = profileFormFactory.form(Profile.class);
         this.imageForm = imageFormFactory.form(Image.class);
         this.messagesApi = messagesApi;
@@ -45,6 +46,7 @@ public class ProfileController extends Controller {
         this.profileFormFactory = profileFormFactory;
         this.imageFormFactory = imageFormFactory;
         this.profileRepository = profileRepository;
+        this.imageRepository = imageRepository;
     }
 
 
@@ -93,8 +95,17 @@ public class ProfileController extends Controller {
         }
     }
 
-    public void savePhoto(){
-        //todo
+    public Result savePhoto(Http.Request request){
+        System.out.println(this.imageBytes);
+        Profile currentUser = getCurrentUser(request);
+        Image image = new Image(null, null, null, true);
+        image.setEmail(currentUser.getEmail());
+//        image.setImageId(1);
+        image.setImage(this.imageBytes);
+        image.setVisible(true); // For public or private
+        imageRepository.insert(image);
+        System.out.println("DONE " + image.getVisible());
+        return ok();
     }
 
     public void displayPhotos(){
@@ -102,17 +113,28 @@ public class ProfileController extends Controller {
     }
 
     public Result uploadPhoto(Http.Request request) {
-        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
-        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
+
+        Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
 
         if (picture != null) {
             String fileName = picture.getFilename();
             long fileSize = picture.getFileSize();
             String contentType = picture.getContentType();
-            TemporaryFile file = picture.getRef();
-            file.copyTo(Paths.get("public/images/" + fileName), true); // Can change to appropriate folder
 
-            return ok("File uploaded");
+            TemporaryFile tempFile = picture.getRef();
+            File file = tempFile.path().toFile();
+//            tempFile.copyTo(Paths.get("public/images/" + fileName), true); // Can change to appropriate folder
+            //TODO: Convert image file into byte array and save image to the database
+            try {
+                this.imageBytes = Files.readAllBytes(file.toPath());
+                savePhoto(request);
+            } catch (IOException e) {
+                System.out.print(e);
+            }
+
+            // Successful upload
+            return redirect(routes.ProfileController.show());
         } else {
 
             return badRequest().flashing("error", "Missing file");
