@@ -260,54 +260,6 @@ public class Profile extends Model {
 
 
     /**
-     * Searches the users destinations for the given search term.
-     *
-     * @param searchTerm The term that will be searched for.
-     * @return A arraylists of the destinations that contain the search term.
-     */
-    public ArrayList<Destination> searchDestinations(String searchTerm) {
-        ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
-        for (Destination dest : destinations) {
-            if (dest.getName().contains(searchTerm) || dest.getType().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
-                resultDestinations.add(dest);
-            }
-        }
-        return resultDestinations;
-    }
-
-    /**
-     * Returns a single destination.
-     *
-     * @param destinationID The id of the required destination.
-     * @return The destination required.
-     */
-    public Destination returnDestination(int destinationID) {
-        Destination toReturn = null;
-        for (Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                toReturn = dest;
-                break;
-            }
-        }
-        return toReturn;
-    }
-
-
-
-    /**
-     * Delete a destination from the profile
-     * @param destinationID ID of destination to delete
-     */
-    public void deleteDestination(int destinationID) {
-        for(Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                destinations.remove(dest);
-                return;
-            }
-        }
-    }
-
-    /**
      * This method sorts the users current list of trips by date
      * @return the sorted
      */

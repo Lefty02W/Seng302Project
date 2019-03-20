@@ -108,6 +108,9 @@ public class TripDestination extends Model {
      * @return the date string
      */
     public String getArrivalString() {
+        if (arrival == null) {
+            return "";
+        }
         return dateFormat.format(arrival);
     }
 

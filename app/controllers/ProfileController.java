@@ -14,10 +14,9 @@ import repository.TripRepository;
 import views.html.*;
 
 import javax.inject.Inject;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+
 import java.util.concurrent.CompletionStage;
+
 
 
 public class ProfileController extends Controller {
@@ -28,17 +27,21 @@ public class ProfileController extends Controller {
     private final FormFactory formFactory;
     private final ProfileRepository profileRepository;
     private final TripRepository tripRepository;
+    private final SessionController sessionController;
 
 
 
     @Inject
-    public ProfileController(FormFactory formFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, TripRepository tripRepository){
+    public ProfileController(FormFactory formFactory, MessagesApi messagesApi, HttpExecutionContext
+            httpExecutionContext, ProfileRepository profileRepository, TripRepository tripRepository, SessionController
+                             sessionController){
         this.form = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
         this.httpExecutionContext = httpExecutionContext;
         this.formFactory = formFactory;
         this.profileRepository = profileRepository;
         this.tripRepository = tripRepository;
+        this.sessionController = sessionController;
     }
 
 
@@ -61,7 +64,7 @@ public class ProfileController extends Controller {
         Form<Profile> profileForm = form.bindFromRequest(request);
         Profile profile = profileForm.get();
 
-        profileRepository.update(profile, getCurrentUser(request).getPassword());
+        profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
 
         //TODO redirect does not update profile displayed, have to refresh to get updated info
         return redirect(routes.ProfileController.show());
