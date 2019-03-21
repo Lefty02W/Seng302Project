@@ -1,4 +1,7 @@
-@(users : List[Profile], current: Profile)
+@import play.mvc.Http
+@import views.html.helper.form
+@import views.html.helper.CSRF
+@(searchForm: Form[PartnerFormData], users : List[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -43,28 +46,38 @@
                 <div class="container-fluid">
                     <div id="table-card" class="card-large table-hover">
                         <div class="col">
-                            <form>
-                                <input type="search" placeholder="Name">
-                                <select class="selectpicker" multiple title="Gender" >
-                                    <option hidden disabled>Gender</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                    <option value="other">Other</option>
-                                </select>
-                                <input type="date">
-                                <input type="search" placeholder="Nationality">
-                                <input type="search" placeholder="Passport">
-                                <select class="selectpicker" multiple title="Traveller Type">
-                                    <option value="ThrillSeeker">ThrillSeeker</option>
-                                    <option value="Backpacker">Backpacker</option>
-                                    <option value="GapYear">Gap Year</option>
-                                    <option value="Groupie">Groupie</option>
-                                    <option value="FrequentWeekender">Frequent Weekender</option>
-                                    <option value="business">functional/business Traveller</option>
-                                    <option value="Holidaymaker">Holidaymaker</option>
-                                </select>
-                                <button type="submit">Search</button>
-                            </form>
+                        @form(routes.TravellersController.search()){
+                            @CSRF.formField
+
+                            <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
+                            <select id= "searchGender" class="selectpicker" title="Gender" name="searchGender">
+                                <option hidden disabled>Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            @*<input type="date" id="dateSearch" name="dateSearch">*@
+                           <select id="searchAgeRange" class="selectpicker" title="Age Range" name="searchAgeRange">
+                                <option hidden disabled>Age Range</option>
+                                <option value=1><18</option>
+                                <option value=2>18-25</option>
+                                <option value=3>25-35</option>
+                                <option value=4>35-50</option>
+                                <option value=5>50-65</option>
+                                <option value=6>65+</option>
+                            </select>
+                            <select id= "searchTravellerTypes" class="selectpicker" title="Traveller Type" name="searchTravellerTypes">
+                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                <option value="Backpacker">Backpacker</option>
+                                <option value="GapYear">Gap Year</option>
+                                <option value="Groupie">Groupie</option>
+                                <option value="FrequentWeekender">Frequent Weekender</option>
+                                <option value="business">functional/business Traveller</option>
+                                <option value="Holidaymaker">Holidaymaker</option>
+                            </select>
+                            <button type="submit" id="searchBttn">Search</button>
+                            <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">Clear</button></a>
+                            }
                         </div>
                         <div class="col">
                                 <!-- Table of users -->
