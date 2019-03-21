@@ -98,7 +98,7 @@
                                     <td>@tripDestination.getDestinationName</td>
                                     <td>@tripDestination.getFormattedDate(tripDestination.getDeparture)</td>
                                     <td>@tripDestination.getFormattedDate(tripDestination.getArrival)</td>
-                                    <td><button id="button-edit" data-toggle="modal" data-target="#editModal">Edit</button></td>
+                                    <td><button id="button-edit" data-toggle="modal" data-target="#editModal" onclick="fillModal(this)">Edit</button></td> <!---->
 
                                     @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestinationId)) {
                                         @CSRF.formField
@@ -135,7 +135,7 @@
                                 <h5>Destination</h5>
                                 <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
                                 @for(destination <- currentUser.getDestinations) {
-                                    <option value=@destination.getDestinationId>@destination.getName</option>
+                                    <option editModalvalue=@destination.getDestinationId>@destination.getName</option>
                                 }
                                 </select>
 
@@ -170,31 +170,36 @@
     <script type="text/javascript">
             //Setup for the user table
             $(document).ready(function() {
-                var tripsTable = $('#tripsTable').DataTable({
+                var table = $('#tripsTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
-                    "pageLength": 13,
+                    "bPaginate": false,
                     dom: '<l<"toolbar">f>rtip',
-                    language: {
-                        search: "_INPUT_", //To remove Search Label
-                        searchPlaceholder: "Search..."
-                    },
+                    "searching": false,
                     "sDom": '<"top"pfl>rt<"bottom"><"clear">',
                     "autoWidth": false
                 });
 
+
+/**
                 $('#tripsTable tbody').on( 'click', 'button', function () {
                     var data = tripsTable.row( $(this).parents('tr') ).data();
                     $('select[name=destinationId]').val(data[0]);
                     $('.selectpicker').selectpicker('refresh');
+                    //TODO What does this do
+                } );*/
 
-                } );
+
+
 
             });
 
 
 
-            $('#saveButton').on( 'click',  function () {
+               $('#tripsTable tbody').on( 'click', 'button', function () {
+                    var data = table.row( $(this).parents('tr') ).data();
+                    alert( data[0]);
+                } );            $('#saveButton').on( 'click',  function () {
                 var table = $('#addDest').DataTable();
                 var tripName = $('#tripNameEntry').val();
 
@@ -238,10 +243,20 @@
             $("#wrapper").toggleClass("toggled");
         });
 
+/**
+        function fillModal(button) {
+            var tripsTable = $('#tripsTable').DataTable();
+            var cells = button.parentElement.parentElement.cells;
+            var name = cells.item(0).innerHTML;
+            var depart = cells.item(1).innerHTML;
+            var arrive = cells.item(2).innerHTML;
 
-        function fillModal(row) {
-            alert(row);
-        }
+            $('#arrival').val(arrive);
+
+           // var elem = document.getElementById("arrival");
+           // elem.val = "2014-01-02T11:42:13.510";
+
+        }*/
 
 
 
