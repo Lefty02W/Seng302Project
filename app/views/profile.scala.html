@@ -1,7 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.form
 @import views.html.helper.CSRF
-@(currentUser: Profile, imageForm: Form[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import controllers.ProfileController.ImageData
+@(currentUser: Profile, imageForm: Form[ImageData])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -196,9 +197,8 @@
                                 <h2 class="modal-title">Add Photo</h2>
                             </div>
                             <div class="modal-body">
-                                <input type="text" id="email" name="email" value="@currentUser.getEmail">
                                 <input type="file" id="image"name="image">
-                                <input type="checkbox" id="visible" name="visible" value="Public" checked>
+                                <label>Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
                                 <a href="@routes.ProfileController.show()"><button type="button">Cancel</button></a>
                                 <button type="submit">Submit</button>
                             </div>

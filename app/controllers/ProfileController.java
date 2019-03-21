@@ -28,7 +28,7 @@ import play.libs.Files.TemporaryFile;
 public class ProfileController extends Controller {
 
     private final Form<Profile> profileForm;
-    private final Form<Image> imageForm;
+    private final Form<ImageData> imageForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory profileFormFactory;
@@ -37,10 +37,17 @@ public class ProfileController extends Controller {
     private final ImageRepository imageRepository;
     private byte[] imageBytes;
 
+    /**
+     * To get Image data upon upload
+     */
+    public static class ImageData {
+        public String visible;
+    }
+
     @Inject
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, ImageRepository imageRepository){
         this.profileForm = profileFormFactory.form(Profile.class);
-        this.imageForm = imageFormFactory.form(Image.class);
+        this.imageForm = imageFormFactory.form(ImageData.class);
         this.messagesApi = messagesApi;
         this.httpExecutionContext = httpExecutionContext;
         this.profileFormFactory = profileFormFactory;
@@ -108,6 +115,10 @@ public class ProfileController extends Controller {
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
 
+        Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
+        ImageData imageData = uploadedImageForm.get();
+
+
         if (picture != null) {
 //            String fileName = picture.getFilename();
 //            long fileSize = picture.getFileSize();
@@ -122,7 +133,11 @@ public class ProfileController extends Controller {
                 Profile currentUser = getCurrentUser(request);
                 image.setEmail(currentUser.getEmail());
                 image.setImage(this.imageBytes);
-                image.setVisible(1); // For public or private
+                if(imageData.visible != null){
+                    image.setVisible(1); // For public (true)
+                } else {
+                    image.setVisible(0); // For private (false)
+                }
                 savePhoto(image);
             } catch (IOException e) {
                 System.out.print(e);

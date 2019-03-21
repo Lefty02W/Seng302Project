@@ -26,6 +26,7 @@ public class ImageRepository {
             try {
                 ebeanServer.insert(image);
                 System.out.println("SUCCESS. ID:" + image.getImageId());
+                System.out.println("Type: " + image.getVisible());
 
             } catch (Exception e) {
                 System.out.print(e);
