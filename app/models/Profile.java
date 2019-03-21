@@ -34,13 +34,10 @@ public class Profile extends Model {
     @Constraints.Required
     private String email;
 
-    @Constraints.Required
     private String password;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date birthDate;
-
-
 
     @Constraints.Required
     private String gender;
@@ -49,23 +46,18 @@ public class Profile extends Model {
 
     @Constraints.Required
     private String nationalities;
-
+    @Constraints.Required
     private String travellerTypes;
-
-
 
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
+    private ArrayList<Trip> trips = new ArrayList<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
-
-
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
     private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
-    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-
-
+    private static Sprivate ArrayList<Trip> trips = new ArrayList<>();impleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,
@@ -80,6 +72,7 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
+        this.trips = trips;
     }
 
     // Finder for profile
@@ -116,7 +109,10 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-
+    public String getEntryDate() {
+        String date = dateFormatEntry.format(birthDate);
+        return date;
+    }
 
     //Getters
     public String getEmail() {
@@ -158,6 +154,11 @@ public class Profile extends Model {
     public String getTravellerTypes() {
         return travellerTypes;
     }
+    public String[] getTravellerTypesArray() {
+        String[] typesArray = travellerTypes.split(",");
+        return typesArray;
+    }
+
 
     public void setTravellerTypes(String travellerTypes) {
         this.travellerTypes = travellerTypes;
@@ -178,80 +179,14 @@ public class Profile extends Model {
         return travelerTypesList;
     }
 
-    public boolean checkPassword(String password) {
-        // TODO FIX THIS
-        return true;
-        //BCrypt.checkpw(password, this.password);
+    public ArrayList<Trip> getTrips() {
+        return trips;
     }
 
-
-    /**
-     * Searches the users destinations for the given search term.
-     *
-     * @param searchTerm The term that will be searched for.
-     * @return A arraylists of the destinations that contain the search term.
-     */
-    /**
-    public ArrayList<Destination> searchDestinations(String searchTerm) {
-        ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
-        for (Destination dest : destinations) {
-            if (dest.getName().contains(searchTerm) || dest.getType().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
-                resultDestinations.add(dest);
-            }
-        }
-        return resultDestinations;
-    }
-    */
-
-    /**
-     * Returns a single destination.
-     *
-     * @param destinationID The id of the required destination.
-     * @return The destination required.
-     */
-    /**
-    public Destination returnDestination(int destinationID) {
-        Destination toReturn = null;
-        for (Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                toReturn = dest;
-                break;
-            }
-        }
-        return toReturn;
+    public void setTrips(ArrayList<Trip> trips) {
+        this.trips = trips;
     }
 
-    */
-
-    /**
-     * Delete a destination from the profile
-     * @param destinationID ID of destination to delete
-     */
-    /**
-    public void deleteDestination(int destinationID) {
-        for(Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                destinations.remove(dest);
-                return;
-            }
-        }
-    }
-     */
-
-    /**
-     * Delete a destination from the profile
-     * @param dest ID of destination to delete
-     */
-    /**
-    public void addDestination(Destination dest) {
-        try {
-            destinations.add(dest);
-        } catch(NullPointerException e) {
-            destinations = new ArrayList<Destination>();
-            destinations.add(dest);
-        }
-    }
-    */
 
     public void setPassports(String passports) {
         this.passports = passports;

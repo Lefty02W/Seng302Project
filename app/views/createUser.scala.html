@@ -14,6 +14,7 @@
     <script src="@routes.Assets.at("javascripts/bootstrap.bundle.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/bootstrap-select.js")" type="text/javascript"></script>
 
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/createUser.css")">
     <head>
         <meta charset="UTF-8">
@@ -26,22 +27,78 @@
                 @form(routes.CreateUserController.save()){
                     @CSRF.formField
 
-                    <!--  Create User Scene  -->
-                    <input type="text" id="lastName" placeholder="Last Name" name="lastName" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')">
-                    <input type="text" id="email" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" >
-                    <input type="text" id="password" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" id="firstName" placeholder="First Name" name="firstName" required oninvalid="this.setCustomValidity('First name is required')" oninput="setCustomValidity('')">
+                        </div>
 
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" id="birthDate"  name="birthDate" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
-                    <input type="text" id="gender" placeholder="Gender" name="gender" required oninvalid="this.setCustomValidity('Gender required')" oninput="setCustomValidity('')">
+                        <div class="col">
+                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName">
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" required oninvalid="this.setCustomValidity('Last name is required')" oninput="setCustomValidity('')">
+                        </div>
 
-                    <!-- user.nantionalities & passport needs to be on the list not on the inpute text -->
-                    <input type="text" id="nationalities" placeholder="Nationalities" name="nationalities" required>
-                    <!--<button type="button" id="goButton" onclick="addNat()">Go</button>-->
+                        <div class="col">
+                            <input type="text" id="email" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" >
+                        </div>
+                    </div>
 
-                    <input type="text" id="passports" placeholder="Passport" name="passports">
-                    <!--<button type="button" id="goButton" onclick="addPas()">Go</button>-->
+                    <div class="row">
+                        <div class="col">
+                            <input type="password" id="password" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password is required')" oninput="setCustomValidity('')">
+                        </div>
+
+                        <div class="col">
+                            <input type="date" id="birthDate"  name="birthDate" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" id="gender" placeholder="Gender" name="gender" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
+                        </div>
+
+                        <div class="col">
+                            <input type="text" id="nationalities" placeholder="Nationalities" name="nationalities" required oninvalid="this.setCustomValidity('Nationality is required')" oninput="setCustomValidity('')">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" id="passports" placeholder="Passport" name="passports">
+                        </div>
+
+                        <div class="col">
+                            <div class="hidden-div">
+                                <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field" required oninvalid="this.setCustomValidity('Traveller type is required')" oninput="setCustomValidity('')">
+                            </div>
+                            <div>
+                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown">
+                                    <option value="ThrillSeeker">ThrillSeeker</option>
+                                    <option value="Backpacker">Backpacker</option>
+                                    <option value="Gap Year">Gap Year</option>
+                                    <option value="Groupie">Groupie</option>
+                                    <option value="Frequent Weekender">Frequent Weekender</option>
+                                    <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                    <option value="Holidaymaker">Holidaymaker</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <a href="@routes.LoginController.show()"><button type="button" id="cancelNewUser" class="redButton">Cancel</button></a>
+                        </div>
+
+                        <div class="col">
+                            <button type="submit" id="okButton" onclick="fillVals()" class="loginButton">OK</button>
+                        </div>
+                    </div>
 
                     <div id = nationalityList>
                         <table id="natList">
@@ -52,22 +109,14 @@
                         </table>
                     </div>
 
-                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown">
-                        <option value="ThrillSeeker">ThrillSeeker</option>
-                        <option value="Backpacker">Backpacker</option>
-                        <option value="GapYear">Gap Year</option>
-                        <option value="Groupie">Groupie</option>
-                        <option value="FrequentWeekender">Frequent Weekender</option>
-                        <option value="business">functional/business Traveller</option>
-                        <option value="Holidaymaker">Holidaymaker</option>
-                    </select>
+
 
                     <!-- This is hte only way I could do it -->
-                    <input type="hidden" id="travellerTypes" name="travellerTypes">
 
 
-                    <a href="@routes.LoginController.show()"><button type="button" id="cancelNewUser" class="redButton">Cancel</button></a>
-                    <button type="submit" id="okButton" onclick="fillVals()" class="loginButton">OK</button>
+
+
+
                 }
 
 
