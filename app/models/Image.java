@@ -1,5 +1,6 @@
 package models;
 
+import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.validation.Constraints;
 
@@ -30,6 +31,9 @@ public class Image extends Model {
         this.image = image;
         this.visible = visable;
     }
+
+    // Finder for image
+    public static final Finder<Integer, Image> find = new Finder<>(Image.class);
 
     public String getEmail() {
         return email;

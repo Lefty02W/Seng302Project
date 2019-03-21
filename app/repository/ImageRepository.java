@@ -5,6 +5,10 @@ import models.Image;
 import models.Image;
 import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
+import java.sql.Blob;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -35,4 +39,16 @@ public class ImageRepository {
         }, executionContext);
     }
 
+    /**
+     * Function to get all the images created by the signed in user.
+     * @param email user email
+     * @return imageList list of images uploaded by the user
+     */
+    public Optional<List<Image>> getImages(String email) {
+        List<Image> imageList =
+                ebeanServer.find(Image.class)
+                        .where().eq("email", email)
+                        .findList();
+        return Optional.of(imageList);
+    }
 }

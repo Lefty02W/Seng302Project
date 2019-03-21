@@ -36,6 +36,7 @@ public class ProfileController extends Controller {
     private final ProfileRepository profileRepository;
     private final ImageRepository imageRepository;
     private byte[] imageBytes;
+    private List<Image> imageList = new ArrayList<>();
 
     /**
      * To get Image data upon upload
@@ -102,15 +103,33 @@ public class ProfileController extends Controller {
         }
     }
 
+    /**
+     * Inserts an Image object into the ImageRepository to be stored on the database
+     * @param image Image object containing email, id, byte array of image and visible info
+     * @return
+     */
     public Result savePhoto(Image image){
         imageRepository.insert(image);
         return redirect(routes.ProfileController.show());
     }
 
-    public void displayPhotos(){
-        //Todo
+    /**
+     * Method to convert image byte arrays into pictures and display them
+     * (May refactor image conversion into another method)
+     * @param request
+     */
+    public void displayPhotos(Http.Request request){
+        // TODO: Work on converting each image binary array into an picture and display them
+        List<Image> userPhotos = getUserPhotos(request);
     }
 
+    /**
+     * Retrieves file (image) upload from the front end and converts the image into bytes
+     * A new Image object is created and has its attributes set. This image is then sent
+     * to savePhoto.
+     * @param request
+     * @return
+     */
     public Result uploadPhoto(Http.Request request) {
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
@@ -150,10 +169,32 @@ public class ProfileController extends Controller {
         }
     }
 
+    /**
+     * Method to retrieve all uploaded profile images from the database for a logged in user
+     * @param request
+     * @return
+     */
+    public List<Image> getUserPhotos(Http.Request request) {
+        Profile profile = getCurrentUser(request);
+        Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
+        try {
+            imageList = imageListTemp.get();
+        } catch(NoSuchElementException e) {
+            imageList = new ArrayList<Image>();
+        }
+
+        // For testing. Delete later
+        for(Image image : imageList) {
+            System.out.println("ID: " + image.getImageId() + " Image: " + image.getImage() + " Visible: " + image.getVisible());
+        }
+        return imageList;
+    }
+
     public Result show(Http.Request request) {
         Profile currentProfile = getCurrentUser(request);
         //TODO change to read from db (the trips)
         currentProfile.setTrips(new ArrayList<Trip>());
+        displayPhotos(request); // For Testing if images are able to be retrieved from db. Delete later.
         return ok(profile.render(currentProfile, imageForm, request, messagesApi.preferred(request)));
     }
 }
