@@ -8,6 +8,7 @@ import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.ProfileRepository;
 import views.html.*;
 
 import javax.inject.Inject;
@@ -60,7 +61,7 @@ public class TravellersController extends Controller {
             resultData = searchTravelTypes(resultData, searchData);
         }
 
-        return ok(travellers.render(form, resultData, request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, resultData, ProfileController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 
     /**
@@ -209,6 +210,6 @@ public class TravellersController extends Controller {
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
 
-        return ok(travellers.render(form, profiles, request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, profiles, ProfileController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 }

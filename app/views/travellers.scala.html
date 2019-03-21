@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.form
 @import views.html.helper.CSRF
-@(searchForm: Form[PartnerFormData], users : List[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[PartnerFormData], users : List[Profile], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -83,7 +83,7 @@
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Admin: @current.isAdmin</th>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>@if(current.isAdmin){<th>Admin Controls</th>}
                                 </thead>
                                 @for(user <- users) {
                                     <tr>
@@ -95,7 +95,13 @@
                                         <td>@user.getNationalities</td>
                                         <td>@user.getPassports</td>
                                         <td>@user.getTravellerTypes</td>
-                                        <td>@user.isAdmin</td>
+
+                                        @if(user.isAdmin){
+                                            <td><button class="button-delete" onclick="updateAdmin(false)">Remove Admin</button></td>
+                                        }else {
+                                            <td><button onclick="updateAdmin(false)">Make Admin</button></td>
+                                        }
+
                                     </tr>
                                 }
                             </table>
@@ -125,9 +131,11 @@
 
             });
 
-            function removeAdmin(r) {
-            var i = r.parentNode.parentNode.rowIndex;
-            document.getElementById("tripsTable").deleteRow(i)
+            function updateAdmin(isAdmin) {
+
+
+
+
             }
 
             @*valid = @current.isAdmin();*@
