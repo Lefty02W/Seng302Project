@@ -15,7 +15,6 @@ public class Image extends Model {
     @Constraints.Required
     private String email;
 
-    @Constraints.Required
     @Id
     private Integer imageId;
 
@@ -24,11 +23,10 @@ public class Image extends Model {
     private byte[] image;
 
     @Constraints.Required
-    private Boolean visible;
+    private Integer visible;
 
-    public Image(String email, Integer imageId, byte[] image, Boolean visable){
+    public Image(String email, byte[] image, Integer visable){
         this.email = email;
-        this.imageId = imageId;
         this.image = image;
         this.visible = visable;
     }
@@ -57,11 +55,11 @@ public class Image extends Model {
         this.image = image;
     }
 
-    public Boolean getVisible() {
+    public Integer getVisible() {
         return visible;
     }
 
-    public void setVisible(Boolean visible) {
+    public void setVisible(Integer visible) {
         this.visible = visible;
     }
 }

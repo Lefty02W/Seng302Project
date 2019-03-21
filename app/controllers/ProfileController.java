@@ -95,17 +95,9 @@ public class ProfileController extends Controller {
         }
     }
 
-    public Result savePhoto(Http.Request request){
-        System.out.println(this.imageBytes);
-        Profile currentUser = getCurrentUser(request);
-        Image image = new Image(null, null, null, true);
-        image.setEmail(currentUser.getEmail());
-//        image.setImageId(1);
-        image.setImage(this.imageBytes);
-        image.setVisible(true); // For public or private
+    public Result savePhoto(Image image){
         imageRepository.insert(image);
-        System.out.println("DONE " + image.getVisible());
-        return ok();
+        return redirect(routes.ProfileController.show());
     }
 
     public void displayPhotos(){
@@ -113,31 +105,33 @@ public class ProfileController extends Controller {
     }
 
     public Result uploadPhoto(Http.Request request) {
-
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
 
         if (picture != null) {
-            String fileName = picture.getFilename();
-            long fileSize = picture.getFileSize();
-            String contentType = picture.getContentType();
+//            String fileName = picture.getFilename();
+//            long fileSize = picture.getFileSize();
+//            String contentType = picture.getContentType();
 
             TemporaryFile tempFile = picture.getRef();
             File file = tempFile.path().toFile();
 //            tempFile.copyTo(Paths.get("public/images/" + fileName), true); // Can change to appropriate folder
-            //TODO: Convert image file into byte array and save image to the database
             try {
                 this.imageBytes = Files.readAllBytes(file.toPath());
-                savePhoto(request);
+                Image image = new Image(null, null, null); // Initialize Image object
+                Profile currentUser = getCurrentUser(request);
+                image.setEmail(currentUser.getEmail());
+                image.setImage(this.imageBytes);
+                image.setVisible(1); // For public or private
+                savePhoto(image);
             } catch (IOException e) {
                 System.out.print(e);
             }
-
             // Successful upload
             return redirect(routes.ProfileController.show());
         } else {
-
-            return badRequest().flashing("error", "Missing file");
+            System.out.println("No image found.");
+            return redirect(routes.ProfileController.show());
         }
     }
 

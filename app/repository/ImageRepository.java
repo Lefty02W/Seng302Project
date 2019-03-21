@@ -23,9 +23,13 @@ public class ImageRepository {
 
     public CompletionStage<Integer> insert(Image image){
         return supplyAsync(() -> {
-            System.out.println("Email (call form repository) " + image.getEmail());
-            System.out.println("ID (call form repository) " + image.getImageId());
-            ebeanServer.insert(image);
+            try {
+                ebeanServer.insert(image);
+                System.out.println("SUCCESS. ID:" + image.getImageId());
+
+            } catch (Exception e) {
+                System.out.print(e);
+            }
             return image.getImageId();
         }, executionContext);
     }
