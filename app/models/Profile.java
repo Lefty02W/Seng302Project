@@ -57,7 +57,7 @@ public class Profile extends Model {
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
     private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
-    private static Sprivate ArrayList<Trip> trips = new ArrayList<>();impleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,

@@ -93,7 +93,7 @@ public class DestinationsController extends Controller {
             }
         }
         Form<Destination> destinationForm = form.fill(destination);
-        return ok(edit.render(id, destinationForm, request, messagesApi.preferred(request)));
+        return ok(edit.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -106,7 +106,6 @@ public class DestinationsController extends Controller {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.value().get();
         destinationRepository.update(dest, id);
-        //destinationsList.add(dest);
         return redirect(routes.DestinationsController.show());
     }
 
@@ -118,20 +117,12 @@ public class DestinationsController extends Controller {
     public Result saveDestination(Http.Request request) {
         Profile user = sessionController.getCurrentUser(request);
         if (user == null) {
-            // redirect to log in
             return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
-        //if (!destinationForm.apply("latitude")) {
-
-        //}
-       // if (destinationForm.hasErrors()) {
-            // show on UI
-        //}
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
-        // Run insert db operation, then redirect
         return redirect(routes.DestinationsController.show());
     }
 
