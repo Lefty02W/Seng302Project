@@ -13,7 +13,9 @@ import repository.ImageRepository;
 import repository.ProfileRepository;
 import views.html.*;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Paths;
 import java.nio.file.Files;
@@ -115,12 +117,35 @@ public class ProfileController extends Controller {
 
     /**
      * Method to convert image byte arrays into pictures and display them
-     * (May refactor image conversion into another method)
      * @param request
      */
     public void displayPhotos(Http.Request request){
         // TODO: Work on converting each image binary array into an picture and display them
         List<Image> userPhotos = getUserPhotos(request);
+        ArrayList<BufferedImage> imageList = new ArrayList<>();
+        for(Image photo: userPhotos) {
+            imageList.add(convertByteToImage(photo.getImage()));
+        }
+
+        // For testing. Delete later
+        for(BufferedImage image1 : imageList) {
+            System.out.println("Image to display: " + image1);
+        }
+    }
+
+    /**
+     * Method to convert a given byte array into a buffered image file
+     * @param byteArray the file's byte array value
+     * @return a BufferedImage object of the byte array
+     */
+    public BufferedImage convertByteToImage(byte[] byteArray) {
+        try {
+            return ImageIO.read(new ByteArrayInputStream(byteArray));
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        System.out.println("Error converting image");
+        return null;
     }
 
     /**
