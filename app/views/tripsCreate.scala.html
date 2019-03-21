@@ -4,9 +4,9 @@
 
 @import helper._
 
+@orginalDestOrder = {0}
 
 
-<!DOCTYPE html>
 <html>
 
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
@@ -94,11 +94,11 @@
                                 <tr><th>Destination Name</th><th>Departure Time</th><th>Arrival Time</th><th>Actions</th>
                             </thead>
                             @for(tripDestination <- currentDestinationsList) {
-                                <tr>
+                                <tr id="tripRow@tripDestination.getDestinationId">
                                     <td>@tripDestination.getDestinationName</td>
                                     <td>@tripDestination.getFormattedDate(tripDestination.getDeparture)</td>
                                     <td>@tripDestination.getFormattedDate(tripDestination.getArrival)</td>
-                                    <td><button id="button-edit" data-toggle="modal" data-target="#editModal" onclick="fillModal(this)">Edit</button></td> <!---->
+                                    <td><button id="edit_@tripDestination.getDestinationId" data-toggle="modal" data-target="#editModal" onclick="fillModal(this)">Edit</button></td> <!---->
 
                                     @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestinationId)) {
                                         @CSRF.formField
@@ -128,14 +128,21 @@
 
                         <!-- Modal body -->
                     <div class="modal-body">
+
                         @helper.form(routes.TripsController.updateDestination()) {
                             @CSRF.formField
 
                             <div class="col">
+
+                                <h3>Original Order: @orginalDestOrder</h3>
+
+                                <h5>Destination Order</h5>
+                                <input id="destOrder" type="number">
+
                                 <h5>Destination</h5>
                                 <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
                                 @for(destination <- currentUser.getDestinations) {
-                                    <option editModalvalue=@destination.getDestinationId>@destination.getName</option>
+                                    <option value=@destination.getDestinationId>@destination.getName</option>
                                 }
                                 </select>
 
@@ -218,7 +225,7 @@
 
         $('#closeIcon, #closeButton').on( 'click', function() {
             var table = $('#destinations').DataTable();
-            $('#destForm').get(0).reset()
+            $('#destForm').get(0).reset();
             table
                     .clear()
                     .draw();
@@ -243,20 +250,24 @@
             $("#wrapper").toggleClass("toggled");
         });
 
-/**
+
         function fillModal(button) {
+            var destId = button.id.split("_")[1]; //Can change to dest order once it is there
+            console.log(destId);
+            console.log(@orginalDestOrder);
+            document.getElementById("destOrder").value = destId;
+            @{val orginalDestOrder = "5"}
+            console.log(@orginalDestOrder);
+            /**
             var tripsTable = $('#tripsTable').DataTable();
             var cells = button.parentElement.parentElement.cells;
             var name = cells.item(0).innerHTML;
             var depart = cells.item(1).innerHTML;
             var arrive = cells.item(2).innerHTML;
 
-            $('#arrival').val(arrive);
+           alert(name + " " + depart + " " + arrive);*/
 
-           // var elem = document.getElementById("arrival");
-           // elem.val = "2014-01-02T11:42:13.510";
-
-        }*/
+        }
 
 
 
