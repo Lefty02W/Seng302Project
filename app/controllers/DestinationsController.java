@@ -54,12 +54,13 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     public Result show(Http.Request request) {
+
         Profile user = sessionController.getCurrentUser(request);
         Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
         try {
-          destinationsList = destListTemp.get();
+            destinationsList = destListTemp.get();
         } catch(NoSuchElementException e) {
-           destinationsList = new ArrayList<Destination>();
+            destinationsList = new ArrayList<Destination>();
         }
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
@@ -103,7 +104,7 @@ public class DestinationsController extends Controller {
      */
     public Result update(Http.Request request, Integer id){
         Form<Destination> destinationForm = form.bindFromRequest(request);
-        Destination dest = destinationForm.get();
+        Destination dest = destinationForm.value().get();
         destinationRepository.update(dest, id);
         //destinationsList.add(dest);
         return redirect(routes.DestinationsController.show());
@@ -121,10 +122,13 @@ public class DestinationsController extends Controller {
             return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
+        //if (!destinationForm.apply("latitude")) {
+
+        //}
        // if (destinationForm.hasErrors()) {
             // show on UI
         //}
-        Destination destination = destinationForm.get();
+        Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
         // Run insert db operation, then redirect
