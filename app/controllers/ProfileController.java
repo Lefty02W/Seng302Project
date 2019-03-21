@@ -65,6 +65,19 @@ public class ProfileController extends Controller {
 
     }
 
+
+    public Result updateAdmin(Http.Request request, boolean isAdmin){
+        Form<Profile> profileForm = form.bindFromRequest(request);
+        Profile profile = profileForm.get();
+
+        profileRepository.updateAdminPrivelege(profile.getEmail(), isAdmin);
+
+        //TODO redirect does not update profile displayed, have to refresh to get updated info
+        return redirect(routes.TravellersController.show());
+
+    }
+
+
     /**
      * Get the currently logged in user
      * @param request
