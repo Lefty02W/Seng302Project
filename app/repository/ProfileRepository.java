@@ -110,7 +110,7 @@ public class ProfileRepository {
      * @param clickedProfileEmail the email of the user that is going to have admin privilege updated.
      * @return
      */
-    public CompletionStage<Optional<String>> updateAdminPrivelege(String clickedProfileEmail, boolean isAdmin) {
+    public CompletionStage<Optional<String>> updateAdminPrivelege(String clickedProfileEmail) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<String> value = Optional.empty();
@@ -118,8 +118,7 @@ public class ProfileRepository {
                 Profile targetProfile = ebeanServer.find(Profile.class).setId(clickedProfileEmail).findOne();
                 if (targetProfile != null) {
 
-                    targetProfile.setAdmin(isAdmin);
-
+                    targetProfile.setAdmin(!targetProfile.isAdmin());
                     targetProfile.update();
                     txn.commit();
                     value = Optional.of(clickedProfileEmail);

@@ -42,4 +42,6 @@ POST    /trips/create                controllers.TripsController.addDestination(
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
 
+#Admins
+POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
 
