@@ -119,37 +119,11 @@ public class ProfileController extends Controller {
 
     /**
      * Method to convert image byte arrays into pictures and display them
-     * @param request
+     * @param id image id to be used as primary key
      */
-    public ArrayList<ImageIcon> displayPhotos(Http.Request request){
-        // TODO: Work on converting each image binary array into an picture and display them
-        List<Image> userPhotos = getUserPhotos(request);
-        ArrayList<ImageIcon> displayImageList = new ArrayList<>();
-        for(Image photo: userPhotos) {
-            displayImageList.add(convertByteToImage(photo.getImage()));
-        }
-
-        // For testing. Delete later
-        for(ImageIcon image1 : displayImageList) {
-            System.out.println("Image to display: " + image1);
-        }
-        return displayImageList;
-    }
-
-    /**
-     * Method to convert a given byte array into a buffered image file
-     * @param byteArray the file's byte array value
-     * @return a BufferedImage object of the byte array
-     */
-    public ImageIcon convertByteToImage(byte[] byteArray) {
-        try {
-            BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(byteArray));
-            return new ImageIcon(buffImage);
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-        System.out.println("Error converting image");
-        return null;
+    public Result displayPhotos(Integer id) {
+        Image image = Image.find.byId(id);
+        return ok(Objects.requireNonNull(image).getImage()).as("image/png");
     }
 
     /**
@@ -223,7 +197,7 @@ public class ProfileController extends Controller {
         Profile currentProfile = getCurrentUser(request);
         //TODO change to read from db (the trips)
         currentProfile.setTrips(new ArrayList<Trip>());
-        ArrayList<ImageIcon> displayImageList = displayPhotos(request); // For Testing if images are able to be retrieved from db. Delete later.
+        List<Image> displayImageList = getUserPhotos(request); // For Testing if images are able to be retrieved from db. Delete later.
         return ok(profile.render(currentProfile, imageForm, displayImageList, request, messagesApi.preferred(request)));
     }
 }

@@ -4,7 +4,7 @@
 @import controllers.ProfileController.ImageData
 @import java.util
 @import javax.swing.ImageIcon
-@(currentUser: Profile, imageForm: Form[ImageData], imageList : List[ImageIcon])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList : List[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -216,7 +216,7 @@
                         </div>
                         <div class="modal-body">
                             <p>@for(image <- imageList) {
-                                <img src="@image">
+                                <img src="@routes.ProfileController.displayPhotos(image.getImageId)">
                             }</p>
                             <a href="@routes.ProfileController.show()"><button type="button">Back</button></a>
                         </div>
