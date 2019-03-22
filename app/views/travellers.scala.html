@@ -97,12 +97,20 @@
                                             <td>@user.getPassports</td>
                                             <td>@user.getTravellerTypes</td>
                                             @if(current.isAdmin) {
-                                                @if(user.isAdmin) {
-                                                    <td><a href="@routes.ProfileController.updateAdmin(user.getEmail)"><button class="button-delete" type="button" >
-                                                        Remove Admin</button></a></td>
+                                                @if(user.isAdmin && user.getEmail != "admin") {
+                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
+                                                        @CSRF.formField
+                                                        <td><button class="cancelBttn" type="submit" >
+                                                            Remove Admin</button></td>
+                                                    }
+                                                } else if (!user.isAdmin) {
+                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
+                                                        @CSRF.formField
+                                                        <td><button type="submit">
+                                                            Make Admin</button></td>
+                                                    }
                                                 } else {
-                                                    <td><a href="@routes.ProfileController.updateAdmin(user.getEmail)"><button type="button">
-                                                        Make Admin</button></a></td>
+                                                    <td>Master Admin</td>
                                                 }
                                             }
                                         </tr>
@@ -136,7 +144,7 @@
 
             function updateAdmin(isAdmin) {
 
-
+                @routes.ProfileController.show()
 
 
             }

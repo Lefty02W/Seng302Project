@@ -27,7 +27,7 @@ GET     /destinations/create         controllers.DestinationsController.showCrea
 
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)
-GET     /travellers/search                  controllers.TravellersController.search(request: Request)
+GET     /travellers/search           controllers.TravellersController.search(request: Request)
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)
