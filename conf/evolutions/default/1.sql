@@ -54,7 +54,7 @@ END
 $$
 create table destination (
   destination_id                integer auto_increment not null,
-  user_id                       integer not null,
+  user_email                    varchar(255),
   name                          varchar(255),
   type                          varchar(255),
   country                       varchar(255),
@@ -83,7 +83,7 @@ create table profile (
 create table trip (
   trip_id                       integer auto_increment not null,
   name                          varchar(255),
-  user_id                       integer not null,
+  user_email                    varchar(255),
   constraint pk_trip primary key (trip_id)
 );
 

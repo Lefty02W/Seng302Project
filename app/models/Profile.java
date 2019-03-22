@@ -54,9 +54,7 @@ public class Profile extends Model {
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
-    private ArrayList<Destination> destinations = new ArrayList<>();
     private ArrayList<Trip> trips = new ArrayList<>();
-
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
@@ -75,7 +73,6 @@ public class Profile extends Model {
         this.gender = gender;
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
-        this.destinations = destinations;
         this.travellerTypes = travellerTypes;
         this.trips = trips;
         this.admin = isAdmin;
@@ -115,9 +112,6 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-    public void setDestinations(ArrayList<Destination> destinations) {
-        this.destinations = destinations;
-    }
 
     public void setAdmin(boolean isAdmin){
         this.admin = isAdmin;
@@ -125,59 +119,6 @@ public class Profile extends Model {
     public String getEntryDate() {
         String date = dateFormatEntry.format(birthDate);
         return date;
-    }
-    public boolean checkPassword(String password) {
-        // TODO FIX THIS
-        return true;
-        //BCrypt.checkpw(password, this.password);
-    }
-
-
-    /**
-     * Searches the users destinations for the given search term.
-     *
-     * @param searchTerm The term that will be searched for.
-     * @return A arraylists of the destinations that contain the search term.
-     */
-    public ArrayList<Destination> searchDestinations(String searchTerm) {
-        ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
-        for (Destination dest : destinations) {
-            if (dest.getName().contains(searchTerm) || dest.getType().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
-                resultDestinations.add(dest);
-            }
-        }
-        return resultDestinations;
-    }
-
-
-    /**
-     * Returns a single destination.
-     *
-     * @param destinationID The id of the required destination.
-     * @return The destination required.
-     */
-    public Destination returnDestination(int destinationID) {
-        Destination toReturn = null;
-        for (Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                toReturn = dest;
-                break;
-            }
-        }
-        return toReturn;
-    }
-
-    /**
-     * Delete a destination from the profile
-     * @param destinationID ID of destination to delete
-     */
-    public void deleteDestination(int destinationID) {
-        for(Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                destinations.remove(dest);
-                return;
-            }
-        }
     }
 
     //Getters
@@ -233,10 +174,6 @@ public class Profile extends Model {
     public ArrayList<String> getPassportsList() {
         ArrayList<String> passportsList = new ArrayList<>(Arrays.asList(passports.split(",")));
         return passportsList;
-    }
-
-    public ArrayList<Destination> getDestinations() {
-        return destinations;
     }
 
     public ArrayList<String> getNationalityList() {

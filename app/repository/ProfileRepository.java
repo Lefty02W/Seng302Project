@@ -8,6 +8,7 @@ import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -53,7 +54,11 @@ public class ProfileRepository {
     }
 
 
-
+    /**
+     *
+     * @param profile
+     * @return
+     */
     public CompletionStage<String> insert(Profile profile) {
         return supplyAsync(() -> {
             profile.setTimeCreated(new Date());
@@ -89,7 +94,7 @@ public class ProfileRepository {
                     targetProfile.setNationalities(newProfile.getNationalities());
                     targetProfile.setTravellerTypes(newProfile.getTravellerTypes());
                     //TODO get actual trips out of the database
-                    targetProfile.setTrips(new ArrayList<Trip>());
+                    //targetProfile.setTrips(new ArrayList<Trip>());
 
                     targetProfile.update();
                     txn.commit();
@@ -143,22 +148,29 @@ public class ProfileRepository {
         }, executionContext);
     }
 
-    public CompletionStage<Optional<String>> deleteDestination(String email, int destID) {
-        return supplyAsync(() -> {
-            try {
-                final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class)
-                        .setId(email).findOne());
-                final Optional<Destination> destOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
-                        .setId(destID).findOne());
-                Profile profile = profileOptional.get();
-                profile.deleteDestination(destID);
-                profile.update();
-                destOptional.ifPresent(Model::delete);
-                return Optional.of("Successfully deleted destination");
-            } catch (Exception e) {
-                return Optional.empty();
-            }
-        }, executionContext);
+    /**
+     * Function to get all the destinations created by the signed in user.
+     * @param email user email
+     * @return destList arrayList of destinations registered by the user
+     */
+    public Optional<ArrayList<Destination>> getDestinations(String email) {
+        String sql = ("select * from destination where user_email = ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, email).findList();
+        ArrayList<Destination> destList = new ArrayList<>();
+        Destination dest;
+        for (int i = 0; i < rowList.size(); i++) {
+            dest = new Destination();
+            dest.setDestination_id(rowList.get(i).getInteger("destination_id"));
+            dest.setUserEmail(rowList.get(i).getString("user_email"));
+            dest.setName(rowList.get(i).getString("name"));
+            dest.setType(rowList.get(i).getString("type"));
+            dest.setCountry(rowList.get(i).getString("country"));
+            dest.setDistrict(rowList.get(i).getString("district"));
+            dest.setLatitude(rowList.get(i).getDouble("latitude"));
+            dest.setLongitude(rowList.get(i).getDouble("longitude"));
+            destList.add(dest);
+        }
+        return Optional.of(destList);
     }
 
 }

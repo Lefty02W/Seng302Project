@@ -25,7 +25,7 @@ public class Trip extends Model {
     private String name;
     @Id
     private int tripId;
-    private int userId;
+    private String userEmail;
     public Trip() {}
 
 

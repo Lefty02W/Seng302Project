@@ -64,22 +64,22 @@
                         <div class="col">
                             <div id="Trips Card" class="card-large upper-card center-col">
                                 <h3>Your Trips</h3>
-
-                                @if(currentUser.getTrips.isEmpty) {
-                                    <div class="alert alert-info" role="alert">
-                                        You have no trips associated with your profile
-                                    </div>
-                                } else {
-                                    <div class="container columns-2">
-                                    @for(index <- 0 until currentUser.getTrips.size - 1) {
-                                        <div class="card-small trip-card">
-                                            <h6>@currentUser.getTrips.get(index).getName</h6>
-                                            <p style="margin: 0;">Destinations visited: @currentUser.getTrips().get(index).getDestinations.size()</p>
-                                            <p style="margin: 0;">Days Travelling: @currentUser.getTrips().get(index).getTravelTime</p>
-                                        </div>
-                                    }
-                                    </div>
-                                }
+                                @* TODO send in new list of trips.
+                                @*if(currentUser.getTrips.isEmpty) {*@
+                                    @*<div class="alert alert-info" role="alert">*@
+                                        @*You have no trips associated with your profile*@
+                                    @*</div>*@
+                                @*} else {*@
+                                    @*<div class="container columns-2">*@
+                                    @*for(index <- 0 until currentUser.getTrips.size - 1) {*@
+                                        @*<div class="card-small trip-card">*@
+                                            @*<h6>@currentUser.getTrips.get(index).getName</h6>*@
+                                            @*<p style="margin: 0;">Destinations visited: @currentUser.getTrips().get(index).getDestinations.size()</p>*@
+                                            @*<p style="margin: 0;">Days Travelling: @currentUser.getTrips().get(index).getTravelTime</p>*@
+                                        @*</div>*@
+                                    @*}*@
+                                    @*</div>*@
+                                @*}*@
 
                             </div>
                         </div>
