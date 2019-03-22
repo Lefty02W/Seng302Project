@@ -65,12 +65,16 @@ public class ProfileController extends Controller {
 
     }
 
-
+    /**
+     * Called by either the make or remove admin buttons to update admin privilege in database.
+     * @param request
+     * @param email The email of the user who is having admin privilege updated
+     * @return Result, redrects to the travellers page.
+     */
     public Result updateAdmin(Http.Request request, String email){
         profileRepository.updateAdminPrivelege(email);
         //TODO redirect does not update profile displayed, have to refresh to get updated info
         return redirect(routes.TravellersController.show());
-
     }
 
 

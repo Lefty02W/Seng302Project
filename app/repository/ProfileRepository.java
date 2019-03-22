@@ -108,7 +108,7 @@ public class ProfileRepository {
     /**
      * Used to update (add or remove) admin privilege to another user from the Travellers page.
      * @param clickedProfileEmail the email of the user that is going to have admin privilege updated.
-     * @return
+     * @return The email member who had their admin updated.
      */
     public CompletionStage<Optional<String>> updateAdminPrivelege(String clickedProfileEmail) {
         return supplyAsync(() -> {
