@@ -61,7 +61,7 @@ public class TravellersController extends Controller {
             resultData = searchTravelTypes(resultData, searchData);
         }
 
-        return ok(travellers.render(form, resultData, ProfileController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, resultData, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 
     /**
@@ -210,6 +210,6 @@ public class TravellersController extends Controller {
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
 
-        return ok(travellers.render(form, profiles, ProfileController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, profiles, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 }
