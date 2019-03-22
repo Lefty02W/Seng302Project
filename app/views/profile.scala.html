@@ -2,7 +2,9 @@
 @import views.html.helper.form
 @import views.html.helper.CSRF
 @import controllers.ProfileController.ImageData
-@(currentUser: Profile, imageForm: Form[ImageData])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import java.util
+@import javax.swing.ImageIcon
+@(currentUser: Profile, imageForm: Form[ImageData], imageList : List[ImageIcon])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -18,18 +20,22 @@
     </head>
     <body>
 
-
         <div class="d-flex" id="wrapper">
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
                 <div class="sidebar-heading"><h2>TravelEA</h2></div>
                 <div id="sidebar">
-                    <a style="color: #ca6636" href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                    <a href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                    <a href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
-                    <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                    <a style="color: #ca6636" href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                        Profile</a>
+                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                        Destinations</a>
+                    <a href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                        Trips</a>
+                    <a href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                        Travellers</a>
+                    <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                        Logout</a>
                 </div>
             </div>
 
@@ -87,13 +93,9 @@
                             </div>
                         </div>
 
-
-
-
                     </div>
 
                     <div class="row">
-
 
                         <div class="col">
                             <div id="typesCard" class="card-large lower-card center-col">
@@ -133,8 +135,6 @@
                                     }
                                     </div>
                                 }
-
-
 
                             </div>
                         </div>
@@ -177,37 +177,37 @@
                         <div class="col">
                             <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button" class="button-edit" style="width: 10vw; float: right">
                                 Edit Profile
-                            </button></a>
+                            </button>
+                            </a>
                         </div>
 
                     </div>
 
                 </div>
 
-
-
             </div>
             <div class="modal fade" id="addPhotoModal">
-                @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data"){
-                    @CSRF.formField
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+            @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
+                @CSRF.formField
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
 
-                            <div class="modal-header">
-                                <h2 class="modal-title">Add Photo</h2>
-                            </div>
-                            <div class="modal-body">
-                                <input type="file" id="image"name="image">
-                                <label>Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
-                                <a href="@routes.ProfileController.show()"><button type="button">Cancel</button></a>
-                                <button type="submit">Submit</button>
-                            </div>
+                        <div class="modal-header">
+                            <h2 class="modal-title">Add Photo</h2>
+                        </div>
+                        <div class="modal-body">
+                            <input type="file" id="image" name="image">
+                            <label>Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
+                            <a href="@routes.ProfileController.show()"><button type="button">Cancel</button></a>
+                            <button type="submit">Submit</button>
                         </div>
                     </div>
-                }
+                </div>
+            }
             </div>
 
             <div class="modal fade" id="viewPhotoModal">
+
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
 
@@ -215,7 +215,9 @@
                             <h2 class="modal-title">View Photos</h2>
                         </div>
                         <div class="modal-body">
-                            <p>test</p>
+                            <p>@for(image <- imageList) {
+                                <img src="@image">
+                            }</p>
                             <a href="@routes.ProfileController.show()"><button type="button">Back</button></a>
                         </div>
                     </div>
@@ -234,7 +236,7 @@
             var i;
 
             for (i = 0; i < closebtns.length; i++) {
-                closebtns[i].addEventListener("click", function() {
+                closebtns[i].addEventListener("click", function () {
                     this.parentElement.style.display = 'none';
                 });
             }

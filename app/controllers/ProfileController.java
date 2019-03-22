@@ -15,8 +15,10 @@ import views.html.*;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.text.ParseException;
@@ -119,18 +121,19 @@ public class ProfileController extends Controller {
      * Method to convert image byte arrays into pictures and display them
      * @param request
      */
-    public void displayPhotos(Http.Request request){
+    public ArrayList<ImageIcon> displayPhotos(Http.Request request){
         // TODO: Work on converting each image binary array into an picture and display them
         List<Image> userPhotos = getUserPhotos(request);
-        ArrayList<BufferedImage> imageList = new ArrayList<>();
+        ArrayList<ImageIcon> displayImageList = new ArrayList<>();
         for(Image photo: userPhotos) {
-            imageList.add(convertByteToImage(photo.getImage()));
+            displayImageList.add(convertByteToImage(photo.getImage()));
         }
 
         // For testing. Delete later
-        for(BufferedImage image1 : imageList) {
+        for(ImageIcon image1 : displayImageList) {
             System.out.println("Image to display: " + image1);
         }
+        return displayImageList;
     }
 
     /**
@@ -138,9 +141,10 @@ public class ProfileController extends Controller {
      * @param byteArray the file's byte array value
      * @return a BufferedImage object of the byte array
      */
-    public BufferedImage convertByteToImage(byte[] byteArray) {
+    public ImageIcon convertByteToImage(byte[] byteArray) {
         try {
-            return ImageIO.read(new ByteArrayInputStream(byteArray));
+            BufferedImage buffImage = ImageIO.read(new ByteArrayInputStream(byteArray));
+            return new ImageIcon(buffImage);
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -219,7 +223,7 @@ public class ProfileController extends Controller {
         Profile currentProfile = getCurrentUser(request);
         //TODO change to read from db (the trips)
         currentProfile.setTrips(new ArrayList<Trip>());
-        displayPhotos(request); // For Testing if images are able to be retrieved from db. Delete later.
-        return ok(profile.render(currentProfile, imageForm, request, messagesApi.preferred(request)));
+        ArrayList<ImageIcon> displayImageList = displayPhotos(request); // For Testing if images are able to be retrieved from db. Delete later.
+        return ok(profile.render(currentProfile, imageForm, displayImageList, request, messagesApi.preferred(request)));
     }
 }
