@@ -118,12 +118,13 @@ public class ProfileController extends Controller {
     }
 
     /**
-     * Method to convert image byte arrays into pictures and display them
-     * @param id image id to be used as primary key
+     * Method to convert image byte arrays into pictures and display them as the appropriate
+     * content type
+     * @param id image id to be used as primary key to find image object
      */
     public Result displayPhotos(Integer id) {
         Image image = Image.find.byId(id);
-        return ok(Objects.requireNonNull(image).getImage()).as("image/png");
+        return ok(Objects.requireNonNull(image).getImage()).as(image.getType());
     }
 
     /**
@@ -144,16 +145,17 @@ public class ProfileController extends Controller {
         if (picture != null) {
 //            String fileName = picture.getFilename();
 //            long fileSize = picture.getFileSize();
-//            String contentType = picture.getContentType();
+            String contentType = picture.getContentType();
 
             TemporaryFile tempFile = picture.getRef();
             File file = tempFile.path().toFile();
 //            tempFile.copyTo(Paths.get("public/images/" + fileName), true); // Can change to appropriate folder
             try {
                 this.imageBytes = Files.readAllBytes(file.toPath());
-                Image image = new Image(null, null, null); // Initialize Image object
+                Image image = new Image(null, null, null, null); // Initialize Image object
                 Profile currentUser = getCurrentUser(request);
                 image.setEmail(currentUser.getEmail());
+                image.setType(contentType);
                 image.setImage(this.imageBytes);
                 if(imageData.visible != null){
                     image.setVisible(1); // For public (true)

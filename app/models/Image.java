@@ -7,6 +7,7 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.validation.Constraint;
 import java.io.File;
 import java.sql.Blob;
 
@@ -26,9 +27,13 @@ public class Image extends Model {
     @Constraints.Required
     private Integer visible;
 
-    public Image(String email, byte[] image, Integer visable){
+    @Constraints.Required
+    private String type;
+
+    public Image(String email, byte[] image, String type, Integer visable){
         this.email = email;
         this.image = image;
+        this.type = type;
         this.visible = visable;
     }
 
@@ -66,4 +71,13 @@ public class Image extends Model {
     public void setVisible(Integer visible) {
         this.visible = visible;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
 }
