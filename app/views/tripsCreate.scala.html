@@ -4,8 +4,6 @@
 
 @import helper._
 
-@orginalDestOrder = {0}
-
 
 <html>
 
@@ -98,7 +96,7 @@
                                     <td>@tripDestination.getDestinationName</td>
                                     <td>@tripDestination.getFormattedDate(tripDestination.getDeparture)</td>
                                     <td>@tripDestination.getFormattedDate(tripDestination.getArrival)</td>
-                                    <td><button id="edit_@tripDestination.getDestinationId" data-toggle="modal" data-target="#editModal" onclick="fillModal(this)">Edit</button></td> <!---->
+                                    <td><button id="edit_@tripDestination.getDestinationId" data-toggle="modal" data-target="#editModal_@tripDestination.getOrder" >Edit</button></td> <!--onclick="fillModal(this)-->
 
                                     @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestinationId)) {
                                         @CSRF.formField
@@ -106,6 +104,64 @@
                                     }
 
                                 </tr>
+                                <div class="modal" id="editModal_@tripDestination.getOrder">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+
+                                                <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Edit Trip Destination</h4>
+                                                <button type="button" class="close" data-dismiss="modal"></button>
+                                            </div>
+
+                                                <!-- Modal body -->
+                                            <div class="modal-body">
+
+                                            @helper.form(routes.TripsController.updateDestination(tripDestination.getOrder)) {
+                                                @CSRF.formField
+
+                                                <div class="col">
+
+
+                                                    <h5>Destination Order</h5>
+                                                    <input id="destOrder" type="number" value="@tripDestination.getOrder" min="1" max="@currentDestinationsList.size" required>
+
+                                                    <h5>Destination</h5>
+                                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
+                                                    @for(destination <- currentUser.getDestinations) {
+                                                        @if(tripDestination.getDestinationName == destination.getName) {
+                                                            <option value=@destination.getDestinationId selected>@destination.getName</option>
+                                                        } else {
+                                                            <option value=@destination.getDestinationId>@destination.getName</option>
+                                                        }
+
+                                                    }
+                                                    </select>
+
+
+
+                                                    <h5>Arrival Time</h5>
+                                                    <input type="date" id="arrival" name="arrival" value="@tripDestination.formatLocalDate(tripDestination.getArrival)">
+
+                                                    <h5>Departure Time</h5>
+                                                    <input type="date" id="departure" name="departure" value="@tripDestination.formatLocalDate(tripDestination.getDeparture)"></div>
+                                            </div>
+
+
+                                            <div class="modal-footer">
+                                                <button type="submit" class="button-add">save</button>
+                                                <button type="button" class="button-delete" data-dismiss="modal">Close</button>
+                                            </div>
+
+                                        }
+                                                <!-- Modal footer -->
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                    </div>
                             }
 
                         </table>
@@ -116,59 +172,6 @@
             </div>
         </div>
 
-        <div class="modal" id="editModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-
-                        <!-- Modal Header -->
-                    <div class="modal-header">
-                        <h4 class="modal-title">Edit Trip Destination</h4>
-                        <button type="button" class="close" data-dismiss="modal"></button>
-                    </div>
-
-                        <!-- Modal body -->
-                    <div class="modal-body">
-
-                        @helper.form(routes.TripsController.updateDestination()) {
-                            @CSRF.formField
-
-                            <div class="col">
-
-                                <h3>Original Order: @orginalDestOrder</h3>
-
-                                <h5>Destination Order</h5>
-                                <input id="destOrder" type="number">
-
-                                <h5>Destination</h5>
-                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
-                                @for(destination <- currentUser.getDestinations) {
-                                    <option value=@destination.getDestinationId>@destination.getName</option>
-                                }
-                                </select>
-
-
-                                <h5>Arrival Time</h5>
-                                <input type="datetime-local" id="arrival" name="arrival">
-
-                                <h5>Departure Time</h5>
-                                <input type="datetime-local" id="departure" name="departure"></div>
-                            </div>
-
-
-                            <div class="modal-footer">
-                                <button type="submit" class="button-add">save</button>
-                                <button type="button" class="button-delete" data-dismiss="modal">Close</button>
-                            </div>
-
-                        }
-                            <!-- Modal footer -->
-
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
 
 
     </body>
@@ -254,10 +257,8 @@
         function fillModal(button) {
             var destId = button.id.split("_")[1]; //Can change to dest order once it is there
             console.log(destId);
-            console.log(@orginalDestOrder);
             document.getElementById("destOrder").value = destId;
-            @{val orginalDestOrder = "5"}
-            console.log(@orginalDestOrder);
+
             /**
             var tripsTable = $('#tripsTable').DataTable();
             var cells = button.parentElement.parentElement.cells;

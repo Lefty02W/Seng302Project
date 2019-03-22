@@ -31,9 +31,12 @@ public class TripDestination extends Model {
 
     private int tripId;
 
+    private int order;
+
     private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY mm:hh");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
 
 
@@ -52,6 +55,18 @@ public class TripDestination extends Model {
         this.destinationId = destinationId;
         this.arrival = arrival;
         this.departure = departure;
+    }
+
+    /**
+     * Formats a passed date into the correct format for input type datetime-local
+     * @param toFormat The date t format
+     * @return the formatted date string
+     */
+    public String formatLocalDate(Date toFormat) {
+        if (toFormat == null) {
+            return "";
+        }
+        return dateFormatEntry.format(toFormat);
     }
 
 
@@ -137,4 +152,11 @@ public class TripDestination extends Model {
         return Destination.find.byId(Integer.toString(destinationId)).getName();
     }
 
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
+    }
 }

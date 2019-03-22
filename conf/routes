@@ -9,7 +9,7 @@ GET     /destinations/edit/:id      controllers.DestinationsController.edit(requ
 POST    /destinations/:id      controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.save(request: Request)
 POST    /destinations/delete/:id    controllers.DestinationsController.delete(id: Integer)
-POST    /trips/update    controllers.TripsController.updateDestination()
+POST    /trips/update    controllers.TripsController.updateDestination(request: Request, destOrder: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
