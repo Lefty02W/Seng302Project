@@ -120,7 +120,9 @@ public class TripDestination extends Model {
      * @return the date string
      */
     public String getArrivalString() {
+        System.out.println(arrival);
         if (arrival == null) {
+            System.out.println("jews");
             return "";
         }
         return dateFormat.format(arrival);

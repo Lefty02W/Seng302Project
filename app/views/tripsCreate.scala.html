@@ -121,21 +121,26 @@
                                             @helper.form(routes.TripsController.updateDestination(tripDestination.getOrder)) {
                                                 @CSRF.formField
 
-                                                <div class="col">
+                                                <div class="col" id="formItems">
+
 
 
                                                     <h5>Destination Order</h5>
                                                     <input id="order" name="order" type="number" value="@tripDestination.getOrder" min="1" max="@currentDestinationsList.size" required>
 
-                                                    <h5>Destination</h5>
-                                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                                    @for(destination <- currentUser.getDestinations) {
 
+                                                    <h5>Destination</h5>
+
+                                                    <select id="destinationId" name="destinationId" title="Select Destination" required>
+                                                    @for(destination <- currentUser.getDestinations) {
+                                                        @if(destination.getDestinationId == tripDestination.getDestinationId) {
+                                                            <option value=@destination.getDestinationId selected>@destination.getName</option>
+                                                        } else {
                                                             <option value=@destination.getDestinationId>@destination.getName</option>
+                                                        }
 
                                                     }
                                                     </select>
-
 
 
                                                     <h5>Arrival Time</h5>
@@ -143,11 +148,13 @@
 
                                                     <h5>Departure Time</h5>
                                                     <input type="date" id="departure" name="departure" value="@tripDestination.formatLocalDate(tripDestination.getDeparture)"></div>
+
+                                                <button type="submit" class="button-add" onclick="fillDestinationId()">save</button>
                                             </div>
 
 
                                             <div class="modal-footer">
-                                                <button type="submit" class="button-add">save</button>
+
                                                 <button type="button" class="button-delete" data-dismiss="modal">Close</button>
                                             </div>
 
@@ -159,7 +166,6 @@
 
                                     </div>
                                 </div>
-                    </div>
                             }
 
                         </table>
@@ -204,6 +210,8 @@
 
 
 
+
+            //TODO Cry test this stuff
                $('#tripsTable tbody').on( 'click', 'button', function () {
                     var data = table.row( $(this).parents('tr') ).data();
                     alert( data[0]);
@@ -250,27 +258,6 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
-
-
-        function fillModal(button) {
-            var destId = button.id.split("_")[1]; //Can change to dest order once it is there
-            console.log(destId);
-            document.getElementById("destOrder").value = destId;
-
-            /**
-            var tripsTable = $('#tripsTable').DataTable();
-            var cells = button.parentElement.parentElement.cells;
-            var name = cells.item(0).innerHTML;
-            var depart = cells.item(1).innerHTML;
-            var arrive = cells.item(2).innerHTML;
-
-           alert(name + " " + depart + " " + arrive);*/
-
-        }
-
-
-
-
 
 
     </script>

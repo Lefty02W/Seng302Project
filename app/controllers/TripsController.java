@@ -87,6 +87,7 @@ public class TripsController extends Controller {
      */
     public Result addDestination(Http.Request request) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
+        System.out.println(tripDestForm);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         currentDestinationsList.add(tripDestination);
@@ -154,6 +155,7 @@ public class TripsController extends Controller {
 
     public Result updateDestination(Http.Request request, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
+        System.out.println(tripDestForm);
         TripDestination tripDestination = tripDestForm.get();
         System.out.println(tripDestination.getOrder());
         System.out.println(oldLocation);
