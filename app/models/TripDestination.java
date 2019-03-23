@@ -41,20 +41,17 @@ public class TripDestination extends Model {
 
 
 
-    public TripDestination() {
-
-    }
-
     /**
      * Constructor for a destination within a trip
      * @param destinationId the destination
      * @param arrival the arrival timestamp
      * @param departure the departure timestamp
      */
-    public TripDestination(int destinationId, Date arrival, Date departure) {
+    public TripDestination(int destinationId, Date arrival, Date departure, int order) {
         this.destinationId = destinationId;
         this.arrival = arrival;
         this.departure = departure;
+        this.order = order;
     }
 
     /**

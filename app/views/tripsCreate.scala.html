@@ -117,6 +117,7 @@
                                                 <!-- Modal body -->
                                             <div class="modal-body">
 
+
                                             @helper.form(routes.TripsController.updateDestination(tripDestination.getOrder)) {
                                                 @CSRF.formField
 
@@ -124,16 +125,13 @@
 
 
                                                     <h5>Destination Order</h5>
-                                                    <input id="destOrder" type="number" value="@tripDestination.getOrder" min="1" max="@currentDestinationsList.size" required>
+                                                    <input id="order" name="order" type="number" value="@tripDestination.getOrder" min="1" max="@currentDestinationsList.size" required>
 
                                                     <h5>Destination</h5>
-                                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
+                                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                                     @for(destination <- currentUser.getDestinations) {
-                                                        @if(tripDestination.getDestinationName == destination.getName) {
-                                                            <option value=@destination.getDestinationId selected>@destination.getName</option>
-                                                        } else {
+
                                                             <option value=@destination.getDestinationId>@destination.getName</option>
-                                                        }
 
                                                     }
                                                     </select>

@@ -90,7 +90,7 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         currentDestinationsList.add(tripDestination);
-        tripDestination.setOrder(currentDestinationsList.size()); //Not this cannot be used as indexes as they start at 1 not 0
+        tripDestination.setOrder(currentDestinationsList.size()); //Note this cannot be used as indexes as they start at 1 not 0
         tripDestination.setTripId(1);
         tripRepository.insertTripDestination(tripDestination);
         return redirect(routes.TripsController.showCreate());
@@ -152,10 +152,19 @@ public class TripsController extends Controller {
 
 
 
-    public Result updateDestination(Http.Request request, Integer originalOrder) {
+    public Result updateDestination(Http.Request request, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
-        //System.out.println(tripDestination.getDestinationName());
+        System.out.println(tripDestination.getOrder());
+        System.out.println(oldLocation);
+        System.out.println(tripDestination.getDestinationId());
+        tripDestination.setDestinationId(3);//set this as a destination as cant get correct destinationId
+        tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+
+        Integer newLocation = tripDestination.getOrder();
+
+        currentDestinationsList.set(0, tripDestination);
+
         //TODO this null pointers, need to read the dest and then replace it in the currentDestinationsList correctly
         // originalOrder is where the dest was in the list before edit, tripDest.getOrder will give new order selected by user - will need to be -1 of the new order
         return redirect(routes.TripsController.showCreate());
