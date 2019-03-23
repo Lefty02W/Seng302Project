@@ -88,4 +88,11 @@
     width: 80%;
 }
 
+img.thumbnail {
+    display: block;
+    width: 250px;
+    height: auto;
+    max-height: 250px;
+}
+
 

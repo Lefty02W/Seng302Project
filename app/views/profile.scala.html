@@ -208,17 +208,21 @@
 
             <div class="modal fade" id="viewPhotoModal">
 
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
 
                         <div class="modal-header">
-                            <h2 class="modal-title">View Photos</h2>
+                            <h2 class="modal-title">Photos</h2>
                         </div>
                         <div class="modal-body">
-                            <p>@for(image <- imageList) {
-                                <img src="@routes.ProfileController.displayPhotos(image.getImageId)" height="400px" width="400px">
-                            }</p>
-                            <a href="@routes.ProfileController.show()"><button type="button">Back</button></a>
+                            <div class="row">
+                            @for(image <- imageList) {
+                                <div class="column">
+                                    <img class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)">
+                                </div>
+                            }
+                            </div>
+                            <button type="button" data-dismiss="modal" style="width: 10vw; float: right">Close</button>
                         </div>
                     </div>
                 </div>
