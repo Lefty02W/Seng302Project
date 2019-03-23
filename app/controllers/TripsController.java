@@ -113,6 +113,17 @@ public class TripsController extends Controller {
         return redirect(routes.TripsController.showEdit(id));
     }
 
+    /**
+     * Updates a trip destination within the trip currenty being edited
+     * @param request
+     * @param oldLocation
+     * @return
+     */
+    public Result updateDestinationEdit(Http.Request request, Integer oldLocation) {
+        //TODO implement this
+        return null;
+    }
+
 
     /**
      * Saves a users newly created trip and its connected tripDestinations ot the database
@@ -152,7 +163,12 @@ public class TripsController extends Controller {
     }
 
 
-
+    /**
+     * Updates a trip destination that is within the current trip being created
+     * @param request the request
+     * @param oldLocation the index of the destiantion to edit
+     * @return
+     */
     public Result updateDestination(Http.Request request, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
