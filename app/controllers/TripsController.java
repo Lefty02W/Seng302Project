@@ -155,13 +155,10 @@ public class TripsController extends Controller {
 
     public Result updateDestination(Http.Request request, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
-        System.out.println(tripDestForm);
         TripDestination tripDestination = tripDestForm.get();
-        //TODO get the true destinationId instead of just setting it to 3
-        //tripDestination.setDestinationId(3);//set this as a destination as cant get correct destinationId
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         Integer newLocation = tripDestination.getOrder();
-        if (oldLocation == newLocation) {
+        if (oldLocation.equals(newLocation)) {
             currentDestinationsList.set(newLocation-1, tripDestination);
         } else {
             sortFunc(oldLocation, newLocation);
