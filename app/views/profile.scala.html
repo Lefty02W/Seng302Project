@@ -218,7 +218,7 @@
                             <div class="row">
                             @for(image <- imageList) {
                                 <div class="column">
-                                    <img class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)">
+                                    <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getType">
                                 </div>
                             }
                             </div>
@@ -229,6 +229,12 @@
 
             </div>
 
+            <!-- The Expanded Image Modal -->
+            <div id="expandImageModal" class="modal">
+                <span class="close">&times;</span>
+                <img class="modal-content" id="expandedImage">
+                <div id="caption"></div>
+            </div>
         </div>
 
     </body>
@@ -245,6 +251,25 @@
                 });
             }
 
+            // Method that gets the image data from on the image clicked and displays
+            // it in its original resolution in a new modal
+            function expand(image, text) {
+                // Get the modal
+                var modal = document.getElementById('expandImageModal');
+                var modalImg = document.getElementById('expandedImage');
+                var captionText = document.getElementById("caption");
+                modal.style.display = "block";
+                modalImg.src = image;
+                captionText.innerHTML = text;
+
+                // Get the <span> element that closes the modal
+                var span = document.getElementsByClassName("close")[0];
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function() {
+                    modal.style.display = "none";
+                }
+            }
     </script>
 
 </html>
