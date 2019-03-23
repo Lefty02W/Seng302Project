@@ -158,7 +158,7 @@ public class TripsController extends Controller {
         System.out.println(tripDestForm);
         TripDestination tripDestination = tripDestForm.get();
         //TODO get the true destinationId instead of just setting it to 3
-        tripDestination.setDestinationId(3);//set this as a destination as cant get correct destinationId
+        //tripDestination.setDestinationId(3);//set this as a destination as cant get correct destinationId
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         Integer newLocation = tripDestination.getOrder();
         if (oldLocation == newLocation) {
