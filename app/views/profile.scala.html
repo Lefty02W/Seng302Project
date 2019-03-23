@@ -216,7 +216,7 @@
                         </div>
                         <div class="modal-body">
                             <p>@for(image <- imageList) {
-                                <img src="@routes.ProfileController.displayPhotos(image.getImageId)">
+                                <img src="@routes.ProfileController.displayPhotos(image.getImageId)" height="400px" width="400px">
                             }</p>
                             <a href="@routes.ProfileController.show()"><button type="button">Back</button></a>
                         </div>
