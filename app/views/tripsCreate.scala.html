@@ -130,8 +130,11 @@
                                                     <h5>Destination</h5>
                                                     <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                                     @for(destination <- currentUser.getDestinations) {
-
+                                                        @if(tripDestination.getDestinationName == destination.getName) {
+                                                            <option value=@destination.getDestinationId selected>@destination.getName</option>
+                                                        } else {
                                                             <option value=@destination.getDestinationId>@destination.getName</option>
+                                                        }
 
                                                     }
                                                     </select>

@@ -155,19 +155,51 @@ public class TripsController extends Controller {
     public Result updateDestination(Http.Request request, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
-        System.out.println(tripDestination.getOrder());
-        System.out.println(oldLocation);
-        System.out.println(tripDestination.getDestinationId());
+        //TODO get the true destinationId instead of just setting it to 3
         tripDestination.setDestinationId(3);//set this as a destination as cant get correct destinationId
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
-
         Integer newLocation = tripDestination.getOrder();
-
-        currentDestinationsList.set(0, tripDestination);
-
-        //TODO this null pointers, need to read the dest and then replace it in the currentDestinationsList correctly
-        // originalOrder is where the dest was in the list before edit, tripDest.getOrder will give new order selected by user - will need to be -1 of the new order
+        if (oldLocation == newLocation) {
+            currentDestinationsList.set(newLocation-1, tripDestination);
+        } else {
+            sortFunc(oldLocation, newLocation);
+            currentDestinationsList.set(newLocation-1, tripDestination);
+        }
         return redirect(routes.TripsController.showCreate());
+    }
+
+    /**
+     * Sorts the currentDestinationsList
+     */
+    private void sortFunc(int oldLocation, int newLocation) {
+        //changes the order of any tripDests that may be indirectly affected
+        TripDestination tripDest;
+        for (int i = 0; i < currentDestinationsList.size(); i++) {
+            tripDest = currentDestinationsList.get(i);
+            if (tripDest.getOrder() > oldLocation && tripDest.getOrder() <= newLocation) {
+                currentDestinationsList.get(i).setOrder(tripDest.getOrder() - 1);
+
+            }
+            else if (tripDest.getOrder() < oldLocation && tripDest.getOrder() >= newLocation) {
+                currentDestinationsList.get(i).setOrder(tripDest.getOrder() + 1);
+            }
+        }
+        //changes the order of the main tripDest
+        currentDestinationsList.get(oldLocation-1).setOrder(newLocation);
+        //puts everything into another list ordered
+        ArrayList<TripDestination> tempList = new ArrayList<>();
+        for (int i = 0; i < currentDestinationsList.size(); i++) {
+            for (int x= 0; x < currentDestinationsList.size(); x++) {
+                if (currentDestinationsList.get(x).getOrder() == i+1) {
+                    tempList.add(currentDestinationsList.get(x));
+                    break;
+                }
+            }
+        }
+        //copies temp list into main list
+        for (int i = 0; i < currentDestinationsList.size(); i++) {
+            currentDestinationsList.set(i, tempList.get(i));
+        }
     }
 
     public Result deleteDestination(Http.Request request, Integer id) {
