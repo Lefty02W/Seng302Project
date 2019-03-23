@@ -143,7 +143,7 @@ public class ProfileController extends Controller {
 
 
         if (picture != null) {
-//            String fileName = picture.getFilename();
+            String fileName = picture.getFilename();
 //            long fileSize = picture.getFileSize();
             String contentType = picture.getContentType();
 
@@ -152,10 +152,11 @@ public class ProfileController extends Controller {
 //            tempFile.copyTo(Paths.get("public/images/" + fileName), true); // Can change to appropriate folder
             try {
                 this.imageBytes = Files.readAllBytes(file.toPath());
-                Image image = new Image(null, null, null, null); // Initialize Image object
+                Image image = new Image(null, null, null, null, null); // Initialize Image object
                 Profile currentUser = getCurrentUser(request);
                 image.setEmail(currentUser.getEmail());
                 image.setType(contentType);
+                image.setName(fileName);
                 image.setImage(this.imageBytes);
                 if(imageData.visible != null){
                     image.setVisible(1); // For public (true)

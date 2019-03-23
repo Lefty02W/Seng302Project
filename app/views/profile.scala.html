@@ -218,7 +218,7 @@
                             <div class="row">
                             @for(image <- imageList) {
                                 <div class="column">
-                                    <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getType">
+                                    <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName">
                                 </div>
                             }
                             </div>

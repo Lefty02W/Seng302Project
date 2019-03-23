@@ -30,11 +30,15 @@ public class Image extends Model {
     @Constraints.Required
     private String type;
 
-    public Image(String email, byte[] image, String type, Integer visable){
+    @Constraints.Required
+    private String name;
+
+    public Image(String email, byte[] image, String type, Integer visable, String name){
         this.email = email;
         this.image = image;
         this.type = type;
         this.visible = visable;
+        this.name = name;
     }
 
     // Finder for image
@@ -78,6 +82,14 @@ public class Image extends Model {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
