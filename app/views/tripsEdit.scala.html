@@ -124,9 +124,9 @@
                                                     <select id="destinationId" name="destinationId" title="Select Destination" required>
                                                     @for(destination <- currentUser.getDestinations) {
                                                         @if(destination.getDestinationId == tripDestination.getDestinationId) {
-                                                            <option value=@destination.getDestinationId selected>@destination.getName</option>
+                                                            <option value="@destination.getDestinationId" selected>@destination.getName</option>
                                                         } else {
-                                                            <option value=@destination.getDestinationId>@destination.getName</option>
+                                                            <option value="@destination.getDestinationId">@destination.getName</option>
                                                         }
 
                                                     }

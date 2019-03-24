@@ -134,9 +134,9 @@
                                                     <select id="destinationId" name="destinationId" title="Select Destination" required>
                                                     @for(destination <- currentUser.getDestinations) {
                                                         @if(destination.getDestinationId == tripDestination.getDestinationId) {
-                                                            <option value=@destination.getDestinationId selected>@destination.getName</option>
+                                                            <option value="@destination.getDestinationId" selected>@destination.getName</option>
                                                         } else {
-                                                            <option value=@destination.getDestinationId>@destination.getName</option>
+                                                            <option value="@destination.getDestinationId">@destination.getName</option>
                                                         }
 
                                                     }
@@ -149,7 +149,7 @@
                                                     <h5>Departure Time</h5>
                                                     <input type="date" id="departure" name="departure" value="@tripDestination.formatLocalDate(tripDestination.getDeparture)"></div>
 
-                                                <button type="submit" class="button-add" onclick="fillDestinationId()">save</button>
+                                                <button type="submit" class="button-add">save</button>
                                             </div>
 
 
