@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], currentUser: Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], currentUser: Profile, toEdit: TripDestination)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import helper._
 
@@ -89,14 +89,14 @@
 
                         <table id="tripsTable">
                             <thead>
-                                <tr><th>Destination Name</th><th>Departure Time</th><th>Arrival Time</th><th>Actions</th>
+                                <tr><th>Destination Name</th><th>Arrival Time</th><th>Departure Time</th><th>Actions</th>
                             </thead>
                             @for(tripDestination <- currentDestinationsList) {
                                 <tr id="tripRow@tripDestination.getDestinationId">
                                     <td>@tripDestination.getDestinationName</td>
-                                    <td>@tripDestination.getFormattedDate(tripDestination.getDeparture)</td>
-                                    <td>@tripDestination.getFormattedDate(tripDestination.getArrival)</td>
-                                    <td><button id="edit_@tripDestination.getDestinationId" data-toggle="modal" data-target="#editModal_@tripDestination.getOrder" >Edit</button></td> <!--onclick="fillModal(this)-->
+                                    <td>@tripDestination.getArrival</td>
+                                    <td>@tripDestination.getDeparture</td>
+                                    <td><a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getOrder)"><button id="edit_@tripDestination.getDestinationId">Edit</button></a></td> <!--onclick="fillModal(this)-->
 
                                     @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestinationId)) {
                                         @CSRF.formField
@@ -104,68 +104,7 @@
                                     }
 
                                 </tr>
-                                <div class="modal" id="editModal_@tripDestination.getOrder">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
 
-                                                <!-- Modal Header -->
-                                            <div class="modal-header">
-                                                <h4 class="modal-title">Edit Trip Destination</h4>
-                                                <button type="button" class="close" data-dismiss="modal"></button>
-                                            </div>
-
-                                                <!-- Modal body -->
-                                            <div class="modal-body">
-
-
-                                            @helper.form(routes.TripsController.updateDestination(tripDestination.getOrder)) {
-                                                @CSRF.formField
-
-                                                <div class="col" id="formItems">
-
-
-
-                                                    <h5>Destination Order</h5>
-                                                    <input id="order" name="order" type="number" value="@tripDestination.getOrder" min="1" max="@currentDestinationsList.size" required>
-
-
-                                                    <h5>Destination</h5>
-
-                                                    <select id="destinationId" name="destinationId" title="Select Destination" required>
-                                                    @for(destination <- currentUser.getDestinations) {
-                                                        @if(destination.getDestinationId == tripDestination.getDestinationId) {
-                                                            <option value="@destination.getDestinationId" selected>@destination.getName</option>
-                                                        } else {
-                                                            <option value="@destination.getDestinationId">@destination.getName</option>
-                                                        }
-
-                                                    }
-                                                    </select>
-
-
-                                                    <h5>Arrival Time</h5>
-                                                    <input type="date" id="arrival" name="arrival" value="@tripDestination.formatLocalDate(tripDestination.getArrival)">
-
-                                                    <h5>Departure Time</h5>
-                                                    <input type="date" id="departure" name="departure" value="@tripDestination.formatLocalDate(tripDestination.getDeparture)"></div>
-
-                                                <button type="submit" class="button-add">save</button>
-                                            </div>
-
-
-                                            <div class="modal-footer">
-
-                                                <button type="button" class="button-delete" data-dismiss="modal">Close</button>
-                                            </div>
-
-                                        }
-                                                <!-- Modal footer -->
-
-                                        </div>
-
-
-                                    </div>
-                                </div>
                             }
 
                         </table>
@@ -175,6 +114,77 @@
                 </div>
             </div>
         </div>
+
+        @if(toEdit != null) {
+            <script type="text/javascript">
+                    $(window).on('load', function(){
+                        $('#editModal').modal('show');
+                    });
+            </script>
+            <div class="modal" id="editModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                            <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Edit Trip Destination</h4>
+                            <button type="button" class="close" data-dismiss="modal"></button>
+                        </div>
+
+                            <!-- Modal body -->
+                        <div class="modal-body">
+
+
+                        @helper.form(routes.TripsController.updateDestination(toEdit.getOrder)) {
+                            @CSRF.formField
+
+                            <div class="col" id="formItems">
+
+
+
+                                <h5>Destination Order</h5>
+                                <input id="order" name="order" type="number" value="@toEdit.getOrder" min="1" max="@currentDestinationsList.size" required>
+
+
+                                <h5>Destination</h5>
+
+                                <select id="destinationId" name="destinationId" title="Select Destination" required>
+                                @for(destination <- currentUser.getDestinations) {
+                                    @if(destination.getDestinationId == toEdit.getDestinationId) {
+                                        <option value="@destination.getDestinationId" selected>@destination.getName</option>
+                                    } else {
+                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                    }
+
+                                }
+                                </select>
+
+
+                                <h5>Arrival Time</h5>
+                                <input type="date" id="arrival" name="arrival" value="@toEdit.formatLocalDate(toEdit.getArrival)">
+
+                                <h5>Departure Time</h5>
+                                <input type="date" id="departure" name="departure" value="@toEdit.formatLocalDate(toEdit.getDeparture)"></div>
+
+                            <button type="submit" class="button-add">save</button>
+                        </div>
+
+
+                        <div class="modal-footer">
+
+                            <button type="button" class="button-delete" data-dismiss="modal">Close</button>
+                        </div>
+
+                    }
+                            <!-- Modal footer -->
+
+                    </div>
+
+
+                </div>
+            </div>
+        }
+
 
 
 

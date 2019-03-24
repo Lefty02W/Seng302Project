@@ -70,14 +70,21 @@ public class TripsController extends Controller {
      */
     public Result showCreate(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, request, messagesApi.preferred(request)));
+        return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, null, request, messagesApi.preferred(request)));
     }
 
     public Result showEdit(Http.Request request, Integer id) {
         Profile currentUser = SessionController.getCurrentUser(request);
         Trip trip = tripRepository.getTrip(id);
         Form<Trip> tripForm = form.fill(trip);
-        return ok(tripsEdit.render(tripForm, formTrip, trip.getDestinations(), currentUser, id, request, messagesApi.preferred(request)));
+        return ok(tripsEdit.render(tripForm, formTrip, trip.getDestinations(), currentUser,  id, request, messagesApi.preferred(request)));
+    }
+
+
+    public Result editTripDestinationCreate(Http.Request request, Integer order) {
+        TripDestination dest = currentDestinationsList.get(order - 1);
+        Profile currentUser = SessionController.getCurrentUser(request);
+        return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, dest, request, messagesApi.preferred(request)));
     }
 
     /**

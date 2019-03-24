@@ -109,9 +109,11 @@ public class TripDestination extends Model {
 
     public String getFormattedDate(Date toFormat)
     {
+        System.out.println(toFormat);
         if (toFormat == null) {
             return "";
         }
+        System.out.println(toFormat.getTime());
         return dateFormat.format(toFormat);
     }
 
@@ -122,7 +124,6 @@ public class TripDestination extends Model {
     public String getArrivalString() {
         System.out.println(arrival);
         if (arrival == null) {
-            System.out.println("jews");
             return "";
         }
         return dateFormat.format(arrival);
