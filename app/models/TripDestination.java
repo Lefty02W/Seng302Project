@@ -39,6 +39,18 @@ public class TripDestination extends Model {
         this.departure = departure;
     }
 
+    /**
+     *
+     * @param destinationId the destination id
+     * @param arrival the arrival timestamp
+     * @param departure the departure timestamp
+     */
+    public TripDestination(int destinationId, Date arrival, Date departure) {
+        this.destinationId = destinationId;
+        this.arrival = arrival;
+        this.departure = departure;
+    }
+
     public String getDestination() {
         return destination;
     }

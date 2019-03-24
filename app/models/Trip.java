@@ -77,6 +77,9 @@ public class Trip extends Model {
     public long getTravelTime() {
         TripDestination startDest = destinations.get(0);
         TripDestination endDest = destinations.get(destinations.size() - 1);
+        if (startDest.getArrival() == null || endDest.getDeparture() == null) {
+            return 0;
+        }
         long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
@@ -86,7 +89,10 @@ public class Trip extends Model {
      */
     public String getStartDateString(){
         Date startDate = destinations.get(0).getArrival();
-        return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
+        if (startDate != null) {
+            return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
+        }
+        return "";
     }
 
     public Date getStartDate(){
