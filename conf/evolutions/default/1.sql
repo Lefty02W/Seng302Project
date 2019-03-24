@@ -97,6 +97,20 @@ create table trip_destination (
   constraint pk_trip_destination primary key (trip_destination_id)
 );
 
+create table user (
+  first_name                    varchar(255),
+  middle_name                   varchar(255),
+  last_name                     varchar(255),
+  email                         varchar(255),
+  password                      varchar(255),
+  birth_date                    datetime(6),
+  gender                        varchar(255),
+  date_of_birth                 varchar(255),
+  nationality                   varchar(255),
+  passport_country              varchar(255),
+  traveller_type                varchar(255)
+);
+
 
 # --- !Downs
 
@@ -107,4 +121,6 @@ drop table if exists profile;
 drop table if exists trip;
 
 drop table if exists trip_destination;
+
+drop table if exists user;
 

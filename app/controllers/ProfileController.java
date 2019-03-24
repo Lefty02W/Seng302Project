@@ -25,7 +25,6 @@ public class ProfileController extends Controller {
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory formFactory;
     private final ProfileRepository profileRepository;
-    private final SessionController sessionController = new SessionController();
 
 
     @Inject
@@ -55,9 +54,9 @@ public class ProfileController extends Controller {
 
     public Result update(Http.Request request){
         Form<Profile> profileForm = form.bindFromRequest(request);
-        Profile profile = profileForm.get();
+        Profile profile = profileForm.value().get();
 
-        profileRepository.update(profile, sessionController.getCurrentUser(request).getPassword());
+        profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
 
         //TODO redirect does not update profile displayed, have to refresh to get updated info
         return redirect(routes.ProfileController.show());
@@ -79,7 +78,7 @@ public class ProfileController extends Controller {
 
 
     public Result show(Http.Request request) {
-        Profile currentProfile = sessionController.getCurrentUser(request);
+        Profile currentProfile = SessionController.getCurrentUser(request);
         //TODO xhange to read from db
         //currentProfile.setTrips(new ArrayList<Trip>());
         return ok(profile.render(currentProfile));

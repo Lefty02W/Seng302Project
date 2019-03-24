@@ -74,7 +74,7 @@
 
                         <div class="col">
                             <div class="hidden-div">
-                                <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field">
+                                <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required oninvalid="this.setCustomValidity('Traveller type is required')" oninput="setCustomValidity('')">
                             </div>
                             <div>
                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown">
