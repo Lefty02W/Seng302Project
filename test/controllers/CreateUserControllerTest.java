@@ -1,5 +1,6 @@
 package controllers;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
@@ -39,6 +40,7 @@ public class CreateUserControllerTest extends WithApplication {
                 .method(GET)
                 .uri("/");
         Result result = route(app, request);
+        Assert.assertEquals(200, result.status());
     }
 
     //@Test
