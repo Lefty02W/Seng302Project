@@ -30,10 +30,3 @@ release-artifacts:
     - target/universal/*.zip
  only:
     - tags
-
-update-sonar:
-  stage: deploy
-  script:
-    - sonar-scanner
-  only:
-    - master@seng302-2019/team-700
