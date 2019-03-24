@@ -90,13 +90,24 @@
 
 img.thumbnail {
     display: block;
-    width: 250px;
+    width: auto;
     height: auto;
-    max-height: 250px;
+    max-height: 240px;
+    max-width: 240px;
+    margin: auto;
 
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
+}
+
+#viewPhotoModal .row {
+    padding-left: 1rem;
+}
+
+.card {
+    height: 240px;
+    width: 240px;
 }
 
 /* The Modal (background) */

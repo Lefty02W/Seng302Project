@@ -4,7 +4,7 @@
 @import controllers.ProfileController.ImageData
 @import java.util
 @import javax.swing.ImageIcon
-@(currentUser: Profile, imageForm: Form[ImageData], imageList : List[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -166,8 +166,10 @@
                         <div class="col">
                             <div id="photosCard" class="card-large lower-card">
                                 <h3>Personal Photos</h3>
-                                <button type="button" class="viewButton" data-toggle="modal" data-target="#viewPhotoModal">View Photos</button>
-                                <button type="button" class="addButton" data-toggle="modal" data-target="#addPhotoModal">Add Photos</button>
+                                <button type="button" class="viewButton" data-toggle="modal" data-target="#viewPhotoModal">
+                                    View Photos</button>
+                                <button type="button" class="addButton" data-toggle="modal" data-target="#addPhotoModal">
+                                    Add Photos</button>
                             </div>
                         </div>
 
@@ -175,7 +177,8 @@
 
                     <div class="row">
                         <div class="col">
-                            <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button" class="button-edit" style="width: 10vw; float: right">
+                            <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button" class="button-edit" style="width: 10vw;
+                                float: right">
                                 Edit Profile
                             </button>
                             </a>
@@ -187,23 +190,26 @@
 
             </div>
             <div class="modal fade" id="addPhotoModal">
-            @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
-                @CSRF.formField
+
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
 
                         <div class="modal-header">
                             <h2 class="modal-title">Add Photo</h2>
                         </div>
-                        <div class="modal-body">
-                            <input type="file" id="image" name="image">
-                            <label>Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
-                            <a href="@routes.ProfileController.show()"><button type="button">Cancel</button></a>
-                            <button type="submit">Submit</button>
-                        </div>
+                        @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
+                            @CSRF.formField
+                            <div class="modal-body">
+                                <input type="file" id="image" name="image">
+                                <label>
+                                    Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
+                                <button type="button" data-dismiss="modal">Cancel</button>
+                                <button type="submit">Submit</button>
+                            </div>
+                        }
                     </div>
                 </div>
-            }
+
             </div>
 
             <div class="modal fade" id="viewPhotoModal">
@@ -217,19 +223,20 @@
                         <div class="modal-body">
                             <div class="row">
                             @for(image <- imageList) {
-                                <div class="column">
+                                <div class="card">
                                     <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName">
                                 </div>
                             }
                             </div>
-                            <button type="button" data-dismiss="modal" style="width: 10vw; float: right">Close</button>
+                            <button type="button" data-dismiss="modal" style="width: 10vw;
+                                float: right">Close</button>
                         </div>
                     </div>
                 </div>
 
             </div>
 
-            <!-- The Expanded Image Modal -->
+                <!-- The Expanded Image Modal -->
             <div id="expandImageModal" class="modal">
                 <span class="close">&times;</span>
                 <img class="modal-content" id="expandedImage">
@@ -266,7 +273,7 @@
                 var span = document.getElementsByClassName("close")[0];
 
                 // When the user clicks on <span> (x), close the modal
-                span.onclick = function() {
+                span.onclick = function () {
                     modal.style.display = "none";
                 }
             }
