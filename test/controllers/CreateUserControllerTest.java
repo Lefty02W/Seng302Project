@@ -33,7 +33,7 @@ public class CreateUserControllerTest extends WithApplication {
     }
 
 
-    //@Test
+    @Test
     public void save() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
