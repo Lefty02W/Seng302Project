@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Image;
 import models.PartnerFormData;
 import models.Profile;
 import play.data.Form;
@@ -8,13 +9,11 @@ import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.ImageRepository;
 import views.html.*;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Calendar;
+import java.util.*;
 
 /**
  * This class is the controller for the travellers.scala.html file, it provides the route to the
@@ -25,11 +24,14 @@ public class TravellersController extends Controller {
 
     private final Form<PartnerFormData> form;
     private MessagesApi messagesApi;
+    private final ImageRepository imageRepository;
+    private List<Image> imageList = new ArrayList<>();
 
     @Inject
-    public TravellersController(FormFactory formFactory, MessagesApi messagesApi) {
+    public TravellersController(FormFactory formFactory, MessagesApi messagesApi, ImageRepository imageRepository) {
         this.form = formFactory.form(PartnerFormData.class);
         this.messagesApi = messagesApi;
+        this.imageRepository = imageRepository;
     }
 
     /**
@@ -58,7 +60,9 @@ public class TravellersController extends Controller {
             resultData = searchTravelTypes(resultData, searchData);
         }
 
-        return ok(travellers.render(form, resultData, request, messagesApi.preferred(request)));
+//        List<Image> displayImageList = getTravellersPhotos("bender@momcorp.com");
+
+        return ok(travellers.render(form, resultData, imageList, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -201,12 +205,35 @@ public class TravellersController extends Controller {
     }
 
     /**
+     * Method to retrieve all uploaded profile images from the database for a particular traveller
+     * @param email email for a particular user you want to view the photos of
+     * @return
+     */
+    public List<Image> getTravellersPhotos(String email) {
+        Optional<List<Image>> imageListTemp = imageRepository.getImages(email);
+        try {
+            imageList = imageListTemp.get();
+        } catch(NoSuchElementException e) {
+            imageList = new ArrayList<Image>();
+        }
+        return imageList;
+    }
+
+    /**
+     * This method shows the travellers photos on a new page
+     * @return
+     */
+    public Result displayTravellersPhotos(String email) {
+        List<Image> displayImageList = getTravellersPhotos(email);
+        return ok(travellersPhotos.render(displayImageList));
+    }
+
+    /**
      * This method shows the travellers page on the screen
      * @return
      */
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
-
-        return ok(travellers.render(form, profiles, request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, profiles, imageList, request, messagesApi.preferred(request)));
     }
 }
