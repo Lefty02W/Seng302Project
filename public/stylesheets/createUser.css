@@ -25,7 +25,8 @@ input[type=text], input[type=password], input[type=date] {
 
 }
 
-.selectpicker {
+
+.bootstrap-select > .dropdown-toggle {
     width: 90%;
 }
 
