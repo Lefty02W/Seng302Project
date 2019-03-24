@@ -37,7 +37,7 @@ public class CreateUserController extends Controller{
     public Result save(Http.Request request){
         Form<Profile> userForm = form.bindFromRequest(request);
         System.out.println(userForm);
-        Profile profile = userForm.get();
+        Profile profile = userForm.value().get();
         profileRepository.insert(profile);
         return redirect(routes.LoginController.show());
     }
