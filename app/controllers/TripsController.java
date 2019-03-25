@@ -141,12 +141,14 @@ public class TripsController extends Controller {
         tripDestination.setTripId(tripId);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         Trip trip = tripRepository.getTrip(tripId);
-        ArrayList<TripDestination> tripDestinations = trip.getDestinations();
+        ArrayList<TripDestination> tripDestinations = sortByOrder(trip.getDestinations());
         Integer newLocation = tripDestination.getDestOrder();
         if (oldLocation.equals(newLocation)) {
             tripDestinationRepository.insert(tripDestination);
+            System.out.println(oldLocation -1);
             tripDestinationRepository.delete(tripDestinations.get(oldLocation - 1).getTripDestinationId());
         } else {
+            int oldLocationId = tripDestinations.get(oldLocation-1).getTripDestinationId();
             //goes through the trips tripDests and changes the order of any tripDests that may be indirectly affected
             for (int i = 0; i < tripDestinations.size(); i++) {
                 if (tripDestinations.get(i).getDestOrder() > oldLocation && tripDestinations.get(i).getDestOrder() <= newLocation) {
@@ -159,7 +161,7 @@ public class TripsController extends Controller {
                 }
             }
             //deletes the tripDest and replaces it with the new TripDest
-            tripDestinationRepository.delete(tripDestinations.get(oldLocation-1).getTripDestinationId());
+            tripDestinationRepository.delete(oldLocationId);
             tripDestinationRepository.insert(tripDestination);
         }
         //tripRepository.getTrip(tripId).setDestinations(sortByOrder(tripRepository.getTrip(tripId).getDestinations()));
