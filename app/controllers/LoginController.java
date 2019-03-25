@@ -7,13 +7,10 @@ import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
-
 import play.mvc.Http;
-import play.mvc.Http.CookieBuilder;
 import play.mvc.Result;
-
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.login;
 
 import javax.inject.Inject;
 import java.util.Optional;

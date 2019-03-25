@@ -2,17 +2,17 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-//import org.mindrot.jbcrypt.BCrypt;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
+
 import javax.persistence.Entity;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import javax.persistence.Id;
-import javax.validation.Constraint;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+
+//import org.mindrot.jbcrypt.BCrypt;
 
 
 @Entity

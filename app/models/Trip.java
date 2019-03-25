@@ -2,16 +2,14 @@ package models;
 
 
 import io.ebean.Model;
-import org.checkerframework.checker.signedness.qual.Constant;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.Constraint;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class holds the data for a profile trip

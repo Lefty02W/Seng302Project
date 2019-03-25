@@ -1,7 +1,7 @@
 package controllers;
 
 
-import models.*;
+import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -10,12 +10,10 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.editProfile;
+import views.html.profile;
 
 import javax.inject.Inject;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 public class ProfileController extends Controller {

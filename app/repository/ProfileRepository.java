@@ -3,8 +3,8 @@ package repository;
 import io.ebean.*;
 import models.Destination;
 import models.Profile;
-import models.Trip;
 import play.db.ebean.EbeanConfig;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
