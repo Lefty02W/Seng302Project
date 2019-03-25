@@ -132,42 +132,6 @@ public class TripsController extends Controller {
         return redirect(routes.TripsController.showEdit(id));
     }
 
-    /**
-     * Updates a trip destination within the trip currenty being edited
-     */
-    public Result updateDestinationEdit(Http.Request request, Integer oldLocation, Integer tripId) {
-        Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
-        TripDestination tripDestination = tripDestForm.get();
-        tripDestination.setTripId(tripId);
-        tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
-        Trip trip = tripRepository.getTrip(tripId);
-        ArrayList<TripDestination> tripDestinations = sortByOrder(trip.getDestinations());
-        Integer newLocation = tripDestination.getDestOrder();
-        if (oldLocation.equals(newLocation)) {
-            tripDestinationRepository.insert(tripDestination);
-            System.out.println(oldLocation -1);
-            tripDestinationRepository.delete(tripDestinations.get(oldLocation - 1).getTripDestinationId());
-        } else {
-            int oldLocationId = tripDestinations.get(oldLocation-1).getTripDestinationId();
-            //goes through the trips tripDests and changes the order of any tripDests that may be indirectly affected
-            for (int i = 0; i < tripDestinations.size(); i++) {
-                if (tripDestinations.get(i).getDestOrder() > oldLocation && tripDestinations.get(i).getDestOrder() <= newLocation) {
-                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
-                            tripDestinations.get(i).getDestOrder()-1);
-                }
-                else if (tripDestinations.get(i).getDestOrder() < oldLocation && tripDestinations.get(i).getDestOrder() >= newLocation) {
-                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
-                            tripDestinations.get(i).getDestOrder()+1);
-                }
-            }
-            //deletes the tripDest and replaces it with the new TripDest
-            tripDestinationRepository.delete(oldLocationId);
-            tripDestinationRepository.insert(tripDestination);
-        }
-        //tripRepository.getTrip(tripId).setDestinations(sortByOrder(tripRepository.getTrip(tripId).getDestinations()));
-        return redirect(routes.TripsController.showEdit(tripId));
-    }
-
 
     /**
      * Saves a users newly created trip and its connected tripDestinations ot the database
@@ -206,12 +170,44 @@ public class TripsController extends Controller {
         });
     }
 
+    /**
+     * Updates a trip destination within the trip currently being edited
+     */
+    public Result updateDestinationEdit(Http.Request request, Integer oldLocation, Integer tripId) {
+        Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
+        TripDestination tripDestination = tripDestForm.get();
+        tripDestination.setTripId(tripId);
+        tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+        Trip trip = tripRepository.getTrip(tripId);
+        ArrayList<TripDestination> tripDestinations = sortByOrder(trip.getDestinations());
+        Integer newLocation = tripDestination.getDestOrder();
+        if (oldLocation.equals(newLocation)) {
+            tripDestinationRepository.insert(tripDestination);
+            tripDestinationRepository.delete(tripDestinations.get(oldLocation - 1).getTripDestinationId());
+        } else {
+            int oldLocationId = tripDestinations.get(oldLocation-1).getTripDestinationId();
+            //goes through the trips tripDests and changes the order of any tripDests that may be indirectly affected
+            for (int i = 0; i < tripDestinations.size(); i++) {
+                if (tripDestinations.get(i).getDestOrder() > oldLocation && tripDestinations.get(i).getDestOrder() <= newLocation) {
+                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
+                            tripDestinations.get(i).getDestOrder()-1);
+                }
+                else if (tripDestinations.get(i).getDestOrder() < oldLocation && tripDestinations.get(i).getDestOrder() >= newLocation) {
+                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
+                            tripDestinations.get(i).getDestOrder()+1);
+                }
+            }
+            //deletes the tripDest and replaces it with the new TripDest
+            tripDestinationRepository.delete(oldLocationId);
+            tripDestinationRepository.insert(tripDestination);
+        }
+        //tripRepository.getTrip(tripId).setDestinations(sortByOrder(tripRepository.getTrip(tripId).getDestinations()));
+        return redirect(routes.TripsController.showEdit(tripId));
+    }
+
 
     /**
      * Updates a trip destination that is within the current trip being created
-     * @param request the request
-     * @param oldLocation the index of the destiantion to edit
-     * @return
      */
     public Result updateDestination(Http.Request request, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
@@ -251,10 +247,10 @@ public class TripsController extends Controller {
             for (int x= 0; x < currentDestinationsList.size(); x++) {
                 if (currentDestinationsList.get(x).getDestOrder() == i+1) {
                     tempList.add(currentDestinationsList.get(x));
-                    break;
                 }
             }
         }
+        System.out.println(tempList.size());
         //copies temp list into main list
         for (int i = 0; i < currentDestinationsList.size(); i++) {
             currentDestinationsList.set(i, tempList.get(i));
