@@ -98,6 +98,11 @@ public class TripsController extends Controller {
         System.out.println(tripDestForm);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+        if(currentDestinationsList.size() >= 1) {
+            if(tripDestination.getDestinationName().equals(currentDestinationsList.get(currentDestinationsList.size() - 1).getDestinationName())) {
+                return redirect(routes.TripsController.showCreate());
+            }
+        }
         currentDestinationsList.add(tripDestination);
         tripDestination.setDestOrder(currentDestinationsList.size()); //Note this cannot be used as indexes as they start at 1 not 0
         tripDestination.setTripId(1);
