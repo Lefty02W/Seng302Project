@@ -56,7 +56,7 @@
                             @helper.form(routes.TripsController.updateName(id)) {
                                 @CSRF.formField
                                 @helper.inputText(tripForm("name"), '_label -> "Trip Name", '_help -> "")
-                                <button type="submit" class="button-edit" style="width: 20vw" id="save">Save Trip</button>
+                                <button type="submit" class="button-edit" style="width: 20vw" id="save">Save trip name</button>
                             }
                             @helper.form(routes.TripsController.addDestinationEditTrip(id, currentTripDestinationsList.size())) {
                                 @CSRF.formField

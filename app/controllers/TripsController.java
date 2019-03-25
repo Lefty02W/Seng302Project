@@ -78,7 +78,7 @@ public class TripsController extends Controller {
         Trip trip = tripRepository.getTrip(id);
         Form<Trip> tripForm = form.fill(trip);
         ArrayList<TripDestination> sortedTripdest = sortByOrder(trip.getDestinations());
-        return ok(tripsEdit.render(tripForm, formTrip, sortedTripdest, currentUser, id, request, messagesApi.preferred(request)));
+        return ok(tripsEdit.render(tripForm, formTrip, trip.getDestinations(), currentUser, id, request, messagesApi.preferred(request)));
     }
 
 

@@ -36,7 +36,7 @@ public class Trip extends Model {
      * @param destinations The destinations in the trip
      */
     public Trip(ArrayList<TripDestination> destinations, String name) {
-        this.destinations = destinations;
+        this.destinations = sortDestinationsByOrder(destinations);
         this.name = name;
 
     }
@@ -58,11 +58,12 @@ public class Trip extends Model {
     }
 
     public ArrayList<TripDestination> getDestinations() {
+        this.destinations = sortDestinationsByOrder(destinations);
         return destinations;
     }
 
     public void setDestinations(ArrayList<TripDestination> destinations) {
-        this.destinations = destinations;
+        this.destinations = sortDestinationsByOrder(destinations);
     }
 
     public Integer getId() { return tripId; }
@@ -78,6 +79,7 @@ public class Trip extends Model {
 
 
     public long getTravelTime() {
+        this.destinations = sortDestinationsByOrder(destinations);
         TripDestination startDest = destinations.get(0);
         TripDestination endDest = destinations.get(destinations.size() - 1);
         if (startDest.getArrival() == null || endDest.getDeparture() == null) {
@@ -91,6 +93,7 @@ public class Trip extends Model {
      * Get the date of arrival at the first destination in the trip, as a string.
      */
     public String getStartDateString(){
+        this.destinations = sortDestinationsByOrder(destinations);
         Date startDate = destinations.get(0).getArrival();
         if (startDate == null) {
             return "";
@@ -99,6 +102,7 @@ public class Trip extends Model {
     }
 
     public long getTimeVal() {
+        this.destinations = sortDestinationsByOrder(destinations);
         Date startDate = destinations.get(0).getArrival();
         if (startDate != null) {
             return startDate.getTime();
@@ -112,12 +116,25 @@ public class Trip extends Model {
     }
 
     public String getDestinationNames() {
+        this.destinations = sortDestinationsByOrder(destinations);
         //TODO fix this to get name not id
         String names = "" + destinations.get(0).getDestinationId();
         for (int i = 1; i < destinations.size(); i++) {
             names += ", " + destinations.get(i).getDestinationId();
         }
         return names;
+    }
+
+    public ArrayList<TripDestination> sortDestinationsByOrder(ArrayList<TripDestination> array) {
+        ArrayList<TripDestination> temp = new ArrayList<TripDestination>();
+        for (int i = 0; i<array.size(); i++) {
+            for (int x=0; x < array.size(); x++) {
+                if (array.get(x).getDestOrder() == i+1) {
+                    temp.add(array.get(x));
+                }
+            }
+        }
+        return temp;
     }
 
 }
