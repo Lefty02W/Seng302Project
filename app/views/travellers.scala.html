@@ -105,8 +105,8 @@
                                         <td>@user.getNationalities</td>
                                         <td>@user.getPassports</td>
                                         <td>@user.getTravellerTypes</td>
-                                        <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)"><button type="submit" class="viewPicButton" data-toggle="modal" data-target="">
-                                                View</button>
+                                        <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)">
+                                            <button type="submit" class="viewPicButton">View</button>
                                         </a>
                                         </td>
                                     </tr>
@@ -135,12 +135,6 @@
                 });
 
             });
-
-            function getTravellerPhotos(ele) {
-                var row = $(ele).closest('tr');
-                console.log(row.find('td:eq(3)').text());
-                return row.find('td:eq(3)').text();
-            }
     </script>
 
 </html>

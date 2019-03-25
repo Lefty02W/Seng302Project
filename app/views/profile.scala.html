@@ -27,15 +27,20 @@
             <div id="sidebar-wrapper">
                 <div class="sidebar-heading"><h2>TravelEA</h2></div>
                 <div id="sidebar">
-                    <a style="color: #ca6636" href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                    <a style="color: #ca6636" href="@routes.ProfileController.show()"><img class="sidebar-icon"
+                    src="@routes.Assets.at("images/profile-icon.png")"/>
                         Profile</a>
-                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon"
+                    src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
-                    <a href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a href="@routes.TripsController.show()"><img class="sidebar-icon"
+                    src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
-                    <a href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                    <a href="@routes.TravellersController.show()"><img class="sidebar-icon"
+                    src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
-                    <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                    <a href="@routes.LoginController.show()"><img class="sidebar-icon"
+                    src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
                 </div>
             </div>
@@ -178,7 +183,8 @@
 
                     <div class="row">
                         <div class="col">
-                            <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button" class="button-edit" style="width: 10vw;
+                            <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button"
+                            class="button-edit" style="width: 10vw;
                                 float: right">
                                 Edit Profile
                             </button>
@@ -225,14 +231,18 @@
                             <div class="row">
                             @for(image <- imageList) {
                                 <div class="card">
-                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName" name="@image.getImageId">
+                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                    src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName"
+                                    name="@image.getImageId">
                                     <div class="card-body">
                                         @if(image.getVisible == 1) {
                                             <p class="card-text"> @image.displayVisibility(image.getVisible) 🌏</p>
-                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)"><button onclick="updatePrivacy(this)">Make Private</button></a>
+                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                                <button>Make Private</button></a>
                                         } else {
                                             <p class="card-text"> @image.displayVisibility(image.getVisible) 🔒</p>
-                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)"><button onclick="updatePrivacy(this)">Make Public</button></a>
+                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                                <button>Make Public</button></a>
                                         }
                                     </div>
 
@@ -261,11 +271,11 @@
 
     <script>
 
-            var closebtns = document.getElementsByClassName("close");
+            var closeBtns = document.getElementsByClassName("close");
             var i;
 
-            for (i = 0; i < closebtns.length; i++) {
-                closebtns[i].addEventListener("click", function () {
+            for (i = 0; i < closeBtns.length; i++) {
+                closeBtns[i].addEventListener("click", function () {
                     this.parentElement.style.display = 'none';
                 });
             }
@@ -277,11 +287,10 @@
                 var modal = document.getElementById('expandImageModal');
                 var modalImg = document.getElementById('expandedImage');
                 var captionText = document.getElementById("caption");
-                // var idText = document.getElementById("id");
+
                 modal.style.display = "block";
                 modalImg.src = image;
                 captionText.innerHTML = text;
-                // idText.innerHTML = id;
 
                 // Get the <span> element that closes the modal
                 var span = document.getElementsByClassName("close")[0];
@@ -290,14 +299,6 @@
                 span.onclick = function () {
                     modal.style.display = "none";
                 }
-            }
-
-            function updatePrivacy() {
-                var id = document.getElementById('id');
-                console.log("Image id value is " + id.innerHTML.valueOf());
-
-                this.currentImage = id.innerHTML.valueOf();
-                return this.currentImage;
             }
     </script>
 

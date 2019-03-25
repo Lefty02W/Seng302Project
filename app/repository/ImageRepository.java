@@ -2,18 +2,19 @@ package repository;
 
 import io.ebean.*;
 import models.Image;
-import models.Image;
 import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
-import java.sql.Blob;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-
+/**
+ * A repository that executes database operations in a different
+ * execution context.
+ * Handles all queries related to images stored in the database
+ */
 public class ImageRepository {
 
     private final EbeanServer ebeanServer;
@@ -29,9 +30,6 @@ public class ImageRepository {
         return supplyAsync(() -> {
             try {
                 ebeanServer.insert(image);
-                System.out.println("SUCCESS. ID:" + image.getImageId());
-                System.out.println("Type: " + image.getVisible());
-
             } catch (Exception e) {
                 System.out.print(e);
             }
@@ -40,14 +38,12 @@ public class ImageRepository {
     }
 
     /**
-     * Update profile in database using Profile model object,
-     * and the raw password from an input field, which will be set if it is not null.
-     * @param newProfile Profile object with new details
-     * @param password String of unhashed password.
-     * @return
+     * Update image visibility in database using Image model object,
+     * Checks if it is 1 'public' and changes it to 0 'private' and vice versa.
+     * @param id Integer with the images 'visible' value. Either 1 or 0.
+     * @return new 'visible' value
      */
     public CompletionStage<Optional<Integer>> updateVisibility(Integer id) {
-        System.out.println("CALL FROM REPOSITORY");
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Integer> value = Optional.empty();
@@ -72,7 +68,7 @@ public class ImageRepository {
 
     /**
      * Function to get all the images created by the signed in user.
-     * @param email user email
+     * @param email String of logged in users email
      * @return imageList list of images uploaded by the user
      */
     public Optional<List<Image>> getImages(String email) {

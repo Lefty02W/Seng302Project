@@ -7,10 +7,16 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.validation.Constraint;
-import java.io.File;
-import java.sql.Blob;
 
+/**
+ * Image class containing all the attributes of an image object.
+ * email - The email of the user the image is linked to.
+ * imageId - Auto incrementing primary key
+ * image - A Blob (Binary Large Object) byte array of the file converted into bytes.
+ * visible - A tinyInt, 1 or 0 meaning 'public' or 'private' access.
+ * contentType - The extension of a file uploaded (image/png, image/gif etc.).
+ * name - The name of the uploaded file.
+ */
 @Entity
 public class Image extends Model {
 
@@ -28,15 +34,15 @@ public class Image extends Model {
     private Integer visible;
 
     @Constraints.Required
-    private String type;
+    private String contentType;
 
     @Constraints.Required
     private String name;
 
-    public Image(String email, byte[] image, String type, Integer visable, String name){
+    public Image(String email, byte[] image, String contentType, Integer visable, String name){
         this.email = email;
         this.image = image;
-        this.type = type;
+        this.contentType = contentType;
         this.visible = visable;
         this.name = name;
     }
@@ -77,11 +83,11 @@ public class Image extends Model {
     }
 
     public String getType() {
-        return type;
+        return contentType;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String contentType) {
+        this.contentType = contentType;
     }
 
     public String getName() {
@@ -92,12 +98,16 @@ public class Image extends Model {
         this.name = name;
     }
 
+    /**
+     * Method to test if the image visibility is 1 or 0 and returns a string 'Public' or 'Private'
+     * respectively. Used only for display on the frontend.
+     * @param visibility Integer specifying the saved content type of an image
+     * @return a String 'Public' or 'Private'
+     */
     public String displayVisibility(Integer visibility) {
         if(visibility == 1) {
             return "Public";
-        } else {
-            return "Private";
         }
+        return "Private";
     }
-
 }

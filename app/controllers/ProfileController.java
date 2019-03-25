@@ -1,7 +1,6 @@
 package controllers;
 
 import models.*;
-import play.api.mvc.MultipartFormData;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -13,16 +12,10 @@ import repository.ImageRepository;
 import repository.ProfileRepository;
 import views.html.*;
 
-import javax.imageio.ImageIO;
+
 import javax.inject.Inject;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.lang.reflect.Array;
-import java.nio.file.Paths;
 import java.nio.file.Files;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -50,7 +43,7 @@ public class ProfileController extends Controller {
     }
 
     @Inject
-    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, ImageRepository imageRepository){
+    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, ImageRepository imageRepository) {
         this.profileForm = profileFormFactory.form(Profile.class);
         this.imageForm = imageFormFactory.form(ImageData.class);
         this.messagesApi = messagesApi;
@@ -63,10 +56,6 @@ public class ProfileController extends Controller {
 
 
     public CompletionStage<Result> showEdit(String email) {
-
-
-
-
         return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
@@ -80,7 +69,7 @@ public class ProfileController extends Controller {
         }, httpExecutionContext.current());
     }
 
-    public Result update(Http.Request request){
+    public Result update(Http.Request request) {
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
 
@@ -93,6 +82,7 @@ public class ProfileController extends Controller {
 
     /**
      * Get the currently logged in user
+     *
      * @param request
      * @return Web page showing connected user's email
      */
@@ -107,19 +97,23 @@ public class ProfileController extends Controller {
         }
     }
 
+
     /**
      * Inserts an Image object into the ImageRepository to be stored on the database
+     *
      * @param image Image object containing email, id, byte array of image and visible info
      * @return
      */
-    public Result savePhoto(Image image){
+    public Result savePhoto(Image image) {
         imageRepository.insert(image);
         return redirect(routes.ProfileController.show());
     }
 
+
     /**
      * Method to convert image byte arrays into pictures and display them as the appropriate
      * content type
+     *
      * @param id image id to be used as primary key to find image object
      */
     public Result displayPhotos(Integer id) {
@@ -127,10 +121,12 @@ public class ProfileController extends Controller {
         return ok(Objects.requireNonNull(image).getImage()).as(image.getType());
     }
 
+
     /**
      * Retrieves file (image) upload from the front end and converts the image into bytes
      * A new Image object is created and has its attributes set. This image is then sent
      * to savePhoto.
+     *
      * @param request
      * @return
      */
@@ -141,51 +137,54 @@ public class ProfileController extends Controller {
         Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
         ImageData imageData = uploadedImageForm.get();
 
-        if (picture != null) {
-            String fileName = picture.getFilename();
-//            long fileSize = picture.getFileSize();
-            String contentType = picture.getContentType();
-
-            if(contentType.equals("image/jpeg") || contentType.equals("image/png") || contentType.equals("image/gif")) {
-                TemporaryFile tempFile = picture.getRef();
-                File file = tempFile.path().toFile();
-//            tempFile.copyTo(Paths.get("public/images/" + fileName), true); // Can change to appropriate folder
-                try {
-                    this.imageBytes = Files.readAllBytes(file.toPath());
-                    Image image = new Image(null, null, null, null, null); // Initialize Image object
-                    Profile currentUser = getCurrentUser(request);
-                    image.setEmail(currentUser.getEmail());
-                    image.setType(contentType);
-                    image.setName(fileName);
-                    image.setImage(this.imageBytes);
-                    if(imageData.visible != null){
-                        image.setVisible(1); // For public (true)
-                    } else {
-                        image.setVisible(0); // For private (false)
-                    }
-                    savePhoto(image); // Successful upload
-                } catch (IOException e) {
-                    System.out.print(e);
-                }
-                return redirect(routes.ProfileController.show());
-            } else {
-                System.out.println("Invalid file type uploaded!");
-                return redirect(routes.ProfileController.show());
-            }
-        } else {
+        if (picture == null) {
             System.out.println("No image found.");
             return redirect(routes.ProfileController.show());
         }
+
+        String fileName = picture.getFilename();
+//            long fileSize = picture.getFileSize();
+        String contentType = picture.getContentType();
+
+        if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
+            return redirect(routes.ProfileController.show());
+        }
+
+        TemporaryFile tempFile = picture.getRef();
+        File file = tempFile.path().toFile();
+
+        try {
+            this.imageBytes = Files.readAllBytes(file.toPath());
+            Image image = new Image(null, null, null, null, null); // Initialize Image object
+            Profile currentUser = getCurrentUser(request);
+            image.setEmail(currentUser.getEmail());
+            image.setType(contentType);
+            image.setName(fileName);
+            image.setImage(this.imageBytes);
+            if (imageData.visible != null) {
+                image.setVisible(1); // For public (true)
+            } else {
+                image.setVisible(0); // For private (false)
+            }
+            savePhoto(image); // Successful upload
+        } catch (IOException e) {
+            System.out.print(e);
+        }
+
+
+        return redirect(routes.ProfileController.show());
     }
+
 
     /**
      * Inserts an Image object into the ImageRepository to be stored on the database
-     * @param image Image object containing email, id, byte array of image and visible info
+     *
+     * @param id Image object containing email, id, byte array of image and visible info
      * @return
      */
-    public Result updatePrivacy(Integer id){
+    public Result updatePrivacy(Integer id) {
         System.out.println("CALL TO UPDATE");
-        try{
+        try {
             imageRepository.updateVisibility(id);
         } catch (Exception e) {
             System.out.println(e);
@@ -195,6 +194,7 @@ public class ProfileController extends Controller {
 
     /**
      * Method to retrieve all uploaded profile images from the database for a logged in user
+     *
      * @param request
      * @return
      */
@@ -203,14 +203,11 @@ public class ProfileController extends Controller {
         Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
         try {
             imageList = imageListTemp.get();
-        } catch(NoSuchElementException e) {
+        } catch (NoSuchElementException e) {
             imageList = new ArrayList<Image>();
         }
 
-        // For testing. Delete later
-        for(Image image : imageList) {
-            System.out.println("ID: " + image.getImageId() + " Image: " + image.getImage() + " Visible: " + image.getVisible());
-        }
+
         return imageList;
     }
 
@@ -218,7 +215,7 @@ public class ProfileController extends Controller {
         Profile currentProfile = getCurrentUser(request);
         //TODO change to read from db (the trips)
         currentProfile.setTrips(new ArrayList<Trip>());
-        List<Image> displayImageList = getUserPhotos(request); // For Testing if images are able to be retrieved from db. Delete later.
+        List<Image> displayImageList = getUserPhotos(request);
         return ok(profile.render(currentProfile, imageForm, displayImageList, request, messagesApi.preferred(request)));
     }
 }
