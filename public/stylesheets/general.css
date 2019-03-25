@@ -259,3 +259,7 @@ div.dataTables_filter {
     height: 4vh;
     opacity: 0;
 }
+
+.alert-card {
+    opacity: 0.95;
+}

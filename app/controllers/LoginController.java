@@ -61,7 +61,7 @@ public class LoginController extends Controller {
         } else {
             //TODO show incorrect user login on the front end
             System.out.println("Incorrect login Data please try again");
-            return supplyAsync(() -> redirect(routes.LoginController.show()));
+            return supplyAsync(() -> redirect("/").flashing("info", "Login details incorrect, please try again"));
         }
     }
 
