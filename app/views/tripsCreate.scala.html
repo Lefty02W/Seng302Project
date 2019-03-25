@@ -96,7 +96,7 @@
                                     <td>@tripDestination.getDestinationName</td>
                                     <td>@tripDestination.getArrival</td>
                                     <td>@tripDestination.getDeparture</td>
-                                    <td><a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getOrder)"><button id="edit_@tripDestination.getDestinationId">Edit</button></a></td> <!--onclick="fillModal(this)-->
+                                    <td><a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder)"><button id="edit_@tripDestination.getDestinationId">Edit</button></a></td> <!--onclick="fillModal(this)-->
 
                                     @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestinationId)) {
                                         @CSRF.formField
@@ -135,7 +135,7 @@
                         <div class="modal-body">
 
 
-                        @helper.form(routes.TripsController.updateDestination(toEdit.getOrder)) {
+                        @helper.form(routes.TripsController.updateDestination(toEdit.getDestOrder)) {
                             @CSRF.formField
 
                             <div class="col" id="formItems">
@@ -143,7 +143,7 @@
 
 
                                 <h5>Destination Order</h5>
-                                <input id="order" name="order" type="number" value="@toEdit.getOrder" min="1" max="@currentDestinationsList.size" required>
+                                <input id="order" name="order" type="number" value="@toEdit.getDestOrder" min="1" max="@currentDestinationsList.size" required>
 
 
                                 <h5>Destination</h5>

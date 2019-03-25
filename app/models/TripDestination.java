@@ -31,7 +31,7 @@ public class TripDestination extends Model {
 
     private int tripId;
 
-    private int order;
+    private int dest_order;
 
     private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
@@ -39,19 +39,18 @@ public class TripDestination extends Model {
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
 
-
-
     /**
-     * Constructor for a destination within a trip
-     * @param destinationId the destination
-     * @param arrival the arrival timestamp
-     * @param departure the departure timestamp
+     *
+     * @param destinationId
+     * @param arrival
+     * @param departure
+     * @param dest_order
      */
-    public TripDestination(int destinationId, Date arrival, Date departure, int order) {
+    public TripDestination(int destinationId, Date arrival, Date departure, int dest_order) {
         this.destinationId = destinationId;
         this.arrival = arrival;
         this.departure = departure;
-        this.order = order;
+        this.dest_order = dest_order;
     }
 
     /**
@@ -152,11 +151,11 @@ public class TripDestination extends Model {
         return Destination.find.byId(Integer.toString(destinationId)).getName();
     }
 
-    public int getOrder() {
-        return order;
+    public int getDestOrder() {
+        return dest_order;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setDestOrder(int dest_order) {
+        this.dest_order = dest_order;
     }
 }

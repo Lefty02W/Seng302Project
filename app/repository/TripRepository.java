@@ -49,6 +49,7 @@ public class TripRepository {
         ebeanServer.insert(trip);
         for (TripDestination tripDestination : tripDestinations) {
             tripDestination.setTripId(trip.getId());
+            System.out.println(tripDestination.getTripId());
             ebeanServer.insert(tripDestination);
         }
 

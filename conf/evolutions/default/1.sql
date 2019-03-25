@@ -92,7 +92,7 @@ create table trip_destination (
   departure                     datetime(6),
   destination_id                integer not null,
   trip_id                       integer not null,
-  order                         integer not null,
+  dest_order                    integer not null,
   constraint pk_trip_destination primary key (trip_destination_id)
 );
 

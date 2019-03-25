@@ -92,9 +92,9 @@
                                     <td>@tripDestination.getDestinationName</td>
                                     <td>@tripDestination.getDeparture</td>
                                     <td>@tripDestination.getArrival</td>
-                                    <td><button id="edit_@tripDestination.getDestinationId" data-toggle="modal" data-target="#editModal_@tripDestination.getOrder" >Edit</button></td> <!--onclick="fillModal(this)-->
+                                    <td><button id="edit_@tripDestination.getDestinationId" data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" >Edit</button></td> <!--onclick="fillModal(this)-->
                                 </tr>
-                                <div class="modal" id="editModal_@tripDestination.getOrder">
+                                <div class="modal" id="editModal_@tripDestination.getDestOrder">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
 
@@ -108,7 +108,7 @@
                                             <div class="modal-body">
 
 
-                                            @helper.form(routes.TripsController.updateDestinationEdit(tripDestination.getOrder)) {
+                                            @helper.form(routes.TripsController.updateDestinationEdit(tripDestination.getDestOrder)) {
                                                 @CSRF.formField
 
                                                 <div class="col" id="formItems">
@@ -116,7 +116,7 @@
 
 
                                                     <h5>Destination Order</h5>
-                                                    <input id="order" name="order" type="number" value="@tripDestination.getOrder" min="1" max="@currentTripDestinationsList.size" required>
+                                                    <input id="order" name="order" type="number" value="@tripDestination.getDestOrder" min="1" max="@currentTripDestinationsList.size" required>
 
 
                                                     <h5>Destination</h5>

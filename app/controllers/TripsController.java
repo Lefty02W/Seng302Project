@@ -98,7 +98,7 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         currentDestinationsList.add(tripDestination);
-        tripDestination.setOrder(currentDestinationsList.size()); //Note this cannot be used as indexes as they start at 1 not 0
+        tripDestination.setDestOrder(currentDestinationsList.size()); //Note this cannot be used as indexes as they start at 1 not 0
         tripDestination.setTripId(1);
         tripRepository.insertTripDestination(tripDestination);
         return redirect(routes.TripsController.showCreate());
@@ -180,7 +180,7 @@ public class TripsController extends Controller {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
-        Integer newLocation = tripDestination.getOrder();
+        Integer newLocation = tripDestination.getDestOrder();
         if (oldLocation.equals(newLocation)) {
             currentDestinationsList.set(newLocation-1, tripDestination);
         } else {
@@ -198,21 +198,21 @@ public class TripsController extends Controller {
         TripDestination tripDest;
         for (int i = 0; i < currentDestinationsList.size(); i++) {
             tripDest = currentDestinationsList.get(i);
-            if (tripDest.getOrder() > oldLocation && tripDest.getOrder() <= newLocation) {
-                currentDestinationsList.get(i).setOrder(tripDest.getOrder() - 1);
+            if (tripDest.getDestOrder() > oldLocation && tripDest.getDestOrder() <= newLocation) {
+                currentDestinationsList.get(i).setDestOrder(tripDest.getDestOrder() - 1);
 
             }
-            else if (tripDest.getOrder() < oldLocation && tripDest.getOrder() >= newLocation) {
-                currentDestinationsList.get(i).setOrder(tripDest.getOrder() + 1);
+            else if (tripDest.getDestOrder() < oldLocation && tripDest.getDestOrder() >= newLocation) {
+                currentDestinationsList.get(i).setDestOrder(tripDest.getDestOrder() + 1);
             }
         }
         //changes the order of the main tripDest
-        currentDestinationsList.get(oldLocation-1).setOrder(newLocation);
+        currentDestinationsList.get(oldLocation-1).setDestOrder(newLocation);
         //puts everything into another list ordered
         ArrayList<TripDestination> tempList = new ArrayList<>();
         for (int i = 0; i < currentDestinationsList.size(); i++) {
             for (int x= 0; x < currentDestinationsList.size(); x++) {
-                if (currentDestinationsList.get(x).getOrder() == i+1) {
+                if (currentDestinationsList.get(x).getDestOrder() == i+1) {
                     tempList.add(currentDestinationsList.get(x));
                     break;
                 }
