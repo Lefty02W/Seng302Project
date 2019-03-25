@@ -31,7 +31,7 @@ public class TripDestination extends Model {
 
     private int tripId;
 
-    private int dest_order;
+    private int destOrder;
 
     private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
@@ -50,7 +50,7 @@ public class TripDestination extends Model {
         this.destinationId = destinationId;
         this.arrival = arrival;
         this.departure = departure;
-        this.dest_order = dest_order;
+        this.destOrder = dest_order;
     }
 
     /**
@@ -152,10 +152,10 @@ public class TripDestination extends Model {
     }
 
     public int getDestOrder() {
-        return dest_order;
+        return destOrder;
     }
 
     public void setDestOrder(int dest_order) {
-        this.dest_order = dest_order;
+        this.destOrder = dest_order;
     }
 }

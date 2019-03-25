@@ -3,6 +3,7 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
+import io.ebean.Transaction;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -32,6 +33,37 @@ public class TripDestinationsRepository {
         return supplyAsync(() -> {
             ebeanServer.insert(tripDestination);
             return tripDestination.getTripId();
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<Integer>> delete(int tripDestinationId) {
+        return supplyAsync(() -> {
+            try {
+                final Optional<TripDestination> tripDestOptional = Optional.ofNullable(ebeanServer.find(TripDestination.class).setId(tripDestinationId).findOne());
+                tripDestOptional.ifPresent(Model::delete);
+                return tripDestOptional.map(p -> p.getTripDestinationId());
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        }, executionContext);
+    }
+
+    public CompletionStage<Optional<Integer>> updateOrder(int tripDestinationId, int order) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Integer> value = Optional.empty();
+            try {
+                TripDestination targetTripDest = ebeanServer.find(TripDestination.class).setId(tripDestinationId).findOne();
+                if (targetTripDest != null) {
+                    targetTripDest.setDestOrder(order);
+                }
+                targetTripDest.update();
+                txn.commit();
+                value = Optional.of(targetTripDest.getDestOrder());
+            } finally {
+                txn.end();
+            }
+            return value;
         }, executionContext);
     }
 }

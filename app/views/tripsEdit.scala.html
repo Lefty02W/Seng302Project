@@ -58,13 +58,13 @@
                                 @helper.inputText(tripForm("name"), '_label -> "Trip Name", '_help -> "")
                                 <button type="submit" class="button-edit" style="width: 20vw" id="save">Save Trip</button>
                             }
-                            @helper.form(routes.TripsController.addDestinationEditTrip(id)) {
+                            @helper.form(routes.TripsController.addDestinationEditTrip(id, currentTripDestinationsList.size())) {
                                 @CSRF.formField
                                 <div class="row">
 
                                     <div class="col">
                                         <h5>Destination</h5>
-                                        <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination">
+                                        <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                         @for(destination <- currentUser.getDestinations) {
                                             <option value=@destination.getDestinationId>@destination.getName</option>
                                         }
@@ -108,7 +108,7 @@
                                             <div class="modal-body">
 
 
-                                            @helper.form(routes.TripsController.updateDestinationEdit(tripDestination.getDestOrder)) {
+                                            @helper.form(routes.TripsController.updateDestinationEdit(tripDestination.getDestOrder, id)) {
                                                 @CSRF.formField
 
                                                 <div class="col" id="formItems">
@@ -116,7 +116,7 @@
 
 
                                                     <h5>Destination Order</h5>
-                                                    <input id="order" name="order" type="number" value="@tripDestination.getDestOrder" min="1" max="@currentTripDestinationsList.size" required>
+                                                    <input id="order" name="destOrder" type="number" value="@tripDestination.getDestOrder" min="1" max="@currentTripDestinationsList.size" required>
 
 
                                                     <h5>Destination</h5>
@@ -185,7 +185,8 @@
                         searchPlaceholder: "Search..."
                     },
                     "sDom": '<"top"pfl>rt<"bottom"><"clear">',
-                    "autoWidth": false
+                    "autoWidth": false,
+                    "ordering": false
                 });
 
                 $('#destinations').DataTable({

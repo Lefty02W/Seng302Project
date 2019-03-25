@@ -77,7 +77,8 @@ public class TripsController extends Controller {
         Profile currentUser = SessionController.getCurrentUser(request);
         Trip trip = tripRepository.getTrip(id);
         Form<Trip> tripForm = form.fill(trip);
-        return ok(tripsEdit.render(tripForm, formTrip, trip.getDestinations(), currentUser,  id, request, messagesApi.preferred(request)));
+        ArrayList<TripDestination> sortedTripdest = sortByOrder(trip.getDestinations());
+        return ok(tripsEdit.render(tripForm, formTrip, sortedTripdest, currentUser, id, request, messagesApi.preferred(request)));
     }
 
 
@@ -110,25 +111,54 @@ public class TripsController extends Controller {
      * @param id
      * @return
      */
-    public Result addDestinationEditTrip(Http.Request request, int id) {
+    public Result addDestinationEditTrip(Http.Request request, int id, int numTripdests) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         //TODO add the destination to the database and the trip
         tripDestination.setTripId(id);
+        tripDestination.setDestOrder(numTripdests + 1);
         tripDestination.setDestinationId(tripDestination.getDestinationId());
-        tripDestinationRepository.insert(tripDestination);
+        try {
+            tripDestinationRepository.insert(tripDestination);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
         return redirect(routes.TripsController.showEdit(id));
     }
 
     /**
      * Updates a trip destination within the trip currenty being edited
-     * @param request
-     * @param oldLocation
-     * @return
      */
-    public Result updateDestinationEdit(Http.Request request, Integer oldLocation) {
-        //TODO implement this
-        return null;
+    public Result updateDestinationEdit(Http.Request request, Integer oldLocation, Integer tripId) {
+        Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
+        TripDestination tripDestination = tripDestForm.get();
+        tripDestination.setTripId(tripId);
+        tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+        Trip trip = tripRepository.getTrip(tripId);
+        ArrayList<TripDestination> tripDestinations = trip.getDestinations();
+        Integer newLocation = tripDestination.getDestOrder();
+        if (oldLocation.equals(newLocation)) {
+            tripDestinationRepository.insert(tripDestination);
+            tripDestinationRepository.delete(tripDestinations.get(oldLocation - 1).getTripDestinationId());
+        } else {
+            //goes through the trips tripDests and changes the order of any tripDests that may be indirectly affected
+            for (int i = 0; i < tripDestinations.size(); i++) {
+                if (tripDestinations.get(i).getDestOrder() > oldLocation && tripDestinations.get(i).getDestOrder() <= newLocation) {
+                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
+                            tripDestinations.get(i).getDestOrder()-1);
+                }
+                else if (tripDestinations.get(i).getDestOrder() < oldLocation && tripDestinations.get(i).getDestOrder() >= newLocation) {
+                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
+                            tripDestinations.get(i).getDestOrder()+1);
+                }
+            }
+            //deletes the tripDest and replaces it with the new TripDest
+            tripDestinationRepository.delete(tripDestinations.get(oldLocation-1).getTripDestinationId());
+            tripDestinationRepository.insert(tripDestination);
+        }
+        //tripRepository.getTrip(tripId).setDestinations(sortByOrder(tripRepository.getTrip(tripId).getDestinations()));
+        return redirect(routes.TripsController.showEdit(tripId));
     }
 
 
@@ -231,6 +261,20 @@ public class TripsController extends Controller {
         //if id = id
         //.remove(currentIndex)
         return redirect(routes.TripsController.showCreate());
+    }
+
+
+
+    public ArrayList<TripDestination> sortByOrder(ArrayList<TripDestination> array) {
+        ArrayList<TripDestination> temp = new ArrayList<TripDestination>();
+        for (int i = 0; i<array.size(); i++) {
+            for (int x=0; x < array.size(); x++) {
+                if (array.get(x).getDestOrder() == i+1) {
+                    temp.add(array.get(x));
+                }
+            }
+        }
+        return temp;
     }
 
 

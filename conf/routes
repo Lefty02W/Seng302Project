@@ -10,7 +10,7 @@ POST    /destinations/:id      controllers.DestinationsController.update(request
 POST    /destinations               controllers.DestinationsController.save(request: Request)
 POST    /destinations/delete/:id    controllers.DestinationsController.delete(id: Integer)
 POST    /trips/update    controllers.TripsController.updateDestination(request: Request, destOrder: Integer)
-POST    /trips/create/update    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer)
+POST    /trips/create/update    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer)
 GET    /trips/create/update    controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer)
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
@@ -42,7 +42,7 @@ GET     /trips/edit/:id              controllers.TripsController.showEdit(reques
 POST    /trips                       controllers.TripsController.save(request: Request)
 POST    /trips/create                controllers.TripsController.addDestination(request: Request)
 POST    /trips/edit                  controllers.TripsController.updateName(request: Request, id: Integer)
-POST    /trips/edit/:id              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer)
+POST    /trips/edit/:id              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, numTripdests: Integer)
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
 GET    /trips/delete/:id             controllers.TripsController.delete(id: Integer)
