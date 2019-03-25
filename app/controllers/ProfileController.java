@@ -179,6 +179,21 @@ public class ProfileController extends Controller {
     }
 
     /**
+     * Inserts an Image object into the ImageRepository to be stored on the database
+     * @param image Image object containing email, id, byte array of image and visible info
+     * @return
+     */
+    public Result updatePrivacy(Integer id){
+        System.out.println("CALL TO UPDATE");
+        try{
+            imageRepository.updateVisibility(id);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return redirect(routes.ProfileController.show());
+    }
+
+    /**
      * Method to retrieve all uploaded profile images from the database for a logged in user
      * @param request
      * @return

@@ -40,6 +40,37 @@ public class ImageRepository {
     }
 
     /**
+     * Update profile in database using Profile model object,
+     * and the raw password from an input field, which will be set if it is not null.
+     * @param newProfile Profile object with new details
+     * @param password String of unhashed password.
+     * @return
+     */
+    public CompletionStage<Optional<Integer>> updateVisibility(Integer id) {
+        System.out.println("CALL FROM REPOSITORY");
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Integer> value = Optional.empty();
+            try {
+                Image targetImage = ebeanServer.find(Image.class).setId(id).findOne();
+                if (targetImage != null) {
+                    if(targetImage.getVisible() == 1) {
+                        targetImage.setVisible(0); // Public to private
+                    } else {
+                        targetImage.setVisible(1); // Private to public
+                    }
+                    targetImage.update();
+                    txn.commit();
+                    value = Optional.of(targetImage.getVisible());
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    /**
      * Function to get all the images created by the signed in user.
      * @param email user email
      * @return imageList list of images uploaded by the user

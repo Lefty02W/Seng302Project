@@ -36,6 +36,7 @@ GET     /profile/edit/:email         controllers.ProfileController.showEdit(emai
 POST    /profile                     controllers.ProfileController.update(request: Request)
 POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer)
+GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
 
 GET     /trips/create                controllers.TripsController.showCreate(request: Request)
 GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)

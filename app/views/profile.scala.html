@@ -6,6 +6,7 @@
 @import javax.swing.ImageIcon
 @(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
 
+
 <!DOCTYPE html>
 <html>
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
@@ -224,7 +225,15 @@
                             <div class="row">
                             @for(image <- imageList) {
                                 <div class="card">
-                                    <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName">
+                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName" name="@image.getImageId">
+                                        <!-- The Expanded Image Modal -->
+                                    <div id="expandImageModal" class="modal">
+                                        <span class="close">&times;</span>
+                                        <img class="modal-content" id="expandedImage">
+                                        <div id="caption"></div>
+                                        <div id="id"></div>
+                                        <div><a href="@routes.ProfileController.updatePrivacy(image.getImageId)"><button onclick="updatePrivacy(this)" data-toggle="modal">Change Privacy</button></a></div>
+                                    </div>
                                 </div>
                             }
                             </div>
@@ -236,14 +245,8 @@
 
             </div>
 
-                <!-- The Expanded Image Modal -->
-            <div id="expandImageModal" class="modal">
-                <span class="close">&times;</span>
-                <img class="modal-content" id="expandedImage">
-                <div id="caption"></div>
-            </div>
-        </div>
 
+        </div>
     </body>
 
 
@@ -260,14 +263,16 @@
 
             // Method that gets the image data from on the image clicked and displays
             // it in its original resolution in a new modal
-            function expand(image, text) {
+            function expand(image, text, id) {
                 // Get the modal
                 var modal = document.getElementById('expandImageModal');
                 var modalImg = document.getElementById('expandedImage');
                 var captionText = document.getElementById("caption");
+                // var idText = document.getElementById("id");
                 modal.style.display = "block";
                 modalImg.src = image;
                 captionText.innerHTML = text;
+                // idText.innerHTML = id;
 
                 // Get the <span> element that closes the modal
                 var span = document.getElementsByClassName("close")[0];
@@ -276,6 +281,15 @@
                 span.onclick = function () {
                     modal.style.display = "none";
                 }
+            }
+
+            function updatePrivacy() {
+                var id = document.getElementById('id');
+                console.log("Image id is " + id);
+                console.log("Image id value is " + id.innerHTML.valueOf());
+
+                this.currentImage = id.innerHTML.valueOf();
+                return this.currentImage;
             }
     </script>
 
