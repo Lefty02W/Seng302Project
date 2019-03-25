@@ -226,13 +226,22 @@
                             @for(image <- imageList) {
                                 <div class="card">
                                     <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName" name="@image.getImageId">
+                                    <div class="card-body">
+                                        @if(image.getVisible == 1) {
+                                            <p class="card-text"> @image.displayVisibility(image.getVisible) 🌏</p>
+                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)"><button onclick="updatePrivacy(this)">Make Private</button></a>
+                                        } else {
+                                            <p class="card-text"> @image.displayVisibility(image.getVisible) 🔒</p>
+                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)"><button onclick="updatePrivacy(this)">Make Public</button></a>
+                                        }
+                                    </div>
+
                                         <!-- The Expanded Image Modal -->
                                     <div id="expandImageModal" class="modal">
                                         <span class="close">&times;</span>
                                         <img class="modal-content" id="expandedImage">
                                         <div id="caption"></div>
                                         <div id="id"></div>
-                                        <div><a href="@routes.ProfileController.updatePrivacy(image.getImageId)"><button onclick="updatePrivacy(this)" data-toggle="modal">Change Privacy</button></a></div>
                                     </div>
                                 </div>
                             }
@@ -285,7 +294,6 @@
 
             function updatePrivacy() {
                 var id = document.getElementById('id');
-                console.log("Image id is " + id);
                 console.log("Image id value is " + id.innerHTML.valueOf());
 
                 this.currentImage = id.innerHTML.valueOf();

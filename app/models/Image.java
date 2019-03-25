@@ -92,4 +92,12 @@ public class Image extends Model {
         this.name = name;
     }
 
+    public String displayVisibility(Integer visibility) {
+        if(visibility == 1) {
+            return "Public";
+        } else {
+            return "Private";
+        }
+    }
+
 }

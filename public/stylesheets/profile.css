@@ -106,8 +106,20 @@ img.thumbnail {
 }
 
 .card {
-    height: 240px;
+    height: 360px;
     width: 240px;
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+     flex: none;
+    padding: 1.25rem;
+}
+
+.card-body button {
+    padding: 0;
+    margin: 0;
+    width: 100%
 }
 
 /* The Modal (background) */
