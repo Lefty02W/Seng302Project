@@ -135,7 +135,7 @@
                                                             } else {
                                                                 <span>0</span>
                                                             }
-                                                            @currentUser.getTrips.get(index).getStartDateString</td>
+                                                            @currentUser.getTrips.get(index).getStartDate</td>
                                                         <td>@currentUser.getTrips.get(index).getDestinations.size()</td>
                                                         <td>@currentUser.getTrips.get(index).getTravelTime</td>
                                                     </tr>
@@ -155,14 +155,14 @@
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrivalString</td>
+                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival</td>
                                                             <td>
                                                                 @if(currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture != null) {
                                                                     <span>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture.getTime</span>
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getDepartureString</td>
+                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture</td>
                                                         </tr>
                                                     }
                                                 </table>

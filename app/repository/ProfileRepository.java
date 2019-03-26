@@ -175,7 +175,7 @@ public class ProfileRepository {
         Destination dest;
         for (int i = 0; i < rowList.size(); i++) {
             dest = new Destination();
-            dest.setDestination_id(rowList.get(i).getInteger("destination_id"));
+            dest.setDestinationId(rowList.get(i).getInteger("destination_id"));
             dest.setUserEmail(rowList.get(i).getString("user_email"));
             dest.setName(rowList.get(i).getString("name"));
             dest.setType(rowList.get(i).getString("type"));

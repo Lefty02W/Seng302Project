@@ -8,9 +8,7 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 //import org.mindrot.jbcrypt.BCrypt;
 import java.util.stream.Collectors;
@@ -59,6 +57,7 @@ public class Profile extends Model {
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private static SimpleDateFormat dateFormatsort = new SimpleDateFormat("dd/MM/YYY");
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
@@ -185,7 +184,13 @@ public class Profile extends Model {
         this.trips = trips;
     }
 
+    public ArrayList<Destination> getDestinations() {
+        return destinations;
+    }
 
+    public void setDestinations(ArrayList<Destination> destinations) {
+        this.destinations = destinations;
+    }
 
     /**
      * This method sorts the users current list of trips by date
@@ -214,7 +219,7 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        return dateFormatSort.format(birthDate);
+        return dateFormatsort.format(birthDate);
     }
 
     public String getFormattedTravellerTypes() {

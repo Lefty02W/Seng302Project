@@ -103,7 +103,12 @@
                                                 @user.getBirthDate</td>
                                             <td>@user.getNationalities</td>
                                             <td>@user.getPassports</td>
-                                            <td>@user.getTravellerTypes</td>
+                                            <td>
+                                                <ul>
+                                            @for(travellerType <- user.getTravellerTypesList) {
+                                                <li>@travellerType</li>
+                                            }</ul>
+                                            </td>
                                             <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)">
                                                 <button type="submit" class="viewPicButton">View</button>
                                             </a>
@@ -148,7 +153,7 @@
                     "pageLength": 13,
                     dom: '<l<"toolbar">f>rtip>',
                     "searching": false,
-                    "sDom": 'rt<"bottom"p>',
+                    "sDom": 'rt<"top"p>',
                     "autoWidth": false
                 });
 

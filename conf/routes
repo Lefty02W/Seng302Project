@@ -55,5 +55,5 @@ POST    /user/create                 controllers.CreateUserController.save(reque
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
 GET    /trips/delete/:id             controllers.TripsController.delete(id: Integer)
-POST   /trips/create/:id             controllers.TripsController.deleteDestination(request: Request, id: Integer)
+GET   /trips/create/:id             controllers.TripsController.deleteDestination(request: Request, id: Integer)
 

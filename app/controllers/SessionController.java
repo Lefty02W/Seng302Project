@@ -3,6 +3,7 @@ package controllers;
 import models.Destination;
 import models.Profile;
 import models.Trip;
+import models.TripDestination;
 import play.mvc.Http;
 
 import java.util.ArrayList;
