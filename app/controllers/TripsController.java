@@ -17,14 +17,13 @@ import scala.xml.Null;
 import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
-
 import java.util.*;
-
 import java.sql.SQLOutput;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
+
+
 
 public class TripsController extends Controller {
 
@@ -100,14 +99,14 @@ public class TripsController extends Controller {
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         if(currentDestinationsList.size() >= 1) {
             if(tripDestination.getDestinationName().equals(currentDestinationsList.get(currentDestinationsList.size() - 1).getDestinationName())) {
-                return redirect(routes.TripsController.showCreate());
+                return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
             }
         }
         currentDestinationsList.add(tripDestination);
         tripDestination.setDestOrder(currentDestinationsList.size()); //Note this cannot be used as indexes as they start at 1 not 0
         tripDestination.setTripId(1);
         tripRepository.insertTripDestination(tripDestination);
-        return redirect(routes.TripsController.showCreate());
+        return redirect("/trips/create");
     }
 
     /**
@@ -144,11 +143,11 @@ public class TripsController extends Controller {
         Profile currentUser = SessionController.getCurrentUser(request);
         trip.setEmail(currentUser.getEmail());
         if (currentDestinationsList.size() < 2){
-            return redirect(routes.TripsController.showCreate());
+            return redirect("/trips/create").flashing("info", "A trip must have at least two destinations");
         } else {
             tripRepository.insert(trip, currentDestinationsList);
 
-            return redirect(routes.TripsController.show());
+            return redirect("/trips");
         }
     }
 
@@ -156,7 +155,7 @@ public class TripsController extends Controller {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip tempTrip = tripForm.get();
         tripRepository.updateName(id, tempTrip.getName());
-        return redirect(routes.TripsController.show());
+        return redirect("/trips");
     }
 
     /**
@@ -166,7 +165,7 @@ public class TripsController extends Controller {
      */
     public CompletionStage<Result> delete(Integer tripId) {
         return tripRepository.delete(tripId).thenApplyAsync(v -> {
-            return redirect(routes.TripsController.show());
+            return redirect("/trips");
         });
     }
 
@@ -220,7 +219,7 @@ public class TripsController extends Controller {
             sortFunc(oldLocation, newLocation);
             currentDestinationsList.set(newLocation-1, tripDestination);
         }
-        return redirect(routes.TripsController.showCreate());
+        return redirect("/trips/create");
     }
 
     /**

@@ -50,6 +50,11 @@
                 </nav>
                 <div class="container-fluid">
                     <div id="viewCard" class="card-large">
+                        @if(request.flash.containsKey("info")) {
+                            <div class="alert alert-info">
+                                @request.flash.get("info")
+                            </div>
+                        }
                         <h2>Create Trip</h2>
                             @helper.form(routes.TripsController.save()) {
                                 @CSRF.formField
