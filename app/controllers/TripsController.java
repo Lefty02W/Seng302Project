@@ -13,16 +13,12 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.TripDestinationsRepository;
 import repository.TripRepository;
-import scala.xml.Null;
 import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
 import java.util.*;
-import java.sql.SQLOutput;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.concurrent.CompletionStage;
-
 
 
 public class TripsController extends Controller {
@@ -52,8 +48,8 @@ public class TripsController extends Controller {
 
     /**
      *show the main trip page
-     * @param request
-     * @return
+     * @param request Http request
+     * @return a render of the trips page
      */
     public Result show(Http.Request request) {
         currentDestinationsList.clear();
@@ -72,11 +68,13 @@ public class TripsController extends Controller {
         return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, null, request, messagesApi.preferred(request)));
     }
 
+
     /**
-     * create and show  edit page
-     * @param request
-     * @param id
-     * @return
+     * Create and show Trip edit page
+     *
+     * @param request Http request
+     * @param id Integer id of the trip (primary key)
+     * @return a render of the edit trips page
      */
     public Result showEdit(Http.Request request, Integer id) {
         Profile currentUser = SessionController.getCurrentUser(request);
@@ -88,11 +86,13 @@ public class TripsController extends Controller {
         return ok(tripsEdit.render(tripForm, formTrip, sortByOrder(currentDestinationsList), currentUser, id, request, messagesApi.preferred(request)));
     }
 
+
     /**
      * create edit trip destination forms and page
-     * @param request
-     * @param order
-     * @return
+     *
+     * @param request Http request
+     * @param order The integer positioning of the destinations
+     * @return a render of the create trips page
      */
     public Result editTripDestinationCreate(Http.Request request, Integer order) {
         TripDestination dest = currentDestinationsList.get(order - 1);
@@ -100,8 +100,10 @@ public class TripsController extends Controller {
         return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, dest, request, messagesApi.preferred(request)));
     }
 
+
     /**
      * Adds a destination to the trip being created
+     *
      * @param request the http request
      * @return the result
      */
@@ -121,10 +123,12 @@ public class TripsController extends Controller {
         return redirect("/trips/create");
     }
 
+
     /**
-     * add extra destination to a trip being edited
-     * @param request
-     * @param id
+     * Add extra destination to a trip being edited
+     *
+     * @param request Http request
+     * @param id Integer id of the trip (primary key)
      * @return redirection tot he edit page
      */
     public Result addDestinationEditTrip(Http.Request request, int id, int numTripdests) {
@@ -148,6 +152,7 @@ public class TripsController extends Controller {
 
     /**
      * Saves a users newly created trip and its connected tripDestinations ot the database
+     *
      * @param request the http request
      * @return the result
      */
@@ -165,11 +170,13 @@ public class TripsController extends Controller {
         }
     }
 
+
     /**
-     * updates a trips
-     * @param request
-     * @param id
-     * @return
+     * Updates the trip after the destinations have been selected
+     *
+     * @param request Http request
+     * @param id Integer primary key of the trip
+     * @return a redirect to the trips page
      */
     public Result updateName(Http.Request request, int id) {
         Form<Trip> tripForm = form.bindFromRequest(request);
@@ -186,10 +193,12 @@ public class TripsController extends Controller {
         }
     }
 
+
     /**
      * Deletes a trip in the database
-     * @param tripId
-     * @return
+     *
+     * @param tripId Integer primary key of a trip
+     * @return a redirect to the trips page
      */
     public CompletionStage<Result> delete(Integer tripId) {
         return tripRepository.delete(tripId).thenApplyAsync(v -> {
@@ -197,12 +206,14 @@ public class TripsController extends Controller {
         });
     }
 
+
     /**
      * Updates a trip destination within the trip currently being edited
-     * @param request
-     * @param tripId
-     * @param oldLocation
-     * @returnredirections to the edit page
+     *
+     * @param request Http request
+     * @param tripId Integer primary key of a trip
+     * @param oldLocation The old destination location saved under a trip
+     * @return redirects to the edit trip page
      */
     public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
@@ -226,11 +237,13 @@ public class TripsController extends Controller {
         return redirect("/trips/edit/" + tripId);
     }
 
+
     /**
-     * delete destinations in the edit page
-     * @param request
-     * @param order
-     * @param tripId
+     * Delete destinations in the edit page
+     *
+     * @param request Http request
+     * @param order The integer positioning of the destinations
+     * @param tripId Integer primary key of a trip
      * @return redirection to the edit page
      */
     public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
@@ -249,12 +262,11 @@ public class TripsController extends Controller {
     }
 
 
-
-
     /**
      * Updates a trip destination that is within the current trip being created
-     * @param request
-     * @param oldLocation
+     *
+     * @param request Http request
+     * @param oldLocation The old destination location saved under a trip
      * @return redirection to the create trips page
      */
     public Result updateDestination(Http.Request request, Integer oldLocation) {
@@ -279,10 +291,12 @@ public class TripsController extends Controller {
         return redirect("/trips/create");
     }
 
+
     /**
      * Sorts the currentDestinationsList using eachs destinations old and new location
-     * @param oldLocation
-     * @param newLocation
+     *
+     * @param oldLocation The old destination location saved under a trip in the database
+     * @param newLocation The new destination location to be saved under a trip in the database
      */
     private void sortFunc(int oldLocation, int newLocation) {
         //changes the order of any tripDests that may be indirectly affected
@@ -314,10 +328,12 @@ public class TripsController extends Controller {
         }
     }
 
+
     /**
-     * eletes TripDests from the current destinations list and changes the order of indirectly affected TripDests
-     * @param request
-     * @param order
+     * Deletes TripDests from the current destinations list and changes the order of indirectly affected TripDests
+     *
+     * @param request Http request
+     * @param order  The integer positioning of the destinations
      * @return redirect to the show create page
      */
     public Result deleteDestination(Http.Request request, Integer order) {
@@ -338,25 +354,27 @@ public class TripsController extends Controller {
 
 
     /**
-     * sorting algorithm by order of trip destinations
+     * Sorting algorithm by order of trip destinations
+     *
      * @param array list of trip destinations
-     * @return temp
+     * @return result ArrayList of the trip destinations in order
      */
     public ArrayList<TripDestination> sortByOrder(ArrayList<TripDestination> array) {
-        ArrayList<TripDestination> temp = new ArrayList<TripDestination>();
+        ArrayList<TripDestination> result = new ArrayList<TripDestination>();
         for (int i = 0; i<array.size(); i++) {
             for (int x=0; x < array.size(); x++) {
                 if (array.get(x).getDestOrder() == i+1) {
-                    temp.add(array.get(x));
+                    result.add(array.get(x));
                 }
             }
         }
-        return temp;
+        return result;
     }
 
 
     /**
-     * helper function to determine if 2 destinations would be next to each other in that list
+     * Helper function to determine if 2 destinations would be next to each other in that list
+     *
      * @param array list of trip destinations
      * @return boolean
      */

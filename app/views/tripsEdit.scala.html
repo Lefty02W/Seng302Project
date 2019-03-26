@@ -1,8 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], currentUser: Profile, id: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
-
 @import helper._
+
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], currentUser: Profile, id: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -58,11 +58,6 @@
                             </div>
                         }
                         <h2>Edit Trip</h2>
-                            @helper.form(routes.TripsController.updateName(id)) {
-                                @CSRF.formField
-                                @helper.inputText(tripForm("name"), '_label -> "Trip Name", '_help -> "")
-                                <button type="submit" class="button-edit" style="width: 20vw" id="save">Save trip</button>
-                            }
                             @helper.form(routes.TripsController.addDestinationEditTrip(id, currentTripDestinationsList.size())) {
                                 @CSRF.formField
                                 <div class="row">
@@ -84,6 +79,7 @@
                                     <div class="col"><button type="submit" class="button-add" id="addDest">Add Destination</button></div>
 
                                 </div>
+
 
                                 }
 
@@ -168,6 +164,14 @@
                                 </div>
                             }
                         </table>
+
+                    <div class="row">
+                    @helper.form(routes.TripsController.updateName(id)) {
+                        @CSRF.formField
+                        @helper.inputText(tripForm("name"), '_label -> "Trip Name", '_help -> "")
+                        <button type="submit" class="button-edit" style="width: 20vw" id="save">Save trip</button>
+                    }
+                    </div>
 
 
                         <a href="@routes.TripsController.show()"> <button style="width: 20vw" class="button-delete" type="button">Back</button> </a>

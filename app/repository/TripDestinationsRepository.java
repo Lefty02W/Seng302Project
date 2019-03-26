@@ -29,6 +29,11 @@ public class TripDestinationsRepository {
         this.executionContext = executionContext;
     }
 
+    /**
+     * insert trip destination into database
+     * @param tripDestination
+     * @return
+     */
     public CompletionStage<Integer> insert(TripDestination tripDestination) {
         return supplyAsync(() -> {
             ebeanServer.insert(tripDestination);
@@ -36,6 +41,11 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
+    /**
+     * delete tripdestination from database
+     * @param tripDestinationId
+     * @return
+     */
     public CompletionStage<Optional<Integer>> delete(int tripDestinationId) {
         return supplyAsync(() -> {
             try {
@@ -48,22 +58,4 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
-    public CompletionStage<Optional<Integer>> updateOrder(int tripDestinationId, int order) {
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            Optional<Integer> value = Optional.empty();
-            try {
-                TripDestination targetTripDest = ebeanServer.find(TripDestination.class).setId(tripDestinationId).findOne();
-                if (targetTripDest != null) {
-                    targetTripDest.setDestOrder(order);
-                }
-                targetTripDest.update();
-                txn.commit();
-                value = Optional.of(targetTripDest.getDestOrder());
-            } finally {
-                txn.end();
-            }
-            return value;
-        }, executionContext);
-    }
 }

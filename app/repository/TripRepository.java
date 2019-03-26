@@ -33,7 +33,11 @@ public class TripRepository {
         this.executionContext = executionContext;
     }
 
-
+    /**
+     * insert trip destination into the database
+     * @param tripDestination
+     * @return trip id
+     */
     public CompletionStage<Integer> insertTripDestination(TripDestination tripDestination) {
         return supplyAsync(() -> {
             ebeanServer.insert(tripDestination);
@@ -42,7 +46,11 @@ public class TripRepository {
     }
 
 
-
+    /**
+     * insert trip into database
+     * @param trip
+     * @param tripDestinations
+     */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
         //TODO maybe look into async again
         //TODO transactions pls
@@ -55,35 +63,7 @@ public class TripRepository {
 
     }
 
-    public CompletionStage<Optional<String>> updateName(int tripId, String name) {
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            Optional<String> value = Optional.empty();
-            try {
-                Trip targetTrip = ebeanServer.find(Trip.class).setId(tripId).findOne();
-                if (targetTrip != null) {
-                    targetTrip.setName(name);
-                }
-                targetTrip.update();
-                txn.commit();
-                value = Optional.of(targetTrip.getName());
-            } finally {
-                txn.end();
-            }
-            return value;
-        }, executionContext);
-    }
 
-    //TODO change this to add tripdests to the trip such as getUsersTrips
-    public Optional<ArrayList<Trip>> getAllTrips() {
-        try {
-            Optional<List<Trip>> toReturnOptional = Optional.ofNullable(ebeanServer.find(Trip.class).findList());
-            ArrayList<Trip> toReturn = (ArrayList<Trip>) toReturnOptional.get();
-            return Optional.of(toReturn);
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
 
     /**
      * Removes a trip from the database
@@ -103,7 +83,11 @@ public class TripRepository {
     }
 
 
-
+    /**
+     * code to return trip from id
+     * @param tripId
+     * @return
+     */
     public Trip getTrip(int tripId) {
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
@@ -129,13 +113,6 @@ public class TripRepository {
         }
         trip.setDestinations(tripDestinations);
         return trip;
-    }
-
-
-    public int getLatestId() {
-        String query = ("SELECT MAX(trip_id) FROM trip");
-        SqlRow row = ebeanServer.createSqlQuery(query).findOne();
-        return row.getInteger("max(trip_id)");
     }
 
 }
