@@ -98,7 +98,7 @@
                                     <td>@tripDestination.getDeparture</td>
                                     <td><a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder)"><button id="edit_@tripDestination.getDestinationId">Edit</button></a></td> <!--onclick="fillModal(this)-->
 
-                                    @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestinationId)) {
+                                    @helper.form(routes.TripsController.deleteDestination(tripDestination.getDestOrder)) {
                                         @CSRF.formField
                                         <td> <button type="submit" class="button-delete"style="height:4vh">Delete</button></td>
                                     }
