@@ -44,36 +44,36 @@
                                     @CSRF.formField
                                     <div class="row">
                                         <div class="col">
-                                            <input type="text" id="firstName" placeholder="First Name" name="firstName" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@user.getFirstName>
+                                            <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@user.getFirstName>
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName" value=@user.getMiddleName>
+                                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@user.getMiddleName>
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@user.getLastName>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col">
-                                            <input type="text" id="email" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@user.getEmail>
-                                        </div>
-                                        <div class="col">
-                                            <input type="text" id="gender" placeholder="Gender" name="gender" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')"value=@user.getGender>
-                                        </div>
-                                        <div class="col">
-                                            <input type="date" id="birthDate"  name="birthDate" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@user.getEntryDate>
+                                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@user.getLastName>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
-                                            <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" required value=@user.getNationalities>
+                                            <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@user.getEmail>
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="passports" placeholder="Passport" name="passports" value=@user.getPassports>
+                                            <input type="text" id="gender" placeholder="Gender" name="gender" class="inputField" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')"value=@user.getGender>
+                                        </div>
+                                        <div class="col">
+                                            <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@user.getEntryDate>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required value=@user.getNationalities>
+                                        </div>
+                                        <div class="col">
+                                            <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField" value=@user.getPassports>
                                         </div>
                                         <div class="col">
                                             <div class="hidden-div">
-                                                <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field" required oninvalid="this.setCustomValidity('Traveller type is required')" oninput="setCustomValidity('')" value=@user.getTravellerTypes>
+                                                <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required oninvalid="this.setCustomValidity('Traveller type is required')" oninput="setCustomValidity('')" value=@user.getTravellerTypes>
                                             </div>
                                             <div>
                                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown">

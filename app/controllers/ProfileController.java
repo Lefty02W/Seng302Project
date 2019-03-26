@@ -1,5 +1,6 @@
 package controllers;
 
+
 import models.*;
 import play.data.Form;
 import play.data.FormFactory;
@@ -11,7 +12,6 @@ import play.mvc.Result;
 import repository.ImageRepository;
 import repository.ProfileRepository;
 import views.html.*;
-
 
 import javax.inject.Inject;
 import java.io.*;
@@ -70,7 +70,6 @@ public class ProfileController extends Controller {
         return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
-                //TODO Form is not auto filling
                 Form<Profile> currentProfileForm = profileForm.fill(toEditProfile);
                 return ok(editProfile.render(toEditProfile, currentProfileForm));
 

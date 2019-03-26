@@ -19,6 +19,8 @@ import javax.inject.Inject;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 /**
  *
  */
@@ -48,30 +50,21 @@ public class LoginController extends Controller {
         Form<Login> loginForm = form.bindFromRequest(request);
         Login login = loginForm.get();
         if (checkUser(login.email, login.password)){
-            // Validate
+            // Validate the login credentials
             Login loginData = loginForm.get();
-            System.out.println("--------LOGIN DATA--------- " + loginData.email);
-            // Run update operation and then flash and then redirect
             CompletionStage<Optional<Profile>> profileOptional = profileRepository.lookup(loginData.email);
             return profileRepository.lookup(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
-                System.out.println("--------Profile DATA--------- " + profile.isPresent());
-
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
-                    System.out.println("--------Profile DATA--------- " + currentUser.getFirstName());
-                    if (currentUser.checkPassword(loginData.password)) {
-                        return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getEmail());
-                        //return Results.redirect(routes.HomeController.index());
-                    }
+                    return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getEmail());
                 }
                 return notFound("Login failed");
             }, httpExecutionContext.current());
 
         } else {
-            //TODO show incorrect user information error message
+            //TODO show incorrect user login on the front end
             System.out.println("Incorrect login Data please try again");
-            //return ok(login.render(form, request, messagesApi.preferred(request)));
-            return null;
+            return supplyAsync(() -> redirect(routes.LoginController.show()));
         }
     }
 
