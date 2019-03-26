@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @import controllers.TravellersController
-@(searchForm: Form[PartnerFormData], users: List[Profile], imageList: List[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[PartnerFormData], users: List[Profile], imageList: List[Image], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>

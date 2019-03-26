@@ -49,6 +49,7 @@ public class ProfileController extends Controller {
         public String visible;
     }
 
+
     @Inject
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, ImageRepository imageRepository) {
         this.profileForm = profileFormFactory.form(Profile.class);
@@ -80,10 +81,6 @@ public class ProfileController extends Controller {
             }
         }, httpExecutionContext.current());
     }
-
-    public Result update(Http.Request request){
-        Form<Profile> profileForm = form.bindFromRequest(request);
-        Profile profile = profileForm.value().get();
 
 
     /**
@@ -177,7 +174,7 @@ public class ProfileController extends Controller {
 
          return supplyAsync(() -> {
             try {
-                Profile currentUser = getCurrentUser(request);
+                Profile currentUser = SessionController.getCurrentUser(request);
                 this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility =  (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
@@ -219,7 +216,7 @@ public class ProfileController extends Controller {
      * @return a list of image objects
      */
     public List<Image> getUserPhotos(Http.Request request) {
-        Profile profile = getCurrentUser(request);
+        Profile profile = SessionController.getCurrentUser(request);
         Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
         try {
             imageList = imageListTemp.get();

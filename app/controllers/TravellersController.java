@@ -68,7 +68,7 @@ public class TravellersController extends Controller {
             resultData = searchTravelTypes(resultData, searchData);
         }
 
-        return ok(travellers.render(form, resultData, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, resultData, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 
 

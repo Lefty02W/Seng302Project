@@ -163,8 +163,6 @@ public class ProfileRepository {
     }
 
 
-
-
     /**
      * Function to get all the destinations created by the signed in user.
      * @param email user email
@@ -189,5 +187,4 @@ public class ProfileRepository {
         }
         return Optional.of(destList);
     }
-
 }
