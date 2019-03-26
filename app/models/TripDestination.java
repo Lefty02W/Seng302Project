@@ -14,7 +14,7 @@ import java.util.Date;
 @Entity
 public class TripDestination extends Model {
 
-    private String destination; //TODO Get out plos
+    private String destination;
     private Date arrival;
     private Date departure;
     @Id
@@ -35,6 +35,18 @@ public class TripDestination extends Model {
      */
     public TripDestination(String destination, Date arrival, Date departure) {
         this.destination = destination;
+        this.arrival = arrival;
+        this.departure = departure;
+    }
+
+    /**
+     *
+     * @param destinationId the destination id
+     * @param arrival the arrival timestamp
+     * @param departure the departure timestamp
+     */
+    public TripDestination(int destinationId, Date arrival, Date departure) {
+        this.destinationId = destinationId;
         this.arrival = arrival;
         this.departure = departure;
     }

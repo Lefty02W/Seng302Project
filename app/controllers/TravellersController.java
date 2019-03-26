@@ -13,6 +13,10 @@ import repository.ImageRepository;
 import views.html.*;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.*;
 
 //TODO Fix table in html - types field needs to wrap
@@ -36,6 +40,7 @@ public class TravellersController extends Controller {
         this.messagesApi = messagesApi;
         this.imageRepository = imageRepository;
     }
+
 
     /**
      * Function to search travellers n gender nationality, age and traveller type fields, calls search functions for
@@ -63,10 +68,9 @@ public class TravellersController extends Controller {
             resultData = searchTravelTypes(resultData, searchData);
         }
 
-//        List<Image> displayImageList = getTravellersPhotos("bender@momcorp.com");
-
-        return ok(travellers.render(form, resultData, imageList, request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, resultData, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
+
 
     /**
      * Method to search for travel partners (profiles) with a search term. The search term can be any of the following attributes:
@@ -91,6 +95,7 @@ public class TravellersController extends Controller {
         return resultProfiles;
     }
 
+
     /**
      * Removes Nationalities from result list
      * @param resultData current list to return
@@ -107,6 +112,7 @@ public class TravellersController extends Controller {
 
         return resultProfiles;
     }
+
 
     /**
      * Removes ages from result list
@@ -188,6 +194,7 @@ public class TravellersController extends Controller {
         return resultProfiles;
     }
 
+
     /**
      * Removes traveller types from result list
      * @param resultData current list to return
@@ -207,6 +214,7 @@ public class TravellersController extends Controller {
         return resultProfiles;
     }
 
+
     /**
      * Method to retrieve all uploaded profile images from the database for a particular traveller
      * @param email email for a particular user you want to view the photos of
@@ -222,6 +230,7 @@ public class TravellersController extends Controller {
         return imageList;
     }
 
+
     /**
      * This method shows the travellers photos on a new page
      * @return
@@ -231,12 +240,14 @@ public class TravellersController extends Controller {
         return ok(travellersPhotos.render(displayImageList));
     }
 
+
     /**
      * This method shows the travellers page on the screen
      * @return
      */
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
-        return ok(travellers.render(form, profiles, imageList, request, messagesApi.preferred(request)));
+
+        return ok(travellers.render(form, profiles, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 }

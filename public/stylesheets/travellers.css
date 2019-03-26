@@ -18,6 +18,10 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     background-color: #ca6636;
 }
 
+.cancelBttn{
+    background-color: #ca6636;
+}
+
 #searchBttn:hover, #cancelBttn:hover {
     font-weight: bold;
 }

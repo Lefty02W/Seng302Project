@@ -2,25 +2,21 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-//import org.mindrot.jbcrypt.BCrypt;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
+
 import javax.persistence.Entity;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import javax.persistence.Id;
-import javax.validation.Constraint;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+
+//import org.mindrot.jbcrypt.BCrypt;
 
 
 @Entity
 public class Profile extends Model {
-
-    //private static final long serialVersionUID = 1L;
-
-    private static final int WORKLOAD = 12;
 
     @Constraints.Required
     private String firstName;
@@ -49,21 +45,19 @@ public class Profile extends Model {
     @Constraints.Required
     private String travellerTypes;
 
+    private boolean admin;
+
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
-    private ArrayList<Destination> destinations = new ArrayList<>();
     private ArrayList<Trip> trips = new ArrayList<>();
-
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
-                   String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,
-                   String travellerTypes, ArrayList<Trip> trips) {
+                   String passports, String gender, Date timeCreated, String nationalities,
+                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -73,15 +67,15 @@ public class Profile extends Model {
         this.gender = gender;
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
-        this.destinations = destinations;
         this.travellerTypes = travellerTypes;
         this.trips = trips;
+        this.admin = isAdmin;
     }
 
     // Finder for profile
     public static final Finder<String, Profile> find = new Finder<>(Profile.class);
 
-    //Setters
+    //--------------Setters----------------------
     public void setEmail(String email) {
         this.email = email;
     }
@@ -112,66 +106,12 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-    public void setDestinations(ArrayList<Destination> destinations) {
-        this.destinations = destinations;
-    }
 
+    public void setAdmin(boolean isAdmin){
+        this.admin = isAdmin;
+    }
     public String getEntryDate() {
-        String date = dateFormatEntry.format(birthDate);
-        return date;
-    }
-    public boolean checkPassword(String password) {
-        // TODO FIX THIS
-        return true;
-        //BCrypt.checkpw(password, this.password);
-    }
-
-
-    /**
-     * Searches the users destinations for the given search term.
-     *
-     * @param searchTerm The term that will be searched for.
-     * @return A arraylists of the destinations that contain the search term.
-     */
-    public ArrayList<Destination> searchDestinations(String searchTerm) {
-        ArrayList<Destination> resultDestinations = new ArrayList<Destination>();
-        for (Destination dest : destinations) {
-            if (dest.getName().contains(searchTerm) || dest.getType().contains(searchTerm) || dest.getCountry().contains(searchTerm) || dest.getDistrict().contains(searchTerm)) {
-                resultDestinations.add(dest);
-            }
-        }
-        return resultDestinations;
-    }
-
-
-    /**
-     * Returns a single destination.
-     *
-     * @param destinationID The id of the required destination.
-     * @return The destination required.
-     */
-    public Destination returnDestination(int destinationID) {
-        Destination toReturn = null;
-        for (Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                toReturn = dest;
-                break;
-            }
-        }
-        return toReturn;
-    }
-
-    /**
-     * Delete a destination from the profile
-     * @param destinationID ID of destination to delete
-     */
-    public void deleteDestination(int destinationID) {
-        for(Destination dest : destinations) {
-            if (dest.getDestinationId() == destinationID) {
-                destinations.remove(dest);
-                return;
-            }
-        }
+        return dateFormatEntry.format(birthDate);
     }
 
     //Getters
@@ -214,10 +154,6 @@ public class Profile extends Model {
     public String getTravellerTypes() {
         return travellerTypes;
     }
-    public String[] getTravellerTypesArray() {
-        String[] typesArray = travellerTypes.split(",");
-        return typesArray;
-    }
 
 
     public void setTravellerTypes(String travellerTypes) {
@@ -225,22 +161,15 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getPassportsList() {
-        ArrayList<String> passportsList = new ArrayList<>(Arrays.asList(passports.split(",")));
-        return passportsList;
-    }
-
-    public ArrayList<Destination> getDestinations() {
-        return destinations;
+        return new ArrayList<>(Arrays.asList(passports.split(",")));
     }
 
     public ArrayList<String> getNationalityList() {
-        ArrayList<String> nationalityList = new ArrayList<>(Arrays.asList(nationalities.split(",")));
-        return nationalityList;
+        return new ArrayList<>(Arrays.asList(nationalities.split(",")));
     }
 
     public ArrayList<String> getTravellerTypesList() {
-        ArrayList<String> travelerTypesList = new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
-        return travelerTypesList;
+        return new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
     }
 
     public ArrayList<Trip> getTrips() {
@@ -252,6 +181,7 @@ public class Profile extends Model {
     }
 
 
+    public boolean isAdmin() { return this.admin; }
     public void setPassports(String passports) {
         this.passports = passports;
     }

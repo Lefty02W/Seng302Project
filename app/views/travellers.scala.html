@@ -1,12 +1,11 @@
 @import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
+@import views.html.helper.{CSRF, form}
 @import controllers.TravellersController
 @(searchForm: Form[PartnerFormData], users: List[Profile], imageList: List[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
-        <!-- Including stylesheets and js attributes-->
+    <!-- Including stylesheets and js attributes-->
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/dataTables.bootstrap4.css")">
@@ -90,28 +89,42 @@
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>
-                                        Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>
-                                        Traveller Types</th><th>Photos</th>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Photos</th>@if(current.isAdmin){<th>Admin Controls}</th>
                                 </thead>
-                                @for(user <- users) {
-                                    <tr>
-                                        <td>@user.getFirstName</td>
-                                        <td>@user.getMiddleName</td>
-                                        <td>@user.getLastName</td>
-                                        <td>@user.getGender</td>
-                                        <td><span>@user.getBirthDate.getTime</span>
-                                            @user.getBirthDate</td>
-                                        <td>@user.getNationalities</td>
-                                        <td>@user.getPassports</td>
-                                        <td>@user.getTravellerTypes</td>
-                                        <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)">
-                                            <button type="submit" class="viewPicButton">View</button>
-                                        </a>
-                                        </td>
-                                    </tr>
-
-                                }
+                                    @for(user <- users) {
+                                        <tr>
+                                            <td>@user.getFirstName</td>
+                                            <td>@user.getMiddleName</td>
+                                            <td>@user.getLastName</td>
+                                            <td>@user.getGender</td>
+                                            <td><span>@user.getBirthDate.getTime</span>
+                                                @user.getBirthDate</td>
+                                            <td>@user.getNationalities</td>
+                                            <td>@user.getPassports</td>
+                                            <td>@user.getTravellerTypes</td>
+                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)">
+                                                <button type="submit" class="viewPicButton">View</button>
+                                            </a>
+                                            </td>
+                                            @if(current.isAdmin) {
+                                                @if(user.isAdmin && user.getEmail != "admin") {
+                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
+                                                        @CSRF.formField
+                                                        <td><button class="cancelBttn" type="submit" >
+                                                            Remove Admin</button></td>
+                                                    }
+                                                } else if (!user.isAdmin) {
+                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
+                                                        @CSRF.formField
+                                                        <td><button type="submit">
+                                                            Make Admin</button></td>
+                                                    }
+                                                } else {
+                                                    <td>Master Admin</td>
+                                                }
+                                            }
+                                        </tr>
+                                    }
                             </table>
                         </div>
                     </div>
@@ -135,6 +148,7 @@
                 });
 
             });
+
     </script>
 
 </html>

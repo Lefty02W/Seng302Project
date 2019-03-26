@@ -54,7 +54,7 @@ END
 $$
 create table destination (
   destination_id                integer auto_increment not null,
-  user_id                       integer not null,
+  user_email                    varchar(255),
   name                          varchar(255),
   type                          varchar(255),
   country                       varchar(255),
@@ -75,6 +75,7 @@ create table profile (
   passports                     varchar(255),
   nationalities                 varchar(255),
   traveller_types               varchar(255),
+  admin                         tinyint(1) default 0 not null,
   time_created                  datetime(6),
   constraint pk_profile primary key (email)
 );
@@ -91,7 +92,7 @@ create table images (
 create table trip (
   trip_id                       integer auto_increment not null,
   name                          varchar(255),
-  user_id                       integer not null,
+  user_email                    varchar(255),
   constraint pk_trip primary key (trip_id)
 );
 
@@ -103,20 +104,6 @@ create table trip_destination (
   destination_id                integer not null,
   trip_id                       integer not null,
   constraint pk_trip_destination primary key (trip_destination_id)
-);
-
-create table user (
-  first_name                    varchar(255),
-  middle_name                   varchar(255),
-  last_name                     varchar(255),
-  email                         varchar(255),
-  password                      varchar(255),
-  birth_date                    datetime(6),
-  gender                        varchar(255),
-  date_of_birth                 varchar(255),
-  nationality                   varchar(255),
-  passport_country              varchar(255),
-  traveller_type                varchar(255)
 );
 
 
@@ -131,6 +118,4 @@ drop table if exists images;
 drop table if exists trip;
 
 drop table if exists trip_destination;
-
-drop table if exists user;
 

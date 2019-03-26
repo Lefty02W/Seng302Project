@@ -1,20 +1,17 @@
 package controllers;
 
 import models.Profile;
-import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.mvc.Controller;
-
 import play.mvc.Http;
 import play.mvc.Result;
-
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.createUser;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
+
 
 /**
  *
@@ -36,11 +33,9 @@ public class CreateUserController extends Controller{
 
     public Result save(Http.Request request){
         Form<Profile> userForm = form.bindFromRequest(request);
-        System.out.println(userForm);
-        Profile profile = userForm.get();
-        profile.setTrips(new ArrayList<Trip>());
+        Profile profile = userForm.value().get();
         profileRepository.insert(profile);
-        return redirect(routes.LoginController.show());
+        return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
     }
 
     //renders the createUser scene

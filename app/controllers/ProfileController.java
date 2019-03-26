@@ -11,7 +11,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.ImageRepository;
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.editProfile;
+import views.html.profile;
 
 import javax.inject.Inject;
 import java.io.*;
@@ -80,6 +81,10 @@ public class ProfileController extends Controller {
         }, httpExecutionContext.current());
     }
 
+    public Result update(Http.Request request){
+        Form<Profile> profileForm = form.bindFromRequest(request);
+        Profile profile = profileForm.value().get();
+
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form
@@ -91,29 +96,26 @@ public class ProfileController extends Controller {
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
 
-        profileRepository.update(profile, getCurrentUser(request).getPassword());
+        profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
 
         //TODO redirect does not update profile displayed, have to refresh to get updated info
-        return redirect(routes.ProfileController.show());
+        return redirect("/profile");
 
     }
 
 
     /**
-     * Get the currently logged in user
+     * Called by either the make or remove admin buttons to update admin privilege in database.
      *
-     * @param request Https request
-     * @return Web page showing connected user's email
+     * @param request
+     * @param email The email of the user who is having admin privilege updated
+     * @return Result, redrects to the travellers page.
      */
-    public Profile getCurrentUser(Http.Request request) {
-        Optional<String> connected = request.session().getOptional("connected");
-        String email;
-        if (connected.isPresent()) {
-            email = connected.get();
-            return Profile.find.byId(email);
-        } else {
-            return null;
-        }
+    public CompletionStage<Result> updateAdmin(Http.Request request, String email){
+
+        return profileRepository.updateAdminPrivelege(email).thenApplyAsync(clickedEmail ->{
+            return redirect("/travellers");
+        }, httpExecutionContext.current());
     }
 
 
@@ -236,9 +238,7 @@ public class ProfileController extends Controller {
      * @return a page render of the users profile page
      */
     public Result show(Http.Request request) {
-        Profile currentProfile = getCurrentUser(request);
-        //TODO change to read from db (the trips)
-        currentProfile.setTrips(new ArrayList<Trip>());
+        Profile currentProfile = SessionController.getCurrentUser(request);
         List<Image> displayImageList = getUserPhotos(request);
         // Get the current show photo modal state
         // Ensure state is false for next refresh action
@@ -246,4 +246,5 @@ public class ProfileController extends Controller {
         showPhotoModal = false;
         return ok(profile.render(currentProfile, imageForm, displayImageList, show, request, messagesApi.preferred(request)));
     }
+
 }

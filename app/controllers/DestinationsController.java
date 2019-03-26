@@ -1,38 +1,51 @@
 package controllers;
+
 import models.Destination;
 import models.Profile;
-import play.i18n.MessagesApi;
-
-import play.data.FormFactory;
 import play.data.Form;
+import play.data.FormFactory;
+import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.Results;
 import repository.DestinationRepository;
-import views.html.*;
+import repository.ProfileRepository;
+import views.html.createDestinations;
+import views.html.createUser;
+import views.html.destinations;
+import views.html.edit;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 
 public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;
-    private final List<Destination> destinationsList = new ArrayList<>();
+    private List<Destination> destinationsList = new ArrayList<>();
     private final Form<Destination> form;
+    private final Form<Profile> userForm;
     private final DestinationRepository destinationRepository;
+    private final ProfileRepository profileRepository;
+    private String destShowRoute = "/destinations";
 
-
+    /**
+     * Constructor for the destination controller class
+     * @param formFactory
+     * @param messagesApi
+     * @param destinationRepository
+     * @param profileRepository
+     */
     @Inject
-    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository) {
+    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository, ProfileRepository profileRepository) {
         this.form = formFactory.form(Destination.class);
+        this.userForm = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
-        //this.destinationsList = Destination.find.all();
         this.destinationRepository = destinationRepository;
+        this.profileRepository = profileRepository;
     }
 
     /**
@@ -41,6 +54,14 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     public Result show(Http.Request request) {
+
+        Profile user = SessionController.getCurrentUser(request);
+        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
+        try {
+            destinationsList = destListTemp.get();
+        } catch(NoSuchElementException e) {
+            destinationsList = new ArrayList<>();
+        }
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
 
@@ -64,89 +85,56 @@ public class DestinationsController extends Controller {
      * @return
      */
     public Result edit(Http.Request request, Integer id) {
-        Destination destination = destinationsList.get(id);
+        Destination destination =  new Destination();
+        for (Destination dest : destinationsList) {
+            if (dest.getDestinationId() == id) {
+                destination = dest;
+                break;
+            }
+        }
         Form<Destination> destinationForm = form.fill(destination);
-        return ok(edit.render(id, destinationForm, request, messagesApi.preferred(request)));
+        return ok(edit.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
     }
 
     /**
      * This method updates destination in the database
      * @param request
-     * @param id
+     * @param id The ID of the destination to edit.
      * @return
      */
     public Result update(Http.Request request, Integer id){
         Form<Destination> destinationForm = form.bindFromRequest(request);
-        Destination dest = destinationForm.get();
-        destinationsList.set(id, dest);
-        return redirect(routes.DestinationsController.show());
+        Destination dest = destinationForm.value().get();
+        destinationRepository.update(dest, id);
+        return redirect(destShowRoute);
     }
 
     /**
-     * Creates a new destination in the database
+     * Adds a new destination to the database
      * @param request
      * @return
      */
-    public Result save(Http.Request request){
+    public Result saveDestination(Http.Request request) {
+        Profile user = SessionController.getCurrentUser(request);
+        if (user == null) {
+            return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
+        }
         Form<Destination> destinationForm = form.bindFromRequest(request);
-        Destination dest = destinationForm.get();
-
-       // dest.setId(destinationsList.size()+1); TODO Jade fix this
-        destinationsList.add(0, dest);
-        return redirect(routes.DestinationsController.show());
+        Destination destination = destinationForm.value().get();
+        destination.setUserEmail(user.getEmail());
+        destinationRepository.insert(destination);
+        return redirect(destShowRoute);
     }
 
     /**
      * Deletes a destination in the database
-     * @param id
+     * @param id ID of the destination to delete
      * @return
      */
-    public Result delete(Integer id) {
-        //System.out.println(id);
-        //for (int i = id; i < destinationsList.size(); i++) {
-        //       destinationsList.get(i).setId(i-1);
-        //}
-        //destinationsList.remove(id*0);
-        return redirect(routes.DestinationsController.show());
-    }
-
-
-
-    /**
-     * Display the 'create destination form'.
-
-    public Result createDestination(Http.Request request) {
-        Form<Destination> destinationForm = formFactory.form(Destination.class);
-        return ok(views.html.createDestinationForm.render(destinationForm, request, messagesApi.preferred(request)));
+    public Result delete(Http.Request request, Integer id) {
+        destinationRepository.delete(id);
+        return redirect(destShowRoute);
 
     }
 
-
-    /**
-     * Handle the 'Create Destination Form' submission
-
-    public CompletionStage<Result> saveDestination(Http.Request request) {
-
-        Profile user = getCurrentUser(request);
-        if (user == null) {
-            return CompletableFuture.completedFuture(redirectToLogin);
-        }
-        Form<Destination> destinationForm = formFactory.form(Destination.class).bindFromRequest(request);
-        if (destinationForm.hasErrors()) {
-
-            // This is the HTTP rendering thread context
-            return CompletableFuture.completedFuture(
-                    badRequest(views.html.createDestinationForm.render(
-                            destinationForm, request, messagesApi.preferred(request))
-                    )
-            );
-        }
-
-        Destination destination = destinationForm.get();
-        destination.setMember_email(user.getEmail());
-        // Run insert db operation, then redirect
-        return destinationRepository.insert(destination).thenApplyAsync(data -> {
-            return Results.redirect(routes.HomeController.index());
-        }, httpExecutionContext.current());
-    }*/
 }
