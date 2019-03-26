@@ -111,7 +111,7 @@ public class Profile extends Model {
         this.admin = isAdmin;
     }
     public String getEntryDate() {
-        return dateFormatEntry.format(birthDate);;
+        return dateFormatEntry.format(birthDate);
     }
 
     //Getters
