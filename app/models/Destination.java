@@ -32,14 +32,15 @@ public class Destination extends Model {
     }
 
     /**
-     * Create a destination
-
-     * @param name The name of this destination
-     * @param type The type this destination is
-     * @param country The country this destination is from
-     * @param district The district this destination is from
-     * @param latitude The latitude of this destination
-     * @param longitude the longitude of this destination
+     * Creating a destination
+     * @param destinationId the destinations db id
+     * @param userEmail the email of the destination owner
+     * @param name the destination name
+     * @param type the destination type
+     * @param country the destinations country
+     * @param district the destinations district
+     * @param latitude the destinations latitude
+     * @param longitude the destinations longitude
      */
     public Destination(int destinationId, String userEmail, String name, String type, String country, String district, double latitude, double longitude) {
         this.destinationId = destinationId;
@@ -64,11 +65,11 @@ public class Destination extends Model {
     }
 
     /**
-     * Sets the destination_id
-     * @param destination_id
+     * Sets the destinationId
+     * @param destinationId the destinations db id
      */
-    public void setDestination_id(int destination_id) {
-        this.destinationId = destination_id;
+    public void setDestination_id(int destinationId) {
+        this.destinationId = destinationId;
     }
 
 

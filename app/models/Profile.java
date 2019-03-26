@@ -18,10 +18,6 @@ import java.util.Date;
 @Entity
 public class Profile extends Model {
 
-    //private static final long serialVersionUID = 1L;
-
-    private static final int WORKLOAD = 12;
-
     @Constraints.Required
     private String firstName;
 
@@ -57,12 +53,10 @@ public class Profile extends Model {
     private ArrayList<Trip> trips = new ArrayList<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
-    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
-                   String passports, String gender, Date timeCreated, String nationalities, ArrayList<Destination> destinations,
+                   String passports, String gender, Date timeCreated, String nationalities,
                    String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -117,8 +111,7 @@ public class Profile extends Model {
         this.admin = isAdmin;
     }
     public String getEntryDate() {
-        String date = dateFormatEntry.format(birthDate);
-        return date;
+        return dateFormatEntry.format(birthDate);
     }
 
     //Getters
@@ -161,10 +154,6 @@ public class Profile extends Model {
     public String getTravellerTypes() {
         return travellerTypes;
     }
-    public String[] getTravellerTypesArray() {
-        String[] typesArray = travellerTypes.split(",");
-        return typesArray;
-    }
 
 
     public void setTravellerTypes(String travellerTypes) {
@@ -172,18 +161,15 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getPassportsList() {
-        ArrayList<String> passportsList = new ArrayList<>(Arrays.asList(passports.split(",")));
-        return passportsList;
+        return new ArrayList<>(Arrays.asList(passports.split(",")));
     }
 
     public ArrayList<String> getNationalityList() {
-        ArrayList<String> nationalityList = new ArrayList<>(Arrays.asList(nationalities.split(",")));
-        return nationalityList;
+        return new ArrayList<>(Arrays.asList(nationalities.split(",")));
     }
 
     public ArrayList<String> getTravellerTypesList() {
-        ArrayList<String> travelerTypesList = new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
-        return travelerTypesList;
+        return new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
     }
 
     public ArrayList<Trip> getTrips() {

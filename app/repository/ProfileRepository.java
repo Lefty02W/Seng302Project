@@ -31,22 +31,12 @@ public class ProfileRepository {
 
     public boolean checkProfileExists(String email) {
         Profile existingEmail = ebeanServer.find(Profile.class).where().like("email", email).findOne();
-        System.out.println(existingEmail);
-        System.out.println(ebeanServer.find(Profile.class).findList());
-        if (existingEmail == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return existingEmail != null;
     }
 
     public boolean validate(String email, String password) {
         Profile profile = ebeanServer.find(Profile.class).where().like("email", email).findOne();
-        if (profile.getEmail().equals(email) && profile.getPassword().equals(password)) {
-            return true;
-        } else {
-            return false;
-        }
+        return profile.getEmail().equals(email) && profile.getPassword().equals(password);
     }
 
     public CompletionStage<Optional<Profile>> lookup(String email) {
@@ -93,9 +83,6 @@ public class ProfileRepository {
                     targetProfile.setPassports(newProfile.getPassports());
                     targetProfile.setNationalities(newProfile.getNationalities());
                     targetProfile.setTravellerTypes(newProfile.getTravellerTypes());
-                    //TODO get actual trips out of the database
-                    //targetProfile.setTrips(new ArrayList<Trip>());
-
                     targetProfile.update();
                     txn.commit();
                     value = Optional.of(newProfile.getEmail());
