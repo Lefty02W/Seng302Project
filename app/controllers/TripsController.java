@@ -208,9 +208,18 @@ public class TripsController extends Controller {
     }
 
     public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
-        System.out.println("he");
         Trip trip = tripRepository.getTrip(tripId);
         ArrayList<TripDestination> tripDestinations = sortByOrder(trip.getDestinations());
+
+
+        //logic to find if deleting this item will cause 2 destinations that are the same to be next to each other
+        if (order != 1 && order != tripDestinations.size()) {
+            //if the item infront of the todelete item has the same destination as the item behind the todelete item
+            if (tripDestinations.get(order-2).getDestinationId() == tripDestinations.get(order).getDestinationId()) {
+                return redirect(routes.TripsController.showEdit(tripId));
+            }
+        }
+
         if (tripDestinations.size() > 2) {
             for (int i= order; i < tripDestinations.size(); i++) {
                 tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
