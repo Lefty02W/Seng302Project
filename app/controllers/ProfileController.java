@@ -14,7 +14,6 @@ import views.html.*;
 
 
 import javax.inject.Inject;
-import javax.swing.text.html.Option;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -61,6 +60,12 @@ public class ProfileController extends Controller {
     }
 
 
+    /**
+     * Method to retrieve a users profile details and return a filled form to be edited.
+     *
+     * @param email String of the users email
+     * @return a render of the edit profile page
+     */
     public CompletionStage<Result> showEdit(String email) {
         return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
@@ -75,6 +80,13 @@ public class ProfileController extends Controller {
         }, httpExecutionContext.current());
     }
 
+
+    /**
+     * Updates a profile's attributes based on what is retrieved form the form
+     *
+     * @param request Http request
+     * @return a redirect to the profile page
+     */
     public Result update(Http.Request request) {
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
@@ -85,6 +97,7 @@ public class ProfileController extends Controller {
         return redirect(routes.ProfileController.show());
 
     }
+
 
     /**
      * Get the currently logged in user
@@ -133,8 +146,8 @@ public class ProfileController extends Controller {
      * A new Image object is created and has its attributes set. This image is then sent
      * to savePhoto.
      *
-     * @param request
-     * @return
+     * @param request Https request
+     * @return a redirect to the profile page
      */
     public CompletionStage<Result> uploadPhoto(Http.Request request) {
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
@@ -221,7 +234,7 @@ public class ProfileController extends Controller {
     /**
      * Show the profile page
      * @param request The http request
-     * @return
+     * @return a page render of the users profile page
      */
     public Result show(Http.Request request) {
         Profile currentProfile = getCurrentUser(request);

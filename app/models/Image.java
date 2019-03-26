@@ -107,6 +107,7 @@ public class Image extends Model {
         this.name = name;
     }
 
+
     /**
      * Method to test if the image visibility is 1 or 0 and returns a string 'Public' or 'Private'
      * respectively. Used only for display on the frontend.

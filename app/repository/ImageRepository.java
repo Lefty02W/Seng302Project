@@ -26,6 +26,13 @@ public class ImageRepository {
         this.executionContext = executionContext;
     }
 
+
+    /**
+     * Inserts an image object into the ebean database server
+     *
+     * @param image Image object to insert into the database
+     * @return the image id
+     */
     public CompletionStage<Integer> insert(Image image){
         return supplyAsync(() -> {
             try {
@@ -36,6 +43,7 @@ public class ImageRepository {
             return image.getImageId();
         }, executionContext);
     }
+
 
     /**
      * Update image visibility in database using Image model object,
@@ -66,6 +74,7 @@ public class ImageRepository {
             return value;
         }, executionContext);
     }
+
 
     /**
      * Function to get all the images created by the signed in user.
