@@ -54,8 +54,8 @@
                         <h1>This traveller has not uploaded any photos.</h1>
                     } else {
                         <h1>Traveller Photos</h1>
-                        <div style="height: 85vh; overflow-y: auto;">
-                            <div class="row" style="margin-right: 0px; margin-left: 0px">
+                        <div id="travellersPhotos">
+                            <div class="row">
                                 @for(image <- imageList) {
                                     @if(image.getVisible == 1) {
                                         <div class="card">

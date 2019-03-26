@@ -108,6 +108,16 @@ img.thumbnail {
     to {transform:scale(1)}
 }
 
+#travellersPhotos {
+    height: 85vh;
+    overflow-y: auto;
+}
+
+#travellersPhotos .row{
+    margin-right: 0px;
+    margin-left: 0px
+}
+
 
 
 
