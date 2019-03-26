@@ -8,14 +8,13 @@ import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import repository.ProfileRepository;
-import views.html.*;
+import views.html.travellers;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Calendar;
 //TODO Fix table in html - types field needs to wrap
 //TODO Fix data format in table
 //TODO Stop fields from clearing when you press search

@@ -2,16 +2,14 @@ package models;
 
 
 import io.ebean.Model;
-import org.checkerframework.checker.signedness.qual.Constant;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.Constraint;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class holds the data for a profile trip
@@ -77,6 +75,9 @@ public class Trip extends Model {
     public long getTravelTime() {
         TripDestination startDest = destinations.get(0);
         TripDestination endDest = destinations.get(destinations.size() - 1);
+        if (startDest.getArrival() == null || endDest.getDeparture() == null) {
+            return 0;
+        }
         long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
         return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
@@ -86,7 +87,10 @@ public class Trip extends Model {
      */
     public String getStartDateString(){
         Date startDate = destinations.get(0).getArrival();
-        return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
+        if (startDate != null) {
+            return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
+        }
+        return "";
     }
 
     public Date getStartDate(){

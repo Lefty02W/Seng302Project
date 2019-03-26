@@ -1,7 +1,7 @@
 package controllers;
 
 
-import models.*;
+import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -10,12 +10,10 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.editProfile;
+import views.html.profile;
 
 import javax.inject.Inject;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 public class ProfileController extends Controller {
@@ -25,7 +23,6 @@ public class ProfileController extends Controller {
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory formFactory;
     private final ProfileRepository profileRepository;
-    private final SessionController sessionController = new SessionController();
 
 
     @Inject
@@ -55,12 +52,12 @@ public class ProfileController extends Controller {
 
     public Result update(Http.Request request){
         Form<Profile> profileForm = form.bindFromRequest(request);
-        Profile profile = profileForm.get();
+        Profile profile = profileForm.value().get();
 
-        profileRepository.update(profile, sessionController.getCurrentUser(request).getPassword());
+        profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
 
         //TODO redirect does not update profile displayed, have to refresh to get updated info
-        return redirect(routes.ProfileController.show());
+        return redirect("/profile");
 
     }
 
@@ -73,16 +70,14 @@ public class ProfileController extends Controller {
     public CompletionStage<Result> updateAdmin(Http.Request request, String email){
 
         return profileRepository.updateAdminPrivelege(email).thenApplyAsync(clickedEmail ->{
-            return redirect(routes.TravellersController.show());
+            return redirect("/travellers");
         }, httpExecutionContext.current());
     }
 
 
 
     public Result show(Http.Request request) {
-        Profile currentProfile = sessionController.getCurrentUser(request);
-        //TODO xhange to read from db
-        //currentProfile.setTrips(new ArrayList<Trip>());
+        Profile currentProfile = SessionController.getCurrentUser(request);
         return ok(profile.render(currentProfile));
     }
 

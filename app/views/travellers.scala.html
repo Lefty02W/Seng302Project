@@ -1,6 +1,5 @@
 @import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
+@import views.html.helper.{CSRF, form}
 @(searchForm: Form[PartnerFormData], users : List[Profile], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -141,13 +140,6 @@
                 });
 
             });
-
-            function updateAdmin(isAdmin) {
-
-                @routes.ProfileController.show()
-
-
-            }
 
     </script>
 

@@ -1,25 +1,25 @@
 package controllers;
+
 import models.Destination;
 import models.Profile;
-import play.i18n.MessagesApi;
-
-import play.data.FormFactory;
 import play.data.Form;
+import play.data.FormFactory;
+import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.Results;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.createDestinations;
+import views.html.createUser;
+import views.html.destinations;
+import views.html.edit;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 
 public class DestinationsController extends Controller {
@@ -106,7 +106,7 @@ public class DestinationsController extends Controller {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.value().get();
         destinationRepository.update(dest, id);
-        return redirect(routes.DestinationsController.show());
+        return redirect("/destinations");
     }
 
     /**
@@ -123,7 +123,7 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
-        return redirect(routes.DestinationsController.show());
+        return redirect("/destinations");
     }
 
     /**
@@ -134,7 +134,7 @@ public class DestinationsController extends Controller {
     public Result delete(Http.Request request, Integer id) {
         Profile profile = sessionController.getCurrentUser(request);
         destinationRepository.delete(id);
-        return redirect(routes.DestinationsController.show());
+        return redirect("/destinations");
 
     }
 
