@@ -141,9 +141,9 @@ public class DestinationsController extends Controller {
         return redirect(destShowRoute);
     }
 
+
     /**
      * Deletes a destination in the database
-     *
      * @param id ID of the destination to delete
      * @return
      */
@@ -170,15 +170,14 @@ public class DestinationsController extends Controller {
                     // Cannot delete a destination if there is match
                     // Since it in a trip
                     if (destination.getDestinationId() == id) {
-                        System.out.println("CANNOT DELETE DESTINATION " + destination.getDestinationName());
                         return redirect("/destinations").flashing("failure",
                                 "Destination cannot be deleted as it is part of a trip");
                     }
-                    System.out.println("SAFE TO DELETE " + destination.getDestinationName());
                 }
             }
-            System.out.println("BAD BAD BAD DELETED DESTINATION");
-           // destinationRepository.delete(id);
+            destinationRepository.delete(id);
+
+
             return redirect("/destinations").flashing("success", "Destination Deleted");
         });
 
