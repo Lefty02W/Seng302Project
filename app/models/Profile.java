@@ -8,11 +8,13 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 
 //import org.mindrot.jbcrypt.BCrypt;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.reverseOrder;
 
 
 @Entity
@@ -50,10 +52,12 @@ public class Profile extends Model {
     //@Formats.DateTime(pattern="dd-MM-yyyy")
     private Date timeCreated;
 
+    private ArrayList<Destination> destinations = new ArrayList<>();
     private ArrayList<Trip> trips = new ArrayList<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private static SimpleDateFormat dateFormatsort = new SimpleDateFormat("dd/MM/YYY");
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
@@ -180,8 +184,64 @@ public class Profile extends Model {
         this.trips = trips;
     }
 
+    public ArrayList<Destination> getDestinations() {
+        return destinations;
+    }
+
+    public void setDestinations(ArrayList<Destination> destinations) {
+        this.destinations = destinations;
+    }
+
+    /**
+     * This method sorts the users current list of trips by date
+     * @return the sorted
+     */
+    public void sortedTrips() {
+        Map<Long, Integer> tripsMap = new TreeMap<Long, Integer>();
+        for (int index = 0; index < trips.size(); index++) {
+            tripsMap.put(trips.get(index).getTimeVal(), index);
+        }
+        List<Map.Entry<Long, Integer>> sortedMap =
+                tripsMap.entrySet()
+                        .stream()
+                        .sorted(reverseOrder(Map.Entry.comparingByKey()))
+                        .collect(Collectors.toList());
+
+        ArrayList<Trip> sortedTrips = new ArrayList<>();
+        for (Map.Entry<Long, Integer> tripEntry : sortedMap) {
+            sortedTrips.add(trips.get(tripEntry.getValue()));
+        }
+        trips = sortedTrips;
+    }
+
+    /**
+     * This method creates a formatted date string of the profiles birth date
+     * @return the formatted date string
+     */
+    public String getBirthString() {
+        return dateFormatsort.format(birthDate);
+    }
+
+    public String getFormattedTravellerTypes() {
+        ArrayList<String> types = getTravellerTypesList();
+        if (types.size() <= 3) {
+            return travellerTypes;
+        } else {
+            String typeString = types.get(0);
+            for (int i = 1; i < types.size(); i++) {
+                if (i % 3 == 0) {
+                    typeString += "\n";
+                }
+                typeString += ", " + types.get(i);
+            }
+
+            return typeString;
+        }
+    }
+
 
     public boolean isAdmin() { return this.admin; }
+
     public void setPassports(String passports) {
         this.passports = passports;
     }

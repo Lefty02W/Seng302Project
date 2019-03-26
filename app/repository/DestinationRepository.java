@@ -17,7 +17,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * A repository that executes database operations in a different
  * execution context.
  */
-public class                                                                                                                                                                                                                                                                                                                                                                                   DestinationRepository {
+public class DestinationRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;

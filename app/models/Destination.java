@@ -11,8 +11,8 @@ import javax.persistence.Id;
 public class Destination extends Model {
 
     @Id
+    @Constraints.Required
     private int destinationId;
-
     private String userEmail;
     @Constraints.Required
     private String name;
@@ -53,7 +53,7 @@ public class Destination extends Model {
         this.longitude = longitude;
     }
 
-    // Finder for profile
+    // Finder for destination
     public static final Finder<String, Destination> find = new Finder<>(Destination.class);
 
     /**
@@ -68,7 +68,7 @@ public class Destination extends Model {
      * Sets the destinationId
      * @param destinationId the destinations db id
      */
-    public void setDestination_id(int destinationId) {
+    public void setDestinationId(int destinationId) {
         this.destinationId = destinationId;
     }
 

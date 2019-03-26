@@ -2,7 +2,7 @@
 @import views.html.helper.CSRF
 @(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
 
-
+@import helper._
 
 
 
@@ -31,18 +31,25 @@
         <div class="d-flex" id="wrapper">
 
                 <!-- Sidebar -->
-            <div class="bg-light border-right" id="sidebar-wrapper">
-                <div class="sidebar-heading"><h2>TravelEA</h2></div>
-                <div id="sidebar">
-                    <a href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="icon"/> Profile</a>
-                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="icon"/> Destinations</a>
-                    <a style="color: #ca6636" href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="icon"/> Trips</a>
-                    <a href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="icon"/> Travellers</a>
-                    <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="icon"/> Logout</a>
+            <div class="border-right" id="sidebar-wrapper">
+                <h1 class="sidebar-heading">TravelEA </h1>
+                <div class="list-group list-group-flush">
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
+                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
+                    <a style="color: #ca6636" href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
+                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
             </div>
+                <!-- /#sidebar-wrapper -->
 
+                <!-- Page Content -->
             <div id="page-content-wrapper">
+
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                    <h2>Trips</h2> <!-- TODO align this in the center -->
+                </nav>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col">
@@ -55,14 +62,21 @@
                                         <tr>
                                             <td>@trip.getName</td>
                                             <td>@trip.getTravelTime</td>
-                                            <td><span>@trip.getStartDate().getTime</span>@trip.getStartDateString</td>
+                                            <td>
+                                                @if(trip.getStartDate != null) {
+                                                    <span>@trip.getStartDate().getTime</span>
+                                                } else {
+                                                    <span>0</span>
+                                                }
+                                                @trip.getStartDateString</td>
                                             <td>@trip.getDestinations.size()</td>
-                                            <td>@trip.getDestinationNames()</td>
+                                            <td>@trip.getDestinationNames</td>
                                             @helper.form(routes.TripsController.showEdit(trip.getId)) {
                                                 @CSRF.formField
-                                                <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button> <button class="button-delete" onclick="deleteTripRow(this)" style="height:4vh">Delete</button></td>
-                                            }
+                                                <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
 
+                                            }
+                                            <a href="@routes.TripsController.delete(trip.getId)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>
                                         </tr>
                                     }
                                 </table>
@@ -189,15 +203,14 @@
         });
 
 
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
 
-        function deleteTripRow(r) {
-            var i = r.parentNode.parentNode.rowIndex;
-            document.getElementById("tripsTable").deleteRow(i)
-        }
 
-        function deleteDestRow() {
-            $('#destsTable').DataTable().row().remove().draw();
-        }
+
+
 
     </script>
 
