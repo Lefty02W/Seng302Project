@@ -73,7 +73,6 @@ public class ProfileController extends Controller {
 
     public Result show(Http.Request request) {
         Profile currentProfile = SessionController.getCurrentUser(request);
-        currentProfile.setTrips(tripRepository.getUsersTrips(currentProfile));
         //currentProfile.sortedTrips();
         System.out.println(currentProfile.getTrips().size());
         return ok(profile.render(currentProfile));

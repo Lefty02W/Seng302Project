@@ -57,7 +57,7 @@ public class TripsController extends Controller {
      */
     public Result show(Http.Request request) {
         currentDestinationsList.clear();
-        ArrayList<Trip> tripsList = tripRepository.getUsersTrips(SessionController.getCurrentUser(request));
+        ArrayList<Trip> tripsList = SessionController.getCurrentUser(request).getTrips();
         return ok(trips.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
     }
 
