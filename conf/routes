@@ -6,12 +6,13 @@
 GET     /                           controllers.LoginController.show(request: Request)
 
 GET     /destinations/edit/:id      controllers.DestinationsController.edit(request: Request, id: Integer)
-POST    /destinations/:id      controllers.DestinationsController.update(request: Request, id: Integer)
-POST    /destinations               controllers.DestinationsController.save(request: Request)
-POST    /destinations/delete/:id    controllers.DestinationsController.delete(id: Integer)
 POST    /trips/update    controllers.TripsController.updateDestination(request: Request, destOrder: Integer)
 POST    /trips/create/update    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer)
 GET    /trips/create/update    controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer)
+POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
+POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
+POST    /destinations/delete/:id    controllers.DestinationsController.delete(request: Request, id: Integer)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 # save the new destination
@@ -29,12 +30,16 @@ GET     /destinations/create         controllers.DestinationsController.showCrea
 
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)
-GET     /travellers/search                  controllers.TravellersController.search(request: Request)
+GET     /travellers/search           controllers.TravellersController.search(request: Request)
+GET     /travellers/photos           controllers.TravellersController.displayTravellersPhotos(email: String)
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)
 GET     /profile/edit/:email         controllers.ProfileController.showEdit(email: String)
 POST    /profile                     controllers.ProfileController.update(request: Request)
+POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
+GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer)
+GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
 
 GET     /trips/create                controllers.TripsController.showCreate(request: Request)
 GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)
@@ -46,6 +51,9 @@ POST    /trips/edit/:id              controllers.TripsController.addDestinationE
 POST    /trips/edit/delete/:id       controllers.TripsController.deleteDestinationEditTrip(request: Request, order: Integer, id: Integer)
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
+
+#Admins
+POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
 GET    /trips/delete/:id             controllers.TripsController.delete(id: Integer)
 POST   /trips/create/:id             controllers.TripsController.deleteDestination(request: Request, id: Integer)
 

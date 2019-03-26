@@ -3,9 +3,7 @@ package controllers;
 import models.Destination;
 import models.Profile;
 import models.Trip;
-import models.TripDestination;
 import play.mvc.Http;
-import repository.TripRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +15,6 @@ import java.util.Optional;
  * @author George, ajl190
  */
 public class SessionController {
-
 
     /**
      * Get the currently logged in user

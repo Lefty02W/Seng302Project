@@ -7,13 +7,10 @@ import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
-
 import play.mvc.Http;
-import play.mvc.Http.CookieBuilder;
 import play.mvc.Result;
-
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.login;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -62,9 +59,7 @@ public class LoginController extends Controller {
             }, httpExecutionContext.current());
 
         } else {
-            //TODO show incorrect user login on the front end
-            System.out.println("Incorrect login Data please try again");
-            return supplyAsync(() -> redirect(routes.LoginController.show()));
+            return supplyAsync(() -> redirect("/").flashing("info", "Login details incorrect, please try again"));
         }
     }
 

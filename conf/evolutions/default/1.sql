@@ -75,24 +75,34 @@ create table profile (
   passports                     varchar(255),
   nationalities                 varchar(255),
   traveller_types               varchar(255),
+  admin                         tinyint(1) default 0 not null,
   time_created                  datetime(6),
   constraint pk_profile primary key (email)
+);
+
+create table images (
+  email                         varchar(255) not null,
+  image_id                      integer auto_increment not null,
+  image                         longblob not null,
+  time_created                  datetime(6),
+  private                       boolean,
+  constraint pk_imageId primary key (image_id)
 );
 
 create table trip (
   trip_id                       integer auto_increment not null,
   name                          varchar(255),
-  email                         varchar(255),
+  user_email                    varchar(255),
   constraint pk_trip primary key (trip_id)
 );
 
 create table trip_destination (
   trip_destination_id           integer auto_increment not null,
+  destination                   varchar(255),
   arrival                       datetime(6),
   departure                     datetime(6),
   destination_id                integer not null,
   trip_id                       integer not null,
-  dest_order                    integer not null,
   constraint pk_trip_destination primary key (trip_destination_id)
 );
 
@@ -102,6 +112,8 @@ create table trip_destination (
 drop table if exists destination;
 
 drop table if exists profile;
+
+drop table if exists images;
 
 drop table if exists trip;
 

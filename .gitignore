@@ -194,3 +194,5 @@ local.properties
 
 # Code Recommenders
 .recommenders/
+
+conf/evolutions/default/1\.sql

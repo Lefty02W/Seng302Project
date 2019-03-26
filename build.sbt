@@ -1,4 +1,4 @@
-name := "SENG302 TEAM 1"
+name := "SENG302 TEAM 700"
 
 version := "0.0.1-SNAPSHOT"
 

@@ -1,7 +1,7 @@
 @import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
-@(searchForm: Form[PartnerFormData], users : List[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import views.html.helper.{CSRF, form}
+@import controllers.TravellersController
+@(searchForm: Form[PartnerFormData], users: List[Profile], imageList: List[Image], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -53,7 +53,7 @@
                 <div class="container-fluid">
                     <div id="table-card" class="card-large table-hover">
                         <div class="col">
-                        @form(routes.TravellersController.search()){
+                        @form(routes.TravellersController.search()) {
                             @CSRF.formField
 
                             <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
@@ -64,7 +64,7 @@
                                 <option value="Other">Other</option>
                             </select>
                             @*<input type="date" id="dateSearch" name="dateSearch">*@
-                           <select id="searchAgeRange" class="selectpicker" title="Age Range" name="searchAgeRange">
+                            <select id="searchAgeRange" class="selectpicker" title="Age Range" name="searchAgeRange">
                                 <option hidden disabled>Age Range</option>
                                 <option value=1><18</option>
                                 <option value=2>18-25</option>
@@ -83,27 +83,50 @@
                                 <option value="Holidaymaker">Holidaymaker</option>
                             </select>
                             <button type="submit" id="searchBttn">Search</button>
-                            <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">Clear</button></a>
-                            }
+                            <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">
+                                Clear</button></a>
+                        }
                         </div>
                         <div class="col">
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Photos</th>@if(current.isAdmin){<th>Admin Controls}</th>
                                 </thead>
-                                @for(user <- users) {
-                                    <tr>
-                                        <td>@user.getFirstName</td>
-                                        <td>@user.getMiddleName</td>
-                                        <td>@user.getLastName</td>
-                                        <td>@user.getGender</td>
-                                        <td><span>@user.getBirthDate.getTime</span>@user.getBirthDate</td>
-                                        <td>@user.getNationalities</td>
-                                        <td>@user.getPassports</td>
-                                        <td>@user.getFormattedTravellerTypes</td>
-                                    </tr>
-                                }
+                                    @for(user <- users) {
+                                        <tr>
+                                            <td>@user.getFirstName</td>
+                                            <td>@user.getMiddleName</td>
+                                            <td>@user.getLastName</td>
+                                            <td>@user.getGender</td>
+                                            <td><span>@user.getBirthDate.getTime</span>
+                                                @user.getBirthDate</td>
+                                            <td>@user.getNationalities</td>
+                                            <td>@user.getPassports</td>
+                                            <td>@user.getTravellerTypes</td>
+                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)">
+                                                <button type="submit" class="viewPicButton">View</button>
+                                            </a>
+                                            </td>
+                                            @if(current.isAdmin) {
+                                                @if(user.isAdmin && user.getEmail != "admin") {
+                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
+                                                        @CSRF.formField
+                                                        <td><button class="cancelBttn" type="submit" >
+                                                            Remove Admin</button></td>
+                                                    }
+                                                } else if (!user.isAdmin) {
+                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
+                                                        @CSRF.formField
+                                                        <td><button type="submit">
+                                                            Make Admin</button></td>
+                                                    }
+                                                } else {
+                                                    <td>Master Admin</td>
+                                                }
+                                            }
+                                        </tr>
+                                    }
                             </table>
                         </div>
 
@@ -118,7 +141,7 @@
 
     <script type="text/javascript">
             //Setup for the user table
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $('#userTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",

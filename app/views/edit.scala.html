@@ -1,7 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(id: Integer, destinationForm : Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
-@import helper.form
+@import helper._
+@(id: Integer, destination: Destination, destinationForm : Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+
 <!DOCTYPE html>
 <html>
 
@@ -38,25 +39,46 @@
                 <div class="container-fluid">
                     <div id="table-card" class="card-large">
                         <h3>Edit destination</h3>
-                        @helper.form(routes.DestinationsController.save()){
+                        @helper.form(routes.DestinationsController.update(id)) {
                             <fieldset>
                                 @CSRF.formField
                                 <div class="row">
                                     <div class="col">
-                                        @helper.inputText(destinationForm("name"), '_label -> "Name", '_help -> "")
-                                        @helper.inputText(destinationForm("type"), '_label -> "Type", '_help -> "")
-                                        @helper.inputText(destinationForm("district"), '_label -> "District", '_help -> "")
+                                        <label>Name</label>
+                                        <input type="text" id="name" placeholder="Name" name="name" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')" value=@destination.getName>
                                     </div>
                                     <div class="col">
-                                        @helper.inputText(destinationForm("latitude"), '_label -> "Latitude", '_help -> "")
-                                        @helper.inputText(destinationForm("longitude"), '_label -> "Longitude", '_help -> "")
-                                        @helper.inputText(destinationForm("country"), '_label -> "Country", '_help -> "")
+                                        <label>Type</label>
+                                        <input type="text" id="type" placeholder="Type" name="type" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')" value=@destination.getType>
                                     </div>
                                 </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <label>District</label>
+                                        <input type="text" id="district" placeholder="District" name="district" value=@destination.getDistrict >
+                                    </div>
+                                    <div class="col">
+                                        <label>Country</label>
+                                        <input type="text" id="country" placeholder="Country" name="country" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')" value=@destination.getCountry >
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Latitude</label>
+                                        <input type="number" step="0.01" id="latitude" name="latitude" value=@destination.getLatitude>
+                                    </div>
+                                    <div class="col">
+                                        <label>Longitude</label>
+                                        <input type="number" step="0.01" id="longitude" name="longitude" value=@destination.getLongitude>
+                                    </div>
+                                </div>
+
                             </fieldset>
                             <a href="@routes.DestinationsController.show()"> <button class="button-delete" style="width: 10vw" type="button">Back</button> </a>
                             <button type="submit" class="registerButton button-add" style="width: 10vw" id = "saveButton">Save</button>
-                            }
+                        }
 
                     </div>
 

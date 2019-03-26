@@ -18,10 +18,105 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     background-color: #ca6636;
 }
 
+.cancelBttn{
+    background-color: #ca6636;
+}
+
 #searchBttn:hover, #cancelBttn:hover {
     font-weight: bold;
 }
 
+.card {
+    height: 240px;
+    width: 240px;
+}
+
+img.thumbnail {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 240px;
+    max-width: 240px;
+    margin: auto;
+
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#expandImageModal.modal {
+    display: none;
+    position: fixed;
+    /*z-index: 0;*/
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.9);
+}
+
+/* Modal Content (Image) */
+#expandedImage.modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 900px;
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 80px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Caption of Modal Image (Image Text) */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 150px;
+}
+
+/* Add Animation - Zoom in the Modal */
+#expandedImage.modal-content, #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+}
+
+#travellersPhotos {
+    height: 85vh;
+    overflow-y: auto;
+}
+
+#travellersPhotos .row{
+    margin-right: 0px;
+    margin-left: 0px
+}
 
 
 

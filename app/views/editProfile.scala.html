@@ -1,6 +1,4 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
+@import views.html.helper.{CSRF, form}
 @(user: Profile, profileForm: Form[Profile])
 
 <!DOCTYPE html>
@@ -65,8 +63,24 @@
                                             <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@user.getEmail>
                                         </div>
                                         <div class="col">
-                                            <input type="text" id="gender" placeholder="Gender" name="gender" class="inputField" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')"value=@user.getGender>
-                                        </div>
+                                            <select class="selectpicker" id="gender" name="gender" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
+                                                @if(user.getGender == "Male") {
+                                                    <option selected>Male</option>
+                                                } else {
+                                                    <option>Male</option>
+                                                }
+                                                @if(user.getGender == "Female") {
+                                                    <option selected>Female</option>
+                                                } else {
+                                                    <option>Female</option>
+                                                }
+                                                @if(user.getGender == "Other") {
+                                                    <option selected>Other</option>
+                                                } else {
+                                                    <option>Other</option>
+                                                }
+                                            </select>
+                                         </div>
                                         <div class="col">
                                             <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@user.getEntryDate>
                                         </div>
