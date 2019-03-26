@@ -256,12 +256,14 @@ public class TripsController extends Controller {
         }
     }
 
-    public Result deleteDestination(Http.Request request, Integer id) {
-        //remove destination from list
-        System.out.println("Destination id is == "+id);
-        //for currentDestinationsList
-        //if id = id
-        //.remove(currentIndex)
+    /**
+     * Deletes TripDests from the current destinations list and changes the order of indirectly affected TripDests
+     */
+    public Result deleteDestination(Http.Request request, Integer order) {
+        for (int i = order-1; i < currentDestinationsList.size(); i++){
+            currentDestinationsList.get(i).setDestOrder(currentDestinationsList.get(i).getDestOrder()-1);
+        }
+        currentDestinationsList.remove(order-1);
         return redirect(routes.TripsController.showCreate());
     }
 
