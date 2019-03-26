@@ -118,9 +118,9 @@ public class Trip extends Model {
     public String getDestinationNames() {
         this.destinations = sortDestinationsByOrder(destinations);
         //TODO fix this to get name not id
-        String names = "" + destinations.get(0).getDestinationId();
+        String names = "" + destinations.get(0).getDestinationName();
         for (int i = 1; i < destinations.size(); i++) {
-            names += ", " + destinations.get(i).getDestinationId();
+            names += ", " + destinations.get(i).getDestinationName();
         }
         return names;
     }
