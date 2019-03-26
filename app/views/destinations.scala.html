@@ -51,7 +51,7 @@
                     <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
                     <h2>Destinations</h2> <!-- TODO align this in the center -->
                 </nav>
-                
+
                 @if(request.flash.containsKey("success")) {
                     <div class="alert alert-success">
                     @request.flash.get("success")
@@ -60,7 +60,7 @@
 
                 @if(request.flash.containsKey("failure")) {
                     <div class="alert alert-danger">
-                    @request.flash.get("invalid")
+                    @request.flash.get("failure")
                     </div>
                 }
 
