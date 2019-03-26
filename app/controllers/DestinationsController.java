@@ -30,7 +30,7 @@ public class DestinationsController extends Controller {
     private final Form<Profile> userForm;
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
-    private final SessionController sessionController = new SessionController();
+    private String destShowRoute = "/destinations";
 
     /**
      * Constructor for the destination controller class
@@ -55,12 +55,12 @@ public class DestinationsController extends Controller {
      */
     public Result show(Http.Request request) {
 
-        Profile user = sessionController.getCurrentUser(request);
+        Profile user = SessionController.getCurrentUser(request);
         Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
         try {
             destinationsList = destListTemp.get();
         } catch(NoSuchElementException e) {
-            destinationsList = new ArrayList<Destination>();
+            destinationsList = new ArrayList<>();
         }
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
@@ -106,7 +106,7 @@ public class DestinationsController extends Controller {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.value().get();
         destinationRepository.update(dest, id);
-        return redirect("/destinations");
+        return redirect(destShowRoute);
     }
 
     /**
@@ -115,7 +115,7 @@ public class DestinationsController extends Controller {
      * @return
      */
     public Result saveDestination(Http.Request request) {
-        Profile user = sessionController.getCurrentUser(request);
+        Profile user = SessionController.getCurrentUser(request);
         if (user == null) {
             return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
         }
@@ -123,7 +123,7 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
-        return redirect("/destinations");
+        return redirect(destShowRoute);
     }
 
     /**
@@ -132,9 +132,8 @@ public class DestinationsController extends Controller {
      * @return
      */
     public Result delete(Http.Request request, Integer id) {
-        Profile profile = sessionController.getCurrentUser(request);
         destinationRepository.delete(id);
-        return redirect("/destinations");
+        return redirect(destShowRoute);
 
     }
 
