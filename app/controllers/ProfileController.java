@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import play.libs.Files.TemporaryFile;
@@ -172,7 +173,7 @@ public class ProfileController extends Controller {
         File file = tempFile.path().toFile();
 
 
-        return supplyAsync(() -> {
+         return supplyAsync(() -> {
             try {
                 Profile currentUser = getCurrentUser(request);
                 this.imageBytes = Files.readAllBytes(file.toPath());
@@ -187,9 +188,8 @@ public class ProfileController extends Controller {
             }
 
             // Redirect user to profile page to show state change
-            return redirect("/profile").flashing("success", "Image uploaded.");
-        });
-
+            return ok();
+        }).thenApply(result -> redirect("/profile").flashing("success", "Image uploaded."));
     }
 
 
