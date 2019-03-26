@@ -21,18 +21,18 @@ public class TripTest {
 
     @Before
     public void setUp() throws Exception {
-        TripDestination tripDest1 = new TripDestination(1, dateFormat.parse("04/05/2018"), dateFormat.parse("14/05/2018"));
-        TripDestination tripDest2 = new TripDestination(2, dateFormat.parse("14/05/2018"), dateFormat.parse("20/05/2018"));
-        TripDestination tripDest3 = new TripDestination(3, dateFormat.parse("20/05/2018"), dateFormat.parse("27/05/2018"));
+        TripDestination tripDest1 = new TripDestination(1, dateFormat.parse("04/05/2018"), dateFormat.parse("14/05/2018"), 1);
+        TripDestination tripDest2 = new TripDestination(2, dateFormat.parse("14/05/2018"), dateFormat.parse("20/05/2018"), 2);
+        TripDestination tripDest3 = new TripDestination(3, dateFormat.parse("20/05/2018"), dateFormat.parse("27/05/2018"), 3);
         ArrayList<TripDestination> dests = new ArrayList<>();
         dests.add(tripDest1);
         dests.add(tripDest2);
         dests.add(tripDest3);
         trip = new Trip(dests, "Trip to Nelson");
 
-        TripDestination tripDest4 = new TripDestination(1, null, null);
-        TripDestination tripDest5 = new TripDestination(2, null, null);
-        TripDestination tripDest6 = new TripDestination(3, null, null);
+        TripDestination tripDest4 = new TripDestination(1, null, null, 1);
+        TripDestination tripDest5 = new TripDestination(2, null, null, 2);
+        TripDestination tripDest6 = new TripDestination(3, null, null, 3);
         ArrayList<TripDestination> dests1 = new ArrayList<>();
         dests1.add(tripDest4);
         dests1.add(tripDest5);

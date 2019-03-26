@@ -46,11 +46,11 @@ public class TripDestination extends Model {
      * @param departure
      * @param dest_order
      */
-    public TripDestination(int destinationId, Date arrival, Date departure, int dest_order) {
+    public TripDestination(int destinationId, Date arrival, Date departure, int destOrder) {
         this.destinationId = destinationId;
         this.arrival = arrival;
         this.departure = departure;
-        this.destOrder = dest_order;
+        this.destOrder = destOrder;
     }
 
     /**
