@@ -127,7 +127,10 @@ public class Trip extends Model {
 
     public ArrayList<TripDestination> sortDestinationsByOrder(ArrayList<TripDestination> array) {
         ArrayList<TripDestination> temp = new ArrayList<TripDestination>();
-        for (int i = 0; i<array.size(); i++) {
+        if (array == null) {
+            return temp;
+        }
+        for (int i = 0; i < array.size(); i++) {
             for (int x=0; x < array.size(); x++) {
                 if (array.get(x).getDestOrder() == i+1) {
                     temp.add(array.get(x));
