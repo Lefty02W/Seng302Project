@@ -82,8 +82,10 @@ public class TripsController extends Controller {
         Profile currentUser = SessionController.getCurrentUser(request);
         Trip trip = tripRepository.getTrip(id);
         Form<Trip> tripForm = form.fill(trip);
-        ArrayList<TripDestination> sortedTripdest = sortByOrder(trip.getDestinations());
-        return ok(tripsEdit.render(tripForm, formTrip, trip.getDestinations(), currentUser, id, request, messagesApi.preferred(request)));
+        if (currentDestinationsList.isEmpty()){
+            currentDestinationsList.addAll(trip.getDestinations());
+        }
+        return ok(tripsEdit.render(tripForm, formTrip, sortByOrder(currentDestinationsList), currentUser, id, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -126,22 +128,21 @@ public class TripsController extends Controller {
      * @return redirection tot he edit page
      */
     public Result addDestinationEditTrip(Http.Request request, int id, int numTripdests) {
+
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
-        ArrayList<TripDestination> tripDestArray = tripRepository.getTrip(id).getDestinations();
-        if (tripDestArray.get(tripDestArray.size()-1).getDestinationId() != tripDestination.getDestinationId()) {
-            tripDestination.setTripId(id);
-            tripDestination.setDestOrder(numTripdests + 1);
-            try {
-                tripDestinationRepository.insert(tripDestination);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-            return redirect("/trips/edit/" + id);
-        } else {
-            return redirect("/trips/edit/" + id).flashing("info", "The same destination cannot be after itself in a trip");
-        }
+        tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+        if(currentDestinationsList.size() >= 1) {
+            if(tripDestination.getDestinationName().equals(currentDestinationsList.get(currentDestinationsList.size() - 1).getDestinationName())) {
+                return redirect("/trips/edit/" + id).flashing("info", "The same destination cannot be after itself in a trip");
 
+            }
+        }
+        currentDestinationsList.add(tripDestination);
+        tripDestination.setDestOrder(currentDestinationsList.size()); //Note this cannot be used as indexes as they start at 1 not 0
+        tripDestination.setTripId(1);
+        tripRepository.insertTripDestination(tripDestination);
+        return redirect("/trips/edit/" + id);
     }
 
 
@@ -165,16 +166,24 @@ public class TripsController extends Controller {
     }
 
     /**
-     * updates a trips name
+     * updates a trips
      * @param request
      * @param id
      * @return
      */
     public Result updateName(Http.Request request, int id) {
         Form<Trip> tripForm = form.bindFromRequest(request);
-        Trip tempTrip = tripForm.get();
-        tripRepository.updateName(id, tempTrip.getName());
-        return redirect("/trips");
+        Trip trip = tripForm.get();
+        Profile currentUser = SessionController.getCurrentUser(request);
+        trip.setEmail(currentUser.getEmail());
+        if (currentDestinationsList.size() < 2){
+            return redirect("/trips/edit/" + id).flashing("info", "The same destination cannot be after itself in a trip");
+        } else {
+            tripRepository.delete(id);
+            tripRepository.insert(trip, currentDestinationsList);
+
+            return redirect("/trips");
+        }
     }
 
     /**
@@ -198,41 +207,23 @@ public class TripsController extends Controller {
     public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
-        tripDestination.setTripId(tripId);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
-        Trip trip = tripRepository.getTrip(tripId);
-        ArrayList<TripDestination> tripDestinations = sortByOrder(trip.getDestinations());
         Integer newLocation = tripDestination.getDestOrder();
-
         //following code block is to test if editing a tripDestination will cause 2 of the same Destinations to be next to each other
         ArrayList<TripDestination> tempList = new ArrayList<>();
-        tempList.addAll(tripDestinations);
+        tempList.addAll(currentDestinationsList);
         tempList.remove(oldLocation-1);
         tempList.add(newLocation-1, tripDestination);
         if (isBeside(tempList)) {
-            return redirect(routes.TripsController.showEdit(tripId)).flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/edit/" + tripId).flashing("info", "The same destination cannot be after itself in a trip");
         }
-
-        //goes through the trips tripDests and changes the order of any tripDests that may be indirectly affected
-        int oldLocationId = tripDestinations.get(oldLocation-1).getTripDestinationId();
-        if (!oldLocation.equals(newLocation)) {
-
-            for (int i = 0; i < tripDestinations.size(); i++) {
-                if (tripDestinations.get(i).getDestOrder() > oldLocation && tripDestinations.get(i).getDestOrder() <= newLocation) {
-                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
-                            tripDestinations.get(i).getDestOrder()-1);
-                }
-                else if (tripDestinations.get(i).getDestOrder() < oldLocation && tripDestinations.get(i).getDestOrder() >= newLocation) {
-                    tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
-                            tripDestinations.get(i).getDestOrder()+1);
-                }
-            }
-
+        if (oldLocation.equals(newLocation)) {
+            currentDestinationsList.set(newLocation-1, tripDestination);
+        } else {
+            sortFunc(oldLocation, newLocation);
+            currentDestinationsList.set(newLocation-1, tripDestination);
         }
-
-        tripDestinationRepository.delete(oldLocationId);
-        tripDestinationRepository.insert(tripDestination);
-        return redirect(routes.TripsController.showEdit(tripId));
+        return redirect("/trips/edit/" + tripId);
     }
 
     /**
@@ -243,26 +234,20 @@ public class TripsController extends Controller {
      * @return redirection to the edit page
      */
     public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
-        Trip trip = tripRepository.getTrip(tripId);
-        ArrayList<TripDestination> tripDestinations = sortByOrder(trip.getDestinations());
-
-        //following code block is to test if editing a tripDestination will cause 2 of the same Destinations to be next to each other
-        ArrayList<TripDestination> tempList = new ArrayList<>();
-        tempList.addAll(tripDestinations);
-        tempList.remove(order-1);
-        if (isBeside(tempList)) {
-            return redirect(routes.TripsController.showEdit(tripId)).flashing("info", "The same destination cannot be after itself in a trip");
-        }
-
-        if (tripDestinations.size() > 2) {
-            for (int i= order; i < tripDestinations.size(); i++) {
-                tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
-                        tripDestinations.get(i).getDestOrder()-1);
+        if (order != 1) {
+            if (order != currentDestinationsList.size()) {
+                if (currentDestinationsList.get(order - 2).getDestinationId() == currentDestinationsList.get(order).getDestinationId()) {
+                    return redirect("/trips/edit/" + tripId).flashing("info", "The same destination cannot be after itself in a trip");
+                }
             }
-            tripDestinationRepository.delete(tripDestinations.get(order-1).getTripDestinationId());
         }
-        return redirect(routes.TripsController.showEdit(tripId));
+        for (int i = order; i < currentDestinationsList.size(); i++){
+            currentDestinationsList.get(i).setDestOrder(currentDestinationsList.get(i).getDestOrder()-1);
+        }
+        currentDestinationsList.remove(order-1);
+        return redirect("/trips/edit/" + tripId);
     }
+
 
 
 
