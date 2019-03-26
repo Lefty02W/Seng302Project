@@ -57,7 +57,7 @@ public class ProfileController extends Controller {
         profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
 
         //TODO redirect does not update profile displayed, have to refresh to get updated info
-        return redirect(routes.ProfileController.show());
+        return redirect("/profile");
 
     }
 
@@ -69,16 +69,13 @@ public class ProfileController extends Controller {
      */
     public Result updateAdmin(Http.Request request, String email){
         profileRepository.updateAdminPrivelege(email);
-        //TODO redirect does not update profile displayed, have to refresh to get updated info
-        return redirect(routes.TravellersController.show());
+        return redirect("/travellers");
     }
 
 
 
     public Result show(Http.Request request) {
         Profile currentProfile = SessionController.getCurrentUser(request);
-        //TODO xhange to read from db
-        //currentProfile.setTrips(new ArrayList<Trip>());
         return ok(profile.render(currentProfile));
     }
 

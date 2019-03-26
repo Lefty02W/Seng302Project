@@ -106,7 +106,7 @@ public class DestinationsController extends Controller {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.value().get();
         destinationRepository.update(dest, id);
-        return redirect(routes.DestinationsController.show());
+        return redirect("/destinations");
     }
 
     /**
@@ -123,7 +123,7 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
-        return redirect(routes.DestinationsController.show());
+        return redirect("/destinations");
     }
 
     /**
@@ -134,7 +134,7 @@ public class DestinationsController extends Controller {
     public Result delete(Http.Request request, Integer id) {
         Profile profile = sessionController.getCurrentUser(request);
         destinationRepository.delete(id);
-        return redirect(routes.DestinationsController.show());
+        return redirect("/destinations");
 
     }
 
