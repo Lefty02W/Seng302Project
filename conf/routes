@@ -28,11 +28,15 @@ GET     /destinations/create         controllers.DestinationsController.showCrea
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)
 GET     /travellers/search           controllers.TravellersController.search(request: Request)
+GET     /travellers/photos           controllers.TravellersController.displayTravellersPhotos(email: String)
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)
 GET     /profile/edit/:email         controllers.ProfileController.showEdit(email: String)
 POST    /profile                     controllers.ProfileController.update(request: Request)
+POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
+GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer)
+GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
 
 GET     /trips/create                controllers.TripsController.showCreate(request: Request)
 GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)

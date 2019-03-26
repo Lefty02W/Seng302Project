@@ -1,6 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(searchForm: Form[PartnerFormData], users : List[Profile], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@import controllers.TravellersController
+@(searchForm: Form[PartnerFormData], users: List[Profile], imageList: List[Image], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -30,14 +31,19 @@
         <div class="d-flex" id="wrapper">
 
                 <!-- The sidebar -->
-            <div  id="sidebar-wrapper">
+            <div id="sidebar-wrapper">
                 <div class="sidebar-heading"><h2>TravelEA</h2></div>
                 <div id="sidebar">
-                    <a href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="icon"/> Profile</a>
-                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="icon"/> Destinations</a>
-                    <a href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="icon"/> Trips</a>
-                    <a style="color: #ca6636" href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="icon"/> Travellers</a>
-                    <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="icon"/> Logout</a>
+                    <a href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                        Profile</a>
+                    <a href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                        Destinations</a>
+                    <a href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                        Trips</a>
+                    <a style="color: #ca6636" href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                        Travellers</a>
+                    <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                        Logout</a>
                 </div>
             </div>
                 <!-- The content of the page -->
@@ -45,7 +51,7 @@
                 <div class="container-fluid">
                     <div id="table-card" class="card-large table-hover">
                         <div class="col">
-                        @form(routes.TravellersController.search()){
+                        @form(routes.TravellersController.search()) {
                             @CSRF.formField
 
                             <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
@@ -56,7 +62,7 @@
                                 <option value="Other">Other</option>
                             </select>
                             @*<input type="date" id="dateSearch" name="dateSearch">*@
-                           <select id="searchAgeRange" class="selectpicker" title="Age Range" name="searchAgeRange">
+                            <select id="searchAgeRange" class="selectpicker" title="Age Range" name="searchAgeRange">
                                 <option hidden disabled>Age Range</option>
                                 <option value=1><18</option>
                                 <option value=2>18-25</option>
@@ -75,14 +81,15 @@
                                 <option value="Holidaymaker">Holidaymaker</option>
                             </select>
                             <button type="submit" id="searchBttn">Search</button>
-                            <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">Clear</button></a>
-                            }
+                            <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">
+                                Clear</button></a>
+                        }
                         </div>
                         <div class="col">
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>@if(current.isAdmin){<th>Admin Controls}</th>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Photos</th>@if(current.isAdmin){<th>Admin Controls}</th>
                                 </thead>
                                     @for(user <- users) {
                                         <tr>
@@ -95,6 +102,10 @@
                                             <td>@user.getNationalities</td>
                                             <td>@user.getPassports</td>
                                             <td>@user.getTravellerTypes</td>
+                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)">
+                                                <button type="submit" class="viewPicButton">View</button>
+                                            </a>
+                                            </td>
                                             @if(current.isAdmin) {
                                                 @if(user.isAdmin && user.getEmail != "admin") {
                                                     @form(routes.ProfileController.updateAdmin(user.getEmail)) {
@@ -116,19 +127,16 @@
                                     }
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
-
-
         </div>
 
     </body>
 
     <script type="text/javascript">
             //Setup for the user table
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $('#userTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",

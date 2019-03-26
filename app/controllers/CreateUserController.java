@@ -42,6 +42,4 @@ public class CreateUserController extends Controller{
     public Result show(Http.Request request) {
         return ok(createUser.render(form, request, messagesApi.preferred(request)));
     }
-
-
 }

@@ -1,8 +1,10 @@
 package controllers;
 
 import models.Profile;
+import models.Trip;
 import play.mvc.Http;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 /**
@@ -21,7 +23,10 @@ public class SessionController {
         String email;
         if (connected.isPresent()) {
             email = connected.get();
-            return Profile.find.byId(email);
+            Profile profile = Profile.find.byId(email);
+            // Temp until merge with trips branch
+            profile.setTrips(new ArrayList<Trip>());
+            return profile;
         } else {
             return null;
         }
