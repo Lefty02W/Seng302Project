@@ -46,6 +46,25 @@
             </div>
 
             <div id="page-content-wrapper">
+
+                @if(request.flash.containsKey("noImage")) {
+                    <div class="alert alert-danger">
+                    @request.flash.get("noImage")
+                    </div>
+                }
+
+                @if(request.flash.containsKey("invalidImage")) {
+                    <div class="alert alert-danger">
+                    @request.flash.get("invalidImage")
+                    </div>
+                }
+
+                @if(request.flash.containsKey("success")) {
+                    <div class="alert alert-success">
+                    @request.flash.get("success")
+                    </div>
+                }
+
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col">

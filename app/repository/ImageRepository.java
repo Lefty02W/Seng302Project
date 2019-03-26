@@ -40,6 +40,7 @@ public class ImageRepository {
     /**
      * Update image visibility in database using Image model object,
      * Checks if it is 1 'public' and changes it to 0 'private' and vice versa.
+     *
      * @param id Integer with the images 'visible' value. Either 1 or 0.
      * @return new 'visible' value
      */
@@ -68,6 +69,7 @@ public class ImageRepository {
 
     /**
      * Function to get all the images created by the signed in user.
+     *
      * @param email String of logged in users email
      * @return imageList list of images uploaded by the user
      */

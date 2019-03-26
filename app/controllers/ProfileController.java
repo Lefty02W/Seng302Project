@@ -21,6 +21,8 @@ import java.util.concurrent.CompletionStage;
 
 import play.libs.Files.TemporaryFile;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 
 public class ProfileController extends Controller {
 
@@ -83,7 +85,7 @@ public class ProfileController extends Controller {
     /**
      * Get the currently logged in user
      *
-     * @param request
+     * @param request Https request
      * @return Web page showing connected user's email
      */
     public Profile getCurrentUser(Http.Request request) {
@@ -99,10 +101,10 @@ public class ProfileController extends Controller {
 
 
     /**
-     * Inserts an Image object into the ImageRepository to be stored on the database
+     * Call to ImageRepository to be insert an image in the database
      *
      * @param image Image object containing email, id, byte array of image and visible info
-     * @return
+     * @return a redirect to the profile page
      */
     public Result savePhoto(Image image) {
         imageRepository.insert(image);
@@ -130,7 +132,7 @@ public class ProfileController extends Controller {
      * @param request
      * @return
      */
-    public Result uploadPhoto(Http.Request request) {
+    public CompletionStage<Result> uploadPhoto(Http.Request request) {
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
 
@@ -139,15 +141,15 @@ public class ProfileController extends Controller {
 
         if (picture == null) {
             System.out.println("No image found.");
-            return redirect(routes.ProfileController.show());
+            return supplyAsync(() -> redirect("/profile").flashing("noImage", "No image selected."));
+
         }
 
-        String fileName = picture.getFilename();
-//            long fileSize = picture.getFileSize();
+        String fileName = picture.getFilename(); // long fileSize = picture.getFileSize();
         String contentType = picture.getContentType();
 
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
-            return redirect(routes.ProfileController.show());
+            return supplyAsync(() -> redirect("/profile").flashing("invalidImage", "Invalid file type!"));
         }
 
         TemporaryFile tempFile = picture.getRef();
@@ -172,7 +174,7 @@ public class ProfileController extends Controller {
         }
 
 
-        return redirect(routes.ProfileController.show());
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Image uploaded."));
     }
 
 
@@ -180,7 +182,7 @@ public class ProfileController extends Controller {
      * Inserts an Image object into the ImageRepository to be stored on the database
      *
      * @param id Image object containing email, id, byte array of image and visible info
-     * @return
+     * @return a redirect to the profile page.
      */
     public Result updatePrivacy(Integer id) {
         System.out.println("CALL TO UPDATE");
@@ -193,10 +195,11 @@ public class ProfileController extends Controller {
     }
 
     /**
-     * Method to retrieve all uploaded profile images from the database for a logged in user
+     * Method to query the image repository to retrieve all images uploaded for a
+     * logged in user.
      *
-     * @param request
-     * @return
+     * @param request Https request
+     * @return a list of image objects
      */
     public List<Image> getUserPhotos(Http.Request request) {
         Profile profile = getCurrentUser(request);
