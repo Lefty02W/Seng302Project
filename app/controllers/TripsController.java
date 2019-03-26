@@ -110,7 +110,7 @@ public class TripsController extends Controller {
     }
 
     /**
-     *
+     * Adds a destination to an already created trip
      * @param request
      * @param id
      * @return
@@ -118,16 +118,19 @@ public class TripsController extends Controller {
     public Result addDestinationEditTrip(Http.Request request, int id, int numTripdests) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
-        //TODO add the destination to the database and the trip
-        tripDestination.setTripId(id);
-        tripDestination.setDestOrder(numTripdests + 1);
-        tripDestination.setDestinationId(tripDestination.getDestinationId());
-        try {
-            tripDestinationRepository.insert(tripDestination);
-        } catch (Exception e) {
-            System.out.println(e);
+        ArrayList<TripDestination> tripDestArray = tripRepository.getTrip(id).getDestinations();
+        System.out.println(tripDestArray.get(tripDestArray.size()-1).getDestinationId());
+        System.out.println(tripDestination.getDestinationId());
+        System.out.println((tripDestArray.get(tripDestArray.size()-1).getDestinationId() != tripDestination.getDestinationId()));
+        if (tripDestArray.get(tripDestArray.size()-1).getDestinationId() != tripDestination.getDestinationId()) {
+            tripDestination.setTripId(id);
+            tripDestination.setDestOrder(numTripdests + 1);
+            try {
+                tripDestinationRepository.insert(tripDestination);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         }
-
         return redirect(routes.TripsController.showEdit(id));
     }
 
