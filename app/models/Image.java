@@ -39,11 +39,20 @@ public class Image extends Model {
     @Constraints.Required
     private String name;
 
-    public Image(String email, byte[] image, String contentType, Integer visable, String name){
+
+    /**
+     * Constructor for image
+     * @param email
+     * @param image
+     * @param contentType
+     * @param visible
+     * @param name
+     */
+    public Image(String email, byte[] image, String contentType, Integer visible, String name){
         this.email = email;
         this.image = image;
         this.contentType = contentType;
-        this.visible = visable;
+        this.visible = visible;
         this.name = name;
     }
 

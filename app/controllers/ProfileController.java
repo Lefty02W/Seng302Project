@@ -14,6 +14,7 @@ import views.html.*;
 
 
 import javax.inject.Inject;
+import javax.swing.text.html.Option;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -36,6 +37,9 @@ public class ProfileController extends Controller {
     private final ImageRepository imageRepository;
     private byte[] imageBytes;
     private List<Image> imageList = new ArrayList<>();
+
+    private static Boolean showPhotoModal = false;
+
 
     /**
      * To get Image data upon upload
@@ -140,41 +144,40 @@ public class ProfileController extends Controller {
         ImageData imageData = uploadedImageForm.get();
 
         if (picture == null) {
-            System.out.println("No image found.");
-            return supplyAsync(() -> redirect("/profile").flashing("noImage", "No image selected."));
+            return supplyAsync(() -> redirect("/profile").flashing("invalid", "No image selected."));
 
         }
 
         String fileName = picture.getFilename(); // long fileSize = picture.getFileSize();
         String contentType = picture.getContentType();
 
+        // Check valid content type for image
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
-            return supplyAsync(() -> redirect("/profile").flashing("invalidImage", "Invalid file type!"));
+            return supplyAsync(() -> redirect("/profile").flashing("invalid", "Invalid file type!"));
         }
 
         TemporaryFile tempFile = picture.getRef();
         File file = tempFile.path().toFile();
 
-        try {
-            this.imageBytes = Files.readAllBytes(file.toPath());
-            Image image = new Image(null, null, null, null, null); // Initialize Image object
-            Profile currentUser = getCurrentUser(request);
-            image.setEmail(currentUser.getEmail());
-            image.setType(contentType);
-            image.setName(fileName);
-            image.setImage(this.imageBytes);
-            if (imageData.visible != null) {
-                image.setVisible(1); // For public (true)
-            } else {
-                image.setVisible(0); // For private (false)
+
+        return supplyAsync(() -> {
+            try {
+                Profile currentUser = getCurrentUser(request);
+                this.imageBytes = Files.readAllBytes(file.toPath());
+                int visibility =  (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
+                // Initialize Image object
+                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType,
+                        visibility, fileName);
+                savePhoto(image); // Save photo, given a successful upload
+                showPhotoModal = true;
+            } catch (IOException e) {
+                System.out.print(e);
             }
-            savePhoto(image); // Successful upload
-        } catch (IOException e) {
-            System.out.print(e);
-        }
 
+            // Redirect user to profile page to show state change
+            return redirect("/profile").flashing("success", "Image uploaded.");
+        });
 
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Image uploaded."));
     }
 
 
@@ -184,14 +187,14 @@ public class ProfileController extends Controller {
      * @param id Image object containing email, id, byte array of image and visible info
      * @return a redirect to the profile page.
      */
-    public Result updatePrivacy(Integer id) {
-        System.out.println("CALL TO UPDATE");
+    public CompletionStage<Result> updatePrivacy(Integer id) {
         try {
             imageRepository.updateVisibility(id);
+            showPhotoModal = true;
         } catch (Exception e) {
             System.out.println(e);
         }
-        return redirect(routes.ProfileController.show());
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
     }
 
     /**
@@ -214,11 +217,21 @@ public class ProfileController extends Controller {
         return imageList;
     }
 
+
+    /**
+     * Show the profile page
+     * @param request The http request
+     * @return
+     */
     public Result show(Http.Request request) {
         Profile currentProfile = getCurrentUser(request);
         //TODO change to read from db (the trips)
         currentProfile.setTrips(new ArrayList<Trip>());
         List<Image> displayImageList = getUserPhotos(request);
-        return ok(profile.render(currentProfile, imageForm, displayImageList, request, messagesApi.preferred(request)));
+        // Get the current show photo modal state
+        // Ensure state is false for next refresh action
+        Boolean show = showPhotoModal;
+        showPhotoModal = false;
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, request, messagesApi.preferred(request)));
     }
 }

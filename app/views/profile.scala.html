@@ -4,7 +4,7 @@
 @import controllers.ProfileController.ImageData
 @import java.util
 @import javax.swing.ImageIcon
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -47,15 +47,9 @@
 
             <div id="page-content-wrapper">
 
-                @if(request.flash.containsKey("noImage")) {
+                @if(request.flash.containsKey("invalid")) {
                     <div class="alert alert-danger">
-                    @request.flash.get("noImage")
-                    </div>
-                }
-
-                @if(request.flash.containsKey("invalidImage")) {
-                    <div class="alert alert-danger">
-                    @request.flash.get("invalidImage")
+                    @request.flash.get("invalid")
                     </div>
                 }
 
@@ -63,6 +57,14 @@
                     <div class="alert alert-success">
                     @request.flash.get("success")
                     </div>
+                }
+
+                @if(showPhotoModal) {
+                    <script type="text/javascript">
+                        $(window).on('load', function() {
+                            $('#viewPhotoModal').modal('show')
+                        })
+                    </script>
                 }
 
                 <div class="container-fluid">
@@ -230,7 +232,7 @@
                                 <label>
                                     Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
                                 <button type="button" data-dismiss="modal">Cancel</button>
-                                <a href="@routes.ProfileController.show()"><button type="submit">Submit</button></a>
+                                <button type="submit">Submit</button>
                             </div>
                         }
                     </div>
