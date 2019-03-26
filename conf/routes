@@ -43,6 +43,7 @@ POST    /trips                       controllers.TripsController.save(request: R
 POST    /trips/create                controllers.TripsController.addDestination(request: Request)
 POST    /trips/edit                  controllers.TripsController.updateName(request: Request, id: Integer)
 POST    /trips/edit/:id              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, numTripdests: Integer)
+POST    /trips/edit/delete/:id       controllers.TripsController.deleteDestinationEditTrip(request: Request, order: Integer, id: Integer)
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
 GET    /trips/delete/:id             controllers.TripsController.delete(id: Integer)

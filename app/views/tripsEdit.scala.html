@@ -93,6 +93,11 @@
                                     <td>@tripDestination.getDeparture</td>
                                     <td>@tripDestination.getArrival</td>
                                     <td><button id="edit_@tripDestination.getDestinationId" data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" >Edit</button></td> <!--onclick="fillModal(this)-->
+
+                                    @helper.form(routes.TripsController.deleteDestinationEditTrip(tripDestination.getDestOrder, id)) {
+                                        @CSRF.formField
+                                        <td> <button type="submit" class="button-delete"style="height:4vh">Delete</button></td>
+                                    }
                                 </tr>
                                 <div class="modal" id="editModal_@tripDestination.getDestOrder">
                                     <div class="modal-dialog">
@@ -108,7 +113,7 @@
                                             <div class="modal-body">
 
 
-                                            @helper.form(routes.TripsController.updateDestinationEdit(tripDestination.getDestOrder, id)) {
+                                            @helper.form(routes.TripsController.updateDestinationEdit(id, tripDestination.getDestOrder)) {
                                                 @CSRF.formField
 
                                                 <div class="col" id="formItems">

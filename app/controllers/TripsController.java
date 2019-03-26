@@ -172,7 +172,7 @@ public class TripsController extends Controller {
     /**
      * Updates a trip destination within the trip currently being edited
      */
-    public Result updateDestinationEdit(Http.Request request, Integer oldLocation, Integer tripId) {
+    public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setTripId(tripId);
@@ -203,6 +203,21 @@ public class TripsController extends Controller {
         //tripRepository.getTrip(tripId).setDestinations(sortByOrder(tripRepository.getTrip(tripId).getDestinations()));
         return redirect(routes.TripsController.showEdit(tripId));
     }
+
+    public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
+        System.out.println("he");
+        Trip trip = tripRepository.getTrip(tripId);
+        ArrayList<TripDestination> tripDestinations = sortByOrder(trip.getDestinations());
+        if (tripDestinations.size() > 2) {
+            for (int i= order; i < tripDestinations.size(); i++) {
+                tripDestinationRepository.updateOrder(tripDestinations.get(i).getTripDestinationId(),
+                        tripDestinations.get(i).getDestOrder()-1);
+            }
+            tripDestinationRepository.delete(tripDestinations.get(order-1).getTripDestinationId());
+        }
+        return redirect(routes.TripsController.showEdit(tripId));
+    }
+
 
 
     /**
@@ -266,6 +281,8 @@ public class TripsController extends Controller {
         currentDestinationsList.remove(order-1);
         return redirect(routes.TripsController.showCreate());
     }
+
+
 
 
 
