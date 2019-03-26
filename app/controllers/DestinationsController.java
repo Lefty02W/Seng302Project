@@ -4,7 +4,6 @@ import models.Destination;
 import models.Profile;
 import models.Trip;
 import models.TripDestination;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -180,9 +179,9 @@ public class DestinationsController extends Controller {
             }
             System.out.println("BAD BAD BAD DELETED DESTINATION");
            // destinationRepository.delete(id);
-            return ok();
-        }).thenApplyAsync( result ->
-                redirect("/destinations").flashing("Success", "Destination Deleted"));
+            return redirect("/destinations").flashing("success", "Destination Deleted");
+        });
+
     }
 
 }
