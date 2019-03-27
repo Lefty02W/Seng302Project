@@ -204,7 +204,7 @@ public class ProfileController extends Controller {
         /**
          * Inserts an Image object into the ImageRepository to be stored on the database
          *
-         * @param id Image object containing email, id, byte array of image and visible info
+         * @param id Image object containing email, id, byte array of images and visible info
          * @return a redirect to the profile page.
          */
         public CompletionStage<Result> updatePrivacy (Integer id){
