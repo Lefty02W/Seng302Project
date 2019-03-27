@@ -22,6 +22,10 @@ import java.util.NoSuchElementException;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+/**
+ * A trip repository that executes database operations in a different
+ * execution context handles all interactions with the trip table .
+ */
 public class TripRepository {
 
     private final EbeanServer ebeanServer;

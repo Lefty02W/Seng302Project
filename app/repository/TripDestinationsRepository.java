@@ -18,6 +18,10 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+/**
+ * A trip destination repository that executes database operations in a different
+ * execution context handles all interactions with the trip destination table .
+ */
 public class TripDestinationsRepository {
 
     private final EbeanServer ebeanServer;

@@ -14,7 +14,8 @@ import javax.inject.Inject;
 
 
 /**
- *
+ * This class is the controller for the createUser.scala.html file, it provides the route to the
+ * createUser page and the method that the page uses.
  */
 public class CreateUserController extends Controller{
 

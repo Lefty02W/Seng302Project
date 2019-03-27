@@ -20,7 +20,10 @@ import java.util.*;
 import java.text.ParseException;
 import java.util.concurrent.CompletionStage;
 
-
+/**
+ * This class is the controller for the trips.scala.html file, it provides the route to the
+ * trips page and the method that the page uses.
+ */
 public class TripsController extends Controller {
 
     private final ArrayList<Destination> destinationsList;

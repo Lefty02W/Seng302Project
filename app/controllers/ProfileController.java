@@ -29,7 +29,10 @@ import play.libs.Files.TemporaryFile;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
-
+/**
+ * This class is the controller for the profiles.scala.html file, it provides the route to the
+ * profiles page
+ */
 public class ProfileController extends Controller {
 
     private final Form<Profile> profileForm;

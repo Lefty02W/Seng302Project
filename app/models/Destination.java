@@ -7,6 +7,9 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+/**
+ * This class holds the data for a profile destination
+ */
 @Entity
 public class Destination extends Model {
 

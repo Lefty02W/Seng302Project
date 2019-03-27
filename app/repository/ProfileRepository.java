@@ -15,8 +15,8 @@ import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * A repository that executes database operations in a different
- * execution context.
+ * A profile repository that executes database operations in a different
+ * execution context handles all interactions with the profile table .
  */
 public class ProfileRepository {
 
