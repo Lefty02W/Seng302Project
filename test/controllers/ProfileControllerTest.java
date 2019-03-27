@@ -16,6 +16,9 @@ import static org.junit.Assert.*;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 
+/**
+ * Test Set for profile controller
+ */
 public class ProfileControllerTest extends  ProvideApplication{
 
     private Application app;
@@ -35,10 +38,13 @@ public class ProfileControllerTest extends  ProvideApplication{
         Result result = Helpers.route(provideApplication(), request);
     }
 
+    /**
+     * Testing profile GET endpoint /profile/edit/:id
+     */
     @Test
     public void showEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("GET")
+                .method(GET)
                 .uri("/profile/edit/admin")
                 .session("connected", "admin");
 
@@ -49,14 +55,36 @@ public class ProfileControllerTest extends  ProvideApplication{
         assertEquals(200, result.status());
     }
 
+    /**
+     * Testing profile POST endpoint /profile
+     */
     @Test
     public void update() {
+        Map<String, String> profileData = new HashMap<>();
+        profileData.put("first_name", "admin");
+        profileData.put("middle_name", "admin");
+        profileData.put("last_name", "admin");
+        profileData.put("email", "admin");
+        profileData.put("birth_date", "2016-05-08");
+
+
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/profile")
+                .bodyForm(profileData)
+                .session("connected", "admin");
+
+        Result result = Helpers.route(provideApplication(),request);
+        //System.out.println(Helpers.contentAsString(result));
+
+
+        assertEquals(303, result.status());
     }
 
-    @Test
-    public void updateAdmin() {
-    }
-
+    /**
+     * Testing profile GET endpoint /profile
+     */
     @Test
     public void show() {
         Http.RequestBuilder request = Helpers.fakeRequest()

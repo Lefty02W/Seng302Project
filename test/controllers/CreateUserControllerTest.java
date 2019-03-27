@@ -29,7 +29,6 @@ public class CreateUserControllerTest extends ProvideApplication{
 
     @Test
     public void save() {
-
     }
 
     @Test
