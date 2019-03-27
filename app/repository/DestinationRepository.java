@@ -14,8 +14,8 @@ import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * A repository that executes database operations in a different
- * execution context.
+ * A destination repository that executes database operations in a different
+ * execution context handles all interactions with the destination table .
  */
 public class DestinationRepository {
 

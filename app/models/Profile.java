@@ -16,7 +16,9 @@ import java.util.stream.Stream;
 
 import static java.util.Collections.reverseOrder;
 
-
+/**
+ * This class holds the data for a profile
+ */
 @Entity
 public class Profile extends Model {
 
@@ -222,6 +224,10 @@ public class Profile extends Model {
         return dateFormatsort.format(birthDate);
     }
 
+    /**
+     * format the traveller types
+     * @return
+     */
     public String getFormattedTravellerTypes() {
         ArrayList<String> types = getTravellerTypesList();
         if (types.size() <= 3) {

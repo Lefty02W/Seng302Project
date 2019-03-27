@@ -232,8 +232,9 @@ public class TravellersController extends Controller {
 
 
     /**
-     * This method shows the travellers photos on a new page
-     * @return
+     * this method shows the travellers photos on a new page
+     * @param email
+     * @return render traveller photo page
      */
     public Result displayTravellersPhotos(String email) {
         List<Image> displayImageList = getTravellersPhotos(email);

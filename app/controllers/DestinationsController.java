@@ -27,7 +27,10 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-
+/**
+ * This class is the controller for the destinations.scala.html file, it provides the route to the
+ * destinations page and the method that the page uses.
+ */
 public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;

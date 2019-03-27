@@ -77,7 +77,10 @@ public class Trip extends Model {
     public void setEmail(String email) { this.email = email; }
     public String getEmail() { return email; }
 
-
+    /**
+     * calculate total travel time
+     * @return travel time
+     */
     public long getTravelTime() {
         this.destinations = sortDestinationsByOrder(destinations);
         TripDestination startDest = destinations.get(0);
@@ -91,6 +94,7 @@ public class Trip extends Model {
 
     /**
      * Get the date of arrival at the first destination in the trip, as a string.
+     * @return formatted start date
      */
     public String getStartDateString(){
         this.destinations = sortDestinationsByOrder(destinations);
@@ -101,6 +105,10 @@ public class Trip extends Model {
         return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
     }
 
+    /**
+     * get time value
+     * @return true time value
+     */
     public long getTimeVal() {
         this.destinations = sortDestinationsByOrder(destinations);
         Date startDate = destinations.get(0).getArrival();
@@ -115,6 +123,10 @@ public class Trip extends Model {
         return destinations.get(0).getArrival();
     }
 
+    /**
+     *create list of printable destinations
+     * @return printable destination names
+     */
     public String getDestinationNames() {
         this.destinations = sortDestinationsByOrder(destinations);
         //TODO fix this to get name not id
@@ -125,6 +137,11 @@ public class Trip extends Model {
         return names;
     }
 
+    /**
+     * sort destinations by order
+     * @param array
+     * @return sorted destination list
+     */
     public ArrayList<TripDestination> sortDestinationsByOrder(ArrayList<TripDestination> array) {
         ArrayList<TripDestination> temp = new ArrayList<TripDestination>();
         if (array == null) {

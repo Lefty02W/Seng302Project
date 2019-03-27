@@ -40,7 +40,11 @@ public class SessionController {
     }
 
 
-
+    /**
+     * Get the users destination list
+     * @param email
+     * @return destinations, list of all user destination
+     */
     private static ArrayList<Destination> getUserDestinations(String email) {
         ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
                 .where()

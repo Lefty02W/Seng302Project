@@ -11,9 +11,8 @@ import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * A repository that executes database operations in a different
- * execution context.
- * Handles all queries related to images stored in the database
+ * A image repository that executes database operations in a different
+ * execution context handles all interactions with the image table .
  */
 public class ImageRepository {
 
