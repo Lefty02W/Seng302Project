@@ -106,6 +106,11 @@ public class TripDestination extends Model {
         this.tripId = tripId;
     }
 
+    /**
+     * format the date  string
+     * @param toFormat
+     * @return formated date string
+     */
     public String getFormattedDate(Date toFormat)
     {
         System.out.println(toFormat);

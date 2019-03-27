@@ -29,8 +29,11 @@ public class CreateUserController extends Controller{
         this.messagesApi = messagesApi;
     }
 
-    //to create user
-
+    /**
+     * Save user into the database
+     * @param request
+     * @return redirect to login
+     */
     public Result save(Http.Request request){
         Form<Profile> userForm = form.bindFromRequest(request);
         Profile profile = userForm.value().get();
@@ -38,7 +41,12 @@ public class CreateUserController extends Controller{
         return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
     }
 
-    //renders the createUser scene
+
+    /**
+     * render createUser page
+     * @param request
+     * @return rendered create user page
+     */
     public Result show(Http.Request request) {
         return ok(createUser.render(form, request, messagesApi.preferred(request)));
     }
