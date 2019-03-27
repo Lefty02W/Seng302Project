@@ -45,7 +45,7 @@ public class LoginController extends Controller {
     /**
      * Function to authenticate a login
      * @param request
-     * @return either login failed with incorrect info or successful login and go to user page
+     * @return either login failed  with incorrect info or successful login and go to user page
      */
     public CompletionStage<Result> login(Http.Request request){
 
