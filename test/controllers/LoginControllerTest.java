@@ -18,6 +18,9 @@ import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.route;
 
+/**
+ * Test set for Login Controller
+ */
 public class LoginControllerTest extends WithApplication {
 
     @Override
@@ -25,16 +28,9 @@ public class LoginControllerTest extends WithApplication {
     return new GuiceApplicationBuilder().build();
   }
 
-     @Test
-     public void save() {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/login");
-        Result result = route(app, request);
-        System.out.println(result);
-        //Assert.assertEquals(200, result.status());
-    }
-
+    /**
+     * Testing login POST endpoint /login
+     */
     @Test
     public void login() {
         Map<String, String> formData = new HashMap<>();
@@ -50,5 +46,31 @@ public class LoginControllerTest extends WithApplication {
 
         assertEquals(303, result.status());
 
+    }
+
+    /**
+     * Testing login GET endpoint /
+     */
+    @Test
+    public void loadLoginOnStart(){
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/");
+        Result result = Helpers.route(provideApplication(),request);
+
+        assertEquals(OK, result.status());
+    }
+
+    /**
+     * Testing login GET endpoint /login
+     */
+    @Test
+    public void show(){
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/login");
+        Result result = Helpers.route(provideApplication(),request);
+
+        assertEquals(OK, result.status());
     }
 }
