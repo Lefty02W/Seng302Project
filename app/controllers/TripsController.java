@@ -245,7 +245,7 @@ public class TripsController extends Controller {
      * Delete destinations in the edit page
      *
      * @param request Http request
-     * @param order The integer positioning of the destinations
+     * @param order The integer of the positioning of the destinations
      * @param tripId Integer primary key of a trip
      * @return redirection to the edit page
      */
