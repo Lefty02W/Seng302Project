@@ -37,7 +37,7 @@ public class ImageRepository {
             try {
                 ebeanServer.insert(image);
             } catch (Exception e) {
-                System.out.print(e);
+                e.printStackTrace();
             }
             return image.getImageId();
         }, executionContext);

@@ -140,7 +140,7 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         if(currentDestinationsList.size() >= 1) {
-            if(tripDestination.getDestinationName().equals(currentDestinationsList.get(currentDestinationsList.size() - 1).getDestinationName())) {
+            if (tripDestination.getDestinationId() == currentDestinationsList.get(currentDestinationsList.size() - 1).getDestinationId()) {
                 return redirect("/trips/edit/" + id).flashing("info", "The same destination cannot be after itself in a trip");
 
             }

@@ -192,7 +192,7 @@ public class ProfileController extends Controller {
                     savePhoto(image); // Save photo, given a successful upload
                     showPhotoModal = true;
                 } catch (IOException e) {
-                    System.out.print(e);
+                    e.printStackTrace();
                 }
 
                 // Redirect user to profile page to show state change
@@ -212,7 +212,7 @@ public class ProfileController extends Controller {
                 imageRepository.updateVisibility(id);
                 showPhotoModal = true;
             } catch (Exception e) {
-                System.out.println(e);
+                e.printStackTrace();
             }
             return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
         }
