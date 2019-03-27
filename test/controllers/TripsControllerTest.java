@@ -2,7 +2,6 @@ package controllers;
 
 
 import org.junit.Test;
-import play.mvc.Call;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -12,7 +11,9 @@ import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 
 
-public class TripsControllerTest extends ProvideApplication{
+public class TripsControllerTest extends ProvideApplication {
+
+
 
     @Test
     public void showCreatePageEndPoint() {
@@ -20,8 +21,7 @@ public class TripsControllerTest extends ProvideApplication{
                 .method(GET)
                 .uri("/trips/create");
 
-        Call call = controllers.routes.TripsController.showCreate();
-        Result result = Helpers.route(provideApplication(), Helpers.fakeRequest(call));
+        Result result = Helpers.route(provideApplication(), request);
 
         assertEquals(OK, result.status());
     }
@@ -33,8 +33,7 @@ public class TripsControllerTest extends ProvideApplication{
                 .method(GET)
                 .uri("/trips");
 
-        Call call = controllers.routes.TripsController.show();
-        Result result = Helpers.route(provideApplication(), Helpers.fakeRequest(call));
+        Result result = Helpers.route(provideApplication(), request);
 
         assertEquals(OK, result.status());
     }
@@ -44,11 +43,11 @@ public class TripsControllerTest extends ProvideApplication{
     public void showEditPageEndPoint() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/edit/148");
+                .uri("/trips/edit/0");
 
-        Call call = controllers.routes.TripsController.showEdit((Integer) 0);
-        Result result = Helpers.route(provideApplication(), Helpers.fakeRequest(call));
+        Result result = Helpers.route(provideApplication(), request);
 
         assertEquals(OK, result.status());
     }
+
 }
