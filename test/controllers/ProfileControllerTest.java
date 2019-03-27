@@ -67,6 +67,7 @@ public class ProfileControllerTest extends  ProvideApplication{
         profileData.put("gender", "male");
         profileData.put("travellerTypes", "Backpacker");
         profileData.put("nationalities", "NZ");
+        profileData.put("passports", "NZ");
 
 
 

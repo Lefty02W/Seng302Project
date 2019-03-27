@@ -1,20 +1,13 @@
 package controllers;
 
-import controllers.routes;
 import org.junit.Before;
 import org.junit.Test;
 import play.Application;
-import play.Mode;
-import play.api.Environment;
-import play.api.inject.guice.GuiceApplicationBuilder;
-import play.mvc.Call;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import java.io.File;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 
