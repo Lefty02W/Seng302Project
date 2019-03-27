@@ -5,28 +5,35 @@
 # Home page
 GET     /                           controllers.LoginController.show(request: Request)
 
+# Login
+GET      /login                       controllers.LoginController.show(request: Request)
+POST     /login                      controllers.LoginController.login(request: Request)
+
+# Destination
+GET     /destinations                controllers.DestinationsController.show(request: Request)
+GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
 GET     /destinations/edit/:id      controllers.DestinationsController.edit(request: Request, id: Integer)
-POST    /trips/update    controllers.TripsController.updateDestination(request: Request, destOrder: Integer)
-POST    /trips/create/update    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer)
-GET    /trips/create/update    controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
 POST    /destinations/delete/:id    controllers.DestinationsController.delete(request: Request, id: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
-# save the new destination
-
-# Login
-GET     /login                       controllers.LoginController.show(request: Request)
-POST     /login                      controllers.LoginController.login(request: Request)
 
 # Trips
 GET     /trips                       controllers.TripsController.show(request: Request)
-
-# Destinations
-GET     /destinations                controllers.DestinationsController.show(request: Request)
-GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
+GET     /trips/create                controllers.TripsController.showCreate(request: Request)
+POST    /trips/edit                  controllers.TripsController.updateName(request: Request, id: Integer)
+GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)
+POST    /trips/edit/:id              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, numTripdests: Integer)
+POST    /trips/update    controllers.TripsController.updateDestination(request: Request, destOrder: Integer)
+POST    /trips/create/update    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer)
+GET     /trips/create/update    controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer)
+POST    /trips                       controllers.TripsController.save(request: Request)
+POST    /trips/create                controllers.TripsController.addDestination(request: Request)
+POST    /trips/edit/delete/:id       controllers.TripsController.deleteDestinationEditTrip(request: Request, order: Integer, id: Integer)
+GET     /trips/delete/:id             controllers.TripsController.delete(id: Integer)
+GET     /trips/create/:id             controllers.TripsController.deleteDestination(request: Request, id: Integer)
 
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)
@@ -41,19 +48,11 @@ POST    /profile/photo               controllers.ProfileController.uploadPhoto(r
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer)
 GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
 
-GET     /trips/create                controllers.TripsController.showCreate(request: Request)
-GET     /trips/edit/:id              controllers.TripsController.showEdit(request: Request, id: Integer)
-
-POST    /trips                       controllers.TripsController.save(request: Request)
-POST    /trips/create                controllers.TripsController.addDestination(request: Request)
-POST    /trips/edit                  controllers.TripsController.updateName(request: Request, id: Integer)
-POST    /trips/edit/:id              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, numTripdests: Integer)
-POST    /trips/edit/delete/:id       controllers.TripsController.deleteDestinationEditTrip(request: Request, order: Integer, id: Integer)
+# Create Profile
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
 
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
-GET    /trips/delete/:id             controllers.TripsController.delete(id: Integer)
-GET   /trips/create/:id             controllers.TripsController.deleteDestination(request: Request, id: Integer)
+
 

@@ -10,7 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repository.ProfileRepository;
-import views.html.login;
+import views.html.*;
 
 import javax.inject.Inject;
 import java.util.Optional;

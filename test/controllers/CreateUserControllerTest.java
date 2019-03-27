@@ -1,47 +1,45 @@
 package controllers;
 
+import controllers.routes;
+import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.Mockito.mock;
-import static play.mvc.Http.Status.OK;
-import static play.test.Helpers.*;
-import static org.junit.Assert.*;
-
-
 import play.Application;
-import play.data.FormFactory;
-import play.data.format.Formatters;
-import play.i18n.MessagesApi;
-import play.inject.guice.GuiceApplicationBuilder;
+import play.Mode;
+import play.api.Environment;
+import play.api.inject.guice.GuiceApplicationBuilder;
+import play.mvc.Call;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import play.test.WithApplication;
-import play.twirl.api.Content;
-import repository.ProfileRepository;
-import play.test.*;
-import static play.test.Helpers.*;
-import static play.test.Helpers.fakeRequest;
 
+import java.io.File;
 
-public class CreateUserControllerTest extends WithApplication {
+import static org.junit.Assert.*;
+import static play.mvc.Http.Status.OK;
+import static play.test.Helpers.GET;
 
+public class CreateUserControllerTest extends ProvideApplication{
 
-    @Override
-    protected Application provideApplication() {
-        return new GuiceApplicationBuilder().build();
+    private Application app;
+
+    @Before
+    public void setUp() {
+        app = super.provideApplication();
     }
 
-
-    //@Test
+    @Test
     public void save() {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/");
-        Result result = route(app, request);
     }
 
-    //@Test
+    @Test
     public void show() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+             .method(GET)
+                .uri("/user/create");
+
+        Result result = Helpers.route(provideApplication(), request);
+        //System.out.println(Helpers.contentAsString(result));
+
+        assertEquals(OK, result.status());
     }
 }

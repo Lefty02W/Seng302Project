@@ -104,8 +104,8 @@ public class ProfileController extends Controller {
 
             profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
 
-            //TODO redirect does not update profile displayed, have to refresh to get updated info
-            return redirect("/profile");
+        //TODO make async
+        return redirect(routes.ProfileController.show());
 
         }
 
