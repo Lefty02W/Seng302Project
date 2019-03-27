@@ -20,7 +20,7 @@ libraryDependencies += "org.mockito" % "mockito-core" % "2.1.0" % Test
 libraryDependencies += "io.cucumber" % "cucumber-core" % "4.2.0" % Test
 libraryDependencies += "io.cucumber" % "cucumber-jvm" % "4.2.0" % Test
 libraryDependencies += "io.cucumber" % "cucumber-junit" % "4.2.0" % Test
-libraryDependencies += "io.cucumber" % "cucumber-java" % "4.2.0"
+libraryDependencies += "io.cucumber" % "cucumber-java" % "4.2.0" % Test
 
 libraryDependencies += javaJdbc
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"

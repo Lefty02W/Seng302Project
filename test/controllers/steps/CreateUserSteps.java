@@ -47,7 +47,7 @@ public class CreateUserSteps {
     public void setUp() {
         application = new GuiceApplicationBuilder().in(Mode.TEST).build();
         profile = new Profile(null, null, null, null, null, null,null,
-                null, null, null, null, null, false);
+                null, null, null, null, false);
         Helpers.start(application);
         formFactory = new FormFactory(null, null, null, null);
         profileForm = formFactory.form(Profile.class);
