@@ -1,8 +1,6 @@
 package controllers.steps;
 
 
-import com.google.common.collect.ImmutableMap;
-import controllers.routes;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -16,7 +14,6 @@ import play.Mode;
 import play.data.Form;
 
 import play.data.FormFactory;
-import play.data.format.Formats;
 import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -31,6 +28,9 @@ import java.util.Optional;
 
 import static play.test.Helpers.*;
 
+/**
+ * Implements steps for testing CreateUser
+ */
 public class CreateUserSteps {
 
     private Form<Profile> profileForm;
@@ -40,6 +40,10 @@ public class CreateUserSteps {
 
     @Inject FormFactory formFactory;
     @Before
+    /**
+     * Create an application instance, empty profile, profile form
+     * and run the application.
+     */
     public void setUp() {
         application = new GuiceApplicationBuilder().in(Mode.TEST).build();
         profile = new Profile(null, null, null, null, null, null,null,
