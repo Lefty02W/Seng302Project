@@ -1,27 +1,36 @@
 package controllers;
+
 import models.Destination;
 import models.Profile;
-import play.i18n.MessagesApi;
-
-import play.data.FormFactory;
+import models.Trip;
+import models.TripDestination;
 import play.data.Form;
+import play.data.FormFactory;
+import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.Results;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
-import views.html.*;
+import repository.TripRepository;
+import views.html.createDestinations;
+import views.html.createUser;
+import views.html.destinations;
+import views.html.edit;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+/**
+ * This class is the controller for the destinations.scala.html file, it provides the route to the
+ * destinations page and the method that the page uses.
+ */
 public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;
@@ -30,43 +39,49 @@ public class DestinationsController extends Controller {
     private final Form<Profile> userForm;
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
-    private final SessionController sessionController = new SessionController();
+    private final TripRepository tripRepository;
+    private String destShowRoute = "/destinations";
 
     /**
      * Constructor for the destination controller class
+     *
      * @param formFactory
      * @param messagesApi
      * @param destinationRepository
      * @param profileRepository
      */
     @Inject
-    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository, ProfileRepository profileRepository) {
+    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
+                                  ProfileRepository profileRepository, TripRepository tripRepository) {
         this.form = formFactory.form(Destination.class);
         this.userForm = formFactory.form(Profile.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
+        this.tripRepository = tripRepository;
     }
 
     /**
      * Displays a page showing the destinations to the user
+     *
      * @param request
      * @return the list of destinations
      */
     public Result show(Http.Request request) {
 
-        Profile user = sessionController.getCurrentUser(request);
+        Profile user = SessionController.getCurrentUser(request);
         Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
         try {
             destinationsList = destListTemp.get();
-        } catch(NoSuchElementException e) {
-            destinationsList = new ArrayList<Destination>();
+        } catch (NoSuchElementException e) {
+            destinationsList = new ArrayList<>();
         }
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
 
     /**
      * Displays a page to create a destination
+     *
      * @param request
      * @return
      */
@@ -80,12 +95,13 @@ public class DestinationsController extends Controller {
 
     /**
      * This method displays the edit page for the destinations to the user
+     *
      * @param request
      * @param id
      * @return
      */
     public Result edit(Http.Request request, Integer id) {
-        Destination destination =  new Destination();
+        Destination destination = new Destination();
         for (Destination dest : destinationsList) {
             if (dest.getDestinationId() == id) {
                 destination = dest;
@@ -98,24 +114,26 @@ public class DestinationsController extends Controller {
 
     /**
      * This method updates destination in the database
+     *
      * @param request
-     * @param id The ID of the destination to edit.
+     * @param id      The ID of the destination to edit.
      * @return
      */
-    public Result update(Http.Request request, Integer id){
+    public Result update(Http.Request request, Integer id) {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.value().get();
         destinationRepository.update(dest, id);
-        return redirect(routes.DestinationsController.show());
+        return redirect(destShowRoute);
     }
 
     /**
      * Adds a new destination to the database
+     *
      * @param request
      * @return
      */
     public Result saveDestination(Http.Request request) {
-        Profile user = sessionController.getCurrentUser(request);
+        Profile user = SessionController.getCurrentUser(request);
         if (user == null) {
             return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
         }
@@ -123,18 +141,48 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
         destinationRepository.insert(destination);
-        return redirect(routes.DestinationsController.show());
+        return redirect(destShowRoute);
     }
+
 
     /**
      * Deletes a destination in the database
      * @param id ID of the destination to delete
      * @return
      */
-    public Result delete(Http.Request request, Integer id) {
-        Profile profile = sessionController.getCurrentUser(request);
-        destinationRepository.delete(id);
-        return redirect(routes.DestinationsController.show());
+    public CompletionStage<Result> delete(Http.Request request, Integer id) {
+        Profile profile = SessionController.getCurrentUser(request);
+
+        return supplyAsync(() -> {
+            // Get all trips
+            List<Trip> trips = Trip.find.query()
+                    .where()
+                    .eq("email", profile.getEmail())
+                    .findList();
+
+            // Iterate through each trip
+            // and get it's destinations
+            for (Trip trip : trips) {
+                List<TripDestination> destinations = TripDestination.find.query()
+                        .where()
+                        .eq("trip_id", trip.getId())
+                        .findList();
+
+                // Iterate over each destination
+                for (TripDestination destination : destinations) {
+                    // Cannot delete a destination if there is match
+                    // Since it in a trip
+                    if (destination.getDestinationId() == id) {
+                        return redirect("/destinations").flashing("failure",
+                                "Destination cannot be deleted as it is part of a trip");
+                    }
+                }
+            }
+            destinationRepository.delete(id);
+
+
+            return redirect("/destinations").flashing("success", "Destination Deleted");
+        });
 
     }
 

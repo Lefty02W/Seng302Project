@@ -36,7 +36,7 @@
     background: white;
     margin-top: 10px;
     border-radius: 0.25rem;
-    overflow: auto;
+    overflow: hidden;
 }
 
 
@@ -57,6 +57,7 @@ table {
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
     width: 100%;
+    background-color: #ede1d1;
 }
 
 th,
@@ -258,4 +259,8 @@ div.dataTables_filter {
 .hidden-field {
     height: 4vh;
     opacity: 0;
+}
+
+.alert-card {
+    opacity: 0.95;
 }

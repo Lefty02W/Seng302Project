@@ -21,41 +21,15 @@
 }
 
 
-#passportList {
-    overflow: auto;
-    height: 15vh;
-}
-
-
-#nationalityList {
-    overflow: auto;
-    height: 15vh;
-}
-
-
-
-.card-trip {
-    position: relative;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    background-clip: border-box;
-    border: 1px solid rgba(0, 0, 0, 0.125);
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    text-align: center;
-    background: white;
-    margin-top: 10px;
-    border-radius: 0.25rem;
-}
-
 .trip-button {
     width: 100%;
 }
 
 .trip-card {
-    height: 10vh;
+    height: 5vh;
+    width: 100%;
+    padding: 1%;
+    cursor: copy;
 }
 
 .lower-card {
@@ -68,24 +42,142 @@
     display:block;
 }
 
-.upper-card {
-    width: 80%;
-}
-
-
-
 .lower-card {
-    width: 70%;
-}
-
-.center-col {
-    margin-left:auto;
-    margin-right:auto;
-    display:block;
-}
-
-.upper-card {
     width: 80%;
 }
 
+
+.upper-card {
+    width: 87%;
+}
+
+.collapse-body {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    text-align: center;
+    overflow:auto;
+    border-radius: 0.25rem;
+    padding-left: 25px;
+    padding-right: 25px;
+    width: 100%;
+}
+
+#destsTable span, #tripTable span {
+    display: none;
+}
+
+#tripName {
+    float: left;
+}
+
+.trip-icon {
+    float: right;
+    height: 3vh;
+    width: 1.5vw;
+}
+img.thumbnail {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 240px;
+    max-width: 240px;
+    margin: auto;
+
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#viewPhotoModal .row {
+    padding-left: 1rem;
+}
+
+.card {
+    height: 360px;
+    width: 240px;
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+     flex: none;
+    padding: 1.25rem;
+}
+
+.card-body button {
+    padding: 0;
+    margin: 0;
+    width: 100%
+}
+
+/* The Modal (background) */
+#expandImageModal.modal {
+    display: none;
+    position: fixed;
+    /*z-index: 0;*/
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.9);
+}
+
+/* Modal Content (Image) */
+#expandedImage.modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 900px;
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 80px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Caption of Modal Image (Image Text) */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 50px;
+}
+
+/* Add Animation - Zoom in the Modal */
+#expandedImage.modal-content, #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+}
+
+/*!* 100% Image Width on Smaller Screens *!*/
+/*@media only screen and (max-width: 700px){*/
+    /*.modal-content {*/
+        /*width: 100%;*/
+    /*}*/
+/*}*/
 

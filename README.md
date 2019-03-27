@@ -1,26 +1,33 @@
-# SENG302 Project Template
-Basic Play project using sbt build and basic GitLab CI.
-It is a requirement that your product can be packaged to a deliverable form using the `sbt dist` command.
-Remember to set up your GitLab CI server (refer to the student guide for instructions).
-
-## Basic Project Structure
-* app/ Your application source
-* doc/ User and design documentation
-* doc/examples/ Demo example files for use with your application
-* conf/ configuration files required to ensure the project builds properly
+# SENG302 Project Team 700
+This is Travel EA, a website for storing and organising destinations and trips.
+It can be packaged to a deliverable form using the `sbt dist` command.
 
 ## How to run
-Start the Play app:
+Run
 ```bash
-sbt run
+sbt dist
 ```
+
+Once complete, navigate to /team-700/target/universal and locate the created snapshot.zip for the team project
+
+Extract (Unzip) all the snapshot.zip at your current directory.
+
+Open the snapshot folder and navigate to the /bin folder and open the terminal here.
+
+Run
+```bash
+chmod +x seng302-team-700
+```
+
+and then:
+```bash
+./seng302-team-700 -Dplay.http.secret.key='zHEyLENJwfBB88RsrMBW'
+```
+
+
 And open <http://localhost:9000/>
 
-## Todo
-* In the `build.sbt` file, you will need to ensure you update the name (on line 1) to your appropriate Team Number and Name
-* Remember to set up your GitLab CI server (refer to the student guide on Learn for instructions).
-
-### Reference
+### References
 * [Play documentation](https://playframework.com/documentation/latest/Home](https://playframework.com/documentation/latest/Home)
 * [EBean](https://www.playframework.com/documentation/latest/JavaEbean) is a Java ORM library that uses SQL.The documentation can be found [here](https://ebean-orm.github.io/).
 * For Java Forms, Please see [here](<https://playframework.com/documentation/latest/JavaForms>).

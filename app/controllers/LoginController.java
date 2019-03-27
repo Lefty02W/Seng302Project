@@ -7,11 +7,8 @@ import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
-
 import play.mvc.Http;
-import play.mvc.Http.CookieBuilder;
 import play.mvc.Result;
-
 import repository.ProfileRepository;
 import views.html.*;
 
@@ -22,7 +19,8 @@ import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- *
+ * This class is the controller for the login.scala.html file, it provides the route to the
+ * login page and the method that the page uses.
  */
 public class LoginController extends Controller {
 
@@ -45,6 +43,11 @@ public class LoginController extends Controller {
         this.messagesApi = messagesApi;
     }
 
+    /**
+     * Function to authenticate a login
+     * @param request
+     * @return either login failed  with incorrect info or successful login and go to user  page
+     */
     public CompletionStage<Result> login(Http.Request request){
 
         Form<Login> loginForm = form.bindFromRequest(request);
@@ -62,11 +65,17 @@ public class LoginController extends Controller {
             }, httpExecutionContext.current());
 
         } else {
-            return supplyAsync(() -> redirect(routes.LoginController.show()));
+            return supplyAsync(() -> redirect("/").flashing("info", "Login details incorrect, please try again"));
         }
     }
 
 
+    /**
+     * Check if user exists
+     * @param email
+     * @param password
+     * @return true for existing user or false if not existing
+     */
     private boolean checkUser(String email, String password){
         if (profileRepository.checkProfileExists(email)) {
             return profileRepository.validate(email, password);
@@ -76,6 +85,11 @@ public class LoginController extends Controller {
 
     }
 
+    /**
+     * create the login page
+     * @param request
+     * @return rendered login page
+     */
     public Result show(Http.Request request) {
         return ok(login.render(form, request, messagesApi.preferred(request)));
     }

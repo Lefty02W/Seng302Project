@@ -8,25 +8,27 @@ body {
 }
 
 #sidebar-wrapper {
-    height: 100vh;
+    min-height: 100vh;
     margin-left: -15rem;
-    width: 15vw;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
+    background-color: #37623B;
 }
 
 #sidebar-wrapper .sidebar-heading {
     padding: 0.875rem 1.25rem;
-    font-size: 1.2rem;
     background-color: #37623B;
     color: #ca6636;
 }
 
 #sidebar-wrapper .list-group {
     width: 15rem;
-    background-color: red;
+}
+
+#sidebar-wrapper .list-group-item {
+    color: #f1f1f1;
 }
 
 #page-content-wrapper {
@@ -50,43 +52,17 @@ body {
     #wrapper.toggled #sidebar-wrapper {
         margin-left: -15rem;
     }
-
-}
-
-@media screen and (max-width: 768px) {
-    #sidebar-wrapper {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    #page-content-wrapper {
-        min-width: 0;
-        width: 100%;
-    }
-
-    #wrapper.toggled #sidebar-wrapper {
-        margin-left: -15rem;
-    }
-
 }
 
 
-#sidebar {
-    height: 100%;
-    background-color: #37623B;
-}
-/* Side Bar style */
-#sidebar a {
-    padding: 25px 8px 0 5px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #ede1d1;
-    display: block;
+.sidebar-icon {
+    height: 3vh;
+    width: 1.5vw;
 }
 
-/* Side Bar style */
-#sidebar a:hover {
-    color: #ca6636;
+.expand-icon {
+    height: 4vh;
+    width: 2vw;
+    cursor: pointer;
 }
-
 

@@ -1,23 +1,21 @@
 package controllers;
 
 import models.Profile;
-import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.mvc.Controller;
-
 import play.mvc.Http;
 import play.mvc.Result;
-
 import repository.ProfileRepository;
-import views.html.*;
+import views.html.createUser;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
+
 
 /**
- *
+ * This class is the controller for the createUser.scala.html file, it provides the route to the
+ * createUser page and the method that the page uses.
  */
 public class CreateUserController extends Controller{
 
@@ -32,20 +30,25 @@ public class CreateUserController extends Controller{
         this.messagesApi = messagesApi;
     }
 
-    //to create user
-
+    /**
+     * Save user into the database
+     * @param request
+     * @return redirect to login
+     */
     public Result save(Http.Request request){
         Form<Profile> userForm = form.bindFromRequest(request);
-        System.out.println(userForm);
         Profile profile = userForm.value().get();
         profileRepository.insert(profile);
-        return redirect(routes.LoginController.show());
+        return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
     }
 
-    //renders the createUser scene
+
+    /**
+     * render createUser page
+     * @param request
+     * @return rendered create user page
+     */
     public Result show(Http.Request request) {
         return ok(createUser.render(form, request, messagesApi.preferred(request)));
     }
-
-
 }

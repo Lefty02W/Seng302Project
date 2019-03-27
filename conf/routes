@@ -14,6 +14,9 @@ GET     /destinations                controllers.DestinationsController.show(req
 GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
 GET     /destinations/edit/:id      controllers.DestinationsController.edit(request: Request, id: Integer)
 
+POST    /trips/update    controllers.TripsController.updateDestination(request: Request, destOrder: Integer)
+POST    /trips/create/update    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer)
+GET    /trips/create/update    controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
 POST    /destinations/delete/:id    controllers.DestinationsController.delete(request: Request, id: Integer)
@@ -32,19 +35,30 @@ POST    /trips/create                controllers.TripsController.addDestination(
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)
 GET     /travellers/search           controllers.TravellersController.search(request: Request)
+GET     /travellers/photos           controllers.TravellersController.displayTravellersPhotos(email: String)
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)
 GET     /profile/edit/:email         controllers.ProfileController.showEdit(email: String)
 
 POST    /profile                     controllers.ProfileController.update(request: Request)
+POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
+GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer)
+GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
 
 
 
 # Create Profile
+POST    /trips                       controllers.TripsController.save(request: Request)
+POST    /trips/create                controllers.TripsController.addDestination(request: Request)
+POST    /trips/edit                  controllers.TripsController.updateName(request: Request, id: Integer)
+POST    /trips/edit/:id              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, numTripdests: Integer)
+POST    /trips/edit/delete/:id       controllers.TripsController.deleteDestinationEditTrip(request: Request, order: Integer, id: Integer)
 GET     /user/create                 controllers.CreateUserController.show(request: Request)
 POST    /user/create                 controllers.CreateUserController.save(request: Request)
 
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
+GET    /trips/delete/:id             controllers.TripsController.delete(id: Integer)
+GET   /trips/create/:id             controllers.TripsController.deleteDestination(request: Request, id: Integer)
 

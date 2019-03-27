@@ -59,7 +59,12 @@
 
                     <div class="row">
                         <div class="col">
-                            <input type="text" id="gender" placeholder="Gender" name="gender" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
+                            <select class="selectpicker" id="gender" name="gender" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                            <!--input type="text" id="gender" placeholder="Gender" name="gender" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')"-->
                         </div>
 
                         <div class="col">
@@ -144,6 +149,7 @@
 
 
                 function fillVals() {
+                    console.log($('#typeDropdown').val());
                     $('#travellerTypes').val($('#typeDropdown').val());
                 }
 

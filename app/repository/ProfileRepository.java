@@ -3,8 +3,8 @@ package repository;
 import io.ebean.*;
 import models.Destination;
 import models.Profile;
-import models.Trip;
 import play.db.ebean.EbeanConfig;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,8 +15,8 @@ import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * A repository that executes database operations in a different
- * execution context.
+ * A profile repository that executes database operations in a different
+ * execution context handles all interactions with the profile table .
  */
 public class ProfileRepository {
 
@@ -29,35 +29,47 @@ public class ProfileRepository {
         this.executionContext = executionContext;
     }
 
+
+    /**
+     * Method for login to check if there is a traveller account under the supplied email
+     *
+     * @param email String of the logged in users email
+     * @return boolean if profile exists or not
+     */
     public boolean checkProfileExists(String email) {
         Profile existingEmail = ebeanServer.find(Profile.class).where().like("email", email).findOne();
-        System.out.println(existingEmail);
-        System.out.println(ebeanServer.find(Profile.class).findList());
-        if (existingEmail == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return existingEmail != null;
     }
 
+
+    /**
+     * Method to validate if the given email and password match an account in the database
+     *
+     * @param email users email input
+     * @param password users password input
+     * @return
+     */
     public boolean validate(String email, String password) {
         Profile profile = ebeanServer.find(Profile.class).where().like("email", email).findOne();
-        if (profile.getEmail().equals(email) && profile.getPassword().equals(password)) {
-            return true;
-        } else {
-            return false;
-        }
+        return profile.getEmail().equals(email) && profile.getPassword().equals(password);
     }
 
+
+    /**
+     * Finds one profile using a given email as a query
+     * @param email the users email
+     * @return a Profile object that matches the email
+     */
     public CompletionStage<Optional<Profile>> lookup(String email) {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Profile.class).setId(email).findOne()), executionContext);
     }
 
 
     /**
+     * Inserts a profile into the ebean database server
      *
-     * @param profile
-     * @return
+     * @param profile Profile object to insert into the database
+     * @return the image id
      */
     public CompletionStage<String> insert(Profile profile) {
         return supplyAsync(() -> {
@@ -66,6 +78,7 @@ public class ProfileRepository {
             return profile.getEmail();
         }, executionContext);
     }
+
 
     /**
      * Update profile in database using Profile model object,
@@ -93,9 +106,6 @@ public class ProfileRepository {
                     targetProfile.setPassports(newProfile.getPassports());
                     targetProfile.setNationalities(newProfile.getNationalities());
                     targetProfile.setTravellerTypes(newProfile.getTravellerTypes());
-                    //TODO get actual trips out of the database
-                    //targetProfile.setTrips(new ArrayList<Trip>());
-
                     targetProfile.update();
                     txn.commit();
                     value = Optional.of(newProfile.getEmail());
@@ -108,6 +118,23 @@ public class ProfileRepository {
     }
 
 
+    /**
+     * Deletes a profile from the database that matches the given email
+     *
+     * @param email the users email
+     * @return an optional profile
+     */
+    public CompletionStage<Optional<String>> delete(String email) {
+        return supplyAsync(() -> {
+            try {
+                final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class).setId(email).findOne());
+                profileOptional.ifPresent(Model::delete);
+                return profileOptional.map(p -> p.getEmail());
+            } catch (Exception e) {
+                return Optional.empty();
+            }
+        }, executionContext);
+    }
 
 
     /**
@@ -136,18 +163,6 @@ public class ProfileRepository {
     }
 
 
-    public CompletionStage<Optional<String>> delete(String email) {
-        return supplyAsync(() -> {
-            try {
-                final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class).setId(email).findOne());
-                profileOptional.ifPresent(Model::delete);
-                return profileOptional.map(p -> p.getEmail());
-            } catch (Exception e) {
-                return Optional.empty();
-            }
-        }, executionContext);
-    }
-
     /**
      * Function to get all the destinations created by the signed in user.
      * @param email user email
@@ -160,7 +175,7 @@ public class ProfileRepository {
         Destination dest;
         for (int i = 0; i < rowList.size(); i++) {
             dest = new Destination();
-            dest.setDestination_id(rowList.get(i).getInteger("destination_id"));
+            dest.setDestinationId(rowList.get(i).getInteger("destination_id"));
             dest.setUserEmail(rowList.get(i).getString("user_email"));
             dest.setName(rowList.get(i).getString("name"));
             dest.setType(rowList.get(i).getString("type"));
@@ -172,5 +187,4 @@ public class ProfileRepository {
         }
         return Optional.of(destList);
     }
-
 }

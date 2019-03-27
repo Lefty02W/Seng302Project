@@ -32,3 +32,7 @@ label {
 #tripsTable span {
     display: none;
 }
+
+
+input[type=datetime-local] {
+}

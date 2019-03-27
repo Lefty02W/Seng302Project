@@ -14,17 +14,26 @@
 
     <body>
         <div class="d-flex" id="wrapper">
-        <div class="bg-light border-right" id="sidebar-wrapper">
-            <div class="sidebar-heading"><h2>TravelEA</h2></div>
-            <div id="sidebar">
-                <a href="@routes.ProfileController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                <a style="color: #ca6636" href="@routes.DestinationsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                <a href="@routes.TripsController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                <a href="@routes.TravellersController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
-                <a href="@routes.LoginController.show()"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                <!-- Sidebar -->
+            <div class="border-right" id="sidebar-wrapper">
+                <h1 class="sidebar-heading">TravelEA </h1>
+                <div class="list-group list-group-flush">
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
+                    <a style="color: #ca6636" href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
+                    <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
+                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                </div>
             </div>
-        </div>
-        <div id="page-content-wrapper">
+                <!-- /#sidebar-wrapper -->
+
+                <!-- Page Content -->
+            <div id="page-content-wrapper">
+
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                    <h2>Destinations</h2> <!-- TODO align this in the center -->
+                </nav>
             <div class="container-fluid">
                 <div id="table-card" class="card-large">
                     <h3>Create destination</h3>
@@ -70,7 +79,6 @@
                             </div>
 
 
-
                         </fieldset>
                         <a href="@routes.DestinationsController.show()"> <button style="width: 10vw" class="button-delete" type="button">Back</button> </a>
                         <button type="submit" class="registerButton button-add" style="width: 10vw" id="saveButton">Save</button>
@@ -84,5 +92,12 @@
 
         </div>
         </div>
+
+        <script type="text/javascript">
+                $("#menu-toggle").click(function(e) {
+                    e.preventDefault();
+                    $("#wrapper").toggleClass("toggled");
+                });
+        </script>
     </body>
 </html>

@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Image;
 import models.PartnerFormData;
 import models.Profile;
 import play.data.Form;
@@ -8,14 +9,16 @@ import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
-import repository.ProfileRepository;
+import repository.ImageRepository;
 import views.html.*;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Calendar;
+import java.util.*;
+
 //TODO Fix table in html - types field needs to wrap
 //TODO Fix data format in table
 //TODO Stop fields from clearing when you press search
@@ -28,12 +31,16 @@ public class TravellersController extends Controller {
 
     private final Form<PartnerFormData> form;
     private MessagesApi messagesApi;
+    private final ImageRepository imageRepository;
+    private List<Image> imageList = new ArrayList<>();
 
     @Inject
-    public TravellersController(FormFactory formFactory, MessagesApi messagesApi) {
+    public TravellersController(FormFactory formFactory, MessagesApi messagesApi, ImageRepository imageRepository) {
         this.form = formFactory.form(PartnerFormData.class);
         this.messagesApi = messagesApi;
+        this.imageRepository = imageRepository;
     }
+
 
     /**
      * Function to search travellers n gender nationality, age and traveller type fields, calls search functions for
@@ -61,8 +68,9 @@ public class TravellersController extends Controller {
             resultData = searchTravelTypes(resultData, searchData);
         }
 
-        return ok(travellers.render(form, resultData, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, resultData, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
+
 
     /**
      * Method to search for travel partners (profiles) with a search term. The search term can be any of the following attributes:
@@ -87,6 +95,7 @@ public class TravellersController extends Controller {
         return resultProfiles;
     }
 
+
     /**
      * Removes Nationalities from result list
      * @param resultData current list to return
@@ -103,6 +112,7 @@ public class TravellersController extends Controller {
 
         return resultProfiles;
     }
+
 
     /**
      * Removes ages from result list
@@ -184,6 +194,7 @@ public class TravellersController extends Controller {
         return resultProfiles;
     }
 
+
     /**
      * Removes traveller types from result list
      * @param resultData current list to return
@@ -203,6 +214,34 @@ public class TravellersController extends Controller {
         return resultProfiles;
     }
 
+
+    /**
+     * Method to retrieve all uploaded profile images from the database for a particular traveller
+     * @param email email for a particular user you want to view the photos of
+     * @return
+     */
+    public List<Image> getTravellersPhotos(String email) {
+        Optional<List<Image>> imageListTemp = imageRepository.getImages(email);
+        try {
+            imageList = imageListTemp.get();
+        } catch(NoSuchElementException e) {
+            imageList = new ArrayList<Image>();
+        }
+        return imageList;
+    }
+
+
+    /**
+     * this method shows the travellers photos on a new page
+     * @param email
+     * @return render traveller photo page
+     */
+    public Result displayTravellersPhotos(String email) {
+        List<Image> displayImageList = getTravellersPhotos(email);
+        return ok(travellersPhotos.render(displayImageList));
+    }
+
+
     /**
      * This method shows the travellers page on the screen
      * @return
@@ -210,6 +249,6 @@ public class TravellersController extends Controller {
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
 
-        return ok(travellers.render(form, profiles, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, profiles, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 }
