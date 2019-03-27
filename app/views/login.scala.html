@@ -18,7 +18,7 @@
             @form(routes.LoginController.login()){
                 @CSRF.formField
 
-                <input type="text" id="email" placeholder="Username" name="email" required required oninvalid="this.setCustomValidity('Email required')" oninput="setCustomValidity('')">
+                <input type="text" id="email" placeholder="Email" name="email" required required oninvalid="this.setCustomValidity('Email required')" oninput="setCustomValidity('')">
                 <input type="password" id="password" placeholder="Password" name="password" required required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
 
                 <a href="@routes.CreateUserController.show()"><button type="button" id="createUserButton" class="redButton" >Create User</button></a>

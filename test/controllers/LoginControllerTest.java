@@ -4,11 +4,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.mvc.Call;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 import play.test.WithApplication;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
+import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.route;
 
@@ -30,5 +36,19 @@ public class LoginControllerTest extends WithApplication {
     }
 
     @Test
-    public void login() {}
+    public void login() {
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "admin");
+        formData.put("password", "admin123");
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(provideApplication(), request);
+
+        assertEquals(303, result.status());
+
+    }
 }

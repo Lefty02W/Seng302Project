@@ -35,11 +35,10 @@ public class CreateUserControllerTest extends ProvideApplication{
     @Test
     public void show() {
         Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
+             .method(GET)
                 .uri("/user/create");
 
-        Call call = controllers.routes.CreateUserController.show();
-        Result result = Helpers.route(provideApplication(), Helpers.fakeRequest(call));
+        Result result = Helpers.route(provideApplication(), request);
         //System.out.println(Helpers.contentAsString(result));
 
         assertEquals(OK, result.status());
