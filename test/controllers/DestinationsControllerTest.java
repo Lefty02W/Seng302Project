@@ -22,9 +22,11 @@ public class DestinationsControllerTest extends ProvideApplication {
      */
     @Test
     public void showDestinationCreateEndPoint() {
+        loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/destinations/create");
+                .uri("/destinations/create")
+                .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
 
@@ -76,20 +78,20 @@ public class DestinationsControllerTest extends ProvideApplication {
     }
 
     /**
-     *
+     * Testing trying to edit a destination that does not exists
      */
     @Test
     public void showEditDestination() {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/destinations/edit/42")
+                .uri("/destinations/42/edit")
                 .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
 
 
-        assertEquals(OK, result.status());
+        assertEquals(200, result.status());
     }
 
 }

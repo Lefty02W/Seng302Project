@@ -19,7 +19,7 @@ public class ProvideApplication extends WithApplication {
     }
 
 
-    public void loginUser() {
+    void loginUser() {
         Map<String, String> formData = new HashMap<>();
         formData.put("email", "admin");
         formData.put("password", "admin123");
