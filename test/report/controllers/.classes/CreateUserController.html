@@ -1,0 +1,147 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CreateUserController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CreateUserController (controllers)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CreateUserController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CreateUserController$$FastClassByGuice$$9d97db3a</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package controllers;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import models.Profile;
+<i>4</i>&nbsp;import play.data.Form;
+<i>5</i>&nbsp;import play.data.FormFactory;
+<i>6</i>&nbsp;import play.i18n.MessagesApi;
+<i>7</i>&nbsp;import play.mvc.Controller;
+<i>8</i>&nbsp;import play.mvc.Http;
+<i>9</i>&nbsp;import play.mvc.Result;
+<i>10</i>&nbsp;import repository.ProfileRepository;
+<i>11</i>&nbsp;import views.html.createUser;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;import javax.inject.Inject;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;/**
+<i>17</i>&nbsp; * This class is the controller for the createUser.scala.html file, it provides the route to the
+<i>18</i>&nbsp; * createUser page and the method that the page uses.
+<i>19</i>&nbsp; */
+<i>20</i>&nbsp;public class CreateUserController extends Controller{
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    private final Form&lt;Profile&gt; form;
+<i>23</i>&nbsp;    private MessagesApi messagesApi;
+<i>24</i>&nbsp;    private final ProfileRepository profileRepository;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    @Inject
+<b class="fc"><i>27</i>&nbsp;    public CreateUserController(FormFactory formFactory, ProfileRepository profileRepository, MessagesApi messagesApi){</b>
+<b class="fc"><i>28</i>&nbsp;        this.form = formFactory.form(Profile.class);</b>
+<b class="fc"><i>29</i>&nbsp;        this.profileRepository = profileRepository;</b>
+<b class="fc"><i>30</i>&nbsp;        this.messagesApi = messagesApi;</b>
+<b class="fc"><i>31</i>&nbsp;    }</b>
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    /**
+<i>34</i>&nbsp;     * Save user into the database
+<i>35</i>&nbsp;     * @param request
+<i>36</i>&nbsp;     * @return redirect to login
+<i>37</i>&nbsp;     */
+<i>38</i>&nbsp;    public Result save(Http.Request request){
+<b class="fc"><i>39</i>&nbsp;        Form&lt;Profile&gt; userForm = form.bindFromRequest(request);</b>
+<b class="fc"><i>40</i>&nbsp;        Profile profile = userForm.value().get();</b>
+<b class="fc"><i>41</i>&nbsp;        profileRepository.insert(profile);</b>
+<b class="fc"><i>42</i>&nbsp;        return redirect(&quot;/&quot;).flashing(&quot;info&quot;, &quot;Profile: &quot; + profile.getFirstName() + &quot; &quot; + profile.getLastName() + &quot; created&quot;);</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    /**
+<i>47</i>&nbsp;     * render createUser page
+<i>48</i>&nbsp;     * @param request
+<i>49</i>&nbsp;     * @return rendered create user page
+<i>50</i>&nbsp;     */
+<i>51</i>&nbsp;    public Result show(Http.Request request) {
+<b class="fc"><i>52</i>&nbsp;        return ok(createUser.render(form, request, messagesApi.preferred(request)));</b>
+<i>53</i>&nbsp;    }
+<i>54</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-03-29 19:09</div>
+</div>
+</body>
+</html>

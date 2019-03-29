@@ -1,0 +1,364 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: trips</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">views.html</a> ]
+</div>
+
+<h1>Coverage Summary for Class: trips (views.html)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+  <tr>
+    <td class="name">trips$</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.6%
+  </span>
+  <span class="absValue">
+    (86/ 89)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    96.6%
+  </span>
+  <span class="absValue">
+    (86/ 89)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;
+<i>2</i>&nbsp;package views.html
+<i>3</i>&nbsp;
+<i>4</i>&nbsp;import _root_.play.twirl.api.TwirlFeatureImports._
+<i>5</i>&nbsp;import _root_.play.twirl.api.TwirlHelperImports._
+<i>6</i>&nbsp;import _root_.play.twirl.api.Html
+<i>7</i>&nbsp;import _root_.play.twirl.api.JavaScript
+<i>8</i>&nbsp;import _root_.play.twirl.api.Txt
+<i>9</i>&nbsp;import _root_.play.twirl.api.Xml
+<i>10</i>&nbsp;import models._
+<i>11</i>&nbsp;import controllers._
+<i>12</i>&nbsp;import play.api.i18n._
+<i>13</i>&nbsp;import views.html._
+<i>14</i>&nbsp;import play.api.templates.PlayMagic._
+<i>15</i>&nbsp;import java.lang._
+<i>16</i>&nbsp;import java.util._
+<i>17</i>&nbsp;import scala.collection.JavaConverters._
+<i>18</i>&nbsp;import play.core.j.PlayMagicForJava._
+<i>19</i>&nbsp;import play.mvc._
+<i>20</i>&nbsp;import play.api.data.Field
+<i>21</i>&nbsp;import play.mvc.Http.Context.Implicit._
+<i>22</i>&nbsp;import play.data._
+<i>23</i>&nbsp;import play.core.j.PlayFormsMagicForJava._
+<i>24</i>&nbsp;/*1.2*/import play.mvc.Http
+<i>25</i>&nbsp;/*2.2*/import views.html.helper.CSRF
+<i>26</i>&nbsp;
+<b class="fc"><i>27</i>&nbsp;object trips extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template6[Form[Trip],Form[TripDestination],List[Destination],List[Trip],Http.Request,play.i18n.Messages,play.twirl.api.HtmlFormat.Appendable] {</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;  /**/
+<i>30</i>&nbsp;  def apply/*3.2*/(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages):play.twirl.api.HtmlFormat.Appendable = {
+<b class="fc"><i>31</i>&nbsp;    _display_ {</b>
+<i>32</i>&nbsp;      {
+<i>33</i>&nbsp;/*5.2*/import helper._
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;
+<b class="fc"><i>36</i>&nbsp;Seq[Any](format.raw/*3.183*/(&quot;&quot;&quot;</b>
+<i>37</i>&nbsp;
+<b class="fc"><i>38</i>&nbsp;&quot;&quot;&quot;),format.raw/*6.1*/(&quot;&quot;&quot;</b>
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;
+<b class="fc"><i>41</i>&nbsp;&quot;&quot;&quot;),format.raw/*9.1*/(&quot;&quot;&quot;&lt;!DOCTYPE html&gt;</b>
+<i>42</i>&nbsp;&lt;html&gt;
+<i>43</i>&nbsp;
+<b class="fc"><i>44</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*12.35*/routes/*12.41*/.Assets.at(&quot;stylesheets/bootstrap/bootstrap-select.css&quot;)),format.raw/*12.97*/(&quot;&quot;&quot;&quot;&gt;</b>
+<b class="fc"><i>45</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*13.35*/routes/*13.41*/.Assets.at(&quot;stylesheets/bootstrap/bootstrap.css&quot;)),format.raw/*13.90*/(&quot;&quot;&quot;&quot;&gt;</b>
+<b class="fc"><i>46</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*14.35*/routes/*14.41*/.Assets.at(&quot;stylesheets/bootstrap/dataTables.bootstrap4.css&quot;)),format.raw/*14.102*/(&quot;&quot;&quot;&quot;&gt;</b>
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;
+<b class="fc"><i>49</i>&nbsp;    &lt;script src=&quot;&quot;&quot;&quot;),_display_(/*17.19*/routes/*17.25*/.Assets.at(&quot;javascripts/jquery-3.3.1.js&quot;)),format.raw/*17.66*/(&quot;&quot;&quot;&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</b>
+<b class="fc"><i>50</i>&nbsp;    &lt;script src=&quot;&quot;&quot;&quot;),_display_(/*18.19*/routes/*18.25*/.Assets.at(&quot;javascripts/bootstrap.bundle.js&quot;)),format.raw/*18.70*/(&quot;&quot;&quot;&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</b>
+<b class="fc"><i>51</i>&nbsp;    &lt;script src=&quot;&quot;&quot;&quot;),_display_(/*19.19*/routes/*19.25*/.Assets.at(&quot;javascripts/bootstrap-select.js&quot;)),format.raw/*19.70*/(&quot;&quot;&quot;&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</b>
+<b class="fc"><i>52</i>&nbsp;    &lt;script src=&quot;&quot;&quot;&quot;),_display_(/*20.19*/routes/*20.25*/.Assets.at(&quot;javascripts/jquery.dataTables.js&quot;)),format.raw/*20.71*/(&quot;&quot;&quot;&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</b>
+<b class="fc"><i>53</i>&nbsp;    &lt;script src=&quot;&quot;&quot;&quot;),_display_(/*21.19*/routes/*21.25*/.Assets.at(&quot;javascripts/dataTables.bootstrap4.js&quot;)),format.raw/*21.75*/(&quot;&quot;&quot;&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;
+<b class="fc"><i>56</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*24.35*/routes/*24.41*/.Assets.at(&quot;stylesheets/sidebar.css&quot;)),format.raw/*24.78*/(&quot;&quot;&quot;&quot;&gt;</b>
+<b class="fc"><i>57</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*25.35*/routes/*25.41*/.Assets.at(&quot;stylesheets/general.css&quot;)),format.raw/*25.78*/(&quot;&quot;&quot;&quot;&gt;</b>
+<b class="fc"><i>58</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*26.35*/routes/*26.41*/.Assets.at(&quot;stylesheets/trips.css&quot;)),format.raw/*26.76*/(&quot;&quot;&quot;&quot;&gt;</b>
+<i>59</i>&nbsp;    &lt;head&gt;
+<i>60</i>&nbsp;        &lt;title&gt;TravelEA | Trips&lt;/title&gt;
+<i>61</i>&nbsp;    &lt;/head&gt;
+<i>62</i>&nbsp;    &lt;body&gt;
+<i>63</i>&nbsp;        &lt;div class=&quot;d-flex&quot; id=&quot;wrapper&quot;&gt;
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;                &lt;!-- Sidebar --&gt;
+<i>66</i>&nbsp;            &lt;div class=&quot;border-right&quot; id=&quot;sidebar-wrapper&quot;&gt;
+<i>67</i>&nbsp;                &lt;h1 class=&quot;sidebar-heading&quot;&gt;TravelEA &lt;/h1&gt;
+<i>68</i>&nbsp;                &lt;div class=&quot;list-group list-group-flush&quot;&gt;
+<b class="fc"><i>69</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*37.31*/routes/*37.37*/.ProfileController.show()),format.raw/*37.62*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*37.158*/routes/*37.164*/.Assets.at(&quot;images/profile-icon.png&quot;)),format.raw/*37.201*/(&quot;&quot;&quot;&quot;/&gt; Profile&lt;/a&gt;</b>
+<b class="fc"><i>70</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*38.31*/routes/*38.37*/.DestinationsController.show()),format.raw/*38.67*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*38.163*/routes/*38.169*/.Assets.at(&quot;images/destination-icon.png&quot;)),format.raw/*38.210*/(&quot;&quot;&quot;&quot;/&gt; Destinations&lt;/a&gt;</b>
+<b class="fc"><i>71</i>&nbsp;                    &lt;a style=&quot;color: #ca6636&quot; href=&quot;&quot;&quot;&quot;),_display_(/*39.54*/routes/*39.60*/.TripsController.show()),format.raw/*39.83*/(&quot;&quot;&quot;&quot;class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*39.178*/routes/*39.184*/.Assets.at(&quot;images/trips-icon.png&quot;)),format.raw/*39.219*/(&quot;&quot;&quot;&quot;/&gt; Trips&lt;/a&gt;</b>
+<b class="fc"><i>72</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*40.31*/routes/*40.37*/.TravellersController.show()),format.raw/*40.65*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*40.161*/routes/*40.167*/.Assets.at(&quot;images/traveller-icon.png&quot;)),format.raw/*40.206*/(&quot;&quot;&quot;&quot;/&gt; Travellers&lt;/a&gt;</b>
+<b class="fc"><i>73</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*41.31*/routes/*41.37*/.LoginController.show()),format.raw/*41.60*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*41.156*/routes/*41.162*/.Assets.at(&quot;images/logout-icon.png&quot;)),format.raw/*41.198*/(&quot;&quot;&quot;&quot;/&gt; Logout&lt;/a&gt;</b>
+<i>74</i>&nbsp;                &lt;/div&gt;
+<i>75</i>&nbsp;            &lt;/div&gt;
+<i>76</i>&nbsp;                &lt;!-- /#sidebar-wrapper --&gt;
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;                &lt;!-- Page Content --&gt;
+<i>79</i>&nbsp;            &lt;div id=&quot;page-content-wrapper&quot;&gt;
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;                &lt;nav class=&quot;navbar navbar-expand-lg navbar-light bg-light border-bottom&quot;&gt;
+<b class="fc"><i>82</i>&nbsp;                    &lt;img class=&quot;expand-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*50.52*/routes/*50.58*/.Assets.at(&quot;images/list-icon.png&quot;)),format.raw/*50.92*/(&quot;&quot;&quot;&quot; id=&quot;menu-toggle&quot;&gt;</b>
+<i>83</i>&nbsp;                    &lt;h2&gt;Trips&lt;/h2&gt; &lt;!-- TODO align this in the center --&gt;
+<i>84</i>&nbsp;                &lt;/nav&gt;
+<i>85</i>&nbsp;                &lt;div class=&quot;container-fluid&quot;&gt;
+<i>86</i>&nbsp;                    &lt;div class=&quot;row&quot;&gt;
+<i>87</i>&nbsp;                        &lt;div class=&quot;col&quot;&gt;
+<i>88</i>&nbsp;                            &lt;div id=&quot;viewCard&quot; class=&quot;card-large&quot;&gt;
+<i>89</i>&nbsp;                                &lt;table id=&quot;tripsTable&quot;&gt;
+<i>90</i>&nbsp;                                    &lt;thead&gt;
+<i>91</i>&nbsp;                                        &lt;tr&gt;&lt;th&gt;Trip Name&lt;/th&gt;&lt;th&gt;Travel Time (Days)&lt;/th&gt;&lt;th&gt;Start Date&lt;/th&gt;&lt;th&gt;Number of Destinations&lt;/th&gt;&lt;th&gt;Destinations Visited&lt;/th&gt;&lt;th&gt;Actions&lt;/th&gt;
+<i>92</i>&nbsp;                                    &lt;/thead&gt;
+<b class="fc"><i>93</i>&nbsp;                                    &quot;&quot;&quot;),_display_(/*61.38*/for(trip &lt;- trips) yield /*61.56*/ {_display_(Seq[Any](format.raw/*61.58*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>94</i>&nbsp;                                        &quot;&quot;&quot;),format.raw/*62.41*/(&quot;&quot;&quot;&lt;tr&gt;</b>
+<b class="fc"><i>95</i>&nbsp;                                            &lt;td&gt;&quot;&quot;&quot;),_display_(/*63.50*/trip/*63.54*/.getName),format.raw/*63.62*/(&quot;&quot;&quot;&lt;/td&gt;</b>
+<b class="fc"><i>96</i>&nbsp;                                            &lt;td&gt;&quot;&quot;&quot;),_display_(/*64.50*/trip/*64.54*/.getTravelTime),format.raw/*64.68*/(&quot;&quot;&quot;&lt;/td&gt;</b>
+<i>97</i>&nbsp;                                            &lt;td&gt;
+<b class="fc"><i>98</i>&nbsp;                                                &quot;&quot;&quot;),_display_(/*66.50*/if(trip.getStartDate != null)/*66.79*/ {_display_(Seq[Any](format.raw/*66.81*/(&quot;&quot;&quot;</b>
+<b class="nc"><i>99</i>&nbsp;                                                    &quot;&quot;&quot;),format.raw/*67.53*/(&quot;&quot;&quot;&lt;span&gt;&quot;&quot;&quot;),_display_(/*67.60*/trip/*67.64*/.getStartDate().getTime),format.raw/*67.87*/(&quot;&quot;&quot;&lt;/span&gt;</b>
+<b class="fc"><i>100</i>&nbsp;                                                &quot;&quot;&quot;)))}/*68.51*/else/*68.56*/{_display_(Seq[Any](format.raw/*68.57*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>101</i>&nbsp;                                                    &quot;&quot;&quot;),format.raw/*69.53*/(&quot;&quot;&quot;&lt;span&gt;0&lt;/span&gt;</b>
+<b class="fc"><i>102</i>&nbsp;                                                &quot;&quot;&quot;)))}),format.raw/*70.50*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>103</i>&nbsp;                                                &quot;&quot;&quot;),_display_(/*71.50*/trip/*71.54*/.getStartDateString),format.raw/*71.73*/(&quot;&quot;&quot;&lt;/td&gt;</b>
+<b class="fc"><i>104</i>&nbsp;                                            &lt;td&gt;&quot;&quot;&quot;),_display_(/*72.50*/trip/*72.54*/.getDestinations.size()),format.raw/*72.77*/(&quot;&quot;&quot;&lt;/td&gt;</b>
+<b class="fc"><i>105</i>&nbsp;                                            &lt;td&gt;&quot;&quot;&quot;),_display_(/*73.50*/trip/*73.54*/.getDestinationNames),format.raw/*73.74*/(&quot;&quot;&quot;&lt;/td&gt;</b>
+<b class="fc"><i>106</i>&nbsp;                                            &quot;&quot;&quot;),_display_(/*74.46*/helper/*74.52*/.form(routes.TripsController.showEdit(trip.getId))/*74.102*/ {_display_(Seq[Any](format.raw/*74.104*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>107</i>&nbsp;                                                &quot;&quot;&quot;),_display_(/*75.50*/CSRF/*75.54*/.formField),format.raw/*75.64*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>108</i>&nbsp;                                                &quot;&quot;&quot;),format.raw/*76.49*/(&quot;&quot;&quot;&lt;td&gt; &lt;button type=&quot;submit&quot; class=&quot;button-edit&quot; style=&quot;height:4vh&quot;&gt;Edit&lt;/button&gt;</b>
+<i>109</i>&nbsp;
+<b class="fc"><i>110</i>&nbsp;                                            &quot;&quot;&quot;)))}),format.raw/*78.46*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>111</i>&nbsp;                                            &quot;&quot;&quot;),format.raw/*79.45*/(&quot;&quot;&quot;&lt;a href=&quot;&quot;&quot;&quot;),_display_(/*79.55*/routes/*79.61*/.TripsController.delete(trip.getId)),format.raw/*79.96*/(&quot;&quot;&quot;&quot;&gt;&lt;button type=&quot;submit&quot; class=&quot;button-delete&quot; style=&quot;height:4vh&quot;&gt;Delete&lt;/button&gt;&lt;/a&gt; &lt;/td&gt;</b>
+<i>112</i>&nbsp;                                        &lt;/tr&gt;
+<b class="fc"><i>113</i>&nbsp;                                    &quot;&quot;&quot;)))}),format.raw/*81.38*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>114</i>&nbsp;                                &quot;&quot;&quot;),format.raw/*82.33*/(&quot;&quot;&quot;&lt;/table&gt;</b>
+<i>115</i>&nbsp;                            &lt;/div&gt;
+<i>116</i>&nbsp;                        &lt;/div&gt;
+<i>117</i>&nbsp;                    &lt;/div&gt;
+<i>118</i>&nbsp;                    &lt;div class=&quot;row&quot;&gt;
+<i>119</i>&nbsp;                        &lt;div class=&quot;col&quot;&gt;
+<b class="fc"><i>120</i>&nbsp;                            &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*88.39*/routes/*88.45*/.TripsController.showCreate()),format.raw/*88.74*/(&quot;&quot;&quot;&quot;&gt; &lt;button id=&quot;addTripButton&quot; type=&quot;button&quot; class=&quot;button-add&quot;&gt;</b>
+<i>121</i>&nbsp;                                Add New Trip
+<i>122</i>&nbsp;                            &lt;/button&gt; &lt;/a&gt;
+<i>123</i>&nbsp;                        &lt;/div&gt;
+<i>124</i>&nbsp;                    &lt;/div&gt;
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;                &lt;/div&gt;
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;
+<i>130</i>&nbsp;            &lt;/div&gt;
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;
+<i>133</i>&nbsp;        &lt;/div&gt;
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    &lt;/body&gt;
+<i>140</i>&nbsp;
+<i>141</i>&nbsp;    &lt;script type=&quot;text/javascript&quot;&gt;
+<i>142</i>&nbsp;            //Setup for the user table
+<b class="fc"><i>143</i>&nbsp;            $(document).ready(function() &quot;&quot;&quot;),format.raw/*111.42*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*111.43*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>144</i>&nbsp;                &quot;&quot;&quot;),format.raw/*112.17*/(&quot;&quot;&quot;$(&#39;#tripsTable&#39;).DataTable(&quot;&quot;&quot;),format.raw/*112.44*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*112.45*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>145</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*113.21*/(&quot;&quot;&quot;&quot;lengthChange&quot;: false,</b>
+<i>146</i>&nbsp;                    &quot;pagingType&quot;: &quot;full&quot;,
+<i>147</i>&nbsp;                    &quot;pageLength&quot;: 13,
+<i>148</i>&nbsp;                    dom: &#39;&lt;l&lt;&quot;toolbar&quot;&gt;f&gt;rtip&#39;,
+<b class="fc"><i>149</i>&nbsp;                    language: &quot;&quot;&quot;),format.raw/*117.31*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*117.32*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>150</i>&nbsp;                        &quot;&quot;&quot;),format.raw/*118.25*/(&quot;&quot;&quot;search: &quot;_INPUT_&quot;, //To remove Search Label</b>
+<i>151</i>&nbsp;                        searchPlaceholder: &quot;Search...&quot;
+<b class="fc"><i>152</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*120.21*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*120.22*/(&quot;&quot;&quot;,</b>
+<i>153</i>&nbsp;                    &quot;sDom&quot;: &#39;&lt;&quot;top&quot;pfl&gt;rt&lt;&quot;bottom&quot;&gt;&lt;&quot;clear&quot;&gt;&#39;,
+<i>154</i>&nbsp;                    &quot;autoWidth&quot;: false
+<b class="fc"><i>155</i>&nbsp;                &quot;&quot;&quot;),format.raw/*123.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*123.18*/(&quot;&quot;&quot;);</b>
+<i>156</i>&nbsp;
+<b class="fc"><i>157</i>&nbsp;                $(&#39;#destinations&#39;).DataTable(&quot;&quot;&quot;),format.raw/*125.46*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*125.47*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>158</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*126.21*/(&quot;&quot;&quot;searching: false,</b>
+<i>159</i>&nbsp;                    paging: false,
+<i>160</i>&nbsp;                    info: false,
+<b class="fc"><i>161</i>&nbsp;                    &quot;language&quot;: &quot;&quot;&quot;),format.raw/*129.33*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*129.34*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>162</i>&nbsp;                        &quot;&quot;&quot;),format.raw/*130.25*/(&quot;&quot;&quot;&quot;emptyTable&quot;: &quot;Please add at least two destinations&quot;</b>
+<b class="fc"><i>163</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*131.21*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*131.22*/(&quot;&quot;&quot;,</b>
+<i>164</i>&nbsp;                    &quot;ordering&quot;: false,
+<i>165</i>&nbsp;                    &quot;scrollY&quot;: &quot;20vh&quot;,
+<i>166</i>&nbsp;                    &quot;scrollCollapse&quot;: true
+<b class="fc"><i>167</i>&nbsp;                &quot;&quot;&quot;),format.raw/*135.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*135.18*/(&quot;&quot;&quot;);</b>
+<b class="fc"><i>168</i>&nbsp;            &quot;&quot;&quot;),format.raw/*136.13*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*136.14*/(&quot;&quot;&quot;);</b>
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;
+<b class="fc"><i>171</i>&nbsp;            $(&#39;#addDest&#39;).on( &#39;click&#39;, function () &quot;&quot;&quot;),format.raw/*139.52*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*139.53*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>172</i>&nbsp;                &quot;&quot;&quot;),format.raw/*140.17*/(&quot;&quot;&quot;var table = $(&#39;#destinations&#39;).DataTable();</b>
+<i>173</i>&nbsp;                var dest = $(&#39;#destsPicker&#39;).val();
+<i>174</i>&nbsp;                var arrive = $(&quot;#arrival&quot;).val();
+<i>175</i>&nbsp;                var depart = $(&quot;#departure&quot;).val();
+<i>176</i>&nbsp;                var valid = true;
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;
+<b class="fc"><i>179</i>&nbsp;                if (arrive.length === 0 || dest.length === 0 || depart.length === 0) &quot;&quot;&quot;),format.raw/*147.86*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*147.87*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>180</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*148.21*/(&quot;&quot;&quot;alert(&quot;Please fill in destination all fields&quot;);</b>
+<i>181</i>&nbsp;                    valid = false;
+<b class="fc"><i>182</i>&nbsp;                &quot;&quot;&quot;),format.raw/*150.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*150.18*/(&quot;&quot;&quot; &quot;&quot;&quot;),format.raw/*150.19*/(&quot;&quot;&quot;else if (table.rows().data().length &gt; 0)&quot;&quot;&quot;),format.raw/*150.59*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*150.60*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>183</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*151.21*/(&quot;&quot;&quot;var last_row = table.row(&#39;:last&#39;).data();</b>
+<b class="fc"><i>184</i>&nbsp;                    if (last_row[0] === dest) &quot;&quot;&quot;),format.raw/*152.47*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*152.48*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>185</i>&nbsp;                        &quot;&quot;&quot;),format.raw/*153.25*/(&quot;&quot;&quot;alert(&quot;The next destination cannot be the same as the previous destination&quot;);</b>
+<i>186</i>&nbsp;                        valid = false;
+<b class="fc"><i>187</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*155.21*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*155.22*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>188</i>&nbsp;                &quot;&quot;&quot;),format.raw/*156.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*156.18*/(&quot;&quot;&quot;</b>
+<i>189</i>&nbsp;
+<b class="fc"><i>190</i>&nbsp;                &quot;&quot;&quot;),format.raw/*158.17*/(&quot;&quot;&quot;if (valid) &quot;&quot;&quot;),format.raw/*158.28*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*158.29*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>191</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*159.21*/(&quot;&quot;&quot;table.row.add( [</b>
+<i>192</i>&nbsp;                                dest,
+<i>193</i>&nbsp;                                arrive,
+<i>194</i>&nbsp;                                depart,
+<i>195</i>&nbsp;                        &#39;&lt;button id=&quot;deleteButton&quot; onclick=&quot;deleteDestRow()&quot;&gt;Delete&lt;/button&gt;&#39;
+<i>196</i>&nbsp;                            ]
+<i>197</i>&nbsp;                    ).draw( false );
+<i>198</i>&nbsp;                    $(&#39;#destForm&#39;).get(0).reset();
+<i>199</i>&nbsp;                    $(&quot;#destsPicker&quot;).val(&#39;default&#39;);
+<i>200</i>&nbsp;                    $(&quot;#destsPicker&quot;).selectpicker(&quot;refresh&quot;);
+<b class="fc"><i>201</i>&nbsp;                &quot;&quot;&quot;),format.raw/*169.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*169.18*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>202</i>&nbsp;            &quot;&quot;&quot;),format.raw/*170.13*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*170.14*/(&quot;&quot;&quot; &quot;&quot;&quot;),format.raw/*170.15*/(&quot;&quot;&quot;);</b>
+<i>203</i>&nbsp;
+<b class="fc"><i>204</i>&nbsp;            $(&#39;#saveButton&#39;).on( &#39;click&#39;,  function () &quot;&quot;&quot;),format.raw/*172.56*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*172.57*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>205</i>&nbsp;                &quot;&quot;&quot;),format.raw/*173.17*/(&quot;&quot;&quot;var table = $(&#39;#destinations&#39;).DataTable();</b>
+<i>206</i>&nbsp;                var tripName = $(&#39;#tripNameEntry&#39;).val();
+<i>207</i>&nbsp;
+<b class="fc"><i>208</i>&nbsp;                if (table.rows().data().length &lt; 2) &quot;&quot;&quot;),format.raw/*176.53*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*176.54*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>209</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*177.21*/(&quot;&quot;&quot;alert(&quot;Please enter at least 2 destinations&quot;);</b>
+<b class="fc"><i>210</i>&nbsp;                &quot;&quot;&quot;),format.raw/*178.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*178.18*/(&quot;&quot;&quot; &quot;&quot;&quot;),format.raw/*178.19*/(&quot;&quot;&quot;else if (tripName.length === 0) &quot;&quot;&quot;),format.raw/*178.51*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*178.52*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>211</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*179.21*/(&quot;&quot;&quot;alert(&quot;Please enter a trip name&quot;);</b>
+<b class="fc"><i>212</i>&nbsp;                &quot;&quot;&quot;),format.raw/*180.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*180.18*/(&quot;&quot;&quot; &quot;&quot;&quot;),format.raw/*180.19*/(&quot;&quot;&quot;else &quot;&quot;&quot;),format.raw/*180.24*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*180.25*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>213</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*181.21*/(&quot;&quot;&quot;// Send data to controller here to create te trip and add to table</b>
+<i>214</i>&nbsp;
+<i>215</i>&nbsp;                    table
+<i>216</i>&nbsp;                            .clear()
+<i>217</i>&nbsp;                            .draw();
+<i>218</i>&nbsp;                    $(&quot;#createModal&quot;).modal(&quot;hide&quot;);
+<i>219</i>&nbsp;                    document.getElementById(&#39;tripNameEntry&#39;).value = &quot;&quot;;
+<i>220</i>&nbsp;                    $(&quot;#destination&quot;).val(&#39;default&#39;);
+<i>221</i>&nbsp;                    $(&quot;#destination&quot;).selectpicker(&quot;refresh&quot;);
+<b class="fc"><i>222</i>&nbsp;                &quot;&quot;&quot;),format.raw/*190.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*190.18*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>223</i>&nbsp;            &quot;&quot;&quot;),format.raw/*191.13*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*191.14*/(&quot;&quot;&quot;);</b>
+<i>224</i>&nbsp;
+<b class="fc"><i>225</i>&nbsp;        $(&#39;#closeIcon, #closeButton&#39;).on( &#39;click&#39;, function() &quot;&quot;&quot;),format.raw/*193.63*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*193.64*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>226</i>&nbsp;            &quot;&quot;&quot;),format.raw/*194.13*/(&quot;&quot;&quot;var table = $(&#39;#destinations&#39;).DataTable();</b>
+<i>227</i>&nbsp;            $(&#39;#destForm&#39;).get(0).reset()
+<i>228</i>&nbsp;            table
+<i>229</i>&nbsp;                    .clear()
+<i>230</i>&nbsp;                    .draw();
+<i>231</i>&nbsp;            $(&quot;#createModal&quot;).modal(&quot;hide&quot;);
+<i>232</i>&nbsp;            document.getElementById(&#39;tripNameEntry&#39;).value = &quot;&quot;;
+<i>233</i>&nbsp;            $(&quot;#destination&quot;).val(&#39;default&#39;);
+<i>234</i>&nbsp;            $(&quot;#destination&quot;).selectpicker(&quot;refresh&quot;);
+<b class="fc"><i>235</i>&nbsp;        &quot;&quot;&quot;),format.raw/*203.9*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*203.10*/(&quot;&quot;&quot;);</b>
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;
+<b class="fc"><i>238</i>&nbsp;        $(&quot;#menu-toggle&quot;).click(function(e) &quot;&quot;&quot;),format.raw/*206.45*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*206.46*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>239</i>&nbsp;            &quot;&quot;&quot;),format.raw/*207.13*/(&quot;&quot;&quot;e.preventDefault();</b>
+<i>240</i>&nbsp;            $(&quot;#wrapper&quot;).toggleClass(&quot;toggled&quot;);
+<b class="fc"><i>241</i>&nbsp;        &quot;&quot;&quot;),format.raw/*209.9*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*209.10*/(&quot;&quot;&quot;);</b>
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;
+<i>246</i>&nbsp;
+<i>247</i>&nbsp;    &lt;/script&gt;
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;
+<i>251</i>&nbsp;&lt;/html&gt;&quot;&quot;&quot;))
+<i>252</i>&nbsp;      }
+<i>253</i>&nbsp;    }
+<i>254</i>&nbsp;  }
+<i>255</i>&nbsp;
+<b class="fc"><i>256</i>&nbsp;  def render(tripForm:Form[Trip],tripDestinationForm:Form[TripDestination],destinations:List[Destination],trips:List[Trip],request:Http.Request,messages:play.i18n.Messages): play.twirl.api.HtmlFormat.Appendable = apply(tripForm,tripDestinationForm,destinations,trips)(request,messages)</b>
+<i>257</i>&nbsp;
+<b class="nc"><i>258</i>&nbsp;  def f:((Form[Trip],Form[TripDestination],List[Destination],List[Trip]) =&gt; (Http.Request,play.i18n.Messages) =&gt; play.twirl.api.HtmlFormat.Appendable) = (tripForm,tripDestinationForm,destinations,trips) =&gt; (request,messages) =&gt; apply(tripForm,tripDestinationForm,destinations,trips)(request,messages)</b>
+<i>259</i>&nbsp;
+<b class="nc"><i>260</i>&nbsp;  def ref: this.type = this</b>
+<i>261</i>&nbsp;
+<i>262</i>&nbsp;}
+<i>263</i>&nbsp;
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;              /*
+<i>266</i>&nbsp;                  -- GENERATED --
+<i>267</i>&nbsp;                  DATE: Wed Mar 27 23:46:22 NZDT 2019
+<i>268</i>&nbsp;                  SOURCE: D:/Documents/SENG302/team-700/app/views/trips.scala.html
+<i>269</i>&nbsp;                  HASH: 5c8a45b6bfff0e2b4b9967e5c7f4121af0283825
+<i>270</i>&nbsp;                  MATRIX: 651-&gt;1|679-&gt;24|1100-&gt;56|1354-&gt;242|1400-&gt;237|1430-&gt;259|1462-&gt;265|1550-&gt;326|1565-&gt;332|1642-&gt;388|1707-&gt;426|1722-&gt;432|1792-&gt;481|1857-&gt;519|1872-&gt;525|1955-&gt;586|2008-&gt;612|2023-&gt;618|2085-&gt;659|2166-&gt;713|2181-&gt;719|2247-&gt;764|2328-&gt;818|2343-&gt;824|2409-&gt;869|2490-&gt;923|2505-&gt;929|2572-&gt;975|2653-&gt;1029|2668-&gt;1035|2739-&gt;1085|2840-&gt;1159|2855-&gt;1165|2913-&gt;1202|2978-&gt;1240|2993-&gt;1246|3051-&gt;1283|3116-&gt;1321|3131-&gt;1327|3187-&gt;1362|3585-&gt;1733|3600-&gt;1739|3646-&gt;1764|3770-&gt;1860|3786-&gt;1866|3845-&gt;1903|3919-&gt;1950|3934-&gt;1956|3985-&gt;1986|4109-&gt;2082|4125-&gt;2088|4188-&gt;2129|4290-&gt;2204|4305-&gt;2210|4349-&gt;2233|4472-&gt;2328|4488-&gt;2334|4545-&gt;2369|4617-&gt;2414|4632-&gt;2420|4681-&gt;2448|4805-&gt;2544|4821-&gt;2550|4882-&gt;2589|4959-&gt;2639|4974-&gt;2645|5018-&gt;2668|5142-&gt;2764|5158-&gt;2770|5216-&gt;2806|5577-&gt;3140|5592-&gt;3146|5647-&gt;3180|6362-&gt;3868|6396-&gt;3886|6436-&gt;3888|6506-&gt;3930|6588-&gt;3985|6601-&gt;3989|6630-&gt;3997|6713-&gt;4053|6726-&gt;4057|6761-&gt;4071|6894-&gt;4177|6932-&gt;4206|6972-&gt;4208|7054-&gt;4262|7088-&gt;4269|7101-&gt;4273|7145-&gt;4296|7222-&gt;4355|7235-&gt;4360|7274-&gt;4361|7356-&gt;4415|7452-&gt;4480|7530-&gt;4531|7543-&gt;4535|7583-&gt;4554|7666-&gt;4610|7679-&gt;4614|7723-&gt;4637|7806-&gt;4693|7819-&gt;4697|7860-&gt;4717|7939-&gt;4769|7954-&gt;4775|8014-&gt;4825|8055-&gt;4827|8133-&gt;4878|8146-&gt;4882|8177-&gt;4892|8255-&gt;4942|8414-&gt;5070|8488-&gt;5116|8525-&gt;5126|8540-&gt;5132|8596-&gt;5167|8803-&gt;5343|8865-&gt;5377|9118-&gt;5603|9133-&gt;5609|9183-&gt;5638|9642-&gt;6068|9672-&gt;6069|9719-&gt;6087|9775-&gt;6114|9805-&gt;6115|9856-&gt;6137|10070-&gt;6322|10100-&gt;6323|10155-&gt;6349|10305-&gt;6470|10335-&gt;6471|10487-&gt;6594|10517-&gt;6595|10597-&gt;6646|10627-&gt;6647|10678-&gt;6669|10828-&gt;6790|10858-&gt;6791|10913-&gt;6817|11016-&gt;6891|11046-&gt;6892|11218-&gt;7035|11248-&gt;7036|11293-&gt;7052|11323-&gt;7053|11411-&gt;7112|11441-&gt;7113|11488-&gt;7131|11843-&gt;7457|11873-&gt;7458|11924-&gt;7480|12054-&gt;7581|12084-&gt;7582|12114-&gt;7583|12183-&gt;7623|12213-&gt;7624|12264-&gt;7646|12382-&gt;7735|12412-&gt;7736|12467-&gt;7762|12635-&gt;7901|12665-&gt;7902|12712-&gt;7920|12742-&gt;7921|12791-&gt;7941|12831-&gt;7952|12861-&gt;7953|12912-&gt;7975|13431-&gt;8465|13461-&gt;8466|13504-&gt;8480|13534-&gt;8481|13564-&gt;8482|13654-&gt;8543|13684-&gt;8544|13731-&gt;8562|13918-&gt;8720|13948-&gt;8721|13999-&gt;8743|14092-&gt;8807|14122-&gt;8808|14152-&gt;8809|14213-&gt;8841|14243-&gt;8842|14294-&gt;8864|14375-&gt;8916|14405-&gt;8917|14435-&gt;8918|14469-&gt;8923|14499-&gt;8924|14550-&gt;8946|15015-&gt;9382|15045-&gt;9383|15088-&gt;9397|15118-&gt;9398|15215-&gt;9466|15245-&gt;9467|15288-&gt;9481|15706-&gt;9871|15736-&gt;9872|15817-&gt;9924|15847-&gt;9925|15890-&gt;9939|15998-&gt;10019|16028-&gt;10020
+<i>271</i>&nbsp;                  LINES: 24-&gt;1|25-&gt;2|30-&gt;3|33-&gt;5|36-&gt;3|38-&gt;6|41-&gt;9|44-&gt;12|44-&gt;12|44-&gt;12|45-&gt;13|45-&gt;13|45-&gt;13|46-&gt;14|46-&gt;14|46-&gt;14|49-&gt;17|49-&gt;17|49-&gt;17|50-&gt;18|50-&gt;18|50-&gt;18|51-&gt;19|51-&gt;19|51-&gt;19|52-&gt;20|52-&gt;20|52-&gt;20|53-&gt;21|53-&gt;21|53-&gt;21|56-&gt;24|56-&gt;24|56-&gt;24|57-&gt;25|57-&gt;25|57-&gt;25|58-&gt;26|58-&gt;26|58-&gt;26|69-&gt;37|69-&gt;37|69-&gt;37|69-&gt;37|69-&gt;37|69-&gt;37|70-&gt;38|70-&gt;38|70-&gt;38|70-&gt;38|70-&gt;38|70-&gt;38|71-&gt;39|71-&gt;39|71-&gt;39|71-&gt;39|71-&gt;39|71-&gt;39|72-&gt;40|72-&gt;40|72-&gt;40|72-&gt;40|72-&gt;40|72-&gt;40|73-&gt;41|73-&gt;41|73-&gt;41|73-&gt;41|73-&gt;41|73-&gt;41|82-&gt;50|82-&gt;50|82-&gt;50|93-&gt;61|93-&gt;61|93-&gt;61|94-&gt;62|95-&gt;63|95-&gt;63|95-&gt;63|96-&gt;64|96-&gt;64|96-&gt;64|98-&gt;66|98-&gt;66|98-&gt;66|99-&gt;67|99-&gt;67|99-&gt;67|99-&gt;67|100-&gt;68|100-&gt;68|100-&gt;68|101-&gt;69|102-&gt;70|103-&gt;71|103-&gt;71|103-&gt;71|104-&gt;72|104-&gt;72|104-&gt;72|105-&gt;73|105-&gt;73|105-&gt;73|106-&gt;74|106-&gt;74|106-&gt;74|106-&gt;74|107-&gt;75|107-&gt;75|107-&gt;75|108-&gt;76|110-&gt;78|111-&gt;79|111-&gt;79|111-&gt;79|111-&gt;79|113-&gt;81|114-&gt;82|120-&gt;88|120-&gt;88|120-&gt;88|143-&gt;111|143-&gt;111|144-&gt;112|144-&gt;112|144-&gt;112|145-&gt;113|149-&gt;117|149-&gt;117|150-&gt;118|152-&gt;120|152-&gt;120|155-&gt;123|155-&gt;123|157-&gt;125|157-&gt;125|158-&gt;126|161-&gt;129|161-&gt;129|162-&gt;130|163-&gt;131|163-&gt;131|167-&gt;135|167-&gt;135|168-&gt;136|168-&gt;136|171-&gt;139|171-&gt;139|172-&gt;140|179-&gt;147|179-&gt;147|180-&gt;148|182-&gt;150|182-&gt;150|182-&gt;150|182-&gt;150|182-&gt;150|183-&gt;151|184-&gt;152|184-&gt;152|185-&gt;153|187-&gt;155|187-&gt;155|188-&gt;156|188-&gt;156|190-&gt;158|190-&gt;158|190-&gt;158|191-&gt;159|201-&gt;169|201-&gt;169|202-&gt;170|202-&gt;170|202-&gt;170|204-&gt;172|204-&gt;172|205-&gt;173|208-&gt;176|208-&gt;176|209-&gt;177|210-&gt;178|210-&gt;178|210-&gt;178|210-&gt;178|210-&gt;178|211-&gt;179|212-&gt;180|212-&gt;180|212-&gt;180|212-&gt;180|212-&gt;180|213-&gt;181|222-&gt;190|222-&gt;190|223-&gt;191|223-&gt;191|225-&gt;193|225-&gt;193|226-&gt;194|235-&gt;203|235-&gt;203|238-&gt;206|238-&gt;206|239-&gt;207|241-&gt;209|241-&gt;209
+<i>272</i>&nbsp;                  -- GENERATED --
+<i>273</i>&nbsp;              */
+<i>274</i>&nbsp;          
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-03-29 19:09</div>
+</div>
+</body>
+</html>

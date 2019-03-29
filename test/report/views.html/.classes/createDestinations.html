@@ -1,0 +1,249 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: createDestinations</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">views.html</a> ]
+</div>
+
+<h1>Coverage Summary for Class: createDestinations (views.html)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+  <tr>
+    <td class="name">createDestinations$</td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (4/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (24/ 26)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    66.7%
+  </span>
+  <span class="absValue">
+    (4/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92.3%
+  </span>
+  <span class="absValue">
+    (24/ 26)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;
+<i>2</i>&nbsp;package views.html
+<i>3</i>&nbsp;
+<i>4</i>&nbsp;import _root_.play.twirl.api.TwirlFeatureImports._
+<i>5</i>&nbsp;import _root_.play.twirl.api.TwirlHelperImports._
+<i>6</i>&nbsp;import _root_.play.twirl.api.Html
+<i>7</i>&nbsp;import _root_.play.twirl.api.JavaScript
+<i>8</i>&nbsp;import _root_.play.twirl.api.Txt
+<i>9</i>&nbsp;import _root_.play.twirl.api.Xml
+<i>10</i>&nbsp;import models._
+<i>11</i>&nbsp;import controllers._
+<i>12</i>&nbsp;import play.api.i18n._
+<i>13</i>&nbsp;import views.html._
+<i>14</i>&nbsp;import play.api.templates.PlayMagic._
+<i>15</i>&nbsp;import java.lang._
+<i>16</i>&nbsp;import java.util._
+<i>17</i>&nbsp;import scala.collection.JavaConverters._
+<i>18</i>&nbsp;import play.core.j.PlayMagicForJava._
+<i>19</i>&nbsp;import play.mvc._
+<i>20</i>&nbsp;import play.api.data.Field
+<i>21</i>&nbsp;import play.mvc.Http.Context.Implicit._
+<i>22</i>&nbsp;import play.data._
+<i>23</i>&nbsp;import play.core.j.PlayFormsMagicForJava._
+<i>24</i>&nbsp;/*1.2*/import play.mvc.Http
+<i>25</i>&nbsp;/*2.2*/import views.html.helper.CSRF
+<i>26</i>&nbsp;
+<b class="fc"><i>27</i>&nbsp;object createDestinations extends _root_.play.twirl.api.BaseScalaTemplate[play.twirl.api.HtmlFormat.Appendable,_root_.play.twirl.api.Format[play.twirl.api.HtmlFormat.Appendable]](play.twirl.api.HtmlFormat) with _root_.play.twirl.api.Template3[Form[Destination],Http.Request,play.i18n.Messages,play.twirl.api.HtmlFormat.Appendable] {</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;  /**/
+<i>30</i>&nbsp;  def apply/*3.2*/(destinationForm : Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages):play.twirl.api.HtmlFormat.Appendable = {
+<b class="fc"><i>31</i>&nbsp;    _display_ {</b>
+<i>32</i>&nbsp;      {
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;
+<b class="fc"><i>35</i>&nbsp;Seq[Any](format.raw/*3.101*/(&quot;&quot;&quot;</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;
+<b class="fc"><i>38</i>&nbsp;&quot;&quot;&quot;),format.raw/*6.1*/(&quot;&quot;&quot;&lt;!DOCTYPE html&gt;</b>
+<i>39</i>&nbsp;&lt;html&gt;
+<b class="fc"><i>40</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*8.35*/routes/*8.41*/.Assets.at(&quot;stylesheets/bootstrap/bootstrap.css&quot;)),format.raw/*8.90*/(&quot;&quot;&quot;&quot;&gt;</b>
+<b class="fc"><i>41</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*9.35*/routes/*9.41*/.Assets.at(&quot;stylesheets/sidebar.css&quot;)),format.raw/*9.78*/(&quot;&quot;&quot;&quot;&gt;</b>
+<b class="fc"><i>42</i>&nbsp;    &lt;link rel=&quot;stylesheet&quot; href=&quot;&quot;&quot;&quot;),_display_(/*10.35*/routes/*10.41*/.Assets.at(&quot;stylesheets/general.css&quot;)),format.raw/*10.78*/(&quot;&quot;&quot;&quot;&gt;</b>
+<i>43</i>&nbsp;    &lt;head&gt;
+<i>44</i>&nbsp;        &lt;title&gt;TravelEA | Destinations&lt;/title&gt;
+<i>45</i>&nbsp;    &lt;/head&gt;
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    &lt;body&gt;
+<i>48</i>&nbsp;        &lt;div class=&quot;d-flex&quot; id=&quot;wrapper&quot;&gt;
+<i>49</i>&nbsp;                &lt;!-- Sidebar --&gt;
+<i>50</i>&nbsp;            &lt;div class=&quot;border-right&quot; id=&quot;sidebar-wrapper&quot;&gt;
+<i>51</i>&nbsp;                &lt;h1 class=&quot;sidebar-heading&quot;&gt;TravelEA &lt;/h1&gt;
+<i>52</i>&nbsp;                &lt;div class=&quot;list-group list-group-flush&quot;&gt;
+<b class="fc"><i>53</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*21.31*/routes/*21.37*/.ProfileController.show()),format.raw/*21.62*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*21.158*/routes/*21.164*/.Assets.at(&quot;images/profile-icon.png&quot;)),format.raw/*21.201*/(&quot;&quot;&quot;&quot;/&gt; Profile&lt;/a&gt;</b>
+<b class="fc"><i>54</i>&nbsp;                    &lt;a style=&quot;color: #ca6636&quot; href=&quot;&quot;&quot;&quot;),_display_(/*22.54*/routes/*22.60*/.DestinationsController.show()),format.raw/*22.90*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*22.186*/routes/*22.192*/.Assets.at(&quot;images/destination-icon.png&quot;)),format.raw/*22.233*/(&quot;&quot;&quot;&quot;/&gt; Destinations&lt;/a&gt;</b>
+<b class="fc"><i>55</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*23.31*/routes/*23.37*/.TripsController.show()),format.raw/*23.60*/(&quot;&quot;&quot;&quot;class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*23.155*/routes/*23.161*/.Assets.at(&quot;images/trips-icon.png&quot;)),format.raw/*23.196*/(&quot;&quot;&quot;&quot;/&gt; Trips&lt;/a&gt;</b>
+<b class="fc"><i>56</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*24.31*/routes/*24.37*/.TravellersController.show()),format.raw/*24.65*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*24.161*/routes/*24.167*/.Assets.at(&quot;images/traveller-icon.png&quot;)),format.raw/*24.206*/(&quot;&quot;&quot;&quot;/&gt; Travellers&lt;/a&gt;</b>
+<b class="fc"><i>57</i>&nbsp;                    &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*25.31*/routes/*25.37*/.LoginController.show()),format.raw/*25.60*/(&quot;&quot;&quot;&quot; class=&quot;list-group-item list-group-item-action bg-transparent&quot;&gt;&lt;img class=&quot;sidebar-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*25.156*/routes/*25.162*/.Assets.at(&quot;images/logout-icon.png&quot;)),format.raw/*25.198*/(&quot;&quot;&quot;&quot;/&gt; Logout&lt;/a&gt;</b>
+<i>58</i>&nbsp;                &lt;/div&gt;
+<i>59</i>&nbsp;            &lt;/div&gt;
+<i>60</i>&nbsp;                &lt;!-- /#sidebar-wrapper --&gt;
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;                &lt;!-- Page Content --&gt;
+<i>63</i>&nbsp;            &lt;div id=&quot;page-content-wrapper&quot;&gt;
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;                &lt;nav class=&quot;navbar navbar-expand-lg navbar-light bg-light border-bottom&quot;&gt;
+<b class="fc"><i>66</i>&nbsp;                    &lt;img class=&quot;expand-icon&quot; src=&quot;&quot;&quot;&quot;),_display_(/*34.52*/routes/*34.58*/.Assets.at(&quot;images/list-icon.png&quot;)),format.raw/*34.92*/(&quot;&quot;&quot;&quot; id=&quot;menu-toggle&quot;&gt;</b>
+<i>67</i>&nbsp;                    &lt;h2&gt;Destinations&lt;/h2&gt; &lt;!-- TODO align this in the center --&gt;
+<i>68</i>&nbsp;                &lt;/nav&gt;
+<i>69</i>&nbsp;            &lt;div class=&quot;container-fluid&quot;&gt;
+<i>70</i>&nbsp;                &lt;div id=&quot;table-card&quot; class=&quot;card-large&quot;&gt;
+<i>71</i>&nbsp;                    &lt;h3&gt;Create destination&lt;/h3&gt;
+<b class="fc"><i>72</i>&nbsp;                    &quot;&quot;&quot;),_display_(/*40.22*/helper/*40.28*/.form(routes.DestinationsController.saveDestination())/*40.82*/{_display_(Seq[Any](format.raw/*40.83*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>73</i>&nbsp;                        &quot;&quot;&quot;),format.raw/*41.25*/(&quot;&quot;&quot;&lt;fieldset&gt;</b>
+<b class="fc"><i>74</i>&nbsp;                            &quot;&quot;&quot;),_display_(/*42.30*/CSRF/*42.34*/.formField),format.raw/*42.44*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>75</i>&nbsp;                            &quot;&quot;&quot;),format.raw/*43.29*/(&quot;&quot;&quot;&lt;div class=&quot;row&quot;&gt;</b>
+<i>76</i>&nbsp;                                &lt;div class=&quot;col&quot;&gt;
+<i>77</i>&nbsp;                                    &lt;label&gt;Name&lt;/label&gt;
+<i>78</i>&nbsp;                                    &lt;input type=&quot;text&quot; id=&quot;name&quot; placeholder=&quot;Name&quot; name=&quot;name&quot; required oninvalid=&quot;this.setCustomValidity(&#39;Name required&#39;)&quot; oninput=&quot;setCustomValidity(&#39;&#39;)&quot;&gt;
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;                                &lt;/div&gt;
+<i>81</i>&nbsp;                                &lt;div class=&quot;col&quot;&gt;
+<i>82</i>&nbsp;                                    &lt;label&gt;Type&lt;/label&gt;
+<i>83</i>&nbsp;                                    &lt;input type=&quot;text&quot; id=&quot;type&quot; placeholder=&quot;Type&quot; name=&quot;type&quot; required oninvalid=&quot;this.setCustomValidity(&#39;Type required&#39;)&quot; oninput=&quot;setCustomValidity(&#39;&#39;)&quot;&gt;
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;                                &lt;/div&gt;
+<i>86</i>&nbsp;
+<i>87</i>&nbsp;                            &lt;/div&gt;
+<i>88</i>&nbsp;                            &lt;div class=&quot;row&quot;&gt;
+<i>89</i>&nbsp;                                &lt;div class=&quot;col&quot;&gt;
+<i>90</i>&nbsp;                                    &lt;label&gt;District&lt;/label&gt;
+<i>91</i>&nbsp;                                    &lt;input type=&quot;text&quot; id=&quot;district&quot; placeholder=&quot;District&quot; name=&quot;district&quot;&gt;
+<i>92</i>&nbsp;                                &lt;/div&gt;
+<i>93</i>&nbsp;                                &lt;div class=&quot;col&quot;&gt;
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;                                    &lt;label&gt;Country&lt;/label&gt;
+<i>97</i>&nbsp;                                    &lt;input type=&quot;text&quot; id=&quot;country&quot; placeholder=&quot;Country&quot; name=&quot;country&quot; required oninvalid=&quot;this.setCustomValidity(&#39;Country required&#39;)&quot; oninput=&quot;setCustomValidity(&#39;&#39;)&quot;&gt;
+<i>98</i>&nbsp;                                &lt;/div&gt;
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;                            &lt;/div&gt;
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;                            &lt;div class=&quot;row&quot;&gt;
+<i>103</i>&nbsp;                                &lt;div class=&quot;col&quot;&gt;
+<i>104</i>&nbsp;                                    &lt;label&gt;Latitude&lt;/label&gt;
+<i>105</i>&nbsp;                                    &lt;input type=&quot;number&quot; step=&quot;0.01&quot; id=&quot;latitude&quot; value=0.0 name=&quot;latitude&quot;&gt;
+<i>106</i>&nbsp;                                &lt;/div&gt;
+<i>107</i>&nbsp;                                &lt;div class=&quot;col&quot;&gt;
+<i>108</i>&nbsp;                                    &lt;label&gt;Longitude&lt;/label&gt;
+<i>109</i>&nbsp;                                    &lt;input type=&quot;number&quot; step=&quot;0.01&quot; id=&quot;longitude&quot; value=0.0 name=&quot;longitude&quot;&gt;
+<i>110</i>&nbsp;                                &lt;/div&gt;
+<i>111</i>&nbsp;                            &lt;/div&gt;
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;                        &lt;/fieldset&gt;
+<b class="fc"><i>115</i>&nbsp;                        &lt;a href=&quot;&quot;&quot;&quot;),_display_(/*83.35*/routes/*83.41*/.DestinationsController.show()),format.raw/*83.71*/(&quot;&quot;&quot;&quot;&gt; &lt;button style=&quot;width: 10vw&quot; class=&quot;button-delete&quot; type=&quot;button&quot;&gt;Back&lt;/button&gt; &lt;/a&gt;</b>
+<i>116</i>&nbsp;                        &lt;button type=&quot;submit&quot; class=&quot;registerButton button-add&quot; style=&quot;width: 10vw&quot; id=&quot;saveButton&quot;&gt;Save&lt;/button&gt;
+<b class="fc"><i>117</i>&nbsp;                    &quot;&quot;&quot;)))}),format.raw/*85.22*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>118</i>&nbsp;                &quot;&quot;&quot;),format.raw/*86.17*/(&quot;&quot;&quot;&lt;/div&gt;</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;
+<i>121</i>&nbsp;            &lt;/div&gt;
+<i>122</i>&nbsp;
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;        &lt;/div&gt;
+<i>126</i>&nbsp;        &lt;/div&gt;
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;        &lt;script type=&quot;text/javascript&quot;&gt;
+<b class="fc"><i>129</i>&nbsp;                $(&quot;#menu-toggle&quot;).click(function(e) &quot;&quot;&quot;),format.raw/*97.53*/(&quot;&quot;&quot;{&quot;&quot;&quot;),format.raw/*97.54*/(&quot;&quot;&quot;</b>
+<b class="fc"><i>130</i>&nbsp;                    &quot;&quot;&quot;),format.raw/*98.21*/(&quot;&quot;&quot;e.preventDefault();</b>
+<i>131</i>&nbsp;                    $(&quot;#wrapper&quot;).toggleClass(&quot;toggled&quot;);
+<b class="fc"><i>132</i>&nbsp;                &quot;&quot;&quot;),format.raw/*100.17*/(&quot;&quot;&quot;}&quot;&quot;&quot;),format.raw/*100.18*/(&quot;&quot;&quot;);</b>
+<i>133</i>&nbsp;        &lt;/script&gt;
+<i>134</i>&nbsp;    &lt;/body&gt;
+<i>135</i>&nbsp;&lt;/html&gt;
+<i>136</i>&nbsp;&quot;&quot;&quot;))
+<i>137</i>&nbsp;      }
+<i>138</i>&nbsp;    }
+<i>139</i>&nbsp;  }
+<i>140</i>&nbsp;
+<b class="fc"><i>141</i>&nbsp;  def render(destinationForm:Form[Destination],request:Http.Request,messages:play.i18n.Messages): play.twirl.api.HtmlFormat.Appendable = apply(destinationForm)(request,messages)</b>
+<i>142</i>&nbsp;
+<b class="nc"><i>143</i>&nbsp;  def f:((Form[Destination]) =&gt; (Http.Request,play.i18n.Messages) =&gt; play.twirl.api.HtmlFormat.Appendable) = (destinationForm) =&gt; (request,messages) =&gt; apply(destinationForm)(request,messages)</b>
+<i>144</i>&nbsp;
+<b class="nc"><i>145</i>&nbsp;  def ref: this.type = this</b>
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;}
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;              /*
+<i>151</i>&nbsp;                  -- GENERATED --
+<i>152</i>&nbsp;                  DATE: Wed Mar 27 23:46:21 NZDT 2019
+<i>153</i>&nbsp;                  SOURCE: D:/Documents/SENG302/team-700/app/views/createDestinations.scala.html
+<i>154</i>&nbsp;                  HASH: 4c8d67449f4d71e4c985ce2275c96ccbd44b76ca
+<i>155</i>&nbsp;                  MATRIX: 651-&gt;1|679-&gt;24|1069-&gt;56|1264-&gt;155|1296-&gt;161|1381-&gt;220|1395-&gt;226|1464-&gt;275|1528-&gt;313|1542-&gt;319|1599-&gt;356|1664-&gt;394|1679-&gt;400|1737-&gt;437|2142-&gt;815|2157-&gt;821|2203-&gt;846|2327-&gt;942|2343-&gt;948|2402-&gt;985|2499-&gt;1055|2514-&gt;1061|2565-&gt;1091|2689-&gt;1187|2705-&gt;1193|2768-&gt;1234|2847-&gt;1286|2862-&gt;1292|2906-&gt;1315|3029-&gt;1410|3045-&gt;1416|3102-&gt;1451|3174-&gt;1496|3189-&gt;1502|3238-&gt;1530|3362-&gt;1626|3378-&gt;1632|3439-&gt;1671|3516-&gt;1721|3531-&gt;1727|3575-&gt;1750|3699-&gt;1846|3715-&gt;1852|3773-&gt;1888|4134-&gt;2222|4149-&gt;2228|4204-&gt;2262|4529-&gt;2560|4544-&gt;2566|4607-&gt;2620|4646-&gt;2621|4700-&gt;2647|4768-&gt;2688|4781-&gt;2692|4812-&gt;2702|4870-&gt;2732|7030-&gt;4865|7045-&gt;4871|7096-&gt;4901|7366-&gt;5140|7412-&gt;5158|7605-&gt;5323|7634-&gt;5324|7684-&gt;5346|7809-&gt;5442|7839-&gt;5443
+<i>156</i>&nbsp;                  LINES: 24-&gt;1|25-&gt;2|30-&gt;3|35-&gt;3|38-&gt;6|40-&gt;8|40-&gt;8|40-&gt;8|41-&gt;9|41-&gt;9|41-&gt;9|42-&gt;10|42-&gt;10|42-&gt;10|53-&gt;21|53-&gt;21|53-&gt;21|53-&gt;21|53-&gt;21|53-&gt;21|54-&gt;22|54-&gt;22|54-&gt;22|54-&gt;22|54-&gt;22|54-&gt;22|55-&gt;23|55-&gt;23|55-&gt;23|55-&gt;23|55-&gt;23|55-&gt;23|56-&gt;24|56-&gt;24|56-&gt;24|56-&gt;24|56-&gt;24|56-&gt;24|57-&gt;25|57-&gt;25|57-&gt;25|57-&gt;25|57-&gt;25|57-&gt;25|66-&gt;34|66-&gt;34|66-&gt;34|72-&gt;40|72-&gt;40|72-&gt;40|72-&gt;40|73-&gt;41|74-&gt;42|74-&gt;42|74-&gt;42|75-&gt;43|115-&gt;83|115-&gt;83|115-&gt;83|117-&gt;85|118-&gt;86|129-&gt;97|129-&gt;97|130-&gt;98|132-&gt;100|132-&gt;100
+<i>157</i>&nbsp;                  -- GENERATED --
+<i>158</i>&nbsp;              */
+<i>159</i>&nbsp;          
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-03-29 19:09</div>
+</div>
+</body>
+</html>

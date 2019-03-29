@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DestinationRepository</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">repository</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DestinationRepository (repository)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DestinationRepository</td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (3/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    21.9%
+  </span>
+  <span class="absValue">
+    (7/ 32)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DestinationRepository$$FastClassByGuice$$f7b8234</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    37.5%
+  </span>
+  <span class="absValue">
+    (3/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    21.9%
+  </span>
+  <span class="absValue">
+    (7/ 32)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package repository;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import io.ebean.Ebean;
+<i>4</i>&nbsp;import io.ebean.EbeanServer;
+<i>5</i>&nbsp;import io.ebean.Model;
+<i>6</i>&nbsp;import io.ebean.Transaction;
+<i>7</i>&nbsp;import models.Destination;
+<i>8</i>&nbsp;import play.db.ebean.EbeanConfig;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import javax.inject.Inject;
+<i>11</i>&nbsp;import java.util.Optional;
+<i>12</i>&nbsp;import java.util.concurrent.CompletionStage;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;import static java.util.concurrent.CompletableFuture.supplyAsync;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;/**
+<i>17</i>&nbsp; * A destination repository that executes database operations in a different
+<i>18</i>&nbsp; * execution context handles all interactions with the destination table .
+<i>19</i>&nbsp; */
+<i>20</i>&nbsp;public class DestinationRepository {
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    private final EbeanServer ebeanServer;
+<i>23</i>&nbsp;    private final DatabaseExecutionContext executionContext;
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    /**
+<i>26</i>&nbsp;     * A Constructor which links to the ebeans database
+<i>27</i>&nbsp;     * @param ebeanConfig
+<i>28</i>&nbsp;     * @param executionContext
+<i>29</i>&nbsp;     */
+<i>30</i>&nbsp;    @Inject
+<b class="fc"><i>31</i>&nbsp;    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {</b>
+<b class="fc"><i>32</i>&nbsp;        this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());</b>
+<b class="fc"><i>33</i>&nbsp;        this.executionContext = executionContext;</b>
+<b class="fc"><i>34</i>&nbsp;    }</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     * Returns a specific destination
+<i>38</i>&nbsp;     * @param destID The ID of the destination to return
+<i>39</i>&nbsp;     * @return
+<i>40</i>&nbsp;     */
+<i>41</i>&nbsp;    public CompletionStage&lt;Optional&lt;Destination&gt;&gt; lookup(int destID) {
+<b class="nc"><i>42</i>&nbsp;        return supplyAsync(() -&gt; Optional.ofNullable(ebeanServer.find(Destination.class).setId(destID).findOne()), executionContext);</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    /**
+<i>46</i>&nbsp;     * Inserts a new destination to the database.
+<i>47</i>&nbsp;     * @param dest The destination to insert
+<i>48</i>&nbsp;     * @return
+<i>49</i>&nbsp;     */
+<i>50</i>&nbsp;    public CompletionStage&lt;String&gt; insert(Destination dest) {
+<b class="fc"><i>51</i>&nbsp;        return supplyAsync(() -&gt; {</b>
+<b class="fc"><i>52</i>&nbsp;            ebeanServer.insert(dest);</b>
+<b class="fc"><i>53</i>&nbsp;            return String.format(&quot;Destination %s added&quot;, dest.getName());</b>
+<i>54</i>&nbsp;        }, executionContext);
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    /**
+<i>58</i>&nbsp;     * Deletes a destination from the database
+<i>59</i>&nbsp;     * @param destID The ID of the destination to delete
+<i>60</i>&nbsp;     * @return
+<i>61</i>&nbsp;     */
+<i>62</i>&nbsp;    public CompletionStage&lt;Optional&lt;String&gt;&gt; delete(int destID) {
+<b class="nc"><i>63</i>&nbsp;        return supplyAsync(() -&gt; {</b>
+<i>64</i>&nbsp;            try {
+<b class="nc"><i>65</i>&nbsp;                final Optional&lt;Destination&gt; destinationOptional = Optional.ofNullable(ebeanServer.find(Destination.class)</b>
+<b class="nc"><i>66</i>&nbsp;                        .setId(destID).findOne());</b>
+<b class="nc"><i>67</i>&nbsp;                destinationOptional.ifPresent(Model::delete);</b>
+<b class="nc"><i>68</i>&nbsp;                return Optional.of(String.format(&quot;Destination %s deleted&quot;, destinationOptional.map(p -&gt; p.getName())));</b>
+<b class="nc"><i>69</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>70</i>&nbsp;                return Optional.empty();</b>
+<i>71</i>&nbsp;            }
+<i>72</i>&nbsp;        }, executionContext);
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     * Updates a destination in the database
+<i>77</i>&nbsp;     * @param newDestination The new info to change the destination to
+<i>78</i>&nbsp;     * @param Id The ID of the destination to edit
+<i>79</i>&nbsp;     * @return
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    public CompletionStage&lt;Optional&lt;String&gt;&gt; update(Destination newDestination, Integer Id) {
+<b class="nc"><i>82</i>&nbsp;        return supplyAsync(() -&gt; {</b>
+<b class="nc"><i>83</i>&nbsp;            Transaction txn = ebeanServer.beginTransaction();</b>
+<b class="nc"><i>84</i>&nbsp;            Optional&lt;String&gt; value = Optional.empty();</b>
+<i>85</i>&nbsp;            try {
+<b class="nc"><i>86</i>&nbsp;                Destination targetDestination = ebeanServer.find(Destination.class).setId(Id).findOne();</b>
+<b class="nc"><i>87</i>&nbsp;                if (targetDestination != null) {</b>
+<b class="nc"><i>88</i>&nbsp;                    targetDestination.setName(newDestination.getName());</b>
+<b class="nc"><i>89</i>&nbsp;                    targetDestination.setType(newDestination.getType());</b>
+<b class="nc"><i>90</i>&nbsp;                    targetDestination.setCountry(newDestination.getCountry());</b>
+<b class="nc"><i>91</i>&nbsp;                    targetDestination.setDistrict(newDestination.getDistrict());</b>
+<b class="nc"><i>92</i>&nbsp;                    targetDestination.setLatitude(newDestination.getLatitude());</b>
+<b class="nc"><i>93</i>&nbsp;                    targetDestination.setLongitude(newDestination.getLongitude());</b>
+<b class="nc"><i>94</i>&nbsp;                    targetDestination.update();</b>
+<b class="nc"><i>95</i>&nbsp;                    txn.commit();</b>
+<b class="nc"><i>96</i>&nbsp;                    value = Optional.of(String.format(&quot;Destination %s edited&quot;, newDestination.getDestinationId()));</b>
+<i>97</i>&nbsp;                }
+<i>98</i>&nbsp;            } finally {
+<b class="nc"><i>99</i>&nbsp;                txn.end();</b>
+<b class="nc"><i>100</i>&nbsp;            }</b>
+<b class="nc"><i>101</i>&nbsp;            return value;</b>
+<i>102</i>&nbsp;        }, executionContext);
+<i>103</i>&nbsp;    }
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-03-29 19:09</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,289 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: DestinationsController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: DestinationsController (controllers)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DestinationsController</td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (5/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.7%
+  </span>
+  <span class="absValue">
+    (31/ 60)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DestinationsController$$FastClassByGuice$$98c48738</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    62.5%
+  </span>
+  <span class="absValue">
+    (5/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    51.7%
+  </span>
+  <span class="absValue">
+    (31/ 60)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package controllers;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import models.Destination;
+<i>4</i>&nbsp;import models.Profile;
+<i>5</i>&nbsp;import models.Trip;
+<i>6</i>&nbsp;import models.TripDestination;
+<i>7</i>&nbsp;import play.data.Form;
+<i>8</i>&nbsp;import play.data.FormFactory;
+<i>9</i>&nbsp;import play.i18n.MessagesApi;
+<i>10</i>&nbsp;import play.mvc.Controller;
+<i>11</i>&nbsp;import play.mvc.Http;
+<i>12</i>&nbsp;import play.mvc.Result;
+<i>13</i>&nbsp;import play.mvc.Security;
+<i>14</i>&nbsp;import repository.DestinationRepository;
+<i>15</i>&nbsp;import repository.ProfileRepository;
+<i>16</i>&nbsp;import repository.TripRepository;
+<i>17</i>&nbsp;import views.html.createDestinations;
+<i>18</i>&nbsp;import views.html.createUser;
+<i>19</i>&nbsp;import views.html.destinations;
+<i>20</i>&nbsp;import views.html.edit;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;import javax.inject.Inject;
+<i>23</i>&nbsp;import java.util.ArrayList;
+<i>24</i>&nbsp;import java.util.List;
+<i>25</i>&nbsp;import java.util.NoSuchElementException;
+<i>26</i>&nbsp;import java.util.Optional;
+<i>27</i>&nbsp;import java.util.concurrent.CompletionStage;
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;import static java.util.concurrent.CompletableFuture.supplyAsync;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;/**
+<i>32</i>&nbsp; * This class is the controller for the destinations.scala.html file, it provides the route to the
+<i>33</i>&nbsp; * destinations page and the method that the page uses.
+<i>34</i>&nbsp; */
+<i>35</i>&nbsp;public class DestinationsController extends Controller {
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    private MessagesApi messagesApi;
+<b class="fc"><i>38</i>&nbsp;    private List&lt;Destination&gt; destinationsList = new ArrayList&lt;&gt;();</b>
+<i>39</i>&nbsp;    private final Form&lt;Destination&gt; form;
+<i>40</i>&nbsp;    private final Form&lt;Profile&gt; userForm;
+<i>41</i>&nbsp;    private final DestinationRepository destinationRepository;
+<i>42</i>&nbsp;    private final ProfileRepository profileRepository;
+<i>43</i>&nbsp;    private final TripRepository tripRepository;
+<b class="fc"><i>44</i>&nbsp;    private String destShowRoute = &quot;/destinations&quot;;</b>
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    /**
+<i>47</i>&nbsp;     * Constructor for the destination controller class
+<i>48</i>&nbsp;     *
+<i>49</i>&nbsp;     * @param formFactory
+<i>50</i>&nbsp;     * @param messagesApi
+<i>51</i>&nbsp;     * @param destinationRepository
+<i>52</i>&nbsp;     * @param profileRepository
+<i>53</i>&nbsp;     */
+<i>54</i>&nbsp;    @Inject
+<i>55</i>&nbsp;    public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
+<b class="fc"><i>56</i>&nbsp;                                  ProfileRepository profileRepository, TripRepository tripRepository) {</b>
+<b class="fc"><i>57</i>&nbsp;        this.form = formFactory.form(Destination.class);</b>
+<b class="fc"><i>58</i>&nbsp;        this.userForm = formFactory.form(Profile.class);</b>
+<b class="fc"><i>59</i>&nbsp;        this.messagesApi = messagesApi;</b>
+<b class="fc"><i>60</i>&nbsp;        this.destinationRepository = destinationRepository;</b>
+<b class="fc"><i>61</i>&nbsp;        this.profileRepository = profileRepository;</b>
+<b class="fc"><i>62</i>&nbsp;        this.tripRepository = tripRepository;</b>
+<b class="fc"><i>63</i>&nbsp;    }</b>
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     * Displays a page showing the destinations to the user
+<i>67</i>&nbsp;     *
+<i>68</i>&nbsp;     * @param request
+<i>69</i>&nbsp;     * @return the list of destinations
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    @Security.Authenticated(SecureSession.class)
+<i>72</i>&nbsp;    public Result show(Http.Request request) {
+<i>73</i>&nbsp;
+<b class="fc"><i>74</i>&nbsp;        Profile user = SessionController.getCurrentUser(request);</b>
+<b class="fc"><i>75</i>&nbsp;        Optional&lt;ArrayList&lt;Destination&gt;&gt; destListTemp = profileRepository.getDestinations(user.getEmail());</b>
+<i>76</i>&nbsp;        try {
+<b class="fc"><i>77</i>&nbsp;            destinationsList = destListTemp.get();</b>
+<b class="nc"><i>78</i>&nbsp;        } catch (NoSuchElementException e) {</b>
+<b class="nc"><i>79</i>&nbsp;            destinationsList = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>80</i>&nbsp;        }</b>
+<b class="fc"><i>81</i>&nbsp;        return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    /**
+<i>85</i>&nbsp;     * Displays a page to create a destination
+<i>86</i>&nbsp;     *
+<i>87</i>&nbsp;     * @param request
+<i>88</i>&nbsp;     * @return
+<i>89</i>&nbsp;     */
+<i>90</i>&nbsp;    @Security.Authenticated(SecureSession.class)
+<i>91</i>&nbsp;    public Result showCreate(Http.Request request) {
+<b class="fc"><i>92</i>&nbsp;        Destination dest = new Destination();</b>
+<b class="fc"><i>93</i>&nbsp;        dest.setLatitude(0.0);</b>
+<b class="fc"><i>94</i>&nbsp;        dest.setLongitude(0.0);</b>
+<b class="fc"><i>95</i>&nbsp;        Form&lt;Destination&gt; destinationForm = form.fill(dest);</b>
+<b class="fc"><i>96</i>&nbsp;        return ok(createDestinations.render(destinationForm, request, messagesApi.preferred(request)));</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     * This method displays the edit page for the destinations to the user
+<i>101</i>&nbsp;     *
+<i>102</i>&nbsp;     * @param request
+<i>103</i>&nbsp;     * @param id
+<i>104</i>&nbsp;     * @return
+<i>105</i>&nbsp;     */
+<i>106</i>&nbsp;    @Security.Authenticated(SecureSession.class)
+<i>107</i>&nbsp;    public Result edit(Http.Request request, Integer id) {
+<b class="fc"><i>108</i>&nbsp;        Destination destination = new Destination();</b>
+<b class="fc"><i>109</i>&nbsp;        for (Destination dest : destinationsList) {</b>
+<b class="nc"><i>110</i>&nbsp;            if (dest.getDestinationId() == id) {</b>
+<b class="nc"><i>111</i>&nbsp;                destination = dest;</b>
+<b class="nc"><i>112</i>&nbsp;                break;</b>
+<i>113</i>&nbsp;            }
+<b class="nc"><i>114</i>&nbsp;        }</b>
+<b class="fc"><i>115</i>&nbsp;        Form&lt;Destination&gt; destinationForm = form.fill(destination);</b>
+<b class="fc"><i>116</i>&nbsp;        return ok(edit.render(id, destination, destinationForm, request, messagesApi.preferred(request)));</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     * This method updates destination in the database
+<i>121</i>&nbsp;     *
+<i>122</i>&nbsp;     * @param request
+<i>123</i>&nbsp;     * @param id      The ID of the destination to edit.
+<i>124</i>&nbsp;     * @return
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    @Security.Authenticated(SecureSession.class)
+<i>127</i>&nbsp;    public Result update(Http.Request request, Integer id) {
+<b class="nc"><i>128</i>&nbsp;        Form&lt;Destination&gt; destinationForm = form.bindFromRequest(request);</b>
+<b class="nc"><i>129</i>&nbsp;        Destination dest = destinationForm.value().get();</b>
+<b class="nc"><i>130</i>&nbsp;        destinationRepository.update(dest, id);</b>
+<b class="nc"><i>131</i>&nbsp;        return redirect(destShowRoute);</b>
+<i>132</i>&nbsp;    }
+<i>133</i>&nbsp;
+<i>134</i>&nbsp;    /**
+<i>135</i>&nbsp;     * Adds a new destination to the database
+<i>136</i>&nbsp;     *
+<i>137</i>&nbsp;     * @param request
+<i>138</i>&nbsp;     * @return
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    @Security.Authenticated(SecureSession.class)
+<i>141</i>&nbsp;    public Result saveDestination(Http.Request request) {
+<b class="fc"><i>142</i>&nbsp;        Profile user = SessionController.getCurrentUser(request);</b>
+<b class="fc"><i>143</i>&nbsp;        if (user == null) {</b>
+<b class="nc"><i>144</i>&nbsp;            return ok(createUser.render(userForm, request, messagesApi.preferred(request)));</b>
+<i>145</i>&nbsp;        }
+<b class="fc"><i>146</i>&nbsp;        Form&lt;Destination&gt; destinationForm = form.bindFromRequest(request);</b>
+<b class="fc"><i>147</i>&nbsp;        Destination destination = destinationForm.value().get();</b>
+<b class="fc"><i>148</i>&nbsp;        destination.setUserEmail(user.getEmail());</b>
+<b class="fc"><i>149</i>&nbsp;        destinationRepository.insert(destination);</b>
+<b class="fc"><i>150</i>&nbsp;        return redirect(destShowRoute);</b>
+<i>151</i>&nbsp;    }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;    /**
+<i>155</i>&nbsp;     * Deletes a destination in the database
+<i>156</i>&nbsp;     * @param id ID of the destination to delete
+<i>157</i>&nbsp;     * @return
+<i>158</i>&nbsp;     */
+<i>159</i>&nbsp;    @Security.Authenticated(SecureSession.class)
+<i>160</i>&nbsp;    public CompletionStage&lt;Result&gt; delete(Http.Request request, Integer id) {
+<b class="nc"><i>161</i>&nbsp;        Profile profile = SessionController.getCurrentUser(request);</b>
+<i>162</i>&nbsp;
+<b class="nc"><i>163</i>&nbsp;        return supplyAsync(() -&gt; {</b>
+<i>164</i>&nbsp;            // Get all trips
+<b class="nc"><i>165</i>&nbsp;            List&lt;Trip&gt; trips = Trip.find.query()</b>
+<b class="nc"><i>166</i>&nbsp;                    .where()</b>
+<b class="nc"><i>167</i>&nbsp;                    .eq(&quot;email&quot;, profile.getEmail())</b>
+<b class="nc"><i>168</i>&nbsp;                    .findList();</b>
+<i>169</i>&nbsp;
+<i>170</i>&nbsp;            // Iterate through each trip
+<i>171</i>&nbsp;            // and get it&#39;s destinations
+<b class="nc"><i>172</i>&nbsp;            for (Trip trip : trips) {</b>
+<b class="nc"><i>173</i>&nbsp;                List&lt;TripDestination&gt; destinations = TripDestination.find.query()</b>
+<b class="nc"><i>174</i>&nbsp;                        .where()</b>
+<b class="nc"><i>175</i>&nbsp;                        .eq(&quot;trip_id&quot;, trip.getId())</b>
+<b class="nc"><i>176</i>&nbsp;                        .findList();</b>
+<i>177</i>&nbsp;
+<i>178</i>&nbsp;                // Iterate over each destination
+<b class="nc"><i>179</i>&nbsp;                for (TripDestination destination : destinations) {</b>
+<i>180</i>&nbsp;                    // Cannot delete a destination if there is match
+<i>181</i>&nbsp;                    // Since it in a trip
+<b class="nc"><i>182</i>&nbsp;                    if (destination.getDestinationId() == id) {</b>
+<b class="nc"><i>183</i>&nbsp;                        return redirect(&quot;/destinations&quot;).flashing(&quot;failure&quot;,</b>
+<i>184</i>&nbsp;                                &quot;Destination cannot be deleted as it is part of a trip&quot;);
+<i>185</i>&nbsp;                    }
+<b class="nc"><i>186</i>&nbsp;                }</b>
+<b class="nc"><i>187</i>&nbsp;            }</b>
+<b class="nc"><i>188</i>&nbsp;            destinationRepository.delete(id);</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;
+<b class="nc"><i>191</i>&nbsp;            return redirect(&quot;/destinations&quot;).flashing(&quot;success&quot;, &quot;Destination Deleted&quot;);</b>
+<i>192</i>&nbsp;        });
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;    }
+<i>195</i>&nbsp;
+<i>196</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-03-29 19:09</div>
+</div>
+</body>
+</html>
