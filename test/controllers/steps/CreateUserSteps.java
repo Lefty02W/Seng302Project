@@ -90,15 +90,6 @@ public class CreateUserSteps {
     }
 
 
-    @And("the email he used does not exist")
-    public void email_not_exist() {
-        Profile duplicate = Profile.find.query()
-                .where()
-                .eq("email", profile.getEmail())
-                .findOne();
-        Assert.assertNull(duplicate);
-    }
-
 
     @And("he fills in Gender with {string}")
     public void fill_gender(String gender) {

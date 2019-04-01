@@ -8,7 +8,6 @@ Feature: Sign Up
     And he fills in Middle Name with "Gherkin"
     And he fills in Last Name with "Doe"
     And he fills in Email with "john.gherkin.doe@travelea.com"
-    And the email he used does not exist
     And he fills in Gender with "Male"
     And he fills in Birth date with "01/04/2019"
     And he fills in Nationalities with "New Zealand"
