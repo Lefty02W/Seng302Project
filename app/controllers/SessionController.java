@@ -7,7 +7,6 @@ import models.TripDestination;
 import play.mvc.Http;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +21,7 @@ public class SessionController {
      * @param request
      * @return Web page showing connected user's email
      */
-    public static Profile getCurrentUser(Http.Request request) {
+    static Profile getCurrentUser(Http.Request request) {
         Optional<String> connected = request.session().getOptional("connected");
         String email;
         if (connected.isPresent()) {

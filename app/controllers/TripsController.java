@@ -1,23 +1,25 @@
 package controllers;
 
+import com.google.inject.Inject;
 import models.Destination;
 import models.Profile;
-import play.data.Form;
-import play.i18n.MessagesApi;
-import com.google.inject.Inject;
 import models.Trip;
 import models.TripDestination;
+import play.data.Form;
 import play.data.FormFactory;
+import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Security;
 import repository.TripDestinationsRepository;
 import repository.TripRepository;
 import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
-import java.util.*;
+
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -54,6 +56,7 @@ public class TripsController extends Controller {
      * @param request Http request
      * @return a render of the trips page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result show(Http.Request request) {
         currentDestinationsList.clear();
         ArrayList<Trip> tripsList = SessionController.getCurrentUser(request).getTrips();
@@ -66,6 +69,7 @@ public class TripsController extends Controller {
      * @param request the http request
      * @return the result
      */
+    @Security.Authenticated(SecureSession.class)
     public Result showCreate(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
         return ok(tripsCreate.render(form, formTrip, currentDestinationsList, currentUser, null, request, messagesApi.preferred(request)));
@@ -79,6 +83,7 @@ public class TripsController extends Controller {
      * @param id Integer id of the trip (primary key)
      * @return a render of the edit trips page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result showEdit(Http.Request request, Integer id) {
         Profile currentUser = SessionController.getCurrentUser(request);
         Trip trip = tripRepository.getTrip(id);
@@ -97,6 +102,7 @@ public class TripsController extends Controller {
      * @param order The integer positioning of the destinations
      * @return a render of the create trips page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result editTripDestinationCreate(Http.Request request, Integer order) {
         TripDestination dest = currentDestinationsList.get(order - 1);
         Profile currentUser = SessionController.getCurrentUser(request);
@@ -110,6 +116,7 @@ public class TripsController extends Controller {
      * @param request the http request
      * @return the result
      */
+    @Security.Authenticated(SecureSession.class)
     public Result addDestination(Http.Request request) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
@@ -134,6 +141,7 @@ public class TripsController extends Controller {
      * @param id Integer id of the trip (primary key)
      * @return redirection tot he edit page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result addDestinationEditTrip(Http.Request request, int id, int numTripdests) {
 
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
@@ -159,6 +167,7 @@ public class TripsController extends Controller {
      * @param request the http request
      * @return the result
      */
+    @Security.Authenticated(SecureSession.class)
     public Result save(Http.Request request) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
@@ -181,6 +190,7 @@ public class TripsController extends Controller {
      * @param id Integer primary key of the trip
      * @return a redirect to the trips page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result updateName(Http.Request request, int id) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
@@ -203,6 +213,7 @@ public class TripsController extends Controller {
      * @param tripId Integer primary key of a trip
      * @return a redirect to the trips page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> delete(Integer tripId) {
         return tripRepository.delete(tripId).thenApplyAsync(v -> {
             return redirect("/trips");
@@ -218,6 +229,7 @@ public class TripsController extends Controller {
      * @param oldLocation The old destination location saved under a trip
      * @return redirects to the edit trip page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
@@ -249,6 +261,7 @@ public class TripsController extends Controller {
      * @param tripId Integer primary key of a trip
      * @return redirection to the edit page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
         if (order != 1) {
             if (order != currentDestinationsList.size()) {
@@ -272,6 +285,7 @@ public class TripsController extends Controller {
      * @param oldLocation The old destination location saved under a trip
      * @return redirection to the create trips page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result updateDestination(Http.Request request, Integer oldLocation) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
@@ -304,14 +318,13 @@ public class TripsController extends Controller {
     private void sortFunc(int oldLocation, int newLocation) {
         //changes the order of any tripDests that may be indirectly affected
         TripDestination tripDest;
-        for (int i = 0; i < currentDestinationsList.size(); i++) {
-            tripDest = currentDestinationsList.get(i);
+        for (TripDestination aCurrentDestinationsList : currentDestinationsList) {
+            tripDest = aCurrentDestinationsList;
             if (tripDest.getDestOrder() > oldLocation && tripDest.getDestOrder() <= newLocation) {
-                currentDestinationsList.get(i).setDestOrder(tripDest.getDestOrder() - 1);
+                aCurrentDestinationsList.setDestOrder(tripDest.getDestOrder() - 1);
 
-            }
-            else if (tripDest.getDestOrder() < oldLocation && tripDest.getDestOrder() >= newLocation) {
-                currentDestinationsList.get(i).setDestOrder(tripDest.getDestOrder() + 1);
+            } else if (tripDest.getDestOrder() < oldLocation && tripDest.getDestOrder() >= newLocation) {
+                aCurrentDestinationsList.setDestOrder(tripDest.getDestOrder() + 1);
             }
         }
         //changes the order of the main tripDest
@@ -319,9 +332,9 @@ public class TripsController extends Controller {
         //puts everything into another list ordered
         ArrayList<TripDestination> tempList = new ArrayList<>();
         for (int i = 0; i < currentDestinationsList.size(); i++) {
-            for (int x= 0; x < currentDestinationsList.size(); x++) {
-                if (currentDestinationsList.get(x).getDestOrder() == i+1) {
-                    tempList.add(currentDestinationsList.get(x));
+            for (TripDestination aCurrentDestinationsList : currentDestinationsList) {
+                if (aCurrentDestinationsList.getDestOrder() == i + 1) {
+                    tempList.add(aCurrentDestinationsList);
                 }
             }
         }
@@ -339,6 +352,7 @@ public class TripsController extends Controller {
      * @param order  The integer positioning of the destinations
      * @return redirect to the show create page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result deleteDestination(Http.Request request, Integer order) {
 
         if (order != 1) {
@@ -362,7 +376,7 @@ public class TripsController extends Controller {
      * @param array list of trip destinations
      * @return result ArrayList of the trip destinations in order
      */
-    public ArrayList<TripDestination> sortByOrder(ArrayList<TripDestination> array) {
+    private ArrayList<TripDestination> sortByOrder(ArrayList<TripDestination> array) {
         ArrayList<TripDestination> result = new ArrayList<TripDestination>();
         for (int i = 0; i<array.size(); i++) {
             for (int x=0; x < array.size(); x++) {
@@ -381,7 +395,7 @@ public class TripsController extends Controller {
      * @param array list of trip destinations
      * @return boolean
      */
-    public Boolean isBeside(ArrayList<TripDestination> array) {
+    private Boolean isBeside(ArrayList<TripDestination> array) {
         if (array.size() == 1 || array.size() == 0) {
             return false;
         }

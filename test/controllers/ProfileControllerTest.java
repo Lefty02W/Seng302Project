@@ -43,7 +43,7 @@ public class ProfileControllerTest extends  ProvideApplication{
     public void showEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/profile/edit/admin")
+                .uri("/profile/admin/edit")
                 .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(),request);

@@ -9,14 +9,12 @@ import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Security;
 import repository.ImageRepository;
-import views.html.*;
+import views.html.travellers;
+import views.html.travellersPhotos;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.*;
 
 //TODO Fix table in html - types field needs to wrap
@@ -48,6 +46,7 @@ public class TravellersController extends Controller {
      * @param request http request
      * @return renders traveller view with queried list of travellers
      */
+    @Security.Authenticated(SecureSession.class)
     public Result search(Http.Request request){
         Form<PartnerFormData> searchForm = form.bindFromRequest(request);
         PartnerFormData searchData = searchForm.get();
@@ -78,7 +77,7 @@ public class TravellersController extends Controller {
      * @param searchForm
      * @return return list of profiles
      */
-    public List<Profile> listGender(List<Profile> resultData, PartnerFormData searchForm) {
+    private List<Profile> listGender(List<Profile> resultData, PartnerFormData searchForm) {
         List<Profile> resultProfiles = new ArrayList<>();
         String genderTerm = searchForm.searchGender;
 
@@ -102,7 +101,7 @@ public class TravellersController extends Controller {
      * @param searchData Form holding search terms
      * @return queried list including nationality search
      */
-    public List<Profile> searchNat(List<Profile> resultData, PartnerFormData searchData){
+    private List<Profile> searchNat(List<Profile> resultData, PartnerFormData searchData){
         List<Profile> resultProfiles = new ArrayList<>();
         for (Profile profile: resultData){
             if (profile.getNationalities().contains(searchData.searchNationality)){
@@ -120,7 +119,7 @@ public class TravellersController extends Controller {
      * @param searchData Form holding search terms
      * @return queried list including age search
      */
-    public List<Profile> searchAge(List<Profile> resultData, PartnerFormData searchData) {
+    private List<Profile> searchAge(List<Profile> resultData, PartnerFormData searchData) {
         List<Profile> resultProfiles = new ArrayList<>();
         int travellerTypeTerm = searchData.searchAgeRange;
         Date range1;
@@ -201,7 +200,7 @@ public class TravellersController extends Controller {
      * @param searchData Form holding search terms
      * @return queried list including traveller types search
      */
-    public List<Profile> searchTravelTypes(List<Profile> resultData, PartnerFormData searchData){
+    private List<Profile> searchTravelTypes(List<Profile> resultData, PartnerFormData searchData){
         List<Profile> resultProfiles = new ArrayList<>();
         String travellerTypeTerm = searchData.searchTravellerTypes;
 
@@ -220,7 +219,7 @@ public class TravellersController extends Controller {
      * @param email email for a particular user you want to view the photos of
      * @return
      */
-    public List<Image> getTravellersPhotos(String email) {
+    private List<Image> getTravellersPhotos(String email) {
         Optional<List<Image>> imageListTemp = imageRepository.getImages(email);
         try {
             imageList = imageListTemp.get();
@@ -236,6 +235,7 @@ public class TravellersController extends Controller {
      * @param email
      * @return render traveller photo page
      */
+    @Security.Authenticated(SecureSession.class)
     public Result displayTravellersPhotos(String email) {
         List<Image> displayImageList = getTravellersPhotos(email);
         return ok(travellersPhotos.render(displayImageList));
@@ -246,6 +246,7 @@ public class TravellersController extends Controller {
      * This method shows the travellers page on the screen
      * @return
      */
+    @Security.Authenticated(SecureSession.class)
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
 

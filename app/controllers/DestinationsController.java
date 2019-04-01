@@ -10,6 +10,7 @@ import play.i18n.MessagesApi;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
@@ -67,6 +68,7 @@ public class DestinationsController extends Controller {
      * @param request
      * @return the list of destinations
      */
+    @Security.Authenticated(SecureSession.class)
     public Result show(Http.Request request) {
 
         Profile user = SessionController.getCurrentUser(request);
@@ -85,6 +87,7 @@ public class DestinationsController extends Controller {
      * @param request
      * @return
      */
+    @Security.Authenticated(SecureSession.class)
     public Result showCreate(Http.Request request) {
         Destination dest = new Destination();
         dest.setLatitude(0.0);
@@ -100,6 +103,7 @@ public class DestinationsController extends Controller {
      * @param id
      * @return
      */
+    @Security.Authenticated(SecureSession.class)
     public Result edit(Http.Request request, Integer id) {
         Destination destination = new Destination();
         for (Destination dest : destinationsList) {
@@ -119,6 +123,7 @@ public class DestinationsController extends Controller {
      * @param id      The ID of the destination to edit.
      * @return
      */
+    @Security.Authenticated(SecureSession.class)
     public Result update(Http.Request request, Integer id) {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.value().get();
@@ -132,6 +137,7 @@ public class DestinationsController extends Controller {
      * @param request
      * @return
      */
+    @Security.Authenticated(SecureSession.class)
     public Result saveDestination(Http.Request request) {
         Profile user = SessionController.getCurrentUser(request);
         if (user == null) {
@@ -150,6 +156,7 @@ public class DestinationsController extends Controller {
      * @param id ID of the destination to delete
      * @return
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
         Profile profile = SessionController.getCurrentUser(request);
 
