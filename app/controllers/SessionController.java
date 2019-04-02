@@ -31,7 +31,7 @@ public class SessionController {
 
             profile.setDestinations(getUserDestinations(profile.getEmail()));
             profile.setTrips(getUsersTrips(profile));
-            profile.sortedTrips();
+            //profile.sortedTrips();
             return profile;
         } else {
             return null;
