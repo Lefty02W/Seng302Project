@@ -1,7 +1,6 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
 @import controllers.LoginController.Login
+@import play.mvc.Http
+@import views.html.helper.{CSRF, form}
 @(loginForm : Form[Login], userForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -23,9 +22,9 @@
     <body>
         <div id="startUpBox" class="startUpBox">
 
-            @if(request.flash.containsKey("info")) {
+            @if(request.flash.getOptional("info").isPresent) {
                 <div class="alert alert-info">
-                @request.flash.get("info")
+                @request.flash.getOptional("info").get()
                 </div>
             }
 

@@ -1,6 +1,5 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@import helper._
 @(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], currentUser: Profile, toEdit: TripDestination)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -55,9 +54,9 @@
                 </nav>
                 <div class="container-fluid">
                     <div id="viewCard" class="card-large">
-                        @if(request.flash.containsKey("info")) {
+                        @if(request.flash.getOptional("info").isPresent) {
                             <div class="alert alert-info">
-                            @request.flash.get("info")
+                            @request.flash.getOptional("info").get()
                             </div>
                         }
                     <h2>Create Trip</h2>

@@ -1,9 +1,6 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
 @import controllers.ProfileController.ImageData
-@import java.util
-@import javax.swing.ImageIcon
+@import play.mvc.Http
+@import views.html.helper.{CSRF, form}
 @(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -56,17 +53,18 @@
                 </nav>
 
 
-                @if(request.flash.containsKey("invalid")) {
-                    <div class="alert alert-danger">
-                    @request.flash.get("invalid")
+                @if(request.flash.getOptional("success").isPresent) {
+                    <div class="alert alert-success">
+                    @request.flash.getOptional("success").get()
                     </div>
                 }
 
-                @if(request.flash.containsKey("success")) {
-                    <div class="alert alert-success">
-                    @request.flash.get("success")
+                @if(request.flash.getOptional("invalid").isPresent) {
+                    <div class="alert alert-danger">
+                    @request.flash.getOptional("invalid").get()
                     </div>
                 }
+
 
                 @if(showPhotoModal) {
                     <script type="text/javascript">

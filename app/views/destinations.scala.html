@@ -1,6 +1,5 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@import helper._
 @(destinationsList : List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -52,15 +51,15 @@
                     <h2>Destinations</h2> <!-- TODO align this in the center -->
                 </nav>
 
-                @if(request.flash.containsKey("success")) {
+                @if(request.flash.getOptional("success").isPresent) {
                     <div class="alert alert-success">
-                    @request.flash.get("success")
+                    @request.flash.getOptional("success").get()
                     </div>
                 }
 
-                @if(request.flash.containsKey("failure")) {
-                    <div class="alert alert-danger">
-                    @request.flash.get("failure")
+                @if(request.flash.getOptional("failure").isPresent) {
+                    <div class="alert alert-failure">
+                    @request.flash.getOptional("failure").get()
                     </div>
                 }
 
