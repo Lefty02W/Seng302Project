@@ -103,6 +103,11 @@ public class ProfileController extends Controller {
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
 
+        // Could improve on this
+        profile.setNationalities(profile.getNationalities().replaceAll("\\s",""));
+        profile.setTravellerTypes(profile.getTravellerTypes().replaceAll("\\s",""));
+        profile.setPassports(profile.getPassports().replaceAll("\\s",""));
+
         return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),
                 SessionController.getCurrentUser(request).getEmail()).thenApplyAsync(x -> {
             return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profile.getEmail());

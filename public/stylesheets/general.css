@@ -256,6 +256,10 @@ div.dataTables_filter {
     left: 8vw;
 }
 
+.hidden-div-edit {
+    position: absolute;
+}
+
 .hidden-field {
     height: 4vh;
     opacity: 0;
