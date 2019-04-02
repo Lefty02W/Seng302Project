@@ -50,7 +50,11 @@ public class ProfileRepository {
      * @return
      */
     public boolean validate(String email, String password) {
+        //TODO improve this please
         Profile profile = ebeanServer.find(Profile.class).where().like("email", email).findOne();
+        if (profile == null) {
+            return false;
+        }
         return profile.getEmail().equals(email) && profile.getPassword().equals(password);
     }
 
