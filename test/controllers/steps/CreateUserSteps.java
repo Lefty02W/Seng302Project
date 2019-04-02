@@ -52,7 +52,7 @@ public class CreateUserSteps extends WithBrowser {
         WebDriverManager.chromedriver().setup();
         application = fakeApplication();         // Create a fake application instance
         ChromeOptions options = new ChromeOptions();
-      //  options.addArguments("headless");
+        options.addArguments("headless");
         driver = new ChromeDriver(options);      // Use Chrome
         testServer(port, application).start();  //Run the application
         driver.manage().window().maximize();
