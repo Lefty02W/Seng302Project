@@ -31,4 +31,4 @@ testOptions in Test += Tests.Argument("-Dconfig.file=conf/test.conf")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
 
-unmanagedResourceDirectories in Test +=  baseDirectory ( _ /"public/" ).value
+unmanagedResourceDirectories in Test += baseDirectory ( _ /"target/web/public/test" ).value
