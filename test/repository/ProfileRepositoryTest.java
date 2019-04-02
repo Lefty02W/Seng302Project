@@ -2,18 +2,12 @@ package repository;
 
 import controllers.ProvideApplication;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ProfileRepositoryTest extends ProvideApplication {
 
     //TODO: write methods to populate db with some test data and then remove it afterwards
     ProfileRepository profileRepository;
-
-    @Before
-    public void setUp() {
-
-    }
 
     /**
      * Testing the checkProfileExists method with an email that does not exist

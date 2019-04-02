@@ -64,6 +64,7 @@ public class ProvideApplication extends WithApplication {
             profileRepository.insert(new Profile("Jenny", "Smith", "jenny@gmail.com",
                     "password", new Date(), "NZ", "Female", new Date(), "NZ",
                     "Thrillseeker", new ArrayList<Trip>(), false));
+            setUpComplete = true;
         }
     }
 
