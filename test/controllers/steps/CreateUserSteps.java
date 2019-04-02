@@ -38,7 +38,7 @@ public class CreateUserSteps extends WithBrowser {
     private WebElement element;
     private WebDriverWait wait;
 
-    private final int port = 9001; // Port to use, must not conflict
+    private final int port = 50000; // Port to use, must not conflict
     private final String loginPage = "http://localhost:" + port + "/";
     private final String signUpPage = "http://localhost:" + port + "/user/create";
 
