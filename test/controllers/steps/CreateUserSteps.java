@@ -38,8 +38,9 @@ public class CreateUserSteps extends WithBrowser {
     private WebElement element;
     private WebDriverWait wait;
 
-    private final String loginPage = "http://localhost:9000/";
-    private final String signUpPage = "http://localhost:9000/user/create";
+    private final int port = 9001; // Port to use, must not conflict
+    private final String loginPage = "http://localhost:" + port + "/";
+    private final String signUpPage = "http://localhost:" + port + "/user/create";
 
 
     @Before
@@ -53,7 +54,7 @@ public class CreateUserSteps extends WithBrowser {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
         driver = new ChromeDriver(options);        // Use Chrome
-        testServer(9000, application).start();  //Run the application
+        testServer(port, application).start();  //Run the application
         driver.manage().window().maximize();
     }
 
