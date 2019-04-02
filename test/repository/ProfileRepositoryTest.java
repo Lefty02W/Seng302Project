@@ -1,29 +1,23 @@
 package repository;
 
 import controllers.ProvideApplication;
+import models.Profile;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import play.Application;
+
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 public class ProfileRepositoryTest extends ProvideApplication {
 
     //TODO: write methods to populate db with some test data and then remove it afterwards
-
-    private Application app;
-
-    @Before
-    public void setUp() {
-        app = super.provideApplication();
-    }
 
     /**
      * Testing the checkProfileExists method with an email that does not exist
      */
     @Test
     public void checkProfileExistsProfileDoesNotExist() {
-        ProfileRepository profileRepository = app.injector().instanceOf(ProfileRepository.class);
-        boolean profileExists = profileRepository.checkProfileExists("kdlhafalkjdfhalkdf");
+        boolean profileExists = profileRepository.checkProfileExists("kdlhafalkjdfhalkdf@gmail.co.nz");
         Assert.assertFalse(profileExists);
     }
 
@@ -32,8 +26,7 @@ public class ProfileRepositoryTest extends ProvideApplication {
      */
     @Test
     public void checkProfileExistsProfileDoesExist() {
-        ProfileRepository profileRepository = app.injector().instanceOf(ProfileRepository.class);
-        boolean profileExists = profileRepository.checkProfileExists("admin");
+        boolean profileExists = profileRepository.checkProfileExists("jenny@gmail.com");
         Assert.assertTrue(profileExists);
     }
 
@@ -43,7 +36,6 @@ public class ProfileRepositoryTest extends ProvideApplication {
      */
     @Test
     public void validateInvalidEmailAndPassword() {
-        ProfileRepository profileRepository = app.injector().instanceOf(ProfileRepository.class);
         boolean isValid = profileRepository.validate("sadasdsad", "dklfdhslkf");
         Assert.assertFalse(isValid);
     }
@@ -53,8 +45,7 @@ public class ProfileRepositoryTest extends ProvideApplication {
      */
     @Test
     public void validateInvalidPassword() {
-        ProfileRepository profileRepository = app.injector().instanceOf(ProfileRepository.class);
-        boolean isValid = profileRepository.validate("admin", "sadasdsadsad");
+        boolean isValid = profileRepository.validate("jenny@gmail.com", "sadasdsadsad");
         Assert.assertFalse(isValid);
     }
 
@@ -63,8 +54,7 @@ public class ProfileRepositoryTest extends ProvideApplication {
      */
     @Test
     public void validateInvalidEmail() {
-        ProfileRepository profileRepository = app.injector().instanceOf(ProfileRepository.class);
-        boolean isValid = profileRepository.validate("adsadasdsadmin", "admin123");
+        boolean isValid = profileRepository.validate("adsadasdsadmin", "password");
         Assert.assertFalse(isValid);
     }
 
@@ -73,8 +63,13 @@ public class ProfileRepositoryTest extends ProvideApplication {
      */
     @Test
     public void validateValidData() {
-        ProfileRepository profileRepository = app.injector().instanceOf(ProfileRepository.class);
-        boolean isValid = profileRepository.validate("admin", "admin123");
+        boolean isValid = profileRepository.validate("jenny@gmail.com", "password");
         Assert.assertTrue(isValid);
+    }
+
+    @Test
+    public void lookupInvalidEmail() {
+        CompletionStage<Optional<Profile>> profile = profileRepository.lookup("asgfdg@asdasd.com");
+        Assert.assertNull(profile);
     }
 }
