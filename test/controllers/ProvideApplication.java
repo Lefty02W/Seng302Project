@@ -21,7 +21,7 @@ public class ProvideApplication extends WithApplication {
 
     protected DestinationRepository destinationRepository;
     protected ImageRepository imageRepository;
-    protected ProfileRepository profileRepository;
+    private ProfileRepository profileRepository;
     protected TripDestinationsRepository tripDestinationsRepository;
     protected TripRepository tripRepository;
 

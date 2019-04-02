@@ -1,16 +1,19 @@
 package repository;
 
 import controllers.ProvideApplication;
-import models.Profile;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 public class ProfileRepositoryTest extends ProvideApplication {
 
     //TODO: write methods to populate db with some test data and then remove it afterwards
+    ProfileRepository profileRepository;
+
+    @Before
+    public void setUp() {
+        profileRepository = app.injector().instanceOf(ProfileRepository.class);
+    }
 
     /**
      * Testing the checkProfileExists method with an email that does not exist
@@ -67,9 +70,4 @@ public class ProfileRepositoryTest extends ProvideApplication {
         Assert.assertTrue(isValid);
     }
 
-    @Test
-    public void lookupInvalidEmail() {
-        CompletionStage<Optional<Profile>> profile = profileRepository.lookup("asgfdg@asdasd.com");
-        Assert.assertNull(profile);
-    }
 }
