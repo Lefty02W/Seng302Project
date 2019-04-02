@@ -24,7 +24,8 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  */
 public class LoginController extends Controller {
 
-    private final Form<Login> form;
+    private final Form<Login> loginForm;
+    private final Form<Profile> profileForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final ProfileRepository profileRepository;
@@ -36,8 +37,9 @@ public class LoginController extends Controller {
     }
 
     @Inject
-    public LoginController(FormFactory formFactory, ProfileRepository profileRepository, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi){
-        this.form = formFactory.form(Login.class);
+    public LoginController(FormFactory formFactory, FormFactory profileFormFactory, ProfileRepository profileRepository, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi){
+        this.loginForm = formFactory.form(Login.class);
+        this.profileForm = profileFormFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
@@ -50,11 +52,11 @@ public class LoginController extends Controller {
      */
     public CompletionStage<Result> login(Http.Request request){
 
-        Form<Login> loginForm = form.bindFromRequest(request);
-        Login login = loginForm.get();
+        Form<Login> currentLoginForm = loginForm.bindFromRequest(request);
+        Login login = currentLoginForm.get();
         if (checkUser(login.email, login.password)){
             // Validate the login credentials
-            Login loginData = loginForm.get();
+            Login loginData = currentLoginForm.get();
             CompletionStage<Optional<Profile>> profileOptional = profileRepository.lookup(loginData.email);
             return profileRepository.lookup(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
@@ -86,12 +88,24 @@ public class LoginController extends Controller {
     }
 
     /**
+     * Save user into the database
+     * @param request
+     * @return redirect to login
+     */
+    public Result save(Http.Request request){
+        Form<Profile> userForm = profileForm.bindFromRequest(request);
+        Profile profile = userForm.value().get();
+        profileRepository.insert(profile);
+        return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
+    }
+
+    /**
      * create the login page
      * @param request
      * @return rendered login page
      */
     public Result show(Http.Request request) {
-        return ok(login.render(form, request, messagesApi.preferred(request)));
+        return ok(login.render(loginForm, profileForm, request, messagesApi.preferred(request)));
     }
 
 }

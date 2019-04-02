@@ -21,7 +21,7 @@ html {
     opacity: 0.9;
 }
 
-#email{
+.loginEmail{
     position: fixed;
     bottom: 400px;
     left: 350px;
@@ -30,7 +30,7 @@ html {
     border-color: #ca6636;
 }
 
-#password{
+.loginPassword{
     position: fixed;
     bottom: 300px;
     left: 350px;
