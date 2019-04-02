@@ -40,8 +40,6 @@ public class CreateUserSteps extends WithBrowser {
 
     private final int port = 50000; // Port to use, must not conflict
     private final String loginPage = "http://localhost:" + port + "/";
-    private final String signUpPage = "http://localhost:" + port + "/user/create";
-
 
     @Before
     /**
@@ -50,10 +48,10 @@ public class CreateUserSteps extends WithBrowser {
      */
     public void setUp() {
         WebDriverManager.chromedriver().setup();
-        application = fakeApplication();    // Create a fake application instance
+        application = fakeApplication();         // Create a fake application instance
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
-        driver = new ChromeDriver(options);        // Use Chrome
+        driver = new ChromeDriver(options);      // Use Chrome
         testServer(port, application).start();  //Run the application
         driver.manage().window().maximize();
     }
@@ -62,7 +60,7 @@ public class CreateUserSteps extends WithBrowser {
     @AfterStep
     // Simply to allow visual following of selenium's execution
     public void pause() throws InterruptedException {
-        Thread.sleep(1000); // 1 second delay
+        Thread.sleep(500); // 0.5 second delay
     }
 
 
@@ -75,9 +73,12 @@ public class CreateUserSteps extends WithBrowser {
 
     @Given("John is at the sign up page")
     public void at_sign_up_page() throws InterruptedException {
-        driver.get("http://localhost:9000/user/create");
+        driver.get(loginPage);
+        element = driver.findElement(By.id("createUserButton"));
+        element.click();
+        element = driver.findElement(By.id("createProfileModal"));
 
-        Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:9000/user/create");
+        Assert.assertNotNull(element);
     }
 
 
@@ -109,7 +110,7 @@ public class CreateUserSteps extends WithBrowser {
 
     @And("he fills in Email with {string}")
     public void fill_email(String email) {
-        element = driver.findElement(By.id("email"));
+        element = driver.findElement(By.className("createEmail"));
         element.sendKeys(email);
         Assert.assertEquals(email, element.getAttribute("value"));
     }
@@ -117,7 +118,7 @@ public class CreateUserSteps extends WithBrowser {
 
     @And("he fills in Password with {string}")
     public void fill_password(String password) {
-        element = driver.findElement(By.id("password"));
+        element = driver.findElement(By.className("createPassword"));
         element.sendKeys(password);
         Assert.assertEquals(password, element.getAttribute("value"));
     }
@@ -176,15 +177,16 @@ public class CreateUserSteps extends WithBrowser {
 
     @And("he presses OK")
     public void press_ok() {
-        element = driver.findElement(By.id("okButton"));
+        element = driver.findElement(By.id("createButton"));
         element.click();
-        // Check for a redirect to another page
-        Assert.assertNotEquals(driver.getCurrentUrl(), signUpPage);
+
+        Assert.assertEquals(driver.getCurrentUrl(), loginPage);
     }
 
 
     @Then("the login page should be shown")
     public void login() {
-        Assert.assertEquals(driver.getCurrentUrl(), loginPage);
+        // Ensure sign up modal is no longer on page
+        Assert.assertEquals(0, driver.findElements(By.id("createUserModal")).size());
     }
 }
