@@ -39,9 +39,7 @@ public class CreateUserSteps extends WithBrowser {
     private WebDriverWait wait;
 
     private final int port = 50000; // Port to use, must not conflict
-    private final String loginPage = "http://localhost:" + port + "/";
-    private final String signUpPage = "http://localhost:" + port + "/user/create";
-
+    private final String loginPage = "http://localhost:" + port + "/login";
 
     @Before
     /**
@@ -52,8 +50,8 @@ public class CreateUserSteps extends WithBrowser {
         WebDriverManager.chromedriver().setup();
         application = fakeApplication();    // Create a fake application instance
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
-        driver = new ChromeDriver(options);        // Use Chrome
+       // options.addArguments("headless");
+        driver = new ChromeDriver();        // Use Chrome
         testServer(port, application).start();  //Run the application
         driver.manage().window().maximize();
     }
@@ -75,9 +73,12 @@ public class CreateUserSteps extends WithBrowser {
 
     @Given("John is at the sign up page")
     public void at_sign_up_page() throws InterruptedException {
-        driver.get("http://localhost:9000/user/create");
+        driver.get(loginPage);
+        element = driver.findElement(By.id("createUserButton"));
+        element.click();
+        element = driver.findElement(By.id("createProfileModal"));
 
-        Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:9000/user/create");
+        Assert.assertNotNull(element);
     }
 
 
@@ -176,15 +177,15 @@ public class CreateUserSteps extends WithBrowser {
 
     @And("he presses OK")
     public void press_ok() {
-        element = driver.findElement(By.id("okButton"));
+        element = driver.findElement(By.id("createButton"));
         element.click();
-        // Check for a redirect to another page
-        Assert.assertNotEquals(driver.getCurrentUrl(), signUpPage);
+
+        Assert.assertEquals(driver.getCurrentUrl(), loginPage);
     }
 
 
     @Then("the login page should be shown")
     public void login() {
-        Assert.assertEquals(driver.getCurrentUrl(), loginPage);
+        Assert.assertNull(driver.findElement(By.id("createUserModal")));
     }
 }
