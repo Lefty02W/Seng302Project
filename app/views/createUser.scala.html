@@ -79,10 +79,10 @@
 
                         <div class="col">
                             <div class="hidden-div">
-                                <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required oninvalid="this.setCustomValidity('Traveller type is required')" oninput="setCustomValidity('')">
+                                <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required>
                             </div>
                             <div>
-                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown">
+                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" required>
                                     <option value="ThrillSeeker">ThrillSeeker</option>
                                     <option value="Backpacker">Backpacker</option>
                                     <option value="Gap Year">Gap Year</option>
@@ -114,14 +114,6 @@
                         </table>
                     </div>
 
-
-
-                    <!-- This is hte only way I could do it -->
-
-
-
-
-
                 }
 
 
@@ -129,24 +121,6 @@
 
 
             <script type="text/javascript">
-
-                function addNat() {
-                    var table = document.getElementById("natList");
-                    var row = table.insertRow(0);
-                    var cell1 = row.insertCell(0);
-                    var text = document.getElementById("nationality").value;
-                    cell1.innerHTML = text;
-                }
-
-
-                function addPas() {
-                    var table = document.getElementById("pasList");
-                    var row = table.insertRow(0);
-                    var cell1 = row.insertCell(0);
-                    var text = document.getElementById("passport").value;
-                    cell1.innerHTML = text;
-                }
-
 
                 function fillVals() {
                     console.log($('#typeDropdown').val());
