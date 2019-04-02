@@ -49,12 +49,14 @@ public class ProvideApplication extends WithApplication {
 
     @Before
     public void setUpDb() {
+        profileRepository = app.injector().instanceOf(ProfileRepository.class);
+        destinationRepository = app.injector().instanceOf(DestinationRepository.class);
+        imageRepository = app.injector().instanceOf(ImageRepository.class);
+        tripDestinationsRepository = app.injector().instanceOf(TripDestinationsRepository.class);
+        tripRepository = app.injector().instanceOf(TripRepository.class);
+
+
         if (!setUpComplete) {
-            profileRepository = app.injector().instanceOf(ProfileRepository.class);
-            destinationRepository = app.injector().instanceOf(DestinationRepository.class);
-            imageRepository = app.injector().instanceOf(ImageRepository.class);
-            tripDestinationsRepository = app.injector().instanceOf(TripDestinationsRepository.class);
-            tripRepository = app.injector().instanceOf(TripRepository.class);
 
             //TODO: Add more insert data here when other repositories are inserted
 
