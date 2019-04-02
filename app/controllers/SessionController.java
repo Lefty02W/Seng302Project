@@ -26,8 +26,9 @@ public class SessionController {
         String email;
         if (connected.isPresent()) {
             email = connected.get();
+            System.out.println(email);
             Profile profile = Profile.find.byId(email);
-
+            System.out.println(profile);
 
             profile.setDestinations(getUserDestinations(profile.getEmail()));
             profile.setTrips(getUsersTrips(profile));
