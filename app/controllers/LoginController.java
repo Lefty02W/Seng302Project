@@ -92,7 +92,7 @@ public class LoginController extends Controller {
      * @return rendered login page
      */
     public Result show(Http.Request request) {
-        return ok(login.render(form, request, messagesApi.preferred(request)));
+        return ok(login.render(form, request, messagesApi.preferred(request))).removingFromSession(request, "connected");
     }
 
 }
