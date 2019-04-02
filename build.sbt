@@ -3,8 +3,7 @@ name := "SENG302 TEAM 700"
 version := "0.0.1-SNAPSHOT"
 
 scalaVersion := "2.12.8"
-
-lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
+lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean, jacoco)
 
 libraryDependencies += guice
 libraryDependencies += jdbc
@@ -24,7 +23,6 @@ libraryDependencies += "io.cucumber" % "cucumber-java" % "4.2.0" % Test
 
 libraryDependencies += "org.seleniumhq.selenium" % "selenium-java" % "3.141.59" % Test
 libraryDependencies += "io.github.bonigarcia" % "webdrivermanager" % "3.4.0" % Test
-
 
 libraryDependencies += javaJdbc
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
