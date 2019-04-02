@@ -140,14 +140,12 @@ public class CreateUserSteps extends WithBrowser {
         element = driver.findElement(By.id("birthDate"));
         element.sendKeys(birthDate);
 
-        // Convert both strings to dates
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // Reformat from HTML to dd/MM/yyyy
+        String date = element.getAttribute("value");
+        String[] split = date.split("-");
+        date = split[2] + "/" + split[1] + "/" + split[0];
 
-        LocalDate filledDate = LocalDate.parse(element.getAttribute("value"), format);
-        format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate passedDate = LocalDate.parse(birthDate, format); //.parse(birthDate);
-
-        Assert.assertEquals(passedDate, filledDate);
+        Assert.assertEquals(birthDate, date);
     }
 
 
