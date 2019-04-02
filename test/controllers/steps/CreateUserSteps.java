@@ -39,7 +39,7 @@ public class CreateUserSteps extends WithBrowser {
     private WebDriverWait wait;
 
     private final int port = 50000; // Port to use, must not conflict
-    private final String loginPage = "http://localhost:" + port + "/login";
+    private final String loginPage = "http://localhost:" + port + "/";
 
     @Before
     /**
@@ -48,10 +48,10 @@ public class CreateUserSteps extends WithBrowser {
      */
     public void setUp() {
         WebDriverManager.chromedriver().setup();
-        application = fakeApplication();    // Create a fake application instance
+        application = fakeApplication();         // Create a fake application instance
         ChromeOptions options = new ChromeOptions();
-       // options.addArguments("headless");
-        driver = new ChromeDriver();        // Use Chrome
+        options.addArguments("headless");
+        driver = new ChromeDriver(options);      // Use Chrome
         testServer(port, application).start();  //Run the application
         driver.manage().window().maximize();
     }
@@ -60,7 +60,7 @@ public class CreateUserSteps extends WithBrowser {
     @AfterStep
     // Simply to allow visual following of selenium's execution
     public void pause() throws InterruptedException {
-        Thread.sleep(1000); // 1 second delay
+        Thread.sleep(500); // 0.5 second delay
     }
 
 
@@ -110,7 +110,7 @@ public class CreateUserSteps extends WithBrowser {
 
     @And("he fills in Email with {string}")
     public void fill_email(String email) {
-        element = driver.findElement(By.id("email"));
+        element = driver.findElement(By.className("createEmail"));
         element.sendKeys(email);
         Assert.assertEquals(email, element.getAttribute("value"));
     }
@@ -118,7 +118,7 @@ public class CreateUserSteps extends WithBrowser {
 
     @And("he fills in Password with {string}")
     public void fill_password(String password) {
-        element = driver.findElement(By.id("password"));
+        element = driver.findElement(By.className("createPassword"));
         element.sendKeys(password);
         Assert.assertEquals(password, element.getAttribute("value"));
     }
@@ -186,6 +186,7 @@ public class CreateUserSteps extends WithBrowser {
 
     @Then("the login page should be shown")
     public void login() {
-        Assert.assertNull(driver.findElement(By.id("createUserModal")));
+        // Ensure sign up modal is no longer on page
+        Assert.assertEquals(0, driver.findElements(By.id("createUserModal")).size());
     }
 }
