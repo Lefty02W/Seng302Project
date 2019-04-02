@@ -22,9 +22,14 @@ libraryDependencies += "io.cucumber" % "cucumber-jvm" % "4.2.0" % Test
 libraryDependencies += "io.cucumber" % "cucumber-junit" % "4.2.0" % Test
 libraryDependencies += "io.cucumber" % "cucumber-java" % "4.2.0" % Test
 
+libraryDependencies += "org.seleniumhq.selenium" % "selenium-java" % "3.141.59" % Test
+libraryDependencies += "io.github.bonigarcia" % "webdrivermanager" % "3.4.0" % Test
+
+
 libraryDependencies += javaJdbc
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
 
+unmanagedResourceDirectories in Test +=  baseDirectory ( _ /"public/" ).value
