@@ -99,15 +99,14 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result update (Http.Request request){
+    public CompletionStage<Result> update (Http.Request request){
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
 
-        profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
-
-    //TODO make async
-    return redirect(routes.ProfileController.show());
-
+        return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),
+                SessionController.getCurrentUser(request).getEmail()).thenApplyAsync(x -> {
+            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profile.getEmail());
+        }, httpExecutionContext.current());
     }
 
 

@@ -87,26 +87,30 @@ public class ProfileRepository {
      * @param password String of unhashed password.
      * @return
      */
-    public CompletionStage<Optional<String>> update(Profile newProfile, String password) {
+    public CompletionStage<Optional<String>> update(Profile newProfile, String password, String oldEmail) {
+
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
+            String updateQuery = "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, " +
+                    "password = ?, birth_date = ?, gender = ?, passports = ?, nationalities = ?, traveller_types = ?, " +
+                    "admin = ? WHERE email = ?";
             Optional<String> value = Optional.empty();
             try {
-                Profile targetProfile = ebeanServer.find(Profile.class).setId(newProfile.getEmail()).findOne();
-                if (targetProfile != null) {
-                    targetProfile.setEmail(newProfile.getEmail());
-
-                    if (password.length() != 0) {
-                        targetProfile.setPassword(password);
-                    }
-                    targetProfile.setFirstName(newProfile.getFirstName());
-                    targetProfile.setLastName(newProfile.getLastName());
-                    targetProfile.setBirthDate(newProfile.getBirthDate());
-                    targetProfile.setGender(newProfile.getGender());
-                    targetProfile.setPassports(newProfile.getPassports());
-                    targetProfile.setNationalities(newProfile.getNationalities());
-                    targetProfile.setTravellerTypes(newProfile.getTravellerTypes());
-                    targetProfile.update();
+                if (ebeanServer.find(Profile.class).setId(oldEmail).findOne() != null) {
+                    SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+                    query.setParameter(1, newProfile.getFirstName());
+                    query.setParameter(2, newProfile.getMiddleName());
+                    query.setParameter(3, newProfile.getLastName());
+                    query.setParameter(4, newProfile.getEmail());
+                    query.setParameter(5, password);
+                    query.setParameter(6, newProfile.getBirthDate());
+                    query.setParameter(7, newProfile.getGender());
+                    query.setParameter(8, newProfile.getPassports());
+                    query.setParameter(9, newProfile.getNationalities());
+                    query.setParameter(10, newProfile.getTravellerTypes());
+                    query.setParameter(11, newProfile.isAdmin());
+                    query.setParameter(12, oldEmail);
+                    query.execute();
                     txn.commit();
                     value = Optional.of(newProfile.getEmail());
                 }
@@ -173,16 +177,16 @@ public class ProfileRepository {
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, email).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination dest;
-        for (int i = 0; i < rowList.size(); i++) {
+        for (SqlRow aRowList : rowList) {
             dest = new Destination();
-            dest.setDestinationId(rowList.get(i).getInteger("destination_id"));
-            dest.setUserEmail(rowList.get(i).getString("user_email"));
-            dest.setName(rowList.get(i).getString("name"));
-            dest.setType(rowList.get(i).getString("type"));
-            dest.setCountry(rowList.get(i).getString("country"));
-            dest.setDistrict(rowList.get(i).getString("district"));
-            dest.setLatitude(rowList.get(i).getDouble("latitude"));
-            dest.setLongitude(rowList.get(i).getDouble("longitude"));
+            dest.setDestinationId(aRowList.getInteger("destination_id"));
+            dest.setUserEmail(aRowList.getString("user_email"));
+            dest.setName(aRowList.getString("name"));
+            dest.setType(aRowList.getString("type"));
+            dest.setCountry(aRowList.getString("country"));
+            dest.setDistrict(aRowList.getString("district"));
+            dest.setLatitude(aRowList.getDouble("latitude"));
+            dest.setLongitude(aRowList.getDouble("longitude"));
             destList.add(dest);
         }
         return Optional.of(destList);
