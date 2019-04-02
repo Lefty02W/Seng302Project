@@ -17,6 +17,8 @@ import play.Application;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.openqa.selenium.By;
@@ -50,7 +52,7 @@ public class CreateUserSteps extends WithBrowser {
         WebDriverManager.chromedriver().setup();
         application = fakeApplication();         // Create a fake application instance
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
+      //  options.addArguments("headless");
         driver = new ChromeDriver(options);      // Use Chrome
         testServer(port, application).start();  //Run the application
         driver.manage().window().maximize();
@@ -139,10 +141,11 @@ public class CreateUserSteps extends WithBrowser {
         element.sendKeys(birthDate);
 
         // Convert both strings to dates
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");   // Pattern of HTML input date
-        Date filledDate = format.parse(element.getAttribute("value"));
-        format.applyPattern("dd/MM/yyyy");  // Pattern of birthDate string
-        Date passedDate = format.parse(birthDate);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalDate filledDate = LocalDate.parse(element.getAttribute("value"), format);
+        format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate passedDate = LocalDate.parse(birthDate, format); //.parse(birthDate);
 
         Assert.assertEquals(passedDate, filledDate);
     }
