@@ -1,156 +1,186 @@
 package controllers.steps;
 
 
+import cucumber.api.java.After;
+import cucumber.api.java.AfterStep;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.api.java.en.And;
-import junit.framework.AssertionFailedError;
 import org.junit.Assert;
-import models.Profile;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import play.Application;
-import play.Mode;
-import play.data.Form;
-
-import play.data.FormFactory;
-import play.inject.guice.GuiceApplicationBuilder;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.test.Helpers;
-
-import javax.inject.Inject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Optional;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import play.test.WithBrowser;
 import static play.test.Helpers.*;
+
 
 /**
  * Implements steps for testing CreateUser
  */
-public class CreateUserSteps {
+public class CreateUserSteps extends WithBrowser {
 
-    private Form<Profile> profileForm;
     protected Application application;
-    protected Profile profile;
-    private Optional redirectedPage;
+    private WebDriver driver;
+    private WebElement element;
+    private WebDriverWait wait;
 
-    @Inject FormFactory formFactory;
+    private final String loginPage = "http://localhost:9000/";
+    private final String signUpPage = "http://localhost:9000/user/create";
+
+
     @Before
     /**
      * Create an application instance, empty profile, profile form
      * and run the application.
      */
     public void setUp() {
-        application = new GuiceApplicationBuilder().in(Mode.TEST).build();
-        profile = new Profile(null, null, null, null, null, null,null,
-                null, null, null, null, false);
-        Helpers.start(application);
-        formFactory = new FormFactory(null, null, null, null);
-        profileForm = formFactory.form(Profile.class);
+        WebDriverManager.chromedriver().setup();
+        application = fakeApplication();    // Create a fake application instance
+        driver = new ChromeDriver();        // Use Chrome
+        testServer(9000, application).start();  //Run the application
+        driver.manage().window().maximize();
+    }
+
+
+    @AfterStep
+    // Simply to allow visual following of selenium's execution
+    public void pause() throws InterruptedException {
+        Thread.sleep(1000); // 1 second delay
+    }
+
+
+    @After
+    public void teardown() {
+        driver.close();
+        driver.quit();
     }
 
 
     @Given("John is at the sign up page")
-    public void at_sign_up_page() {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/user/create")
-                .host("localhost:9000");
-        Result result = route(application, request);
-        Assert.assertEquals(200,  result.status());
+    public void at_sign_up_page() throws InterruptedException {
+        driver.get("http://localhost:9000/user/create");
+
+        Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:9000/user/create");
     }
+
 
     @When("he fills in First Name with {string}")
     public void fill_first_name(String firstName) {
-        profile.setFirstName(firstName);
-        Assert.assertEquals(profile.getFirstName(), firstName);
+        element = driver.findElement(By.id("firstName"));
+        element.click();
+        element.sendKeys(firstName);
+        Assert.assertEquals(firstName, element.getAttribute("value"));
     }
 
 
     @And("he fills in Middle Name with {string}")
-    public void fill_middle_name(String middleName) {
-        profile.setMiddleName(middleName);
-        Assert.assertEquals(profile.getMiddleName(), middleName);
+    public void fill_middle_name(String middleName) { ;
+        element = driver.findElement(By.id("middleName"));
+        element.sendKeys(middleName);
+
+        Assert.assertEquals(middleName, element.getAttribute("value"));
     }
+
 
     @And("he fills in Last Name with {string}")
     public void fill_last_name(String lastName) {
-        profile.setLastName(lastName);
-        Assert.assertEquals(profile.getLastName(), lastName);
+        element = driver.findElement(By.id("lastName"));
+        element.sendKeys(lastName);
+        Assert.assertEquals(lastName, element.getAttribute("value"));
     }
+
 
     @And("he fills in Email with {string}")
     public void fill_email(String email) {
-        profile.setEmail(email);
-        Assert.assertEquals(profile.getEmail(), email);
+        element = driver.findElement(By.id("email"));
+        element.sendKeys(email);
+        Assert.assertEquals(email, element.getAttribute("value"));
     }
 
+
+    @And("he fills in Password with {string}")
+    public void fill_password(String password) {
+        element = driver.findElement(By.id("password"));
+        element.sendKeys(password);
+        Assert.assertEquals(password, element.getAttribute("value"));
+    }
 
 
     @And("he fills in Gender with {string}")
     public void fill_gender(String gender) {
-        profile.setGender(gender);
-        Assert.assertEquals(profile.getGender(), gender);
+        Select genderSelect = new Select(driver.findElement(By.id("gender")));
+        genderSelect.selectByVisibleText(gender);
+
+        Assert.assertEquals(gender, genderSelect.getFirstSelectedOption().getAttribute("value"));
     }
 
 
     @And("he fills in Birth date with {string}")
-    public void fill_birth_date(String birthDate) {
-        Date date = null;
-        try {
-            date = new SimpleDateFormat("dd/MM/yyyy").parse(birthDate);
-            profile.setBirthDate(date);
-            Assert.assertEquals(profile.getBirthDate(), date);
-        } catch (ParseException e) {
-            throw new AssertionFailedError();
-        }
-        Assert.assertNotNull(date);
+    public void fill_birth_date(String birthDate) throws ParseException {
+        element = driver.findElement(By.id("birthDate"));
+        element.sendKeys(birthDate);
+
+        // Convert both strings to dates
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");   // Pattern of HTML input date
+        Date filledDate = format.parse(element.getAttribute("value"));
+        format.applyPattern("dd/MM/yyyy");  // Pattern of birthDate string
+        Date passedDate = format.parse(birthDate);
+
+        Assert.assertEquals(passedDate, filledDate);
     }
 
 
     @And("he fills in Nationalities with {string}")
     public void fill_nationality(String nationality) {
-        profile.setNationalities(nationality);
-        Assert.assertEquals(profile.getNationalities(), nationality);
+        element = driver.findElement(By.id("nationalities"));
+        element.sendKeys(nationality);
+
+        Assert.assertEquals(nationality, element.getAttribute("value"));
     }
+
 
     @And("he fills in Passport with {string}")
     public void fill_passport(String passport) {
-        profile.setPassports(passport);
-        Assert.assertEquals(profile.getPassports(), passport);
+        element = driver.findElement(By.id("passports"));
+        element.sendKeys(passport);
+
+        Assert.assertEquals(passport, element.getAttribute("value"));
     }
+
 
     @And("he selects {string} from Traveller Type")
     public void select_traveller_type(String type) {
-        profile.setTravellerTypes(type);
-        Assert.assertEquals(profile.getTravellerTypes(), type);
+        Select travellerTypes = new Select(driver.findElement(By.id("typeDropdown")));
+        travellerTypes.selectByValue(type);
+
+        Assert.assertEquals(type, travellerTypes.getFirstSelectedOption().getAttribute("value"));
     }
+
 
     @And("he presses OK")
     public void press_ok() {
-        Date now = new Date();
-        profile.setTimeCreated(now);
-        Assert.assertEquals(profile.getTimeCreated(), now);
-        profileForm.fill(profile);
-
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(POST)
-                .uri("/user/create")
-                .bodyForm(profileForm.rawData())
-                .host("localhost:9000");
-        Result result = route(application, request);
-        redirectedPage = result.redirectLocation();
-        // Expect a redirect!
-        Assert.assertEquals(303,  result.status());
+        element = driver.findElement(By.id("okButton"));
+        element.click();
+        // Check for a redirect to another page
+        Assert.assertNotEquals(driver.getCurrentUrl(), signUpPage);
     }
 
-    @Then("the login form should be shown")
+
+    @Then("the login page should be shown")
     public void login() {
-        Assert.assertEquals("/", redirectedPage.get());
+        Assert.assertEquals(driver.getCurrentUrl(), loginPage);
     }
-
 }
