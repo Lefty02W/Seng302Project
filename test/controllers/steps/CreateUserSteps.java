@@ -10,6 +10,7 @@ import cucumber.api.java.en.When;
 import cucumber.api.java.en.And;
 import org.junit.Assert;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import play.Application;
@@ -49,7 +50,9 @@ public class CreateUserSteps extends WithBrowser {
     public void setUp() {
         WebDriverManager.chromedriver().setup();
         application = fakeApplication();    // Create a fake application instance
-        driver = new ChromeDriver();        // Use Chrome
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("headless");
+        driver = new ChromeDriver(options);        // Use Chrome
         testServer(9000, application).start();  //Run the application
         driver.manage().window().maximize();
     }
