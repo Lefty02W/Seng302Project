@@ -34,7 +34,7 @@ public class ProfileRepositoryTest extends ProvideApplication {
     public void checkProfileExistsProfileDoesExist() {
         ProfileRepository profileRepository = app.injector().instanceOf(ProfileRepository.class);
         boolean profileExists = profileRepository.checkProfileExists("admin");
-        Assert.assertFalse(profileExists);
+        Assert.assertTrue(profileExists);
     }
 
 
