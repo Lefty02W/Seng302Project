@@ -26,6 +26,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import play.test.Helpers;
+import play.test.TestServer;
 import play.test.WithBrowser;
 import static play.test.Helpers.*;
 
@@ -38,12 +40,12 @@ public class CreateUserSteps extends WithBrowser {
     protected Application application;
     private WebDriver driver;
     private WebElement element;
-    private WebDriverWait wait;
+    private TestServer testServer;
 
     private final int port = 50000; // Port to use, must not conflict
     private final String loginPage = "http://localhost:" + port + "/";
 
-    //@Before
+    @Before
     /**
      * Create an application instance, empty profile, profile form
      * and run the application.
@@ -54,26 +56,29 @@ public class CreateUserSteps extends WithBrowser {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("headless");
         driver = new ChromeDriver(options);      // Use Chrome
-        testServer(port, application).start();  //Run the application
+        testServer = Helpers.testServer(port, application);
+        testServer.start();  //Run the application
         driver.manage().window().maximize();
     }
 
 
-    //@AfterStep
+    @AfterStep
     // Simply to allow visual following of selenium's execution
     public void pause() throws InterruptedException {
         Thread.sleep(500); // 0.5 second delay
     }
 
 
-    //@After
+    @After
     public void teardown() {
         driver.close();
         driver.quit();
+        testServer.application().stop();
+        testServer.stop();
     }
 
 
-    //@Given("John is at the sign up page")
+    @Given("John is at the sign up page")
     public void at_sign_up_page() throws InterruptedException {
         driver.get(loginPage);
         element = driver.findElement(By.id("createUserButton"));
@@ -84,7 +89,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@When("he fills in First Name with {string}")
+    @When("he fills in First Name with {string}")
     public void fill_first_name(String firstName) {
         element = driver.findElement(By.id("firstName"));
         element.click();
@@ -93,7 +98,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Middle Name with {string}")
+    @And("he fills in Middle Name with {string}")
     public void fill_middle_name(String middleName) { ;
         element = driver.findElement(By.id("middleName"));
         element.sendKeys(middleName);
@@ -102,7 +107,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Last Name with {string}")
+    @And("he fills in Last Name with {string}")
     public void fill_last_name(String lastName) {
         element = driver.findElement(By.id("lastName"));
         element.sendKeys(lastName);
@@ -110,7 +115,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Email with {string}")
+    @And("he fills in Email with {string}")
     public void fill_email(String email) {
         element = driver.findElement(By.className("createEmail"));
         element.sendKeys(email);
@@ -118,7 +123,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Password with {string}")
+    @And("he fills in Password with {string}")
     public void fill_password(String password) {
         element = driver.findElement(By.className("createPassword"));
         element.sendKeys(password);
@@ -126,7 +131,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Gender with {string}")
+    @And("he fills in Gender with {string}")
     public void fill_gender(String gender) {
         Select genderSelect = new Select(driver.findElement(By.id("gender")));
         genderSelect.selectByVisibleText(gender);
@@ -135,7 +140,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Birth date with {string}")
+    @And("he fills in Birth date with {string}")
     public void fill_birth_date(String birthDate) throws ParseException {
         element = driver.findElement(By.id("birthDate"));
         element.sendKeys(birthDate);
@@ -144,7 +149,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Nationalities with {string}")
+    @And("he fills in Nationalities with {string}")
     public void fill_nationality(String nationality) {
         element = driver.findElement(By.id("nationalities"));
         element.sendKeys(nationality);
@@ -153,7 +158,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he fills in Passport with {string}")
+    @And("he fills in Passport with {string}")
     public void fill_passport(String passport) {
         element = driver.findElement(By.id("passports"));
         element.sendKeys(passport);
@@ -162,7 +167,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he selects {string} from Traveller Type")
+    @And("he selects {string} from Traveller Type")
     public void select_traveller_type(String type) {
         Select travellerTypes = new Select(driver.findElement(By.id("typeDropdown")));
         travellerTypes.selectByValue(type);
@@ -171,7 +176,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@And("he presses OK")
+    @And("he presses OK")
     public void press_ok() {
         element = driver.findElement(By.id("createButton"));
         element.click();
@@ -180,7 +185,7 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    //@Then("the login page should be shown")
+    @Then("the login page should be shown")
     public void login() {
         // Ensure sign up modal is no longer on page
         Assert.assertEquals(0, driver.findElements(By.id("createUserModal")).size());
