@@ -268,3 +268,12 @@ div.dataTables_filter {
 .alert-card {
     opacity: 0.95;
 }
+
+#pageTitle {
+    text-align: center;
+    display: inline-block;
+    margin-left: 44%;
+    padding-left: 0;
+
+
+}
