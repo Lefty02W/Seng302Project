@@ -60,9 +60,9 @@ public class ProvideApplication extends WithApplication {
 
             //TODO: Add more insert data here when other repositories are inserted
 
-            profileRepository.insert(new Profile("John", "James", "john@gmial.com",
+            profileRepository.insert(new Profile("John", "James", "john@gmail.com",
                     "password", new Date(), "NZ", "Male", new Date(), "NZ",
-                    "Backpacker,Gap Year", new ArrayList<Trip>(), false));
+                    "Backpacker,GapYear", new ArrayList<Trip>(), false));
             profileRepository.insert(new Profile("Jenny", "Smith", "jenny@gmail.com",
                     "password", new Date(), "NZ", "Female", new Date(), "NZ",
                     "Thrillseeker", new ArrayList<Trip>(), false));

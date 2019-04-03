@@ -101,6 +101,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> update (Http.Request request){
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
+    System.out.println(currentProfileForm);
         Profile profile = currentProfileForm.get();
 
         // Could improve on this
