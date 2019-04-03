@@ -139,11 +139,15 @@ public class CreateUserSteps extends WithBrowser {
     public void fill_birth_date(String birthDate) throws ParseException {
         element = driver.findElement(By.id("birthDate"));
         element.sendKeys(birthDate);
-
-        // Reformat from HTML to dd/MM/yyyy
+//
+//      // Reformat from HTML to dd/MM/yyyy
         String date = element.getAttribute("value");
-        String[] split = date.split("-");
-        date = split[2] + "/" + split[1] + "/" + split[0];
+//      String[] split = date.split("-");
+        String[] split = birthDate.split("/");
+
+        birthDate = split[2] + "-" + split[1] + "-" +split[0];
+
+        System.out.println(birthDate);
 
         Assert.assertEquals(birthDate, date);
     }
