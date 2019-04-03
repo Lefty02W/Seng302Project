@@ -77,7 +77,7 @@ body {
     background: #37623B;
     transform: scaleX(0);
     transform-origin: 50%;
-    transition: transform .3s ease-out;
+    transition: transform .1s ease-out;
     border-radius: 20%;
 }
 .expand-icon:hover:before{transform: scaleX(1);}
