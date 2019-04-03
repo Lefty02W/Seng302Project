@@ -11,7 +11,7 @@ junit:
     - sbt test
 
 Jacoco-Report:
-  stage: report
+  stage: deploy
   script:
     - sbt jacoco
 
