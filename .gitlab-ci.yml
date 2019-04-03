@@ -10,11 +10,6 @@ junit:
   script:
     - sbt test
 
-Jacoco-Report:
-  stage: report
-  script:
-    - sbt jacoco
-
 recent-artifacts:
   stage: deploy
   script:
