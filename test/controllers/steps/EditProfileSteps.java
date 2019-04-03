@@ -23,6 +23,7 @@ public class EditProfileSteps extends ProvideApplication {
     Map<String, String> editForm = new HashMap<>();
 
     Result redirectResultEdit;
+    Result loginResult;
 
 
     // Scenario: I can perform an edit of my profile - start
@@ -37,14 +38,13 @@ public class EditProfileSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "john@gmail.com");
 
-        Result result = Helpers.route(provideApplication(), request);
+        loginResult = Helpers.route(provideApplication(), request);
 
-        assertEquals(303, result.status());
+        assertEquals(303, loginResult.status());
     }
 
     @Given("I am on the edit profile page")
     public void iAmOnTheEditProfilePage() {
-        //TODO not sure what to do as its a modal not page
         // Mocking auto fill operation of users current data
         editForm.put("firstName", "John");
         editForm.put("lastName", "James");
@@ -55,6 +55,8 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("gender", "Male");
         editForm.put("nationalities", "password");
         editForm.put("travellerTypes", "Backpacker,Gap Year");
+
+        assertEquals("/profile", loginResult.redirectLocation().get());
     }
 
     @When("I change my first name to {string}")
