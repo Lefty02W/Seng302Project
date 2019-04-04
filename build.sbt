@@ -25,6 +25,7 @@ libraryDependencies += "io.cucumber" % "cucumber-java" % "4.2.0" % Test
 libraryDependencies += javaJdbc
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
+testOptions in Test += Tests.Argument("-Dconfig.file=conf/test.conf")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
 
