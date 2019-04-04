@@ -38,8 +38,9 @@ deploy-dev:
   script:
   - echo "Deploy to development server"
   - sbt dist
-  - unzip -d /target/universal/ *.zip
-  - cd target/universal/seng302-team-700-0.0.1-SNAPSHOT/bin
+  - cd /var/lib/gitlab-runner/builds/cc082478/0/seng302-2019/team-700/target/universal
+  - unzip -d *.zip
+  - cd seng302-team-700-0.0.1-SNAPSHOT/bin
   - chmod +x seng302-team-700
   - ./seng302-team-700 -Dplay.http.secret.key='zHEyLENJwfBB88RsrMBW' -Dhttp.port=8080
 
