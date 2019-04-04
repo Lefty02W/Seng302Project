@@ -8,12 +8,12 @@ tag_checker:
 junit:
   stage: test
   script:
-    - sbt test
+    - sbt jacoco
 
-coverage:
-  stage: deploy
-  script:
-    - sbt clean jacoco
+#coverage:
+#  stage: deploy
+#  script:
+#    - sbt clean jacoco
 
 recent-artifacts:
   stage: deploy
