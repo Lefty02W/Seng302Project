@@ -1,6 +1,7 @@
 package controllers;
 
 
+import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -14,13 +15,13 @@ public class TripsControllerTest extends ProvideApplication {
 
 
 
-    //@Test
+    @Test
     public void showCreatePageEndPoint() {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/trips/create")
-                .session("connected", "admin@admin.com");
+                .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
 
@@ -28,13 +29,13 @@ public class TripsControllerTest extends ProvideApplication {
     }
 
 
-    //@Test
+    @Test
     public void showTripsPageEndPoint() {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/trips")
-                .session("connected", "admin@admin.com");
+                .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
 
@@ -47,8 +48,8 @@ public class TripsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/2/edit")
-                .session("connected", "admin@admin.com");
+                .uri("/trips/214/edit")
+                .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
 
@@ -60,12 +61,11 @@ public class TripsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/edit/3/delete?id=11")
+                .uri("/trips/edit/3/delete?id=214")
                 .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
         assertEquals(404, result.status());
-
     }
 
 }
