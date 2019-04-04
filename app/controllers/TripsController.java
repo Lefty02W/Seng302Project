@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.common.collect.TreeMultimap;
 import com.google.inject.Inject;
 import models.Destination;
 import models.Profile;
@@ -59,12 +60,12 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result show(Http.Request request) {
         currentDestinationsList.clear();
-        TreeMap<Long, Trip> tripsMap = SessionController.getCurrentUser(request).getTrips();
+        TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         System.out.println(tripsMap.size());
 
-        List<Trip> tripValues = new ArrayList<>(tripsMap.values());
-        System.out.println(tripValues.size());
-        return ok(trips.render(form, formTrip, destinationsList, tripValues, request, messagesApi.preferred(request)));
+        List<Integer> tripValues = new ArrayList<>(tripsMap.values());
+        System.out.println(tripValues);
+        return ok(trips.render(form, formTrip, destinationsList, tripValues, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 
 

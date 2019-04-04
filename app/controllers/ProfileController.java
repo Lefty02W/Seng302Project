@@ -1,6 +1,7 @@
 package controllers;
 
 
+import com.google.common.collect.TreeMultimap;
 import models.Image;
 import models.Profile;
 import models.Trip;
@@ -255,8 +256,8 @@ public class ProfileController extends Controller {
         // Get the current show photo modal state
         // Ensure state is false for next refresh action
         Boolean show = showPhotoModal = false;
-        TreeMap<Long, Trip> tripsMap = SessionController.getCurrentUser(request).getTrips();
-        List<Trip> tripValues= new ArrayList<>(tripsMap.values());
+        TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
+        List<Integer> tripValues= new ArrayList<>(tripsMap.values());
         return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, request, messagesApi.preferred(request)));
     }
 

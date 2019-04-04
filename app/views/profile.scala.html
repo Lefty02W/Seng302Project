@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -112,29 +112,29 @@
                                     </div>
                                 } else {
                                     <div class="col">
-                                    @for(index <- 0 until trips.size) {
+                                    @for(tripId <- trips) {
                                         <div class="row">
-                                            <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@index">
-                                                <h5 id="tripName">@trips.get(index).getName</h5>
+                                            <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
+                                                <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
                                                 <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div id="tripInfo@index" class="collapse collapse-body">
+                                            <div id="tripInfo@tripId" class="collapse collapse-body">
                                                 <table id="tripTable">
                                                     <thead>
                                                         <tr><th>Start Date</th><th>N.O. Destinations</th><th>Travel Time (Days)</th>
                                                     </thead>
                                                     <tr>
                                                         <td>
-                                                            @if(trips.get(index).getStartDate != null) {
-                                                                <span>@currentUser.getTrips.get(index).getStartDate.getTime</span>
+                                                            @if(currentUser.getTripById(tripId).getStartDate != null) {
+                                                                <span>@currentUser.getTripById(tripId).getStartDate.getTime</span>
                                                             } else {
                                                                 <span>0</span>
                                                             }
-                                                            @trips.get(index).getStartDate</td>
-                                                        <td>@trips.get(index).getDestinations.size()</td>
-                                                        <td>@trips.get(index).getTravelTime</td>
+                                                            @currentUser.getTripById(tripId).getStartDate</td>
+                                                        <td>@currentUser.getTripById(tripId).getDestinations.size()</td>
+                                                        <td>@currentUser.getTripById(tripId).getTravelTime</td>
                                                     </tr>
                                                 </table>
                                                 <h4>Destinations Visted</h4>
@@ -142,24 +142,24 @@
                                                     <thead>
                                                         <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
                                                     </thead>
-                                                    @for(destIndex <- 0 until trips.get(index).getDestinations.size) {
+                                                    @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
                                                         <tr>
-                                                            <td>@trips.get(index).getDestinations.get(destIndex).getDestination.getName</td>
-                                                            <td>@trips.get(index).getDestinations.get(destIndex).getDestination.getCountry</td>
+                                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
+                                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
                                                             <td>
-                                                                @if(trips.get(index).getDestinations.get(destIndex).getArrival != null) {
-                                                                    <span>@trips.get(index).getDestinations.get(destIndex).getArrival.getTime</span>
+                                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
+                                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @trips.get(index).getDestinations.get(destIndex).getArrival</td>
+                                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
                                                             <td>
-                                                                @if(trips.get(index).getDestinations.get(destIndex).getDeparture != null) {
-                                                                    <span>@trips.get(index).getDestinations.get(destIndex).getDeparture.getTime</span>
+                                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
+                                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @trips.get(index).getDestinations.get(destIndex).getDeparture</td>
+                                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
                                                         </tr>
                                                     }
                                                 </table>
@@ -167,6 +167,7 @@
                                         </div>
                                     }
                                     </div>
+
                                 }
 
                             </div>

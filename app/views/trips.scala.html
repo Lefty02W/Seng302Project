@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Integer], currentUser : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import helper._
 
@@ -25,7 +25,7 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/trips.css")">
     <head>
-        <title>TravelEA | Trips</title>
+        <title>TravelEA | Trips</title>Trip
     </head>
     <body>
         <div class="d-flex" id="wrapper">
@@ -60,23 +60,23 @@
                                     </thead>
                                     @for(trip <- trips) {
                                         <tr>
-                                            <td>@trip.getName</td>
-                                            <td>@trip.getTravelTime</td>
+                                            <td>@currentUser.getTripById(trip).getName</td>
+                                            <td>@currentUser.getTripById(trip).getTravelTime</td>
                                             <td>
-                                                @if(trip.getStartDate != null) {
-                                                    <span>@trip.getStartDate().getTime</span>
+                                                @if(currentUser.getTripById(trip).getStartDate != null) {
+                                                    <span>@currentUser.getTripById(trip).getStartDate().getTime</span>
                                                 } else {
                                                     <span>0</span>
                                                 }
-                                                @trip.getStartDateString</td>
-                                            <td>@trip.getDestinations.size()</td>
-                                            <td>@trip.getDestinationNames</td>
-                                            @helper.form(routes.TripsController.showEdit(trip.getId)) {
+                                                @currentUser.getTripById(trip).getStartDateString</td>
+                                            <td>@currentUser.getTripById(trip).getDestinations.size()</td>
+                                            <td>@currentUser.getTripById(trip).getDestinationNames</td>
+                                            @helper.form(routes.TripsController.showEdit(trip)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
 
                                             }
-                                            <a href="@routes.TripsController.delete(trip.getId)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>
+                                            <a href="@routes.TripsController.delete(trip)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>
                                         </tr>
                                     }
                                 </table>

@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.common.collect.TreeMultimap;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -31,7 +32,7 @@ public class SessionController {
 
 
             profile.setDestinations(getUserDestinations(profile.getEmail()));
-            profile.setTrips(getUsersTrips(profile));
+            getUsersTrips(profile);
             //profile.sortedTrips();
             return profile;
         } else {
@@ -59,9 +60,9 @@ public class SessionController {
      * @param currentUser the profile to get rips for
      * @return the trips found for the passed profile
      */
-    private static TreeMap<Long, Trip> getUsersTrips(Profile currentUser) {
-        TreeMap<Long, Trip> trips = new TreeMap<>();
-
+    private static void getUsersTrips(Profile currentUser) {
+        TreeMultimap<Long, Integer> trips = TreeMultimap.create();
+        TreeMap <Integer, Trip> tripMap = new TreeMap<>();
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
                 .eq("email", currentUser.getEmail())
@@ -84,9 +85,11 @@ public class SessionController {
                 tripDestinations.add(tripDest);
             }
             trip.setDestinations(tripDestinations);
-            trips.put(trip.getFirstDate(), trip);
+            trips.put(trip.getFirstDate(), trip.getId());
+            tripMap.put(trip.getId(), trip);
         }
         // Returning the trips found
-        return trips;
+        currentUser.setTrips(trips);
+        currentUser.setTripMaps(tripMap);
     }
 }
