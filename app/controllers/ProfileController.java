@@ -3,6 +3,7 @@ package controllers;
 
 import models.Image;
 import models.Profile;
+import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -253,9 +254,10 @@ public class ProfileController extends Controller {
         List<Image> displayImageList = getUserPhotos(request);
         // Get the current show photo modal state
         // Ensure state is false for next refresh action
-        Boolean show = showPhotoModal;
-        showPhotoModal = false;
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, request, messagesApi.preferred(request)));
+        Boolean show = showPhotoModal = false;
+        TreeMap<Long, Trip> tripsMap = SessionController.getCurrentUser(request).getTrips();
+        List<Trip> tripValues= new ArrayList<>(tripsMap.values());
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, request, messagesApi.preferred(request)));
     }
 
 }

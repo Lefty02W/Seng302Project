@@ -9,6 +9,7 @@ import play.mvc.Http;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 /**
  * This class manages sessions cookies
@@ -58,8 +59,8 @@ public class SessionController {
      * @param currentUser the profile to get rips for
      * @return the trips found for the passed profile
      */
-    private static ArrayList<Trip> getUsersTrips(Profile currentUser) {
-        ArrayList<Trip> trips = new ArrayList<>();
+    private static TreeMap<Long, Trip> getUsersTrips(Profile currentUser) {
+        TreeMap<Long, Trip> trips = new TreeMap<>();
 
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
@@ -83,7 +84,7 @@ public class SessionController {
                 tripDestinations.add(tripDest);
             }
             trip.setDestinations(tripDestinations);
-            trips.add(trip);
+            trips.put(trip.getFirstDate(), trip);
         }
         // Returning the trips found
         return trips;

@@ -3,16 +3,14 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-import org.checkerframework.checker.signedness.qual.Constant;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.Constraint;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class holds the data for a profile trip
@@ -40,6 +38,7 @@ public class Trip extends Model {
         this.name = name;
 
     }
+
 
     /**
      * Adds the passed TripDestination to the trip
@@ -117,6 +116,27 @@ public class Trip extends Model {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * This method gets the first date stored within a trip
+     * @return the date found
+     */
+    public long getFirstDate() {
+        Date toReturn = null;
+        for (TripDestination tripDestination : destinations) {
+            if (tripDestination.getArrival() != null) {
+                toReturn = tripDestination.getArrival();
+                break;
+            } else if (tripDestination.getDeparture() != null) {
+                toReturn = tripDestination.getDeparture();
+                break;
+            }
+        }
+        if (toReturn != null) {
+            return toReturn.getTime();
+        }
+        return 0;
     }
 
     public Date getStartDate(){

@@ -9,12 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-//import org.mindrot.jbcrypt.BCrypt;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Collections.reverseOrder;
+
+//import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * This class holds the data for a profile
@@ -55,7 +54,8 @@ public class Profile extends Model {
     private Date timeCreated;
 
     private ArrayList<Destination> destinations = new ArrayList<>();
-    private ArrayList<Trip> trips = new ArrayList<>();
+    private ArrayList<Trip> trips;
+    TreeMap<Long, Trip> tripsMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
@@ -178,12 +178,12 @@ public class Profile extends Model {
         return new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
     }
 
-    public ArrayList<Trip> getTrips() {
-        return trips;
+    public TreeMap<Long, Trip> getTrips() {
+        return tripsMap;
     }
 
-    public void setTrips(ArrayList<Trip> trips) {
-        this.trips = trips;
+    public void setTrips(TreeMap<Long, Trip> trips) {
+        this.tripsMap = trips;
     }
 
     public ArrayList<Destination> getDestinations() {

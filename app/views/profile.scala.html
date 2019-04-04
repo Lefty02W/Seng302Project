@@ -1,10 +1,7 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
 @import controllers.ProfileController.ImageData
-@import java.util
-@import javax.swing.ImageIcon
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
+@import play.mvc.Http
+@import views.html.helper.{CSRF, form}
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -109,16 +106,16 @@
                             <div id="trips-card" class="card-large upper-card">
                                 <h3>Your Trips</h3>
 
-                                @if(currentUser.getTrips.isEmpty) {
+                                @if(trips.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no trips associated with your profile
                                     </div>
                                 } else {
                                     <div class="col">
-                                    @for(index <- 0 until currentUser.getTrips.size) {
+                                    @for(index <- 0 until trips.size) {
                                         <div class="row">
                                             <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@index">
-                                                <h5 id="tripName">@currentUser.getTrips.get(index).getName</h5>
+                                                <h5 id="tripName">@trips.get(index).getName</h5>
                                                 <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
                                             </div>
                                         </div>
@@ -130,14 +127,14 @@
                                                     </thead>
                                                     <tr>
                                                         <td>
-                                                            @if(currentUser.getTrips.get(index).getStartDate != null) {
+                                                            @if(trips.get(index).getStartDate != null) {
                                                                 <span>@currentUser.getTrips.get(index).getStartDate.getTime</span>
                                                             } else {
                                                                 <span>0</span>
                                                             }
-                                                            @currentUser.getTrips.get(index).getStartDate</td>
-                                                        <td>@currentUser.getTrips.get(index).getDestinations.size()</td>
-                                                        <td>@currentUser.getTrips.get(index).getTravelTime</td>
+                                                            @trips.get(index).getStartDate</td>
+                                                        <td>@trips.get(index).getDestinations.size()</td>
+                                                        <td>@trips.get(index).getTravelTime</td>
                                                     </tr>
                                                 </table>
                                                 <h4>Destinations Visted</h4>
@@ -145,24 +142,24 @@
                                                     <thead>
                                                         <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
                                                     </thead>
-                                                    @for(destIndex <- 0 until currentUser.getTrips.get(index).getDestinations.size) {
+                                                    @for(destIndex <- 0 until trips.get(index).getDestinations.size) {
                                                         <tr>
-                                                            <td>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDestination.getName</td>
-                                                            <td>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDestination.getCountry</td>
+                                                            <td>@trips.get(index).getDestinations.get(destIndex).getDestination.getName</td>
+                                                            <td>@trips.get(index).getDestinations.get(destIndex).getDestination.getCountry</td>
                                                             <td>
-                                                                @if(currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival != null) {
-                                                                    <span>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival.getTime</span>
+                                                                @if(trips.get(index).getDestinations.get(destIndex).getArrival != null) {
+                                                                    <span>@trips.get(index).getDestinations.get(destIndex).getArrival.getTime</span>
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival</td>
+                                                                @trips.get(index).getDestinations.get(destIndex).getArrival</td>
                                                             <td>
-                                                                @if(currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture != null) {
-                                                                    <span>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture.getTime</span>
+                                                                @if(trips.get(index).getDestinations.get(destIndex).getDeparture != null) {
+                                                                    <span>@trips.get(index).getDestinations.get(destIndex).getDeparture.getTime</span>
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture</td>
+                                                                @trips.get(index).getDestinations.get(destIndex).getDeparture</td>
                                                         </tr>
                                                     }
                                                 </table>

@@ -20,6 +20,8 @@ import views.html.tripsEdit;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.concurrent.CompletionStage;
 
 /**
@@ -44,8 +46,6 @@ public class TripsController extends Controller {
         this.tripDestinationRepository = tripDestinationRepository;
         this.messagesApi = messagesApi;
         this.formTrip = formFactory.form(TripDestination.class);
-
-
         this.destinationsList = new ArrayList<>();
         this.currentDestinationsList = new ArrayList<>();
 
@@ -59,8 +59,12 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result show(Http.Request request) {
         currentDestinationsList.clear();
-        ArrayList<Trip> tripsList = SessionController.getCurrentUser(request).getTrips();
-        return ok(trips.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
+        TreeMap<Long, Trip> tripsMap = SessionController.getCurrentUser(request).getTrips();
+        System.out.println(tripsMap.size());
+
+        List<Trip> tripValues = new ArrayList<>(tripsMap.values());
+        System.out.println(tripValues.size());
+        return ok(trips.render(form, formTrip, destinationsList, tripValues, request, messagesApi.preferred(request)));
     }
 
 
