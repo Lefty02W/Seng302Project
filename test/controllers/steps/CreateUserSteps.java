@@ -9,56 +9,27 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import cucumber.api.java.en.And;
 import org.junit.Assert;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import play.Application;
 
+import org.openqa.selenium.support.ui.Select;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
-import play.test.Helpers;
-import play.test.TestServer;
-import play.test.WithBrowser;
-import static play.test.Helpers.*;
 
 
 /**
  * Implements steps for testing CreateUser
  */
-public class CreateUserSteps extends WithBrowser {
-
-    protected Application application;
-    private WebDriver driver;
-    private WebElement element;
-    private TestServer testServer;
-
-    private final int port = 50000; // Port to use, must not conflict
-    private final String loginPage = "http://localhost:" + port + "/";
+public class CreateUserSteps extends BaseStep {
 
     @Before
-    /**
-     * Create an application instance, empty profile, profile form
-     * and run the application.
-     */
-    public void setUp() {
-        WebDriverManager.chromedriver().setup();
-        application = fakeApplication();         // Create a fake application instance
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");
-        driver = new ChromeDriver(options);      // Use Chrome
-        testServer = Helpers.testServer(port, application);
-        testServer.start();  //Run the application
-        driver.manage().window().maximize();
+    public void setup() {
+        setUp();
+    }
+
+
+    @After
+    public void teardown() {
+        tearDown();
     }
 
 
@@ -69,17 +40,9 @@ public class CreateUserSteps extends WithBrowser {
     }
 
 
-    @After
-    public void teardown() {
-        driver.close();
-        driver.quit();
-        testServer.application().stop();
-        testServer.stop();
-    }
-
-
     @Given("John is at the sign up page")
     public void at_sign_up_page() throws InterruptedException {
+        setUp();
         driver.get(loginPage);
         element = driver.findElement(By.id("createUserButton"));
         element.click();
@@ -180,8 +143,6 @@ public class CreateUserSteps extends WithBrowser {
     public void press_ok() {
         element = driver.findElement(By.id("createButton"));
         element.click();
-
-        Assert.assertEquals(driver.getCurrentUrl(), loginPage);
     }
 
 
