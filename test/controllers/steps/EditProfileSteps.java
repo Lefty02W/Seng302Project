@@ -16,14 +16,16 @@ import java.util.Map;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
-
+/**
+ * This class provides the steps need to test the EditProfile feature
+ */
 public class EditProfileSteps extends ProvideApplication {
 
-    Map<String, String> loginForm = new HashMap<>();
-    Map<String, String> editForm = new HashMap<>();
+    private Map<String, String> loginForm = new HashMap<>();
+    private Map<String, String> editForm = new HashMap<>();
 
-    Result redirectResultEdit;
-    Result loginResult;
+    private Result redirectResultEdit;
+    private Result loginResult;
 
 
     // Scenario: I can perform an edit of my profile - start

@@ -90,7 +90,7 @@ public class ProfileController extends Controller {
             }
         }, httpExecutionContext.current());
     }
-
+            //TODO: Delete all profile
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form
