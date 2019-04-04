@@ -43,17 +43,30 @@ public class TripsControllerTest extends ProvideApplication {
     }
 
 
-    //@Test // Having issues with this test will sort at a later date
+    @Test
     public void showEditPageEndPoint() {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/0/edit")
+                .uri("/trips/2/edit")
                 .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
 
         assertEquals(OK, result.status());
+    }
+
+    @Test
+    public void deleteTripDestination() {
+        loginUser();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/trips/edit/3/delete?id=11")
+                .session("connected", "admin@admin.com");
+
+        Result result = Helpers.route(provideApplication(), request);
+        assertEquals(404, result.status());
+
     }
 
 }
