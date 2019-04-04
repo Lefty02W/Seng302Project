@@ -1,24 +1,19 @@
 package repository;
 
-import controllers.SessionController;
-import io.ebean.*;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.Model;
 import models.Destination;
-import models.Profile;
 import models.Trip;
 import models.TripDestination;
-import play.api.mvc.Request;
 import play.db.ebean.EbeanConfig;
-import scala.None;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.CompletionStage;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -100,6 +95,7 @@ public class TripRepository {
         Trip trip = result.get(0);
 
         ArrayList<TripDestination> tripDestinations = new ArrayList<>();
+        TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
         List<TripDestination> tripDests = TripDestination.find.query()
                 .where()
                 .eq("trip_id", tripId)
@@ -112,9 +108,9 @@ public class TripRepository {
                     .eq("destination_id", tripDest.getDestinationId())
                     .findList();
             tripDest.setDestination(destinations.get(0));
-            tripDestinations.add(tripDest);
+            orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
         }
-        trip.setDestinations(tripDestinations);
+        trip.setOrderedDestiantions(orderedDestiantions);
         return trip;
     }
 

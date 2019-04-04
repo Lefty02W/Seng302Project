@@ -1,10 +1,8 @@
 package controllers;
 
-import org.junit.Assert;
 import org.junit.Test;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;
-import play.mvc.Call;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -13,10 +11,9 @@ import play.test.WithApplication;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
-import static play.test.Helpers.route;
 
 /**
  * Test set for Login Controller
@@ -34,7 +31,7 @@ public class LoginControllerTest extends WithApplication {
     @Test
     public void login() {
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin");
+        formData.put("email", "admin@admin.com");
         formData.put("password", "admin123");
 
         Http.RequestBuilder request = Helpers.fakeRequest()

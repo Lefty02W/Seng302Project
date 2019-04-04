@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -20,6 +21,7 @@ public class Trip extends Model {
 
 
     private ArrayList<TripDestination> destinations;
+    private TreeMap<Integer, TripDestination> orderedDestiantions;
     @Constraints.Required
     private String name;
     @Id
@@ -34,9 +36,11 @@ public class Trip extends Model {
      * @param destinations The destinations in the trip
      */
     public Trip(ArrayList<TripDestination> destinations, String name) {
-        this.destinations = sortDestinationsByOrder(destinations);
+        this.destinations = destinations;
         this.name = name;
-
+        for (TripDestination tripDestination : destinations) {
+            this.orderedDestiantions.put(tripDestination.getDestOrder(), tripDestination);
+        }
     }
 
 
@@ -54,6 +58,22 @@ public class Trip extends Model {
      */
     public void removeDestination(int index) {
         destinations.remove(index);
+    }
+
+    public TreeMap<Integer, TripDestination> getOrderedDestiantions() {
+        return orderedDestiantions;
+    }
+
+    public void setOrderedDestiantions(TreeMap<Integer, TripDestination> orderedDestiantions) {
+        this.orderedDestiantions = orderedDestiantions;
+    }
+
+    public int getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(int tripId) {
+        this.tripId = tripId;
     }
 
     public ArrayList<TripDestination> getDestinations() {
