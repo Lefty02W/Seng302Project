@@ -24,6 +24,6 @@ Feature: Edit User Profile
      Given I am logged into the application
      And I am on the edit profile page
      When I change my traveller types to ""
-     And I press the Save Profile button
+     And I try to save the edit
      Then I am not redirected to the profile page
      And my edit is not saved

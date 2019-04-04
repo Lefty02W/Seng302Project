@@ -9,13 +9,12 @@ import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 public class EditProfileSteps extends ProvideApplication {
@@ -24,6 +23,7 @@ public class EditProfileSteps extends ProvideApplication {
     Map<String, String> editForm = new HashMap<>();
 
     Result redirectResultEdit;
+    Result loginResult;
 
 
     // Scenario: I can perform an edit of my profile - start
@@ -38,14 +38,13 @@ public class EditProfileSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "john@gmail.com");
 
-        Result result = Helpers.route(provideApplication(), request);
+        loginResult = Helpers.route(provideApplication(), request);
 
-        assertEquals(303, result.status());
+        assertEquals(303, loginResult.status());
     }
 
     @Given("I am on the edit profile page")
     public void iAmOnTheEditProfilePage() {
-        //TODO not sure what to do as its a modal not page
         // Mocking auto fill operation of users current data
         editForm.put("firstName", "John");
         editForm.put("lastName", "James");
@@ -56,6 +55,8 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("gender", "Male");
         editForm.put("nationalities", "password");
         editForm.put("travellerTypes", "Backpacker,Gap Year");
+
+        assertEquals("/profile", loginResult.redirectLocation().get());
     }
 
     @When("I change my first name to {string}")
@@ -104,8 +105,8 @@ public class EditProfileSteps extends ProvideApplication {
 
     // Scenario: I cannot save my profile with no traveller types - end
     // Includes steps from above
-    @When("I press the Save Profile button")
-    public void iPressTheSaveProfileButton() {
+    @When("I try to save the edit")
+    public void iTryToSaveTheEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/profile")
