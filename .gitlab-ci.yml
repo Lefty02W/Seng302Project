@@ -13,7 +13,7 @@ junit:
 coverage:
   stage: deploy
   script:
-    - sbt jacoco
+    - sbt clean jacoco
 
 recent-artifacts:
   stage: deploy
