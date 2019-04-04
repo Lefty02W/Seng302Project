@@ -21,7 +21,7 @@ public class TripsControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/trips/create")
-                .session("connected", "admin");
+                .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
 
@@ -35,7 +35,7 @@ public class TripsControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/trips")
-                .session("connected", "admin");
+                .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
 
@@ -48,8 +48,8 @@ public class TripsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/edit/0")
-                .session("connected", "admin");
+                .uri("/trips/0/edit")
+                .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
 

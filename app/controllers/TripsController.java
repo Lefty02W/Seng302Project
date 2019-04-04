@@ -154,7 +154,7 @@ public class TripsController extends Controller {
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         if(currentDestinationsList.size() >= 1) {
             if (tripDestination.getDestinationId() == currentDestinationsList.get(currentDestinationsList.size() - 1).getDestinationId()) {
-                return redirect("/trips/edit/" + id).flashing("info", "The same destination cannot be after itself in a trip");
+                return redirect("/trips/"+id+"/edit").flashing("info", "The same destination cannot be after itself in a trip");
 
             }
         }
@@ -162,7 +162,7 @@ public class TripsController extends Controller {
         tripDestination.setDestOrder(currentDestinationsList.size()); //Note this cannot be used as indexes as they start at 1 not 0
         tripDestination.setTripId(1);
         tripRepository.insertTripDestination(tripDestination);
-        return redirect("/trips/edit/" + id);
+        return redirect("/trips/"+id+"edit");
     }
 
 
@@ -202,7 +202,7 @@ public class TripsController extends Controller {
         Profile currentUser = SessionController.getCurrentUser(request);
         trip.setEmail(currentUser.getEmail());
         if (currentDestinationsList.size() < 2){
-            return redirect("/trips/edit/" + id).flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/"+id+"/edit").flashing("info", "The same destination cannot be after itself in a trip");
         } else {
             tripRepository.delete(id);
             tripRepository.insert(trip, currentDestinationsList);
@@ -246,7 +246,7 @@ public class TripsController extends Controller {
         tempList.remove(oldLocation-1);
         tempList.add(newLocation-1, tripDestination);
         if (isBeside(tempList)) {
-            return redirect("/trips/edit/" + tripId).flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/"+tripId+"/edit").flashing("info", "The same destination cannot be after itself in a trip");
         }
         if (oldLocation.equals(newLocation)) {
             currentDestinationsList.set(newLocation-1, tripDestination);
@@ -254,7 +254,7 @@ public class TripsController extends Controller {
             sortFunc(oldLocation, newLocation);
             currentDestinationsList.set(newLocation-1, tripDestination);
         }
-        return redirect("/trips/edit/" + tripId);
+        return redirect("/trips/"+tripId+"/edit");
     }
 
 
@@ -271,7 +271,7 @@ public class TripsController extends Controller {
         if (order != 1) {
             if (order != currentDestinationsList.size()) {
                 if (currentDestinationsList.get(order - 2).getDestinationId() == currentDestinationsList.get(order).getDestinationId()) {
-                    return redirect("/trips/edit/" + tripId).flashing("info", "The same destination cannot be after itself in a trip");
+                    return redirect("/trips/"+tripId+"/edit").flashing("info", "The same destination cannot be after itself in a trip");
                 }
             }
         }
@@ -279,7 +279,7 @@ public class TripsController extends Controller {
             currentDestinationsList.get(i).setDestOrder(currentDestinationsList.get(i).getDestOrder()-1);
         }
         currentDestinationsList.remove(order-1);
-        return redirect("/trips/edit/" + tripId);
+        return redirect("/trips/"+tripId+"/edit");
     }
 
 
