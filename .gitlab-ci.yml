@@ -40,7 +40,7 @@ deploy-dev:
   - sbt dist
   - cd /var/lib/gitlab-runner/builds/cc082478/0/seng302-2019/team-700/target/universal
   - ls
-  - unzip -d *.zip
+  - unzip seng302-team-700-0.0.1-SNAPSHOT.zip
   - cd seng302-team-700-0.0.1-SNAPSHOT/bin
   - chmod +x seng302-team-700
   - ./seng302-team-700 -Dplay.http.secret.key='zHEyLENJwfBB88RsrMBW' -Dhttp.port=8080
