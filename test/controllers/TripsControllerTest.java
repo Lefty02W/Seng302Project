@@ -80,7 +80,7 @@ public class TripsControllerTest extends ProvideApplication {
 
         result = Helpers.route(provideApplication(), request);
 
-        assertEquals(OK, result.);
+        assertEquals(OK, result.status());
     }
 
 }
