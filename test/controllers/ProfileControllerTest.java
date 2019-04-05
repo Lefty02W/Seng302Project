@@ -25,7 +25,7 @@ public class ProfileControllerTest extends ProvideApplication{
     public void setUp() {
         app = super.provideApplication();
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin");
+        formData.put("email", "admin@admin.com");
         formData.put("password", "admin123");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -36,28 +36,13 @@ public class ProfileControllerTest extends ProvideApplication{
         Result result = Helpers.route(provideApplication(), request);
     }
 
-    /**
-     * Testing profile GET endpoint /profile/edit/:id
-     */
-    @Test
-    public void showEdit() {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/profile/admin/edit")
-                .session("connected", "admin");
-
-        Result result = Helpers.route(provideApplication(),request);
-        //System.out.println(Helpers.contentAsString(result));
-
-
-        assertEquals(200, result.status());
-    }
 
     /**
      * Testing profile POST endpoint /profile
      */
     @Test
     public void update() {
+        loginUser();
         Map<String, String> profileData = new HashMap<>();
         profileData.put("firstName", "admin");
         profileData.put("middleName", "admin");
@@ -75,7 +60,7 @@ public class ProfileControllerTest extends ProvideApplication{
                 .method("POST")
                 .uri("/profile")
                 .bodyForm(profileData)
-                .session("connected", "admin");
+                .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(),request);
         //System.out.println(Helpers.contentAsString(result));
@@ -93,7 +78,7 @@ public class ProfileControllerTest extends ProvideApplication{
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile")
-                .session("connected", "admin");
+                .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(),request);
 
