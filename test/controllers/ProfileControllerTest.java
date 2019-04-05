@@ -46,8 +46,6 @@ public class ProfileControllerTest extends  ProvideApplication{
                 .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(),request);
-        //System.out.println(Helpers.contentAsString(result));
-
 
         assertEquals(200, result.status());
     }

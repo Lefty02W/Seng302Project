@@ -59,7 +59,6 @@ public class LoginController extends Controller {
             return profileRepository.lookup(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
-                    System.out.println("noot");
                     return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getEmail());
                 }
                 return notFound("Login failed");

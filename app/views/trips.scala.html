@@ -1,8 +1,8 @@
-@import play.mvc.Http
+@@import play.mvc.Http
 @import views.html.helper.CSRF
 @(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Integer], currentUser : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
-@import helper._
+
 
 
 
@@ -71,7 +71,7 @@
                                                 @currentUser.getTripById(trip).getStartDateString</td>
                                             <td>@currentUser.getTripById(trip).getDestinations.size()</td>
                                             <td>@currentUser.getTripById(trip).getDestinationNames</td>
-                                            @helper.form(routes.TripsController.updateCurrentDestinations(trip)) {
+                                            @helper.form(routes.TripsController.showEdit(trip)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
 
