@@ -43,7 +43,7 @@ deploy-dev:
     - unzip seng302-team-700-0.0.1-SNAPSHOT.zip
     - cd seng302-team-700-0.0.1-SNAPSHOT/bin
     - chmod +x seng302-team-700
-    - ./seng302-team-700 -Dhttp.port=8080 -Dhttp.address=132.181.16.17
+    - ./seng302-team-700 -Dhttp.port=8080 -Dhttp.address=132.181.16.17 &
   environment:
     name: dev
     url: http://csse-s302g7.canterbury.ac.nz:8080
