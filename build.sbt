@@ -8,6 +8,11 @@ lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean, J
 configs(IntegrationTest)
 Defaults.itSettings
 
+jacocoReportSettings in Test := JacocoReportSettings()
+  .withFormats(
+    JacocoReportFormats.XML
+  )
+
 libraryDependencies += guice
 libraryDependencies += jdbc
 libraryDependencies += "com.h2database" % "h2" % "1.4.197"
