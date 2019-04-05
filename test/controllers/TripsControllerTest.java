@@ -83,4 +83,10 @@ public class TripsControllerTest extends ProvideApplication {
         assertEquals(OK, result.status());
     }
 
+    @Test
+    public void checkTripDestDoesntExist() {
+
+    }
+
+
 }
