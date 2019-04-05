@@ -71,7 +71,7 @@
                                                 @currentUser.getTripById(trip).getStartDateString</td>
                                             <td>@currentUser.getTripById(trip).getDestinations.size()</td>
                                             <td>@currentUser.getTripById(trip).getDestinationNames</td>
-                                            @helper.form(routes.TripsController.showEdit(trip)) {
+                                            @helper.form(routes.TripsController.updateCurrentDestinations(trip)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
 

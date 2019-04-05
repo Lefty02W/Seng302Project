@@ -62,4 +62,12 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
+    public boolean validate(int tripDestID) {
+        if (ebeanServer.find(TripDestination.class).setId(tripDestID).findOne() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

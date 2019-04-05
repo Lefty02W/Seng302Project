@@ -1,10 +1,17 @@
 package controllers;
 
 
+import org.junit.Assert;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import repository.DestinationRepository;
+import repository.TripDestinationsRepository;
+import repository.TripRepository;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
@@ -48,7 +55,7 @@ public class TripsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/214/edit")
+                .uri("/trips/1/edit")
                 .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -56,16 +63,39 @@ public class TripsControllerTest extends ProvideApplication {
         assertEquals(OK, result.status());
     }
 
+
     @Test
     public void deleteTripDestination() {
         loginUser();
+
+        boolean exists = tripDestinationsRepository.validate(3);
+        Assert.assertTrue(exists);
+        //user deletes the 3rd tripDest
         Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/trips/edit/3/delete?id=214")
-                .session("connected", "admin@admin.com");
+                .method("POST")
+                .uri("/trips/edit/3/delete?id=1")
+                .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
-        assertEquals(404, result.status());
+        assertEquals(303, result.status());
+
+        //and then clicks save
+        Map<String, String> formData = new HashMap<>();
+        formData.put("name", "yes");
+        request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/trips/edit?id=1")
+                .bodyForm(formData)
+                .session("connected", "admin");
+
+        result = Helpers.route(provideApplication(), request);
+        assertEquals(303, result.status());
+
+        //should equal false as it is not deleted
+        //exists = tripDestinationsRepository.validate(3);
+        //Assert.assertFalse(exists);
+
     }
+
 
 }
