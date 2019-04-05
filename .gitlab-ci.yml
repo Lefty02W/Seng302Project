@@ -42,4 +42,4 @@ update-sonar:
     - export PATH=$PATH:/opt/sonar-scanner/bin
     - sonar-scanner
   only:
-    - SessionAuthUpgrade@seng302-2019/team-700
+    - sonar-qube@seng302-2019/team-700
