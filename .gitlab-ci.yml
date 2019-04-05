@@ -9,6 +9,7 @@ junit:
   stage: test
   script:
     - sbt jacoco
+    - cp /target/scala-2.12/jacoco/report/test /jacoco
 
 #coverage:
 #  stage: deploy
