@@ -9,12 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-//import org.mindrot.jbcrypt.BCrypt;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Collections.reverseOrder;
+
+//import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * This class holds the data for a profile

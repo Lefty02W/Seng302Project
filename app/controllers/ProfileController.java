@@ -99,15 +99,19 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result update (Http.Request request){
+    public CompletionStage<Result> update (Http.Request request){
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
+    System.out.println(currentProfileForm);
         Profile profile = currentProfileForm.get();
 
-        profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
+        // Could improve on this
+        profile.setNationalities(profile.getNationalities().replaceAll("\\s",""));
+        profile.setPassports(profile.getPassports().replaceAll("\\s",""));
 
-    //TODO make async
-    return redirect(routes.ProfileController.show());
-
+        return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),
+                SessionController.getCurrentUser(request).getEmail()).thenApplyAsync(x -> {
+            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profile.getEmail());
+        }, httpExecutionContext.current());
     }
 
 

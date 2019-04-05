@@ -15,9 +15,10 @@ import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
 import views.html.createDestinations;
-import views.html.createUser;
+import views.html.login;
 import views.html.destinations;
 import views.html.edit;
+import controllers.LoginController.Login;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class DestinationsController extends Controller {
     private List<Destination> destinationsList = new ArrayList<>();
     private final Form<Destination> form;
     private final Form<Profile> userForm;
+    private final Form<Login> loginForm;
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
     private final TripRepository tripRepository;
@@ -56,6 +58,7 @@ public class DestinationsController extends Controller {
                                   ProfileRepository profileRepository, TripRepository tripRepository) {
         this.form = formFactory.form(Destination.class);
         this.userForm = formFactory.form(Profile.class);
+        this.loginForm = formFactory.form(Login.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
@@ -141,7 +144,7 @@ public class DestinationsController extends Controller {
     public Result saveDestination(Http.Request request) {
         Profile user = SessionController.getCurrentUser(request);
         if (user == null) {
-            return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
+            return ok(login.render(loginForm, userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination destination = destinationForm.value().get();
