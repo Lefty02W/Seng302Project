@@ -1,4 +1,4 @@
-@@import play.mvc.Http
+@import play.mvc.Http
 @import views.html.helper.CSRF
 
 @(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], currentUser: Profile, id: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
