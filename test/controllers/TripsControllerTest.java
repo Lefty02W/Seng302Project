@@ -20,9 +20,6 @@ import static play.test.Helpers.GET;
 
 public class TripsControllerTest extends ProvideApplication {
 
-    protected TripRepository tripRepository;
-    protected DestinationRepository destinationRepository;
-    protected TripDestinationsRepository tripDestinationsRepository;
 
 
     @Test
@@ -58,7 +55,7 @@ public class TripsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/214/edit")
+                .uri("/trips/1/edit")
                 .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -70,10 +67,13 @@ public class TripsControllerTest extends ProvideApplication {
     @Test
     public void deleteTripDestination() {
         loginUser();
+
+        boolean exists = tripDestinationsRepository.validate(3);
+        Assert.assertTrue(exists);
         //user deletes the 3rd tripDest
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/trips/edit/3/delete?id=214")
+                .uri("/trips/edit/3/delete?id=1")
                 .session("connected", "admin");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -84,20 +84,16 @@ public class TripsControllerTest extends ProvideApplication {
         formData.put("name", "yes");
         request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/trips/edit?id=214")
+                .uri("/trips/edit?id=1")
                 .bodyForm(formData)
                 .session("connected", "admin");
 
         result = Helpers.route(provideApplication(), request);
         assertEquals(303, result.status());
 
-
-    }
-
-
-    //@Test
-    public void addTripdestination() {
-
+        //should equal false as it is not deleted
+        //exists = tripDestinationsRepository.validate(3);
+        //Assert.assertFalse(exists);
 
     }
 
