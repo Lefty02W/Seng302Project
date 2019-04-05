@@ -1,7 +1,6 @@
 #viewCard {
-    height: 80vh;
+    height: 60vh;
 }
-
 
 #name {
     width: 20vw;
@@ -33,6 +32,31 @@ label {
     display: none;
 }
 
+.saveTripButton{
+    right: 0;
+    bottom: 0;
+    margin: 1vw;
+    position: fixed;
+}
+.button-back{
+    right: 170px;
+    bottom: 0;
+    margin:1vw;
+    position: fixed;
+}
 
+.tripNameInput{
+    display: block;
+    text-align: center;
+    margin-left: 40vw;
+    margin-bottom: 50px;
+}
+
+.delete-icon{
+    display: inline;
+}
+.contract-icon{
+    display: inline;
+}
 input[type=datetime-local] {
 }

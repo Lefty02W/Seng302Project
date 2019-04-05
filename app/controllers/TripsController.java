@@ -84,6 +84,19 @@ public class TripsController extends Controller {
         return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), currentUser, null, request, messagesApi.preferred(request)));
     }
 
+    /**
+     * loads the orderedCurrentDestinations and then redirects to load the trips/edit page
+     * (this solves the error of the destinations reloading once the last destination is deleted)
+     * @param id Interger of the trip (primary key)
+     */
+    public Result updateCurrentDestinations(Http.Request request, int id) {
+        Trip trip = tripRepository.getTrip(id);
+        if (orderedCurrentDestinations.isEmpty()){
+            System.out.println(trip.getDestinations().size());
+            orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
+        }
+        return redirect("/trips/"+id+"/edit");
+    }
 
     /**
      * Create and show Trip edit page
@@ -97,10 +110,6 @@ public class TripsController extends Controller {
         Profile currentUser = SessionController.getCurrentUser(request);
         Trip trip = tripRepository.getTrip(id);
         Form<Trip> tripForm = form.fill(trip);
-        if (orderedCurrentDestinations.isEmpty()){
-            System.out.println(trip.getDestinations().size());
-            orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
-        }
         return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), currentUser, id, request, messagesApi.preferred(request)));
     }
 
