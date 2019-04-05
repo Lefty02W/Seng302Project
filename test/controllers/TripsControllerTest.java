@@ -1,6 +1,7 @@
 package controllers;
 
 
+import org.junit.Assert;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -8,6 +9,9 @@ import play.test.Helpers;
 import repository.DestinationRepository;
 import repository.TripDestinationsRepository;
 import repository.TripRepository;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
@@ -62,9 +66,11 @@ public class TripsControllerTest extends ProvideApplication {
         assertEquals(OK, result.status());
     }
 
+
     @Test
     public void deleteTripDestination() {
         loginUser();
+        //user deletes the 3rd tripDest
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/trips/edit/3/delete?id=214")
@@ -73,18 +79,25 @@ public class TripsControllerTest extends ProvideApplication {
         Result result = Helpers.route(provideApplication(), request);
         assertEquals(303, result.status());
 
+        //and then clicks save
+        Map<String, String> formData = new HashMap<>();
+        formData.put("name", "yes");
         request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/trips/214/edit")
+                .method("POST")
+                .uri("/trips/edit?id=214")
+                .bodyForm(formData)
                 .session("connected", "admin");
 
         result = Helpers.route(provideApplication(), request);
+        assertEquals(303, result.status());
 
-        assertEquals(OK, result.status());
+
     }
 
-    @Test
-    public void checkTripDestDoesntExist() {
+
+    //@Test
+    public void addTripdestination() {
+
 
     }
 
