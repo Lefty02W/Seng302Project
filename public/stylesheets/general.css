@@ -15,6 +15,10 @@
     padding-left: 40px;
 }
 
+body {
+    background-color: #1F1F1F;
+}
+
 /* Style for a large card */
 .card-large {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -87,7 +91,7 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 
 button {
-    background-color: #4CAF50;
+    background-color: #37623B;
     color: white;
     padding: 10px 18px;
     margin: 8px 0;
@@ -97,7 +101,7 @@ button {
 }
 
 .button-edit {
-    background-color: #4CAF50;
+    background-color: #37623B;
     color: white;
     padding: 10px 18px;
     margin: 8px 0;
@@ -192,7 +196,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Active/current link */
 .sidebar a.active {
-    background-color: #4CAF50;
+    background-color: #37623B;
     color: white;
 }
 
@@ -263,4 +267,12 @@ div.dataTables_filter {
 
 .alert-card {
     opacity: 0.95;
+}
+
+.topbar-dark{
+    background-color: #191919;
+}
+
+.container-fluid{
+    border-color: red;
 }
