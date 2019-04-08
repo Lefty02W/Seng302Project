@@ -8,6 +8,8 @@ body {
 }
 
 #sidebar-wrapper {
+    position: fixed;
+    z-index: 0; /*change to 1 before commit */
     min-height: 100vh;
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
