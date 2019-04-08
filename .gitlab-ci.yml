@@ -34,26 +34,40 @@ release-artifacts:
 
 deploy-dev:
   stage: deploy
-
   script:
     - echo "Deploy to development server"
     - sbt dist
     - cd /var/lib/gitlab-runner/builds/cc082478/0/seng302-2019/team-700/target/universal
     - ls
-    - echo $CI_
+    - echo $CI_ENVIRONMENT_SLUG
+    - echo $CI_COMMIT_REF_NAME
     - unzip seng302-team-700-0.0.1-SNAPSHOT.zip
     - cd seng302-team-700-0.0.1-SNAPSHOT/bin
     - chmod +x seng302-team-700
     - nohup ./seng302-team-700 -Dhttp.port=8080 -Dhttp.address=132.181.16.17 &
-  when: manual
   environment:
     name: development
     url: http://csse-s302g7.canterbury.ac.nz:8080
+    on_stop: stop_dev
+  when: manual
 
   only:
     #For now only deploy when committing from the test branch.
     #TODO change to master branch when working.
   - dedicatedServerTest@seng302-2019/team-700
+
+stop_dev:
+  stage: deploy
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "Remove deployed development instance"
+    - exit
+  when: manual
+  environment:
+    name: development
+    action: stop
+
 
 #deploy-prod:
 #
