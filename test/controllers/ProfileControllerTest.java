@@ -12,6 +12,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
+import org.junit.Test;
 
 /**
  * Test Set for profile controller
@@ -45,13 +46,14 @@ public class ProfileControllerTest extends ProvideApplication{
                 .uri("/profile/admin@admin.com/editDestinations")
                 .session("connected", "admin@admin.com");
 
-        Result result = Helpers.route(provideApplication(),request);
+        Result result = Helpers.route(provideApplication(), request);
+    }
 
 
     /**
      * Testing profile POST endpoint /profile
      */
-   // @Test
+    //@Test
     public void update() {
         loginUser();
         Map<String, String> profileData = new HashMap<>();
