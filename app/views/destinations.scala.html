@@ -29,7 +29,7 @@
 
     <body>
 
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
@@ -47,20 +47,22 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
-                    <h2>Destinations</h2> <!-- TODO align this in the center -->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
+                        <h2> Destinations</h2> <!-- TODO align this in the center -->
+                    </div>
                 </nav>
 
-                @if(request.flash.containsKey("success")) {
+                @if(request.flash.getOptional("success").isPresent) {
                     <div class="alert alert-success">
-                    @request.flash.get("success")
+                    @request.flash.getOptional("success").get()
                     </div>
                 }
 
-                @if(request.flash.containsKey("failure")) {
-                    <div class="alert alert-danger">
-                    @request.flash.get("failure")
+                @if(request.flash.getOptional("failure").isPresent) {
+                    <div class="alert alert-failure">
+                    @request.flash.getOptional("failure").get()
                     </div>
                 }
 

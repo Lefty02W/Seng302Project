@@ -16,7 +16,7 @@ import static play.test.Helpers.GET;
 /**
  * Test Set for profile controller
  */
-public class ProfileControllerTest extends  ProvideApplication{
+public class ProfileControllerTest extends ProvideApplication{
 
     private Application app;
 
@@ -47,19 +47,18 @@ public class ProfileControllerTest extends  ProvideApplication{
 
         Result result = Helpers.route(provideApplication(),request);
 
-        assertEquals(200, result.status());
-    }
 
     /**
      * Testing profile POST endpoint /profile
      */
    // @Test
     public void update() {
+        loginUser();
         Map<String, String> profileData = new HashMap<>();
         profileData.put("firstName", "admin");
         profileData.put("middleName", "admin");
         profileData.put("lastName", "admin");
-        profileData.put("email", "admin");
+        profileData.put("email", "admin@admin.com");
         profileData.put("birthDate", "2016-05-08");
         profileData.put("gender", "male");
         profileData.put("travellerTypes", "Backpacker");
