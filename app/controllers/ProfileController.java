@@ -77,7 +77,7 @@ public class ProfileController extends Controller {
      * Method to retrieve a users profile details and return a filled form to be edited.
      *
      * @param email String of the users email
-     * @return a render of the edit profile page
+     * @return a render of the editDestinations profile page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showEdit (String email){

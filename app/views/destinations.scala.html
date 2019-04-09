@@ -47,7 +47,7 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
                     <div id="pageTitle">
                         <h2> Destinations</h2> <!-- TODO align this in the center -->
@@ -93,7 +93,7 @@
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
                                     @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                         @CSRF.formField
-                                        <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button> </td>
+                                        <td> <button type="submit" class="button-editDestinations" style="height:4vh">Edit</button> </td>
                                     }
                                     @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                         @CSRF.formField

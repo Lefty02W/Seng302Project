@@ -86,7 +86,7 @@ public class TripsController extends Controller {
      *
      * @param request Http request
      * @param id Integer id of the trip (primary key)
-     * @return a render of the edit trips page
+     * @return a render of the editDestinations trips page
      */
     @Security.Authenticated(SecureSession.class)
     public Result showEdit(Http.Request request, Integer id) {
@@ -101,7 +101,7 @@ public class TripsController extends Controller {
 
 
     /**
-     * create edit trip destination forms and page
+     * create editDestinations trip destination forms and page
      *
      * @param request Http request
      * @param order The integer positioning of the destinations
@@ -187,7 +187,7 @@ public class TripsController extends Controller {
      *
      * @param request Http request
      * @param id Integer id of the trip (primary key)
-     * @return redirection tot he edit page
+     * @return redirection tot he editDestinations page
      */
     @Security.Authenticated(SecureSession.class)
     public Result addDestinationEditTrip(Http.Request request, int id) {
@@ -197,11 +197,11 @@ public class TripsController extends Controller {
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
         if(orderedCurrentDestinations.size() >= 1) {
             if (orderInvalidInsert(tripDestination)) {
-                return redirect("/trips/"+id+"/edit").flashing("info", "The same destination cannot be after itself in a trip");
+                return redirect("/trips/"+id+"/editDestinations").flashing("info", "The same destination cannot be after itself in a trip");
             }
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
-        return redirect("/trips/"+id+"/edit");
+        return redirect("/trips/"+id+"/editDestinations");
     }
 
 
@@ -228,7 +228,7 @@ public class TripsController extends Controller {
 
 
     /**
-     * Saving the edit of a trip
+     * Saving the editDestinations of a trip
      *
      * @param request Http request
      * @param id Integer primary key of the trip
@@ -241,7 +241,7 @@ public class TripsController extends Controller {
         Profile currentUser = SessionController.getCurrentUser(request);
         trip.setEmail(currentUser.getEmail());
         if (orderedCurrentDestinations.size() < 2){
-            return redirect("/trips/"+id+"/edit").flashing("info", "A trip must have at least two destinations");
+            return redirect("/trips/"+id+"/editDestinations").flashing("info", "A trip must have at least two destinations");
         } else {
             // TODO refactor once task 1 / 2 of simple trips is done
             tripRepository.delete(id);
@@ -272,7 +272,7 @@ public class TripsController extends Controller {
      * @param request Http request
      * @param tripId Integer primary key of a trip
      * @param oldLocation The old destination location saved under a trip
-     * @return redirects to the edit trip page
+     * @return redirects to the editDestinations trip page
      */
     @Security.Authenticated(SecureSession.class)
     public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation) {
@@ -286,14 +286,14 @@ public class TripsController extends Controller {
             tripDestination.setDestOrder(order);
             boolean insertValid = orderInvalidInsert(tripDestination);
             if (deleteValid || insertValid) {
-                return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+                return redirect("/trips/" + tripId + "/editDestinations").flashing("info", "The same destination cannot be after itself in a trip");
             }
             removeTripDestination(oldLocation);
             insertTripDestination(tripDestination, tripDestination.getDestOrder());
-            return redirect("/trips/" + tripId + "/edit");
+            return redirect("/trips/" + tripId + "/editDestinations");
         }
         orderedCurrentDestinations.put(order, tripDestination);
-        return redirect("/trips/" + tripId + "/edit");
+        return redirect("/trips/" + tripId + "/editDestinations");
     }
 
     /**
@@ -333,21 +333,21 @@ public class TripsController extends Controller {
     }
 
     /**
-     * Delete destinations in the edit page
+     * Delete destinations in the editDestinations page
      *
      * @param request Http request
      * @param order The integer of the positioning of the destinations
      * @param tripId Integer primary key of a trip
-     * @return redirection to the edit page
+     * @return redirection to the editDestinations page
      */
     @Security.Authenticated(SecureSession.class)
     public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
         if (orderInvalidDelete(orderedCurrentDestinations.get(order)) ) {
-            return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/" + tripId + "/editDestinations").flashing("info", "The same destination cannot be after itself in a trip");
         }
         removeTripDestination(order);
         showEmptyEdit = true;
-        return redirect("/trips/" + tripId + "/edit");
+        return redirect("/trips/" + tripId + "/editDestinations");
     }
 
 

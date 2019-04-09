@@ -75,7 +75,7 @@ public class DestinationRepository {
     /**
      * Updates a destination in the database
      * @param newDestination The new info to change the destination to
-     * @param Id The ID of the destination to edit
+     * @param Id The ID of the destination to editDestinations
      * @return
      */
     public CompletionStage<Optional<String>> update(Destination newDestination, Integer Id) {

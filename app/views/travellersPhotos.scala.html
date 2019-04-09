@@ -29,7 +29,7 @@
 
     <body>
             <!-- Wrapper for the page -->
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex toggled" id="wrapper">
 
                 <!-- The sidebar -->
             <div id="sidebar-wrapper">
@@ -45,8 +45,10 @@
                 <!-- The content of the page -->
             <div id="page-content-wrapper">
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
                     <h2>Travellers</h2> <!-- TODO align this in the center -->
+                    </div>
                 </nav>
                 <div class="container-fluid">
                     @if(imageList.isEmpty) {

@@ -45,8 +45,10 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
                     <h2>Trips</h2> <!-- TODO align this in the center -->
+                    </div>
                 </nav>
                 <div class="container-fluid">
                     <div class="row">
@@ -71,7 +73,7 @@
                                             <td>@currentUser.getTripById(trip).getDestinationNames</td>
                                             @helper.form(routes.TripsController.showEdit(trip)) {
                                                 @CSRF.formField
-                                                <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
+                                                <td> <button type="submit" class="button-editDestinations" style="height:4vh">Edit</button>
 
                                             }
                                             <a href="@routes.TripsController.delete(trip)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>

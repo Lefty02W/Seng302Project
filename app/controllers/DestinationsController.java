@@ -17,7 +17,7 @@ import repository.TripRepository;
 import views.html.createDestinations;
 import views.html.login;
 import views.html.destinations;
-import views.html.edit;
+import views.html.editDestinations;
 import controllers.LoginController.Login;
 
 import javax.inject.Inject;
@@ -100,7 +100,7 @@ public class DestinationsController extends Controller {
     }
 
     /**
-     * This method displays the edit page for the destinations to the user
+     * This method displays the editDestinations page for the destinations to the user
      *
      * @param request
      * @param id
@@ -116,14 +116,14 @@ public class DestinationsController extends Controller {
             }
         }
         Form<Destination> destinationForm = form.fill(destination);
-        return ok(edit.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
+        return ok(editDestinations.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
     }
 
     /**
      * This method updates destination in the database
      *
      * @param request
-     * @param id      The ID of the destination to edit.
+     * @param id      The ID of the destination to editDestinations.
      * @return
      */
     @Security.Authenticated(SecureSession.class)

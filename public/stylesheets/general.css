@@ -16,7 +16,7 @@
 }
 
 body {
-    background-color: #1F1F1F;
+    background-color: white;
 }
 
 /* Style for a large card */
@@ -136,7 +136,7 @@ button {
 }
 
 
-h1, h2, h3, h4, h5, h6 {
+h3, h4, h5, h6 {
     color: #ca6636;
 }
 
@@ -274,7 +274,9 @@ div.dataTables_filter {
 }
 
 .topbar-dark{
-    background-color: #191919;
+    z-index: 1;
+    color: #ede1d1;
+    background-color: #37623B;
 }
 
 .container-fluid{

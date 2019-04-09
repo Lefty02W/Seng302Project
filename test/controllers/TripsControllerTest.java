@@ -52,7 +52,7 @@ public class TripsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/1/edit")
+                .uri("/trips/1/editDestinations")
                 .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -70,7 +70,7 @@ public class TripsControllerTest extends ProvideApplication {
         //user deletes the 3rd tripDest
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/trips/edit/3/delete?id=1")
+                .uri("/trips/editDestinations/3/delete?id=1")
                 .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -81,7 +81,7 @@ public class TripsControllerTest extends ProvideApplication {
         formData.put("name", "yes");
         request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/trips/edit?id=1")
+                .uri("/trips/editDestinations?id=1")
                 .bodyForm(formData)
                 .session("connected", "admin");
 

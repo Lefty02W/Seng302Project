@@ -28,7 +28,7 @@
         <title>TravelEA | Trips</title>
     </head>
     <body>
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
@@ -47,8 +47,10 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
                     <h2>Trips</h2> <!-- TODO align this in the center -->
+                    </div>
                 </nav>
                 <div class="row">
                     @helper.form(routes.TripsController.saveEdit(id)) {
@@ -57,7 +59,7 @@
                         @helper.inputText(tripForm("name"), '_label -> "Trip Name:", '_help -> "")
                         </div>
                         <button type="submit" class="saveTripButton" id="save">Save trip</button>
-                    } <!-- close tag for edit form-->
+                    } <!-- close tag for editDestinations form-->
                 </div>
                 <div class="container-fluid">
                 @helper.form(routes.TripsController.addDestinationEditTrip(id)) {
