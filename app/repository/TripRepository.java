@@ -3,6 +3,7 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
+import io.ebean.Transaction;
 import models.Destination;
 import models.Trip;
 import models.TripDestination;
@@ -53,10 +54,13 @@ public class TripRepository {
     public CompletionStage<Integer> insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
         //TODO transactions
         return supplyAsync(() -> {
-            ebeanServer.insert(trip);
-            for (TripDestination tripDestination : tripDestinations) {
-                tripDestination.setTripId(trip.getId());
-                ebeanServer.insert(tripDestination);
+            try (Transaction txn = ebeanServer.beginTransaction()) {
+                ebeanServer.insert(trip);
+                for (TripDestination tripDestination : tripDestinations) {
+                    tripDestination.setTripId(trip.getId());
+                    ebeanServer.insert(tripDestination);
+                }
+                txn.commit();
             }
             return trip.getId();
         }, executionContext);
