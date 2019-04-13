@@ -50,15 +50,16 @@ public class TripRepository {
      * @param trip
      * @param tripDestinations
      */
-    public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
-        //TODO maybe look into async again
-        //TODO transactions pls
-        ebeanServer.insert(trip);
-        for (TripDestination tripDestination : tripDestinations) {
-            tripDestination.setTripId(trip.getId());
-            ebeanServer.insert(tripDestination);
-        }
-
+    public CompletionStage<Integer> insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
+        //TODO transactions
+        return supplyAsync(() -> {
+            ebeanServer.insert(trip);
+            for (TripDestination tripDestination : tripDestinations) {
+                tripDestination.setTripId(trip.getId());
+                ebeanServer.insert(tripDestination);
+            }
+            return trip.getId();
+        }, executionContext);
     }
 
 
