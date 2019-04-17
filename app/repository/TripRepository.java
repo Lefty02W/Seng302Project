@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.concurrent.CompletionStage;
+import repository.TripDestinationsRepository;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -26,11 +27,13 @@ public class TripRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
+    private final TripDestinationsRepository tripDestinationsRepository;
 
     @Inject
-    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
+    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, TripDestinationsRepository tripDestinationsRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
+        this.tripDestinationsRepository = tripDestinationsRepository;
     }
 
     /**
@@ -47,12 +50,51 @@ public class TripRepository {
 
 
     /**
+     * Edit a trip in the database
+     * @param trip
+     * @param tripId
+     * @param tripDestinations
+     */
+    public CompletionStage<Integer> update(Trip trip, Integer tripId, ArrayList<TripDestination> tripDestinations) {
+        return supplyAsync(() -> {
+            try (Transaction txn = ebeanServer.beginTransaction()) {
+                Trip tripEdit = ebeanServer.find(Trip.class).setId(tripId).findOne();
+                if (tripEdit != null) {
+                    tripEdit.setName(trip.getName());
+                    tripEdit.setEmail(trip.getEmail());
+                    ArrayList<TripDestination> originalTripDests = tripEdit.getDestinations();
+                    int i;
+                    for (i = 0; i < tripDestinations.size() && i < originalTripDests.size(); i++) {
+                        tripDestinations.get(i).setTripId(trip.getId());
+                        tripDestinationsRepository.editTrip(tripDestinations.get(i), originalTripDests.get(i).getTripDestinationId());
+                    }
+                    if (i + 1 < tripDestinations.size()) {
+                        for (i++; i < tripDestinations.size(); i++) {
+                            tripDestinations.get(i).setTripId(trip.getId());
+                            tripDestinationsRepository.insert(tripDestinations.get(i));
+                        }
+                    } else if (i + 1 < originalTripDests.size()) {
+                        for (i++; i < originalTripDests.size(); i++) {
+                            tripDestinationsRepository.delete(originalTripDests.get(i).getTripDestinationId());
+                        }
+                    }
+                    tripEdit.setDestinations(trip.getDestinations());
+                    tripEdit.setOrderedDestiantions(trip.getOrderedDestiantions());
+                    tripEdit.update();
+                    txn.commit();
+                }
+                txn.commit();
+            }
+            return trip.getId();
+        }, executionContext);
+    }
+
+    /**
      * insert trip into database
      * @param trip
      * @param tripDestinations
      */
     public CompletionStage<Integer> insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
-        //TODO transactions
         return supplyAsync(() -> {
             try (Transaction txn = ebeanServer.beginTransaction()) {
                 ebeanServer.insert(trip);

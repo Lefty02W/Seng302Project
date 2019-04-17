@@ -119,10 +119,10 @@
                                                 <td>@tripDestination.getDeparture</td>
                                                 <td>@tripDestination.getArrival</td>
                                                 <td> <!--onclick="fillModal(this)-->
-                                                    <a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder)">
+                                                    <a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder, id)">
                                                         <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
                                                     </a>
-                                                    <a href="@routes.TripsController.deleteDestination(tripDestination.getDestOrder)">
+                                                    <a href="@routes.TripsController.deleteDestinationEditTrip(tripDestination.getDestOrder, tripDestination.getTripDestinationId)">
                                                         <input type="image" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
                                                     </a>
                                                 </td>

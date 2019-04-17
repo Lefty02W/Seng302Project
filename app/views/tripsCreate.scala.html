@@ -125,7 +125,7 @@
                                         <td>@tripDestination.getArrival</td>
                                         <td>@tripDestination.getDeparture</td>
                                         <td>
-                                            <a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder)">
+                                            <a href="@routes.TripsController.createTripDestinationCreate(tripDestination.getDestOrder)">
                                                 <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
                                             </a>
                                             <a href="@routes.TripsController.deleteDestination(tripDestination.getDestOrder)">
@@ -248,7 +248,7 @@
                 } else if (tripName.length === 0) {
                     alert("Please enter a trip name");
                 } else {
-                    // Send data to controller here to create te trip and add to table
+                    // Send data to controller here to create the trip and add to table
 
                     table
                             .clear()

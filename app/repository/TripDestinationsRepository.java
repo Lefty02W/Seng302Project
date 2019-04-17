@@ -45,7 +45,7 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
-    public CompletionStage<Integer> edit(TripDestination tripDestination, int tripDestinationId) {
+    public CompletionStage<Integer> editTrip(TripDestination tripDestination, int tripDestinationId) {
         return supplyAsync(() -> {
             try (Transaction txn = ebeanServer.beginTransaction()) {
                 TripDestination tripDestEdit = ebeanServer.find(TripDestination.class).setId(tripDestinationId).findOne();
@@ -55,7 +55,7 @@ public class TripDestinationsRepository {
                     tripDestEdit.setDestination(tripDestination.getDestination());
                     tripDestEdit.setDestinationId(tripDestination.getDestinationId());
                     tripDestEdit.setDestOrder(tripDestination.getDestOrder());
-                    tripDestEdit.setTripDestinationId(tripDestination.getTripDestinationId());
+                    //tripDestEdit.setTripDestinationId(tripDestination.getTripDestinationId());
                     tripDestEdit.setTripId(tripDestination.getTripId());
                     tripDestEdit.update();
                     txn.commit();

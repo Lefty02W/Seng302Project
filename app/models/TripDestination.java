@@ -44,7 +44,7 @@ public class TripDestination extends Model {
      * @param destinationId
      * @param arrival
      * @param departure
-     * @param dest_order
+     * @param destOrder
      */
     public TripDestination(int destinationId, Date arrival, Date departure, int destOrder) {
         this.destinationId = destinationId;
