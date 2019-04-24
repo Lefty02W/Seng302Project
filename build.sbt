@@ -27,7 +27,8 @@ libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
-javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
+scalacOptions += Seq("-target:jvm-1.8")
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-bootclasspath", "/usr/lib/jvm/java-8-oracle/rt.jar", "-Xlint")
 
 initialize := {
   val _ = initialize.value
@@ -35,4 +36,4 @@ initialize := {
     sys.error("Java 8 is required for this project.")
 }
 
-scalacOptions := Seq("-target:jvm-1.8")
+
