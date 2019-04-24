@@ -27,7 +27,7 @@ libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
-javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "Xlint")
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint")
 
 initialize := {
   val _ = initialize.value
