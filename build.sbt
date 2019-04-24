@@ -27,7 +27,8 @@ libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
 
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
-scalacOptions += Seq("-target:jvm-1.8")
+
+scalacOptions += "-target:jvm-1.8"
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-bootclasspath", "/usr/lib/jvm/java-8-oracle/rt.jar", "-Xlint")
 
 initialize := {
