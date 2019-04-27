@@ -24,8 +24,8 @@ recent-artifacts:
 release-artifacts:
  stage: deploy
  script:
-    - export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
-    - export PATH=$PATH:/usr/lib/jvm/java-8-oracle/bin
+#    - export JAVA_HOME="/usr/lib/jvm/java-8-oracle"
+#    - export PATH=$PATH:/usr/lib/jvm/java-8-oracle/bin
     - sbt dist
  artifacts:
     paths:
