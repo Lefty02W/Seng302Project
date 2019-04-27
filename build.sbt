@@ -3,8 +3,6 @@ name := "SENG302 TEAM 700"
 version := "0.0.1-SNAPSHOT"
 
 scalaVersion := "2.12.8"
-scalacOptions += "-target:jvm-1.8"
-javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
 lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
 
