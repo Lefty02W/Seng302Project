@@ -90,7 +90,7 @@ public class ProfileController extends Controller {
             }
         }, httpExecutionContext.current());
     }
-            //TODO: Delete all profile
+
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form
@@ -106,7 +106,6 @@ public class ProfileController extends Controller {
 
         // Could improve on this
         profile.setNationalities(profile.getNationalities().replaceAll("\\s",""));
-        profile.setTravellerTypes(profile.getTravellerTypes().replaceAll("\\s",""));
         profile.setPassports(profile.getPassports().replaceAll("\\s",""));
 
         return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),

@@ -100,7 +100,7 @@ public class EditProfileSteps extends ProvideApplication {
             fail();
         }
         assertEquals("Jenny", profile.getFirstName());
-        assertEquals("Backpacker,Thrillseeker", profile.getTravellerTypes());
+        assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypes());
         assertEquals("Max", profile.getMiddleName());
     }
     // Scenario: I can perform an edit of my profile - end
@@ -134,6 +134,6 @@ public class EditProfileSteps extends ProvideApplication {
         if (profile == null) {
             fail();
         }
-        assertEquals("Backpacker,Thrillseeker", profile.getTravellerTypes());
+        assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypes());
     }
 }
