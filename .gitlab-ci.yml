@@ -10,9 +10,11 @@ junit:
   script:
     - sudo update-java-alternatives --set java-8-oracle
     - sbt jacoco
-    - mkdir jacoco
-    - cp -r target/scala-2.12/jacoco/report/test jacoco
     - sudo update-java-alternatives --set java-1.11.0-openjdk-amd64
+  artifacts:
+    paths:
+      - target/scala-2.12/classes/
+      - target/scala-2.12/jacoco/data/jacoco.exec
 
 #coverage:
 #  stage: deploy
