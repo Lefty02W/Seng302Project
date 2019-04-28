@@ -8,9 +8,11 @@ tag_checker:
 junit:
   stage: test
   script:
+    - update-java-alternatives --set java-8-oracle
     - sbt jacoco
     - mkdir jacoco
     - cp -r target/scala-2.12/jacoco/report/test jacoco
+    - update-java-alternatives --set java-1.11.0-openjdk-amd64
 
 #coverage:
 #  stage: deploy
