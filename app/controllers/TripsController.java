@@ -14,7 +14,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.TripDestinationsRepository;
 import repository.TripRepository;
-import views.html.trips;
+import views.html.tripsCard;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
 
@@ -60,7 +60,7 @@ public class TripsController extends Controller {
     public Result show(Http.Request request) {
         currentDestinationsList.clear();
         ArrayList<Trip> tripsList = SessionController.getCurrentUser(request).getTrips();
-        return ok(trips.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
+        return ok(tripsCard.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
     }
 
 
