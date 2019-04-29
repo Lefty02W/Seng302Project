@@ -94,20 +94,28 @@ public class TripRepository {
      * @param trip
      * @param tripDestinations
      */
-    public CompletionStage<Integer> insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
-        return supplyAsync(() -> {
-            try (Transaction txn = ebeanServer.beginTransaction()) {
-                ebeanServer.insert(trip);
-                for (TripDestination tripDestination : tripDestinations) {
-                    tripDestination.setTripId(trip.getId());
-                    ebeanServer.insert(tripDestination);
-                }
-                txn.commit();
-            }
-            return trip.getId();
-        }, executionContext);
-    }
+    public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
+        // make it return ---  CompletionStage<Integer>  --- instead of void
+       // return supplyAsync(() -> {
+            //try (Transaction txn = ebeanServer.beginTransaction()) {
+               // ebeanServer.insert(trip);
+                //for (TripDestination tripDestination : tripDestinations) {
+             //       tripDestination.setTripId(trip.getId());
+           //         ebeanServer.insert(tripDestination);
+               // }
+             //   txn.commit();
+            //}
+         //   return trip.getId();
+      //  }, executionContext);
 
+//old insert
+    ebeanServer.insert(trip);
+    for (TripDestination tripDestination : tripDestinations) {
+            tripDestination.setTripId(trip.getId());
+            ebeanServer.insert(tripDestination);
+
+            }
+    }
 
 
     /**
