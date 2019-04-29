@@ -8,7 +8,7 @@ tag_checker:
 junit:
   stage: test
   script:
-    - jav
+    - sudo update-java-alternatives --set java-8-oracle
     - sbt jacoco
     - sudo update-java-alternatives --set java-1.11.0-openjdk-amd64
   artifacts:
