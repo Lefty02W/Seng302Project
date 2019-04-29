@@ -38,6 +38,10 @@ input[type=datetime-local] {
 }
 
 #trip-card {
-    max-height: 50vh;
-    max-width: 30vw;
+    height: 45vh;
+    width: 25vw;
+}
+
+.card-border {
+    background-color: #376238;
 }

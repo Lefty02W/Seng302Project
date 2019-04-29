@@ -1,8 +1,7 @@
 @import play.mvc.Http
-@import views.html.helper.CSRF
 @(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
 
-@import helper._
+
 
 
 
@@ -54,39 +53,43 @@
                 </nav>
                 <div class="container-fluid">
                     <div class="row">
-                           <div class="card" id="trip-card">
                            @for(trip <- trips) {
-                                   <div class="card-header"> <!-- Change to the dark green -->
-                                       <h3>@trip.getName</h3>
+                               <div class="col" align="center">
+                                   <div class="card" id="trip-card">
+
+                                       <div class="card-header card-border"> <!-- Change to the dark green -->
+                                           <h3>@trip.getName</h3>
+                                       </div>
+
+                                       <div class="card-body overflow-auto">  <!-- Sort out min/max height and width for resizing -->
+                                           <table id="destinationsTable" class="destinationsTable">
+                                               <thead>
+                                                   <tr>
+                                                       <th>Destination Name</th>
+                                                       <th>Departure Time</th>
+                                                       <th>Arrival Time</th>
+                                               </thead>
+                                               @for(tripDestination <- trip.getDestinations) {
+                                                   <tr>
+                                                       <td>@tripDestination.getDestinationName</td>
+                                                       <td>@tripDestination.getDeparture</td>
+                                                       <td>@tripDestination.getArrival</td>
+                                                   </tr>
+                                               }
+
+                                           </table>
+                                       </div>
+
+                                       <div class="card-footer card-border"> <!-- Change to the dark green -->
+                                           <button>Edit</button>  <!-- Need to change to the correct style of button -->
+                                           <button>Delete</button>
+                                       </div>
                                    </div>
-
-                                   <div class="card-body">  <!-- Sort out min/max height and width for resizing -->
-                                       <table id="destinationsTable" class="destinationsTable">
-                                           <thead>
-                                               <tr>
-                                                   <th>Destination Name</th>
-                                                   <th>Departure Time</th>
-                                                   <th>Arrival Time</th>
-                                           </thead>
-                                           @for(tripDestination <- trip.getDestinations) {
-                                               <tr>
-                                                   <td>@tripDestination.getDestinationName</td>
-                                                   <td>@tripDestination.getDeparture</td>
-                                                   <td>@tripDestination.getArrival</td>
-                                               </tr>
-                                           }
-
-                                       </table>
-
-                                   </div>
-
-                                   <div class="card-footer"> <!-- Change to the dark green -->
-                                       <button>Edit</button>  <!-- Need to change to the correct style of button -->
-                                       <button>Delete</button>
-                                   </div>
+                               </div>
                                }
-                        </div>
+
                     </div>
+
                     <div class="row">
                         <div class="col">
                             <a href="@routes.TripsController.showCreate()"> <button id="addTripButton" type="button" class="button-add">
