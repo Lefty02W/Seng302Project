@@ -8,6 +8,7 @@ import models.Destination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -40,6 +41,19 @@ public class DestinationRepository {
      */
     public CompletionStage<Optional<Destination>> lookup(int destID) {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Destination.class).setId(destID).findOne()), executionContext);
+    }
+
+    /**
+     * Get the users destination list
+     * @param email
+     * @return destinations, list of all user destination
+     */
+    public ArrayList<Destination> getUserDestinations(String email) {
+        ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+                .where()
+                .eq("user_email", email)
+                .findList());
+        return destinations;
     }
 
     /**

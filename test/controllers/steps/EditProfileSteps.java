@@ -66,7 +66,7 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("firstName", string);
     }
 
-    @When("I change my traveller types to {string}")
+    @When("I change my traveller type s to {string}")
     public void iChangeMyTravellerTypesTo(String string) {
         editForm.put("travellerTypes", string);
     }
