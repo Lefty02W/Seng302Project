@@ -2,6 +2,7 @@ package controllers;
 
 import com.google.common.collect.TreeMultimap;
 import com.google.inject.Inject;
+import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -245,12 +246,14 @@ public class TripsController extends Controller {
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         int order = tripDestination.getDestOrder();
         if(orderedCurrentDestinations.size() >= 1 && order != oldLocation) {
-            tripDestination.setDestOrder(oldLocation);
-            boolean deleteValid = orderInvalidDelete(tripDestination);
-            tripDestination.setDestOrder(order);
-            boolean insertValid = orderInvalidInsert(tripDestination);
-            if (deleteValid || insertValid) {
-                return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+            if(orderOneInvalid(tripDestination, oldLocation)) {
+                tripDestination.setDestOrder(oldLocation);
+                boolean deleteValid = orderInvalidDelete(tripDestination);
+                tripDestination.setDestOrder(order);
+                boolean insertValid = orderInvalidInsert(tripDestination);
+                if (deleteValid || insertValid) {
+                    return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+                }
             }
             removeTripDestination(oldLocation);
             insertTripDestination(tripDestination, tripDestination.getDestOrder());
@@ -258,6 +261,38 @@ public class TripsController extends Controller {
         }
         orderedCurrentDestinations.put(order, tripDestination);
         return redirect("/trips/" + tripId + "/edit");
+    }
+
+    private boolean orderOneInvalid(TripDestination tripDestination, Integer oldLocation) {
+        int order = tripDestination.getDestOrder();
+        if (order == oldLocation + 1) {
+            if (orderedCurrentDestinations.get(order + 1) != null) {
+                if (orderedCurrentDestinations.get(oldLocation).getDestinationId() == orderedCurrentDestinations.get(order + 1).getDestinationId()) {
+                    return true;
+                }
+            }
+            if (orderedCurrentDestinations.get(oldLocation - 1) != null) {
+                if (orderedCurrentDestinations.get(oldLocation - 1).getDestinationId() == orderedCurrentDestinations.get(order).getDestinationId()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (order == oldLocation - 1) {
+            if (orderedCurrentDestinations.get(order - 1) != null) {
+                if (orderedCurrentDestinations.get(oldLocation).getDestinationId() == orderedCurrentDestinations.get(order - 1).getDestinationId()) {
+
+                    return true;
+                }
+            }
+            if (orderedCurrentDestinations.get(oldLocation + 1) != null) {
+                if (orderedCurrentDestinations.get(oldLocation + 1).getDestinationId() == orderedCurrentDestinations.get(order).getDestinationId()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
