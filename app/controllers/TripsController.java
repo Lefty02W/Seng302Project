@@ -96,7 +96,7 @@ public class TripsController extends Controller {
         if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
             orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
         }
-        return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), currentUser, id, request, messagesApi.preferred(request)));
+        return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), currentUser, id, null, request, messagesApi.preferred(request)));
     }
 
 
@@ -250,14 +250,14 @@ public class TripsController extends Controller {
             tripDestination.setDestOrder(order);
             boolean insertValid = orderInvalidInsert(tripDestination);
             if (deleteValid || insertValid) {
-                return redirect("/trips/" + tripId + "/editDestinations").flashing("info", "The same destination cannot be after itself in a trip");
+                return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
             }
             removeTripDestination(oldLocation);
             insertTripDestination(tripDestination, tripDestination.getDestOrder());
-            return redirect("/trips/" + tripId + "/editDestinations");
+            return redirect("/trips/" + tripId + "/edit");
         }
         orderedCurrentDestinations.put(order, tripDestination);
-        return redirect("/trips/" + tripId + "/editDestinations");
+        return redirect("/trips/" + tripId + "/edit");
     }
 
     /**
@@ -319,9 +319,9 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result editTripDestinationCreate(Http.Request request, Integer order, Integer id) {
-        //TripDestination dest = orderedCurrentDestinations.get(order);
+        TripDestination dest = orderedCurrentDestinations.get(order);
         Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), currentUser, id, request, messagesApi.preferred(request)));
+        return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), currentUser, id, dest, request, messagesApi.preferred(request)));
     }
 
 

@@ -71,12 +71,14 @@
                                                 @currentUser.getTripById(trip).getStartDateString</td>
                                             <td>@currentUser.getTripById(trip).getDestinations.size()</td>
                                             <td>@currentUser.getTripById(trip).getDestinationNames</td>
-                                            @helper.form(routes.TripsController.showEdit(trip)) {
-                                                @CSRF.formField
-                                                <td> <button type="submit" class="button-editDestinations" style="height:4vh">Edit</button>
-
-                                            }
-                                            <a href="@routes.TripsController.delete(trip)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>
+                                            <td>
+                                                <a href="@routes.TripsController.showEdit(trip)" >
+                                                    <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon">
+                                                </a>
+                                                <a href="@routes.TripsController.delete(trip)">
+                                                    <input type="image" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
+                                                </a>
+                                            </td>
                                         </tr>
                                     }
                                 </table>
