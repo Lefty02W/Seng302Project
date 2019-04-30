@@ -206,9 +206,11 @@ public class TripsController extends Controller {
             return redirect("/trips/"+id+"/editDestinations").flashing("info", "A trip must have at least two destinations");
         } else {
             // TODO refactor once task 1 / 2 of simple trips is done
-            tripRepository.delete(id);
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
-            tripRepository.insert(trip, tripDestinations);
+            tripRepository.update(trip, id, tripDestinations);
+
+            //tripRepository.insert(trip, tripDestinations);
+            //tripRepository.insert(trip, tripDestinations);
             // TODO put redirect inside a thenApplyAsync
             return redirect("/trips");
         }
@@ -342,6 +344,7 @@ public class TripsController extends Controller {
     }
 
     /**
+     *
      * Add extra destination to a trip being edited
      *
      * @param request Http request

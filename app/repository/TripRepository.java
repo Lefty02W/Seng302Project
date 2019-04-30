@@ -58,7 +58,10 @@ public class TripRepository {
     public CompletionStage<Integer> update(Trip trip, Integer tripId, ArrayList<TripDestination> tripDestinations) {
         return supplyAsync(() -> {
             try (Transaction txn = ebeanServer.beginTransaction()) {
-                Trip tripEdit = ebeanServer.find(Trip.class).setId(tripId).findOne();
+                List<Trip> result = Trip.find.query().where()
+                        .eq("trip_id", tripId)
+                        .findList();
+                Trip tripEdit = result.get(0);
                 if (tripEdit != null) {
                     tripEdit.setName(trip.getName());
                     tripEdit.setEmail(trip.getEmail());
@@ -81,7 +84,6 @@ public class TripRepository {
                     tripEdit.setDestinations(trip.getDestinations());
                     tripEdit.setOrderedDestiantions(trip.getOrderedDestiantions());
                     tripEdit.update();
-                    txn.commit();
                 }
                 txn.commit();
             }

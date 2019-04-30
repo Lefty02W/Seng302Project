@@ -58,7 +58,6 @@ public class TripDestinationsRepository {
                     //tripDestEdit.setTripDestinationId(tripDestination.getTripDestinationId());
                     tripDestEdit.setTripId(tripDestination.getTripId());
                     tripDestEdit.update();
-                    txn.commit();
                 }
                 txn.commit();
             }
