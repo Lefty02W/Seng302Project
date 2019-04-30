@@ -65,27 +65,25 @@
                 }
                 <div class="container-fluid">
                     <div class="row">
-                    <div class="col">
-                        <div id="viewCard" class="card-large upper-card">
-                            @if(request.flash.getOptional("info").isPresent) {
-                                <div class="alert alert-info">
-                                @request.flash.getOptional("info").get()
-                                </div>
-                            }
-                        <h3>Add Destination</h3>
-
-                            @helper.form(routes.TripsController.addDestination()) {
-                                @CSRF.formField
+                        <div class="col">
+                            <div id = "viewCard" class="card-large upper-card">
+                                @if(request.flash.getOptional("info").isPresent) {
+                                    <div class="alert alert-info">
+                                    @request.flash.getOptional("info").get()
+                                    </div>
+                                }
+                                <h3>Add Destination</h3>
+                                @helper.form(routes.TripsController.addDestination()) {
+                                    @CSRF.formField
                                     <div class="container">
                                         <div class="col">
-
-                                        <h5>Destination</h5>
-                                        <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                        @for(destination <- currentUser.getDestinations) {
-                                            <option value=@destination.getDestinationId>@destination.getName</option>
-                                        }
-                                        </select>
-                                    </div>
+                                            <h5>Destination</h5>
+                                            <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                            @for(destination <- currentUser.getDestinations) {
+                                                <option value=@destination.getDestinationId>@destination.getName</option>
+                                            }
+                                            </select>
+                                        </div>
 
 
                                     <div class="col">

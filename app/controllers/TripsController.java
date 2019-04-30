@@ -204,14 +204,12 @@ public class TripsController extends Controller {
         Profile currentUser = SessionController.getCurrentUser(request);
         trip.setEmail(currentUser.getEmail());
         if (orderedCurrentDestinations.size() < 2){
-            return redirect("/trips/"+id+"/editDestinations").flashing("info", "A trip must have at least two destinations");
+            return redirect("/trips/"+id+"/edit").flashing("info", "A trip must have at least two destinations");
         } else {
-            // TODO refactor once task 1 / 2 of simple trips is done
+            // TODO still needs to ideally be in a transaction
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
-            tripRepository.update(trip, id, tripDestinations);
-
-            //tripRepository.insert(trip, tripDestinations);
-            //tripRepository.insert(trip, tripDestinations);
+            tripRepository.delete(id);
+            tripRepository.insert(trip, tripDestinations);
             // TODO put redirect inside a thenApplyAsync
             return redirect("/trips");
         }
