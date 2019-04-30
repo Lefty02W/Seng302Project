@@ -50,67 +50,11 @@ public class TripRepository {
 
 
     /**
-     * Edit a trip in the database
-     * @param trip
-     * @param tripId
-     * @param tripDestinations
-     */
-    public CompletionStage<Integer> update(Trip trip, Integer tripId, ArrayList<TripDestination> tripDestinations) {
-        return supplyAsync(() -> {
-            try (Transaction txn = ebeanServer.beginTransaction()) {
-                List<Trip> result = Trip.find.query().where()
-                        .eq("trip_id", tripId)
-                        .findList();
-                Trip tripEdit = result.get(0);
-                if (tripEdit != null) {
-                    tripEdit.setName(trip.getName());
-                    tripEdit.setEmail(trip.getEmail());
-                    ArrayList<TripDestination> originalTripDests = tripEdit.getDestinations();
-                    int i;
-                    for (i = 0; i < tripDestinations.size() && i < originalTripDests.size(); i++) {
-                        tripDestinations.get(i).setTripId(trip.getId());
-                        tripDestinationsRepository.editTrip(tripDestinations.get(i), originalTripDests.get(i).getTripDestinationId());
-                    }
-                    if (i + 1 < tripDestinations.size()) {
-                        for (i++; i < tripDestinations.size(); i++) {
-                            tripDestinations.get(i).setTripId(trip.getId());
-                            tripDestinationsRepository.insert(tripDestinations.get(i));
-                        }
-                    } else if (i + 1 < originalTripDests.size()) {
-                        for (i++; i < originalTripDests.size(); i++) {
-                            tripDestinationsRepository.delete(originalTripDests.get(i).getTripDestinationId());
-                        }
-                    }
-                    tripEdit.setDestinations(trip.getDestinations());
-                    tripEdit.setOrderedDestiantions(trip.getOrderedDestiantions());
-                    tripEdit.update();
-                }
-                txn.commit();
-            }
-            return trip.getId();
-        }, executionContext);
-    }
-
-    /**
      * insert trip into database
      * @param trip
      * @param tripDestinations
      */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
-        // make it return ---  CompletionStage<Integer>  --- instead of void
-       // return supplyAsync(() -> {
-            //try (Transaction txn = ebeanServer.beginTransaction()) {
-               // ebeanServer.insert(trip);
-                //for (TripDestination tripDestination : tripDestinations) {
-             //       tripDestination.setTripId(trip.getId());
-           //         ebeanServer.insert(tripDestination);
-               // }
-             //   txn.commit();
-            //}
-         //   return trip.getId();
-      //  }, executionContext);
-
-//old insert
     ebeanServer.insert(trip);
     for (TripDestination tripDestination : tripDestinations) {
             tripDestination.setTripId(trip.getId());
