@@ -53,6 +53,14 @@
                 </nav>
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="col">
+                            <a href="@routes.TripsController.showCreate()"> <button id="addTripButton" type="button" class="button-add">
+                                Add New Trip
+                            </button> </a>
+                        </div>
+                    </div>
+
+                    <div class="row">
                            @for(trip <- trips) {
                                <div class="col" align="center">
                                    <div class="card" id="trip-card">
@@ -81,21 +89,13 @@
                                        </div>
 
                                        <div class="card-footer card-border"> <!-- Change to the dark green -->
-                                           <button>Edit</button>  <!-- Need to change to the correct style of button -->
-                                           <button>Delete</button>
+                                           <a href="@routes.TripsController.showEdit(trip.getId)"><button type="submit">Edit</button></a>  <!-- Need to change to the correct style of button -->
+                                           <a href="@routes.TripsController.delete(trip.getId)"><button type="submit">Delete</button></a>
                                        </div>
                                    </div>
                                </div>
                                }
 
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <a href="@routes.TripsController.showCreate()"> <button id="addTripButton" type="button" class="button-add">
-                                Add New Trip
-                            </button> </a>
-                        </div>
                     </div>
 
                 </div>

@@ -2,7 +2,7 @@
 @import views.html.helper.CSRF
 @(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
 
-@import helper._
+
 
 
 
@@ -76,7 +76,6 @@
                                             @helper.form(routes.TripsController.showEdit(trip.getId)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
-
                                             }
                                             <a href="@routes.TripsController.delete(trip.getId)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>
                                         </tr>
