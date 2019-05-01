@@ -4,12 +4,9 @@ package models;
 import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.validation.Constraints;
-import repository.DestinationRepository;
 
-import javax.inject.Inject;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -35,7 +32,7 @@ public class TripDestination extends Model {
 
     private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
 
@@ -44,7 +41,7 @@ public class TripDestination extends Model {
      * @param destinationId
      * @param arrival
      * @param departure
-     * @param dest_order
+     * @param destOrder
      */
     public TripDestination(int destinationId, Date arrival, Date departure, int destOrder) {
         this.destinationId = destinationId;
@@ -139,6 +136,22 @@ public class TripDestination extends Model {
         if (departure == null) {
             return "";
         }return dateFormat.format(departure);
+    }
+
+    /**
+     * Forms a string holding the arrival and departure dates of the trip destination if they are present
+     * @return
+     */
+    public String getDisplayDates() {
+        if (departure == null && arrival == null) {
+            return "No dates given";
+        } else if (departure == null) {
+            return  dateFormat.format(arrival) + " to -";
+        } else if (arrival == null) {
+            return "- to " + dateFormat.format(departure);
+        } else {
+            return dateFormat.format(arrival) + " to " + dateFormat.format(departure);
+        }
     }
 
     public Destination getDestination() {

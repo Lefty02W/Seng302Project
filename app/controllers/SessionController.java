@@ -26,13 +26,11 @@ public class SessionController {
         String email;
         if (connected.isPresent()) {
             email = connected.get();
-            System.out.println(email);
             Profile profile = Profile.find.byId(email);
-            System.out.println(profile);
 
             profile.setDestinations(getUserDestinations(profile.getEmail()));
             profile.setTrips(getUsersTrips(profile));
-            profile.sortedTrips();
+            //profile.sortedTrips(); // TODO need to fix the sort - may be sorted in simple trips
             return profile;
         } else {
             return null;
@@ -66,7 +64,6 @@ public class SessionController {
         List<Trip> result = Trip.find.query().where()
                 .eq("email", currentUser.getEmail())
                 .findList();
-
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();
             // Getting the tripDestinations out of the database for each trip returned

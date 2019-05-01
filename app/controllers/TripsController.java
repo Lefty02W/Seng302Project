@@ -60,7 +60,6 @@ public class TripsController extends Controller {
     public Result show(Http.Request request) {
         currentDestinationsList.clear();
         ArrayList<Trip> tripsList = SessionController.getCurrentUser(request).getTrips();
-        System.out.println(tripsList.size());
         return ok(tripsCard.render(form, formTrip, destinationsList, tripsList, request, messagesApi.preferred(request)));
     }
 

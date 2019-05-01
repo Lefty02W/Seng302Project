@@ -60,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row pt-3">
                            @for(trip <- trips) {
                                <div class="col" align="center">
                                    <div class="card" id="trip-card">
@@ -70,25 +70,28 @@
                                        </div>
 
                                        <div class="card-body overflow-auto">  <!-- Sort out min/max height and width for resizing -->
-                                           <table id="destinationsTable" class="destinationsTable">
+
+                                           <h4>Destinations Visted</h4>
+                                           <table id="destinationsTable" class="trip-table">
                                                <thead>
                                                    <tr>
+                                                       <th>Order</th>
                                                        <th>Destination Name</th>
                                                        <th>Departure Time</th>
                                                        <th>Arrival Time</th>
                                                </thead>
                                                @for(tripDestination <- trip.getDestinations) {
                                                    <tr>
+                                                       <td>Destination @tripDestination.getDestOrder</td>
                                                        <td>@tripDestination.getDestinationName</td>
-                                                       <td>@tripDestination.getDeparture</td>
-                                                       <td>@tripDestination.getArrival</td>
+                                                       <td>@tripDestination.getDisplayDates</td>
                                                    </tr>
                                                }
 
                                            </table>
                                        </div>
 
-                                       <div class="card-footer card-border"> <!-- Change to the dark green -->
+                                       <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
                                            <a href="@routes.TripsController.showEdit(trip.getId)"><button type="submit">Edit</button></a>  <!-- Need to change to the correct style of button -->
                                            <a href="@routes.TripsController.delete(trip.getId)"><button type="submit">Delete</button></a>
                                        </div>
@@ -114,34 +117,6 @@
     </body>
 
     <script type="text/javascript">
-            //Setup for the user table
-            $(document).ready(function() {
-                $('#tripsTable').DataTable({
-                    "lengthChange": false,
-                    "pagingType": "full",
-                    "pageLength": 13,
-                    dom: '<l<"toolbar">f>rtip',
-                    language: {
-                        search: "_INPUT_", //To remove Search Label
-                        searchPlaceholder: "Search..."
-                    },
-                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
-                    "autoWidth": false
-                });
-
-                $('#destinations').DataTable({
-                    searching: false,
-                    paging: false,
-                    info: false,
-                    "language": {
-                        "emptyTable": "Please add at least two destinations"
-                    },
-                    "ordering": false,
-                    "scrollY": "20vh",
-                    "scrollCollapse": true
-                });
-            });
-
 
             $('#addDest').on( 'click', function () {
                 var table = $('#destinations').DataTable();

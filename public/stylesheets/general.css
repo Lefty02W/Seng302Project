@@ -51,7 +51,7 @@
     padding: 25px 25px 25px 25px;
 }
 
-/* Table Styling */
+/* Table Styling
 table {
     border-collapse: collapse;
     overflow: hidden;
@@ -62,14 +62,35 @@ table {
 
 th,
 td {
-    padding: 15px;
+    padding: 1vh;
     background-color: rgba(255,255,255,0.2);
     color: #376238;
-
 }
 
 th {
     border: 3px solid #ca6636;
+}*/
+
+
+.trip-table {
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+    width: 100%;
+}
+.trip-table thead th {
+    display: none;
+}
+.trip-table tr:nth-child(even) {
+    background-color: #f2f2f2
+}
+
+.trip-table tbody td {
+    border: solid 1px #DDEEEE;
+    color: #333;
+    padding: 10px;
+    text-shadow: 1px 1px 1px #fff;
 }
 
 /* Text input style */
