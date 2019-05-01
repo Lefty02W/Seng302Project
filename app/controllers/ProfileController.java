@@ -200,7 +200,7 @@ public class ProfileController extends Controller {
                         visibility, fileName);
                 savePhoto(image); // Save photo, given a successful upload
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
-                if (isProfilePicture == 0) {
+                if (isProfilePicture == 0) { //case not setting as the new profile picture
                     showPhotoModal = true;
                 } else {
                     //TODO set the picture as the new profile picture and show modal/redirect to appropriate place on page

@@ -261,7 +261,9 @@
                                 <button type="button" class="addButton" data-toggle="modal" data-target="#addPhotoModal">
                                     Add Photos</button>
                                 <button type="button" class="addProfilebutton" data-toggle="modal" data-target="#addProfileModal">
-                                    Add New Profile</button>
+                                    Upload new photo</button>
+                                <button type="button" class="selectPhotoButton" data-toggle="modal" data-target="#selectPhotoModal">
+                                    Select existing photo</button>
                             </div>
                         </div>
 
@@ -356,6 +358,41 @@
                                         }
                                     </div>
 
+                                        <!-- The Expanded Image Modal -->
+                                    <div id="expandImageModal" class="modal">
+                                        <span class="close">&times;</span>
+                                        <img class="modal-content" id="expandedImage">
+                                        <div id="caption"></div>
+                                        <div id="id"></div>
+                                    </div>
+                                </div>
+                            }
+                            </div>
+                            <button type="button" data-dismiss="modal" style="width: 10vw;
+                                float: right">Close</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal fade" id="selectPhotoModal">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h2 class="modal-title">Select profile Picture</h2>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                            @for(image <- imageList) {
+                                <div class="card">
+                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                    src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName"
+                                    name="@image.getImageId">
+                                    <div class="card-body">
+                                        <button type="submit">Select</button>
+                                    </div>
                                         <!-- The Expanded Image Modal -->
                                     <div id="expandImageModal" class="modal">
                                         <span class="close">&times;</span>
