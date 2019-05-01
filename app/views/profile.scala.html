@@ -260,6 +260,8 @@
                                     View Photos</button>
                                 <button type="button" class="addButton" data-toggle="modal" data-target="#addPhotoModal">
                                     Add Photos</button>
+                                <button type="button" class="addProfilebutton" data-toggle="modal" data-target="#addProfileModal">
+                                    Add New Profile</button>
                             </div>
                         </div>
 
@@ -300,6 +302,26 @@
                     </div>
                 </div>
 
+            </div>
+
+            <div class="modal fade" id="addProfileModal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h2 class="modal-title">Add a new photo as your profile picture</h2>
+                        </div>
+                        @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
+                            @CSRF.formField
+                            <div class="modal-body">
+                                <input type="file" id="image" name="image">
+                                <label>Public <input type="checkbox" id="visible" name="visible" value="Public" checked ></label>
+                                <button type="button" data-dismiss="modal">Cancel</button>
+                                <button type="submit">Submit</button>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
 
             <div class="modal fade" id="viewPhotoModal">
