@@ -156,12 +156,11 @@ public class ProfileController extends Controller {
     }
 
 
-
-
     /**
      * Retrieves file (image) upload from the front end and converts the image into bytes
      * A new Image object is created and has its attributes set. This image is then sent
-     * to savePhoto.
+     * to savePhoto. Logic is also used so that if the newly uploaded photo is a new
+     * profile picture then it will set it as a profile picture
      *
      * @param request Https request
      * @return a redirect to the profile page
@@ -203,6 +202,8 @@ public class ProfileController extends Controller {
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 if (isProfilePicture == 0) {
                     showPhotoModal = true;
+                } else {
+                    //TODO set the picture as the new profile picture and show modal/redirect to appropriate place on page
                 }
             } catch (IOException e) {
                 e.printStackTrace();
