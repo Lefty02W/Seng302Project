@@ -295,6 +295,7 @@
                                 <input type="file" id="image" name="image">
                                 <label>
                                     Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
+                                <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="false" hidden>
                                 <button type="button" data-dismiss="modal">Cancel</button>
                                 <button type="submit">Submit</button>
                             </div>
@@ -310,17 +311,20 @@
 
                         <div class="modal-header">
                             <h2 class="modal-title">Add a new photo as your profile picture</h2>
-                            <p>Note that a photo set as profile picture will be set as public</p>
                         </div>
                         @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
                             @CSRF.formField
                             <div class="modal-body">
                                 <input type="file" id="image" name="image">
-                                <label>Public <input type="checkbox" id="visible" name="visible" value="Public" onclick="return false" checked ></label>
+                                <input type="hidden" id="visible" name="visible" value="Public" hidden></label>
+                                <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
                                 <button type="button" data-dismiss="modal">Cancel</button>
                                 <button type="submit">Submit</button>
                             </div>
                         }
+                        <div class="modal-dialog">
+                            <p>Note that a photo set as profile picture will be set as public</p>
+                        </div>
                     </div>
                 </div>
             </div>

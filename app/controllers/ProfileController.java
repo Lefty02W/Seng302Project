@@ -53,6 +53,7 @@ public class ProfileController extends Controller {
      */
     public static class ImageData {
         public String visible;
+        public String isNewProfilePicture;
     }
 
 
@@ -155,6 +156,8 @@ public class ProfileController extends Controller {
     }
 
 
+
+
     /**
      * Retrieves file (image) upload from the front end and converts the image into bytes
      * A new Image object is created and has its attributes set. This image is then sent
@@ -197,7 +200,10 @@ public class ProfileController extends Controller {
                 Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType,
                         visibility, fileName);
                 savePhoto(image); // Save photo, given a successful upload
-                showPhotoModal = true;
+                int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
+                if (isProfilePicture == 0) {
+                    showPhotoModal = true;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
