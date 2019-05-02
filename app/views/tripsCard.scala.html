@@ -1,5 +1,5 @@
 @import play.mvc.Http
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Integer], currentUser : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -30,14 +30,19 @@
         <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
-            <div class="border-right" id="sidebar-wrapper">
+            <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                    <a style="color: #ca6636" href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                        Profile</a>
+                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                        Destinations</a>
+                    <a style="color: #ca6636" href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                        Trips</a>
+                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                        Travellers</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                        Logout</a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -45,10 +50,10 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
                     <div id="pageTitle">
-                        <h2> Trips</h2>
+                        <h2>Trips</h2>
                     </div>
                 </nav>
                 <div class="container-fluid">
@@ -66,7 +71,7 @@
                                    <div class="card" id="trip-card">
 
                                        <div class="card-header card-border"> <!-- Change to the dark green -->
-                                           <h3>@trip.getName</h3>
+                                           <h3>@currentUser.getTripById(trip).getName</h3>
                                        </div>
 
                                        <div class="card-body overflow-auto">  <!-- Sort out min/max height and width for resizing -->
@@ -80,7 +85,7 @@
                                                        <th>Departure Time</th>
                                                        <th>Arrival Time</th>
                                                </thead>
-                                               @for(tripDestination <- trip.getDestinations) {
+                                               @for(tripDestination <- currentUser.getTripById(trip).getDestinations) {
                                                    <tr>
                                                        <td>Destination @tripDestination.getDestOrder</td>
                                                        <td>@tripDestination.getDestinationName</td>
@@ -92,8 +97,8 @@
                                        </div>
 
                                        <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
-                                           <a href="@routes.TripsController.showEdit(trip.getId)"><button type="submit">Edit</button></a>  <!-- Need to change to the correct style of button -->
-                                           <a href="@routes.TripsController.delete(trip.getId)"><button type="submit" class="button-delete">Delete</button></a>
+                                           <a href="@routes.TripsController.showEdit(trip)"><button type="submit">Edit</button></a>  <!-- Need to change to the correct style of button -->
+                                           <a href="@routes.TripsController.delete(trip)"><button type="submit" class="button-delete">Delete</button></a>
                                        </div>
                                    </div>
                                </div>
