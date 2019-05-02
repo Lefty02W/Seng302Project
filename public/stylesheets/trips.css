@@ -35,8 +35,7 @@ input[type=datetime-local] {
 
 #trip-card {
     height: 40vh;
-    width: 20vw;
-    min-width: 20vw;
+    min-width: 100px;
 }
 
 .card-border {
