@@ -37,8 +37,9 @@ release-artifacts:
 deploy-dev:
   stage: deploy
   script:
-#    - sudo systemctl start development_server
+    - rm -rf seng302-team-700-0.0.1-SNAPSHOT
     - sbt dist
+    - sudo systemctl start development_server
   environment:
     name: development
     url: http://csse-s302g7.canterbury.ac.nz:8443
