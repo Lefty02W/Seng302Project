@@ -37,7 +37,8 @@ release-artifacts:
 deploy-dev:
   stage: deploy
   script:
-    - sudo systemctl start development_server
+#    - sudo systemctl start development_server
+    - sbt dist
   environment:
     name: development
     url: http://csse-s302g7.canterbury.ac.nz:8443
