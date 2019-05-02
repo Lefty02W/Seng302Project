@@ -41,8 +41,9 @@ deploy-dev:
     - sbt dist
     - sudo cp /var/lib/gitlab-runner/builds/cc082478/0/seng302-2019/team-700/target/universal/seng302-team-700-0.0.1-SNAPSHOT.zip /opt/dev_server
     - cd /opt/dev_server
+    - rm -rf /opt/dev_server/*
     - sudo unzip seng302-team-700-0.0.1-SNAPSHOT.zip
-    - rm seng302-team-700-0.0.1-SNAPSHOT.zip
+    - sudo rm seng302-team-700-0.0.1-SNAPSHOT.zip
     - sudo systemctl start development_server
   environment:
     name: development
