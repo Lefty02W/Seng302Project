@@ -45,6 +45,7 @@ deploy-dev:
     - sudo unzip seng302-team-700-0.0.1-SNAPSHOT.zip
     - sudo rm seng302-team-700-0.0.1-SNAPSHOT.zip
     - cd /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/bin
+    - sudo chmod +x seng302-team-700
     - sudo systemctl start development_server
   environment:
     name: development
