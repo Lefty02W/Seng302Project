@@ -45,6 +45,26 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
+    public CompletionStage<Integer> editTrip(TripDestination tripDestination, int tripDestinationId) {
+        return supplyAsync(() -> {
+            try (Transaction txn = ebeanServer.beginTransaction()) {
+                TripDestination tripDestEdit = ebeanServer.find(TripDestination.class).setId(tripDestinationId).findOne();
+                if (tripDestEdit != null) {
+                    tripDestEdit.setArrival(tripDestination.getArrival());
+                    tripDestEdit.setDeparture(tripDestination.getDeparture());
+                    tripDestEdit.setDestination(tripDestination.getDestination());
+                    tripDestEdit.setDestinationId(tripDestination.getDestinationId());
+                    tripDestEdit.setDestOrder(tripDestination.getDestOrder());
+                    //tripDestEdit.setTripDestinationId(tripDestination.getTripDestinationId());
+                    tripDestEdit.setTripId(tripDestination.getTripId());
+                    tripDestEdit.update();
+                }
+                txn.commit();
+            }
+            return tripDestination.getTripDestinationId();
+        }, executionContext);
+    }
+
     /**
      * delete tripdestination from database
      * @param tripDestinationId
@@ -60,6 +80,14 @@ public class TripDestinationsRepository {
                 return Optional.empty();
             }
         }, executionContext);
+    }
+
+    public boolean validate(int tripDestID) {
+        if (ebeanServer.find(TripDestination.class).setId(tripDestID).findOne() != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

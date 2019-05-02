@@ -18,10 +18,10 @@
         <title>TravelEA | editProfile</title>
     </head>
     <body>
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex toggled" id="wrapper">
                 <!-- Sidebar -->
                 <!-- Sidebar -->
-            <div class="border-right" id="sidebar-wrapper">
+            <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
                     <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
@@ -36,9 +36,11 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
                     <h2>Profile</h2> <!-- TODO align this in the center -->
+                    </div>
                 </nav>
                 <div class="container-fluid">
                     <div class="row">
@@ -152,7 +154,7 @@
                                         </div>
                                         <div class="col">
                                             <a href="@routes.ProfileController.show()"><button type="button" id="profileEditCancel" class="button-add">Cancel</button></a>
-                                            <button type="submit" id="profileEditSub" onclick="fillVals()" class="button-edit">Submit</button>
+                                            <button type="submit" id="profileEditSub" onclick="fillVals()" class="button-editDestinations">Submit</button>
                                         </div>
                                     </div>
                                 }

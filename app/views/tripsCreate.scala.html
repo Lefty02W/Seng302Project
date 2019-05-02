@@ -24,10 +24,10 @@
         <title>TravelEA | Trips</title>
     </head>
     <body>
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
-            <div class="border-right" id="sidebar-wrapper">
+            <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
@@ -47,86 +47,101 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
-                    <h2>Trips</h2>
-                        <!-- TODO align this in the center -->
-                </nav>
-                <div class="container-fluid">
-                    <div id="viewCard" class="card-large">
-                        @if(request.flash.getOptional("info").isPresent) {
-                            <div class="alert alert-info">
-                            @request.flash.getOptional("info").get()
-                            </div>
-                        }
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
                     <h2>Create Trip</h2>
+                    </div>
+                </nav>
+                @helper.form(routes.TripsController.save()) {
+                    @CSRF.formField
+                    <div class="row">
+                        <div class="tripNameInput">
+                            <input type="text" id="name" name="name" required placeholder="Trip Name">
+                        </div>
+                        <button type="submit" class="saveTripButton" id="save">Save Trip</button>
+                    </div>
 
-                        @helper.form(routes.TripsController.addDestination()) {
-                            @CSRF.formField
-                            <div class="row">
+                }
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <div id = "viewCard" class="card-large upper-card">
+                                @if(request.flash.getOptional("info").isPresent) {
+                                    <div class="alert alert-info">
+                                    @request.flash.getOptional("info").get()
+                                    </div>
+                                }
+                                <h3>Add Destination</h3>
+                                @helper.form(routes.TripsController.addDestination()) {
+                                    @CSRF.formField
+                                    <div class="container">
+                                        <div class="col">
+                                            <h5>Destination</h5>
+                                            <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                            @for(destination <- currentUser.getDestinations) {
+                                                <option value=@destination.getDestinationId>@destination.getName</option>
+                                            }
+                                            </select>
+                                        </div>
 
-                                <div class="col">
-                                        <!--
-                                        <div class="hidden-div">
-                                            <input type="text" class="hidden-field" name="destination" id="destination" required>
-                                        </div>-->
 
-                                    <h5>Destination</h5>
-                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                    @for(destination <- currentUser.getDestinations) {
-                                        <option value=@destination.getDestinationId>@destination.getName</option>
-                                    }
-                                    </select>
+                                    <div class="col">
+                                        <h5>Arrival Time</h5>
+                                        <input type="date" id="arrival" name="arrival">
+                                    </div>
+
+                                    <div class="col">
+                                        <h5>Departure Time</h5>
+                                        <input type="date" id="departure" name="departure">
+                                    </div>
+                                    <div class="col">
+                                        <button type="submit" class="button-add" id="addDest">
+                                        Add Destination</button>
+                                    </div>
+
                                 </div>
 
-
-                                <div class="col"><h5>Arrival Time</h5>
-                                    <input type="date" id="arrival" name="arrival"></div>
-
-                                <div class="col"><h5>Departure Time</h5>
-                                    <input type="date" id="departure" name="departure"></div>
-                                <div class="col"><button type="submit" class="button-add" id="addDest">
-                                    Add Destination</button></div>
-
-                            </div>
-
-                        }
-
-
-                    <table id="tripsTable">
-                        <thead>
-                            <tr><th>Destination Name</th>
-                                <th>Arrival Time</th>
-                                <th>Departure Time</th>
-                                <th>Actions</th>
-                        </thead>
-                        @for(tripDestination <- currentDestinationsList) {
-                            <tr id="tripRow@tripDestination.getDestinationId">
-                                <td>@tripDestination.getDestinationName</td>
-                                <td>@tripDestination.getArrival</td>
-                                <td>@tripDestination.getDeparture</td>
-                                <td><a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder)"><button id="edit_@tripDestination.getDestinationId">Edit</button></a> <a href="@routes.TripsController.deleteDestination(tripDestination.getDestOrder)"><button type="submit" class="button-delete" style="height: 4vh"> Delete</button></a></td>
-
-                            </tr>
-                        }
-
-                    </table>
-
-                    <div class="row">
-                    @helper.form(routes.TripsController.save()) {
-                        @CSRF.formField
-                        <div class="col">
-                            <input type="text" id="name" name="name" required placeholder="Trip Name">
-                            <button type="submit" class="button-edit" style="width: 20vw;
-                                float: right" id="save">Save Trip</button>
+                            }
                         </div>
+                    </div>
+                    <div class="col">
+                        <div id = "viewCard" class="card-large upper-card">
+                            <h3>Destination Table</h3>
 
-                    }
-                    <a href="@routes.TripsController.show()"> <button style="width: 20vw" class="button-delete" type="button">Back</button> </a>
+                            <table id="tripsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Destination Name</th>
+                                        <th>Arrival Time</th>
+                                        <th>Departure Time</th>
+                                        <th>Actions</th>
+                                </thead>
+                                @for(tripDestination <- currentDestinationsList) {
+                                    <tr id="tripRow@tripDestination.getDestinationId">
+                                        <td>@tripDestination.getDestinationName</td>
+                                        <td>@tripDestination.getArrival</td>
+                                        <td>@tripDestination.getDeparture</td>
+                                        <td>
+                                            <a href="@routes.TripsController.createTripDestinationCreate(tripDestination.getDestOrder)">
+                                                <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
+                                            </a>
+                                            <a href="@routes.TripsController.deleteDestination(tripDestination.getDestOrder)">
+                                                <input type="image" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
+                                            </a>
+                                        </td>
 
+                                    </tr>
+                                }
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                    <div class="row">
+                        <a href="@routes.TripsController.show()"> <button class="button-back" type="button">Back</button> </a>
                     </div>
 
-                    </div>
                 </div>
             </div>
         </div>
@@ -231,7 +246,7 @@
                 } else if (tripName.length === 0) {
                     alert("Please enter a trip name");
                 } else {
-                    // Send data to controller here to create te trip and add to table
+                    // Send data to controller here to create the trip and add to table
 
                     table
                             .clear()

@@ -1,5 +1,7 @@
 package models;
 
+import com.google.common.collect.Ordering;
+import com.google.common.collect.TreeMultimap;
 import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
@@ -54,7 +56,9 @@ public class Profile extends Model {
     private Date timeCreated;
 
     private ArrayList<Destination> destinations = new ArrayList<>();
-    private ArrayList<Trip> trips = new ArrayList<>();
+    private ArrayList<Trip> trips;
+    TreeMultimap<Long, Integer> tripsMap = TreeMultimap.create();
+    TreeMap <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
@@ -177,12 +181,24 @@ public class Profile extends Model {
         return new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
     }
 
-    public ArrayList<Trip> getTrips() {
-        return trips;
+    public TreeMultimap<Long, Integer> getTrips() {
+        return tripsMap;
     }
 
-    public void setTrips(ArrayList<Trip> trips) {
-        this.trips = trips;
+    public Trip getTripById(int tripId) {
+        return tripsTripMap.get(tripId);
+    }
+
+    public void setTrips(TreeMultimap<Long, Integer> trips) {
+        this.tripsMap = trips;
+    }
+
+    public void setTripMaps(TreeMap<Integer, Trip> trips) {
+        this.tripsTripMap = trips;
+    }
+
+    public TreeMap<Integer, Trip> getTripsMap() {
+        return tripsTripMap;
     }
 
     public ArrayList<Destination> getDestinations() {
@@ -193,27 +209,6 @@ public class Profile extends Model {
         this.destinations = destinations;
     }
 
-    /**
-     * This method sorts the users current list of trips by date
-     * @return the sorted
-     */
-    public void sortedTrips() {
-        Map<Long, Integer> tripsMap = new TreeMap<Long, Integer>();
-        for (int index = 0; index < trips.size(); index++) {
-            tripsMap.put(trips.get(index).getTimeVal(), index);
-        }
-        List<Map.Entry<Long, Integer>> sortedMap =
-                tripsMap.entrySet()
-                        .stream()
-                        .sorted(reverseOrder(Map.Entry.comparingByKey()))
-                        .collect(Collectors.toList());
-
-        ArrayList<Trip> sortedTrips = new ArrayList<>();
-        for (Map.Entry<Long, Integer> tripEntry : sortedMap) {
-            sortedTrips.add(trips.get(tripEntry.getValue()));
-        }
-        trips = sortedTrips;
-    }
 
     /**
      * This method creates a formatted date string of the profiles birth date

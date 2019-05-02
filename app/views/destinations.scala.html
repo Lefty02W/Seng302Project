@@ -1,5 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
+@import helper._
 @(destinationsList : List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -31,7 +32,7 @@
         <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
-            <div class="border-right" id="sidebar-wrapper">
+            <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
@@ -46,7 +47,7 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
                     <div id="pageTitle">
                         <h2> Destinations</h2> <!-- TODO align this in the center -->
@@ -92,7 +93,7 @@
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
                                     @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                         @CSRF.formField
-                                        <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button> </td>
+                                        <td> <button type="submit" class="button-editDestinations" style="height:4vh">Edit</button> </td>
                                     }
                                     @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                         @CSRF.formField
