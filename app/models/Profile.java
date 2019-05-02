@@ -196,7 +196,7 @@ public class Profile extends Model {
     /**
      * This method sorts the users current list of trips by date
      * @return the sorted
-     */
+     */ //TODO Change to multi map i thunk
     public void sortedTrips() {
         Map<Long, Integer> tripsMap = new TreeMap<Long, Integer>();
         for (int index = 0; index < trips.size(); index++) {
