@@ -52,7 +52,8 @@ public class TripsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/trips/1/edit")
+                //todo dont hard code routes with id 220
+                .uri("/trips/220/edit")
                 .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
