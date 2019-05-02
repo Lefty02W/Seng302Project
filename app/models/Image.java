@@ -39,6 +39,7 @@ public class Image extends Model {
     @Constraints.Required
     private String name;
 
+    //this causes issues when signing in a new user as it searches for images in repo with feature cropx, cropy ect
 //    @Constraints.Required
 //    private int cropX;
 //
