@@ -3,7 +3,15 @@ name := "SENG302 TEAM 700"
 version := "0.0.1-SNAPSHOT"
 
 scalaVersion := "2.12.8"
-lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean)
+lazy val myProject = (project in file(".")).enablePlugins(PlayJava, PlayEbean, JacocoPlugin, JacocoItPlugin)
+
+configs(IntegrationTest)
+Defaults.itSettings
+
+jacocoReportSettings in Test := JacocoReportSettings()
+  .withFormats(
+    JacocoReportFormats.XML
+  )
 
 libraryDependencies += guice
 libraryDependencies += jdbc

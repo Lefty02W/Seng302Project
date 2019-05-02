@@ -8,7 +8,18 @@ tag_checker:
 junit:
   stage: test
   script:
-    - sbt test
+    - sudo update-java-alternatives --set java-8-oracle
+    - sbt jacoco
+    - sudo update-java-alternatives --set java-1.11.0-openjdk-amd64
+  artifacts:
+    paths:
+      - target/scala-2.12/classes/
+      - target/scala-2.12/jacoco/data/jacoco.exec
+
+#coverage:
+#  stage: deploy
+#  script:
+#    - sbt clean jacoco
 
 recent-artifacts:
   stage: deploy
@@ -37,4 +48,5 @@ update-sonar:
     - export PATH=$PATH:/opt/sonar-scanner/bin
     - sonar-scanner
   only:
-    - SessionAuthUpgrade@seng302-2019/team-700
+    - master@seng302-2019/team-700
+    - sonar-qube@seng302-2019/team-700
