@@ -65,7 +65,6 @@ public class SessionController {
         List<Trip> result = Trip.find.query().where()
                 .eq("email", currentUser.getEmail())
                 .findList();
-
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();
             // Getting the tripDestinations out of the database for each trip returned

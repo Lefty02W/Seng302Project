@@ -6,10 +6,6 @@
     width: 20vw;
 }
 
-#addTripButton {
-    float: right;
-    width: 10vw;
-}
 
 #destForm {
     padding-bottom: 20px;
@@ -59,4 +55,13 @@ label {
     display: inline;
 }
 input[type=datetime-local] {
+}
+
+#trip-card {
+    height: 40vh;
+    min-width: 100px;
+}
+
+.card-border {
+    background-color: #376238;
 }
