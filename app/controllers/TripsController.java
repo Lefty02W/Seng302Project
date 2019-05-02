@@ -243,7 +243,7 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         int order = tripDestination.getDestOrder();
-        if(orderedCurrentDestinations.size() >= 1 && order != oldLocation) {
+        if(orderedCurrentDestinations.size() >= 1) {
             if(orderOneInvalid(tripDestination, oldLocation)) {
                 tripDestination.setDestOrder(oldLocation);
                 boolean deleteValid = orderInvalidDelete(tripDestination);
@@ -413,13 +413,15 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         int order = tripDestination.getDestOrder();
-        if(orderedCurrentDestinations.size() >= 1 && order != oldLocation) {
-            tripDestination.setDestOrder(oldLocation);
-            boolean deleteValid = orderInvalidDelete(tripDestination);
-            tripDestination.setDestOrder(order);
-            boolean insertValid = orderInvalidInsert(tripDestination);
-            if (deleteValid || insertValid) {
-                return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
+        if(orderedCurrentDestinations.size() >= 1) {
+            if(orderOneInvalid(tripDestination, oldLocation)) {
+                tripDestination.setDestOrder(oldLocation);
+                boolean deleteValid = orderInvalidDelete(tripDestination);
+                tripDestination.setDestOrder(order);
+                boolean insertValid = orderInvalidInsert(tripDestination);
+                if (deleteValid || insertValid) {
+                    return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
+                }
             }
             removeTripDestination(oldLocation);
             insertTripDestination(tripDestination, tripDestination.getDestOrder());
