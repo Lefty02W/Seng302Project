@@ -260,10 +260,9 @@
                                     View Photos</button>
                                 <button type="button" class="addButton" data-toggle="modal" data-target="#addPhotoModal">
                                     Add Photos</button>
-                                <button type="button" class="addProfilebutton" data-toggle="modal" data-target="#addProfileModal">
-                                    Upload new photo</button>
-                                <button type="button" class="selectPhotoButton" data-toggle="modal" data-target="#selectPhotoModal">
-                                    Select existing photo</button>
+                                <button type="button" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                                    Change Profile Picture
+                                </button>
                             </div>
                         </div>
 
@@ -282,6 +281,7 @@
                 </div>
 
             </div>
+
 
             <div class="modal fade" id="addPhotoModal">
 
@@ -307,6 +307,42 @@
 
             </div>
 
+
+            <div class="modal fade" id="changeProfilePicture">
+
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h2 class="modal-title">Change Profile Picture</h2>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                src="@routes.ProfileController.displayPhotos(77)" alt="name"
+                                name="77">
+                            </div>
+                            <div class="row">
+                                <div class="center-col">
+                                    <button type="button" class="addProfilebutton" data-toggle="modal" data-target="#addProfileModal" data-dismiss="modal">
+                                        Upload new photo</button>
+                                    <button type="button" class="selectPhotoButton" data-toggle="modal" data-target="#selectPhotoModal" data-dismiss="modal">
+                                        Select existing photo</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="center-col">
+                                <button type="button" data-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
             <div class="modal fade" id="addProfileModal">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -320,7 +356,7 @@
                                 <input type="file" id="image" name="image">
                                 <input type="hidden" id="visible" name="visible" value="Public" hidden></label>
                                 <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
-                                <button type="button" data-dismiss="modal">Cancel</button>
+                                <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">Cancel</button>
                                 <button type="submit">Submit</button>
                             </div>
                         }
@@ -404,7 +440,8 @@
                             }
                             </div>
                             <button type="button" data-dismiss="modal" style="width: 10vw;
-                                float: right">Close</button>
+                                float: right" class="changeProfilePictureButton"
+                            data-toggle="modal" data-target="#changeProfilePicture">Close</button>
                         </div>
                     </div>
                 </div>
