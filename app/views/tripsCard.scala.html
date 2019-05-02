@@ -53,8 +53,8 @@
                 </nav>
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col">
-                            <a href="@routes.TripsController.showCreate()"> <button id="addTripButton" type="button" class="button-add">
+                        <div class="col text-center">
+                            <a href="@routes.TripsController.showCreate()"><button id="addTripButton" type="button" class="button-add">
                                 Add New Trip
                             </button> </a>
                         </div>
@@ -62,7 +62,7 @@
 
                     <div class="row pt-3">
                            @for(trip <- trips) {
-                               <div class="col" align="center">
+                               <div class="col-md-3 col-sm-8" align="center">
                                    <div class="card" id="trip-card">
 
                                        <div class="card-header card-border"> <!-- Change to the dark green -->
@@ -93,7 +93,7 @@
 
                                        <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
                                            <a href="@routes.TripsController.showEdit(trip.getId)"><button type="submit">Edit</button></a>  <!-- Need to change to the correct style of button -->
-                                           <a href="@routes.TripsController.delete(trip.getId)"><button type="submit">Delete</button></a>
+                                           <a href="@routes.TripsController.delete(trip.getId)"><button type="submit" class="button-delete">Delete</button></a>
                                        </div>
                                    </div>
                                </div>
@@ -103,96 +103,18 @@
 
                 </div>
 
-
-
             </div>
-
 
         </div>
 
 
-
-
-
     </body>
-
     <script type="text/javascript">
-
-            $('#addDest').on( 'click', function () {
-                var table = $('#destinations').DataTable();
-                var dest = $('#destsPicker').val();
-                var arrive = $("#arrival").val();
-                var depart = $("#departure").val();
-                var valid = true;
-
-
-                if (arrive.length === 0 || dest.length === 0 || depart.length === 0) {
-                    alert("Please fill in destination all fields");
-                    valid = false;
-                } else if (table.rows().data().length > 0){
-                    var last_row = table.row(':last').data();
-                    if (last_row[0] === dest) {
-                        alert("The next destination cannot be the same as the previous destination");
-                        valid = false;
-                    }
-                }
-
-                if (valid) {
-                    table.row.add( [
-                                dest,
-                                arrive,
-                                depart,
-                        '<button id="deleteButton" onclick="deleteDestRow()">Delete</button>'
-                            ]
-                    ).draw( false );
-                    $('#destForm').get(0).reset();
-                    $("#destsPicker").val('default');
-                    $("#destsPicker").selectpicker("refresh");
-                }
-            } );
-
-            $('#saveButton').on( 'click',  function () {
-                var table = $('#destinations').DataTable();
-                var tripName = $('#tripNameEntry').val();
-
-                if (table.rows().data().length < 2) {
-                    alert("Please enter at least 2 destinations");
-                } else if (tripName.length === 0) {
-                    alert("Please enter a trip name");
-                } else {
-                    // Send data to controller here to create te trip and add to table
-
-                    table
-                            .clear()
-                            .draw();
-                    $("#createModal").modal("hide");
-                    document.getElementById('tripNameEntry').value = "";
-                    $("#destination").val('default');
-                    $("#destination").selectpicker("refresh");
-                }
-            });
-
-        $('#closeIcon, #closeButton').on( 'click', function() {
-            var table = $('#destinations').DataTable();
-            $('#destForm').get(0).reset()
-            table
-                    .clear()
-                    .draw();
-            $("#createModal").modal("hide");
-            document.getElementById('tripNameEntry').value = "";
-            $("#destination").val('default');
-            $("#destination").selectpicker("refresh");
-        });
-
 
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
-
-
-
-
 
     </script>
 

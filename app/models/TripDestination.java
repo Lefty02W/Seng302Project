@@ -140,11 +140,11 @@ public class TripDestination extends Model {
 
     /**
      * Forms a string holding the arrival and departure dates of the trip destination if they are present
-     * @return
+     * @return the string of the data information for the trip destination
      */
     public String getDisplayDates() {
         if (departure == null && arrival == null) {
-            return "No dates given";
+            return "-";
         } else if (departure == null) {
             return  dateFormat.format(arrival) + " to -";
         } else if (arrival == null) {
