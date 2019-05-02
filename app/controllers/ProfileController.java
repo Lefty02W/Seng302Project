@@ -241,14 +241,12 @@ public class ProfileController extends Controller {
      */
     private List<Image> getUserPhotos(Http.Request request){
         Profile profile = SessionController.getCurrentUser(request);
-        Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
         try {
+            Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
             imageList = imageListTemp.get();
         } catch (NoSuchElementException e) {
             imageList = new ArrayList<Image>();
         }
-
-
         return imageList;
     }
 

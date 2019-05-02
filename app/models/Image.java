@@ -39,17 +39,17 @@ public class Image extends Model {
     @Constraints.Required
     private String name;
 
-    @Constraints.Required
-    private int cropX;
-
-    @Constraints.Required
-    private int cropY;
-
-    @Constraints.Required
-    private int cropWidth;
-
-    @Constraints.Required
-    private int cropHeight;
+//    @Constraints.Required
+//    private int cropX;
+//
+//    @Constraints.Required
+//    private int cropY;
+//
+//    @Constraints.Required
+//    private int cropWidth;
+//
+//    @Constraints.Required
+//    private int cropHeight;
 
 
     /**
@@ -119,37 +119,37 @@ public class Image extends Model {
         this.name = name;
     }
 
-    public int getCropX() {
-        return cropX;
-    }
-
-    public void setCropX(int cropX) {
-        this.cropX = cropX;
-    }
-
-    public int getCropY() {
-        return cropY;
-    }
-
-    public void setCropY(int cropY) {
-        this.cropY = cropY;
-    }
-
-    public int getCropWidth() {
-        return cropWidth;
-    }
-
-    public void setCropWidth(int cropWidth) {
-        this.cropWidth = cropWidth;
-    }
-
-    public int getCropHeight() {
-        return cropHeight;
-    }
-
-    public void setCropHeight(int cropHeight) {
-        this.cropHeight = cropHeight;
-    }
+//    public int getCropX() {
+//        return cropX;
+//    }
+//
+//    public void setCropX(int cropX) {
+//        this.cropX = cropX;
+//    }
+//
+//    public int getCropY() {
+//        return cropY;
+//    }
+//
+//    public void setCropY(int cropY) {
+//        this.cropY = cropY;
+//    }
+//
+//    public int getCropWidth() {
+//        return cropWidth;
+//    }
+//
+//    public void setCropWidth(int cropWidth) {
+//        this.cropWidth = cropWidth;
+//    }
+//
+//    public int getCropHeight() {
+//        return cropHeight;
+//    }
+//
+//    public void setCropHeight(int cropHeight) {
+//        this.cropHeight = cropHeight;
+//    }
 
 
     /**
