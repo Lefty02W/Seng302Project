@@ -56,7 +56,7 @@ public class ProfileController extends Controller {
      * To get Image data upon upload
      */
     public static class ImageData {
-        public String visible;
+        public String visible = "Private";
         public String isNewProfilePicture;
     }
 
