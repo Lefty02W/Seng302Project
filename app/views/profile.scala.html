@@ -77,141 +77,19 @@
 
                 <div class="container-fluid">
 
-                    <div id="profilePhoto">
-                        <div class="row">
-                            <div class="col center-col" style="margin-top: 100px;">
-                                <img id="profilePhotoDisplay" style="border-width: 1px; border-style: solid;" class="thumbnail"
-                                src="@routes.Assets.at("images/defaultPic.jpg")" alt="Profile picture">
-                            </div>
+                    <div id="profilePhotoContainer">
+                        <div class="container" id="profilePhoto">
+                                <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
+                                alt="Profile picture">
                         </div>
 
-                        <div class="row">
-                            <div id="greeting" class="col center-col">
-                                <h2 style="text-align: center; margin-top: 25px">Welcome, @currentUser.getFirstName()!</h2>
-                            </div>
+                        <div class="container" id="greeting">
+                                <h2 style="text-align: center;">Welcome, @currentUser.getFirstName()!</h2>
                         </div>
-                        <div class="row" style="margin-top: 200px">
-                        </div>
+                    </div>
 
 
-                        <div class="col-4 center-col" style="background-color: lightgray; border-width: 0px;">
-                            <div id="profileInformationCard">
-                                <div class="card-header-tabs">
-                                    <ul class="nav nav-pills">
-                                        <li class="nav-item">
-                                            <button type="button" style="margin-left: 10px;" onclick="openTab('personalInformation'); ">Personal information</button>
-                                        </li>
-                                        <li class="nav-item">
-                                            <button type="button" onclick="openTab('b2');">Photos</button>
-                                        </li>
-                                        <li class="nav-item">
-                                            <button type="button" onclick="openTab('b3');">Destination</button>
-                                        </li>
-                                        <li class="nav-item">
-                                            <button type="button" onclick="openTab('b4');">Trips</button>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="col">
-                                    <div id="personalInformation" style="display: none;">
-                                        <h3>Personal Information</h3>
-                                        <div class="container">
-                                            <div id="firstNameCard" class="card-small">
-                                                <a>First Name: @currentUser.getFirstName</a>
-                                            </div>
-
-                                            <div id="midNameCard" class="card-small">
-                                                <a>Middle Name: @currentUser.getMiddleName</a>
-                                            </div>
-
-                                            <div id="lastNameCard" class="card-small">
-                                                <a>Last Name: @currentUser.getLastName</a>
-                                            </div>
-
-                                            <div id="emailCard" class="card-small">
-                                                <a>Email: @currentUser.getEmail</a>
-                                            </div>
-
-                                            <div id="dobCard" class="card-small">
-                                                <a>Date Of Birth: @currentUser.getBirthString</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div id="myTrips" style="display: none;">
-                                        <h3>Your Trips</h3>
-
-                                        @if(trips.isEmpty) {
-                                            <div class="alert alert-info" role="alert">
-                                                You have no trips associated with your profile
-                                            </div>
-                                        } else {
-                                            <div class="col">
-                                            @for(tripId <- trips) {
-                                                <div class="row">
-                                                    <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
-                                                        <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
-                                                        <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div id="tripInfo@tripId" class="collapse collapse-body">
-                                                        <table id="tripTable">
-                                                            <thead>
-                                                                <tr><th>Start Date</th><th>N.O. Destinations</th><th>Travel Time (Days)</th>
-                                                            </thead>
-                                                            <tr>
-                                                                <td>
-                                                                    @if(currentUser.getTripById(tripId).getStartDate != null) {
-                                                                        <span>@currentUser.getTripById(tripId).getStartDate.getTime</span>
-                                                                    } else {
-                                                                        <span>0</span>
-                                                                    }
-                                                                    @currentUser.getTripById(tripId).getStartDate</td>
-                                                                <td>@currentUser.getTripById(tripId).getDestinations.size()</td>
-                                                                <td>@currentUser.getTripById(tripId).getTravelTime</td>
-                                                            </tr>
-                                                        </table>
-                                                        <h4>Destinations Visted</h4>
-                                                        <table id="destsTable">
-                                                            <thead>
-                                                                <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
-                                                            </thead>
-                                                            @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
-                                                                <tr>
-                                                                    <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
-                                                                    <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
-                                                                    <td>
-                                                                        @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
-                                                                            <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
-                                                                        } else {
-                                                                            <span></span>
-                                                                        }
-                                                                        @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
-                                                                    <td>
-                                                                        @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
-                                                                            <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
-                                                                        } else {
-                                                                            <span></span>
-                                                                        }
-                                                                        @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
-                                                                </tr>
-                                                            }
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            }
-                                            </div>
-                                        }
-
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
+                    <div class="row" style="margin-top: 200px">
 
 
 
@@ -640,15 +518,5 @@
                     modal.style.display = "none";
                 }
             }
-
-            // Hide all elements with class="containerTab", except for the one that matches the clickable grid column
-            function openTab(tabName) {
-                var i, x;
-                x = document.getElementsByClassName("containerTab");
-                for (i = 0; i < x.length; i++) {
-                    x[i].style.display = "none";
-                }
-                document.getElementById(tabName).style.display = "block";
-            }
-        </script>
+    </script>
 </html>
