@@ -60,8 +60,9 @@ input[type=datetime-local] {
 #trip-card {
     height: 40vh;
     min-width: 100px;
+    background-color: #e8f5e9;
 }
 
 .card-border {
-    background-color: #376238;
+    background-color: #2e7d32;
 }
