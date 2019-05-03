@@ -194,7 +194,6 @@ public class ProfileController extends Controller {
         TemporaryFile tempFile = picture.getRef();
         File file = tempFile.path().toFile();
 
-
         return supplyAsync(() -> {
             try {
                 Profile currentUser = SessionController.getCurrentUser(request);
