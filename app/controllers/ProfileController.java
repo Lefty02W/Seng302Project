@@ -239,9 +239,7 @@ public class ProfileController extends Controller {
 
 
     /**
-     *
-     *
-     * @return
+     * @return a number, 1 if the default profile picture should be used on the modal and 0 if not
      */
     public Integer isDefaultProfilePicture() {
         if (demoProfilePicture == null) {
@@ -251,8 +249,8 @@ public class ProfileController extends Controller {
     }
 
     /**
-     * if the
-     * @param request
+     * @param request http request
+     * @return an object which will be used to display an image already in the database
      */
     public Result getTemporaryProfilePictureId(Http.Request request) {
         return ok(Objects.requireNonNull(demoProfilePicture).getImage()).as(demoProfilePicture.getType());
@@ -306,14 +304,13 @@ public class ProfileController extends Controller {
     public Result show (Http.Request request){
         Profile currentProfile = SessionController.getCurrentUser(request);
         List<Image> displayImageList = getUserPhotos(request);
-        demoProfilePicture = displayImageList.get(0);
+        demoProfilePicture = displayImageList.get(0);//todo delete this
         // Get the current show photo modal state
         // Ensure state is false for next refresh action
         Boolean show = showPhotoModal = false;
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
         Integer defaultProfilePicture = isDefaultProfilePicture();
-        //Image demoProfilePicture = getDemoProfilePicture(request);
         return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, defaultProfilePicture, request, messagesApi.preferred(request)));
     }
 
