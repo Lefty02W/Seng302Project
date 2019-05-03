@@ -20,9 +20,13 @@ import repository.TripRepository;
 import views.html.editProfile;
 import views.html.profile;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
@@ -200,8 +204,24 @@ public class ProfileController extends Controller {
                 this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
-                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType,
-                        visibility, fileName);
+                int width = 100;
+                int height = 100;
+                try {
+                    InputStream in = new ByteArrayInputStream(this.imageBytes);
+                    BufferedImage buffImage = ImageIO.read(in);
+                    width = buffImage.getWidth();
+                    height = buffImage.getHeight();
+                    if (width < height) {
+                        height = width;
+                    } else {
+                        width = height;
+                    }
+                } catch (Exception e) {
+                    height = 100;
+                    width = 100;
+                }
+
+                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, width, height);
                 savePhoto(image); // Save photo, given a successful upload
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 if (isProfilePicture == 0) { //case not setting as the new profile picture

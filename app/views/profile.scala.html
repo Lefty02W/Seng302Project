@@ -76,7 +76,24 @@
                 }
 
                 <div class="container-fluid">
-                    <div class="row">
+
+                    <div id="profilePhoto">
+                        <div class="row">
+                            <div class="col center-col" style="margin-top: 100px;">
+                                <img id="profilePhotoDisplay" style="border-width: 1px; border-style: solid;" class="thumbnail"
+                                src="@routes.Assets.at("images/defaultPic.jpg")" alt="Profile picture">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div id="greeting" class="col center-col">
+                                <h2 style="text-align: center; margin-top: 25px">Welcome, @currentUser.getFirstName()!</h2>
+                            </div>
+                        </div>
+                    <div class="row" style="margin-top: 200px">
+
+
+
                         <div class="col">
                             <div id="personalCard" class="card-large upper-card center-col">
                                 <h3>Personal Information</h3>

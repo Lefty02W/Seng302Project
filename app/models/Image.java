@@ -40,18 +40,17 @@ public class Image extends Model {
     private String name;
 
     //this causes issues when signing in a new user as it searches for images in repo with feature cropx, cropy ect
-//    @Constraints.Required
-//    private int cropX;
-//
-//    @Constraints.Required
-//    private int cropY;
-//
-//    @Constraints.Required
-//    private int cropWidth;
-//
-//    @Constraints.Required
-//    private int cropHeight;
+    @Constraints.Required
+    private int cropX;
 
+    @Constraints.Required
+    private int cropY;
+
+    @Constraints.Required
+    private int cropWidth;
+
+    @Constraints.Required
+    private int cropHeight;
 
     /**
      * Constructor for image
@@ -61,12 +60,16 @@ public class Image extends Model {
      * @param visible
      * @param name
      */
-    public Image(String email, byte[] image, String contentType, Integer visible, String name){
+    public Image(String email, byte[] image, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight) {
         this.email = email;
         this.image = image;
-        this.contentType = contentType;
         this.visible = visible;
+        this.contentType = contentType;
         this.name = name;
+        this.cropX = cropX;
+        this.cropY = cropY;
+        this.cropWidth = cropWidth;
+        this.cropHeight = cropHeight;
     }
 
     // Finder for image
