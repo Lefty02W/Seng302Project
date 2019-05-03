@@ -88,4 +88,18 @@ public class ImageRepository {
                         .findList();
         return Optional.of(imageList);
     }
+
+
+    /**
+     * Function to get a single image of a given id
+     * @param id of the required image
+     * @return a single image
+     */
+    public Optional<Image> getImage(Integer id) {
+        Image image =
+                ebeanServer.find(Image.class)
+                .where().eq("image_id", id)
+                .findOne();
+        return Optional.of(image);
+    }
 }

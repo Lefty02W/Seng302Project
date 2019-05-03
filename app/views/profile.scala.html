@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -72,6 +72,14 @@
                         $(window).on('load', function() {
                             $('#viewPhotoModal').modal('show')
                         })
+                    </script>
+                }
+
+                @if(showChangeProfilePictureModal) {
+                    <script type="text/javascript">
+                            $(window).on('load', function() {
+                                $('#changeProfilePicture').modal('show')
+                            })
                     </script>
                 }
 
@@ -309,7 +317,7 @@
                             @if(defaultProfilePicture == 1) {
                                 <img id="displayImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
                             } @if(defaultProfilePicture == 0) {
-                                <img id="displayImage" class="thumbnail" src="@routes.ProfileController.getTemporaryProfilePictureId" name="demoProfilePicture">
+                                <img id="displayImage" class="thumbnail" src="@routes.ProfileController.getDemoProfilePictureId" name="demoProfilePicture">
                             }
                                 <div class="row">
                                 <div class="center-col">
@@ -345,7 +353,8 @@
                                         src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName"
                                         name="@image.getImageId">
                                         <div class="card-body">
-                                            <button type="submit">Select</button>
+                                            <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
+                                                <button>Select</button></a>
                                         </div>
                                             <!-- The Expanded Image Modal -->
                                         <div id="expandImageModal" class="modal">
@@ -356,6 +365,7 @@
                                         </div>
                                     </div>
                                 }
+
                             </div>
                             <button type="button" data-dismiss="modal" style="width: 10vw;
                                 float: right" class="changeProfilePictureButton"
