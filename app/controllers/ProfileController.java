@@ -243,6 +243,11 @@ public class ProfileController extends Controller {
         this.demoProfilePicture = usersImages.get(0);
     }
 
+    public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
+        this.demoProfilePicture = selectedImage;
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
+    }
+
 
     /**
      * Inserts an Image object into the ImageRepository to be stored on the database
