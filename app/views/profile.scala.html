@@ -90,7 +90,57 @@
                                 <h2 style="text-align: center; margin-top: 25px">Welcome, @currentUser.getFirstName()!</h2>
                             </div>
                         </div>
-                    <div class="row" style="margin-top: 200px">
+                        <div class="row" style="margin-top: 200px">
+                        </div>
+
+
+                        <ul class="nav nav-pills container">
+
+                            <li class="nav-item">
+                                <button type="button" onclick="openTab('b1');">Profile data</button>
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" onclick="openTab('b2');">Photos</button>
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" onclick="openTab('b3');">Destination</button>
+                            </li>
+                            <li class="nav-item">
+                                <button type="button" onclick="openTab('b4');">Trips</button>
+                            </li>
+                        </ul>
+
+                            <!-- The grid: three columns -->
+                        <div class="col">
+                        <div class="card-large lower-card center-col">
+                            <div class="container">
+                                <div class="row container">
+                                    <button class="col-4" onclick="openTab('b1');" style="background:green;">Box 1</button>
+                                    <button class="col-4" onclick="openTab('b2');" style="background:blue;">Box 2</button>
+                                    <button class="col-4" onclick="openTab('b3');" style="background:red;">Box 3</button>
+                                </div>
+                                    <!-- The expanding grid (hidden by default) -->
+                                <div id="b1" class="containerTab" style="display:none;background:green">
+                                        <!-- If you want the ability to close the container, add a close button -->
+                                    <span onclick="this.parentElement.style.display='none'" class="closebtn">x</span>
+                                    <h2>Box 1</h2>
+                                    <p>Lorem ipsum..</p>
+                                </div>
+
+                                <div id="b2" class="containerTab" style="display:none;background:blue">
+                                    <span onclick="this.parentElement.style.display='none'" class="closebtn">x</span>
+                                    <h2>Box 2</h2>
+                                    <p>Lorem ipsum..</p>
+                                </div>
+
+                                <div id="b3" class="containerTab" style="display:none;background:red">
+                                    <span onclick="this.parentElement.style.display='none'" class="closebtn">x</span>
+                                    <h2>Box 3</h2>
+                                    <p>Lorem ipsum..</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
 
@@ -519,5 +569,15 @@
                     modal.style.display = "none";
                 }
             }
-    </script>
+
+            // Hide all elements with class="containerTab", except for the one that matches the clickable grid column
+            function openTab(tabName) {
+                var i, x;
+                x = document.getElementsByClassName("containerTab");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                document.getElementById(tabName).style.display = "block";
+            }
+        </script>
 </html>
