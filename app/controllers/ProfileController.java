@@ -48,14 +48,16 @@ public class ProfileController extends Controller {
     private List<Image> imageList = new ArrayList<>();
     private static Boolean showPhotoModal = false;
     private final TripRepository tripRepository;
+    private Image demoProfilePicture = null;
+
 
 
     /**
      * To get Image data upon upload
      */
     public static class ImageData {
-        public String visible;
-        public String isNewProfilePicture;
+        private String visible;
+        private String isNewProfilePicture;
     }
 
 
@@ -71,6 +73,7 @@ public class ProfileController extends Controller {
             this.profileRepository = profileRepository;
             this.tripRepository = tripRepository;
             this.imageRepository = imageRepository;
+
         }
 
 
@@ -216,6 +219,30 @@ public class ProfileController extends Controller {
         }).thenApply(result -> redirect("/profile").flashing("success", "Image uploaded."));
     }
 
+    /**
+     * Selects an image and sets it as the demo profile picture so that a user can see what that
+     * picture may look like if it was truly set as the profile picture
+     * @param request https reuquest
+     * @return a redirect to the profile page
+     */
+    public Image getDemoProfilePicture(Http.Request request) {
+        if (demoProfilePicture == null) {
+            resetDemoProfilePicture(request);
+        }
+        return demoProfilePicture;
+    }
+
+    /**
+     * resets the demo profile picture to the original profile picture
+     * @param request
+     */
+    public void resetDemoProfilePicture(Http.Request request) {
+        Profile currentUser = SessionController.getCurrentUser(request);
+        Optional<List<Image>> imagesList  = imageRepository.getImages(currentUser.getEmail());
+        List<Image> usersImages = imagesList.get();
+        this.demoProfilePicture = usersImages.get(0);
+    }
+
 
     /**
      * Inserts an Image object into the ImageRepository to be stored on the database
@@ -267,7 +294,8 @@ public class ProfileController extends Controller {
         Boolean show = showPhotoModal = false;
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, request, messagesApi.preferred(request)));
+        Image demoProfilePicture = getDemoProfilePicture(request);
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, demoProfilePicture, request, messagesApi.preferred(request)));
     }
 
 }
