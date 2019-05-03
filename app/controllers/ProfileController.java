@@ -53,7 +53,6 @@ public class ProfileController extends Controller {
     private static Boolean showPhotoModal = false;
     private final TripRepository tripRepository;
     private Image demoProfilePicture = null;
-    public String defaultProfilePicture = "@routes.Assets.at(\"images/defaultPic.jpg\")";
 
 
 
@@ -238,31 +237,28 @@ public class ProfileController extends Controller {
         }).thenApply(result -> redirect("/profile").flashing("success", "Image uploaded."));
     }
 
+
     /**
-     * Selects an image and sets it as the demo profile picture so that a user can see what that
-     * picture may look like if it was truly set as the profile picture
-     * @param request https reuquest
-     * @return a redirect to the profile page
+     *
+     *
+     * @return
      */
-    public String getDemoProfilePicture(Http.Request request) {
+    public Integer isDefaultProfilePicture() {
         if (demoProfilePicture == null) {
-            return defaultProfilePicture;
+            return 1;
         }
-        return demoProfilePicture.getImageId().toString();
+        return 0;
     }
 
     /**
-     * resets the demo profile picture to the original profile picture
+     * if the
      * @param request
      */
-    public void resetDemoProfilePicture(Http.Request request) {
-        //demoProfilePicture = "@routes.Assets.at(\"images/defaultPic.jpg\")";
+    public Result getTemporaryProfilePictureId(Http.Request request) {
+        return ok(Objects.requireNonNull(demoProfilePicture).getImage()).as(demoProfilePicture.getType());
     }
 
-//    public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
-//        this.demoProfilePicture = selectedImage;
-//        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
-//    }
+
 
 
     /**
@@ -310,13 +306,15 @@ public class ProfileController extends Controller {
     public Result show (Http.Request request){
         Profile currentProfile = SessionController.getCurrentUser(request);
         List<Image> displayImageList = getUserPhotos(request);
+        demoProfilePicture = displayImageList.get(0);
         // Get the current show photo modal state
         // Ensure state is false for next refresh action
         Boolean show = showPhotoModal = false;
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
+        Integer defaultProfilePicture = isDefaultProfilePicture();
         //Image demoProfilePicture = getDemoProfilePicture(request);
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, request, messagesApi.preferred(request)));
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, defaultProfilePicture, request, messagesApi.preferred(request)));
     }
 
 }

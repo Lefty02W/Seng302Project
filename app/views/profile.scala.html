@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -280,7 +280,6 @@
                                 </button>
                             </div>
                         </div>
-
                     </div>
 
                     <div class="row">
@@ -307,8 +306,12 @@
                             <h2 class="modal-title center-col">Change Profile Picture</h2>
                         </div>
                         <div class="modal-body">
-                            <img id="displayImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
-                            <div class="row">
+                            @if(defaultProfilePicture == 1) {
+                                <img id="displayImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
+                            } @if(defaultProfilePicture == 0) {
+                                <img id="displayImage" class="thumbnail" src="@routes.ProfileController.getTemporaryProfilePictureId" name="demoProfilePicture">
+                            }
+                                <div class="row">
                                 <div class="center-col">
                                     <button type="button" class="addProfilebutton" data-toggle="modal" data-target="#addProfileModal" data-dismiss="modal">
                                         Upload new photo</button>
