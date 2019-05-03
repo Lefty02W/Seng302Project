@@ -49,7 +49,7 @@ POST    /profile                     controllers.ProfileController.update(reques
 POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer)
 GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
-POST    /profile/photo/profilePicture   controllers.ProfileController.setDemoProfilePicture(request: Request)
+#POST    /profile/photo/profilePicture   controllers.ProfileController.setDemoProfilePicture(request: Request)
 
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)

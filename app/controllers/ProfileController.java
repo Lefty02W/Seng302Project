@@ -243,10 +243,10 @@ public class ProfileController extends Controller {
         this.demoProfilePicture = usersImages.get(0);
     }
 
-    public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
-        this.demoProfilePicture = selectedImage;
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
-    }
+//    public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
+//        this.demoProfilePicture = selectedImage;
+//        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
+//    }
 
 
     /**
@@ -299,8 +299,8 @@ public class ProfileController extends Controller {
         Boolean show = showPhotoModal = false;
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-        Image demoProfilePicture = getDemoProfilePicture(request);
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, demoProfilePicture, request, messagesApi.preferred(request)));
+        //Image demoProfilePicture = getDemoProfilePicture(request);
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, request, messagesApi.preferred(request)));
     }
 
 }
