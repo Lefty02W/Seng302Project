@@ -10,7 +10,7 @@ junit:
   script:
     - sudo update-java-alternatives --set java-8-oracle
     - sbt jacoco
-    - sudo mkdir /home/JACOCO
+    - sudo mkdir -p /home/JACOCO
     - sudo cp -r target/ /home/JACOCO/
     - sudo update-java-alternatives --set java-1.11.0-openjdk-amd64
   artifacts:
