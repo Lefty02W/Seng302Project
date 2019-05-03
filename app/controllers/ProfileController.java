@@ -56,8 +56,8 @@ public class ProfileController extends Controller {
      * To get Image data upon upload
      */
     public static class ImageData {
-        private String visible;
-        private String isNewProfilePicture;
+        public String visible;
+        public String isNewProfilePicture;
     }
 
 
@@ -193,7 +193,6 @@ public class ProfileController extends Controller {
 
         TemporaryFile tempFile = picture.getRef();
         File file = tempFile.path().toFile();
-
         return supplyAsync(() -> {
             try {
                 Profile currentUser = SessionController.getCurrentUser(request);
