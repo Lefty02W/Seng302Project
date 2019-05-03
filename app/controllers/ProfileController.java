@@ -49,6 +49,7 @@ public class ProfileController extends Controller {
     private static Boolean showPhotoModal = false;
     private final TripRepository tripRepository;
     private Image demoProfilePicture = null;
+    public String defaultProfilePicture = "@routes.Assets.at(\"images/defaultPic.jpg\")";
 
 
 
@@ -223,11 +224,11 @@ public class ProfileController extends Controller {
      * @param request https reuquest
      * @return a redirect to the profile page
      */
-    public Image getDemoProfilePicture(Http.Request request) {
+    public String getDemoProfilePicture(Http.Request request) {
         if (demoProfilePicture == null) {
-            resetDemoProfilePicture(request);
+            return defaultProfilePicture;
         }
-        return demoProfilePicture;
+        return demoProfilePicture.getImageId().toString();
     }
 
     /**
@@ -235,10 +236,7 @@ public class ProfileController extends Controller {
      * @param request
      */
     public void resetDemoProfilePicture(Http.Request request) {
-        Profile currentUser = SessionController.getCurrentUser(request);
-        Optional<List<Image>> imagesList  = imageRepository.getImages(currentUser.getEmail());
-        List<Image> usersImages = imagesList.get();
-        this.demoProfilePicture = usersImages.get(0);
+        //demoProfilePicture = "@routes.Assets.at(\"images/defaultPic.jpg\")";
     }
 
 //    public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
