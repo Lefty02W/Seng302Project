@@ -8,6 +8,7 @@ import cucumber.api.java.AfterStep;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import models.Profile;
 import org.junit.Assert;
 import org.openqa.selenium.By;
@@ -61,10 +62,43 @@ public class viewProfileSteps extends BaseStep {
         throw new cucumber.api.PendingException();
     }
 
+
     @Then("he should see a default profile photo")
     public void he_should_see_a_default_profile_photo() {
         element = driver.findElement(By.id("profileImage"));
         Assert.assertTrue(element.getAttribute("currentSrc").endsWith("defaultPic.jpg"));
     }
+
+
+    @When("he clicks the information tab")
+    public void he_clicks_the_information_tab() {
+        driver.findElement(By.id("informationTabLink")).click();
+    }
+
+
+    @Then("he should see a first name {string}")
+    public void he_should_see_a_first_name(String name) {
+        element = driver.findElement(By.id("firstNameRow"));
+
+        Assert.assertEquals("First Name: "+name, element.getAttribute("innerText"));
+    }
+
+
+    @Then("a middle name: {string}")
+    public void a_middle_name(String name) {
+        element = driver.findElement(By.id("middleNameRow"));
+
+        Assert.assertEquals("Middle Name: " + name, element.getAttribute("innerText"));
+    }
+
+
+    @Then("a last name: {string}")
+    public void a_last_name(String name) {
+        element = driver.findElement(By.id("lastNameRow"));
+
+        Assert.assertEquals("Last Name: "+name, element.getAttribute("innerText"));
+    }
+
+
 
 }
