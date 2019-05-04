@@ -169,9 +169,10 @@ public class ProfileController extends Controller {
 
     /**
      * Retrieves file (image) upload from the front end and converts the image into bytes
-     * A new Image object is created and has its attributes set. This image is then sent
-     * to savePhoto. Logic is also used so that if the newly uploaded photo is a new
-     * profile picture then it will set it as a profile picture
+     * A new Image object is created and has its attributes set. If the photo is a normal
+     * upload it will be sent to savePhoto and the modal showPhoto is loaded. If the photo
+     * is a potential new profile picture it will not be saved but will be set as the demo
+     * profile picture and the modal changeProfilePicture is shown
      *
      * @param request Https request
      * @return a redirect to the profile page
@@ -223,11 +224,13 @@ public class ProfileController extends Controller {
                 }
 
                 Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, width, height);
-                savePhoto(image); // Save photo, given a successful upload
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
+                    savePhoto(image); // Save photo, given a successful upload
                     showPhotoModal = true;
                 } else {
+                    demoProfilePicture = image;
+                    showChangeProfilePictureModal = true;
                     //TODO set the picture as the new profile picture and show modal/redirect to appropriate place on page
                 }
             } catch (IOException e) {
@@ -236,7 +239,7 @@ public class ProfileController extends Controller {
 
             // Redirect user to profile page to show state change
             return ok();
-        }).thenApply(result -> redirect("/profile").flashing("success", "Image uploaded."));
+        }).thenApply(result -> redirect("/profile"));
     }
 
 
@@ -263,6 +266,16 @@ public class ProfileController extends Controller {
         return supplyAsync(() -> redirect("/profile"));
     }
 
+
+    /**
+     * deletes the demoProfilePicture, effectively deleting any changes to the profile picture then refreshes the page
+     * @return a redirect to the profile page
+     */
+    public CompletionStage<Result> resetDemoProfilePicture() {
+        demoProfilePicture = null;
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
+    }
+
     /**
      * Gives the id of the demo profile picture to be displayed on the change profile picture modal
      * @param request http request
@@ -271,10 +284,6 @@ public class ProfileController extends Controller {
     public Result getDemoProfilePictureId(Http.Request request) {
         return ok(Objects.requireNonNull(demoProfilePicture).getImage()).as(demoProfilePicture.getType());
     }
-
-
-
-
 
     /**
      * Inserts an Image object into the ImageRepository to be stored on the database

@@ -49,8 +49,9 @@ POST    /profile                     controllers.ProfileController.update(reques
 POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer)
 GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
-GET     /profile/photo/profilePicture   controllers.ProfileController.getDemoProfilePictureId(request: Request)
-GET     /profile/photo/profilePicture/:id  controllers.ProfileController.setDemoProfilePicture(id: Integer)
+GET     /profile/profilePicture   controllers.ProfileController.getDemoProfilePictureId(request: Request)
+GET     /profile/profilePicture/:id  controllers.ProfileController.setDemoProfilePicture(id: Integer)
+GET     /profile/changesCancelled     controllers.ProfileController.resetDemoProfilePicture()
 
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
