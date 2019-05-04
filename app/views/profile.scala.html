@@ -99,22 +99,21 @@
 
                     <div class="row">
                         <ul class="nav nav-tabs" id="profileTabs">
-                            <li class="active"><a data-toggle="tab" href="#informationTab" onclick="">Information</a></li>
-                            <li><a data-toggle="tab" href="#photosTab">Photos</a></li>
-                            <li><a data-toggle="tab" href="#destsTab">Destinations</a></li>
-                            <li><a data-toggle="tab" href="#tripsTab">Trips</a></li>
+                            <li class="active"><a data-toggle="tab" href="#informationTab" id="informationTabLink">Information</a></li>
+                            <li><a data-toggle="tab" href="#photosTab" id="photosTabLink">Photos</a></li>
+                            <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
+                            <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
                         </ul>
 
                     </div>
                         <div class="tab-content" id="profileTabsContent">
-
                             <div id="informationTab" class="tab-pane fade in active">
                                 <div class="container">
                                     <div id="firstNameRow" class="row">
                                         <a>First Name: @currentUser.getFirstName</a>
                                     </div>
 
-                                    <div id="midNameRow" class="row">
+                                    <div id="middleNameRow" class="row">
                                         <a>Middle Name: @currentUser.getMiddleName</a>
                                     </div>
 
