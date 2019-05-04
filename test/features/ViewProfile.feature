@@ -6,6 +6,6 @@ Feature: View Profile
 
   Scenario: See a default profile photo
     Given John has logged in with email "john.gherkin.doe@travelea.com" and password "password"
-    And he has no profile photo
+    #And he has no profile photo
     Then he should see a default profile photo
 
