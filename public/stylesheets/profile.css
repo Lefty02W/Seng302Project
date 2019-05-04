@@ -20,6 +20,11 @@
     height: 40vh;
 }
 
+.button-edit {
+    float: right;
+    width: 10vw;
+}
+
 
 .trip-button {
     width: 100%;

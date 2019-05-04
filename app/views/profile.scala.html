@@ -1,10 +1,7 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
 @import controllers.ProfileController.ImageData
-@import java.util
-@import javax.swing.ImageIcon
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
+@import play.mvc.Http
+@import views.html.helper.{CSRF, form}
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -31,11 +28,11 @@
     </head>
 
     <body>
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
-            <div class="border-right" id="sidebar-wrapper">
-                <h1 class="sidebar-heading">TravelEA </h1>
+            <div id="sidebar-wrapper">
+                <h2 class="sidebar-heading">TravelEA </h2>
                 <div class="list-group list-group-flush">
                     <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
                     <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
@@ -49,23 +46,25 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
-                    <h2> Profile</h2> <!-- TODO align this in the center -->
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
+                        <h2> Profile</h2> <!-- TODO align this in the center -->
+                    </div>
                 </nav>
 
-
-                @if(request.flash.containsKey("invalid")) {
-                    <div class="alert alert-danger">
-                    @request.flash.get("invalid")
-                    </div>
-                }
-
-                @if(request.flash.containsKey("success")) {
+                @if(request.flash.getOptional("success").isPresent) {
                     <div class="alert alert-success">
-                    @request.flash.get("success")
+                    @request.flash.getOptional("success").get()
                     </div>
                 }
+
+                @if(request.flash.getOptional("failure").isPresent) {
+                    <div class="alert alert-failure">
+                    @request.flash.getOptional("failure").get()
+                    </div>
+                }
+
 
                 @if(showPhotoModal) {
                     <script type="text/javascript">
@@ -109,35 +108,35 @@
                             <div id="trips-card" class="card-large upper-card">
                                 <h3>Your Trips</h3>
 
-                                @if(currentUser.getTrips.isEmpty) {
+                                @if(trips.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no trips associated with your profile
                                     </div>
                                 } else {
                                     <div class="col">
-                                    @for(index <- 0 until currentUser.getTrips.size) {
+                                    @for(tripId <- trips) {
                                         <div class="row">
-                                            <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@index">
-                                                <h5 id="tripName">@currentUser.getTrips.get(index).getName</h5>
+                                            <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
+                                                <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
                                                 <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div id="tripInfo@index" class="collapse collapse-body">
+                                            <div id="tripInfo@tripId" class="collapse collapse-body">
                                                 <table id="tripTable">
                                                     <thead>
                                                         <tr><th>Start Date</th><th>N.O. Destinations</th><th>Travel Time (Days)</th>
                                                     </thead>
                                                     <tr>
                                                         <td>
-                                                            @if(currentUser.getTrips.get(index).getStartDate != null) {
-                                                                <span>@currentUser.getTrips.get(index).getStartDate.getTime</span>
+                                                            @if(currentUser.getTripById(tripId).getStartDate != null) {
+                                                                <span>@currentUser.getTripById(tripId).getStartDate.getTime</span>
                                                             } else {
                                                                 <span>0</span>
                                                             }
-                                                            @currentUser.getTrips.get(index).getStartDate</td>
-                                                        <td>@currentUser.getTrips.get(index).getDestinations.size()</td>
-                                                        <td>@currentUser.getTrips.get(index).getTravelTime</td>
+                                                            @currentUser.getTripById(tripId).getStartDate</td>
+                                                        <td>@currentUser.getTripById(tripId).getDestinations.size()</td>
+                                                        <td>@currentUser.getTripById(tripId).getTravelTime</td>
                                                     </tr>
                                                 </table>
                                                 <h4>Destinations Visted</h4>
@@ -145,24 +144,24 @@
                                                     <thead>
                                                         <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
                                                     </thead>
-                                                    @for(destIndex <- 0 until currentUser.getTrips.get(index).getDestinations.size) {
+                                                    @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
                                                         <tr>
-                                                            <td>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDestination.getName</td>
-                                                            <td>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDestination.getCountry</td>
+                                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
+                                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
                                                             <td>
-                                                                @if(currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival != null) {
-                                                                    <span>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival.getTime</span>
+                                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
+                                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getArrival</td>
+                                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
                                                             <td>
-                                                                @if(currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture != null) {
-                                                                    <span>@currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture.getTime</span>
+                                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
+                                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
                                                                 } else {
                                                                     <span></span>
                                                                 }
-                                                                @currentUser.getTrips.get(index).getDestinations.get(destIndex).getDeparture</td>
+                                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
                                                         </tr>
                                                     }
                                                 </table>
@@ -170,6 +169,7 @@
                                         </div>
                                     }
                                     </div>
+
                                 }
 
                             </div>
@@ -267,7 +267,7 @@
                     <div class="row">
                         <div class="col">
                             <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button"
-                            class="button-edit" style="width: 10vw;
+                            class="button-editDestinations" style="width: 10vw;
                                 float: right">
                                 Edit Profile
                             </button>
@@ -277,8 +277,6 @@
                     </div>
 
                 </div>
-                </div>
-
             </div>
         </div>
             <div class="modal fade" id="addPhotoModal">
@@ -348,9 +346,6 @@
                 </div>
 
             </div>
-
-
-        </div>
     </body>
 
             <!-- Menu Toggle Script -->
@@ -417,8 +412,4 @@
                 }
             }
     </script>
-        </script>
-
-    </body>
-
 </html>

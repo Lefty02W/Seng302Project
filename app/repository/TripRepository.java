@@ -1,24 +1,21 @@
 package repository;
 
-import controllers.SessionController;
-import io.ebean.*;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.Model;
+import io.ebean.Transaction;
 import models.Destination;
-import models.Profile;
 import models.Trip;
 import models.TripDestination;
-import play.api.mvc.Request;
 import play.db.ebean.EbeanConfig;
-import scala.None;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.CompletionStage;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.NoSuchElementException;
+import repository.TripDestinationsRepository;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -30,11 +27,13 @@ public class TripRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
+    private final TripDestinationsRepository tripDestinationsRepository;
 
     @Inject
-    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
+    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, TripDestinationsRepository tripDestinationsRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
+        this.tripDestinationsRepository = tripDestinationsRepository;
     }
 
     /**
@@ -56,16 +55,13 @@ public class TripRepository {
      * @param tripDestinations
      */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
-        //TODO maybe look into async again
-        //TODO transactions pls
-        ebeanServer.insert(trip);
-        for (TripDestination tripDestination : tripDestinations) {
+    ebeanServer.insert(trip);
+    for (TripDestination tripDestination : tripDestinations) {
             tripDestination.setTripId(trip.getId());
             ebeanServer.insert(tripDestination);
-        }
 
+            }
     }
-
 
 
     /**
@@ -100,6 +96,7 @@ public class TripRepository {
         Trip trip = result.get(0);
 
         ArrayList<TripDestination> tripDestinations = new ArrayList<>();
+        TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
         List<TripDestination> tripDests = TripDestination.find.query()
                 .where()
                 .eq("trip_id", tripId)
@@ -112,9 +109,9 @@ public class TripRepository {
                     .eq("destination_id", tripDest.getDestinationId())
                     .findList();
             tripDest.setDestination(destinations.get(0));
-            tripDestinations.add(tripDest);
+            orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
         }
-        trip.setDestinations(tripDestinations);
+        trip.setOrderedDestiantions(orderedDestiantions);
         return trip;
     }
 

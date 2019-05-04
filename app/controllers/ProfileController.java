@@ -1,8 +1,10 @@
 package controllers;
 
 
+import com.google.common.collect.TreeMultimap;
 import models.Image;
 import models.Profile;
+import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -75,7 +77,7 @@ public class ProfileController extends Controller {
      * Method to retrieve a users profile details and return a filled form to be edited.
      *
      * @param email String of the users email
-     * @return a render of the edit profile page
+     * @return a render of the editDestinations profile page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showEdit (String email){
@@ -99,15 +101,19 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result update (Http.Request request){
+    public CompletionStage<Result> update (Http.Request request){
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
+    System.out.println(currentProfileForm);
         Profile profile = currentProfileForm.get();
 
-        profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword());
+        // Could improve on this
+        profile.setNationalities(profile.getNationalities().replaceAll("\\s",""));
+        profile.setPassports(profile.getPassports().replaceAll("\\s",""));
 
-    //TODO make async
-    return redirect(routes.ProfileController.show());
-
+        return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),
+                SessionController.getCurrentUser(request).getEmail()).thenApplyAsync(x -> {
+            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profile.getEmail());
+        }, httpExecutionContext.current());
     }
 
 
@@ -253,9 +259,10 @@ public class ProfileController extends Controller {
         List<Image> displayImageList = getUserPhotos(request);
         // Get the current show photo modal state
         // Ensure state is false for next refresh action
-        Boolean show = showPhotoModal;
-        showPhotoModal = false;
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, request, messagesApi.preferred(request)));
+        Boolean show = showPhotoModal = false;
+        TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
+        List<Integer> tripValues= new ArrayList<>(tripsMap.values());
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, tripValues, request, messagesApi.preferred(request)));
     }
 
 }

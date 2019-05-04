@@ -56,6 +56,26 @@ public class Destination extends Model {
         this.longitude = longitude;
     }
 
+    /**
+     * Creating a destination
+     * @param userEmail the email of the destination owner
+     * @param name the destination name
+     * @param type the destination type
+     * @param country the destinations country
+     * @param district the destinations district
+     * @param latitude the destinations latitude
+     * @param longitude the destinations longitude
+     */
+    public Destination(String userEmail, String name, String type, String country, String district, double latitude, double longitude) {
+        this.userEmail = userEmail;
+        this.name = name;
+        this.type = type;
+        this.country = country;
+        this.district = district;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     // Finder for destination
     public static final Finder<String, Destination> find = new Finder<>(Destination.class);
 

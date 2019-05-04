@@ -1,8 +1,7 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
 @import controllers.LoginController.Login
-@(loginForm : Form[Login])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import play.mvc.Http
+@import views.html.helper.{CSRF, form}
+@(loginForm : Form[Login], userForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -10,18 +9,23 @@
     <head>
         <meta charset="UTF-8">
         <title>TravelEA: Development</title>
+        <title>TravelEA</title>
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/login.css")">
 
+        <script src="@routes.Assets.at("javascripts/jquery-3.3.1.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/bootstrap.bundle.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap-select.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap.js")" type="text/javascript"></script>
     </head>
     <body>
         <div id="startUpBox" class="startUpBox">
 
-            @if(request.flash.containsKey("info")) {
+            @if(request.flash.getOptional("info").isPresent) {
                 <div class="alert alert-info">
-                @request.flash.get("info")
+                @request.flash.getOptional("info").get()
                 </div>
             }
 
@@ -29,16 +33,132 @@
             @form(routes.LoginController.login()){
                 @CSRF.formField
 
-                <input type="text" id="email" placeholder="Email" name="email" required required oninvalid="this.setCustomValidity('Email required')" oninput="setCustomValidity('')">
-                <input type="password" id="password" placeholder="Password" name="password" required required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
+                <input type="text" id="email" class="loginEmail" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('Email required')" oninput="setCustomValidity('')">
+                <input type="password" id="password" class="loginPassword" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
 
-                <a href="@routes.CreateUserController.show()"><button type="button" id="createUserButton" class="redButton" >Create User</button></a>
+
                 <button type="submit" id="loginButton" class="loginButton">Login</button>
 
             }
 
+            <button type="button" id="createUserButton" class="redButton" data-toggle="modal" data-target="#createProfileModal">Create User</button>
+
+
+        </div>
+
+        <div class="modal fade" id="createProfileModal">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">Create Profile</h2>
+                    </div>
+                    @form(routes.LoginController.save()) {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">First Name*</small>
+                                    <input type="text" id="firstName" placeholder="First Name" name="firstName" required oninvalid="this.setCustomValidity('First name is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Middle Name</small>
+                                    <input type="text" id="middleName" placeholder="Middle Name" name="middleName">
+                                    <div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Last Name*</small>
+                                    <input type="text" id="lastName" placeholder="Last Name" name="lastName" required oninvalid="this.setCustomValidity('Last name is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Email*</small>
+                                    <input type="text" id="email" class="createEmail" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" >
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Password*</small>
+                                    <input type="password" id="password" placeholder="Password" class="createPassword" name="password" required oninvalid="this.setCustomValidity('Password is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Date of Birth*</small>
+                                    <input type="date" id="birthDate"  name="birthDate" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Gender*</small>
+                                        <select class="selectpicker" id="gender" name="gender" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                        <option>Other</option>
+                                    </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Nationalities*</small>
+                                        <input type="text" id="nationalities" placeholder="Nationalities" name="nationalities" required oninvalid="this.setCustomValidity('Nationality is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group" id="holder"> <small id="label">Passport</small>
+                                        <input type="text" id="passports" placeholder="Passport" name="passports">
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="hidden-div-editDestinations">
+                                        <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required>
+                                    </div>
+                                    <div>
+                                        <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" required>
+                                            <option value="ThrillSeeker">ThrillSeeker</option>
+                                            <option value="Backpacker">Backpacker</option>
+                                            <option value="Gap Year">Gap Year</option>
+                                            <option value="Groupie">Groupie</option>
+                                            <option value="Frequent Weekender">Frequent Weekender</option>
+                                            <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                            <option value="Holidaymaker">Holidaymaker</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="cancelButton" data-dismiss="modal">Cancel</button>
+                            <button type="submit" id="createButton" onclick="fillVals()">Create</button>
+                        </div>
+                    }
+                </div>
+            </div>
 
         </div>
 
     </body>
+    <script type="text/javascript">
+
+            function fillVals() {
+                console.log($('#typeDropdown').val());
+                $('#travellerTypes').val($('#typeDropdown').val());
+            }
+
+    </script>
 </html>

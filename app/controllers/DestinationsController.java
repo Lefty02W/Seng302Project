@@ -15,9 +15,10 @@ import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
 import views.html.createDestinations;
-import views.html.createUser;
+import views.html.login;
 import views.html.destinations;
-import views.html.edit;
+import views.html.editDestinations;
+import controllers.LoginController.Login;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class DestinationsController extends Controller {
     private List<Destination> destinationsList = new ArrayList<>();
     private final Form<Destination> form;
     private final Form<Profile> userForm;
+    private final Form<Login> loginForm;
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
     private final TripRepository tripRepository;
@@ -56,6 +58,7 @@ public class DestinationsController extends Controller {
                                   ProfileRepository profileRepository, TripRepository tripRepository) {
         this.form = formFactory.form(Destination.class);
         this.userForm = formFactory.form(Profile.class);
+        this.loginForm = formFactory.form(Login.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
@@ -97,7 +100,7 @@ public class DestinationsController extends Controller {
     }
 
     /**
-     * This method displays the edit page for the destinations to the user
+     * This method displays the editDestinations page for the destinations to the user
      *
      * @param request
      * @param id
@@ -113,14 +116,14 @@ public class DestinationsController extends Controller {
             }
         }
         Form<Destination> destinationForm = form.fill(destination);
-        return ok(edit.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
+        return ok(editDestinations.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
     }
 
     /**
      * This method updates destination in the database
      *
      * @param request
-     * @param id      The ID of the destination to edit.
+     * @param id      The ID of the destination to editDestinations.
      * @return
      */
     @Security.Authenticated(SecureSession.class)
@@ -141,7 +144,7 @@ public class DestinationsController extends Controller {
     public Result saveDestination(Http.Request request) {
         Profile user = SessionController.getCurrentUser(request);
         if (user == null) {
-            return ok(createUser.render(userForm, request, messagesApi.preferred(request)));
+            return ok(login.render(loginForm, userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination destination = destinationForm.value().get();

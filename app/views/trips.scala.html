@@ -1,8 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
-
-@import helper._
+@(tripForm : Form[Trip], destinations: List[Destination], trips: List[Integer], currentUser : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -24,14 +22,14 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/trips.css")">
-    <head>
+    <head>Trip
         <title>TravelEA | Trips</title>
     </head>
     <body>
-        <div class="d-flex" id="wrapper">
+        <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
-            <div class="border-right" id="sidebar-wrapper">
+            <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
@@ -46,9 +44,11 @@
                 <!-- Page Content -->
             <div id="page-content-wrapper">
 
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <img class="expand-icon" src="@routes.Assets.at("images/list-icon.png")" id="menu-toggle">
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
                     <h2>Trips</h2> <!-- TODO align this in the center -->
+                    </div>
                 </nav>
                 <div class="container-fluid">
                     <div class="row">
@@ -60,23 +60,25 @@
                                     </thead>
                                     @for(trip <- trips) {
                                         <tr>
-                                            <td>@trip.getName</td>
-                                            <td>@trip.getTravelTime</td>
+                                            <td>@currentUser.getTripById(trip).getName</td>
+                                            <td>@currentUser.getTripById(trip).getTravelTime</td>
                                             <td>
-                                                @if(trip.getStartDate != null) {
-                                                    <span>@trip.getStartDate().getTime</span>
+                                                @if(currentUser.getTripById(trip).getStartDate != null) {
+                                                    <span>@currentUser.getTripById(trip).getStartDate().getTime</span>
                                                 } else {
                                                     <span>0</span>
                                                 }
-                                                @trip.getStartDateString</td>
-                                            <td>@trip.getDestinations.size()</td>
-                                            <td>@trip.getDestinationNames</td>
-                                            @helper.form(routes.TripsController.showEdit(trip.getId)) {
-                                                @CSRF.formField
-                                                <td> <button type="submit" class="button-edit" style="height:4vh">Edit</button>
-
-                                            }
-                                            <a href="@routes.TripsController.delete(trip.getId)"><button type="submit" class="button-delete" style="height:4vh">Delete</button></a> </td>
+                                                @currentUser.getTripById(trip).getStartDateString</td>
+                                            <td>@currentUser.getTripById(trip).getDestinations.size()</td>
+                                            <td>@currentUser.getTripById(trip).getDestinationNames</td>
+                                            <td>
+                                                <a href="@routes.TripsController.showEdit(trip)" >
+                                                    <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon">
+                                                </a>
+                                                <a href="@routes.TripsController.delete(trip)">
+                                                    <input type="image" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
+                                                </a>
+                                            </td>
                                         </tr>
                                     }
                                 </table>
@@ -208,12 +210,5 @@
             $("#wrapper").toggleClass("toggled");
         });
 
-
-
-
-
     </script>
-
-
-
 </html>

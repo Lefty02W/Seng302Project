@@ -8,6 +8,7 @@ import models.Destination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -43,6 +44,19 @@ public class DestinationRepository {
     }
 
     /**
+     * Get the users destination list
+     * @param email
+     * @return destinations, list of all user destination
+     */
+    public ArrayList<Destination> getUserDestinations(String email) {
+        ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+                .where()
+                .eq("user_email", email)
+                .findList());
+        return destinations;
+    }
+
+    /**
      * Inserts a new destination to the database.
      * @param dest The destination to insert
      * @return
@@ -75,7 +89,7 @@ public class DestinationRepository {
     /**
      * Updates a destination in the database
      * @param newDestination The new info to change the destination to
-     * @param Id The ID of the destination to edit
+     * @param Id The ID of the destination to editDestinations
      * @return
      */
     public CompletionStage<Optional<String>> update(Destination newDestination, Integer Id) {

@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.common.collect.TreeMultimap;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -9,6 +10,7 @@ import play.mvc.Http;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 /**
  * This class manages sessions cookies
@@ -26,13 +28,10 @@ public class SessionController {
         String email;
         if (connected.isPresent()) {
             email = connected.get();
-            System.out.println(email);
             Profile profile = Profile.find.byId(email);
-            System.out.println(profile);
 
             profile.setDestinations(getUserDestinations(profile.getEmail()));
-            profile.setTrips(getUsersTrips(profile));
-            profile.sortedTrips();
+            getUsersTrips(profile);
             return profile;
         } else {
             return null;
@@ -59,14 +58,13 @@ public class SessionController {
      * @param currentUser the profile to get rips for
      * @return the trips found for the passed profile
      */
-    private static ArrayList<Trip> getUsersTrips(Profile currentUser) {
-        ArrayList<Trip> trips = new ArrayList<>();
-
+    private static void getUsersTrips(Profile currentUser) {
+        TreeMultimap<Long, Integer> trips = TreeMultimap.create();
+        TreeMap <Integer, Trip> tripMap = new TreeMap<>();
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
                 .eq("email", currentUser.getEmail())
                 .findList();
-
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();
             // Getting the tripDestinations out of the database for each trip returned
@@ -84,9 +82,11 @@ public class SessionController {
                 tripDestinations.add(tripDest);
             }
             trip.setDestinations(tripDestinations);
-            trips.add(trip);
+            trips.put(trip.getFirstDate(), trip.getId());
+            tripMap.put(trip.getId(), trip);
         }
         // Returning the trips found
-        return trips;
+        currentUser.setTrips(trips);
+        currentUser.setTripMaps(tripMap);
     }
 }
