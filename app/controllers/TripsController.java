@@ -111,12 +111,14 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result addDestination(Http.Request request) {
-
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/create").flashing("info", "The arrival date must be before the departure date");
+        }
         if(orderedCurrentDestinations.size() >= 1) {
             if (orderInvalidInsert(tripDestination)) {
                 return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
@@ -124,6 +126,21 @@ public class TripsController extends Controller {
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
         return redirect("/trips/create");
+    }
+
+
+    /**
+     * This method checks that the arrival and departure dates are valid.
+     * In this context valid is that the arrival date is prior to the departure date
+     * @param tripDestination the trip destination to check the dates for
+     * @return a boolean holding true if the dates are valid
+     */
+    private boolean checkDates(TripDestination tripDestination) {
+        // Possibly add check to stop overlap with other destinations in the trip
+        if (tripDestination.getDeparture() != null && tripDestination.getArrival() != null) {
+            return tripDestination.getArrival().getTime() < tripDestination.getDeparture().getTime();
+        }
+        return true;
     }
 
 
