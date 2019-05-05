@@ -130,8 +130,12 @@ public class DestinationsController extends Controller {
     public Result update(Http.Request request, Integer id) {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination dest = destinationForm.value().get();
-        destinationRepository.update(dest, id);
-        return redirect(destShowRoute);
+        if(longLatCheck(dest)){
+            destinationRepository.update(dest, id);
+            return redirect(destShowRoute);
+        } else {
+            return redirect("/destinations/create").flashing("info", "A destinations longitude and latitude must be valid");
+        }
     }
 
     /**
@@ -149,8 +153,22 @@ public class DestinationsController extends Controller {
         Form<Destination> destinationForm = form.bindFromRequest(request);
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
-        destinationRepository.insert(destination);
-        return redirect(destShowRoute);
+        if(longLatCheck(destination)){
+            destinationRepository.insert(destination);
+            return redirect(destShowRoute);
+        } else {
+            return redirect("/destinations/create").flashing("info", "A destinations longitude and latitude must be valid");
+        }
+    }
+
+    private boolean longLatCheck(Destination destination) {
+        if (destination.getLatitude() > 90 || destination.getLatitude() < 0) {
+            return false;
+        }
+        if (destination.getLongitude() > 180 || destination.getLongitude() < 0) {
+                return false;
+        }
+        return true;
     }
 
 

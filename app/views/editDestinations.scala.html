@@ -53,6 +53,11 @@
                 </nav>
                 <div class="container-fluid">
                     <div id="table-card" class="card-large">
+                        @if(request.flash.getOptional("info").isPresent) {
+                            <div class="alert alert-info">
+                            @request.flash.getOptional("info").get()
+                            </div>
+                        }
                         <h3>Edit destination</h3>
                         @helper.form(routes.DestinationsController.update(id)) {
                             <fieldset>
