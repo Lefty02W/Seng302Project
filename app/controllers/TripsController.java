@@ -438,6 +438,9 @@ public class TripsController extends Controller {
         setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/create").flashing("info", "The arrival date must be before the departure date");
+        }
         if(orderedCurrentDestinations.size() >= 1) {
             if (orderInvalidInsert(tripDestination)) {
                 return redirect("/trips/"+id+"/edit").flashing("info", "The same destination cannot be after itself in a trip");
