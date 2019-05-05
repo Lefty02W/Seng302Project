@@ -24,10 +24,7 @@ import views.html.profile;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
@@ -167,7 +164,20 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result displayPhotos (Integer id){
         Image image = Image.find.byId(id);
-        return ok(Objects.requireNonNull(image).getImage()).as(image.getType());
+        byte[] imageDisplay;
+        try {
+            InputStream in = new ByteArrayInputStream(image.getImage());
+            BufferedImage buffImage = ImageIO.read(in).getSubimage(image.getCropX(), image.getCropY(), image.getCropWidth(),image.getCropHeight());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write( buffImage, image.getType().split("/")[1], baos);
+            baos.flush();
+            imageDisplay = baos.toByteArray();
+            baos.close();
+        } catch (Exception e) {
+            imageDisplay = Objects.requireNonNull(image).getImage();
+            System.out.println("um");
+        }
+        return ok(imageDisplay).as(image.getType());
     }
 
 
