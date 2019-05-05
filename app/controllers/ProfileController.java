@@ -180,6 +180,43 @@ public class ProfileController extends Controller {
         return ok(imageDisplay).as(image.getType());
     }
 
+    private class cropInfo {
+        private int cropHeight;
+        private int cropWidth;
+
+        public cropInfo(int cropHeight, int cropWidth) {
+            this.cropHeight = cropHeight;
+            this.cropWidth = cropWidth;
+        }
+
+        public void setCropHeight(int cropHeight) { this.cropHeight = cropHeight; }
+
+        public void setCropWidth(int cropWidth) { this.cropWidth = cropWidth; }
+
+        public int getCropHeight() { return cropHeight; }
+
+        public int getCropWidth() { return cropWidth; }
+    }
+
+    private cropInfo autoCrop(byte[] image) {
+        cropInfo crop = new cropInfo(100, 100);
+        try {
+            InputStream in = new ByteArrayInputStream(this.imageBytes);
+            BufferedImage buffImage = ImageIO.read(in);
+            crop.setCropWidth(buffImage.getWidth());
+            crop.setCropHeight(buffImage.getHeight());
+            if (crop.getCropWidth() < crop.getCropHeight()) {
+                crop.setCropHeight(crop.getCropWidth());
+            } else {
+                crop.setCropWidth(crop.getCropHeight());
+            }
+        } catch (Exception e) {
+            crop.setCropHeight(100);
+            crop.setCropWidth(100);
+        }
+        return crop;
+    }
+
 
     /**
      * Retrieves file (image) upload from the front end and converts the image into bytes
@@ -192,7 +229,7 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> uploadPhoto (Http.Request request){
+    public CompletionStage<Result> uploadPhoto(Http.Request request) {
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
 
@@ -220,24 +257,9 @@ public class ProfileController extends Controller {
                 this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
-                int width = 100;
-                int height = 100;
-                try {
-                    InputStream in = new ByteArrayInputStream(this.imageBytes);
-                    BufferedImage buffImage = ImageIO.read(in);
-                    width = buffImage.getWidth();
-                    height = buffImage.getHeight();
-                    if (width < height) {
-                        height = width;
-                    } else {
-                        width = height;
-                    }
-                } catch (Exception e) {
-                    height = 100;
-                    width = 100;
-                }
+                cropInfo crop = autoCrop(this.imageBytes);
 
-                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, width, height);
+                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight());
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
                     savePhoto(image); // Save photo, given a successful upload
