@@ -32,8 +32,9 @@ public class TripDestination extends Model {
 
     private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm a");
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm");
 
 
     /**
@@ -59,7 +60,8 @@ public class TripDestination extends Model {
         if (toFormat == null) {
             return "";
         }
-        return dateFormatEntry.format(toFormat);
+        System.out.println(dateTimeEntry.format(toFormat));
+        return dateTimeEntry.format(toFormat);
     }
 
 
@@ -101,19 +103,6 @@ public class TripDestination extends Model {
 
     public void setTripId(int tripId) {
         this.tripId = tripId;
-    }
-
-    /**
-     * format the date  string
-     * @param toFormat
-     * @return formated date string
-     */
-    public String getFormattedDate(Date toFormat)
-    {
-        if (toFormat == null) {
-            return "";
-        }
-        return dateFormat.format(toFormat);
     }
 
     /**

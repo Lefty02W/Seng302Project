@@ -2,7 +2,6 @@ package controllers;
 
 import com.google.common.collect.TreeMultimap;
 import com.google.inject.Inject;
-import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -19,6 +18,9 @@ import views.html.trips;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -109,8 +111,10 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result addDestination(Http.Request request) {
+
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
+        setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
         if(orderedCurrentDestinations.size() >= 1) {
@@ -120,6 +124,32 @@ public class TripsController extends Controller {
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
         return redirect("/trips/create");
+    }
+
+
+    /**
+     * This method sets the correct date values for a newly added tripDestination
+     * @param tripDestination the tripDestination to set values for
+     * @param form the form holding the data values
+     */
+    private void setDates(TripDestination tripDestination, Form<TripDestination> form) {
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+        Form.Field arrivalField = form.field("arrival");
+        Form.Field departureField = form.field("departure");
+        try {
+            if (arrivalField.value().isPresent()) {
+                tripDestination.setArrival(formatter.parse(arrivalField.value().get()));
+            }
+        } catch (ParseException e) {
+            tripDestination.setArrival(null);
+        }
+        try {
+            if (departureField.value().isPresent()) {
+                tripDestination.setDeparture(formatter.parse(departureField.value().get()));
+            }
+        } catch (ParseException e) {
+            tripDestination.setDeparture(null);
+        }
     }
 
 
@@ -388,6 +418,7 @@ public class TripsController extends Controller {
     public Result addDestinationEditTrip(Http.Request request, int id) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
+        setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
         if(orderedCurrentDestinations.size() >= 1) {
