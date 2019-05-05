@@ -26,9 +26,8 @@ public class Image extends Model {
     @Id
     private Integer imageId;
 
-    @Lob
     @Constraints.Required
-    private byte[] image;
+    private String path;
 
     @Constraints.Required
     private Integer visible;
@@ -43,14 +42,14 @@ public class Image extends Model {
     /**
      * Constructor for image
      * @param email
-     * @param image
+     * @param path
      * @param contentType
      * @param visible
      * @param name
      */
-    public Image(String email, byte[] image, String contentType, Integer visible, String name){
+    public Image(String email, String path, String contentType, Integer visible, String name){
         this.email = email;
-        this.image = image;
+        this.path = path;
         this.contentType = contentType;
         this.visible = visible;
         this.name = name;
@@ -75,14 +74,6 @@ public class Image extends Model {
         this.imageId = imageId;
     }
 
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
     public Integer getVisible() {
         return visible;
     }
@@ -91,13 +82,9 @@ public class Image extends Model {
         this.visible = visible;
     }
 
-    public String getType() {
-        return contentType;
-    }
+    public String getType() { return contentType; }
 
-    public void setType(String contentType) {
-        this.contentType = contentType;
-    }
+    public void setType(String contentType) { this.contentType = contentType; }
 
     public String getName() {
         return name;
@@ -105,6 +92,14 @@ public class Image extends Model {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setpath(String path) {
+        this.path = path;
     }
 
 

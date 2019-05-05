@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
+import java.nio.file.Paths;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -153,7 +154,7 @@ public class ProfileController extends Controller {
      */
     public Result displayPhotos (Integer id){
         Image image = Image.find.byId(id);
-        return ok(Objects.requireNonNull(image).getImage()).as(image.getType());
+        return ok(Objects.requireNonNull(image).getPath()).as(image.getType());
     }
 
 
@@ -187,20 +188,20 @@ public class ProfileController extends Controller {
         }
 
         TemporaryFile tempFile = picture.getRef();
-        File file = tempFile.path().toFile();
+        String filepath = "public/userPhotos/" + fileName;
+        tempFile.copyTo(Paths.get(filepath), true);
 
 
         return supplyAsync(() -> {
             try {
                 Profile currentUser = SessionController.getCurrentUser(request);
-                this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
-                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType,
-                        visibility, fileName);
+                Image image = new Image(currentUser.getEmail(), filepath, contentType, visibility, fileName);
+                System.out.println(image);
                 savePhoto(image); // Save photo, given a successful upload
                 showPhotoModal = true;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
