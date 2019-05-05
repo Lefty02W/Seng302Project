@@ -70,11 +70,6 @@ public class viewProfileSteps extends BaseStep {
     }
 
 
-    @When("he clicks the information tab")
-    public void he_clicks_the_information_tab() {
-        driver.findElement(By.id("informationTabLink")).click();
-    }
-
 
     @Then("he should see a first name {string}")
     public void he_should_see_a_first_name(String name) {

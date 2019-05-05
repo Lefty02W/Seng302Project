@@ -11,7 +11,6 @@ Feature: View Profile
 
   Scenario: View name in personal information
     Given John has logged in with email "john.gherkin.doe@travelea.com" and password "password"
-    When he clicks the information tab
     Then he should see a first name "John"
     And a middle name: "Gherkin"
     And a last name: "Doe"
