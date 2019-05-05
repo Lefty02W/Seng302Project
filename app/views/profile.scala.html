@@ -315,7 +315,7 @@
                             @for(image <- imageList) {
                                 <div class="card">
                                     <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                    src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName"
+                                    src="@routes.Assets.at(image.getPath)" alt="@image.getName"
                                     name="@image.getImageId">
                                     <div class="card-body">
                                         @if(image.getVisible == 1) {

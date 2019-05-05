@@ -146,6 +146,7 @@ public class ProfileController extends Controller {
     }
 
 
+    //TODO: Remove if not needed in final build
     /**
      * Method to convert image byte arrays into pictures and display them as the appropriate
      * content type
@@ -154,7 +155,8 @@ public class ProfileController extends Controller {
      */
     public Result displayPhotos (Integer id){
         Image image = Image.find.byId(id);
-        return ok(Objects.requireNonNull(image).getPath()).as(image.getType());
+        System.out.println(image.getPath());
+        return ok(image.getPath());
     }
 
 
@@ -188,7 +190,7 @@ public class ProfileController extends Controller {
         }
 
         TemporaryFile tempFile = picture.getRef();
-        String filepath = "public/userPhotos/" + fileName;
+        String filepath = "public/personalphotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
 
 
@@ -197,7 +199,7 @@ public class ProfileController extends Controller {
                 Profile currentUser = SessionController.getCurrentUser(request);
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
-                Image image = new Image(currentUser.getEmail(), filepath, contentType, visibility, fileName);
+                Image image = new Image(currentUser.getEmail(), "personalphotos/" + fileName, contentType, visibility, fileName);
                 System.out.println(image);
                 savePhoto(image); // Save photo, given a successful upload
                 showPhotoModal = true;
