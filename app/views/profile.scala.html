@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -87,8 +87,14 @@
 
                     <div id="profilePhotoContainer">
                         <div class="container" id="profilePhoto">
+                            @if(profilePicture != null) {
+                                <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getProfilePictureId()"
+                            alt="Profile picture">
+                            } else {
                                 <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
-                                alt="Profile picture">
+                            alt="Profile picture">
+
+                            }
                         </div>
 
                         <div class="container" id="greeting">
@@ -324,8 +330,9 @@
                         <div class="modal-footer">
                             <div class="center-col">
                                 <a href="@routes.ProfileController.resetDemoProfilePicture()">
-                                    <button type="button">Cancel Changes</button></a>
-                                <button type="submit" data-dismiss="modal">Submit</button>
+                                    <button type="button">Cancel</button></a>
+                                <a href="@routes.ProfileController.setProfilePicture()">
+                                    <button type="submit">Submit</button></a>
                             </div>
                         </div>
                     </div>

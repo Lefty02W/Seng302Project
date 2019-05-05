@@ -96,10 +96,12 @@ public class ImageRepository {
      * @return a single image
      */
     public Optional<Image> getImage(Integer id) {
+
         Image image =
                 ebeanServer.find(Image.class)
                 .where().eq("image_id", id)
                 .findOne();
+
         return Optional.of(image);
     }
 }

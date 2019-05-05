@@ -17,6 +17,7 @@ import play.mvc.Security;
 import repository.ImageRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
+import scala.util.Try;
 import views.html.editProfile;
 import views.html.profile;
 
@@ -54,6 +55,7 @@ public class ProfileController extends Controller {
     private static boolean showChangeProfilePictureModal = false;
     private final TripRepository tripRepository;
     private Image demoProfilePicture = null;
+    private Image profilePicture = null;
 
 
 
@@ -149,6 +151,7 @@ public class ProfileController extends Controller {
      * @param image Image object containing email, id, byte array of image and visible info
      * @return a redirect to the profile page
      */
+    @Security.Authenticated(SecureSession.class)
     private Result savePhoto(Image image){
         imageRepository.insert(image);
         return redirect(routes.ProfileController.show());
@@ -161,6 +164,7 @@ public class ProfileController extends Controller {
      *
      * @param id image id to be used as primary key to find image object
      */
+    @Security.Authenticated(SecureSession.class)
     public Result displayPhotos (Integer id){
         Image image = Image.find.byId(id);
         return ok(Objects.requireNonNull(image).getImage()).as(image.getType());
@@ -231,7 +235,6 @@ public class ProfileController extends Controller {
                 } else {
                     demoProfilePicture = image;
                     showChangeProfilePictureModal = true;
-                    //TODO set the picture as the new profile picture and show modal/redirect to appropriate place on page
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -246,6 +249,7 @@ public class ProfileController extends Controller {
     /**
      * @return a number, 1 if the default profile picture should be used on the modal and 0 if not
      */
+    @Security.Authenticated(SecureSession.class)
     public Integer isDefaultProfilePicture() {
         if (demoProfilePicture == null) {
             return 1;
@@ -259,11 +263,11 @@ public class ProfileController extends Controller {
      * @param id the picture to be chosen as the demo profile picture
      * @return a redirect to the profile page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setDemoProfilePicture(Integer id) {
         showChangeProfilePictureModal = true;
         Optional<Image> image = imageRepository.getImage(id);
         demoProfilePicture = image.get();
-        System.out.println("yeet");
         return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
     }
 
@@ -272,18 +276,46 @@ public class ProfileController extends Controller {
      * deletes the demoProfilePicture, effectively deleting any changes to the profile picture then refreshes the page
      * @return a redirect to the profile page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> resetDemoProfilePicture() {
         demoProfilePicture = null;
         return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
     }
 
     /**
-     * Gives the id of the demo profile picture to be displayed on the change profile picture modal
-     * @param request http request
-     * @return an object which will be used to display an image already in the database
+     * saves the demo profile picture if it is not already saved to the database
+     * @return a refresh to the profile page
      */
-    public Result getDemoProfilePictureId(Http.Request request) {
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> setProfilePicture() {
+        try {
+            Optional<Image> image = imageRepository.getImage(demoProfilePicture.getImageId());
+        } catch (NullPointerException e) {
+            savePhoto(demoProfilePicture);
+        }
+        profilePicture = demoProfilePicture;
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Profile picture updated"));
+    }
+
+    /**
+     * Gives the id of the demo profile picture to be displayed on the change profile picture modal
+     * @return the id in an object and a refresh to the profile page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result getDemoProfilePictureId() {
         return ok(Objects.requireNonNull(demoProfilePicture).getImage()).as(demoProfilePicture.getType());
+    }
+
+    /**
+     * Gives the id of the profile picture to be displayed
+     * @return the id in an object and a refresh to the profile page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result getProfilePictureId() {
+        if (profilePicture == null) {
+            return ok();
+        }
+        return ok(Objects.requireNonNull(profilePicture).getImage()).as(profilePicture.getType());
     }
 
     /**
@@ -310,6 +342,7 @@ public class ProfileController extends Controller {
      * @param request Https request
      * @return a list of image objects
      */
+    @Security.Authenticated(SecureSession.class)
     private List<Image> getUserPhotos(Http.Request request){
         Profile profile = SessionController.getCurrentUser(request);
         try {
@@ -336,11 +369,10 @@ public class ProfileController extends Controller {
         Boolean show = showPhotoModal = false;
         Boolean showChangeProfile = showChangeProfilePictureModal;
         showChangeProfilePictureModal = false;
-
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
         Integer defaultProfilePicture = isDefaultProfilePicture();
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, request, messagesApi.preferred(request)));
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, request, messagesApi.preferred(request)));
     }
 
 }
