@@ -263,7 +263,8 @@ public class ProfileController extends Controller {
         showChangeProfilePictureModal = true;
         Optional<Image> image = imageRepository.getImage(id);
         demoProfilePicture = image.get();
-        return supplyAsync(() -> redirect("/profile"));
+        System.out.println("yeet");
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
     }
 
 

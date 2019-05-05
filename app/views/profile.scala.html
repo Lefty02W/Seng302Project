@@ -304,11 +304,14 @@
                             <h2 class="modal-title center-col">Change Profile Picture</h2>
                         </div>
                         <div class="modal-body">
-                            @if(defaultProfilePicture == 1) {
-                                <img id="displayImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
-                            } @if(defaultProfilePicture == 0) {
-                                <img id="displayImage" class="thumbnail" src="@routes.ProfileController.getDemoProfilePictureId" name="demoProfilePicture">
-                            }
+                            <div class="container" id="profilePhoto">
+                                @if(defaultProfilePicture == 1) {
+                                    <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
+                                } @if(defaultProfilePicture == 0) {
+                                    <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getDemoProfilePictureId" name="demoProfilePicture">
+                                }
+                            </div>
+
                                 <div class="row">
                                 <div class="center-col">
                                     <button type="button" class="addProfilebutton" data-toggle="modal" data-target="#addProfileModal" data-dismiss="modal">
@@ -344,7 +347,7 @@
                                         src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName"
                                         name="@image.getImageId">
                                         <div class="card-body">
-                                            <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
+                                            <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId())">
                                                 <button>Select</button></a>
                                         </div>
                                             <!-- The Expanded Image Modal -->
@@ -521,6 +524,16 @@
                 span.onclick = function () {
                     modal.style.display = "none";
                 }
+            }
+            
+            function selectPhoto() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("demo").innerHTML = this.responseText;
+                    }
+                };
+                modal.style.display = "none";
             }
     </script>
 </html>
