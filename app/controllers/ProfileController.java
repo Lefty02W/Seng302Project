@@ -278,7 +278,7 @@ public class ProfileController extends Controller {
                 // Initialize Image object
                 cropInfo crop = autoCrop(this.imageBytes);
 
-                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight());
+                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, crop.getCropHeight(), crop.getCropWidth(), crop.getCropHeight());
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
                     savePhoto(image); // Save photo, given a successful upload
