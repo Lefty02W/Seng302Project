@@ -8,6 +8,8 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import models.Destination;
+import models.Profile;
 import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -17,34 +19,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class EditDestinationSteps extends ProvideApplication{
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestinationEdit;
 
+    @Given("User is at the edit destinations page for destination {string}")
+    public void userIsAtTheEditDestinationForDestination(String id) {
 
-    @Given("User is at the edit destinations page")
-    public void userIsAtTheEditDestinationsPage() {
-        loginForm.put("email", "john@gmail.com");
-        loginForm.put("password", "password");
+        //TODO: Change the url for the edit page for a specific destination to not have tokens as the param. Needed to
+        //TODO: test the edit destinations GET page as the tokens are all auto generated and not testable.
 
         Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("POST")
-                .uri("/login")
+                .method("GET")
+                .uri("/destinations/" + id + "/edit")
                 .bodyForm(loginForm)
                 .session("connected", "john@gmail.com");
 
-        Result loginResult = Helpers.route(provideApplication(), request);
+        Result editPageResult = Helpers.route(provideApplication(), request);
+        assertEquals("/destinations/" + id + "/edit", editPageResult.redirectLocation().get());
+    }
 
-        Http.RequestBuilder requestDest = Helpers.fakeRequest()
-                .method("GET")
-                //todo dont hard code the trip id, create a trip and use new id
-                .uri("/destinations/513/edit")
-                .bodyForm(destForm)
-                .session("connected", "john@gmail.com");
-
-        Result destinationResult = Helpers.route(provideApplication(), requestDest);
+    @Given("the user has a destination with id {string}")
+    public void theUserHasADestinationWithId(String id) {
+        Destination destination = Destination.find.byId(id);
+        if (destination == null) {
+            fail();
+        }
+        assertEquals("john@gmail.com", destination.getUserEmail());
     }
 
     @When("user changes Name to {string}")
@@ -52,8 +56,8 @@ public class EditDestinationSteps extends ProvideApplication{
         destForm.put("name", string);
     }
 
-    @And("he changes Type to {string}")
-    public void userFillsInTypeWith(String string) {
+    @And("user changes Type to {string}")
+    public void userChangesTypeTo(String string) {
         destForm.put("type", string);
     }
 
@@ -62,29 +66,33 @@ public class EditDestinationSteps extends ProvideApplication{
         destForm.put("country", string);
     }
 
-    @When("he presses the Save button")
+    @When("user presses the Save button")
     public void iPressTheSaveButton() {
-        System.out.println("--------------HERE-----------");
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/destinations/show/false")
+                .uri("/destinations/512")
+                .bodyForm(destForm)
                 .session("connected", "john@gmail.com");
 
         redirectDestinationEdit = Helpers.route(provideApplication(), request);
         assertEquals(303, redirectDestinationEdit.status());
     }
 
-    @Then("we are redirected to the destination page")
+    @Then("user is redirected to the destination page")
     public void iAmRedirectedToMyProfilePage() {
-        assertEquals(200, redirectDestinationEdit.status());
+        assertEquals(303, redirectDestinationEdit.status());
         assertEquals("/destinations/show/false", redirectDestinationEdit.redirectLocation().get());
     }
 
-    @And("the destination is displayed with updated fields")
-    public void theDestinationIsDisplayedWithUpdatedFields() {
-        assertEquals(destForm.get("name"), "Hello");
-        assertEquals(destForm.get("type"), "World");
-        assertEquals(destForm.get("country"), "New Zealand");
+    @Then("the destination is displayed with the updated fields")
+    public void theDestinationIsDisplayedWithTheUpdatedFields() {
+        Destination destination = Destination.find.byId("512");
+        if (destination == null) {
+            fail();
+        }
+        assertEquals("Hello", destination.getName());
+        assertEquals("World", destination.getType());
+        assertEquals("New Zealand", destination.getCountry());
     }
 }
 

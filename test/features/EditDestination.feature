@@ -3,13 +3,14 @@ Feature: Edit a destination
   I want to edit a destination
   So that I can then update my created destination
   Scenario: Edit a destination
-    Given User is at the edit destinations page
-    And the user has a destination with id "513"
+#    Given User is at the edit destinations page for destination "513"
+    Given User is at the destinations page
+    And the user has a destination with id "512"
     When user changes Name to "Hello"
     And user changes Type to "World"
     And user changes Country to "New Zealand"
-    And he presses the Save button
-    Then we are redirected to the destination page
+    And user presses the Save button
+    Then user is redirected to the destination page
     And the destination is displayed with the updated fields
 
 #  Scenario:  Edit a destination with invalid latitude
