@@ -315,10 +315,18 @@ public class ProfileController extends Controller {
         Optional<Image> image = imageRepository.getImage(id);
         demoProfilePicture = image.get();
         if (autoCrop == 1) {
-            System.out.println("yes");
             cropInfo cropInfo = autoCrop(demoProfilePicture.getImage());
             demoProfilePicture.setCropHeight(cropInfo.getCropHeight());
             demoProfilePicture.setCropWidth(cropInfo.getCropWidth());
+        } else {
+            try {
+                InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
+                BufferedImage buffImage = ImageIO.read(in);
+                demoProfilePicture.setCropHeight(buffImage.getHeight());
+                demoProfilePicture.setCropWidth(buffImage.getWidth());
+            }catch (IOException e) {
+                System.out.println(e);
+            }
         }
         return supplyAsync(() -> redirect("/profile"));
     }
@@ -358,9 +366,7 @@ public class ProfileController extends Controller {
         byte[] imageDisplay;
             try {
                 InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
-                System.out.println(demoProfilePicture.getCropWidth());
                 BufferedImage buffImage = ImageIO.read(in).getSubimage(0, 0, demoProfilePicture.getCropWidth(), demoProfilePicture.getCropHeight());
-                System.out.println(buffImage.getWidth());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(buffImage, demoProfilePicture.getType().split("/")[1], baos);
                 baos.flush();
@@ -372,6 +378,8 @@ public class ProfileController extends Controller {
             }
             return ok(imageDisplay).as(demoProfilePicture.getType());
     }
+
+
     /**
      * Gives the id of the profile picture to be displayed
      * @return the id in an object and a refresh to the profile page
