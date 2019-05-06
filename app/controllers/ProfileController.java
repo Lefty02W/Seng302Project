@@ -171,8 +171,8 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result displayPhotos (Integer id, Integer autoCrop) {
         Image image = Image.find.byId(id);
+        byte[] imageDisplay;
         if (autoCrop == 1) {
-            byte[] imageDisplay;
             try {
                 InputStream in = new ByteArrayInputStream(image.getImage());
                 BufferedImage buffImage = ImageIO.read(in).getSubimage(image.getCropX(), image.getCropY(), image.getCropWidth(), image.getCropHeight());
@@ -186,10 +186,14 @@ public class ProfileController extends Controller {
             }
             return ok(imageDisplay).as(image.getType());
         }else {
-            return ok(image.getImage()).as(image.getType());
+            imageDisplay = Objects.requireNonNull(image).getImage();
+            return ok(imageDisplay).as(image.getType());
         }
     }
 
+    /**
+     * A class to store information about a cropped image
+     */
     private class cropInfo {
         private int cropHeight;
         private int cropWidth;
@@ -208,6 +212,11 @@ public class ProfileController extends Controller {
         public int getCropWidth() { return cropWidth; }
     }
 
+    /**
+     * Auto crops the image passed in
+     * @param image The image to be cropped
+     * @return
+     */
     private cropInfo autoCrop(byte[] image) {
         cropInfo crop = new cropInfo(100, 100);
         try {
