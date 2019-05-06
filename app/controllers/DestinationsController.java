@@ -164,7 +164,7 @@ public class DestinationsController extends Controller {
             destinationRepository.insert(destination);
             return redirect(destShowRoute);
         } else {
-            return redirect("/destinations/create").flashing("info", "A destinations longitude and latitude must be valid");
+            return redirect("/destinations/edit").flashing("info", "A destinations longitude and latitude must be valid");
         }
     }
 
