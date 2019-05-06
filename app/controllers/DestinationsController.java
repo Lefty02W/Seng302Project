@@ -89,7 +89,7 @@ public class DestinationsController extends Controller {
                 destinationsList = new ArrayList<>();
             }
         }
-        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -123,7 +123,6 @@ public class DestinationsController extends Controller {
                 break;
             }
         }
-        System.out.println("This: "+destination.getVisible());
         Form<Destination> destinationForm = form.fill(destination);
         return ok(editDestinations.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
     }
