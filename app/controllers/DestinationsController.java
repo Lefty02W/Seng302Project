@@ -115,6 +115,7 @@ public class DestinationsController extends Controller {
                 break;
             }
         }
+        System.out.println("This: "+destination.getVisible());
         Form<Destination> destinationForm = form.fill(destination);
         return ok(editDestinations.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
     }
@@ -129,7 +130,10 @@ public class DestinationsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result update(Http.Request request, Integer id) {
         Form<Destination> destinationForm = form.bindFromRequest(request);
+        String visible = destinationForm.field("visible").value().get();
+        int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
+        dest.setVisible(visibility);
         if(longLatCheck(dest)){
             destinationRepository.update(dest, id);
             return redirect(destShowRoute);
@@ -151,8 +155,11 @@ public class DestinationsController extends Controller {
             return ok(login.render(loginForm, userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
+        String visible = destinationForm.field("visible").value().get();
+        int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
+        destination.setVisible(visibility);
         if(longLatCheck(destination)){
             destinationRepository.insert(destination);
             return redirect(destShowRoute);

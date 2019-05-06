@@ -14,6 +14,7 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+
 /**
  * A destination repository that executes database operations in a different
  * execution context handles all interactions with the destination table .
@@ -105,6 +106,7 @@ public class DestinationRepository {
                     targetDestination.setDistrict(newDestination.getDistrict());
                     targetDestination.setLatitude(newDestination.getLatitude());
                     targetDestination.setLongitude(newDestination.getLongitude());
+                    targetDestination.setVisible(newDestination.getVisible());
                     targetDestination.update();
                     txn.commit();
                     value = Optional.of(String.format("Destination %s edited", newDestination.getDestinationId()));

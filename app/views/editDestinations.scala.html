@@ -95,6 +95,17 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Make Public</label>
+                                        @if(destination.getVisible == 1) {
+                                            <input type="checkbox" id="visible" name="visible" value="Public" class="check-box" checked>
+                                        } else {
+                                            <input type="checkbox" id="visible" name="visible" value="Public" class="check-box">
+                                        }
+                                    </div>
+                                </div>
+
                             </fieldset>
                             <a href="@routes.DestinationsController.show()"> <button class="button-delete" style="width: 10vw" type="button">Back</button> </a>
                             <button type="submit" class="registerButton button-add" style="width: 10vw" id = "saveButton">Save</button>
