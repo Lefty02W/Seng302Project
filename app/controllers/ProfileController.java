@@ -40,7 +40,6 @@ public class ProfileController extends Controller {
 
     private final Form<Profile> profileForm;
     private final Form<ImageData> imageForm;
-    private final Form<selectDemoProfilePictureData> selectImageForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory profileFormFactory;
@@ -57,10 +56,6 @@ public class ProfileController extends Controller {
 
 
 
-    public static class selectDemoProfilePictureData {
-        public String autoCrop = "False";
-        public int photoId;
-    }
 
     /**
      * To get Image data upon upload
@@ -68,6 +63,7 @@ public class ProfileController extends Controller {
     public static class ImageData {
         public String visible = "Private";
         public String isNewProfilePicture;
+        public String autoCropped = "true";//todo use this to set photo as default without cropping it
     }
 
 
@@ -76,7 +72,6 @@ public class ProfileController extends Controller {
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
-            this.selectImageForm = imageFormFactory.form(selectDemoProfilePictureData.class);
             this.messagesApi = messagesApi;
             this.httpExecutionContext = httpExecutionContext;
             this.profileFormFactory = profileFormFactory;
