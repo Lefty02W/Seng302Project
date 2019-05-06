@@ -67,7 +67,7 @@ public class EditDestinationSteps extends ProvideApplication{
         System.out.println("--------------HERE-----------");
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/destinations/false")
+                .uri("/destinations/show/false")
                 .session("connected", "john@gmail.com");
 
         redirectDestinationEdit = Helpers.route(provideApplication(), request);
@@ -77,7 +77,7 @@ public class EditDestinationSteps extends ProvideApplication{
     @Then("we are redirected to the destination page")
     public void iAmRedirectedToMyProfilePage() {
         assertEquals(200, redirectDestinationEdit.status());
-        assertEquals("/destinations/false", redirectDestinationEdit.redirectLocation().get());
+        assertEquals("/destinations/show/false", redirectDestinationEdit.redirectLocation().get());
     }
 
     @And("the destination is displayed with updated fields")

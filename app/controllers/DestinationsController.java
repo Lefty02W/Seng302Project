@@ -43,7 +43,7 @@ public class DestinationsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
     private final TripRepository tripRepository;
-    private String destShowRoute = "/destinations/false";
+    private String destShowRoute = "/destinations/show/false";
 
     /**
      * Constructor for the destination controller class
@@ -216,7 +216,7 @@ public class DestinationsController extends Controller {
                     // Cannot delete a destination if there is match
                     // Since it in a trip
                     if (destination.getDestinationId() == id) {
-                        return redirect("/destinations/false").flashing("failure",
+                        return redirect("/destinations/show/false").flashing("failure",
                                 "Destination cannot be deleted as it is part of a trip");
                     }
                 }
@@ -224,7 +224,7 @@ public class DestinationsController extends Controller {
             destinationRepository.delete(id);
 
 
-            return redirect("/destinations/false").flashing("success", "Destination Deleted");
+            return redirect("/destinations/show/false").flashing("success", "Destination Deleted");
         });
 
     }
