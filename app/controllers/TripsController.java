@@ -264,6 +264,9 @@ public class TripsController extends Controller {
 
     private boolean orderOneInvalid(TripDestination tripDestination, Integer oldLocation) {
         int order = tripDestination.getDestOrder();
+        if (order == oldLocation) {
+            return false;
+        }
         if (order == oldLocation + 1) {
             if (orderedCurrentDestinations.get(order + 1) != null) {
                 if (orderedCurrentDestinations.get(oldLocation).getDestinationId() == orderedCurrentDestinations.get(order + 1).getDestinationId()) {
