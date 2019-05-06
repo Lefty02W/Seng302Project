@@ -40,6 +40,7 @@ public class ProfileController extends Controller {
 
     private final Form<Profile> profileForm;
     private final Form<ImageData> imageForm;
+    private final Form<selectDemoProfilePictureData> selectImageForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory profileFormFactory;
@@ -56,6 +57,10 @@ public class ProfileController extends Controller {
 
 
 
+    public static class selectDemoProfilePictureData {
+        public String autoCrop = "False";
+        public int photoId;
+    }
 
     /**
      * To get Image data upon upload
@@ -71,6 +76,7 @@ public class ProfileController extends Controller {
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
+            this.selectImageForm = imageFormFactory.form(selectDemoProfilePictureData.class);
             this.messagesApi = messagesApi;
             this.httpExecutionContext = httpExecutionContext;
             this.profileFormFactory = profileFormFactory;
@@ -158,28 +164,36 @@ public class ProfileController extends Controller {
     /**
      * Method to convert image byte arrays into pictures and display them as the appropriate
      * content type
-     *
+     * @param autoCrop used as a boolean, 1 if photo is to be cropped else 0 (note that photo
+     *                 will only be cropped for the profile picture)
      * @param id image id to be used as primary key to find image object
      */
     @Security.Authenticated(SecureSession.class)
-    public Result displayPhotos (Integer id){
+    public Result displayPhotos (Integer id, Integer autoCrop) {
         Image image = Image.find.byId(id);
         byte[] imageDisplay;
-        try {
-            InputStream in = new ByteArrayInputStream(image.getImage());
-            BufferedImage buffImage = ImageIO.read(in).getSubimage(image.getCropX(), image.getCropY(), image.getCropWidth(),image.getCropHeight());
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write( buffImage, image.getType().split("/")[1], baos);
-            baos.flush();
-            imageDisplay = baos.toByteArray();
-            baos.close();
-        } catch (Exception e) {
+        if (autoCrop == 1) {
+            try {
+                InputStream in = new ByteArrayInputStream(image.getImage());
+                BufferedImage buffImage = ImageIO.read(in).getSubimage(image.getCropX(), image.getCropY(), image.getCropWidth(), image.getCropHeight());
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(buffImage, image.getType().split("/")[1], baos);
+                baos.flush();
+                imageDisplay = baos.toByteArray();
+                baos.close();
+            } catch (Exception e) {
+                imageDisplay = Objects.requireNonNull(image).getImage();
+            }
+            return ok(imageDisplay).as(image.getType());
+        }else {
             imageDisplay = Objects.requireNonNull(image).getImage();
-            System.out.println("um");
+            return ok(imageDisplay).as(image.getType());
         }
-        return ok(imageDisplay).as(image.getType());
     }
 
+    /**
+     * A class to store information about a cropped image
+     */
     private class cropInfo {
         private int cropHeight;
         private int cropWidth;
@@ -198,6 +212,11 @@ public class ProfileController extends Controller {
         public int getCropWidth() { return cropWidth; }
     }
 
+    /**
+     * Auto crops the image passed in
+     * @param image The image to be cropped
+     * @return
+     */
     private cropInfo autoCrop(byte[] image) {
         cropInfo crop = new cropInfo(100, 100);
         try {
@@ -291,16 +310,34 @@ public class ProfileController extends Controller {
 
     /**
      * when a new profile picture is chosen but not confirmed this modal is called, it will set the
-     * demo profile picture from the id, so it can bt displayed on the next modal
-     * @param id the picture to be chosen as the demo profile picture
+     * demo profile picture from the id, so it can be displayed on the next modal
+     * @param request gives a form with the photo id and an int autoCrop which acts as a boolean
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> setDemoProfilePicture(Integer id) {
+    public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
+        Form<selectDemoProfilePictureData> selectedImageForm = selectImageForm.bindFromRequest(request);
+        selectDemoProfilePictureData selectedImageData = selectedImageForm.get();
+        int id = selectedImageData.photoId;
+        int autoCrop = (selectedImageData.autoCrop.equals("True")) ? 1 : 0;
         showChangeProfilePictureModal = true;
         Optional<Image> image = imageRepository.getImage(id);
         demoProfilePicture = image.get();
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
+        if (autoCrop == 1) {
+            cropInfo cropInfo = autoCrop(demoProfilePicture.getImage());
+            demoProfilePicture.setCropHeight(cropInfo.getCropHeight());
+            demoProfilePicture.setCropWidth(cropInfo.getCropWidth());
+        } else {
+            try {
+                InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
+                BufferedImage buffImage = ImageIO.read(in);
+                demoProfilePicture.setCropHeight(buffImage.getHeight());
+                demoProfilePicture.setCropWidth(buffImage.getWidth());
+            }catch (IOException e) {
+                System.out.println(e);
+            }
+        }
+        return supplyAsync(() -> redirect("/profile"));
     }
 
 
@@ -334,9 +371,23 @@ public class ProfileController extends Controller {
      * @return the id in an object and a refresh to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result getDemoProfilePictureId() {
-        return ok(Objects.requireNonNull(demoProfilePicture).getImage()).as(demoProfilePicture.getType());
+    public Result getDemoProfilePicture() {
+        byte[] imageDisplay;
+            try {
+                InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
+                BufferedImage buffImage = ImageIO.read(in).getSubimage(0, 0, demoProfilePicture.getCropWidth(), demoProfilePicture.getCropHeight());
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(buffImage, demoProfilePicture.getType().split("/")[1], baos);
+                baos.flush();
+                imageDisplay = baos.toByteArray();
+                baos.close();
+            } catch (Exception e) {
+                System.out.println(e);
+                imageDisplay = Objects.requireNonNull(demoProfilePicture).getImage();
+            }
+            return ok(imageDisplay).as(demoProfilePicture.getType());
     }
+
 
     /**
      * Gives the id of the profile picture to be displayed
