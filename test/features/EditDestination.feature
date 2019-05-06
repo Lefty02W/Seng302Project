@@ -4,7 +4,7 @@ Feature: Edit a destination
   So that I can then update my created destination
   Scenario: Edit a destination
 #    Given User is at the edit destinations page for destination "513"
-    Given User is at the destinations page
+    Given user is at the destinations page
     And the user has a destination with id "512"
     When user changes Name to "Hello"
     And user changes Type to "World"

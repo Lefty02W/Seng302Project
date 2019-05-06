@@ -29,8 +29,9 @@ public class EditDestinationSteps extends ProvideApplication{
     @Given("User is at the edit destinations page for destination {string}")
     public void userIsAtTheEditDestinationForDestination(String id) {
 
-        //TODO: Change the url for the edit page for a specific destination to not have tokens as the param. Needed to
-        //TODO: test the edit destinations GET page as the tokens are all auto generated and not testable.
+        //TODO: Change the url for the edit page for a specific destination to not have tokens as the param.
+        //TODO: Need to test the edit destinations GET page as the tokens are all auto generated and not testable.
+        //TODO: Uncomment the relevant step once refactor is done
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
