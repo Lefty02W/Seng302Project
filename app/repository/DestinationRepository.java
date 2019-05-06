@@ -47,7 +47,7 @@ public class DestinationRepository {
     /**
      * Get the users destination list
      * @param email
-     * @return destinations, list of all user destination
+     * @return destinations, list of all user destinations
      */
     public ArrayList<Destination> getUserDestinations(String email) {
         ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
@@ -56,6 +56,19 @@ public class DestinationRepository {
                 .findList());
         return destinations;
     }
+
+    /**
+     * Get the all of the public destinations
+     * @return destinations, list of all public destinations
+     */
+    public ArrayList<Destination> getPublicDestinations() {
+        ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+                .where()
+                .eq("visible", 1)
+                .findList());
+        return destinations;
+    }
+
 
     /**
      * Inserts a new destination to the database.

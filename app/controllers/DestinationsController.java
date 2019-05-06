@@ -43,7 +43,7 @@ public class DestinationsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
     private final TripRepository tripRepository;
-    private String destShowRoute = "/destinations";
+    private String destShowRoute = "/destinations/false";
 
     /**
      * Constructor for the destination controller class
@@ -72,14 +72,22 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     @Security.Authenticated(SecureSession.class)
-    public Result show(Http.Request request) {
-
-        Profile user = SessionController.getCurrentUser(request);
-        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
-        try {
-            destinationsList = destListTemp.get();
-        } catch (NoSuchElementException e) {
-            destinationsList = new ArrayList<>();
+    public Result show(Http.Request request, boolean isPublic) {
+        if (isPublic) {
+            ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
+            try {
+                destinationsList = destListTemp;
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
+        } else{
+            Profile user = SessionController.getCurrentUser(request);
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
+            try {
+                destinationsList = destListTemp.get();
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
         }
         return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
     }
