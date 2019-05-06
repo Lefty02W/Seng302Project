@@ -89,7 +89,7 @@ public class DestinationsController extends Controller {
                 destinationsList = new ArrayList<>();
             }
         }
-        return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
+        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 
     /**
@@ -137,16 +137,20 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result update(Http.Request request, Integer id) {
+        Profile user = SessionController.getCurrentUser(request);
         Form<Destination> destinationForm = form.bindFromRequest(request);
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
+        if(destinationRepository.checkValid(dest, user.getEmail())) {
+            return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
+        }
         if(longLatCheck(dest)){
             destinationRepository.update(dest, id);
             return redirect(destShowRoute);
         } else {
-            return redirect("/destinations/create").flashing("info", "A destinations longitude and latitude must be valid");
+            return redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
         }
     }
 
@@ -168,13 +172,17 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setUserEmail(user.getEmail());
         destination.setVisible(visibility);
+        if(destinationRepository.checkValid(destination, user.getEmail())) {
+            return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
+        }
         if(longLatCheck(destination)){
             destinationRepository.insert(destination);
             return redirect(destShowRoute);
         } else {
-            return redirect("/destinations/edit").flashing("info", "A destinations longitude and latitude must be valid");
+            return redirect("/destinations/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
         }
     }
+
 
     private boolean longLatCheck(Destination destination) {
         if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {

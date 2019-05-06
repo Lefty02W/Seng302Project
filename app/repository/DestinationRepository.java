@@ -131,4 +131,30 @@ public class DestinationRepository {
         }, executionContext);
     }
 
+    /** class to check if destination is already available to user
+     *    return true if already in else false
+     */
+    public boolean checkValid(Destination destination, String email) {
+        Destination destinations = (Destination.find.query()
+                .where()
+                .eq("name", destination.getName())
+                .eq("type", destination.getType())
+                .eq("country", destination.getCountry())
+                .eq("user_email", email)
+                .findOne());
+        Destination publicDestinations = (Destination.find.query()
+                .where()
+                .eq("name", destination.getName())
+                .eq("type", destination.getType())
+                .eq("country", destination.getCountry())
+                .eq("visible", "1")
+                .findOne());
+        if (publicDestinations != null){
+            return true;
+        } else if (destinations != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

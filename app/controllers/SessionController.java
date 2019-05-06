@@ -14,7 +14,7 @@ import java.util.TreeMap;
 
 /**
  * This class manages sessions cookies
- * @author George, ajl190
+ * @author George, ajl190, jma361
  */
 public class SessionController {
 
@@ -49,6 +49,11 @@ public class SessionController {
                 .where()
                 .eq("user_email", email)
                 .findList());
+        ArrayList<Destination> publicDestinations = new ArrayList<>(Destination.find.query()
+                .where()
+                .eq("visible", "1")
+                .findList());
+        destinations.addAll(publicDestinations);
         return destinations;
     }
 
