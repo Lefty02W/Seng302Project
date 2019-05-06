@@ -193,8 +193,7 @@
                                                     }
                                                 </a>
                                             </div>
-                                            </div>
-                                        }
+                                            </div>}
                                     </div>
 
                                 </div>
@@ -375,24 +374,26 @@
                             <div class="row">
                                 @for(image <- imageList) {
                                     <div class="card">
-                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                        src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName"
-                                        name="@image.getImageId">
-                                        <div class="card-body">
-                                            <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId())">
-                                                <button>Select</button></a>
-                                        </div>
-                                            <!-- The Expanded Image Modal -->
-                                        <div id="expandImageModal" class="modal">
-                                            <span class="close">&times;</span>
-                                            <img class="modal-content" id="expandedImage">
-                                            <div id="caption"></div>
-                                            <div id="id"></div>
-                                        </div>
+                                        @form(routes.ProfileController.setDemoProfilePicture(), 'enctype -> "multipart/form-data") {
+                                            @CSRF.formField
+                                            <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                            src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
+                                            name="@image.getImageId">
+                                            <label> Auto-cropping
+                                                <input type="checkbox" id="visible" name="visible" value="True" checked></label>
+                                            <button type="submit">Select</button>
+
+                                                <!-- The Expanded Image Modal -->
+                                            <div id="expandImageModal" class="modal">
+                                                <span class="close">&times;</span>
+                                                <img class="modal-content" id="expandedImage">
+                                                <div id="caption"></div>
+                                                <div id="id"></div>
+                                            </div>
+                                        }
                                     </div>
                                 }
-
-                            </div>
+                                </div>
                             <button type="button" data-dismiss="modal" style="width: 10vw;
                                 float: right" class="changeProfilePictureButton"
                             data-toggle="modal" data-target="#changeProfilePicture">Close</button>
@@ -462,7 +463,7 @@
                         @for(image <- imageList) {
                             <div class="card">
                                 <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                src="@routes.ProfileController.displayPhotos(image.getImageId)" alt="@image.getName"
+                                src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
                                 name="@image.getImageId">
                                 <div class="card-body">
                                 @if(image.getVisible == 1) {
