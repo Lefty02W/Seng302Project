@@ -68,8 +68,15 @@
 
 
                 <div class="container-fluid">
-                    <div id="table-card" class="card-large table-hover">
+                    <div class="row">
+                        <div class="col">
+                            <div class="card-header">
+                                <a href="@routes.DestinationsController.showCreate()"> <button id="addDestButton" type="button" class="btn-primary button-hover">Create Destination</button> </a>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div id="table-card" class="card-large dest-table table-hover">
                         <!-- Table of users -->
                         <table id="destTable">
                             <thead>
@@ -93,7 +100,7 @@
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
                                     @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                         @CSRF.formField
-                                        <td> <button type="submit" class="button-editDestinations" style="height:4vh">Edit</button> </td>
+                                        <td> <button type="submit" class="button-editDestinations btn-primary" style="height:4vh">Edit</button> </td>
                                     }
                                     @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                         @CSRF.formField
@@ -102,14 +109,10 @@
                                 </tr>
                             }
                         </table>
+
+
                     </div>
-                    <div class="row">
-                        <div class="col">
-                            <div>
-                                <a href="@routes.DestinationsController.showCreate()"> <button id="addDestButton" type="button" class="button-add">Create Destination</button> </a>
-                            </div>
-                        </div>
-                    </div>
+
 
 
 
