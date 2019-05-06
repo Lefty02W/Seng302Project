@@ -50,7 +50,7 @@ POST    /profile/photo               controllers.ProfileController.uploadPhoto(r
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer, autoCrop: Integer)
 GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
 GET     /profile/profilePicture   controllers.ProfileController.getDemoProfilePicture()
-GET     /profile/newProfilePic  controllers.ProfileController.setDemoProfilePicture(request: Request)
+GET     /profile/proiflePicture/:imageId  controllers.ProfileController.setDemoProfilePicture(imageId: Integer)
 GET     /profile/changesCancelled     controllers.ProfileController.resetDemoProfilePicture()
 GET     /profile/saveChanges         controllers.ProfileController.setProfilePicture()
 GET     /profile/getPicture   controllers.ProfileController.getProfilePictureId()

@@ -315,28 +315,10 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
-        Form<selectDemoProfilePictureData> selectedImageForm = selectImageForm.bindFromRequest(request);
-        selectDemoProfilePictureData selectedImageData = selectedImageForm.get();
-        int id = selectedImageData.photoId;
-        int autoCrop = (selectedImageData.autoCrop.equals("True")) ? 1 : 0;
+    public CompletionStage<Result> setDemoProfilePicture(Integer imageId) {
         showChangeProfilePictureModal = true;
-        Optional<Image> image = imageRepository.getImage(id);
+        Optional<Image> image = imageRepository.getImage(imageId);
         demoProfilePicture = image.get();
-        if (autoCrop == 1) {
-            cropInfo cropInfo = autoCrop(demoProfilePicture.getImage());
-            demoProfilePicture.setCropHeight(cropInfo.getCropHeight());
-            demoProfilePicture.setCropWidth(cropInfo.getCropWidth());
-        } else {
-            try {
-                InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
-                BufferedImage buffImage = ImageIO.read(in);
-                demoProfilePicture.setCropHeight(buffImage.getHeight());
-                demoProfilePicture.setCropWidth(buffImage.getWidth());
-            }catch (IOException e) {
-                System.out.println(e);
-            }
-        }
         return supplyAsync(() -> redirect("/profile"));
     }
 
