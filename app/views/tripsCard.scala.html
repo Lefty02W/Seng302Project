@@ -55,15 +55,11 @@
                     <div id="pageTitle">
                         <h2>Trips</h2>
                     </div>
+                    <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
+                        Add New Trip This needs to be moved somewhere
+                    </button> </a>
                 </nav>
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col text-center">
-                            <a href="@routes.TripsController.showCreate()"><button id="addTripButton" type="button" class="button-add">
-                                Add New Trip
-                            </button> </a>
-                        </div>
-                    </div>
 
                     <div class="row pt-3">
                            @for(trip <- trips) {
@@ -76,7 +72,7 @@
 
                                        <div class="card-body overflow-auto">  <!-- Sort out min/max height and width for resizing -->
 
-                                           <h4>Destinations Visted</h4>
+                                           <h4 class="dark-header">Destinations Visited</h4>
                                            <table id="destinationsTable" class="trip-table">
                                                <thead>
                                                    <tr>
@@ -97,8 +93,8 @@
                                        </div>
 
                                        <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
-                                           <a href="@routes.TripsController.showEdit(trip)"><button type="submit">Edit</button></a>  <!-- Need to change to the correct style of button -->
-                                           <a href="@routes.TripsController.delete(trip)"><button type="submit" class="button-delete">Delete</button></a>
+                                           <a href="@routes.TripsController.showEdit(trip)"><button type="submit" class="btn btn-primary">Edit</button></a>  <!-- Need to change to the correct style of button -->
+                                           <a href="@routes.TripsController.delete(trip)"><button type="submit" class="btn btn-outline-secondary">Delete</button></a>
                                        </div>
                                    </div>
                                </div>
