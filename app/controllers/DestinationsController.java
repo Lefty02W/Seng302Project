@@ -169,10 +169,10 @@ public class DestinationsController extends Controller {
     }
 
     private boolean longLatCheck(Destination destination) {
-        if (destination.getLatitude() > 90 || destination.getLatitude() < 0) {
+        if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
             return false;
         }
-        if (destination.getLongitude() > 180 || destination.getLongitude() < 0) {
+        if (destination.getLongitude() > 180 || destination.getLongitude() < -180) {
                 return false;
         }
         return true;
