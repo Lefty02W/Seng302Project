@@ -338,7 +338,7 @@
                                 @if(defaultProfilePicture == 1) {
                                     <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
                                 } @if(defaultProfilePicture == 0) {
-                                    <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getDemoProfilePictureId" name="demoProfilePicture">
+                                    <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture()" name="demoProfilePicture">
                                 }
                             </div>
 
@@ -374,17 +374,18 @@
                             <div class="row">
                                 @for(image <- imageList) {
                                     <div class="card">
-                                        @form(routes.ProfileController.setDemoProfilePicture(), 'enctype -> "multipart/form-data") {
+                                        @form(routes.ProfileController.setDemoProfilePicture()) {
                                             @CSRF.formField
                                             <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
                                             src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
                                             name="@image.getImageId">
+                                            <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
                                             <label> Auto-cropping
-                                                <input type="checkbox" id="visible" name="visible" value="True" checked></label>
+                                                <input type="checkbox" id="autoCrop" name="autoCrop" value="True" checked></label>
                                             <button type="submit">Select</button>
 
                                                 <!-- The Expanded Image Modal -->
-                                            <div id="expandImageModal" class="modal">
+                                        <div id="expandImageModal" class="modal">
                                                 <span class="close">&times;</span>
                                                 <img class="modal-content" id="expandedImage">
                                                 <div id="caption"></div>
@@ -567,6 +568,11 @@
                     }
                 };
                 modal.style.display = "none";
+            }
+
+            function setDemoProfilePicture() {
+                var autoCrop = document.getElementById("autoCrop").value;
+                return autoCrop;
             }
     </script>
 </html>

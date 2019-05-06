@@ -49,7 +49,7 @@ POST    /profile                     controllers.ProfileController.update(reques
 POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer, autoCrop: Integer)
 GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
-GET     /profile/profilePicture   controllers.ProfileController.getDemoProfilePictureId()
+GET     /profile/profilePicture   controllers.ProfileController.getDemoProfilePicture()
 GET     /profile/newProfilePic  controllers.ProfileController.setDemoProfilePicture(request: Request)
 GET     /profile/changesCancelled     controllers.ProfileController.resetDemoProfilePicture()
 GET     /profile/saveChanges         controllers.ProfileController.setProfilePicture()

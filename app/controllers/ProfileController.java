@@ -40,7 +40,7 @@ public class ProfileController extends Controller {
 
     private final Form<Profile> profileForm;
     private final Form<ImageData> imageForm;
-    private final Form<selectImageData> selectImageForm;
+    private final Form<selectDemoProfilePictureData> selectImageForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory profileFormFactory;
@@ -56,11 +56,11 @@ public class ProfileController extends Controller {
     private Image profilePicture = null;
 
 
-    public static class selectImageData {
+
+    public static class selectDemoProfilePictureData {
         public String autoCrop = "False";
         public int photoId;
     }
-
 
     /**
      * To get Image data upon upload
@@ -76,7 +76,7 @@ public class ProfileController extends Controller {
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
-            this.selectImageForm = imageFormFactory.form(selectImageData.class);
+            this.selectImageForm = imageFormFactory.form(selectDemoProfilePictureData.class);
             this.messagesApi = messagesApi;
             this.httpExecutionContext = httpExecutionContext;
             this.profileFormFactory = profileFormFactory;
@@ -307,15 +307,20 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setDemoProfilePicture(Http.Request request) {
-        Form<selectImageData> selectedImageForm = selectImageForm.bindFromRequest(request);
-        selectImageData selectedImageData = selectedImageForm.get();
+        Form<selectDemoProfilePictureData> selectedImageForm = selectImageForm.bindFromRequest(request);
+        selectDemoProfilePictureData selectedImageData = selectedImageForm.get();
         int id = selectedImageData.photoId;
         int autoCrop = (selectedImageData.autoCrop.equals("True")) ? 1 : 0;
-        System.out.println(id + autoCrop);
         showChangeProfilePictureModal = true;
         Optional<Image> image = imageRepository.getImage(id);
         demoProfilePicture = image.get();
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
+        if (autoCrop == 1) {
+            System.out.println("yes");
+            cropInfo cropInfo = autoCrop(demoProfilePicture.getImage());
+            demoProfilePicture.setCropHeight(cropInfo.getCropHeight());
+            demoProfilePicture.setCropWidth(cropInfo.getCropWidth());
+        }
+        return supplyAsync(() -> redirect("/profile"));
     }
 
 
@@ -349,34 +354,24 @@ public class ProfileController extends Controller {
      * @return the id in an object and a refresh to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result getDemoProfilePictureId() {
-
-        return ok(Objects.requireNonNull(demoProfilePicture).getImage()).as(demoProfilePicture.getType());
+    public Result getDemoProfilePicture() {
+        byte[] imageDisplay;
+            try {
+                InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
+                System.out.println(demoProfilePicture.getCropWidth());
+                BufferedImage buffImage = ImageIO.read(in).getSubimage(0, 0, demoProfilePicture.getCropWidth(), demoProfilePicture.getCropHeight());
+                System.out.println(buffImage.getWidth());
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(buffImage, demoProfilePicture.getType().split("/")[1], baos);
+                baos.flush();
+                imageDisplay = baos.toByteArray();
+                baos.close();
+            } catch (Exception e) {
+                System.out.println(e);
+                imageDisplay = Objects.requireNonNull(demoProfilePicture).getImage();
+            }
+            return ok(imageDisplay).as(demoProfilePicture.getType());
     }
-
-
-//    @Security.Authenticated(SecureSession.class)
-//    public Result displayPhotos (Integer id, Integer autoCrop) {
-//        Image image = Image.find.byId(id);
-//        if (autoCrop == 1) {
-//            byte[] imageDisplay;
-//            try {
-//                InputStream in = new ByteArrayInputStream(image.getImage());
-//                BufferedImage buffImage = ImageIO.read(in).getSubimage(image.getCropX(), image.getCropY(), image.getCropWidth(), image.getCropHeight());
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                ImageIO.write(buffImage, image.getType().split("/")[1], baos);
-//                baos.flush();
-//                imageDisplay = baos.toByteArray();
-//                baos.close();
-//            } catch (Exception e) {
-//                imageDisplay = Objects.requireNonNull(image).getImage();
-//            }
-//            return ok(imageDisplay).as(image.getType());
-//        }else {
-//            return ok(image.getImage()).as(image.getType());
-//        }
-//    }
-
     /**
      * Gives the id of the profile picture to be displayed
      * @return the id in an object and a refresh to the profile page
