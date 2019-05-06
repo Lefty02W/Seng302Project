@@ -68,7 +68,7 @@ public class DestinationsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/destinations/show/false")
+                .uri("/destinations")
                 .bodyForm(formData)
                 .session("connected", "admin@admin.com");
 
