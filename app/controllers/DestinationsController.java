@@ -216,7 +216,7 @@ public class DestinationsController extends Controller {
                     // Cannot delete a destination if there is match
                     // Since it in a trip
                     if (destination.getDestinationId() == id) {
-                        return redirect("/destinations").flashing("failure",
+                        return redirect("/destinations/false").flashing("failure",
                                 "Destination cannot be deleted as it is part of a trip");
                     }
                 }
@@ -224,7 +224,7 @@ public class DestinationsController extends Controller {
             destinationRepository.delete(id);
 
 
-            return redirect("/destinations").flashing("success", "Destination Deleted");
+            return redirect("/destinations/false").flashing("success", "Destination Deleted");
         });
 
     }
