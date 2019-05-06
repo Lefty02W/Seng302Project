@@ -42,7 +42,7 @@ public class DestinationsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/destinations")
+                .uri("/destinations/false")
                 .session("connected", "admin@admin.com");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -68,7 +68,7 @@ public class DestinationsControllerTest extends ProvideApplication {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/destinations")
+                .uri("/destinations/false")
                 .bodyForm(formData)
                 .session("connected", "admin@admin.com");
 
