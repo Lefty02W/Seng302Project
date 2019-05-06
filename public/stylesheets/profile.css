@@ -199,6 +199,18 @@ img.thumbnail {
     margin-right: auto;
     width: 50%;
 }
+
+
+#changeProfilePictureButton {
+    position: absolute;
+    margin-left: 60%;
+    margin-top: 5%;
+    background-color: #ca6636;
+    border: none;
+    cursor: pointer;
+}
+
+
 /*!* 100% Image Width on Smaller Screens *!*/
 /*@media only screen and (max-width: 700px){*/
     /*.modal-content {*/

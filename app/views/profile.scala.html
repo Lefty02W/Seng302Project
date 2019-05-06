@@ -86,6 +86,12 @@
                 <div class="container-fluid">
 
                     <div id="profilePhotoContainer">
+                        <div class="col">
+                                <!-- TODO align this in the center -->
+                            <button type="button" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                                Change Profile Picture
+                            </button>
+                        </div>
                         <div class="container" id="profilePhoto">
                             @if(profilePicture != null) {
                                 <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getProfilePictureId()"
@@ -95,6 +101,7 @@
                             alt="Profile picture">
 
                             }
+
                         </div>
 
                         <div class="container" id="greeting">
@@ -313,7 +320,7 @@
                     <div class="row">
                         <div class="col">
                             <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button"
-                            class="button-editDestinations" style="width: 10vw;
+                            class="editProfileButton" style="width: 10vw;
                                 float: right">
                                 Edit Profile
                             </button>
