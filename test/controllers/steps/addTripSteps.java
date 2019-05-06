@@ -61,8 +61,9 @@ public class addTripSteps extends ProvideApplication {
 
     @When("user selects a destination called {string}")
     public void userSelectsADestinationCalled(String string) {
-     //  ArrayList<Destination> userDestinations = getUserDest("john@gmail.com");
-        throw new cucumber.api.PendingException()
+     ArrayList<Destination> userDestinations = getUserDest("john@gmail.com");
+        throw new cucumber.api.PendingException();
+
     }
 
     @When("user presses add destination")
