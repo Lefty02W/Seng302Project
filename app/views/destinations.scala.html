@@ -115,13 +115,13 @@
                                         }
                                     } else {
                                         @if(followedDestinationIds contains destination.getDestinationId()) {
-                                            @helper.form(routes.DestinationsController.unfollow(currentUser.getEmail, destination.getDestinationId())) {
+                                            @helper.form(routes.DestinationsController.unfollow(currentUser.getEmail, destination.getDestinationId(), isPublic)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
                                                     Unfollow</button></td>
                                             }
                                         } else {
-                                            @helper.form(routes.DestinationsController.follow(currentUser.getEmail, destination.getDestinationId())) {
+                                            @helper.form(routes.DestinationsController.follow(currentUser.getEmail, destination.getDestinationId(), isPublic)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
                                                     Follow</button></td>

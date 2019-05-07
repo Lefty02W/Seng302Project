@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import static java.util.Collections.addAll;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
@@ -84,8 +85,10 @@ public class DestinationsController extends Controller {
             }
         } else{
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(user.getEmail());
             try {
                 destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
             } catch (NoSuchElementException e) {
                 destinationsList = new ArrayList<>();
             }
@@ -99,24 +102,34 @@ public class DestinationsController extends Controller {
         return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
     }
 
-    public Result follow(Http.Request request, String email, int destId) {
+    public Result follow(Http.Request request, String email, int destId, boolean isPublic) {
         Optional<ArrayList<Integer>> followedTemp = destinationRepository.followDesination(destId, email);
         try {
             followedDestinationIds = followedTemp.get();
         } catch (NoSuchElementException e) {
             followedDestinationIds = new ArrayList<>();
         }
-        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), true, followedDestinationIds, request, messagesApi.preferred(request)));
+        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
     }
 
-    public Result unfollow(Http.Request request, String email, int destId) {
+    public Result unfollow(Http.Request request, String email, int destId, boolean isPublic) {
         Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, email);
         try {
             followedDestinationIds = followedTemp.get();
         } catch (NoSuchElementException e) {
             followedDestinationIds = new ArrayList<>();
         }
-        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), true, followedDestinationIds, request, messagesApi.preferred(request)));
+        if (!isPublic) {
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(email);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(email);
+            try {
+                destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
+        }
+        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
     }
 
     /**

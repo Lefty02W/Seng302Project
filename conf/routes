@@ -17,8 +17,8 @@ GET     /destinations/:id/edit      controllers.DestinationsController.edit(requ
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
 POST    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
-POST    /destinations/follow/:destId       controllers.DestinationsController.follow(request: Request, email: String, destId: Integer)
-POST    /destinations/unfollow/:destId     controllers.DestinationsController.unfollow(request: Request, email: String, destId: Integer)
+POST    /destinations/follow/:destId/:isPublic      controllers.DestinationsController.follow(request: Request, email: String, destId: Integer, isPublic: Boolean)
+POST    /destinations/unfollow/:destId/:isPublic     controllers.DestinationsController.unfollow(request: Request, email: String, destId: Integer, isPublic: Boolean)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
