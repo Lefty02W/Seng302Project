@@ -34,8 +34,8 @@ public class ProfileImageSteps extends BaseStep {
 
     @Then("an error message should be shown telling John to select a photo")
     public void an_error_message_should_be_shown_telling_John_to_select_a_photo() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        element = driver.findElement(By.id("invalidAlert"));
+        Assert.assertEquals("No image selected.", element.getAttribute("innerText"));
     }
 
 

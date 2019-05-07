@@ -466,7 +466,6 @@ public class ProfileController extends Controller {
         try {
             Form<CropImageData> uploadedCropImageDataForm = cropImageDataForm.bindFromRequest(request);
             CropImageData cropImageData = uploadedCropImageDataForm.get();
-            System.out.println("THE BROKEN IMAGE DATE IS \n\n"+cropImageData+"\n\n\n\n\n");
             if (cropImageData == null) {
                 return supplyAsync(() -> redirect("/profile").flashing("invalid", "No image selected."));
             }
