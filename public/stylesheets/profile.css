@@ -60,6 +60,10 @@
     width: 80%;
 }
 
+#selectPhotoModal .lower-card {
+    width: auto;
+}
+
 
 .collapse-body {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -225,7 +229,11 @@ img.thumbnail {
 }
 
 #selectPhotoModal {
-    height: 90vh;
+    /*height: 80vh;*/
+}
+
+#selectPhotoModal .row{
+    max-height: 77vh;
 }
 
 #changeProfilePictureButton {

@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean, widthHeight: String )(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean, widthHeight: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -34,11 +34,16 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">TravelEA </h2>
                 <div class="list-group list-group-flush">
-                    <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                    <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                    <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                        Profile</a>
+                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                        Destinations</a>
+                    <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                        Trips</a>
+                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                        Travellers</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                        Logout</a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -75,15 +80,15 @@
 
                 @if(showPhotoModal) {
                     <script type="text/javascript">
-                        $(window).on('load', function() {
-                            $('#viewPhotoModal').modal('show')
-                        })
+                            $(window).on('load', function () {
+                                $('#viewPhotoModal').modal('show')
+                            })
                     </script>
                 }
 
                 @if(showChangeProfilePictureModal) {
                     <script type="text/javascript">
-                            $(window).on('load', function() {
+                            $(window).on('load', function () {
                                 $('#changeProfilePicture').modal('show')
                             })
                     </script>
@@ -91,7 +96,7 @@
 
                 @if(showCropPhotoModal) {
                     <script type="text/javascript">
-                            $(window).on('load', function() {
+                            $(window).on('load', function () {
                                 $('#cropPhotoModal').modal('show')
                             })
                     </script>
@@ -107,16 +112,16 @@
 
                             <a href="@routes.ProfileController.showEdit(currentUser.getEmail)">
                                 <button type="button" class="btn btn-primary" id="editProfileButton">
-                                Edit Profile
+                                    Edit Profile
                                 </button>
                             </a>
                         </div>
                         <div class="container" id="profilePhoto">
-                            @if(profilePicture != null) {
-                                <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getProfilePictureId()"
+                        @if(profilePicture != null) {
+                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getProfilePictureId()"
                             alt="Profile picture">
-                            } else {
-                                <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
+                        } else {
+                            <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
                             alt="Profile picture">
 
                             }
@@ -124,237 +129,250 @@
                         </div>
 
                         <div class="container" id="greeting">
-                                <h2 style="text-align: center;">Welcome, @currentUser.getFirstName()!</h2>
+                            <h2 style="text-align: center;">Welcome, @currentUser.getFirstName()!</h2>
                         </div>
                     </div>
 
 
                     <div class="row">
                         <ul class="nav nav-tabs" id="profileTabs">
-                            <li class="active"><a data-toggle="tab" href="#informationTab" id="informationTabLink">Information</a></li>
+                            <li class="active"><a data-toggle="tab" href="#informationTab" id="informationTabLink">
+                                Information</a></li>
                             <li><a data-toggle="tab" href="#photosTab" id="photosTabLink">Photos</a></li>
                             <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
                             <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
                         </ul>
 
                     </div>
-                        <div class="tab-content" id="profileTabsContent">
-                            <div id="informationTab" class="tab-pane fade in active show">
-                                <div class="container">
-                                    <div id="firstNameRow" class="row">
-                                        <a>First Name: @currentUser.getFirstName</a>
-                                    </div>
-
-                                    <div id="middleNameRow" class="row">
-                                        <a>Middle Name: @currentUser.getMiddleName</a>
-                                    </div>
-
-                                    <div id="lastNameRow" class="row">
-                                        <a>Last Name: @currentUser.getLastName</a>
-                                    </div>
-
-                                    <div id="emailRow" class="row">
-                                        <a>Email: @currentUser.getEmail</a>
-                                    </div>
-
-                                    <div id="dobRow" class="row">
-                                        <a>Date Of Birth: @currentUser.getBirthString</a>
-                                    </div>
-
-                                    <div id="typesRow" class="row">
-                                        @if(currentUser.getTravellerTypesList.isEmpty) {
-                                            <div class="alert alert-info" role="alert">
-                                                You have no traveller types associated with your profile
-                                            </div>
-                                        } else {
-                                            <div class="row">
-                                                <div class="col">
-                                                        <a>Traveller Types:
-                                                            @for(index <- 0 until currentUser.getTravellerTypesList.size) {
-                                                                <li style="padding: 0px; margin-left: 20px;">
-                                                                    @currentUser.getTravellerTypesList.get(index)
-                                                                </li>
-                                                            }
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                        }
-                                    </div>
-
-
-                                    <div id="nationalities" class="row">
-                                        @if(currentUser.getNationalityList.isEmpty) {
-                                            <div class="alert alert-info" role="alert">
-                                                You have no nationalities associated with your profile
-                                            </div>
-                                        } else {
-                                            <div class="row">
-                                            <div class="col">
-                                                <a>Nationalities:
-                                                    @for(index <- 0 until currentUser.getNationalityList.size) {
-                                                        <li style="padding: 0px; margin-left: 20px;">
-                                                            @currentUser.getNationalityList.get(index)
-                                                        </li>
-                                                    }
-                                                </a>
-                                            </div>
-                                            </div>
-                                        }
-                                    </div>
-
-                                    <div id="passports" class="row">
-
-                                        @if(currentUser.getPassports.isEmpty) {
-                                            <div class="alert alert-info" role="alert">
-                                                You have no passports associated with your profile
-                                            </div>
-                                        } else {
-                                            <div class="row">
-                                            <div class="col">
-                                                <a>Passports:
-                                                    @for(index <- 0 until currentUser.getPassportsList.size) {
-                                                        <li style="padding: 0px; margin-left: 20px;">
-                                                            @currentUser.getPassportsList.get(index)
-                                                        </li>
-                                                    }
-                                                </a>
-                                            </div>
-                                            </div>}
-                                    </div>
-
+                    <div class="tab-content" id="profileTabsContent">
+                        <div id="informationTab" class="tab-pane fade in active show">
+                            <div class="container">
+                                <div id="firstNameRow" class="row">
+                                    <a>First Name: @currentUser.getFirstName</a>
                                 </div>
-                            </div>
 
+                                <div id="middleNameRow" class="row">
+                                    <a>Middle Name: @currentUser.getMiddleName</a>
+                                </div>
 
-                            <div id="photosTab" class="tab-pane fade">
-                                <div class="col">
-                                    <div id="photosCard" class="card-large lower-card">
-                                        <div id="photoHeading">
-                                            <h3>Personal Photos</h3>
-                                            <button class="btn btn-primary" style="right" data-toggle="modal"
-                                            data-target="#addPhotoModal">Add Photo</button>
-                                        </div>
+                                <div id="lastNameRow" class="row">
+                                    <a>Last Name: @currentUser.getLastName</a>
+                                </div>
 
-                                        <div class="row">
-                                        @for(image <- imageList) {
-                                            <div class="card">
-                                                <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                                src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
-                                                name="@image.getImageId">
-                                                <div class="card-body">
-                                                @if(image.getVisible == 1) {
-                                                    <p class="card-text"> @image.displayVisibility(image.getVisible) 🌏</p>
-                                                    <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
-                                                        <button>Make Private</button></a>
-                                                } else {
-                                                    <p class="card-text"> @image.displayVisibility(image.getVisible) 🔒</p>
-                                                    <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
-                                                        <button>Make Public</button></a>
+                                <div id="emailRow" class="row">
+                                    <a>Email: @currentUser.getEmail</a>
+                                </div>
+
+                                <div id="dobRow" class="row">
+                                    <a>Date Of Birth: @currentUser.getBirthString</a>
+                                </div>
+
+                                <div id="typesRow" class="row">
+                                @if(currentUser.getTravellerTypesList.isEmpty) {
+                                    <div class="alert alert-info" role="alert">
+                                        You have no traveller types associated with your profile
+                                    </div>
+                                } else {
+                                    <div class="row">
+                                        <div class="col">
+                                            <a>Traveller Types:
+                                                @for(index <- 0 until currentUser.getTravellerTypesList.size) {
+                                                    <li style="padding: 0px;
+                                                        margin-left: 20px;">
+                                                    @currentUser.getTravellerTypesList.get(index)
+                                                    </li>
                                                 }
-                                                </div>
-                                                    <!-- The Expanded Image Modal -->
-                                                <div id="expandImageModal" class="modal">
-                                                    <span class="close">&times;</span>
-                                                    <img class="modal-content" id="expandedImage">
-                                                    <div id="caption"></div>
-                                                    <div id="id"></div>
-                                                </div>
-                                            </div>
-                                        }
+                                            </a>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-
-                            <div id="destsTab" class="tab-pane fade">
-                                @for(tripId <- trips) {
-                                <table id="destsTable">
-                                    <thead>
-                                        <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
-                                    </thead>
-                                    @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
-                                        <tr>
-                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
-                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
-                                            <td>
-                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
-                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
-                                                } else {
-                                                    <span></span>
-                                                }
-                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
-                                            <td>
-                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
-                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
-                                                } else {
-                                                    <span></span>
-                                                }
-                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
-                                        </tr>
-                                    }
-                                </table>
                                 }
-                            </div>
+                                </div>
 
-                            <div id="tripsTab" class="tab-pane fade">
-                                @for(tripId <- trips) {
+
+                                <div id="nationalities" class="row">
+                                @if(currentUser.getNationalityList.isEmpty) {
+                                    <div class="alert alert-info" role="alert">
+                                        You have no nationalities associated with your profile
+                                    </div>
+                                } else {
                                     <div class="row">
-                                        <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
-                                            <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
-                                            <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
+                                        <div class="col">
+                                            <a>Nationalities:
+                                                @for(index <- 0 until currentUser.getNationalityList.size) {
+                                                    <li style="padding: 0px;
+                                                        margin-left: 20px;">
+                                                    @currentUser.getNationalityList.get(index)
+                                                    </li>
+                                                }
+                                            </a>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div id="tripInfo@tripId" class="collapse collapse-body">
-                                            <table id="tripTable">
-                                                <thead>
-                                                    <tr><th>Start Date</th><th>N.O. Destinations</th><th>Travel Time (Days)</th>
-                                                </thead>
-                                                <tr>
-                                                    <td>
-                                                        @if(currentUser.getTripById(tripId).getStartDate != null) {
-                                                            <span>@currentUser.getTripById(tripId).getStartDate.getTime</span>
-                                                        } else {
-                                                            <span>0</span>
-                                                        }
-                                                        @currentUser.getTripById(tripId).getStartDate</td>
-                                                    <td>@currentUser.getTripById(tripId).getDestinations.size()</td>
-                                                    <td>@currentUser.getTripById(tripId).getTravelTime</td>
-                                                </tr>
-                                            </table>
-                                            <h4>Destinations Visted</h4>
-                                            <table id="destsTable">
-                                                <thead>
-                                                    <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
-                                                </thead>
-                                                @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
-                                                    <tr>
-                                                        <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
-                                                        <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
-                                                        <td>
-                                                            @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
-                                                                <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
-                                                            } else {
-                                                                <span></span>
-                                                            }
-                                                            @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
-                                                        <td>
-                                                            @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
-                                                                <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
-                                                            } else {
-                                                                <span></span>
-                                                            }
-                                                            @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
-                                                    </tr>
-                                                }
-                                            </table>
-                                        </div>
+                                }
                                 </div>
-                            }
-                            </div>
 
+                                <div id="passports" class="row">
+
+                                @if(currentUser.getPassports.isEmpty) {
+                                    <div class="alert alert-info" role="alert">
+                                        You have no passports associated with your profile
+                                    </div>
+                                } else {
+                                    <div class="row">
+                                        <div class="col">
+                                            <a>Passports:
+                                                @for(index <- 0 until currentUser.getPassportsList.size) {
+                                                    <li style="padding: 0px;
+                                                        margin-left: 20px;">
+                                                    @currentUser.getPassportsList.get(index)
+                                                    </li>
+                                                }
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+
+                            </div>
                         </div>
+
+
+                        <div id="photosTab" class="tab-pane fade">
+                            <div class="col">
+                                <div id="photosCard" class="card-large lower-card">
+                                    <div id="photoHeading">
+                                        <h3>Personal Photos</h3>
+                                        <button class="btn btn-primary" style="right" data-toggle="modal"
+                                        data-target="#addPhotoModal">Add Photo</button>
+                                    </div>
+
+                                    <div class="row">
+                                    @for(image <- imageList) {
+                                        <div class="card">
+                                            <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                            src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
+                                            name="@image.getImageId">
+                                            <div class="card-body">
+                                            @if(image.getVisible == 1) {
+                                                <p class="card-text"> @image.displayVisibility(image.getVisible) 🌏</p>
+                                                <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                                    <button>Make Private</button></a>
+                                            } else {
+                                                <p class="card-text"> @image.displayVisibility(image.getVisible) 🔒</p>
+                                                <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                                    <button>Make Public</button></a>
+                                            }
+                                            </div>
+                                                <!-- The Expanded Image Modal -->
+                                            <div id="expandImageModal" class="modal">
+                                                <span class="close">&times;</span>
+                                                <img class="modal-content" id="expandedImage">
+                                                <div id="caption"></div>
+                                                <div id="id"></div>
+                                            </div>
+                                        </div>
+                                    }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div id="destsTab" class="tab-pane fade">
+                        @for(tripId <- trips) {
+                            <table id="destsTable">
+                                <thead>
+                                    <tr><th>Name</th>
+                                        <th>Country</th>
+                                        <th>Departure Time</th>
+                                        <th>Arrival Time</th>
+                                </thead>
+                                @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
+                                    <tr>
+                                        <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
+                                        <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
+                                        <td>
+                                            @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
+                                                <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
+                                            } else {
+                                                <span></span>
+                                            }
+                                            @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
+                                        <td>
+                                            @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
+                                                <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
+                                            } else {
+                                                <span></span>
+                                            }
+                                            @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
+                                    </tr>
+                                }
+                            </table>
+                        }
+                        </div>
+
+                        <div id="tripsTab" class="tab-pane fade">
+                        @for(tripId <- trips) {
+                            <div class="row">
+                                <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
+                                    <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
+                                    <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="tripInfo@tripId" class="collapse collapse-body">
+                                    <table id="tripTable">
+                                        <thead>
+                                            <tr><th>Start Date</th>
+                                                <th>N.O. Destinations</th>
+                                                <th>Travel Time (Days)</th>
+                                        </thead>
+                                        <tr>
+                                            <td>
+                                                @if(currentUser.getTripById(tripId).getStartDate != null) {
+                                                    <span>@currentUser.getTripById(tripId).getStartDate.getTime</span>
+                                                } else {
+                                                    <span>0</span>
+                                                }
+                                                @currentUser.getTripById(tripId).getStartDate</td>
+                                            <td>@currentUser.getTripById(tripId).getDestinations.size()</td>
+                                            <td>@currentUser.getTripById(tripId).getTravelTime</td>
+                                        </tr>
+                                    </table>
+                                    <h4>Destinations Visted</h4>
+                                    <table id="destsTable">
+                                        <thead>
+                                            <tr><th>Name</th>
+                                                <th>Country</th>
+                                                <th>Departure Time</th>
+                                                <th>Arrival Time</th>
+                                        </thead>
+                                        @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
+                                            <tr>
+                                                <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
+                                                <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
+                                                <td>
+                                                    @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
+                                                        <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
+                                                    } else {
+                                                        <span></span>
+                                                    }
+                                                    @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
+                                                <td>
+                                                    @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
+                                                        <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
+                                                    } else {
+                                                        <span></span>
+                                                    }
+                                                    @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        }
+                        </div>
+
+                    </div>
 
                     <div class="row" style="margin-top: 200px">
 
@@ -362,113 +380,86 @@
                 </div>
             </div>
         </div>
-            <div class="modal fade" id="changeProfilePicture">
+        <div class="modal fade" id="changeProfilePicture">
 
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
 
-                        <div class="modal-header">
-                            <h2 class="modal-title center-col">Change Profile Picture</h2>
+                    <div class="modal-header">
+                        <h2 class="modal-title center-col">Change Profile Picture</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container" id="profilePhoto">
+                            @if(defaultProfilePicture == 1) {
+                                <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
+                            } @if(defaultProfilePicture == 0) {
+                            <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture()" name="demoProfilePicture">
+                            }
                         </div>
-                        <div class="modal-body">
-                            <div class="container" id="profilePhoto">
-                                @if(defaultProfilePicture == 1) {
-                                    <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
-                                } @if(defaultProfilePicture == 0) {
-                                    <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture()" name="demoProfilePicture">
-                                }
-                            </div>
 
-                                <div class="row">
-                                <div class="center-col">
-                                    <button type="button" class="btn-outline-primary" id="uploadPhotoButton" data-toggle="modal" data-target="#addProfileModal" data-dismiss="modal">
-                                        Upload new photo</button>
-                                    <button type="button" class="selectPhotoButton" data-toggle="modal" data-target="#selectPhotoModal" data-dismiss="modal">
-                                        Select existing photo</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
+                        <div class="row">
                             <div class="center-col">
-                                <a href="@routes.ProfileController.resetDemoProfilePicture()">
-                                    <button type="button">Cancel</button></a>
-                                <a href="@routes.ProfileController.setProfilePicture()">
-                                    <button type="submit">Submit</button></a>
+                                <button type="button" class="btn-outline-primary" id="uploadPhotoButton" data-toggle="modal" data-target="#addProfileModal" data-dismiss="modal">
+                                    Upload new photo</button>
+                                <button type="button" class="selectPhotoButton" data-toggle="modal" data-target="#selectPhotoModal" data-dismiss="modal">
+                                    Select existing photo</button>
                             </div>
                         </div>
                     </div>
-                </div>
-
-            </div>
-            <div class="modal fade" id="selectPhotoModal">
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
-
-                        <div class="col">
-                            <div id="photosCard" class="card-large lower-card">
-
-                                <div class="modal-header">
-                                    <h2 class="modal-title">Select profile Picture</h2>
-                                </div>
-
-                                <div class="row">
-                                @for(image <- imageList) {
-                                    <div class="card">
-                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                        src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
-                                        name="@image.getImageId">
-                                        <div class="card-body">
-                                            <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
-                                            <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
-                                                <button type="submit">Crop this myself</button></a>
-                                            <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
-                                                <button type="submit">AutoCrop</button></a>
-                                        </div>
-                                            <!-- The Expanded Image Modal -->
-                                        <div id="expandImageModal" class="modal">
-                                            <span class="close">&times;</span>
-                                            <img class="modal-content" id="expandedImage">
-                                            <div id="caption"></div>
-                                            <div id="id"></div>
-                                        </div>
-                                    </div>
-                                }
-                                </div>
-                            </div>
+                    <div class="modal-footer">
+                        <div class="center-col">
+                            <a href="@routes.ProfileController.resetDemoProfilePicture()">
+                                <button type="button">Cancel</button></a>
+                            <a href="@routes.ProfileController.setProfilePicture()">
+                                <button type="submit">Submit</button></a>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-
-                        <div class="modal-body">
+        </div>
+        <div class="modal fade" id="selectPhotoModal">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Select profile Picture</h2>
+                    </div>
+                    <div class="col">
+                        <div id="photosCard" class="card-large lower-card">
                             <div class="row">
-                                @for(image <- imageList) {
-                                    <div class="card" style="overflow-y:auto; max-height:90%;">
-                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                        src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
-                                        name="@image.getImageId">
+                            @for(image <- imageList) {
+                                <div class="card">
+                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                    src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
+                                    name="@image.getImageId">
+                                    <div class="card-body">
                                         <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
                                         <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
                                             <button type="submit">Crop this myself</button></a>
                                         <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
                                             <button type="submit">AutoCrop</button></a>
-
-                                                <!-- The Expanded Image Modal -->
-                                        <div id="expandImageModal" class="modal">
-                                            <span class="close">&times;</span>
-                                            <img class="modal-content" id="expandedImage">
-                                            <div id="caption"></div>
-                                            <div id="id"></div>
-                                        </div>
                                     </div>
-                                }
+                                        <!-- The Expanded Image Modal -->
+                                    <div id="expandImageModal" class="modal">
+                                        <span class="close">&times;</span>
+                                        <img class="modal-content" id="expandedImage">
+                                        <div id="caption"></div>
+                                        <div id="id"></div>
+                                    </div>
                                 </div>
-                            <button type="button" data-dismiss="modal" style="width: 10vw;
-                                float: right" class="changeProfilePictureButton"
-                            data-toggle="modal" data-target="#changeProfilePicture">Close</button>
+                            }
+                            </div>
                         </div>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" style="width: 10vw;
+                            float: right" class="changeProfilePictureButton"
+                        data-toggle="modal" data-target="#changeProfilePicture">Close</button>
+                    </div>
                 </div>
-
             </div>
+
+        </div>
 
         <div class="modal fade" id="addProfileModal">
             <div class="modal-dialog modal-dialog-centered">
@@ -483,9 +474,11 @@
                             <input type="file" id="image" name="image">
                             <input type="hidden" id="visible" name="visible" value="Public" hidden>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
-                            <button type="submit" id="autoCropped" name="autoCropped" value="true">Auto crop this photo</button>
+                            <button type="submit" id="autoCropped" name="autoCropped" value="true">
+                                Auto crop this photo</button>
                             <button type="submit" id="selfCropped" name="autoCropped" value="false">Crop this myself</button>
-                            <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">Cancel</button>
+                            <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                                Cancel</button>
                         </div>
                     }
                     <div class="modal-dialog">
@@ -513,7 +506,8 @@
                             @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
                                 @CSRF.formField
                                 <div class="row">
-                                    <input type="number" id="widthHeight" name="widthHeight" min="80" value="80">Width and Height
+                                    <input type="number" id="widthHeight" name="widthHeight" min="80" value="80">
+                                    Width and Height
                                 </div>
                                 <div class="row">
                                     <input type="number" id="cropX" name="cropX" min="0" value="0">Margin left
@@ -522,12 +516,12 @@
                                     <input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="center-col">
-                                    <button id="acceptCrop" type="submit">Accept</button>
-                                    <button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
-                                        Close</button>
-                                </div>
+                        <div class="row">
+                            <div class="center-col">
+                                <button id="acceptCrop" type="submit">Accept</button>
+                                <button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
+                                    Close</button>
+                            </div>
                             }
                         </div>
                     </div>
@@ -563,9 +557,9 @@
         </div>
     </body>
 
-            <!-- Menu Toggle Script -->
-        <script>
-            $(document).ready(function() {
+        <!-- Menu Toggle Script -->
+    <script>
+            $(document).ready(function () {
                 $('#destsTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
@@ -601,7 +595,7 @@
                     this.parentElement.style.display = 'none';
                 });
             }
-            $("#menu-toggle").click(function(e) {
+            $("#menu-toggle").click(function (e) {
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
             });
@@ -626,10 +620,10 @@
                     modal.style.display = "none";
                 }
             }
-            
+
             function selectPhoto() {
                 var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function() {
+                xhttp.onreadystatechange = function () {
                     if (this.readyState == 4 && this.status == 200) {
                         document.getElementById("demo").innerHTML = this.responseText;
                     }
