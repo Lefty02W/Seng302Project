@@ -1,5 +1,5 @@
 #table-card {
-    height: 85vh;
+    height: 60vh;
 }
 
 #destTable {
@@ -19,6 +19,27 @@ div.dataTables_filter {
 }
 
 #addDestButton {
+    position: center;
     float: right;
     width: 15vw;
+}
+
+
+.dest-table {
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+    width: 100%;
+}
+
+.dest-table tr:nth-child(even) {
+    background-color: #f2f2f2
+}
+
+.dest-table tbody td {
+    border: solid 1px #DDEEEE;
+    color: #333;
+    padding: 10px;
+    text-shadow: 1px 1px 1px #fff;
 }

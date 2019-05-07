@@ -1,16 +1,11 @@
 #viewCard {
-    height: 80vh;
+    height: 60vh;
 }
-
 
 #name {
     width: 20vw;
 }
 
-#addTripButton {
-    float: right;
-    width: 10vw;
-}
 
 #destForm {
     padding-bottom: 20px;
@@ -33,6 +28,45 @@ label {
     display: none;
 }
 
+.saveTripButton{
+    right: 0;
+    bottom: 0;
+    margin: 1vw;
+    position: fixed;
+}
+.button-back{
+    right: 170px;
+    bottom: 0;
+    margin:1vw;
+    position: fixed;
+}
 
+.tripNameInput{
+    display: block;
+    text-align: center;
+    margin-left: 40vw;
+    margin-bottom: 50px;
+}
+
+.delete-icon{
+    display: inline;
+}
+.contract-icon{
+    display: inline;
+}
 input[type=datetime-local] {
+}
+
+#trip-card {
+    height: 40vh;
+    min-width: 100px;
+    background-color: #e8f5e9;
+}
+
+.card-border {
+    background-color: #2e7d32;
+}
+
+.addTripButton {
+    float: right;
 }

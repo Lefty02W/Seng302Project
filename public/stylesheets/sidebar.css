@@ -8,19 +8,24 @@ body {
 }
 
 #sidebar-wrapper {
+    position: fixed;
+    z-index: 1; /*change to 1 before commit */
     min-height: 100vh;
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
-    background-color: #37623B;
+    background-color: #2e7d32;
 }
 
 #sidebar-wrapper .sidebar-heading {
-    padding: 0.875rem 1.25rem;
-    background-color: #37623B;
-    color: #ca6636;
+    top: 500px;
+    padding-top: 6rem;
+    padding-left: 1.25rem;
+    /*padding: 0.875rem 1.25rem;*/
+    background-color: #2e7d32;
+    color: #ede1d1;
 }
 
 #sidebar-wrapper .list-group {
@@ -66,7 +71,7 @@ body {
     margin:0.2em;  padding:.2em;
     cursor:pointer;
     background:#ca6636;  color:white;
-    z-index:0;
+    z-index:2;
     border-radius: 20%;
 }
 .expand-icon:before {
@@ -74,11 +79,13 @@ body {
     position: absolute;
     z-index:-1;
     top: 0;  left: 0;  right: 0;  bottom: 0;
-    background: #37623B;
+    background: #2e7d32;
     transform: scaleX(0);
     transform-origin: 50%;
     transition: transform .1s ease-out;
     border-radius: 20%;
 }
 .expand-icon:hover:before{transform: scaleX(1);}
+
+
 

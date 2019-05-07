@@ -3,16 +3,15 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-import org.checkerframework.checker.signedness.qual.Constant;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.Constraint;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class holds the data for a profile trip
@@ -22,6 +21,7 @@ public class Trip extends Model {
 
 
     private ArrayList<TripDestination> destinations;
+    private TreeMap<Integer, TripDestination> orderedDestiantions;
     @Constraints.Required
     private String name;
     @Id
@@ -36,10 +36,13 @@ public class Trip extends Model {
      * @param destinations The destinations in the trip
      */
     public Trip(ArrayList<TripDestination> destinations, String name) {
-        this.destinations = sortDestinationsByOrder(destinations);
+        this.destinations = destinations;
         this.name = name;
-
+        for (TripDestination tripDestination : destinations) {
+            this.orderedDestiantions.put(tripDestination.getDestOrder(), tripDestination);
+        }
     }
+
 
     /**
      * Adds the passed TripDestination to the trip
@@ -55,6 +58,22 @@ public class Trip extends Model {
      */
     public void removeDestination(int index) {
         destinations.remove(index);
+    }
+
+    public TreeMap<Integer, TripDestination> getOrderedDestiantions() {
+        return orderedDestiantions;
+    }
+
+    public void setOrderedDestiantions(TreeMap<Integer, TripDestination> orderedDestiantions) {
+        this.orderedDestiantions = orderedDestiantions;
+    }
+
+    public int getTripId() {
+        return tripId;
+    }
+
+    public void setTripId(int tripId) {
+        this.tripId = tripId;
     }
 
     public ArrayList<TripDestination> getDestinations() {
@@ -117,6 +136,27 @@ public class Trip extends Model {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * This method gets the first date stored within a trip
+     * @return the date found
+     */
+    public long getFirstDate() {
+        Date toReturn = null;
+        for (TripDestination tripDestination : destinations) {
+            if (tripDestination.getArrival() != null) {
+                toReturn = tripDestination.getArrival();
+                break;
+            } else if (tripDestination.getDeparture() != null) {
+                toReturn = tripDestination.getDeparture();
+                break;
+            }
+        }
+        if (toReturn != null) {
+            return toReturn.getTime();
+        }
+        return 0;
     }
 
     public Date getStartDate(){

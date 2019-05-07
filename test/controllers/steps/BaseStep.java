@@ -27,15 +27,18 @@ public class BaseStep {
     public static String profilePage;
 
     public static void setUp() {
-        if (driver == null) {
+        if (driver == null || ((ChromeDriver) driver).getSessionId() == null) {
             WebDriverManager.chromedriver().setup();
+
             application = fakeApplication();         // Create a fake application instance
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("headless");
+            options.addArguments("--headless");
             driver = new ChromeDriver(options);      // Use Chrome
+
             testServer = Helpers.testServer(port, application);
             testServer.start();  //Run the application
             port = testServer.getRunningHttpPort().getAsInt();
+
             loginPage = "http://localhost:" + port + "/";
             profilePage = "http://localhost:" + port + "/profile";
             driver.manage().window().maximize();

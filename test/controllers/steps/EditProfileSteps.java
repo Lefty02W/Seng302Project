@@ -28,7 +28,7 @@ public class EditProfileSteps extends ProvideApplication {
     private Result loginResult;
 
 
-    // Scenario: I can perform an edit of my profile - start
+    // Scenario: I can perform an editDestinations of my profile - start
     @Given("I am logged into the application")
     public void iAmLoggedIntoTheApplication() {
         loginForm.put("email", "john@gmail.com");
@@ -66,7 +66,7 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("firstName", string);
     }
 
-    @When("I change my traveller types to {string}")
+    @When("I change my traveller type s to {string}")
     public void iChangeMyTravellerTypesTo(String string) {
         editForm.put("travellerTypes", string);
     }
@@ -103,7 +103,7 @@ public class EditProfileSteps extends ProvideApplication {
         assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypes());
         assertEquals("Max", profile.getMiddleName());
     }
-    // Scenario: I can perform an edit of my profile - end
+    // Scenario: I can perform an editDestinations of my profile - end
 
     // Scenario: I cannot save my profile with no traveller types - end
     // Includes steps from above

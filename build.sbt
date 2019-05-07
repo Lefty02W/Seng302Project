@@ -13,6 +13,7 @@ jacocoReportSettings in Test := JacocoReportSettings()
     JacocoReportFormats.XML
   )
 
+
 libraryDependencies += guice
 libraryDependencies += jdbc
 libraryDependencies += "com.h2database" % "h2" % "1.4.197"
