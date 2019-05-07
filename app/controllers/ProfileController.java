@@ -2,6 +2,7 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
+import models.Destination;
 import models.Image;
 import models.Profile;
 import models.Trip;
@@ -43,6 +44,7 @@ public class ProfileController extends Controller {
     private final Form<ImageData> imageForm;
     private final Form<CropImageData> cropImageDataForm;
     private MessagesApi messagesApi;
+    private List<Destination> destinationsList = new ArrayList<>();
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory profileFormFactory;
     private final FormFactory imageFormFactory;
@@ -533,8 +535,14 @@ public class ProfileController extends Controller {
         }
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
+        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(SessionController.getCurrentUser(request).getEmail());
+        try {
+            destinationsList = destListTemp.get();
+        } catch (NoSuchElementException e) {
+            destinationsList = new ArrayList<>();
+        }
         Integer defaultProfilePicture = isDefaultProfilePicture();
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, request, messagesApi.preferred(request)));
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, destinationsList, request, messagesApi.preferred(request)));
     }
 
 }
