@@ -68,6 +68,7 @@ public class ProfileController extends Controller {
         public String visible = "Private";
         public String isNewProfilePicture;
         public String autoCropped = "true";//todo use this to set photo as default without cropping it
+
     }
 
     /**
@@ -260,15 +261,12 @@ public class ProfileController extends Controller {
     public CompletionStage<Result> uploadPhoto(Http.Request request) {
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
-
         Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
         ImageData imageData = uploadedImageForm.get();
-
         if (picture == null) {
             return supplyAsync(() -> redirect("/profile").flashing("invalid", "No image selected."));
 
         }
-
         String fileName = picture.getFilename(); // long fileSize = picture.getFileSize();
         String contentType = picture.getContentType();
 
@@ -276,7 +274,6 @@ public class ProfileController extends Controller {
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
             return supplyAsync(() -> redirect("/profile").flashing("invalid", "Invalid file type!"));
         }
-
         TemporaryFile tempFile = picture.getRef();
         File file = tempFile.path().toFile();
         return supplyAsync(() -> {
@@ -292,15 +289,18 @@ public class ProfileController extends Controller {
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
                     savePhoto(image); // Save photo, given a successful upload
                     showPhotoModal = true;
-                } else {
-                    demoProfilePicture = image;
-                    showChangeProfilePictureModal = true;
+                } else { //case photo is being set
+                    if (imageData.autoCropped.equals("true")) {
+                        demoProfilePicture = image;
+                        showChangeProfilePictureModal = true;
+                    } else {
+                        imageToBeManuallyCropped = image;
+                        showCropPhotoModal = true;
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            // Redirect user to profile page to show state change
             return ok();
         }).thenApply(result -> redirect("/profile"));
     }
@@ -392,6 +392,12 @@ public class ProfileController extends Controller {
         return ok(Objects.requireNonNull(profilePicture).getImage()).as(profilePicture.getType());
     }
 
+    /**
+     * Takes an id and sets that photoId to be the image to be manually cropped, opens the cropping
+     * and refreshes the page
+     * @param imageId the image to be cropped
+     * @return a redirect to the profile page
+     */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setImageToBeManuallyCropped(Integer imageId) {
         Optional<Image> optionalImage = imageRepository.getImage(imageId);
@@ -433,15 +439,20 @@ public class ProfileController extends Controller {
                     showChangeProfilePictureModal = true;
                     return supplyAsync(() -> redirect("/profile"));
                 }
-                return supplyAsync(() -> redirect("/profile").flashing("failure", "Cropped image exceeds original image height"));
+                return supplyAsync(() -> redirect("/profile").flashing("invalid", "Cropped image exceeds original image height"));
             }
-            return supplyAsync(() -> redirect("/profile").flashing("failure", "cropped image exceeds original image width"));
+            return supplyAsync(() -> redirect("/profile").flashing("invalid", "cropped image exceeds original image width"));
         } catch (IOException e) {
             showChangeProfilePictureModal = false;
-            return supplyAsync(() -> redirect("/profile").flashing("failure", "Somthing went wrong while cropping the photo"));
+            return supplyAsync(() -> redirect("/profile").flashing("invalid", "Somthing went wrong while cropping the photo"));
         }
     }
 
+
+    /**
+     * is used to show the user the dimensions of the image they are editing
+     * @return a string telling the user the width and height of the cropped image
+     */
     @Security.Authenticated(SecureSession.class)
     public String getWidthHeight() {
         try {
