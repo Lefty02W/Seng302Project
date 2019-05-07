@@ -404,13 +404,44 @@
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
 
-                        <div class="modal-header">
-                            <h2 class="modal-title">Select profile Picture</h2>
+                        <div class="col">
+                            <div id="photosCard" class="card-large lower-card">
+
+                                <div class="modal-header">
+                                    <h2 class="modal-title">Select profile Picture</h2>
+                                </div>
+
+                                <div class="row">
+                                @for(image <- imageList) {
+                                    <div class="card">
+                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                        src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
+                                        name="@image.getImageId">
+                                        <div class="card-body">
+                                            <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
+                                            <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
+                                                <button type="submit">Crop this myself</button></a>
+                                            <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
+                                                <button type="submit">AutoCrop</button></a>
+                                        </div>
+                                            <!-- The Expanded Image Modal -->
+                                        <div id="expandImageModal" class="modal">
+                                            <span class="close">&times;</span>
+                                            <img class="modal-content" id="expandedImage">
+                                            <div id="caption"></div>
+                                            <div id="id"></div>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+                            </div>
                         </div>
+
+
                         <div class="modal-body">
                             <div class="row">
                                 @for(image <- imageList) {
-                                    <div class="card">
+                                    <div class="card" style="overflow-y:auto; max-height:90%;">
                                         <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
                                         src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
                                         name="@image.getImageId">
