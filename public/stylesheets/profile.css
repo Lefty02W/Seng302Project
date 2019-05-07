@@ -17,7 +17,7 @@
 }
 
 .card-large {
-    height: 40vh;
+    max-height: 90vh;
 }
 
 .button-edit {
@@ -25,6 +25,15 @@
     width: 10vw;
 }
 
+#photoHeading .btn {
+    /*float: right;*/
+}
+
+.btn-primary, .btn-primary:hover {
+    width: auto;
+    background-color: #37623B;
+    border-color: #37623B;
+}
 
 .trip-button {
     width: 100%;
@@ -37,24 +46,20 @@
     cursor: copy;
 }
 
-.lower-card {
-    width: 70%;
-}
-
 .center-col {
     margin-left:auto;
     margin-right:auto;
     display:block;
 }
 
+.upper-card {
+    width: 80%;
+}
+
 .lower-card {
     width: 80%;
 }
 
-
-.upper-card {
-    width: 87%;
-}
 
 .collapse-body {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -191,25 +196,56 @@ img.thumbnail {
 }
 
 #profileTabs, li {
-    padding: 10px;
+    padding: 15px;
+}
+
+#profileTabs, #photosCard {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#destsTab {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#tripsTab {
+    padding-left: 10%;
+    padding-right: 10%;
 }
 
 #profileTabsContent {
     margin-left: auto;
     margin-right: auto;
-    width: 50%;
+    /*width: 50%;*/
 }
 
+.nav .nav-tabs, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
+    font-size: 18pt;
+}
 
 #changeProfilePictureButton {
     position: absolute;
+    color: white;
+    width: auto;
     margin-left: 60%;
     margin-top: 5%;
-    background-color: #ca6636;
-    border: none;
     cursor: pointer;
 }
 
+#editProfileButton {
+    position: absolute;
+    color: white;
+    width: auto;
+    margin-left: 60%;
+    margin-top: 8%;
+    cursor: pointer;
+}
+
+/*.btn-outline-primary:hover {*/
+    /*background-color: #37623B;*/
+    /*border-color: #37623B;*/
+/*}*/
 
 /*!* 100% Image Width on Smaller Screens *!*/
 /*@media only screen and (max-width: 700px){*/
