@@ -118,7 +118,7 @@
                         </div>
                         <div class="container" id="profilePhoto">
                         @if(profilePicture != null) {
-                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getProfilePictureId()"
+                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)"
                             alt="Profile picture">
                         } else {
                             <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
@@ -354,7 +354,7 @@
                             @if(defaultProfilePicture == 1) {
                                 <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
                             } @if(defaultProfilePicture == 0) {
-                            <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture()" name="demoProfilePicture">
+                            <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
                             }
                         </div>
 
@@ -461,13 +461,13 @@
                         <div class="container" id="profilePhoto">
                             <p>A profile picture must be cropped as a square<br>
                                 All parameters are specified in pixels</p>
-                            <img class="thumbnail" src="@routes.ProfileController.getImageToBeManuallyCropped()" name="demoProfilePicture">
+                            <img class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(0)" name="demoProfilePicture">
                             <p style="text-align: center;">@widthHeight</p>
 
                             @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
                                 @CSRF.formField
                                 <div class="row">
-                                    <input type="number" id="widthHeight" name="widthHeight" min="100" value="80">
+                                    <input type="number" id="widthHeight" name="widthHeight" min="100" value="150">
                                     Width and Height
                                 </div>
                                 <div class="row">

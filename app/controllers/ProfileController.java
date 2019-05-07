@@ -394,15 +394,20 @@ public class ProfileController extends Controller {
         demoProfilePicture = null;
         return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
     }
-    
+
 
     /**
      * Gives the id of the demo profile picture to be displayed on the change profile picture modal
+     * @param displayCropped int, if true will display photo as a cropped photo, else will display the cropped photo
      * @return the id in an object
      */
     @Security.Authenticated(SecureSession.class)
-    public Result getDemoProfilePicture() {
-        byte[] imageDisplay;
+    public Result getDemoProfilePicture(Integer displayCropped) {
+        if (demoProfilePicture == null) {
+            return redirect("/profile").flashing("invalid", "No image selected.");
+        }
+        if (displayCropped == 1) {
+            byte[] imageDisplay;
             try {
                 InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
                 BufferedImage buffImage = ImageIO.read(in).getSubimage(0, 0, demoProfilePicture.getCropWidth(), demoProfilePicture.getCropHeight());
@@ -416,20 +421,10 @@ public class ProfileController extends Controller {
                 imageDisplay = Objects.requireNonNull(demoProfilePicture).getImage();
             }
             return ok(imageDisplay).as(demoProfilePicture.getType());
-    }
-
-
-    /**
-     * Gives the id of the profile picture to be displayed
-     * @return the id in an object and a refresh to the profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public Result getProfilePictureId() {
-        if (profilePicture == null) {
-            return ok();
         }
-        return ok(Objects.requireNonNull(profilePicture).getImage()).as(profilePicture.getType());
+        return ok(demoProfilePicture.getImage()).as(demoProfilePicture.getType());
     }
+
 
     /**
      * Takes an id and sets that photoId to be the image to be manually cropped, opens the cropping
@@ -451,9 +446,6 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result getImageToBeManuallyCropped() {
-        if (demoProfilePicture == null) {
-            return redirect("/profile").flashing("invalid", "No image selected.");
-        }
         return ok(demoProfilePicture.getImage()).as(demoProfilePicture.getType());
     }
 
@@ -479,7 +471,6 @@ public class ProfileController extends Controller {
                     demoProfilePicture.setCropHeight(cropImageData.widthHeight);
                     demoProfilePicture.setCropX(cropImageData.cropX);
                     demoProfilePicture.setCropY(cropImageData.cropY);
-                    demoProfilePicture = null;
                     showChangeProfilePictureModal = true;
                     return supplyAsync(() -> redirect("/profile"));
                 }
