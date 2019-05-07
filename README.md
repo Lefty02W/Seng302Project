@@ -2,7 +2,24 @@
 This is Travel EA, a website for storing and organising destinations and trips.
 It can be packaged to a deliverable form using the `sbt dist` command.
 
-## How to run
+## Dedicated server instance
+
+We have two instances of the project running on services in our virtual machine.
+
+#### Production (port 443)
+
+Hosts tagged commits only. Uses the prod database seng302-2019-team700-prod
+
+<http://csse-s302g7.canterbury.ac.nz:443/>
+
+#### Development (port 8443)
+
+Hosts all commits. Uses the test database seng302-2019-team700-test
+
+<http://csse-s302g7.canterbury.ac.nz:8443/>
+
+
+## How to build and deploy locally
 Run
 ```bash
 sbt dist
@@ -24,8 +41,27 @@ and then:
 ./seng302-team-700 -Dplay.http.secret.key='zHEyLENJwfBB88RsrMBW'
 ```
 
-
 And open <http://localhost:9000/>
+
+### Local commands
+
+Build a snapshot of all the files you need to execute the program.
+```bash
+sbt dist
+```
+
+Run the project on localhost:9000
+```bash
+sbt run
+```
+
+Run all tests in the project
+```bash
+sbt test
+```
+
+
+
 
 ### References
 * [Play documentation](https://playframework.com/documentation/latest/Home](https://playframework.com/documentation/latest/Home)
