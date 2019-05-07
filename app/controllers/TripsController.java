@@ -305,7 +305,7 @@ public class TripsController extends Controller {
     private boolean invalid() {
         for(int i = 1; i < orderedCurrentDestinations.size(); i++) {
             if (orderedCurrentDestinations.get(i+1) != null) {
-                if(orderedCurrentDestinations.get(i) == orderedCurrentDestinations.get(i+1)) {
+                if(orderedCurrentDestinations.get(i).getDestinationId() == orderedCurrentDestinations.get(i+1).getDestinationId()) {
                     return true;
                 }
             }
