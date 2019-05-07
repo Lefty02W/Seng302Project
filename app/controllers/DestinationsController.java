@@ -37,6 +37,7 @@ public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;
     private List<Destination> destinationsList = new ArrayList<>();
+    private List<Integer> followedDestinationIds = new ArrayList<>();
     private final Form<Destination> form;
     private final Form<Profile> userForm;
     private final Form<Login> loginForm;
@@ -73,6 +74,7 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result show(Http.Request request, boolean isPublic) {
+        Profile user = SessionController.getCurrentUser(request);
         if (isPublic) {
             ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
             try {
@@ -81,7 +83,6 @@ public class DestinationsController extends Controller {
                 destinationsList = new ArrayList<>();
             }
         } else{
-            Profile user = SessionController.getCurrentUser(request);
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
             try {
                 destinationsList = destListTemp.get();
@@ -89,7 +90,33 @@ public class DestinationsController extends Controller {
                 destinationsList = new ArrayList<>();
             }
         }
-        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, request, messagesApi.preferred(request)));
+        Optional<ArrayList<Integer>> followedTemp = destinationRepository.getFollowedDestinationIds(user.getEmail());
+        try {
+            followedDestinationIds = followedTemp.get();
+        } catch (NoSuchElementException e) {
+            followedDestinationIds = new ArrayList<>();
+        }
+        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+    }
+
+    public Result follow(Http.Request request, String email, int destId) {
+        Optional<ArrayList<Integer>> followedTemp = destinationRepository.followDesination(destId, email);
+        try {
+            followedDestinationIds = followedTemp.get();
+        } catch (NoSuchElementException e) {
+            followedDestinationIds = new ArrayList<>();
+        }
+        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), true, followedDestinationIds, request, messagesApi.preferred(request)));
+    }
+
+    public Result unfollow(Http.Request request, String email, int destId) {
+        Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, email);
+        try {
+            followedDestinationIds = followedTemp.get();
+        } catch (NoSuchElementException e) {
+            followedDestinationIds = new ArrayList<>();
+        }
+        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), true, followedDestinationIds, request, messagesApi.preferred(request)));
     }
 
     /**
