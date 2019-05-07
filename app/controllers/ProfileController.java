@@ -409,20 +409,37 @@ public class ProfileController extends Controller {
         return ok(imageToBeManuallyCropped.getImage()).as(imageToBeManuallyCropped.getType());
     }
 
+    /**
+     * Validation checks that the cropped image is valid, if so sets the image as the demo profile
+     * picture, loads the change profile picture modal and reloads the profile page
+     * @param request gives the form for the sizes of the cropped image
+     * @return a redirect to the profile page with an error message if needed
+     */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadPhotoWithCroppingInfo(Http.Request request) {
-        Form<CropImageData> uploadedCropImageDataForm = cropImageDataForm.bindFromRequest(request);
-        CropImageData cropImageData = uploadedCropImageDataForm.get();
-        System.out.println("width equals");
-        System.out.println(cropImageData.widthHeight);
-        imageToBeManuallyCropped.setCropWidth(cropImageData.widthHeight);
-        imageToBeManuallyCropped.setCropHeight(cropImageData.widthHeight);
-        imageToBeManuallyCropped.setCropX(cropImageData.cropX);
-        imageToBeManuallyCropped.setCropY(cropImageData.cropY);
-        demoProfilePicture = imageToBeManuallyCropped;
-        imageToBeManuallyCropped = null;
-        showChangeProfilePictureModal = true;
-        return supplyAsync(() -> redirect("/profile"));
+        try {
+            Form<CropImageData> uploadedCropImageDataForm = cropImageDataForm.bindFromRequest(request);
+            CropImageData cropImageData = uploadedCropImageDataForm.get();
+            InputStream in = new ByteArrayInputStream(imageToBeManuallyCropped.getImage());
+            BufferedImage buffImage = ImageIO.read(in);
+            if ((cropImageData.widthHeight + cropImageData.cropX) <= buffImage.getWidth()) {
+                if ((cropImageData.widthHeight + cropImageData.cropY) <= buffImage.getHeight()) {
+                    imageToBeManuallyCropped.setCropWidth(cropImageData.widthHeight);
+                    imageToBeManuallyCropped.setCropHeight(cropImageData.widthHeight);
+                    imageToBeManuallyCropped.setCropX(cropImageData.cropX);
+                    imageToBeManuallyCropped.setCropY(cropImageData.cropY);
+                    demoProfilePicture = imageToBeManuallyCropped;
+                    imageToBeManuallyCropped = null;
+                    showChangeProfilePictureModal = true;
+                    return supplyAsync(() -> redirect("/profile"));
+                }
+                return supplyAsync(() -> redirect("/profile").flashing("failure", "Cropped image exceeds original image height"));
+            }
+            return supplyAsync(() -> redirect("/profile").flashing("failure", "cropped image exceeds original image width"));
+        } catch (IOException e) {
+            showChangeProfilePictureModal = false;
+            return supplyAsync(() -> redirect("/profile").flashing("failure", "Somthing went wrong while cropping the photo"));
+        }
     }
 
     @Security.Authenticated(SecureSession.class)
@@ -494,7 +511,6 @@ public class ProfileController extends Controller {
             showCropPhotoModal = false;
             widthHeight = getWidthHeight();
         }
-        System.out.println(showCropPhoto);
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
         Integer defaultProfilePicture = isDefaultProfilePicture();
