@@ -446,8 +446,8 @@
                             <input type="file" id="image" name="image">
                             <input type="hidden" id="visible" name="visible" value="Public" hidden>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
-                            <button type="submit">AutoCrop this photo</button>
-                            <button type="submit" data-toggle="modal" data-target="#cropPhotomodal" data-dismiss="modal">Crop this myself</button>
+                            <button type="submit" id="autoCropped" name="autoCropped" value="true">AutoCrop this photo</button>
+                            <button type="submit" id="autoCropped" name="autoCropped" value="false">Crop this myself</button>
                             <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">Cancel</button>
                         </div>
                     }
@@ -476,7 +476,7 @@
                             @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
                                 @CSRF.formField
                                 <div class="row">
-                                    <input type="number" id="widthHeight" name="widthHeight" min="0" value="50">Width and Height
+                                    <input type="number" id="widthHeight" name="widthHeight" min="80" value="80">Width and Height
                                 </div>
                                 <div class="row">
                                     <input type="number" id="cropX" name="cropX" min="0" value="0">Margin left
