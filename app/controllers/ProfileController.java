@@ -67,8 +67,7 @@ public class ProfileController extends Controller {
     public static class ImageData {
         public String visible = "Private";
         public String isNewProfilePicture;
-        public String autoCropped = "true";//todo use this to set photo as default without cropping it
-
+        public String autoCropped = "true";
     }
 
     /**
@@ -157,19 +156,41 @@ public class ProfileController extends Controller {
         }, httpExecutionContext.current());
     }
 
-
     /**
-     * Call to ImageRepository to be insert an image in the database
+     * Method to query the image repository to retrieve all images uploaded for a
+     * logged in user.
      *
-     * @param image Image object containing email, id, byte array of image and visible info
-     * @return a redirect to the profile page
+     * @param request Https request
+     * @return a list of image objects
      */
     @Security.Authenticated(SecureSession.class)
-    private Result savePhoto(Image image){
-        imageRepository.insert(image);
-        return redirect(routes.ProfileController.show());
+    private List<Image> getUserPhotos(Http.Request request){
+        Profile profile = SessionController.getCurrentUser(request);
+        try {
+            Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
+            imageList = imageListTemp.get();
+        } catch (NoSuchElementException e) {
+            imageList = new ArrayList<Image>();
+        }
+        return imageList;
     }
 
+    /**
+     * Inserts an Image object into the ImageRepository to be stored on the database
+     *
+     * @param id Image object containing email, id, byte array of images and visible info
+     * @return a redirect to the profile page.
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> updatePrivacy (Integer id){
+        try {
+            imageRepository.updateVisibility(id);
+            showPhotoModal = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
+    }
 
     /**
      * Method to convert image byte arrays into pictures and display them as the appropriate
@@ -307,6 +328,36 @@ public class ProfileController extends Controller {
 
 
     /**
+     * Call to ImageRepository to be insert an image in the database
+     *
+     * @param image Image object containing email, id, byte array of image and visible info
+     * @return a redirect to the profile page
+     */
+    @Security.Authenticated(SecureSession.class)
+    private Result savePhoto(Image image){
+        imageRepository.insert(image);
+        return redirect(routes.ProfileController.show());
+    }
+
+    /**
+     * saves the demo profile picture if it is not already saved to the database
+     * @return a refresh to the profile page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> setProfilePicture() {
+        try {
+            Optional<Image> image = imageRepository.getImage(demoProfilePicture.getImageId());
+        } catch (NullPointerException e) {
+            savePhoto(demoProfilePicture);
+        }
+        profilePicture = demoProfilePicture;
+        return supplyAsync(() -> redirect("/profile").flashing("success", "Profile picture updated"));
+    }
+    
+    
+    
+    
+    /**
      * @return a number, 1 if the default profile picture should be used on the modal and 0 if not
      */
     @Security.Authenticated(SecureSession.class)
@@ -341,21 +392,7 @@ public class ProfileController extends Controller {
         demoProfilePicture = null;
         return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
     }
-
-    /**
-     * saves the demo profile picture if it is not already saved to the database
-     * @return a refresh to the profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> setProfilePicture() {
-        try {
-            Optional<Image> image = imageRepository.getImage(demoProfilePicture.getImageId());
-        } catch (NullPointerException e) {
-            savePhoto(demoProfilePicture);
-        }
-        profilePicture = demoProfilePicture;
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Profile picture updated"));
-    }
+    
 
     /**
      * Gives the id of the demo profile picture to be displayed on the change profile picture modal
@@ -464,42 +501,7 @@ public class ProfileController extends Controller {
         }
     }
 
-
-    /**
-     * Inserts an Image object into the ImageRepository to be stored on the database
-     *
-     * @param id Image object containing email, id, byte array of images and visible info
-     * @return a redirect to the profile page.
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> updatePrivacy (Integer id){
-        try {
-            imageRepository.updateVisibility(id);
-            showPhotoModal = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
-    }
-
-    /**
-     * Method to query the image repository to retrieve all images uploaded for a
-     * logged in user.
-     *
-     * @param request Https request
-     * @return a list of image objects
-     */
-    @Security.Authenticated(SecureSession.class)
-    private List<Image> getUserPhotos(Http.Request request){
-        Profile profile = SessionController.getCurrentUser(request);
-        try {
-            Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
-            imageList = imageListTemp.get();
-        } catch (NoSuchElementException e) {
-            imageList = new ArrayList<Image>();
-        }
-        return imageList;
-    }
+    
 
 
     /**
