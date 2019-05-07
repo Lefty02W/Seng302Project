@@ -290,6 +290,10 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         int order = tripDestination.getDestOrder();
+        setDates(tripDestination, tripDestForm);
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/" + tripId + "/edit").flashing("info", "The arrival date must be before the departure date");
+        }
         TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
         removeTripDestination(oldLocation);
         insertTripDestination(tripDestination, tripDestination.getDestOrder());
@@ -441,7 +445,11 @@ public class TripsController extends Controller {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+        setDates(tripDestination, tripDestForm);
         int order = tripDestination.getDestOrder();
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/create").flashing("info", "The arrival date must be before the departure date");
+        }
         TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
         removeTripDestination(oldLocation);
         insertTripDestination(tripDestination, tripDestination.getDestOrder());
