@@ -28,12 +28,14 @@ public class TripRepository {
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
     private final TripDestinationsRepository tripDestinationsRepository;
+    private final DestinationRepository destinationRepository;
 
     @Inject
-    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, TripDestinationsRepository tripDestinationsRepository) {
+    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, TripDestinationsRepository tripDestinationsRepository, DestinationRepository destinationRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.tripDestinationsRepository = tripDestinationsRepository;
+        this.destinationRepository = destinationRepository;
     }
 
     /**
@@ -58,9 +60,21 @@ public class TripRepository {
     ebeanServer.insert(trip);
     for (TripDestination tripDestination : tripDestinations) {
             tripDestination.setTripId(trip.getId());
+            Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
+            if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
+                makeAdmin(dest);
+            }
             ebeanServer.insert(tripDestination);
 
             }
+    }
+
+    private void makeAdmin(Destination destination) {
+        destinationRepository.followDesination(destination.getDestinationId(), destination.getUserEmail());
+        Destination targetDestination = ebeanServer.find(Destination.class).setId(destination.getDestinationId()).findOne();
+        //TODO set as default admin
+        targetDestination.setUserEmail("admin@admin.com");
+        targetDestination.update();
     }
 
 
