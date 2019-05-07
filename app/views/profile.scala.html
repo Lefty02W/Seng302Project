@@ -61,8 +61,14 @@
                 }
 
                 @if(request.flash.getOptional("failure").isPresent) {
-                    <div class="alert alert-failure">
+                    <div class="alert alert-danger">
                     @request.flash.getOptional("failure").get()
+                    </div>
+                }
+
+                @if(request.flash.getOptional("invalid").isPresent) {
+                    <div class="alert alert-danger">
+                    @request.flash.getOptional("invalid").get()
                     </div>
                 }
 
@@ -446,8 +452,8 @@
                             <input type="file" id="image" name="image">
                             <input type="hidden" id="visible" name="visible" value="Public" hidden>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
-                            <button type="submit" id="autoCropped" name="autoCropped" value="true">AutoCrop this photo</button>
-                            <button type="submit" id="selfCropped" name="autoCropped" value="false">Crop this myself</button>
+                            <button type="submit" id="autoCropped" name="autoCropped" value="true">Auto crop this photo</button>
+                            <button type="submit" id="selfCropped" name="selfCropped" value="false">Crop this myself</button>
                             <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">Cancel</button>
                         </div>
                     }
