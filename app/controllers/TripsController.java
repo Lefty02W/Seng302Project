@@ -290,55 +290,30 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         int order = tripDestination.getDestOrder();
-        if(orderedCurrentDestinations.size() >= 1) {
-            if(orderOneInvalid(tripDestination, oldLocation)) {
-                tripDestination.setDestOrder(oldLocation);
-                boolean deleteValid = orderInvalidDelete(tripDestination);
-                tripDestination.setDestOrder(order);
-                boolean insertValid = orderInvalidInsert(tripDestination);
-                if (deleteValid || insertValid) {
-                    return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
-                }
-            }
-            removeTripDestination(oldLocation);
-            insertTripDestination(tripDestination, tripDestination.getDestOrder());
-            return redirect("/trips/" + tripId + "/edit");
-        }
+        TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
+        removeTripDestination(oldLocation);
+        insertTripDestination(tripDestination, tripDestination.getDestOrder());
         orderedCurrentDestinations.put(order, tripDestination);
+        if (invalid()){
+            orderedCurrentDestinations.clear();
+            orderedCurrentDestinations.putAll(tempCurrentDestMap);
+            return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+        }
         return redirect("/trips/" + tripId + "/edit");
     }
 
-    private boolean orderOneInvalid(TripDestination tripDestination, Integer oldLocation) {
-        int order = tripDestination.getDestOrder();
-        if (order == oldLocation + 1) {
-            if (orderedCurrentDestinations.get(order + 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation).getDestinationId() == orderedCurrentDestinations.get(order + 1).getDestinationId()) {
+    private boolean invalid() {
+        for(int i = 1; i < orderedCurrentDestinations.size(); i++) {
+            if (orderedCurrentDestinations.get(i+1) != null) {
+                if(orderedCurrentDestinations.get(i) == orderedCurrentDestinations.get(i+1)) {
                     return true;
                 }
             }
-            if (orderedCurrentDestinations.get(oldLocation - 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation - 1).getDestinationId() == orderedCurrentDestinations.get(order).getDestinationId()) {
-                    return true;
-                }
-            }
-            return false;
         }
-        if (order == oldLocation - 1) {
-            if (orderedCurrentDestinations.get(order - 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation).getDestinationId() == orderedCurrentDestinations.get(order - 1).getDestinationId()) {
-
-                    return true;
-                }
-            }
-            if (orderedCurrentDestinations.get(oldLocation + 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation + 1).getDestinationId() == orderedCurrentDestinations.get(order).getDestinationId()) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return true;
+        return false;
     }
+
+
 
     /**
      * This checks if a tripDestination can be deleted from its current position
@@ -375,6 +350,9 @@ public class TripsController extends Controller {
         }
         return pos2Invalid || pos1Invalid;
     }
+
+
+
 
     /**
      * create editDestinations trip destination forms and page
@@ -464,23 +442,18 @@ public class TripsController extends Controller {
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         int order = tripDestination.getDestOrder();
-        if(orderedCurrentDestinations.size() >= 1) {
-            if(orderOneInvalid(tripDestination, oldLocation)) {
-                tripDestination.setDestOrder(oldLocation);
-                boolean deleteValid = orderInvalidDelete(tripDestination);
-                tripDestination.setDestOrder(order);
-                boolean insertValid = orderInvalidInsert(tripDestination);
-                if (deleteValid || insertValid) {
-                    return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
-                }
-            }
-            removeTripDestination(oldLocation);
-            insertTripDestination(tripDestination, tripDestination.getDestOrder());
-            return redirect("/trips/create");
-        }
+        TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
+        removeTripDestination(oldLocation);
+        insertTripDestination(tripDestination, tripDestination.getDestOrder());
         orderedCurrentDestinations.put(order, tripDestination);
+        if (invalid()){
+            orderedCurrentDestinations.clear();
+            orderedCurrentDestinations.putAll(tempCurrentDestMap);
+            return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
+        }
         return redirect("/trips/create");
     }
+
 
     /**
      * Deletes a tripDestination from the current destinations list and changes the order of indirectly affected tripDestinations
