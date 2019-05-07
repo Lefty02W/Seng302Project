@@ -8,13 +8,13 @@ We have two instances of the project running on services in our virtual machine.
 
 #### Production (port 443)
 
-Hosts tagged commits only. Uses the prod database seng302-2019-team700-prod
+Hosts tagged commits only. Uses the prod database `seng302-2019-team700-prod`
 
 <http://csse-s302g7.canterbury.ac.nz:443/>
 
 #### Development (port 8443)
 
-Hosts all commits. Uses the test database seng302-2019-team700-test
+Hosts all commits. Uses the test database `seng302-2019-team700-test`
 
 <http://csse-s302g7.canterbury.ac.nz:8443/>
 
@@ -50,7 +50,7 @@ Build a snapshot of all the files you need to execute the program.
 sbt dist
 ```
 
-Run the project on localhost:9000
+Run the project on `localhost:9000`
 ```bash
 sbt run
 ```
