@@ -224,6 +224,10 @@ img.thumbnail {
     font-size: 18pt;
 }
 
+#selectPhotoModal {
+    height: 90vh;
+}
+
 #changeProfilePictureButton {
     position: absolute;
     color: white;
