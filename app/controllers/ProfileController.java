@@ -41,6 +41,7 @@ public class ProfileController extends Controller {
 
     private final Form<Profile> profileForm;
     private final Form<ImageData> imageForm;
+    private final Form<CropImageData> cropImageDataForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final FormFactory profileFormFactory;
@@ -69,12 +70,22 @@ public class ProfileController extends Controller {
         public String autoCropped = "true";//todo use this to set photo as default without cropping it
     }
 
+    /**
+     * to get manual cropping details
+     */
+    public static class CropImageData {
+        public int widthHeight;
+        public int cropX;
+        public int cropY;
+    }
+
 
     @Inject
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, ImageRepository imageRepository, TripRepository tripRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
+            this.cropImageDataForm = imageFormFactory.form(CropImageData.class);
             this.messagesApi = messagesApi;
             this.httpExecutionContext = httpExecutionContext;
             this.profileFormFactory = profileFormFactory;
@@ -317,7 +328,6 @@ public class ProfileController extends Controller {
         showChangeProfilePictureModal = true;
         Optional<Image> image = imageRepository.getImage(imageId);
         demoProfilePicture = image.get();
-        showCropPhotoModal = true;
         return supplyAsync(() -> redirect("/profile"));
     }
 
@@ -387,7 +397,7 @@ public class ProfileController extends Controller {
         Optional<Image> optionalImage = imageRepository.getImage(imageId);
         imageToBeManuallyCropped = optionalImage.get();
         showCropPhotoModal = true;
-        return supplyAsync(() -> redirect("/profile").flashing("success", "yes boiii"));
+        return supplyAsync(() -> redirect("/profile"));
     }
 
     /**
@@ -399,6 +409,32 @@ public class ProfileController extends Controller {
         return ok(imageToBeManuallyCropped.getImage()).as(imageToBeManuallyCropped.getType());
     }
 
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> uploadPhotoWithCroppingInfo(Http.Request request) {
+        Form<CropImageData> uploadedCropImageDataForm = cropImageDataForm.bindFromRequest(request);
+        CropImageData cropImageData = uploadedCropImageDataForm.get();
+        System.out.println("width equals");
+        System.out.println(cropImageData.widthHeight);
+        imageToBeManuallyCropped.setCropWidth(cropImageData.widthHeight);
+        imageToBeManuallyCropped.setCropHeight(cropImageData.widthHeight);
+        imageToBeManuallyCropped.setCropX(cropImageData.cropX);
+        imageToBeManuallyCropped.setCropY(cropImageData.cropY);
+        demoProfilePicture = imageToBeManuallyCropped;
+        imageToBeManuallyCropped = null;
+        showChangeProfilePictureModal = true;
+        return supplyAsync(() -> redirect("/profile"));
+    }
+
+    @Security.Authenticated(SecureSession.class)
+    public String getWidthHeight() {
+        try {
+            InputStream in = new ByteArrayInputStream(imageToBeManuallyCropped.getImage());
+            BufferedImage buffImage = ImageIO.read(in);
+            return "Width: " + buffImage.getWidth() + " Height: " + buffImage.getHeight();
+        } catch (IOException e) {
+            return "width and heigh is unknown";
+        }
+    }
 
 
     /**
@@ -452,13 +488,17 @@ public class ProfileController extends Controller {
         Boolean show = showPhotoModal = false;
         Boolean showChangeProfile = showChangeProfilePictureModal;
         showChangeProfilePictureModal = false;
+        String widthHeight = "Width and Height is unknown";
         Boolean showCropPhoto = showCropPhotoModal;
-        showCropPhotoModal = false;
+        if (showCropPhoto) {
+            showCropPhotoModal = false;
+            widthHeight = getWidthHeight();
+        }
         System.out.println(showCropPhoto);
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
         Integer defaultProfilePicture = isDefaultProfilePicture();
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, request, messagesApi.preferred(request)));
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, request, messagesApi.preferred(request)));
     }
 
 }

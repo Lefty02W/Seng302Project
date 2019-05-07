@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean, widthHeight: String )(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -448,16 +448,30 @@
 
                     <div class="modal-body">
                         <div class="container" id="profilePhoto">
-                            <p>A profile picture must be cropped as a square</p>
-                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getImageToBeManuallyCropped()" name="demoProfilePicture">
-                        </div>
-                        <div class="row">
-                            <div class="center-col">
-                                <a href="">
-                                <button type="button">Accept</button></a>
-                                <button type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
-                                    Close</button>
+                            <p>A profile picture must be cropped as a square<br>
+                                All parameters are specified in pixels</p>
+                            <img class="thumbnail" src="@routes.ProfileController.getImageToBeManuallyCropped()" name="demoProfilePicture">
+                            <p style="text-align: center;">@widthHeight</p>
+
+                            @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
+                                @CSRF.formField
+                                <div class="row">
+                                    <input type="number" id="widthHeight" name="widthHeight" min="0" value="50">Width and Height
+                                </div>
+                                <div class="row">
+                                    <input type="number" id="cropX" name="cropX" min="0" value="0">Margin left
+                                </div>
+                                <div class="row">
+                                    <input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom
+                                </div>
                             </div>
+                            <div class="row">
+                                <div class="center-col">
+                                    <button type="submit">Accept</button>
+                                    <button type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
+                                        Close</button>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
