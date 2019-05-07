@@ -17,6 +17,7 @@ import play.mvc.Security;
 import repository.ImageRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
+import scala.Option;
 import scala.util.Try;
 import views.html.editProfile;
 import views.html.profile;
@@ -53,6 +54,8 @@ public class ProfileController extends Controller {
     private final TripRepository tripRepository;
     private Image demoProfilePicture = null;
     private Image profilePicture = null;
+    private Image imageToBeManuallyCropped = null;
+    private static boolean showCropPhotoModal = false;
 
 
 
@@ -306,7 +309,7 @@ public class ProfileController extends Controller {
     /**
      * when a new profile picture is chosen but not confirmed this modal is called, it will set the
      * demo profile picture from the id, so it can be displayed on the next modal
-     * @param request gives a form with the photo id and an int autoCrop which acts as a boolean
+     * @param imageId is used to retrieve the image to set it as the demoprofile picture
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
@@ -314,6 +317,7 @@ public class ProfileController extends Controller {
         showChangeProfilePictureModal = true;
         Optional<Image> image = imageRepository.getImage(imageId);
         demoProfilePicture = image.get();
+        showCropPhotoModal = true;
         return supplyAsync(() -> redirect("/profile"));
     }
 
@@ -345,7 +349,7 @@ public class ProfileController extends Controller {
 
     /**
      * Gives the id of the demo profile picture to be displayed on the change profile picture modal
-     * @return the id in an object and a refresh to the profile page
+     * @return the id in an object
      */
     @Security.Authenticated(SecureSession.class)
     public Result getDemoProfilePicture() {
@@ -377,6 +381,25 @@ public class ProfileController extends Controller {
         }
         return ok(Objects.requireNonNull(profilePicture).getImage()).as(profilePicture.getType());
     }
+
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> setImageToBeManuallyCropped(Integer imageId) {
+        Optional<Image> optionalImage = imageRepository.getImage(imageId);
+        imageToBeManuallyCropped = optionalImage.get();
+        showCropPhotoModal = true;
+        return supplyAsync(() -> redirect("/profile").flashing("success", "yes boiii"));
+    }
+
+    /**
+     * Gives the image to be mannually cropped to the crop image modal
+     * @return the id in an object
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result getImageToBeManuallyCropped() {
+        return ok(imageToBeManuallyCropped.getImage()).as(imageToBeManuallyCropped.getType());
+    }
+
+
 
     /**
      * Inserts an Image object into the ImageRepository to be stored on the database
@@ -429,10 +452,13 @@ public class ProfileController extends Controller {
         Boolean show = showPhotoModal = false;
         Boolean showChangeProfile = showChangeProfilePictureModal;
         showChangeProfilePictureModal = false;
+        Boolean showCropPhoto = showCropPhotoModal;
+        showCropPhotoModal = false;
+        System.out.println(showCropPhoto);
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
         Integer defaultProfilePicture = isDefaultProfilePicture();
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, request, messagesApi.preferred(request)));
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, request, messagesApi.preferred(request)));
     }
 
 }

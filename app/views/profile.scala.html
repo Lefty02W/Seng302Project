@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -79,6 +79,14 @@
                     <script type="text/javascript">
                             $(window).on('load', function() {
                                 $('#changeProfilePicture').modal('show')
+                            })
+                    </script>
+                }
+
+                @if(showCropPhotoModal) {
+                    <script type="text/javascript">
+                            $(window).on('load', function() {
+                                $('#cropPhotoModal').modal('show')
                             })
                     </script>
                 }
@@ -381,7 +389,7 @@
                                         src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
                                         name="@image.getImageId">
                                         <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
-                                        <a href="">
+                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
                                             <button type="submit">Crop this myself</button></a>
                                         <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
                                             <button type="submit">AutoCrop</button></a>
@@ -418,10 +426,9 @@
                             <input type="file" id="image" name="image">
                             <input type="hidden" id="visible" name="visible" value="Public" hidden>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
-                            <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">Cancel</button>
                             <button type="submit">AutoCrop this photo</button>
-                            <a href="">@*needs to link to another modal where the user can crop the photo theirselves*@
-                                <button type="submit" >Crop this myself</button></a>
+                            <button type="submit" data-toggle="modal" data-target="#cropPhotomodal" data-dismiss="modal">Crop this myself</button>
+                            <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">Cancel</button>
                         </div>
                     }
                     <div class="modal-dialog">
@@ -430,6 +437,35 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="cropPhotoModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">Crop a photo and set it as your profile picture</h2>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="container" id="profilePhoto">
+                            <p>A profile picture must be cropped as a square</p>
+                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getImageToBeManuallyCropped()" name="demoProfilePicture">
+                        </div>
+                        <div class="row">
+                            <div class="center-col">
+                                <a href="">
+                                <button type="button">Accept</button></a>
+                                <button type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
+                                    Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
         <div class="modal fade" id="addPhotoModal">
 
             <div class="modal-dialog modal-dialog-centered">

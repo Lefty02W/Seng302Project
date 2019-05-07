@@ -54,7 +54,8 @@ GET     /profile/proiflePicture/:imageId  controllers.ProfileController.setDemoP
 GET     /profile/changesCancelled     controllers.ProfileController.resetDemoProfilePicture()
 GET     /profile/saveChanges         controllers.ProfileController.setProfilePicture()
 GET     /profile/getPicture   controllers.ProfileController.getProfilePictureId()
-
+GET     /profile/manuallyCroppedImage controllers.ProfileController.getImageToBeManuallyCropped()
+GET     /profile/manuallyCroppedImage/:imageId  controllers.ProfileController.setImageToBeManuallyCropped(imageId : Integer)
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
 
