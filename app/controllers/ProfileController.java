@@ -317,7 +317,7 @@ public class ProfileController extends Controller {
                         demoProfilePicture = image;
                         showChangeProfilePictureModal = true;
                     } else {
-                        imageToBeManuallyCropped = image;
+                        demoProfilePicture = image;
                         showCropPhotoModal = true;
                     }
                 }
@@ -440,7 +440,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setImageToBeManuallyCropped(Integer imageId) {
         Optional<Image> optionalImage = imageRepository.getImage(imageId);
-        imageToBeManuallyCropped = optionalImage.get();
+        demoProfilePicture = optionalImage.get();
         showCropPhotoModal = true;
         return supplyAsync(() -> redirect("/profile"));
     }
@@ -451,10 +451,10 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result getImageToBeManuallyCropped() {
-        if (imageToBeManuallyCropped == null) {
+        if (demoProfilePicture == null) {
             return redirect("/profile").flashing("invalid", "No image selected.");
         }
-        return ok(imageToBeManuallyCropped.getImage()).as(imageToBeManuallyCropped.getType());
+        return ok(demoProfilePicture.getImage()).as(demoProfilePicture.getType());
     }
 
     /**
@@ -471,17 +471,15 @@ public class ProfileController extends Controller {
             if (cropImageData == null) {
                 return supplyAsync(() -> redirect("/profile").flashing("invalid", "No image selected."));
             }
-
-            InputStream in = new ByteArrayInputStream(imageToBeManuallyCropped.getImage());
+            InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
             BufferedImage buffImage = ImageIO.read(in);
             if ((cropImageData.widthHeight + cropImageData.cropX) <= buffImage.getWidth()) {
                 if ((cropImageData.widthHeight + cropImageData.cropY) <= buffImage.getHeight()) {
-                    imageToBeManuallyCropped.setCropWidth(cropImageData.widthHeight);
-                    imageToBeManuallyCropped.setCropHeight(cropImageData.widthHeight);
-                    imageToBeManuallyCropped.setCropX(cropImageData.cropX);
-                    imageToBeManuallyCropped.setCropY(cropImageData.cropY);
-                    demoProfilePicture = imageToBeManuallyCropped;
-                    imageToBeManuallyCropped = null;
+                    demoProfilePicture.setCropWidth(cropImageData.widthHeight);
+                    demoProfilePicture.setCropHeight(cropImageData.widthHeight);
+                    demoProfilePicture.setCropX(cropImageData.cropX);
+                    demoProfilePicture.setCropY(cropImageData.cropY);
+                    demoProfilePicture = null;
                     showChangeProfilePictureModal = true;
                     return supplyAsync(() -> redirect("/profile"));
                 }
@@ -502,7 +500,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public String getWidthHeight() {
         try {
-            InputStream in = new ByteArrayInputStream(imageToBeManuallyCropped.getImage());
+            InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
             BufferedImage buffImage = ImageIO.read(in);
             return "Width: " + buffImage.getWidth() + " Height: " + buffImage.getHeight();
         } catch (IOException e) {

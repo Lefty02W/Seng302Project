@@ -305,10 +305,7 @@
                                     <h4 class="primaryText">Destinations Visted</h4>
                                     <table id="destsTable">
                                         <thead>
-                                            <tr><th>Name</th>
-                                                <th>Country</th>
-                                                <th>Departure Time</th>
-                                                <th>Arrival Time</th>
+                                            <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
                                         </thead>
                                         @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
                                             <tr>
@@ -322,12 +319,12 @@
                                                     }
                                                     @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
                                                 <td>
-                                                    @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
-                                                        <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
-                                                    } else {
-                                                        <span></span>
-                                                    }
-                                                    @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
+                                                    @*if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime != null) {*@
+                                                        @*<span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>*@
+                                                    @*} else {*@
+                                                        @*<span></span>*@
+                                                    @*}*@
+                                                    @*currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>*@
                                             </tr>
                                         }
                                     </table>
@@ -470,7 +467,7 @@
                             @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
                                 @CSRF.formField
                                 <div class="row">
-                                    <input type="number" id="widthHeight" name="widthHeight" min="80" value="80">
+                                    <input type="number" id="widthHeight" name="widthHeight" min="100" value="80">
                                     Width and Height
                                 </div>
                                 <div class="row">

@@ -255,6 +255,10 @@ img.thumbnail {
     cursor: pointer;
 }
 
+#photosCard {
+    height: 500px;
+}
+
 /*.btn-outline-primary:hover {*/
     /*background-color: #37623B;*/
     /*border-color: #37623B;*/
