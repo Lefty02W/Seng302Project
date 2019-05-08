@@ -58,6 +58,12 @@
                 </nav>
                 <div class="container-fluid">
 
+                    <div class="row">
+                        <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
+                            Add New Trip
+                        </button> </a>
+                    </div>
+
                     <div class="row pt-3">
                            @for(trip <- trips) {
                                <div class="col-lg-4 col-md-6 col-sm-10" align="center">
@@ -101,15 +107,7 @@
             </div>
         </div>
     </body>
-    <footer>
-        <div>
-        <r>
-            <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
-                Add New Trip
-            </button> </a>
-        </r>
-        </div>
-    </footer>
+
     <script type="text/javascript">
 
         $("#menu-toggle").click(function(e) {
