@@ -75,6 +75,7 @@ create table image (
   crop_y                        integer not null,
   crop_width                    integer not null,
   crop_height                   integer not null,
+  is_profile_pic                integer,
   constraint pk_image primary key (image_id)
 );
 

@@ -395,9 +395,13 @@
                         <div class="container" id="profilePhoto">
                             <p>@isTooSmall</p>
                             @if(defaultProfilePicture == 1) {
-                                <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
-                            } @if(defaultProfilePicture == 0) {
-                            <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
+                                @if(profilePicture == null) {
+                                    <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
+                                } else {
+                                    <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">
+                                }
+                            } else {
+                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
                             }
                         </div>
 
@@ -497,26 +501,24 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h2 class="modal-title">Crop a photo and set it as your profile picture</h2>
+                        <h2 class="modal-title center-text">Crop a photo and set it as your profile picture</h2>
                     </div>
 
                     <div class="modal-body">
                         <div class="container" id="profilePhoto">
-                            <p>A profile picture must be cropped as a square<br>
-                                All parameters are specified in pixels</p>
+                            <p id="center-text">All parameters are specified in pixels</p>
                             <img class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(0)" name="demoProfilePicture">
                             <p style="text-align: center;">@widthHeight</p>
 
                             @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
                                 @CSRF.formField
                                 <div class="row">
-                                    <input type="number" id="widthHeight" name="widthHeight" min="500" value="500">
+                                    <input type="number" id="widthHeight" name="widthHeight" min="200" value="500">
                                     Width and Height
                                 </div>
                                 <div class="row">
                                     <input type="number" id="cropX" name="cropX" min="0" value="0">Margin left
                                 </div>
-                                <div class="row">
                                     <input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom
                                 </div>
                             </div>

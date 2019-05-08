@@ -26,6 +26,39 @@ public class ImageRepository {
     }
 
 
+    public CompletionStage<Optional<String>> update(Image newImage, int oldID) {
+
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String updateQuery = "UPDATE image SET email = ?, image = ?, visible = ?, content_type = ?, " +
+                    "name = ?, crop_x = ?, crop_y = ?, crop_width = ?, crop_height = ?, " +
+                    "is_profile_pic = ? WHERE image_id = ?";
+            Optional<String> value = Optional.empty();
+            try {
+                if (ebeanServer.find(Image.class).setId(oldID).findOne() != null) {
+                    SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+                    query.setParameter(1, newImage.getEmail());
+                    query.setParameter(2, newImage.getImage());
+                    query.setParameter(3, newImage.getVisible());
+                    query.setParameter(4, newImage.getType());
+                    query.setParameter(5, newImage.getName());
+                    query.setParameter(6, newImage.getCropX());
+                    query.setParameter(7, newImage.getCropY());
+                    query.setParameter(8, newImage.getCropWidth());
+                    query.setParameter(9, newImage.getCropHeight());
+                    query.setParameter(10, newImage.getIsProfilePic());
+                    query.setParameter(12, oldID);
+                    query.execute();
+                    txn.commit();
+                    value = Optional.of("Updated");
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
     /**
      * Inserts an image object into the ebean database server
      *
@@ -43,6 +76,24 @@ public class ImageRepository {
         }, executionContext);
     }
 
+    public void removeProfilePic(String email) {
+        String updateQuery = "UPDATE image SET is_profile_pic = 0 where email = ?";
+        SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+        query.setParameter(1, email);
+        query.execute();
+    }
+
+    public Optional<Image> getProfilePicture(String email) {
+        String sql = "select image_id from image where is_profile_pic = 1 and email = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, email).findList();
+        if (rowList.size() < 1) {
+            return null;
+        } else {
+            SqlRow row = rowList.get(0);
+            int id = row.getInteger("image_id");
+            return getImage(id);
+        }
+    }
 
     /**
      * Update image visibility in database using Image model object,

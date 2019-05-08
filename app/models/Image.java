@@ -52,6 +52,8 @@ public class Image extends Model {
     @Constraints.Required
     private int cropHeight;
 
+    private Integer isProfilePic;
+
     /**
      * Constructor for image
      * @param email
@@ -60,7 +62,7 @@ public class Image extends Model {
      * @param visible
      * @param name
      */
-    public Image(String email, byte[] image, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight) {
+    public Image(String email, byte[] image, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
         this.email = email;
         this.image = image;
         this.visible = visible;
@@ -70,10 +72,15 @@ public class Image extends Model {
         this.cropY = cropY;
         this.cropWidth = cropWidth;
         this.cropHeight = cropHeight;
+        this.isProfilePic = isProfilePic;
     }
 
     // Finder for image
     public static final Finder<Integer, Image> find = new Finder<>(Image.class);
+
+    public Integer getIsProfilePic() { return isProfilePic; }
+
+    public void setIsProfilePic(Integer isProfilePic) { this.isProfilePic = isProfilePic; }
 
     public String getEmail() {
         return email;

@@ -271,6 +271,10 @@ img.thumbnail {
     height: 500px;
 }
 
+#center-text {
+    text-align: center;
+}
+
 /*.btn-outline-primary:hover {*/
     /*background-color: #37623B;*/
     /*border-color: #37623B;*/

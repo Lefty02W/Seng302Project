@@ -56,7 +56,6 @@ public class ProfileController extends Controller {
     private static boolean showChangeProfilePictureModal = false;
     private final TripRepository tripRepository;
     private Image demoProfilePicture = null;
-    private Image profilePicture = null;
     private static boolean showCropPhotoModal = false;
 
 
@@ -313,8 +312,9 @@ public class ProfileController extends Controller {
                 // Initialize Image object
                 cropInfo crop = autoCrop(this.imageBytes);
 
-                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight());
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
+                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight(), (isProfilePicture == 0) ? 0 : 1);
+
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
                     savePhoto(image); // Save photo, given a successful upload
                     showPhotoModal = true;
@@ -336,7 +336,7 @@ public class ProfileController extends Controller {
 
 
     /**
-     * Call to ImageRepository to be insert an image in the database
+     * Call to ImageRepository to be insert an image in tsavePhotohe database
      *
      * @param image Image object containing email, id, byte array of image and visible info
      * @return a redirect to the profile page
@@ -352,13 +352,16 @@ public class ProfileController extends Controller {
      * @return a refresh to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> setProfilePicture() {
+    public CompletionStage<Result> setProfilePicture(Http.Request request) {
+        Profile currentUser = SessionController.getCurrentUser(request);
+        imageRepository.removeProfilePic(currentUser.getEmail());
+        demoProfilePicture.setIsProfilePic(1);
         try {
-            Optional<Image> image = imageRepository.getImage(demoProfilePicture.getImageId());
+            //Optional<Image> image = imageRepository.getImage(demoProfilePicture.getImageId());
+            imageRepository.update(demoProfilePicture, demoProfilePicture.getImageId());
         } catch (NullPointerException e) {
             savePhoto(demoProfilePicture);
         }
-        profilePicture = demoProfilePicture;
         return supplyAsync(() -> redirect("/profile").flashing("success", "Profile picture updated"));
     }
     
@@ -405,7 +408,7 @@ public class ProfileController extends Controller {
     /**
      * Gives the id of the demo profile picture to be displayed on the change profile picture modal
      * @param displayCropped int, if true will display photo as a cropped photo, else will display the cropped photo
-     * @return the id in an object
+     * @return the id in an objectsavePhoto
      */
     @Security.Authenticated(SecureSession.class)
     public Result getDemoProfilePicture(Integer displayCropped) {
@@ -524,6 +527,14 @@ public class ProfileController extends Controller {
     public Result show (Http.Request request){
         Profile currentProfile = SessionController.getCurrentUser(request);
         List<Image> displayImageList = getUserPhotos(request);
+
+        Optional<Image> image = imageRepository.getProfilePicture(currentProfile.getEmail());
+        Image profilePicture;
+        if (image == null) {
+            profilePicture = null;
+        } else {
+            profilePicture = image.get();
+        }
 
         Integer defaultProfilePicture = isDefaultProfilePicture();
         String isTooSmall = "";

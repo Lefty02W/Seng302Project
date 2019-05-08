@@ -52,7 +52,7 @@ GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(
 GET     /profile/changeProfilePictureModal   controllers.ProfileController.getDemoProfilePicture(displayCropped: Integer)
 GET     /profile/changeprofilePictureModal/:imageId  controllers.ProfileController.setDemoProfilePicture(imageId: Integer)
 GET     /profile/cancel     controllers.ProfileController.resetDemoProfilePicture()
-GET     /profile/save         controllers.ProfileController.setProfilePicture()
+GET     /profile/save         controllers.ProfileController.setProfilePicture(request: Request)
 GET     /profile/selectPhotoModal/:imageId  controllers.ProfileController.setImageToBeManuallyCropped(imageId : Integer)
 GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWithCroppingInfo(request: Request)
 
