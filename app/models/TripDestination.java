@@ -60,7 +60,6 @@ public class TripDestination extends Model {
         if (toFormat == null) {
             return "";
         }
-        System.out.println(dateTimeEntry.format(toFormat));
         return dateTimeEntry.format(toFormat);
     }
 
