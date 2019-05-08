@@ -61,7 +61,7 @@ table {
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
     width: 100%;
-    background-color: #ede1d1;
+    background-color: #e8f5e9;
 }
 
 th,
@@ -111,14 +111,8 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 
 
-button {
-    background-color: #37623B;
-    color: white;
-    padding: 10px 18px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 150px;
+.btn {
+    width: 5vw;
 }
 
 .button-edit {
@@ -132,10 +126,21 @@ button {
     border-radius: 8px;
 }
 
-.button-delete {
-    background-color: red;
-    color: white;
+.btn-outline-secondary {
+    border-color: darkred;
+    color: darkred;
 }
+
+.btn-outline-secondary:hover {
+    background-color: darkred;
+    border-color: darkred;
+}
+
+.btn-primary, .btn-primary:hover {
+    background-color: #37623B;
+    border-color: #37623B;
+}
+
 
 .button-add {
     background-color: #ca6636;
@@ -144,7 +149,12 @@ button {
 
 
 h3, h4, h5, h6 {
-    color: #ca6636;
+    color: #ede1d1;
+}
+
+
+.dark-header {
+    color: black;
 }
 
 .selectpicker{
@@ -283,7 +293,7 @@ div.dataTables_filter {
 .topbar-dark{
     z-index: 1;
     color: #ede1d1;
-    background-color: #37623B;
+    background-color: #205723;
 }
 
 .container-fluid{

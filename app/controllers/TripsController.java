@@ -15,6 +15,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.TripRepository;
 import views.html.trips;
+import views.html.tripsCard;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
 
@@ -60,7 +61,7 @@ public class TripsController extends Controller {
         orderedCurrentDestinations.clear();
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues = new ArrayList<>(tripsMap.values());
-        return ok(trips.render(form, destinationsList, tripValues, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 
     /**
