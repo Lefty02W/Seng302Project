@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.common.collect.TreeMultimap;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -75,6 +76,7 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result show(Http.Request request, boolean isPublic) {
+        destinationsList.clear();
         Profile user = SessionController.getCurrentUser(request);
         if (isPublic) {
             ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
@@ -113,6 +115,8 @@ public class DestinationsController extends Controller {
     }
 
     public Result unfollow(Http.Request request, String email, int destId, boolean isPublic) {
+        //TODO make it so you can not unfollow destinations inside a trip
+
         Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, email);
         try {
             followedDestinationIds = followedTemp.get();
@@ -182,14 +186,14 @@ public class DestinationsController extends Controller {
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
-        if(destinationRepository.checkValid(dest, user.getEmail())) {
-            return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
+        if(destinationRepository.checkValidEdit(dest, user.getEmail(), id)) {
+            return redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create");
         }
         if(longLatCheck(dest)){
             destinationRepository.update(dest, id);
             return redirect(destShowRoute);
         } else {
-            return redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
+            return redirect("/destinations/" + id +"/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
         }
     }
 
@@ -213,12 +217,13 @@ public class DestinationsController extends Controller {
         destination.setVisible(visibility);
         if(destinationRepository.checkValid(destination, user.getEmail())) {
             return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
+
         }
         if(longLatCheck(destination)){
             destinationRepository.insert(destination);
             return redirect(destShowRoute);
         } else {
-            return redirect("/destinations/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
+            return redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
         }
     }
 

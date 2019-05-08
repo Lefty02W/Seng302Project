@@ -25,6 +25,7 @@ public class DestinationRepository {
 
     /**
      * A Constructor which links to the ebeans database
+     *
      * @param ebeanConfig
      * @param executionContext
      */
@@ -36,6 +37,7 @@ public class DestinationRepository {
 
     /**
      * Returns a specific destination
+     *
      * @param destID The ID of the destination to return
      * @return
      */
@@ -45,6 +47,7 @@ public class DestinationRepository {
 
     /**
      * Get the users destination list
+     *
      * @param email
      * @return destinations, list of all user destinations
      */
@@ -58,6 +61,7 @@ public class DestinationRepository {
 
     /**
      * Get the all of the public destinations
+     *
      * @return destinations, list of all public destinations
      */
     public ArrayList<Destination> getPublicDestinations() {
@@ -71,6 +75,7 @@ public class DestinationRepository {
 
     /**
      * Inserts a new destination to the database.
+     *
      * @param dest The destination to insert
      * @return
      */
@@ -83,6 +88,7 @@ public class DestinationRepository {
 
     /**
      * Deletes a destination from the database
+     *
      * @param destID The ID of the destination to delete
      * @return
      */
@@ -101,8 +107,9 @@ public class DestinationRepository {
 
     /**
      * Updates a destination in the database
+     *
      * @param newDestination The new info to change the destination to
-     * @param Id The ID of the destination to editDestinations
+     * @param Id             The ID of the destination to editDestinations
      * @return
      */
     public CompletionStage<Optional<String>> update(Destination newDestination, Integer Id) {
@@ -130,8 +137,9 @@ public class DestinationRepository {
         }, executionContext);
     }
 
-    /** class to check if destination is already available to user
-     *    return true if already in else false
+    /**
+     * class to check if destination is already available to user
+     * return true if already in else false
      */
     public boolean checkValid(Destination destination, String email) {
         Destination destinations = (Destination.find.query()
@@ -148,7 +156,7 @@ public class DestinationRepository {
                 .eq("country", destination.getCountry())
                 .eq("visible", "1")
                 .findOne());
-        if (publicDestinations != null){
+        if (publicDestinations != null) {
             return true;
         } else if (destinations != null) {
             return true;
@@ -226,5 +234,40 @@ public class DestinationRepository {
             destList.add(destToAdd);
         }
         return Optional.of(destList);
+    }
+
+
+    /**
+     * class to check if destination is already available to user
+     * return true if already in else false
+     */
+    public boolean checkValidEdit(Destination destination, String email, int id) {
+        Destination destinations = (Destination.find.query()
+                .where()
+                .eq("name", destination.getName())
+                .eq("type", destination.getType())
+                .eq("country", destination.getCountry())
+                .eq("user_email", email)
+                .findOne());
+        Destination publicDestination = (Destination.find.query()
+                .where()
+                .eq("name", destination.getName())
+                .eq("type", destination.getType())
+                .eq("country", destination.getCountry())
+                .eq("visible", "1")
+                .findOne());
+        if (publicDestination != null) {
+            if (publicDestination.getDestinationId() != id) {
+                return true;
+            }
+        }
+
+        if (destinations != null) {
+            if (destinations.getDestinationId() != id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
