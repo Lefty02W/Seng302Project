@@ -33,13 +33,6 @@ public class CreateUserSteps extends BaseStep {
     }
 
 
-    @AfterStep
-    // Simply to allow visual following of selenium's execution
-    public void pause() throws InterruptedException {
-        Thread.sleep(500); // 0.5 second delay
-    }
-
-
     @Given("John is at the sign up page")
     public void at_sign_up_page() throws InterruptedException {
         setUp();

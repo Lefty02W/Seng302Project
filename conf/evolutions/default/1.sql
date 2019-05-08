@@ -61,6 +61,7 @@ create table destination (
   district                      varchar(255),
   latitude                      double not null,
   longitude                     double not null,
+  visible                       integer not null,
   constraint pk_destination primary key (destination_id)
 );
 
@@ -75,6 +76,7 @@ create table image (
   crop_y                        integer not null,
   crop_width                    integer not null,
   crop_height                   integer not null,
+  is_profile_pic                integer,
   constraint pk_image primary key (image_id)
 );
 

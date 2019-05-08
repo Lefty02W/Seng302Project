@@ -76,7 +76,7 @@ th {
 }
 
 
-.trip-table {
+.trip-table, user-table {
     border: solid 1px #DDEEEE;
     border-collapse: collapse;
     border-spacing: 0;
@@ -86,11 +86,11 @@ th {
 .trip-table thead th {
     display: none;
 }
-.trip-table tr:nth-child(even) {
+.trip-table, user-table tr:nth-child(even) {
     background-color: #f2f2f2
 }
 
-.trip-table tbody td {
+.trip-table, user-table tbody td {
     border: solid 1px #DDEEEE;
     color: #333;
     padding: 10px;
@@ -120,7 +120,8 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 
 .btn {
-    width: 5vw;
+    /*width: 5vw;*/
+    width: auto;
 }
 
 .button-edit {
@@ -158,6 +159,10 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 h3, h4, h5, h6 {
     color: #ede1d1;
+}
+
+.primaryText {
+    color: #205723;
 }
 
 

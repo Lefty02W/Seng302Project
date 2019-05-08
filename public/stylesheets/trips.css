@@ -67,6 +67,8 @@ input[type=datetime-local] {
     background-color: #2e7d32;
 }
 
-.addTripButton {
-    float: right;
+#addTripButton {
+    right: 0;
+    width: 15vw;
 }
+

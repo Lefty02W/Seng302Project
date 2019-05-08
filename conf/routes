@@ -11,12 +11,14 @@ POST     /login                      controllers.LoginController.login(request: 
 POST    /user/create                 controllers.LoginController.save(request: Request)
 
 # Destination
-GET     /destinations                controllers.DestinationsController.show(request: Request)
-GET     /destinations/create         controllers.DestinationsController.showCreate(request: Request)
+GET     /destinations/show/:isPublic     controllers.DestinationsController.show(request: Request, isPublic: Boolean)
+GET     /destinations/create        controllers.DestinationsController.showCreate(request: Request)
 GET     /destinations/:id/edit      controllers.DestinationsController.edit(request: Request, id: Integer)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
 POST    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
+POST    /destinations/follow/:destId/:isPublic      controllers.DestinationsController.follow(request: Request, email: String, destId: Integer, isPublic: Boolean)
+POST    /destinations/unfollow/:destId/:isPublic     controllers.DestinationsController.unfollow(request: Request, email: String, destId: Integer, isPublic: Boolean)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
@@ -49,12 +51,10 @@ POST    /profile                     controllers.ProfileController.update(reques
 POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer, autoCrop: Integer)
 GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
-GET     /profile/changeProfilePictureModal   controllers.ProfileController.getDemoProfilePicture()
+GET     /profile/changeProfilePictureModal   controllers.ProfileController.getDemoProfilePicture(displayCropped: Integer)
 GET     /profile/changeprofilePictureModal/:imageId  controllers.ProfileController.setDemoProfilePicture(imageId: Integer)
 GET     /profile/cancel     controllers.ProfileController.resetDemoProfilePicture()
-GET     /profile/save         controllers.ProfileController.setProfilePicture()
-GET     /profile/ProfilePicture   controllers.ProfileController.getProfilePictureId()
-GET     /profile/cropPhotoModal controllers.ProfileController.getImageToBeManuallyCropped()
+GET     /profile/save         controllers.ProfileController.setProfilePicture(request: Request)
 GET     /profile/selectPhotoModal/:imageId  controllers.ProfileController.setImageToBeManuallyCropped(imageId : Integer)
 GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWithCroppingInfo(request: Request)
 

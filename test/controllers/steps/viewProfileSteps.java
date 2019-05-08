@@ -75,7 +75,7 @@ public class viewProfileSteps extends BaseStep {
     public void he_should_see_a_first_name(String name) {
         element = driver.findElement(By.id("firstNameRow"));
 
-        Assert.assertEquals("First Name: "+name, element.getAttribute("innerText"));
+        Assert.assertEquals("First Name:\n" + name, element.getAttribute("innerText"));
     }
 
 
@@ -83,7 +83,7 @@ public class viewProfileSteps extends BaseStep {
     public void a_middle_name(String name) {
         element = driver.findElement(By.id("middleNameRow"));
 
-        Assert.assertEquals("Middle Name: " + name, element.getAttribute("innerText"));
+        Assert.assertEquals("Middle Name:\n" + name, element.getAttribute("innerText"));
     }
 
 
@@ -91,7 +91,7 @@ public class viewProfileSteps extends BaseStep {
     public void a_last_name(String name) {
         element = driver.findElement(By.id("lastNameRow"));
 
-        Assert.assertEquals("Last Name: "+name, element.getAttribute("innerText"));
+        Assert.assertEquals("Last Name:\n" + name, element.getAttribute("innerText"));
     }
 
 

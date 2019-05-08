@@ -5,9 +5,9 @@ Feature: Create a trip
   Scenario: Create a trip
     Given user is at trips page
     When user clicks on the add new trip button
-    #And user selects a destination called "China"
+    #And user selects a destination
     #And user presses add destination
-    #And user selects another destination called "Rome"
+    #And user selects another destination
     #And user presses add destination
     #And user enters a trip name
     #And user presses Save Trip

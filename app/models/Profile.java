@@ -79,6 +79,7 @@ public class Profile extends Model {
         this.travellerTypes = travellerTypes;
         this.trips = trips;
         this.admin = isAdmin;
+
     }
 
     // Finder for profile
