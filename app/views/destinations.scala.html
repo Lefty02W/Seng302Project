@@ -102,7 +102,7 @@
                                     <td>@destination.getLatitude() <input type="hidden" name="destinationLatitude" value="@destination.getLatitude()" /></td>
                                     <td>@destination.getLongitude() <input type="hidden" name="destinationLongitude" value="@destination.getLongitude()" /></td>
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
-                                    @if(destination.getUserEmail == currentUser.getEmail) {
+                                    @if(destination.getUserEmail == currentUser.getEmail || currentUser.isAdmin) {
                                         @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                             @CSRF.formField
                                             <td> <button type="submit" class="button-editDestinations" style="height: 4vh">

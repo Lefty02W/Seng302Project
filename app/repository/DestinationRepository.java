@@ -39,8 +39,8 @@ public class DestinationRepository {
      * @param destID The ID of the destination to return
      * @return
      */
-    public CompletionStage<Optional<Destination>> lookup(int destID) {
-        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Destination.class).setId(destID).findOne()), executionContext);
+    public Destination lookup(int destID) {
+        return ebeanServer.find(Destination.class).setId(destID).findOne();
     }
 
     /**

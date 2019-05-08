@@ -3,7 +3,6 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -23,7 +22,6 @@ public class TripDestination extends Model {
     @Id
     private int tripDestinationId;
 
-    @Constraints.Required
     private int destinationId;
 
     private int tripId;
