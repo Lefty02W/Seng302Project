@@ -37,8 +37,8 @@ public class ProvideApplication extends WithApplication {
 
     void loginUser() {
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin@admin.com");
-        formData.put("password", "admin");
+        formData.put("email", "john@gmail.com");
+        formData.put("password", "password");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
