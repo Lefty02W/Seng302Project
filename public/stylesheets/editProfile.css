@@ -2,6 +2,9 @@
     width: 100%;
 }
 
+.card-large {
+    height: auto;
+}
 
 .typesField {
     height: 2vh;

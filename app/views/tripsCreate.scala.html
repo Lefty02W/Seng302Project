@@ -88,12 +88,12 @@
 
                                     <div class="col">
                                         <h5>Arrival Time</h5>
-                                        <input type="date" id="arrival" name="arrival">
+                                        <input type="datetime-local" id="arrival" name="arrival">
                                     </div>
 
                                     <div class="col">
                                         <h5>Departure Time</h5>
-                                        <input type="date" id="departure" name="departure">
+                                        <input type="datetime-local" id="departure" name="departure">
                                     </div>
                                     <div class="col">
                                         <button type="submit" class="button-add" id="addDest">
@@ -120,8 +120,8 @@
                                 @for(tripDestination <- currentDestinationsList) {
                                     <tr id="tripRow@tripDestination.getDestinationId">
                                         <td>@tripDestination.getDestinationName</td>
-                                        <td>@tripDestination.getArrival</td>
-                                        <td>@tripDestination.getDeparture</td>
+                                        <td>@tripDestination.getArrivalString</td>
+                                        <td>@tripDestination.getDepartureString</td>
                                         <td>
                                             <a href="@routes.TripsController.createTripDestinationCreate(tripDestination.getDestOrder)">
                                                 <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
@@ -184,10 +184,10 @@
 
 
                                 <h5>Arrival Time</h5>
-                                <input type="date" id="arrival" name="arrival" value="@toEdit.formatLocalDate(toEdit.getArrival)">
+                                <input type="datetime-local" id="arrival" name="arrival" value="@toEdit.formatLocalDate(toEdit.getArrival)">
 
                                 <h5>Departure Time</h5>
-                                <input type="date" id="departure" name="departure" value="@toEdit.formatLocalDate(toEdit.getDeparture)"></div>
+                                <input type="datetime-local" id="departure" name="departure" value="@toEdit.formatLocalDate(toEdit.getDeparture)"></div>
 
                             <button type="submit" class="button-add">save</button>
                         </div>

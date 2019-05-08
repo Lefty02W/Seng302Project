@@ -35,11 +35,16 @@
             <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a style="color: #ca6636" href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                    <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                        Profile</a>
+                    <a style="color: #ca6636" href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                        Destinations</a>
+                    <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                        Trips</a>
+                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                        Travellers</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                        Logout</a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -78,20 +83,25 @@
                 }
 
                 <div class="container-fluid">
-                    <!--<div id="table-card" class="card-large table-hover"> -->
+                    <div class="row">
+                        <div class="col">
+                            <a href="@routes.DestinationsController.showCreate()"> <button id="addDestButton" type="button" class="btn btn-primary button-hover">
+                                Create Destination</button> </a>
+                        </div>
+                    </div>
 
                     <div id="table-card" class="card-large dest-table table-hover">
-                        <!-- Table of users -->
+                            <!-- Table of users -->
                         <table id="destTable">
                             <thead>
                                 <tr><th>Destination</th>
-                                <th>Type</th>
-                                <th>District</th>
-                                <th>Latitude</th>
-                                <th>Longitude</th>
-                                <th>Country</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
+                                    <th>Type</th>
+                                    <th>District</th>
+                                    <th>Latitude</th>
+                                    <th>Longitude</th>
+                                    <th>Country</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
                             </thead>
 
                             @for(destination <- destinationsList) {
@@ -102,6 +112,15 @@
                                     <td>@destination.getLatitude() <input type="hidden" name="destinationLatitude" value="@destination.getLatitude()" /></td>
                                     <td>@destination.getLongitude() <input type="hidden" name="destinationLongitude" value="@destination.getLongitude()" /></td>
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
+                                    @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
+                                        @CSRF.formField
+                                        <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
+                                            Edit</button> </td>
+                                    }
+                                    @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
+                                        @CSRF.formField
+                                        <td> <button type="submit" class="btn-outline-secondary" style="height: 4vh">
+                                            Delete</button></td>
                                     @if(destination.getUserEmail == currentUser.getEmail | currentUser.isAdmin) {
                                         @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                             @CSRF.formField
@@ -132,13 +151,8 @@
                                 </tr>
                             }
                         </table>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div>
-                                <a href="@routes.DestinationsController.showCreate()"> <button id="addDestButton" type="button" class="button-add">Create Destination</button> </a>
-                            </div>
-                        </div>
+
+
                     </div>
 
 
@@ -150,7 +164,7 @@
         </div>
     </body>
     <script type="text/javascript">
-            $(document).ready(function() {
+            $(document).ready(function () {
                 $('#destTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
@@ -163,12 +177,12 @@
                     "sDom": '<"top"pfl>rt<"bottom"><"clear">',
                     "autoWidth": false
                 });
-                console.log("done");
+
 
             });
 
 
-            $("#menu-toggle").click(function(e) {
+            $("#menu-toggle").click(function (e) {
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
             });

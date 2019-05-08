@@ -55,9 +55,6 @@
                     <div id="pageTitle">
                         <h2>Trips</h2>
                     </div>
-                    <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
-                        Add New Trip This needs to be moved somewhere
-                    </button> </a>
                 </nav>
                 <div class="container-fluid">
 
@@ -103,8 +100,16 @@
                 </div>
             </div>
         </div>
-
     </body>
+    <footer>
+        <div>
+        <r>
+            <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
+                Add New Trip
+            </button> </a>
+        </r>
+        </div>
+    </footer>
     <script type="text/javascript">
 
         $("#menu-toggle").click(function(e) {

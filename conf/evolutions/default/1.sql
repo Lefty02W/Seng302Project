@@ -72,6 +72,10 @@ create table image (
   visible                       integer,
   content_type                  varchar(255),
   name                          varchar(255),
+  crop_x                        integer not null,
+  crop_y                        integer not null,
+  crop_width                    integer not null,
+  crop_height                   integer not null,
   constraint pk_image primary key (image_id)
 );
 

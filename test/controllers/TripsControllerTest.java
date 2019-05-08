@@ -1,14 +1,10 @@
 package controllers;
 
 
-import org.junit.Assert;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
@@ -25,12 +21,15 @@ public class TripsControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/trips/create")
-                .session("connected", "admin@admin.com");
+                .session("connected", "john@gmail.com");
 
         Result result = Helpers.route(provideApplication(), request);
 
         assertEquals(OK, result.status());
     }
+
+
+
 
 
 }
