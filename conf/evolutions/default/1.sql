@@ -61,6 +61,7 @@ create table destination (
   district                      varchar(255),
   latitude                      double not null,
   longitude                     double not null,
+  visible                       integer not null,
   constraint pk_destination primary key (destination_id)
 );
 

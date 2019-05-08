@@ -35,7 +35,7 @@
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
                         Profile</a>
-                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
                     <a style="color: #ca6636" href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
@@ -57,6 +57,12 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
+
+                    <div class="row">
+                        <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
+                            Add New Trip
+                        </button> </a>
+                    </div>
 
                     <div class="row pt-3">
                            @for(trip <- trips) {
@@ -101,15 +107,7 @@
             </div>
         </div>
     </body>
-    <footer>
-        <div>
-        <r>
-            <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
-                Add New Trip
-            </button> </a>
-        </r>
-        </div>
-    </footer>
+
     <script type="text/javascript">
 
         $("#menu-toggle").click(function(e) {

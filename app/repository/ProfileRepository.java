@@ -191,6 +191,7 @@ public class ProfileRepository {
             dest.setDistrict(aRowList.getString("district"));
             dest.setLatitude(aRowList.getDouble("latitude"));
             dest.setLongitude(aRowList.getDouble("longitude"));
+            dest.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
             destList.add(dest);
         }
         return Optional.of(destList);

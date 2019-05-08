@@ -68,7 +68,7 @@ input[type=datetime-local] {
 }
 
 #addTripButton {
-    float: right;
+    right: 0;
     width: 15vw;
 }
 

@@ -100,15 +100,19 @@ public class Trip extends Model {
      * calculate total travel time
      * @return travel time
      */
-    public long getTravelTime() {
-        this.destinations = sortDestinationsByOrder(destinations);
-        TripDestination startDest = destinations.get(0);
-        TripDestination endDest = destinations.get(destinations.size() - 1);
-        if (startDest.getArrival() == null || endDest.getDeparture() == null) {
-            return 0; //TODO fix this or remove this
+    public Long getTravelTime() {
+        if (destinations.size() > 0) {
+            this.destinations = sortDestinationsByOrder(destinations);
+            TripDestination startDest = destinations.get(0);
+            TripDestination endDest = destinations.get(destinations.size() - 1);
+            if (startDest.getArrival() == null || endDest.getDeparture() == null) {
+                return null; //TODO fix this or remove this
+            }
+            long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
+            return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+        } else {
+            return null;
         }
-        long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -160,7 +164,11 @@ public class Trip extends Model {
     }
 
     public Date getStartDate(){
-        return destinations.get(0).getArrival();
+        if (destinations.size() > 0) {
+            return destinations.get(0).getArrival();
+        } else {
+            return null;
+        }
     }
 
     /**

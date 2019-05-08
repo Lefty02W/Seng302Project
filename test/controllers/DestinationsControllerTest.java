@@ -20,49 +20,6 @@ import static play.test.Helpers.GET;
 public class DestinationsControllerTest extends ProvideApplication {
 
     /**
-     * Testing the GET /destinations/create endpoint
-     */
-    @Test
-    public void showDestinationCreateEndPoint() {
-        loginUser();
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/destinations/create")
-                .session("connected", "john@gmail.com");
-
-        Result result = Helpers.route(provideApplication(), request);
-
-        assertEquals(OK, result.status());
-    }
-
-    /**
-     * Testing the POST /destinations endpoint, passing a mocked form to post a destination
-     */
-    @Test
-    public void postDestination() {
-        loginUser();
-        Map<String, String> formData = new HashMap<>();
-        formData.put("name", "china");
-        formData.put("type", "country");
-        formData.put("district", "china");
-        formData.put("country", "China");
-        formData.put("latitude", "78.95");
-        formData.put("longitude", "105.67");
-
-        loginUser();
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("POST")
-                .uri("/destinations")
-                .bodyForm(formData)
-                .session("connected", "john@gmail.com");
-
-        Result result = Helpers.route(provideApplication(), request);
-
-
-        assertEquals(303, result.status());
-    }
-
-    /**
      * Testing trying to editDestinations a destination that does not exists
      */
     @Test
