@@ -33,6 +33,7 @@ public class Trip extends Model {
 
     /**
      * Constructor for a Trip
+     *
      * @param destinations The destinations in the trip
      */
     public Trip(ArrayList<TripDestination> destinations, String name) {
@@ -46,6 +47,7 @@ public class Trip extends Model {
 
     /**
      * Adds the passed TripDestination to the trip
+     *
      * @param toAdd the TripDestination to add
      */
     public void addDestination(TripDestination toAdd) {
@@ -54,6 +56,7 @@ public class Trip extends Model {
 
     /**
      * Removes the destination at the passed position
+     *
      * @param index the show of the TripDestination to remove
      */
     public void removeDestination(int index) {
@@ -93,11 +96,18 @@ public class Trip extends Model {
     public void setName(String name) {
         this.name = name;
     }
-    public void setEmail(String email) { this.email = email; }
-    public String getEmail() { return email; }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 
     /**
      * calculate total travel time
+     *
      * @return travel time
      */
     public Long getTravelTime() {
@@ -117,9 +127,10 @@ public class Trip extends Model {
 
     /**
      * Get the date of arrival at the first destination in the trip, as a string.
+     *
      * @return formatted start date
      */
-    public String getStartDateString(){
+    public String getStartDateString() {
         this.destinations = sortDestinationsByOrder(destinations);
         Date startDate = destinations.get(0).getArrival();
         if (startDate == null) {
@@ -130,6 +141,7 @@ public class Trip extends Model {
 
     /**
      * get time value
+     *
      * @return true time value
      */
     public long getTimeVal() {
@@ -144,6 +156,7 @@ public class Trip extends Model {
 
     /**
      * This method gets the first date stored within a trip
+     *
      * @return the date found
      */
     public long getFirstDate() {
@@ -172,7 +185,8 @@ public class Trip extends Model {
     }
 
     /**
-     *create list of printable destinations
+     * create list of printable destinations
+     *
      * @return printable destination names
      */
     public String getDestinationNames() {
@@ -187,6 +201,7 @@ public class Trip extends Model {
 
     /**
      * sort destinations by order
+     *
      * @param array
      * @return sorted destination list
      */
@@ -196,8 +211,8 @@ public class Trip extends Model {
             return temp;
         }
         for (int i = 0; i < array.size(); i++) {
-            for (int x=0; x < array.size(); x++) {
-                if (array.get(x).getDestOrder() == i+1) {
+            for (int x = 0; x < array.size(); x++) {
+                if (array.get(x).getDestOrder() == i + 1) {
                     temp.add(array.get(x));
                 }
             }

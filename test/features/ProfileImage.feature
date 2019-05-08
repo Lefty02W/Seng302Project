@@ -12,5 +12,5 @@ Feature: Changing profile image
   Scenario:
     Given John clicks Upload new photo
     And he clicks the Crop this myself button with a photo selected
-    When he sets the width and height field as 120 and accepts
-    Then the size of the image should be 120 x 120
+    When he sets the width and height field as 500 and accepts
+    Then the size of the image should be 500 x 500

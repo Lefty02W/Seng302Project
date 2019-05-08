@@ -44,6 +44,7 @@
     width: 100%;
     padding: 1%;
     cursor: copy;
+    background: #205723;
 }
 
 .center-col {
@@ -58,6 +59,10 @@
 
 .lower-card {
     width: 80%;
+}
+
+#selectPhotoModal .lower-card {
+    width: auto;
 }
 
 
@@ -96,6 +101,11 @@ img.thumbnail {
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
+}
+
+#profileImagePreview {
+    border: 1px solid;
+    border-radius: 50%;
 }
 
 #viewPhotoModal .row {
@@ -224,6 +234,14 @@ img.thumbnail {
     font-size: 18pt;
 }
 
+#selectPhotoModal {
+    /*height: 80vh;*/
+}
+
+#selectPhotoModal .row{
+    max-height: 77vh;
+}
+
 #changeProfilePictureButton {
     position: absolute;
     color: white;
@@ -240,6 +258,14 @@ img.thumbnail {
     margin-left: 60%;
     margin-top: 8%;
     cursor: pointer;
+}
+
+#photosCard {
+    height: 500px;
+}
+
+#center-text {
+    text-align: center;
 }
 
 /*.btn-outline-primary:hover {*/
