@@ -29,8 +29,7 @@ public class Trip extends Model {
     private String email;
     public static final Finder<String, Trip> find = new Finder<>(Trip.class);
 
-    public Trip() {
-    }
+    public Trip() {}
 
     /**
      * Constructor for a Trip
@@ -89,18 +88,11 @@ public class Trip extends Model {
         this.destinations = sortDestinationsByOrder(destinations);
     }
 
-    public Integer getId() {
-        return tripId;
-    }
-
+    public Integer getId() { return tripId; }
     public String getName() {
         return name;
     }
-
-    public void setId(int id) {
-        this.tripId = id;
-    }
-
+    public void setId(int id){ this.tripId = id; }
     public void setName(String name) {
         this.name = name;
     }
@@ -118,15 +110,19 @@ public class Trip extends Model {
      *
      * @return travel time
      */
-    public long getTravelTime() {
-        this.destinations = sortDestinationsByOrder(destinations);
-        TripDestination startDest = destinations.get(0);
-        TripDestination endDest = destinations.get(destinations.size() - 1);
-        if (startDest.getArrival() == null || endDest.getDeparture() == null) {
-            return 0; //TODO fix this or remove this
+    public Long getTravelTime() {
+        if (destinations.size() > 0) {
+            this.destinations = sortDestinationsByOrder(destinations);
+            TripDestination startDest = destinations.get(0);
+            TripDestination endDest = destinations.get(destinations.size() - 1);
+            if (startDest.getArrival() == null || endDest.getDeparture() == null) {
+                return null; //TODO fix this or remove this
+            }
+            long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
+            return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+        } else {
+            return null;
         }
-        long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -180,8 +176,12 @@ public class Trip extends Model {
         return 0;
     }
 
-    public Date getStartDate() {
-        return destinations.get(0).getArrival();
+    public Date getStartDate(){
+        if (destinations.size() > 0) {
+            return destinations.get(0).getArrival();
+        } else {
+            return null;
+        }
     }
 
     /**

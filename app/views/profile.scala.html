@@ -34,16 +34,11 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">TravelEA </h2>
                 <div class="list-group list-group-flush">
-                    <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
-                        Profile</a>
-                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
-                        Destinations</a>
-                    <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
-                        Trips</a>
-                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
-                        Travellers</a>
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
-                        Logout</a>
+                    <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
+                    <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
+                    <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
+                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -110,11 +105,7 @@
                                 Change Profile Picture
                             </button>
 
-                            <a href="@routes.ProfileController.showEdit(currentUser.getEmail)">
-                                <button type="button" class="btn btn-primary" id="editProfileButton">
-                                    Edit Profile
-                                </button>
-                            </a>
+                            <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit Profile</button>
                         </div>
                         <div class="container" id="profilePhoto">
                         @if(profilePicture != null) {
@@ -599,11 +590,147 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="editProfileModal">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title ">Edit Profile</h2>
+                    </div>
+                    @form(routes.ProfileController.update()) {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">First Name*</small>
+                                        <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@currentUser.getFirstName>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Middle Name</small>
+                                    <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@currentUser.getMiddleName>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Last Name*</small>
+                                    <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@currentUser.getLastName>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required value=@currentUser.getTravellerTypes>
+                                    </div>
+                                        <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                            @if(currentUser.getTravellerTypes.contains("ThrillSeeker")) {
+                                                <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                            } else {
+                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                            }
+
+                                            @if(currentUser.getTravellerTypes.contains("Gap Year")) {
+                                                <option value="Gap Year" selected>Gap Year</option>
+                                            } else {
+                                                <option value="Gap Year">Gap Year</option>
+                                            }
+
+                                            @if(currentUser.getTravellerTypes.contains("Backpacker")) {
+                                                <option value="Backpacker" selected>Backpacker</option>
+                                            } else {
+                                                <option value="Backpacker">Backpacker</option>
+                                            }
+
+                                            @if(currentUser.getTravellerTypes.contains("Groupie")) {
+                                                <option value="Groupie" selected>Groupie</option>
+                                            } else {
+                                                <option value="Groupie">Groupie</option>
+                                            }
+
+                                            @if(currentUser.getTravellerTypes.contains("Frequent Weekender")) {
+                                                <option value="Frequent Weekender" selected>Frequent Weekender</option>
+                                            } else {
+                                                <option value="Frequent Weekender">Frequent Weekender</option>>
+                                            }
+
+                                            @if(currentUser.getTravellerTypes.contains("Functional/business Traveller")) {
+                                                <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
+                                            } else {
+                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                            }
+
+                                            @if(currentUser.getTravellerTypes.contains("Holidaymaker")) {
+                                                <option value="Holidaymaker" selected>Holidaymaker</option>
+                                            } else {
+                                                <option value="Holidaymaker">Holidaymaker</option>
+                                            }
+                                        </select>
+                                </div>
+                                <div class="row">
+                                    <select class="selectpicker" id="gender" name="gender" data-width="100%" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
+                                        @if(currentUser.getGender == "Male") {
+                                            <option selected>Male</option>
+                                        } else {
+                                            <option>Male</option>
+                                        }
+                                        @if(currentUser.getGender == "Female") {
+                                            <option selected>Female</option>
+                                        } else {
+                                            <option>Female</option>
+                                        }
+                                        @if(currentUser.getGender == "Other") {
+                                            <option selected>Other</option>
+                                        } else {
+                                            <option>Other</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
+                                    <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@currentUser.getEntryDate>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
+                                    <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@currentUser.getEmail>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
+                                    <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required value=@currentUser.getNationalities>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
+                                    <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField" value=@currentUser.getPassports>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"  data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     </body>
 
-        <!-- Menu Toggle Script -->
-    <script>
-            $(document).ready(function () {
+
+
+
+    <!-- Menu Toggle Script -->
+        <script>
+                function fillVals() {
+                    $('#travellerTypes').val($('#typeDropdown').val());
+                }
+
+            $(document).ready(function() {
                 $('#destsTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",

@@ -1,6 +1,7 @@
 package controllers;
 
 import com.google.common.collect.TreeMultimap;
+import io.ebean.Expr;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -14,7 +15,7 @@ import java.util.TreeMap;
 
 /**
  * This class manages sessions cookies
- * @author George, ajl190
+ * @author George, ajl190, jma361
  */
 public class SessionController {
 
@@ -49,6 +50,14 @@ public class SessionController {
                 .where()
                 .eq("user_email", email)
                 .findList());
+
+        ArrayList<Destination> publicDestinations = new ArrayList<>(Destination.find.query()
+                .where()
+                .not(Expr.eq("user_email", email))
+                .eq("visible", "1")
+                .findList());
+        destinations.addAll(publicDestinations);
+
         return destinations;
     }
 

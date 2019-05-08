@@ -29,6 +29,8 @@ public class Destination extends Model {
     private double latitude;
 
     private double longitude;
+    @Constraints.Required
+    private int visible;
 
     public Destination() {
 
@@ -45,7 +47,7 @@ public class Destination extends Model {
      * @param latitude the destinations latitude
      * @param longitude the destinations longitude
      */
-    public Destination(int destinationId, String userEmail, String name, String type, String country, String district, double latitude, double longitude) {
+    public Destination(int destinationId, String userEmail, String name, String type, String country, String district, double latitude, double longitude, int visible) {
         this.destinationId = destinationId;
         this.userEmail = userEmail;
         this.name = name;
@@ -54,6 +56,7 @@ public class Destination extends Model {
         this.district = district;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.visible = visible;
     }
 
     /**
@@ -66,7 +69,7 @@ public class Destination extends Model {
      * @param latitude the destinations latitude
      * @param longitude the destinations longitude
      */
-    public Destination(String userEmail, String name, String type, String country, String district, double latitude, double longitude) {
+    public Destination(String userEmail, String name, String type, String country, String district, double latitude, double longitude, int visible) {
         this.userEmail = userEmail;
         this.name = name;
         this.type = type;
@@ -74,6 +77,7 @@ public class Destination extends Model {
         this.district = district;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.visible = visible;
     }
 
     // Finder for destination
@@ -205,4 +209,8 @@ public class Destination extends Model {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+    public int getVisible() { return visible; }
+
+    public void setVisible(int visible) { this.visible = visible; }
 }
