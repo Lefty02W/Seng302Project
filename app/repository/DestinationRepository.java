@@ -206,4 +206,25 @@ public class DestinationRepository {
         }
         return Optional.of(destIdList);
     }
+
+    public Optional<ArrayList<Destination>> getAdminDestinations() {
+        ArrayList<Destination> destList = new ArrayList<>();
+        String selectQuery = "Select * from destination where user_email IN (select email from profile where admin = 1)";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).findList();
+        Destination destToAdd;
+        for (SqlRow aRowList : rowList) {
+            destToAdd = new Destination();
+            destToAdd.setDestinationId(aRowList.getInteger("destination_id"));
+            destToAdd.setUserEmail(aRowList.getString("user_email"));
+            destToAdd.setName(aRowList.getString("name"));
+            destToAdd.setType(aRowList.getString("type"));
+            destToAdd.setCountry(aRowList.getString("country"));
+            destToAdd.setDistrict(aRowList.getString("district"));
+            destToAdd.setLatitude(aRowList.getDouble("latitude"));
+            destToAdd.setLongitude(aRowList.getDouble("longitude"));
+            destToAdd.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
+            destList.add(destToAdd);
+        }
+        return Optional.of(destList);
+    }
 }
