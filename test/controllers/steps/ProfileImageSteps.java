@@ -61,10 +61,10 @@ public class ProfileImageSteps extends BaseStep {
     @Then("the size of the image should be {int} x {int}")
     public void the_size_of_the_image_should_be_x(Integer width, Integer height) {
         element = driver.findElement(By.id("profileImagePreview"));
-        Integer imageWidth = element.getSize().getWidth();
-        Integer imageHeight = element.getSize().getHeight();
+        String imageWidth = element.getAttribute("naturalWidth");
+        String imageHeight = element.getAttribute("naturalHeight");
         String expected = width.toString() + "x " + height.toString();
-        String actual = imageWidth.toString() + "x " + imageHeight.toString();
+        String actual = imageWidth + "x " + imageHeight;
 
         Assert.assertEquals(expected, actual);
     }

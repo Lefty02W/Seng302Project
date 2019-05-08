@@ -138,7 +138,7 @@
                         <ul class="nav nav-tabs" id="profileTabs">
                             <li class="active"><a data-toggle="tab" href="#informationTab" id="informationTabLink">
                                 Information</a></li>
-                            <li><a data-toggle="tab" href="#photosTab" id="photosTabLink" class="">Photos</a></li>
+                            <li><a data-toggle="tab" href="#photosTab" id="photosTabLink">Photos</a></li>
                             <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
                             <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
                         </ul>
@@ -147,48 +147,90 @@
                     <div class="tab-content" id="profileTabsContent">
                         <div id="informationTab" class="tab-pane fade in active show">
                             <div class="container">
-                                <table id="destinationsTable" class="user-table">
-                                    <thead>
-                                        <tr>
-                                            <th>First Name</th>
-                                            <th>Middle Name</th>
-                                            <th>Last Name</th>
-                                            <th>Email</th>
-                                            <th>DOB</th>
-                                            <th>Traveller Types</th>
-                                            <th>Nationalities</th>
-                                            <th>Passports</th>
-                                        </tr>
-                                    </thead>
-                                    <tr>
-                                        <td>@currentUser.getFirstName</td>
-                                        <td>@currentUser.getMiddleName</td>
-                                        <td>@currentUser.getLastName</td>
-                                        <td>@currentUser.getEmail</td>
-                                        <td>@currentUser.getBirthString</td>
-                                        <td>@for(index <- 0 until currentUser.getTravellerTypesList.size) {
-                                            <li style="padding: 0px;
-                                                margin-left: 20px;">
-                                            @currentUser.getTravellerTypesList.get(index)
-                                            </li>
-                                        }</td>
-                                        <td>@for(index <- 0 until currentUser.getNationalityList.size) {
-                                            <li style="padding: 0px;
-                                                margin-left: 20px;">
-                                            @currentUser.getNationalityList.get(index)
-                                            </li>
-                                        }</td>
-                                        <td>@for(index <- 0 until currentUser.getPassportsList.size) {
-                                            <li style="padding: 0px;
-                                                margin-left: 20px;">
-                                            @currentUser.getPassportsList.get(index)
-                                            </li>
-                                        }</td>
-                                    </tr>
-                                </table>
+                                <div id="firstNameRow" class="row">
+                                    <a>First Name: @currentUser.getFirstName</a>
+                                </div>
 
+                                <div id="middleNameRow" class="row">
+                                    <a>Middle Name: @currentUser.getMiddleName</a>
+                                </div>
+
+                                <div id="lastNameRow" class="row">
+                                    <a>Last Name: @currentUser.getLastName</a>
+                                </div>
+
+                                <div id="emailRow" class="row">
+                                    <a>Email: @currentUser.getEmail</a>
+                                </div>
+
+                                <div id="dobRow" class="row">
+                                    <a>Date Of Birth: @currentUser.getBirthString</a>
+                                </div>
+
+                                <div id="typesRow" class="row">
+                                @if(currentUser.getTravellerTypesList.isEmpty) {
+                                    <div class="alert alert-info" role="alert">
+                                        You have no traveller types associated with your profile
+                                    </div>
+                                } else {
+                                    <div class="row">
+                                        <div class="col">
+                                            <a>Traveller Types:
+                                                @for(index <- 0 until currentUser.getTravellerTypesList.size) {
+                                                    <li style="padding: 0px; margin-left: 20px;">
+                                                    @currentUser.getTravellerTypesList.get(index)
+                                                    </li>
+                                                }
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+
+
+                                <div id="nationalities" class="row">
+                                @if(currentUser.getNationalityList.isEmpty) {
+                                    <div class="alert alert-info" role="alert">
+                                        You have no nationalities associated with your profile
+                                    </div>
+                                } else {
+                                    <div class="row">
+                                        <div class="col">
+                                            <a>Nationalities:
+                                                @for(index <- 0 until currentUser.getNationalityList.size) {
+                                                    <li style="padding: 0px; margin-left: 20px;">
+                                                    @currentUser.getNationalityList.get(index)
+                                                    </li>
+                                                }
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+
+                                <div id="passports" class="row">
+
+                                @if(currentUser.getPassports.isEmpty) {
+                                    <div class="alert alert-info" role="alert">
+                                        You have no passports associated with your profile
+                                    </div>
+                                } else {
+                                    <div class="row">
+                                        <div class="col">
+                                            <a>Passports:
+                                                @for(index <- 0 until currentUser.getPassportsList.size) {
+                                                    <li style="padding: 0px; margin-left: 20px;">
+                                                    @currentUser.getPassportsList.get(index)
+                                                    </li>
+                                                }
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
 
                             </div>
+
                         </div>
 
 

@@ -103,6 +103,17 @@ img.thumbnail {
     transition: 0.3s;
 }
 
+#profileImagePreview {
+    display: block;
+    width: auto;
+    height: auto;
+    margin: auto;
+
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
 #viewPhotoModal .row {
     padding-left: 1rem;
 }
