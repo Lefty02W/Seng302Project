@@ -57,14 +57,13 @@ public class ProfileController extends Controller {
     private final TripRepository tripRepository;
     private Image demoProfilePicture = null;
     private Image profilePicture = null;
-    private Image imageToBeManuallyCropped = null;
     private static boolean showCropPhotoModal = false;
 
 
 
 
     /**
-     * To get Image data upon upload
+     * A class used to recieve information from a form for uploading an image
      */
     public static class ImageData {
         public String visible = "Private";
@@ -73,7 +72,7 @@ public class ProfileController extends Controller {
     }
 
     /**
-     * to get manual cropping details
+     * a class to recieve information from a form for getting cropping image data
      */
     public static class CropImageData {
         public int widthHeight;
@@ -208,13 +207,18 @@ public class ProfileController extends Controller {
         if (autoCrop == 1) {
             try {
                 InputStream in = new ByteArrayInputStream(image.getImage());
-                BufferedImage buffImage = ImageIO.read(in).getSubimage(image.getCropX(), image.getCropY(), image.getCropWidth(), image.getCropHeight());
+                BufferedImage buffImage = ImageIO.read(in);
+                System.out.println(buffImage.getWidth());
+                System.out.println(buffImage.getHeight());
+                buffImage = buffImage.getSubimage(image.getCropX(), image.getCropY(), image.getCropWidth(), image.getCropHeight());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(buffImage, image.getType().split("/")[1], baos);
                 baos.flush();
                 imageDisplay = baos.toByteArray();
                 baos.close();
             } catch (Exception e) {
+                System.out.println(e);
+                System.out.println("dadddddddddddddddddy");
                 imageDisplay = Objects.requireNonNull(image).getImage();
             }
             return ok(imageDisplay).as(image.getType());
@@ -257,6 +261,8 @@ public class ProfileController extends Controller {
             BufferedImage buffImage = ImageIO.read(in);
             crop.setCropWidth(buffImage.getWidth());
             crop.setCropHeight(buffImage.getHeight());
+            System.out.println(buffImage.getWidth());
+            System.out.println(buffImage.getHeight());
             if (crop.getCropWidth() < crop.getCropHeight()) {
                 crop.setCropHeight(crop.getCropWidth());
             } else {
@@ -307,7 +313,7 @@ public class ProfileController extends Controller {
                 // Initialize Image object
                 cropInfo crop = autoCrop(this.imageBytes);
 
-                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, crop.getCropHeight(), crop.getCropWidth(), crop.getCropHeight());
+                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight());
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
                     savePhoto(image); // Save photo, given a successful upload
@@ -410,7 +416,7 @@ public class ProfileController extends Controller {
             byte[] imageDisplay;
             try {
                 InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
-                BufferedImage buffImage = ImageIO.read(in).getSubimage(0, 0, demoProfilePicture.getCropWidth(), demoProfilePicture.getCropHeight());
+                BufferedImage buffImage = ImageIO.read(in).getSubimage(demoProfilePicture.getCropX(), demoProfilePicture.getCropY(), demoProfilePicture.getCropWidth(), demoProfilePicture.getCropHeight());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(buffImage, demoProfilePicture.getType().split("/")[1], baos);
                 baos.flush();
@@ -497,13 +503,13 @@ public class ProfileController extends Controller {
         try {
             InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
             BufferedImage buffImage = ImageIO.read(in);
-            if (buffImage.getWidth() >= 500 && buffImage.getHeight() >= 500) {
+            if (buffImage.getWidth() >= 200 && buffImage.getHeight() >= 200) {
                 return "";
             }
             return "The selected photo has dimensions Width: " + buffImage.getWidth() + " Height: " + buffImage.getHeight() +
-                    ", a photo with dimensions 500 x 500 is needed to be profile picture";
+                    ", a photo with dimensions 200 x 200 is needed to be profile picture";
         } catch (IOException e) {
-            return "The selected photo has dimensions that are too small, a photo with dimensions 500 x 500 is needed to be profile picture";
+            return "The selected photo has dimensions that are too small, a photo with dimensions 200 x 200 is needed to be profile picture";
         }
 
     }
