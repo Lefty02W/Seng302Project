@@ -440,14 +440,6 @@ public class ProfileController extends Controller {
         return supplyAsync(() -> redirect("/profile"));
     }
 
-    /**
-     * Gives the image to be mannually cropped to the crop image modal
-     * @return the id in an object
-     */
-    @Security.Authenticated(SecureSession.class)
-    public Result getImageToBeManuallyCropped() {
-        return ok(demoProfilePicture.getImage()).as(demoProfilePicture.getType());
-    }
 
     /**
      * Validation checks that the cropped image is valid, if so sets the image as the demo profile
@@ -501,6 +493,21 @@ public class ProfileController extends Controller {
 
     
 
+    private String isValidSizedPhoto(Image image) {
+        try {
+            InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
+            BufferedImage buffImage = ImageIO.read(in);
+            if (buffImage.getWidth() >= 500 && buffImage.getHeight() >= 500) {
+                return "";
+            }
+            return "The selected photo has dimensions Width: " + buffImage.getWidth() + " Height: " + buffImage.getHeight() +
+                    ", a photo with dimensions 500 x 500 is needed to be profile picture";
+        } catch (IOException e) {
+            return "The selected photo has dimensions that are too small, a photo with dimensions 500 x 500 is needed to be profile picture";
+        }
+
+    }
+
 
     /**
      * Show the profile page
@@ -511,6 +518,18 @@ public class ProfileController extends Controller {
     public Result show (Http.Request request){
         Profile currentProfile = SessionController.getCurrentUser(request);
         List<Image> displayImageList = getUserPhotos(request);
+
+        Integer defaultProfilePicture = isDefaultProfilePicture();
+        String isTooSmall = "";
+        if (defaultProfilePicture == 0) { //case a demo profile picture is to be uploaded
+            isTooSmall = isValidSizedPhoto(demoProfilePicture);
+            if (isTooSmall != "") { //case the demo Profile picture is too small to be set as
+                demoProfilePicture = null;
+                defaultProfilePicture = 1;
+                showChangeProfilePictureModal = true;
+                showCropPhotoModal = false;
+            }
+        }
         // Get the current show photo modal state
         // Ensure state is false for next refresh action
         Boolean show = showPhotoModal = false;
@@ -530,8 +549,7 @@ public class ProfileController extends Controller {
         } catch (NoSuchElementException e) {
             destinationsList = new ArrayList<>();
         }
-        Integer defaultProfilePicture = isDefaultProfilePicture();
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, destinationsList, request, messagesApi.preferred(request)));
+        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, destinationsList, isTooSmall,request, messagesApi.preferred(request)));
     }
 
 }

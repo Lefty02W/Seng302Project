@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean, widthHeight: String, destinationsList: List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean, widthHeight: String, destinationsList: List[Destination], isTooSmall: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -351,6 +351,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="container" id="profilePhoto">
+                            <p>@isTooSmall</p>
                             @if(defaultProfilePicture == 1) {
                                 <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
                             } @if(defaultProfilePicture == 0) {
@@ -467,7 +468,7 @@
                             @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
                                 @CSRF.formField
                                 <div class="row">
-                                    <input type="number" id="widthHeight" name="widthHeight" min="100" value="150">
+                                    <input type="number" id="widthHeight" name="widthHeight" min="500" value="500">
                                     Width and Height
                                 </div>
                                 <div class="row">
