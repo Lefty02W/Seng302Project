@@ -214,7 +214,8 @@ img.thumbnail {
     margin-right: auto;
 }
 
-#destsTab {
+#destsTab {border: 1px solid;
+    border-radius: 50%;
     padding-left: 10%;
     padding-right: 10%;
 }
