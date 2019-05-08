@@ -104,14 +104,8 @@ img.thumbnail {
 }
 
 #profileImagePreview {
-    display: block;
-    width: auto;
-    height: auto;
-    margin: auto;
-
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
+    border: 1px solid;
+    border-radius: 50%;
 }
 
 #viewPhotoModal .row {
@@ -203,7 +197,6 @@ img.thumbnail {
 #profileImage {
     border: 1px solid;
     border-radius: 50%;
-
 }
 
 #profileTabs {

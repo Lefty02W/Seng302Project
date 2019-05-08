@@ -396,12 +396,12 @@
                             <p>@isTooSmall</p>
                             @if(defaultProfilePicture == 1) {
                                 @if(profilePicture == null) {
-                                    <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
+                                    <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
                                 } else {
-                                    <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">
+                                    <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">
                                 }
                             } else {
-                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
+                            <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
                             }
                         </div>
 
@@ -559,7 +559,6 @@
                     }
                 </div>
             </div>
-
         </div>
     </body>
 
