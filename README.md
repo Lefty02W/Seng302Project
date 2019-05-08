@@ -1,9 +1,8 @@
-
 # SENG302 Project Team 700
 This is Travel EA, a website for storing and organising destinations and trips.
 It can be packaged to a deliverable form using the `sbt dist` command.
 
-###Import Instructions
+### Import Instructions
 With the repository cloned, it can be imported using the following steps.
 
 1. Open IntelliJ and choose Import project.
@@ -18,13 +17,13 @@ With the repository cloned, it can be imported using the following steps.
     b. Choose 1.8 for ProjectJDK.
     c. Finish. 
 
-###Run the project
+### Run the project
 
 1. Once the project is imported, open sbt shell in IntelliJ and enter "run"
 2. An instance of the application is now hosted locally at the address: <localhost:9000>
 
 
-###Run all tests in the project
+### Run all tests in the project
 1. Once the project is imported, open sbt shell in IntelliJ and enter "test"
 2. All tests, including both Cucumber and JUnit tests, will be run and the output shown.
 
@@ -45,7 +44,7 @@ Hosts all commits. Uses the test database `seng302-2019-team700-test`
 
 <http://csse-s302g7.canterbury.ac.nz:8443/>
 
-###Dependencies
+### Dependencies
 The dependencies for our project can be found via the `build.sbt` file. These include:
  * Mockito
  * Cucmber tests
@@ -55,7 +54,7 @@ The dependencies for our project can be found via the `build.sbt` file. These in
  Outside of these, we have approved business cases for the following:
  * Bootstrap version 4.2.1, bootstrap-select, bootstrap datatables
 
-###Contributors
+### Contributors
 Team 700 consists of:
 * Ambrose Ledbrook
 * Luke Walsh
@@ -66,7 +65,7 @@ Team 700 consists of:
 * Sam Verdellen
 * Jade Martin 
 
-###Liscencing
+### Liscencing
 By using this repository you accept that the code and all resources pertaining to the Team 700 project
 are subject to the Creative-Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0) license.
 This means you are free to:
