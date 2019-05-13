@@ -18,6 +18,10 @@ public class Nationality {
         this.nationality_name = nationality_name;
     }
 
+    public Nationality(String nationality_name) {
+        this.nationality_name = nationality_name;
+    }
+
     public int getNationalityId() {
         return nationality_id;
     }

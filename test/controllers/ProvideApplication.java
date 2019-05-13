@@ -25,6 +25,7 @@ public class ProvideApplication extends WithApplication {
     protected ProfileRepository profileRepository;
     protected TripDestinationsRepository tripDestinationsRepository;
     protected TripRepository tripRepository;
+    protected NationalityRepository nationalityRepository;
 
     private static boolean setUpComplete = false;
 
@@ -55,6 +56,7 @@ public class ProvideApplication extends WithApplication {
         imageRepository = app.injector().instanceOf(ImageRepository.class);
         tripDestinationsRepository = app.injector().instanceOf(TripDestinationsRepository.class);
         tripRepository = app.injector().instanceOf(TripRepository.class);
+        nationalityRepository = app.injector().instanceOf(NationalityRepository.class);
 
 
         if (!setUpComplete) {
