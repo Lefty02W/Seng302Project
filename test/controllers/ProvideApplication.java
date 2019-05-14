@@ -1,6 +1,8 @@
 package controllers;
 
 import models.Destination;
+import models.Nationality;
+import models.PassportCountry;
 import org.junit.Before;
 import play.Application;
 import play.Mode;
@@ -23,6 +25,7 @@ public class ProvideApplication extends WithApplication {
     protected TripDestinationsRepository tripDestinationsRepository;
     protected TripRepository tripRepository;
     protected NationalityRepository nationalityRepository;
+    protected PassportCountryRepository passportRepository;
 
     private static boolean setUpComplete = false;
 
@@ -54,10 +57,12 @@ public class ProvideApplication extends WithApplication {
         tripDestinationsRepository = app.injector().instanceOf(TripDestinationsRepository.class);
         tripRepository = app.injector().instanceOf(TripRepository.class);
         nationalityRepository = app.injector().instanceOf(NationalityRepository.class);
+        passportRepository = app.injector().instanceOf(PassportCountryRepository.class);
 
 
         if (!setUpComplete) {
 
+            //passportRepository.insert(new PassportCountry("Australia"));
             //nationalityRepository.insert(new Nationality("Yeet"));
 
             //TODO: Add more insert data here when other repositories are inserted
