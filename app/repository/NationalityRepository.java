@@ -79,7 +79,12 @@ public class NationalityRepository implements ModelRepository<Nationality> {
      */
     public CompletionStage<Optional<Integer>> insert(Nationality nationality) {
         return supplyAsync(() -> {
-            ebeanServer.insert(nationality);
+            try {
+                ebeanServer.insert(nationality);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return Optional.of(nationality.getNationalityId());
         }, executionContext);
     }

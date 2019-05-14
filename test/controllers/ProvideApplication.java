@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Destination;
+import models.Nationality;
 import models.Profile;
 import models.Trip;
 import org.junit.Before;
@@ -25,6 +26,7 @@ public class ProvideApplication extends WithApplication {
     protected ProfileRepository profileRepository;
     protected TripDestinationsRepository tripDestinationsRepository;
     protected TripRepository tripRepository;
+    protected NationalityRepository nationalityRepository;
 
     private static boolean setUpComplete = false;
 
@@ -55,22 +57,25 @@ public class ProvideApplication extends WithApplication {
         imageRepository = app.injector().instanceOf(ImageRepository.class);
         tripDestinationsRepository = app.injector().instanceOf(TripDestinationsRepository.class);
         tripRepository = app.injector().instanceOf(TripRepository.class);
+        nationalityRepository = app.injector().instanceOf(NationalityRepository.class);
 
 
         if (!setUpComplete) {
 
+            nationalityRepository.insert(new Nationality("EU"));
+
             //TODO: Add more insert data here when other repositories are inserted
 
-            profileRepository.insert(new Profile("John", "James", "john@gmail.com",
-                    "password", new Date(), "NZ", "Male", new Date(), "NZ",
-                    "Backpacker,GapYear", new ArrayList<Trip>(), false));
-            profileRepository.insert(new Profile("Jenny", "Smith", "jenny@gmail.com",
-                    "password", new Date(), "NZ", "Female", new Date(), "NZ",
-                    "Thrillseeker", new ArrayList<Trip>(), false));
-            destinationRepository.insert(new Destination("john@gmail.com", "China", "Country", "China", "China", 67.08, 102.75, 0));
-            destinationRepository.insert(new Destination("john@gmail.com", "Rome", "City", "Italy", "Rome", 69.08, 109.75, 1));
-            System.out.println(destinationRepository.getUserDestinations("john@gmail.com"));
-            setUpComplete = true;
+//            profileRepository.insert(new Profile("John", "James", "john@gmail.com",
+//                    "password", new Date(), "NZ", "Male", new Date(), "NZ",
+//                    "Backpacker,GapYear", new ArrayList<Trip>(), false));
+//            profileRepository.insert(new Profile("Jenny", "Smith", "jenny@gmail.com",
+//                    "password", new Date(), "NZ", "Female", new Date(), "NZ",
+//                    "Thrillseeker", new ArrayList<Trip>(), false));
+//            destinationRepository.insert(new Destination("john@gmail.com", "China", "Country", "China", "China", 67.08, 102.75, 0));
+//            destinationRepository.insert(new Destination("john@gmail.com", "Rome", "City", "Italy", "Rome", 69.08, 109.75, 1));
+//            System.out.println(destinationRepository.getUserDestinations("john@gmail.com"));
+//            setUpComplete = true;
         }
     }
 

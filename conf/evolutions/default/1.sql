@@ -80,6 +80,12 @@ create table image (
   constraint pk_image primary key (image_id)
 );
 
+create table nationality (
+  nationality_id                integer auto_increment not null,
+  nationality_name              varchar(255),
+  constraint pk_nationality primary key (nationality_id)
+);
+
 create table profile (
   email                         varchar(255) not null,
   first_name                    varchar(255),
@@ -119,6 +125,8 @@ create table trip_destination (
 drop table if exists destination;
 
 drop table if exists image;
+
+drop table if exists nationality;
 
 drop table if exists profile;
 

@@ -2,8 +2,10 @@ package models;
 
 import io.ebean.Finder;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 
+@Entity
 public class Nationality {
 
     @Id
@@ -15,6 +17,10 @@ public class Nationality {
 
     public Nationality(int nationality_id, String nationality_name) {
         this.nationality_id = nationality_id;
+        this.nationality_name = nationality_name;
+    }
+
+    public Nationality(String nationality_name) {
         this.nationality_name = nationality_name;
     }
 
