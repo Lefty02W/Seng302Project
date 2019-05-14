@@ -43,12 +43,12 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
-    private String passports;
+    private ArrayList<String> passports;
 
     @Constraints.Required
-    private String nationalities;
+    private Map<Integer, Nationality> nationalities;
     @Constraints.Required
-    private String travellerTypes;
+    private Map<Integer, TravellerTypes> travellerTypes;
 
     private boolean admin;
 
@@ -64,9 +64,24 @@ public class Profile extends Model {
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
     private static SimpleDateFormat dateFormatsort = new SimpleDateFormat("dd/MM/YYY");
 
+    /**
+     * Traditional constructor for profile. Used when retrieving a Profile from DB.
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param password
+     * @param birthDate
+     * @param passports
+     * @param gender
+     * @param timeCreated
+     * @param nationalities
+     * @param travellerTypes
+     * @param trips
+     * @param isAdmin
+     */
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
-                   String passports, String gender, Date timeCreated, String nationalities,
-                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+                   ArrayList<String> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
+                   Map<Integer, TravellerTypes> travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -77,6 +92,52 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
+        this.trips = trips;
+        this.admin = isAdmin;
+
+    }
+
+    /**
+     * Overloaded constructor which takes in the user's scala form data to create a Profile.
+     * @param firstName
+     * @param lastName
+     * @param email
+     * @param password
+     * @param birthDate
+     * @param passports
+     * @param gender
+     * @param timeCreated
+     * @param nationalities
+     * @param travellerTypes
+     * @param trips
+     * @param isAdmin
+     */
+    public Profile(String firstName, String lastName, String email, String password, Date birthDate,
+                   String passports, String gender, Date timeCreated, String nationalities,
+                  String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.birthDate = birthDate;
+        this.passports = new ArrayList<>(Arrays.asList(passports.split(",")));
+        this.gender = gender;
+        this.timeCreated = timeCreated;
+
+        this.nationalities =new HashMap<>();
+        for (String nationalityString : (nationalities.split(","))) {
+
+            Nationality nationality = new Nationality(0, nationalityString);
+            this.nationalities.put(nationality.getNationalityId(), nationality);
+        }
+        this.travellerTypes =new HashMap<>();
+        for (String travellerTypesString : (travellerTypes.split(","))) {
+
+            TravellerTypes travellerType = new TravellerTypes(0, travellerTypesString);
+            this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+
+        }
         this.trips = trips;
         this.admin = isAdmin;
 
@@ -161,25 +222,35 @@ public class Profile extends Model {
         return gender;
     }
 
-    public String getTravellerTypes() {
+    public Map<Integer, TravellerTypes> getTravellerTypes() {
         return travellerTypes;
     }
 
 
-    public void setTravellerTypes(String travellerTypes) {
+    public void setTravellerTypes(Map<Integer, TravellerTypes> travellerTypes) {
         this.travellerTypes = travellerTypes;
     }
 
     public ArrayList<String> getPassportsList() {
-        return new ArrayList<>(Arrays.asList(passports.split(",")));
+        return this.passports;
     }
 
     public ArrayList<String> getNationalityList() {
-        return new ArrayList<>(Arrays.asList(nationalities.split(",")));
+        ArrayList<Nationality> nationalityObjects = new ArrayList<Nationality>(nationalities.values());
+        ArrayList<String> toReturn = new ArrayList<>();
+        for (Nationality nationality : nationalityObjects) {
+            toReturn.add(nationality.getNationalityName());
+        }
+        return toReturn;
     }
 
     public ArrayList<String> getTravellerTypesList() {
-        return new ArrayList<>(Arrays.asList(travellerTypes.split(",")));
+        ArrayList<TravellerTypes> nationalityObjects = new ArrayList<TravellerTypes>(travellerTypes.values());
+        ArrayList<String> toReturn = new ArrayList<>();
+        for (TravellerTypes nationality : nationalityObjects) {
+            toReturn.add(nationality.getTravellerTypeName());
+        }
+        return toReturn;
     }
 
     public TreeMultimap<Long, Integer> getTrips() {
@@ -243,19 +314,19 @@ public class Profile extends Model {
 
     public boolean isAdmin() { return this.admin; }
 
-    public void setPassports(String passports) {
+    public void setPassports(ArrayList<String> passports) {
         this.passports = passports;
     }
 
-    public String getPassports() {
+    public ArrayList<String> getPassports() {
         return passports;
     }
 
-    public String getNationalities() {
+    public Map<Integer, Nationality> getNationalities() {
         return nationalities;
     }
 
-    public void setNationalities(String nationalities) {
+    public void setNationalities(Map<Integer, Nationality> nationalities) {
         this.nationalities = nationalities;
     }
 }
