@@ -2,8 +2,6 @@ package controllers;
 
 import models.Destination;
 import models.Nationality;
-import models.Profile;
-import models.Trip;
 import org.junit.Before;
 import play.Application;
 import play.Mode;
@@ -15,7 +13,6 @@ import play.test.WithApplication;
 import repository.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +59,7 @@ public class ProvideApplication extends WithApplication {
 
         if (!setUpComplete) {
 
-            nationalityRepository.insert(new Nationality("EU"));
+            nationalityRepository.insert(new Nationality("UK"));
 
             //TODO: Add more insert data here when other repositories are inserted
 
