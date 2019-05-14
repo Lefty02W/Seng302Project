@@ -37,6 +37,12 @@ create table nationality (
   constraint pk_nationality primary key (nationality_id)
 );
 
+create table passport_country (
+  passport_country_id           integer auto_increment not null,
+  passport_name                 varchar(255),
+  constraint pk_passport_country primary key (passport_country_id)
+);
+
 create table profile (
   email                         varchar(255) not null,
   first_name                    varchar(255),
@@ -83,6 +89,8 @@ drop table if exists destination;
 drop table if exists image;
 
 drop table if exists nationality;
+
+drop table if exists passport_country;
 
 drop table if exists profile;
 
