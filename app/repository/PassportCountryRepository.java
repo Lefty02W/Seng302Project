@@ -18,7 +18,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * Repository class to provide data access methods for the PassportCountry model class.
  * This class implements the ModelRepository interface
  */
-public class PassportCountryRepository implements ModelRepository<PassportCountry> {
+public class PassportCountryRepository implements ModelRepository<PassportCountry>, ModelUpdatableRepository<PassportCountry> {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
