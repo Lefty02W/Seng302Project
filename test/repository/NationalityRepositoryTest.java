@@ -12,9 +12,7 @@ public class NationalityRepositoryTest extends ProvideApplication {
 
     @Before
     public void setUp() {
-       // nationalityRepository.insert(new Nationality("NZ")).thenApplyAsync( id -> {
-
-       // });
+        //System.out.println(nationalityRepository.getAll());
     }
 
     @Test

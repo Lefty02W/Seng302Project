@@ -1,7 +1,6 @@
 package controllers;
 
 import models.Destination;
-import models.Nationality;
 import org.junit.Before;
 import play.Application;
 import play.Mode;
@@ -59,14 +58,13 @@ public class ProvideApplication extends WithApplication {
 
         if (!setUpComplete) {
 
-            nationalityRepository.insert(new Nationality("UK"));
+            //nationalityRepository.insert(new Nationality("Yeet"));
 
             //TODO: Add more insert data here when other repositories are inserted
 
 //            profileRepository.insert(new Profile("John", "James", "john@gmail.com",
-//                    "password", new Date(), "NZ", "Male", new Date(), "NZ",
-//                    "Backpacker,GapYear", new ArrayList<Trip>(), false));
-//            profileRepository.insert(new Profile("Jenny", "Smith", "jenny@gmail.com",
+//                    "password", new Date(), "NZ", "Male", new Date(), "NZ", "Backpacker,GapYear", new ArrayList<Trip>(), false));
+////            profileRepository.insert(new Profile("Jenny", "Smith", "jenny@gmail.com",
 //                    "password", new Date(), "NZ", "Female", new Date(), "NZ",
 //                    "Thrillseeker", new ArrayList<Trip>(), false));
 //            destinationRepository.insert(new Destination("john@gmail.com", "China", "Country", "China", "China", 67.08, 102.75, 0));

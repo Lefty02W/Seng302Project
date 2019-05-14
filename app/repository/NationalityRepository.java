@@ -8,6 +8,7 @@ import models.Nationality;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -98,6 +99,15 @@ public class NationalityRepository implements ModelRepository<Nationality> {
         return supplyAsync(() ->
                  Optional.ofNullable(ebeanServer.find(Nationality.class).where()
                 .eq("nationality_id", id).findOne()), executionContext);
+    }
+
+    /**
+     * Method to retrieve all Nationalities from the database
+     *
+     * @return CompletionStage holding an Optional of the a nationality Map keyed by the database id
+     */
+    public CompletionStage<Optional<Map<Integer, Nationality>>> getAll() {
+        return supplyAsync(() -> Optional.of(ebeanServer.find(Nationality.class).findMap()), executionContext);
     }
 
 
