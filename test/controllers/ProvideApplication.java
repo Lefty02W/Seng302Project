@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Destination;
+import models.PassportCountry;
 import org.junit.Before;
 import play.Application;
 import play.Mode;
@@ -66,6 +67,7 @@ public class ProvideApplication extends WithApplication {
 //            nationalityRepository.insert(new Nationality("NZ"));
 //            nationalityRepository.insert(new Nationality("EU"));
 //            nationalityRepository.insert(new Nationality("USA"));
+//            passportRepository.insert(new PassportCountry("New Zealand"));
 
             //TODO: Add more insert data here when other repositories are inserted
 

@@ -15,8 +15,8 @@ public class PassportCountry {
     public static final Finder<String, PassportCountry> find = new Finder<>(PassportCountry.class);
 
 
-    public PassportCountry(int passport_country__id, String passport_name) {
-        this.passport_country_id = passport_country__id;
+    public PassportCountry(int passport_country_id, String passport_name) {
+        this.passport_country_id = passport_country_id;
         this.passport_name = passport_name;
     }
 

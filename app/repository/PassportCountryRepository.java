@@ -8,13 +8,14 @@ import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * Repository class to provide data access methods for the Nationality model class.
+ * Repository class to provide data access methods for the PassportCountry model class.
  * This class implements the ModelRepository interface
  */
 public class PassportCountryRepository implements ModelRepository<PassportCountry> {
@@ -73,7 +74,7 @@ public class PassportCountryRepository implements ModelRepository<PassportCountr
     }
 
     /**
-     * Method to insert a passed Nationality in the database
+     * Method to insert a passed PassportCountry in the database
      * @param passport the PassportCountry to delete
      * @return CompletionStage holding an Optional of the nationalities database id
      */
@@ -98,6 +99,15 @@ public class PassportCountryRepository implements ModelRepository<PassportCountr
         return supplyAsync(() ->
                 Optional.ofNullable(ebeanServer.find(PassportCountry.class).where()
                         .eq("passport_country_id", id).findOne()), executionContext);
+    }
+
+    /**
+     * Method to retrieve all Passports from the database
+     *
+     * @return CompletionStage holding an Optional of the a passport Map keyed by the database id
+     */
+    public CompletionStage<Optional<Map<Integer, PassportCountry>>> getAll() {
+        return supplyAsync(() -> Optional.of(ebeanServer.find(PassportCountry.class).findMap()), executionContext);
     }
 
 
