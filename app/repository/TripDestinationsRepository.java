@@ -4,15 +4,10 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
 import io.ebean.Transaction;
-import models.Destination;
-import models.Profile;
-import models.Trip;
-import models.TripDestination;
+import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
