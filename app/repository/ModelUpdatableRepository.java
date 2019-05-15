@@ -8,7 +8,7 @@ import java.util.concurrent.CompletionStage;
  * @param <T> Object of type T for the methods to use.
  */
 
-public interface ModelUpdatableRepository<T> {
+public interface ModelUpdatableRepository<T> extends ModelRepository<T> {
 
     /**
      * Generic update function to update the given object using a given id

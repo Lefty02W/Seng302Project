@@ -1,7 +1,6 @@
 package controllers;
 
 import models.Destination;
-import models.PassportCountry;
 import org.junit.Before;
 import play.Application;
 import play.Mode;

@@ -2,10 +2,10 @@ package repository;
 
 import io.ebean.EbeanServer;
 import io.ebean.Model;
-import io.ebean.Transaction;
 import models.TravellerTypes;
 
 import javax.inject.Inject;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -27,29 +27,6 @@ public class TravelerTypeRepository implements ModelRepository<TravellerTypes> {
     }
 
     /**
-     * update function to update the travellerType object using a given id
-     * @param travellerTypes object of type TravellerType to be updated in the database
-     * @param travellerTypeId id of the entry to be updated.
-     * @return Optional completion stage holding the id of the entry that has been updated
-     */
-    public CompletionStage<Optional<Integer>> update(TravellerTypes travellerTypes, int travellerTypeId) {
-        return supplyAsync(() -> {
-            Optional<Integer> value = Optional.empty();
-            try (Transaction txn = ebeanServer.beginTransaction()) {
-                TravellerTypes travellerTypes1 = ebeanServer.find(TravellerTypes.class).setId(travellerTypeId).findOne();
-                if (travellerTypes1 != null) {
-                    travellerTypes1.setTravellerTypeName(travellerTypes.getTravellerTypeName());
-                    travellerTypes1.update();
-                    txn.commit();
-                    value = Optional.of(travellerTypes.getTravellerTypeId());
-                    txn.end();
-                }
-            }
-            return value;
-        }, executionContext);
-    }
-
-    /**
      * Delete function to delete a TravellerType object using a given id
      * @param id id of the entry to be deleted.
      * @return Optional completion stage holding the id of the entry that has been deleted
@@ -59,7 +36,7 @@ public class TravelerTypeRepository implements ModelRepository<TravellerTypes> {
             try {
                 final Optional<TravellerTypes> travellerTypesOptional = Optional.ofNullable(ebeanServer.find(TravellerTypes.class).setId(id).findOne());
                 travellerTypesOptional.ifPresent(Model::delete);
-                return travellerTypesOptional.map(p -> p.getTravellerTypeId());
+                return travellerTypesOptional.map(TravellerTypes::getTravellerTypeId);
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -86,4 +63,15 @@ public class TravelerTypeRepository implements ModelRepository<TravellerTypes> {
     public CompletionStage<Optional<TravellerTypes>> findById(int id) {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(TravellerTypes.class).setId(id).findOne()), executionContext);
     }
+
+
+    /**
+     * Method to retrieve all TravellerTypes from the database
+     *
+     * @return CompletionStage holding an Optional of the a TravellerTypes Map keyed by the database id
+     */
+    public Optional<Map<Integer, TravellerTypes>> getAll() {
+        return Optional.of(ebeanServer.find(TravellerTypes.class).findMap());
+    }
+
 }

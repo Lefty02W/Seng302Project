@@ -1,4 +1,3 @@
-# --- !Ups
 CREATE TABLE photo
 (
 	photo_id int auto_increment
@@ -136,36 +135,3 @@ CREATE TABLE profile_traveller_type
 	profile INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
 	traveller_type INT NOT NULL REFERENCES traveller_type ON UPDATE CASCADE ON DELETE CASCADE
 );
-
-# --- !Downs
-
-drop table if exists destination;
-
-drop table if exists image;
-
-drop table if exists nationality;
-
-drop table if exists passport_country;
-
-drop table if exists profile;
-
-drop table if exists traveller_types;
-
-drop table if exists trip;
-
-drop table if exists trip_destination;
-
-drop table if exists photo;
-
-drop table if exists personal_photo;
-
-drop table if exists admin;
-
-drop table if exists follow_destination;
-
-drop table if exists profile_nationality;
-
-drop table if exists profile_passport_country;
-
-drop table if exists profile_traveller_type;
-
