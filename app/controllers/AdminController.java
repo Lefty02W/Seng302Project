@@ -1,13 +1,14 @@
 package controllers;
 
+import models.Profile;
 import play.i18n.MessagesApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http;
 import play.mvc.Result;
-import repository.ProfileRepository;
 import views.html.admin;
 
 import javax.inject.Inject;
+import java.util.List;
 
 import static play.mvc.Results.ok;
 
@@ -24,6 +25,8 @@ public class AdminController {
 
 
     public Result show(Http.Request request) {
-        return ok(admin.render(request, messagesApi.preferred(request)));
+        List<Profile> profiles = Profile.find.all();
+
+        return ok(admin.render(profiles, request, messagesApi.preferred(request)));
     }
 }
