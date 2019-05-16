@@ -1,6 +1,7 @@
 package repository;
 
 import controllers.ProvideApplication;
+import models.Nationality;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,16 +17,21 @@ public class NationalityRepositoryTest extends ProvideApplication {
     }
 
     @Test
-    public void update() {}
-
-    @Test
     public void delete() {}
 
     @Test
     public void deleteInvalidId() {}
 
     @Test
-    public void insert() {}
+    public void insert() {
+        int nationalityId = -1;
+        nationalityRepository.insert(new Nationality("BeanLand"))
+                .thenApplyAsync(i -> {
+                    System.out.println(i.get());
+                    return i;
+                });
+        System.out.println(nationalityId);
+    }
 
     @Test
     public void findById() {}

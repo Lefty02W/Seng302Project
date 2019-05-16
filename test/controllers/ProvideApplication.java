@@ -1,7 +1,6 @@
 package controllers;
 
 import models.Destination;
-import models.PassportCountry;
 import org.junit.Before;
 import play.Application;
 import play.Mode;
@@ -25,7 +24,6 @@ public class ProvideApplication extends WithApplication {
     protected TripRepository tripRepository;
     protected NationalityRepository nationalityRepository;
     protected PassportCountryRepository passportRepository;
-    protected TravellerTypeRepository travellerTypeRepository;
 
     private static boolean setUpComplete = false;
 
