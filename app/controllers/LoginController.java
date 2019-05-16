@@ -102,7 +102,7 @@ public class LoginController extends Controller {
     /**
      * create the login page
      * @param request
-     * @return rendered login page
+     * @return rendered login pagelogin
      */
     public Result show(Http.Request request) {
         return ok(login.render(loginForm, profileForm, request, messagesApi.preferred(request)));

@@ -60,5 +60,5 @@ GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWit
 
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
-
+GET     /admin                       controllers.AdminController.show(request: Request)
 
