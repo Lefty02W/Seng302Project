@@ -64,3 +64,4 @@ GET     /admin                       controllers.AdminController.show(request: R
 GET     /admin/update                controllers.AdminController.showEditProfile(request: Request, id: String)
 POST   /admin                       controllers.AdminController.update(request: Request, id: String)
 
+

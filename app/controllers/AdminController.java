@@ -2,7 +2,6 @@ package controllers;
 
 import models.Destination;
 import models.Profile;
-import play.api.mvc.Call;
 import play.data.Form;
 import play.data.FormFactory;
 import models.Trip;
@@ -17,7 +16,6 @@ import views.html.admin;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
 import static play.mvc.Results.ok;
@@ -31,7 +29,6 @@ public class AdminController {
 
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
-
     @Inject
     public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ProfileRepository profileRepository){
         this.profileEditForm = profileFormFactory.form(Profile.class);
@@ -39,7 +36,18 @@ public class AdminController {
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.profileFormFactory = profileFormFactory;
+    }
 
+    /**
+     * Function to delete a profile with the given email from the database using the profile controller method
+     * @param request
+     * @param email the email of the user who is to be deleted
+     * @return
+     */
+    private CompletionStage<Result> deleteProfile (Http.Request request, String email){
+        return profileRepository.delete(email).thenApplyAsync(userEmail -> {
+            return redirect("/admin");
+        }, httpExecutionContext.current());
     }
 
 
@@ -84,6 +92,4 @@ public class AdminController {
             return redirect("/admin");
         }, httpExecutionContext.current());
     }
-
-
 }

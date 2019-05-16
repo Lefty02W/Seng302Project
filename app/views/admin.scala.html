@@ -111,6 +111,10 @@
                                         <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
                                         <td>@profile.isAdmin</td> <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
+                                        <td><button class="btn-primary">Edit</button></td>
+                                        <td><button class="btn-danger" data-toggle="modal" data-target="#conformationDeleteModal" onclick="setVariables(@profile.getEmail)">Delete</button></td>
+                                        <td>@profile.isAdmin</td>
+                                        <td><button>Admin</button></td>
                                     </tr>
 
                                 }
@@ -319,6 +323,7 @@
     </body>
 
     <script>
+        var email;
         $(document).ready(function() {
             $('#profileTable').DataTable({
                 "searching": false,
@@ -352,5 +357,34 @@
         } );
 
 
+        function setVariables(email){
+            this.email = email;
+        }
+
+        function runDelete(){
+            email = this.email;
+        }
+
+
     </script>
+    <div class="modal" id="conformationDeleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Conformation</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                <!-- body -->
+                <div class="modal-body">
+                    <h5>Are you sure you want to delete user.....*NEED TO ADD USER* </h5>
+                </div>
+                <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-outline-secondary" onclick="runDelete()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </html>
