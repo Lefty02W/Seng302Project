@@ -50,7 +50,33 @@
                     </div>
                 </nav>
                 <div class="container">
+                    <!-- TODO needs to show all admins - wait for deadbolt -->
                     <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <h2 align="center">Admins</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="adminsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>AdminID</th>
+                                        <th>Email</th>
+                                        <th>Name</th>
+                                        <th>Permission Level</th>
+                                        <th>Alter Permission</th>
+                                    </tr>
+                                </thead>
+                                <tr>
+                                    <td>1</td>
+                                    <td>email</td>
+                                    <td>John</td>
+                                    <td>Master</td>
+                                    <td><button class="btn-primary">Alter Permissions</button></td>
+                                </tr>
+                            </table>
+                        </div>
                             <!-- Profile table -->
                         <div class="row">
                             <div class="col">
@@ -146,8 +172,6 @@
                             </table>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -172,6 +196,14 @@
 
         $(document).ready(function() {
             $('#destinationsTable').DataTable({
+                "searching": false,
+                "pageLength": 8,
+                "lengthChange": false
+            });
+        } );
+
+        $(document).ready(function() {
+            $('#adminsTable').DataTable({
                 "searching": false,
                 "pageLength": 8,
                 "lengthChange": false
