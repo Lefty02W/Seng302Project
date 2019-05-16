@@ -75,14 +75,15 @@
                                     <td>email</td>
                                     <td>John</td>
                                     <td>Master</td>
-                                    <td><button class="btn-primary">Alter Permissions</button></td>
+                                    <td><button class="btn btn-primary">Alter Permissions</button></td>
                                 </tr>
                             </table>
                         </div>
                             <!-- Profile table -->
                         <div class="row">
-                            <div class="col">
+                            <div class="col text-center">
                                 <h2 align="center">User Profiles</h2>
+                                <button class="btn btn-primary">Add Profile</button> <!-- TODO Waiting on db refactor -->
                             </div>
                         </div>
                         <div class="row">
@@ -93,6 +94,7 @@
                                         <th>Email</th>
                                         <th>Edit</th>
                                         <th>Delete</th>
+                                        <th>View</th>
                                         <th>Admin</th>
                                         <th>Alter Admin</th>
                                     </tr>
@@ -105,15 +107,15 @@
                                         <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
                                         <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                         </a> </td>
-                                        <td><button class="btn-danger">Delete</button></td>
+                                        <td><button class="btn btn-danger">Delete</button></td>
+                                        <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
                                         <td>@profile.isAdmin</td> <!-- TODO Update to id once deadbolt is working -->
-                                        <td><button class="btn-info">Admin</button></td>
+                                        <td><button class="btn btn-info">Admin</button></td>
                                     </tr>
 
                                 }
                             </table>
                         </div>
-
                         <div class="row">
                             <div class="col">
                                 <h2 align="center">User Trips</h2>
@@ -136,16 +138,14 @@
                                         <td>@trip.getTripId</td>
                                         <td>@trip.getEmail</td> <!-- TODO Update to id once user id is there -->
                                         <td>@trip.getName</td>
-                                        <td><button class="btn-primary">Edit</button></td>
-                                        <td><button class="btn-danger">Delete</button></td>
-                                        <td><button class="btn-info">View</button></td>
+                                        <td><button class="btn btn-primary">Edit</button></td>
+                                        <td><button class="btn btn-danger">Delete</button></td>
+                                        <td><button class="btn btn-info">View</button></td>
                                     </tr>
 
                                 }
                             </table>
                         </div>
-
-
                         <div class="row">
                             <div class="col">
                                 <h2 align="center">User Destinations</h2>
@@ -168,9 +168,9 @@
                                         <td>@destination.getDestinationId</td>
                                         <td>@destination.getUserEmail</td> <!-- TODO Update to id once user id is there -->
                                         <td>@destination.getName</td>
-                                        <td><button class="btn-primary">Edit</button></td>
-                                        <td><button class="btn-danger">Delete</button></td>
-                                        <td><button class="btn-info">View</button></td>
+                                        <td><button class="btn btn-primary">Edit</button></td>
+                                        <td><button class="btn btn-danger">Delete</button></td>
+                                        <td><button class="btn btn-info">View</button></td>
                                     </tr>
 
                                 }
