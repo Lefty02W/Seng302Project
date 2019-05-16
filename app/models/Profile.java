@@ -48,7 +48,7 @@ public class Profile extends Model {
     @Constraints.Required
     private Map<Integer, Nationality> nationalities;
     @Constraints.Required
-    private Map<Integer, TravellerTypes> travellerTypes;
+    private Map<Integer, TravellerType> travellerTypes;
 
     private boolean admin;
 
@@ -81,7 +81,7 @@ public class Profile extends Model {
      */
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    ArrayList<String> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
-                   Map<Integer, TravellerTypes> travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+                   Map<Integer, TravellerType> travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -134,7 +134,7 @@ public class Profile extends Model {
         this.travellerTypes =new HashMap<>();
         for (String travellerTypesString : (travellerTypes.split(","))) {
 
-            TravellerTypes travellerType = new TravellerTypes(0, travellerTypesString);
+            TravellerType travellerType = new TravellerType(0, travellerTypesString);
             this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
 
         }
@@ -222,12 +222,12 @@ public class Profile extends Model {
         return gender;
     }
 
-    public Map<Integer, TravellerTypes> getTravellerTypes() {
+    public Map<Integer, TravellerType> getTravellerTypes() {
         return travellerTypes;
     }
 
 
-    public void setTravellerTypes(Map<Integer, TravellerTypes> travellerTypes) {
+    public void setTravellerTypes(Map<Integer, TravellerType> travellerTypes) {
         this.travellerTypes = travellerTypes;
     }
 
@@ -245,9 +245,9 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getTravellerTypesList() {
-        ArrayList<TravellerTypes> nationalityObjects = new ArrayList<TravellerTypes>(travellerTypes.values());
+        ArrayList<TravellerType> nationalityObjects = new ArrayList<TravellerType>(travellerTypes.values());
         ArrayList<String> toReturn = new ArrayList<>();
-        for (TravellerTypes nationality : nationalityObjects) {
+        for (TravellerType nationality : nationalityObjects) {
             toReturn.add(nationality.getTravellerTypeName());
         }
         return toReturn;
