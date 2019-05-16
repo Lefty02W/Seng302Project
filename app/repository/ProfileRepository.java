@@ -1,15 +1,11 @@
 package repository;
 
 import io.ebean.*;
-import models.Destination;
-import models.Profile;
+import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -22,11 +18,17 @@ public class ProfileRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
+    private final ProfilePassportCountryRepository profilePassportCountryRepository;
+    private final ProfileNationalityRepository profileNationalityRepository;
+    private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
 
     @Inject
     public ProfileRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
+        this.profilePassportCountryRepository = new ProfilePassportCountryRepository(ebeanConfig, executionContext);
+        this.profileNationalityRepository = new ProfileNationalityRepository(ebeanConfig, executionContext);
+        this.profileTravellerTypeRepository = new ProfileTravellerTypeRepository(ebeanConfig, executionContext);
     }
 
 
@@ -75,11 +77,48 @@ public class ProfileRepository {
      * @param profile Profile object to insert into the database
      * @return the image id
      */
-    public CompletionStage<String> insert(Profile profile) {
+    public CompletionStage<Optional<Integer>> insert(Profile profile) {
         return supplyAsync(() -> {
             profile.setTimeCreated(new Date());
-            ebeanServer.insert(profile);
-            return profile.getEmail();
+            Transaction txn = ebeanServer.beginTransaction();
+            String qry = "INSERT into profile (first_name, middle_name, last_name, email, " +
+                    "password, birth_date, gender) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            Integer value = null;
+//            System.out.println("Info\n"+profile.getFirstName()+"\n"+profile.getMiddleName()+"\n"+profile.getLastName()+
+//                    "\n"+profile.getEmail()+"\n"+profile.getPassword()+"\n"+profile.getBirthDate()+"\n"+profile.getGender()
+//            +"\n"+profile.getPassportsList().get(0));
+            try {
+                SqlUpdate query = Ebean.createSqlUpdate(qry);
+                query.setParameter(1, profile.getFirstName());
+                query.setParameter(2, profile.getMiddleName());
+                query.setParameter(3, profile.getLastName());
+                query.setParameter(4, profile.getEmail());
+                query.setParameter(5, profile.getPassword());
+                query.setParameter(6, profile.getBirthDate());
+                query.setParameter(7, profile.getGender());
+                //query.setParameter(8, profile.isAdmin());
+                query.execute();
+                value = profile.getProfileId();
+                for (String passportName: profile.getPassportsList()) {
+                    System.out.println("YEEETETETETE: "+passportName);
+                    profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(0, passportName), value);
+                }
+                for (String nationalityName: profile.getNationalityList()) {
+                    System.out.println("YEEETETETETE 2: "+nationalityName);
+                    profileNationalityRepository.insertProfileNationality(new Nationality(0, nationalityName), value);
+                }
+                for (String travellerTypeName: profile.getTravellerTypesList()) {
+                    System.out.println("YEEETETETETE 3: "+travellerTypeName);
+                    profileTravellerTypeRepository.insertProfileTravellerType(new TravellerType(0, travellerTypeName), value);
+                }
+        } catch(Exception e) {
+            System.out.println("Search This: "+e);
+        } finally {
+            txn.end();
+        }
+        txn.commit();
+            return Optional.of(value);
         }, executionContext);
     }
 

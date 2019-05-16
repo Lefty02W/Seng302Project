@@ -2,10 +2,12 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.SqlRow;
 import models.Nationality;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -16,7 +18,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * Repository class to provide data access methods for the Nationality model class.
  * This class implements the ModelRepository interface
  */
-public class NationalityRepository implements ModelRepository<Nationality> {
+public class NationalityRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
@@ -48,16 +50,15 @@ public class NationalityRepository implements ModelRepository<Nationality> {
      * @param nationality the Nationality to delete
      * @return CompletionStage holding an Optional of the nationalities database id
      */
-    public CompletionStage<Optional<Integer>> insert(Nationality nationality) {
-        return supplyAsync(() -> {
-            try {
-                ebeanServer.insert(nationality);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public Optional<Integer> insert(Nationality nationality) {
+        try {
+            ebeanServer.insert(nationality);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            return Optional.of(nationality.getNationalityId());
-        }, executionContext);
+        return Optional.of(nationality.getNationalityId());
+
     }
 
     /**
@@ -69,6 +70,23 @@ public class NationalityRepository implements ModelRepository<Nationality> {
         return supplyAsync(() ->
                  Optional.ofNullable(ebeanServer.find(Nationality.class).where()
                 .eq("nationality_id", id).findOne()), executionContext);
+    }
+
+    /**
+     * Gets the ID of a passport country based on the name sent in
+     * @param nationality The nationality to find
+     * @return
+     */
+    public Optional<Integer> getNationalityId(String nationality) {
+        String sql = ("select nationality_id from nationality where nationality_name = ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, nationality).findList();
+        Integer nationalityId;
+        try {
+            nationalityId = rowList.get(0).getInteger("nationality_id");
+        } catch(Exception e) {
+            nationalityId = null;
+        }
+        return Optional.of(nationalityId);
     }
 
     /**

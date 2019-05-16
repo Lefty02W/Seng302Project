@@ -23,6 +23,10 @@ import static java.util.Collections.reverseOrder;
 @Entity
 public class Profile extends Model {
 
+    @Id
+    @Constraints.Required
+    private Integer profileId;
+
     @Constraints.Required
     private String firstName;
 
@@ -31,7 +35,6 @@ public class Profile extends Model {
     @Constraints.Required
     private String lastName;
 
-    @Id
     @Constraints.Required
     private String email;
 
@@ -43,11 +46,17 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
-    private ArrayList<String> passports;
+    @Constraints.Required
+    private String passportsForm;
 
     @Constraints.Required
-    private Map<Integer, Nationality> nationalities;
+    private String nationalitiesForm;
+
     @Constraints.Required
+    private String travellerTypesForm;
+
+    private Map<Integer, PassportCountry> passports;
+    private Map<Integer, Nationality> nationalities;
     private Map<Integer, TravellerType> travellerTypes;
 
     private boolean admin;
@@ -79,9 +88,11 @@ public class Profile extends Model {
      * @param trips
      * @param isAdmin
      */
-    public Profile(String firstName, String lastName, String email, String password, Date birthDate,
-                   ArrayList<String> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
+    public Profile(Integer profileId, String firstName, String lastName, String email, String password, Date birthDate,
+                   Map<Integer, PassportCountry> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
                    Map<Integer, TravellerType> travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+        System.out.println("Owo not this one");
+        this.profileId = profileId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -115,13 +126,16 @@ public class Profile extends Model {
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
-
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.birthDate = birthDate;
-        this.passports = new ArrayList<>(Arrays.asList(passports.split(",")));
+        this.passports = new HashMap<>();
+        for (String passportString : (passports.split(","))) {
+            PassportCountry passport = new PassportCountry(0, passportString);
+            this.passports.put(passport.getPassportId(), passport);
+        }
         this.gender = gender;
         this.timeCreated = timeCreated;
 
@@ -141,6 +155,48 @@ public class Profile extends Model {
         this.trips = trips;
         this.admin = isAdmin;
 
+    }
+
+    public void initProfile() {
+        this.passports = new HashMap<>();
+        int i = 1;
+        for (String passportString : (passportsForm.split(","))) {
+            i++;
+            PassportCountry passport = new PassportCountry(i, passportString);
+            this.passports.put(passport.getPassportId(), passport);
+        }
+        i = 1;
+        this.nationalities =new HashMap<>();
+        for (String nationalityString : (nationalitiesForm.split(","))) {
+            i++;
+            Nationality nationality = new Nationality(i, nationalityString);
+            this.nationalities.put(nationality.getNationalityId(), nationality);
+        }
+        i = 1;
+        this.travellerTypes =new HashMap<>();
+        for (String travellerTypesString : (travellerTypesForm.split(","))) {
+            i++;
+            TravellerType travellerType = new TravellerType(i, travellerTypesString);
+            this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+
+        }
+    }
+
+//    @Constraints.Required
+//    private String passportsForm;
+//
+//    @Constraints.Required
+//    private String nationalitiesForm;
+//
+//    @Constraints.Required
+//    private String travellerTypesForm;
+//
+//    private Map<Integer, PassportCountry> passports;
+//    private Map<Integer, Nationality> nationalities;
+//    private Map<Integer, TravellerType> travellerTypes;
+
+    public Integer getProfileId() {
+        return profileId;
     }
 
     // Finder for profile
@@ -232,7 +288,12 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getPassportsList() {
-        return this.passports;
+        ArrayList<PassportCountry> passportObjects = new ArrayList<PassportCountry>(passports.values());
+        ArrayList<String> toReturn = new ArrayList<>();
+        for (PassportCountry passport : passportObjects) {
+            toReturn.add(passport.getPassportName());
+        }
+        return toReturn;
     }
 
     public ArrayList<String> getNationalityList() {
@@ -291,13 +352,37 @@ public class Profile extends Model {
     }
 
 
+    public String getPassportsForm() {
+        return passportsForm;
+    }
+
+    public void setPassportsForm(String passportsForm) {
+        this.passportsForm = passportsForm;
+    }
+
+    public String getNationalitiesForm() {
+        return nationalitiesForm;
+    }
+
+    public void setNationalitiesForm(String nationalitiesForm) {
+        this.nationalitiesForm = nationalitiesForm;
+    }
+
+    public String getTravellerTypesForm() {
+        return travellerTypesForm;
+    }
+
+    public void setTravellerTypesForm(String travellerTypesForm) {
+        this.travellerTypesForm = travellerTypesForm;
+    }
+
     public boolean isAdmin() { return this.admin; }
 
-    public void setPassports(ArrayList<String> passports) {
+    public void setPassports(Map<Integer, PassportCountry> passports) {
         this.passports = passports;
     }
 
-    public ArrayList<String> getPassports() {
+    public Map<Integer, PassportCountry> getPassports() {
         return passports;
     }
 

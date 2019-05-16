@@ -1,13 +1,12 @@
 package repository;
 
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import io.ebean.SqlUpdate;
-import io.ebean.Transaction;
+import io.ebean.*;
 import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -18,7 +17,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * Repository class to provide data access methods for the PassportCountry model class.
  * This class implements the ModelRepository interface
  */
-public class PassportCountryRepository implements ModelRepository<PassportCountry>, ModelUpdatableRepository<PassportCountry> {
+public class PassportCountryRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
@@ -57,6 +56,7 @@ public class PassportCountryRepository implements ModelRepository<PassportCountr
 
     }
 
+
     /**
      * Method to delete a passed PassportCountry from the database
      * @param id id of the entry to be deleted.
@@ -78,16 +78,14 @@ public class PassportCountryRepository implements ModelRepository<PassportCountr
      * @param passport the PassportCountry to delete
      * @return CompletionStage holding an Optional of the nationalities database id
      */
-    public CompletionStage<Optional<Integer>> insert(PassportCountry passport) {
-        return supplyAsync(() -> {
-            try {
-                ebeanServer.insert(passport);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public Optional<Integer> insert(PassportCountry passport) {
+        try {
+            ebeanServer.insert(passport);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            return Optional.of(passport.getPassportId());
-        }, executionContext);
+        return Optional.of(passport.getPassportId());
     }
 
     /**
@@ -102,6 +100,25 @@ public class PassportCountryRepository implements ModelRepository<PassportCountr
     }
 
     /**
+     * Gets the ID of a passport country based on the name sent in
+     * @param country The country to find
+     * @return
+     */
+    public Optional<Integer> getPassportCountryId(String country) {
+        String sql = ("select passport_country_id from passport_country where passport_name = ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, country).findList();
+        Integer countryId;
+        try {
+            countryId = rowList.get(0).getInteger("passport_country_id");
+        } catch(Exception e) {
+            countryId = null;
+        }
+        return Optional.of(countryId);
+    }
+
+
+    /**
+     *
      * Method to retrieve all Passports from the database
      *
      * @return CompletionStage holding an Optional of the a passport Map keyed by the database id

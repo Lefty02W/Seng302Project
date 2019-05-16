@@ -4,8 +4,10 @@ import io.ebean.*;
 import models.PassportCountry;
 import models.TravellerType;
 import models.TravellerType;
+import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -16,14 +18,14 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * A travellerTypes repository that executes database operations in a different
  * execution context handles all interactions with the travellerType table .
  */
-public class TravellerTypeRepository implements ModelRepository<TravellerType> {
+public class TravellerTypeRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
 
     @Inject
-    public TravellerTypeRepository(EbeanServer ebeanServer, DatabaseExecutionContext executionContext) {
-        this.ebeanServer = ebeanServer;
+    public TravellerTypeRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
+        this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
     }
 
@@ -49,11 +51,9 @@ public class TravellerTypeRepository implements ModelRepository<TravellerType> {
      * @param travellerTypes object of type TravellerTypes to be inserted in the database
      * @return Optional completion stage holding the id of the entry that has been created
      */
-    public CompletionStage<Optional<Integer>> insert(TravellerType travellerTypes) {
-        return supplyAsync(() -> {
-            ebeanServer.insert(travellerTypes);
-            return Optional.of(travellerTypes.getTravellerTypeId());
-        }, executionContext);
+    public Optional<Integer> insert(TravellerType travellerTypes) {
+        ebeanServer.insert(travellerTypes);
+        return Optional.of(travellerTypes.getTravellerTypeId());
     }
 
     /**
@@ -63,6 +63,23 @@ public class TravellerTypeRepository implements ModelRepository<TravellerType> {
      */
     public CompletionStage<Optional<TravellerType>> findById(int id) {
         return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(TravellerType.class).setId(id).findOne()), executionContext);
+    }
+
+    /**
+     * Gets the ID of a passport country based on the name sent in
+     * @param traveller The country to find
+     * @return
+     */
+    public Optional<Integer> getTravellerTypeId(String traveller) {
+        String sql = ("select traveller_type_id from traveller_type where traveller_type_name = ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, traveller).findList();
+        Integer travellerId;
+        try {
+            travellerId = rowList.get(0).getInteger("traveller_type_id");
+        } catch(Exception e) {
+            travellerId = null;
+        }
+        return Optional.of(travellerId);
     }
 
 

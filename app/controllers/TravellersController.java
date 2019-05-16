@@ -104,7 +104,7 @@ public class TravellersController extends Controller {
     private List<Profile> searchNat(List<Profile> resultData, PartnerFormData searchData){
         List<Profile> resultProfiles = new ArrayList<>();
         for (Profile profile: resultData){
-            if (profile.getNationalities().contains(searchData.searchNationality)){
+            if (profile.getNationalityList().contains(searchData.searchNationality)){
                 resultProfiles.add(profile);
             }
         }
@@ -205,7 +205,7 @@ public class TravellersController extends Controller {
         String travellerTypeTerm = searchData.searchTravellerTypes;
 
         for (Profile profile : resultData) {
-            if (profile.getTravellerTypes().contains(travellerTypeTerm)) {
+            if (profile.getTravellerTypesList().contains(travellerTypeTerm)) {
                 resultProfiles.add(profile);
             }
         }

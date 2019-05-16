@@ -131,8 +131,8 @@ public class ProfileController extends Controller {
         Profile profile = currentProfileForm.get();
 
         // Could improve on this
-        profile.setNationalities(profile.getNationalities().replaceAll("\\s",""));
-        profile.setPassports(profile.getPassports().replaceAll("\\s",""));
+//        profile.setNationalities(profile.getNationalityList().replaceAll("\\s",""));
+//        profile.setPassports(profile.getPassportsList().replaceAll("\\s",""));
 
         return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),
                 SessionController.getCurrentUser(request).getEmail()).thenApplyAsync(x -> {
