@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Profile;
+import models.Trip;
 import play.i18n.MessagesApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http;
@@ -26,7 +27,8 @@ public class AdminController {
 
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
+        List<Trip> trips = Trip.find.all();
 
-        return ok(admin.render(profiles, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, request, messagesApi.preferred(request)));
     }
 }

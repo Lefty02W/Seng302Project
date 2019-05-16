@@ -1,5 +1,5 @@
 @import play.mvc.Http
-@(profiles : List[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(profiles : List[Profile], trips : List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -61,7 +61,7 @@
                             <table id="profileTable" class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>ProfileId</th>
+                                        <th>ProfileID</th>
                                         <th>Email</th>
                                         <th>Edit</th>
                                         <th>Delete</th>
@@ -75,8 +75,39 @@
                                         <td>@profile.getEmail</td>
                                         <td><button class="btn-primary">Edit</button></td>
                                         <td><button class="btn-danger">Delete</button></td>
-                                        <td>@profile.isAdmin</td>
-                                        <td><button>Admin</button></td>
+                                        <td>@profile.isAdmin</td> <!-- TODO Update to id once deadbolt is working -->
+                                        <td><button class="btn-info">Admin</button></td>
+                                    </tr>
+
+                                }
+                            </table>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <h2 align="center">User Trips</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="tripsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>TripID</th>
+                                        <th>ProfileID</th>
+                                        <th>Name</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                        <th>View</th>
+                                    </tr>
+                                </thead>
+                                @for(trip <- trips) {
+                                    <tr>
+                                        <td>@trip.getTripId</td>
+                                        <td>@trip.getEmail</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@trip.getName</td>
+                                        <td><button class="btn-primary">Edit</button></td>
+                                        <td><button class="btn-danger">Delete</button></td>
+                                        <td><button class="btn-info">View</button></td>
                                     </tr>
 
                                 }
@@ -98,6 +129,15 @@
                 "lengthChange": false
             });
         } );
+
+        $(document).ready(function() {
+            $('#tripsTable').DataTable({
+                "searching": false,
+                "pageLength": 10,
+                "lengthChange": false
+            });
+        } );
+
 
     </script>
 </html>
