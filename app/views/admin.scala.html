@@ -1,5 +1,5 @@
 @import play.mvc.Http
-@(profiles : List[Profile], trips : List[Trip])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(profiles : List[Profile], trips : List[Trip], destinations : List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -113,6 +113,38 @@
                                 }
                             </table>
                         </div>
+
+
+                        <div class="row">
+                            <div class="col">
+                                <h2 align="center">User Destinations</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="destinationsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>DestinationID</th>
+                                        <th>ProfileID</th>
+                                        <th>Name</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                        <th>View</th>
+                                    </tr>
+                                </thead>
+                                @for(destination <- destinations) {
+                                    <tr>
+                                        <td>@destination.getDestinationId</td>
+                                        <td>@destination.getUserEmail</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@destination.getName</td>
+                                        <td><button class="btn-primary">Edit</button></td>
+                                        <td><button class="btn-danger">Delete</button></td>
+                                        <td><button class="btn-info">View</button></td>
+                                    </tr>
+
+                                }
+                            </table>
+                        </div>
                     </div>
 
 
@@ -125,7 +157,7 @@
         $(document).ready(function() {
             $('#profileTable').DataTable({
                 "searching": false,
-                "pageLength": 10,
+                "pageLength": 8,
                 "lengthChange": false
             });
         } );
@@ -133,7 +165,15 @@
         $(document).ready(function() {
             $('#tripsTable').DataTable({
                 "searching": false,
-                "pageLength": 10,
+                "pageLength": 8,
+                "lengthChange": false
+            });
+        } );
+
+        $(document).ready(function() {
+            $('#destinationsTable').DataTable({
+                "searching": false,
+                "pageLength": 8,
                 "lengthChange": false
             });
         } );

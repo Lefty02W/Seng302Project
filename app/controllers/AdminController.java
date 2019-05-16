@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Destination;
 import models.Profile;
 import models.Trip;
 import play.i18n.MessagesApi;
@@ -28,7 +29,8 @@ public class AdminController {
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
         List<Trip> trips = Trip.find.all();
+        List<Destination> destinations = Destination.find.all();
 
-        return ok(admin.render(profiles, trips, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, destinations, request, messagesApi.preferred(request)));
     }
 }
