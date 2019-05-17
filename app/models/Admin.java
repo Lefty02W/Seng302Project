@@ -4,10 +4,11 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import java.util.ArrayList;
 import java.util.Date;
 
-@Entity
+@MappedSuperclass
 public class Admin extends Profile {
 
     @Id
