@@ -125,7 +125,7 @@
                                             <td>Profile Id</td>
                                             <td>@profile.getEmail</td>
                                             <td>
-                                                <a id="noot" href="@routes.AdminController.showEditProfile(profile.getEmail)">
+                                                <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
                                                     <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                                 </a> </td>
                                             <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
@@ -141,7 +141,7 @@
                                         <td>Profile Id</td>
                                         <td>@selectedProfile.getEmail</td>
                                         <td>
-                                            <a id="noot" href="@routes.AdminController.showEditProfile(selectedProfile.getEmail)">
+                                            <a href="@routes.AdminController.showEditProfile(selectedProfile.getEmail)">
                                                 <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                             </a> </td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
@@ -176,7 +176,11 @@
                                         <td>@trip.getEmail</td> <!-- TODO Update to id once user id is there -->
                                         <td>@trip.getName</td>
                                         <td><button class="btn btn-primary">Edit</button></td>
-                                        <td><button class="btn btn-danger">Delete</button></td>
+                                        <td>
+                                            <a href="#">
+                                                <button class="btn btn-danger" onclick="fillDeleteValues('/admin/trips/@trip.getTripId/delete')">Delete</button>
+                                            </a>
+                                        </td>
                                         <td><button class="btn btn-info">View</button></td>
                                     </tr>
 
@@ -391,8 +395,6 @@
 
 
         function fillDeleteValues(route){
-            console.log("d");
-            console.log(document.getElementById("noot").href);
             var a = document.getElementById("confirmDeleteHrf");
             a.href = route;
             console.log(a.href);
@@ -420,8 +422,7 @@
                 </div>
                 <!-- body -->
                 <div class="modal-body">
-                    <h5>Are you sure you want to delete user.....*NEED TO ADD USER* </h5>
-                    <input id="delete">
+                    <h5>Are you sure you want to delete</h5>
                 </div>
                 <!-- footer -->
                 <div class="modal-footer">

@@ -45,6 +45,8 @@ public class AdminController {
 
     /**
      * Function to delete a profile with the given email from the database using the profile controller method
+     *
+     * @apiNote
      * @param request
      * @param email the email of the user who is to be deleted
      * @return
@@ -56,10 +58,13 @@ public class AdminController {
         }, httpExecutionContext.current());
     }
 
+
     /**
-     * Function to send data to the admin page with all users profiles, trips and destinations and then show the page
-     * @param request
-     * @return a redirect to the admin page
+     * Endpoint method to show the admin page on the site
+     *
+     * @apiNote /admin
+     * @param request the http request
+     * @return the rendered page with status ok
      */
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
@@ -72,6 +77,8 @@ public class AdminController {
 
     /**
      * Create model for editing a users profile in the admin page
+     *
+     * @apiNote
      * @param request
      * @param id of the profile to be edited
      * @return a redirect to the admin page
@@ -90,6 +97,8 @@ public class AdminController {
      * Updates a profile's attributes based on what is retrieved form the form via the admin
      *
      * @param request Http requestRequest
+     * @apiNote
+     * @param request Http request
      * @return a redirect to the profile page
      */
     public CompletionStage<Result> update (Http.Request request, String id){
@@ -117,5 +126,19 @@ public class AdminController {
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
         List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
         return ok(admin.render(profiles, trips, destinations, null, profileEditForm, profile, request, messagesApi.preferred(request)));
+    }
+
+    /**
+     * Endpoint method to delete a trip from the database
+     *
+     * @apiNote /admin/trip/:tripId/delete
+     * @param request
+     * @param tripId
+     * @return
+     */
+    public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
+        return tripRepository.delete(tripId).thenApplyAsync( x -> {
+           return redirect("/admin");
+        });
     }
 }
