@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], selectedProfile: Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -119,20 +119,37 @@
                                         <th>Alter Admin</th>
                                     </tr>
                                 </thead>
-                                @for(profile <- profiles) {
+                                @if(selectedProfile == null) {
+                                    @for(profile <- profiles) {
+                                        <tr>
+                                            <td>Profile Id</td>
+                                            <td>@profile.getEmail</td>
+                                            <td>
+                                                <a id="noot" href="@routes.AdminController.showEditProfile(profile.getEmail)">
+                                                    <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
+                                                </a> </td>
+                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
+                                            <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
+                                            <td>@profile.isAdmin</td>
+                                                <!-- TODO Update to id once deadbolt is working -->
+                                            <td><button class="btn btn-info">Admin</button></td>
+                                        </tr>
+
+                                    }
+                                }else{
                                     <tr>
                                         <td>Profile Id</td>
-                                        <td>@profile.getEmail</td>
+                                        <td>@selectedProfile.getEmail</td>
                                         <td>
-                                        <a id="noot" href="@routes.AdminController.showEditProfile(profile.getEmail)">
-                                        <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
-                                        </a> </td>
+                                            <a id="noot" href="@routes.AdminController.showEditProfile(selectedProfile.getEmail)">
+                                                <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
+                                            </a> </td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
-                                        <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
-                                        <td>@profile.isAdmin</td> <!-- TODO Update to id once deadbolt is working -->
+                                        <td><button class="btn btn-primary" onclick="showProfile(selectedProfile)">View</button></td>
+                                        <td>@selectedProfile.isAdmin</td>
+                                            <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
                                     </tr>
-
                                 }
                             </table>
                         </div>

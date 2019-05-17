@@ -11,6 +11,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
+import repository.TripRepository;
 import views.html.admin;
 
 import javax.inject.Inject;
@@ -65,7 +66,7 @@ public class AdminController {
         List<Trip> trips = Trip.find.all();
         List<Destination> destinations = Destination.find.all();
 
-        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, request, messagesApi.preferred(request)));
     }
 
 
@@ -82,7 +83,7 @@ public class AdminController {
 
         Profile editProfile = profileRepository.getProfileById(id);
         Form<Profile> profileForm = profileEditForm.fill(editProfile);
-        return ok(admin.render(profiles, trips, destinations, editProfile, profileForm, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, destinations, editProfile, profileForm, null, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -106,15 +107,15 @@ public class AdminController {
     /**
      * Function to send data to the admin page with a specific users profiles, that users trips and destinations
      * and then show the page
-     * @param request        TreeMultimap<Long, Integer> tripsMap = profile.getTrips();
+     * @param request
      * @return a redirect to the admin page
      */
     public Result showProfile(Http.Request request, String email) {
         Profile profile = profileRepository.getProfileById(email);
-        List<Profile> profiles = new ArrayList<>();
+        List<Profile> profiles = Profile.find.all();
         profiles.add(profile);
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
         List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
-        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, profile, request, messagesApi.preferred(request)));
     }
 }
