@@ -1,26 +1,22 @@
 package controllers;
 
-import com.google.common.collect.TreeMultimap;
 import models.Destination;
 import models.Profile;
+import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
-import models.Trip;
 import play.i18n.MessagesApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http;
 import play.mvc.Result;
-import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
-import repository.TripRepository;
-import scala.Int;
 import views.html.admin;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
-
 
 import static play.mvc.Results.ok;
 import static play.mvc.Results.redirect;
@@ -50,7 +46,8 @@ public class AdminController {
      * @param email the email of the user who is to be deleted
      * @return
      */
-    private CompletionStage<Result> deleteProfile (Http.Request request, String email){
+    public CompletionStage<Result> deleteProfile (Http.Request request, String email){
+        System.out.println("yeet");
         return profileRepository.delete(email).thenApplyAsync(userEmail -> {
             return redirect("/admin");
         }, httpExecutionContext.current());

@@ -61,6 +61,7 @@ GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWit
 #Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
 GET     /admin                       controllers.AdminController.show(request: Request)
-GET     /admin/update                controllers.AdminController.showEditProfile(request: Request, id: String)
+GET     /admin/:id/update                controllers.AdminController.showEditProfile(request: Request, id: String)
 POST   /admin                       controllers.AdminController.update(request: Request, id: String)
+GET   /admin/:email/delete         controllers.AdminController.deleteProfile(request: Request, email: String)
 GET     /admin/profile                 controllers.AdminController.showProfile(request: Request, profileId: String)

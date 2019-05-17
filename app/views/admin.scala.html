@@ -118,10 +118,10 @@
                                         <td>Profile Id</td>
                                         <td>@profile.getEmail</td>
                                         <td>
-                                        <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
+                                        <a id="noot" href="@routes.AdminController.showEditProfile(profile.getEmail)">
                                         <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                         </a> </td>
-                                        <td><button class="btn btn-danger" data-toggle="modal" data-target="#conformationDeleteModal" onclick="setVariables(@profile.getEmail)">Delete</button></td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
                                         <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
                                         <td>@profile.isAdmin</td> <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
@@ -367,8 +367,13 @@
         } );
 
 
-        function setVariables(email){
-            this.email = email;
+        function fillDeleteValues(route){
+            console.log("d");
+            console.log(document.getElementById("noot").href);
+            var a = document.getElementById("confirmDeleteHrf");
+            a.href = route;
+            console.log(a.href);
+            $('#conformationDeleteModal').modal('show');
         }
 
         function runDelete(){
@@ -393,11 +398,15 @@
                 <!-- body -->
                 <div class="modal-body">
                     <h5>Are you sure you want to delete user.....*NEED TO ADD USER* </h5>
+                    <input id="delete">
                 </div>
                 <!-- footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn-primary" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn-outline-secondary" onclick="runDelete()">Delete</button>
+                    <a href="#" id="confirmDeleteHrf">
+                        <button type="submit" id="confirmDeleteBtn" class="btn-outline-secondary" onclick="runDelete()">Delete</button>
+                    </a>
+
                 </div>
             </div>
         </div>
