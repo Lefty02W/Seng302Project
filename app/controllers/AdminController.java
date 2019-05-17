@@ -25,19 +25,21 @@ public class AdminController {
 
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
+    private final TripRepository tripRepository;
     private final Form<Profile> profileEditForm;
     private final FormFactory profileFormFactory;
 
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     @Inject
-    public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository){
+    public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository, TripRepository tripRepository){
         this.profileEditForm = profileFormFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.profileFormFactory = profileFormFactory;
+        this.tripRepository = tripRepository;
     }
 
     /**
@@ -107,11 +109,11 @@ public class AdminController {
      * @param request        TreeMultimap<Long, Integer> tripsMap = profile.getTrips();
      * @return a redirect to the admin page
      */
-    public Result showProfile(Http.Request request, String profileId) {
-        Profile profile = profileRepository.getProfileById(profileId);
+    public Result showProfile(Http.Request request, String email) {
+        Profile profile = profileRepository.getProfileById(email);
         List<Profile> profiles = new ArrayList<>();
         profiles.add(profile);
-        List<Trip> trips = new ArrayList<>(profile.getTripsMap().values());
+        List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
         List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
         return ok(admin.render(profiles, trips, destinations, null, profileEditForm, request, messagesApi.preferred(request)));
     }
