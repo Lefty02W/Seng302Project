@@ -1,4 +1,4 @@
-@import play.mvc.Http
+@@import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
 
@@ -107,14 +107,10 @@
                                         <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
                                         <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                         </a> </td>
-                                        <td><button class="btn btn-danger">Delete</button></td>
+                                        <td><button class="btn btn-danger" data-toggle="modal" data-target="#conformationDeleteModal" onclick="setVariables(@profile.getEmail)">Delete</button></td>
                                         <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
                                         <td>@profile.isAdmin</td> <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
-                                        <td><button class="btn-primary">Edit</button></td>
-                                        <td><button class="btn-danger" data-toggle="modal" data-target="#conformationDeleteModal" onclick="setVariables(@profile.getEmail)">Delete</button></td>
-                                        <td>@profile.isAdmin</td>
-                                        <td><button>Admin</button></td>
                                     </tr>
 
                                 }
