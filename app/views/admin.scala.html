@@ -52,6 +52,20 @@
                     </div>
                 </nav>
                 <div class="container">
+                    <div class="row">
+                        <div class="filterWriting">
+                            <h2 align="right">Filter by profile</h2>
+                        </div>
+                        <div class="dropDownAndButton">
+                            <select title="Profile" id="profileSelect">
+                            @for(profile <- profiles) {
+                                <option value="@profile.getEmail">@profile.getFirstName</option>
+                            }
+                            </select>
+                            <button type="submit" id="searchBttn" onclick="chooseAdmin()">Search</button>
+                        </div>
+                    </div>
+
                     <!-- TODO needs to show all admins - wait for deadbolt -->
                     <div class="col">
                         <div class="row">
@@ -359,6 +373,11 @@
 
         function runDelete(){
             email = this.email;
+        }
+
+        function chooseAdmin() {
+            var e = document.getElementById("profileSelect");
+            alert(e.value);
         }
 
 

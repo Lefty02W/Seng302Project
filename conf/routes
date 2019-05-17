@@ -63,5 +63,4 @@ POST    /admin/:email                controllers.ProfileController.updateAdmin(r
 GET     /admin                       controllers.AdminController.show(request: Request)
 GET     /admin/update                controllers.AdminController.showEditProfile(request: Request, id: String)
 POST   /admin                       controllers.AdminController.update(request: Request, id: String)
-
-
+GET     /admin/profile                 controllers.AdminController.showProfile(request: Request, profileId: String)

@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.common.collect.TreeMultimap;
 import models.Destination;
 import models.Profile;
 import play.data.Form;
@@ -10,11 +11,14 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import repository.DestinationRepository;
 import repository.ProfileRepository;
+import repository.TripRepository;
+import scala.Int;
 import views.html.admin;
 
 import javax.inject.Inject;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 
@@ -24,15 +28,17 @@ import static play.mvc.Results.redirect;
 public class AdminController {
 
     private final ProfileRepository profileRepository;
+    private final DestinationRepository destinationRepository;
     private final Form<Profile> profileEditForm;
     private final FormFactory profileFormFactory;
 
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     @Inject
-    public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ProfileRepository profileRepository){
+    public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository){
         this.profileEditForm = profileFormFactory.form(Profile.class);
         this.profileRepository = profileRepository;
+        this.destinationRepository = destinationRepository;
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.profileFormFactory = profileFormFactory;
@@ -50,7 +56,11 @@ public class AdminController {
         }, httpExecutionContext.current());
     }
 
-
+    /**
+     * Function to send data to the admin page with all users profiles, trips and destinations and then show the page
+     * @param request
+     * @return a redirect to the admin page
+     */
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
         List<Trip> trips = Trip.find.all();
@@ -59,11 +69,12 @@ public class AdminController {
         return ok(admin.render(profiles, trips, destinations, null, profileEditForm, request, messagesApi.preferred(request)));
     }
 
+
     /**
      * Create model for editing a users profile in the admin page
      * @param request
      * @param id of the profile to be edited
-     * @return
+     * @return a redirect to the admin page
      */
     public Result showEditProfile(Http.Request request, String id) {
         List<Profile> profiles = Profile.find.all();
@@ -78,7 +89,7 @@ public class AdminController {
     /**
      * Updates a profile's attributes based on what is retrieved form the form via the admin
      *
-     * @param request Http request
+     * @param request Http requestRequest
      * @return a redirect to the profile page
      */
     public CompletionStage<Result> update (Http.Request request, String id){
@@ -91,5 +102,20 @@ public class AdminController {
                 id).thenApplyAsync(x -> {
             return redirect("/admin");
         }, httpExecutionContext.current());
+    }
+
+    /**
+     * Function to send data to the admin page with a specific users profiles, that users trips and destinations
+     * and then show the page
+     * @param request        TreeMultimap<Long, Integer> tripsMap = profile.getTrips();
+     * @return a redirect to the admin page
+     */
+    public Result showProfile(Http.Request request, String profileId) {
+        Profile profile = profileRepository.getProfileById(profileId);
+        List<Profile> profiles = new ArrayList<>();
+        profiles.add(profile);
+        List<Trip> trips = new ArrayList<>(profile.getTripsMap().values());
+        List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
+        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, request, messagesApi.preferred(request)));
     }
 }
