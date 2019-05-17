@@ -11,6 +11,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
+import repository.TripDestinationsRepository;
 import repository.TripRepository;
 import views.html.admin;
 
@@ -29,11 +30,15 @@ public class AdminController {
     private final TripRepository tripRepository;
     private final Form<Profile> profileEditForm;
     private final FormFactory profileFormFactory;
+    private final TripDestinationsRepository tripDestinationsRepository;
 
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     @Inject
-    public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository, TripRepository tripRepository){
+    public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext,
+                           MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
+                                       destinationRepository, TripRepository tripRepository, TripDestinationsRepository
+                           tripDestinationsRepository){
         this.profileEditForm = profileFormFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
@@ -41,6 +46,7 @@ public class AdminController {
         this.messagesApi = messagesApi;
         this.profileFormFactory = profileFormFactory;
         this.tripRepository = tripRepository;
+        this.tripDestinationsRepository = tripDestinationsRepository;
     }
 
     /**
@@ -132,13 +138,35 @@ public class AdminController {
      * Endpoint method to delete a trip from the database
      *
      * @apiNote /admin/trip/:tripId/delete
-     * @param request
-     * @param tripId
-     * @return
+     * @param request the http request
+     * @param tripId the id of the trip to delete
+     * @return a redirect to /admin
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
         return tripRepository.delete(tripId).thenApplyAsync( x -> {
            return redirect("/admin");
         });
+    }
+
+    /**
+     * Endpoint method to delete a destination from the database
+     *
+     * @apiNote /admin/destinations/:destId/delete
+     * @param request the heep request
+     * @param destId the id of the destination to delete
+     * @return a redirect to /admin
+     */
+    public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
+        tripDestinationsRepository.checkDestinationExists(destId)
+                .thenApplyAsync(result -> {
+                   if(result.isPresent()) {
+                       if (result.get().size() > 0) {
+                           return redirect("/admin").flashing("destinations", "Destination: " + destId + "is used" +
+                                   "within the following trips: " + result.get());
+                       }
+                   }
+                   destinationRepository.delete(destId);
+                   return redirect("/admin");
+                });
     }
 }

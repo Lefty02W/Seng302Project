@@ -209,7 +209,11 @@
                                         <td>@destination.getDestinationId</td>
                                         <td>@destination.getUserEmail</td> <!-- TODO Update to id once user id is there -->
                                         <td>@destination.getName</td>
-                                        <td><button class="btn btn-primary">Edit</button></td>
+                                        <td>
+                                            <a href="#">
+                                                <button class="btn btn-primary" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Edit</button>
+                                            </a>
+                                        </td>
                                         <td><button class="btn btn-danger">Delete</button></td>
                                         <td><button class="btn btn-info">View</button></td>
                                     </tr>
