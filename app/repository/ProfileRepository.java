@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
@@ -98,10 +99,15 @@ public class ProfileRepository {
                 query.setParameter(6, profile.getBirthDate());
                 query.setParameter(7, profile.getGender());
                 //query.setParameter(8, profile.isAdmin());
+                query.setGetGeneratedKeys(true); // Need to set the ID of the generated key
                 query.execute();
-                value = profile.getProfileId();
+                txn.commit();
+                System.out.println("__________________________");
+                System.out.println("__________________________");
+                System.out.println(query.getGeneratedKey());
+                value = parseInt(query.getGeneratedKey().toString()); // Id of the newly created profile
                 for (String passportName: profile.getPassportsList()) {
-                    System.out.println("YEEETETETETE: "+passportName);
+                    System.out.println("YEEETETETETE: "+passportName + value);
                     profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(0, passportName), value);
                 }
                 for (String nationalityName: profile.getNationalityList()) {
@@ -117,7 +123,6 @@ public class ProfileRepository {
         } finally {
             txn.end();
         }
-        txn.commit();
             return Optional.of(value);
         }, executionContext);
     }

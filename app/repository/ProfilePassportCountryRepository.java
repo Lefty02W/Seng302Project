@@ -31,6 +31,8 @@ public class ProfilePassportCountryRepository {
      */
     public Optional<Integer> insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
        try {
+           System.out.println("This shouldnt be null: " + profileId);
+           System.out.println("This shouldnt be null: " + passport.getPassportName());
            Optional<Integer> idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName());
            Integer passportId;
            if (!idOpt.isPresent()) {
