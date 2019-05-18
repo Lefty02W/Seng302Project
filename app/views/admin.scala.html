@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], tripToView: Trip)(implicit request: Http.Request, messages: play.i18n.Messages)
-
+@import models.Profile; var x = currentUser
 
 <!DOCTYPE html>
 <html>
@@ -139,7 +139,7 @@
                                                 <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                             </a> </td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
-                                        <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
+                                        <td><button class="btn btn-primary" onclick="@(x = profile);showProfile()">View</button></td>
                                         <td>@profile.isAdmin</td>
                                             <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
@@ -418,6 +418,38 @@
             alert(e.value);
         }
 
+        function showProfile() {
+            document.getElementById("viewProfileTitile").innerHTML = "Profile: @x.getEmail";
+            document.getElementById("viewFirstName").innerHTML = "First Name: @x.getFirstName";
+            document.getElementById("viewMiddleName").innerHTML = "Middle Name: @x.getMiddleName";
+            document.getElementById("viewLastName").innerHTML = "Last Name: @x.getLastName";
+            document.getElementById("viewEmail").innerHTML = "Email: @x.getEmail";
+            document.getElementById("viewBirthDate").innerHTML = "Birth Date: @x.getBirthString";
+            document.getElementById("viewGender").innerHTML = "Gender: @x.getGender";
+
+            @for(typeText <- x.getTravellerTypesList) {
+                var travellerType = document.createElement("LI");
+                var typeValue = document.createTextNode("@typeText");
+                travellerType.appendChild(typeValue);
+                document.getElementById("viewTravellerTypeList").appendChild(travellerType);
+            }
+
+            @for(nationality <- x.getNationalityList) {
+                var nationalityItem = document.createElement("LI");
+                var textValue = document.createTextNode("@nationality");
+                nationalityItem.appendChild(textValue);
+                document.getElementById("viewNationalitiesList").appendChild(nationalityItem);
+            }
+
+            @for(passport <- x.getPassportsList) {
+                var country = document.createElement("LI");
+                var countryValue = document.createTextNode("@passport");
+                country.appendChild(countryValue);
+                document.getElementById("viewPassportsList").appendChild(country);
+            }
+            $('#viewProfileModal').modal('show');
+        }
+
 
     </script>
     <div class="modal" id="conformationDeleteModal">
@@ -489,4 +521,54 @@
             </div>
         </div>
     }
+
+    <div class="modal" id="viewProfileModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 id="viewProfileTitile" class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- body -->
+                <div class="modal-body">
+                    <div id="profileImageRow" class="row">
+
+                    </div>
+                    <div class="row">
+                        <div class="row">
+                            <div class="col">
+                                <ul>
+                                    <li id="viewFirstName"></li>
+                                    <li id="viewMiddleName"></li>
+                                    <li id="viewLastName"></li>
+                                    <li id="viewEmail"></li>
+                                    <li id="viewBirthDate"></li>
+                                    <li id="viewGender"></li>
+                                </ul>
+                            </div>
+                            <div class="col">
+                                <ul>
+                                    <li>Traveller Types
+                                        <ul id="viewTravellerTypeList"></ul>
+                                    </li>
+                                    <li>Nationalities
+                                        <ul id="viewNationalitiesList"></ul>
+                                    </li>
+                                    <li>Passport Countries
+                                        <ul id="viewPassportsList"></ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </html>
