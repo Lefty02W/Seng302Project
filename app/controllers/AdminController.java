@@ -144,7 +144,10 @@ public class AdminController {
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
         return tripRepository.delete(tripId).thenApplyAsync( x -> {
-           return redirect("/admin");
+           return redirect("/admin")
+                   .flashing(
+                           "info",
+                           "Trip: " + tripId + " deleted");
         });
     }
 
@@ -157,16 +160,28 @@ public class AdminController {
      * @return a redirect to /admin
      */
     public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
-        tripDestinationsRepository.checkDestinationExists(destId)
-                .thenApplyAsync(result -> {
-                   if(result.isPresent()) {
-                       if (result.get().size() > 0) {
-                           return redirect("/admin").flashing("destinations", "Destination: " + destId + "is used" +
-                                   "within the following trips: " + result.get());
-                       }
-                   }
-                   destinationRepository.delete(destId);
-                   return redirect("/admin");
+        return tripDestinationsRepository
+            .checkDestinationExists(destId)
+            .thenApplyAsync(
+                result -> {
+                  if (result.isPresent()) {
+                    if (result.get().size() > 0) {
+                      return redirect("/admin")
+                          .flashing(
+                              "error",
+                              "Destination: "
+                                  + destId
+                                  + " is used within the following trips: "
+                                  + result.get());
+                    }
+                  }
+                  destinationRepository.delete(destId);
+                  return redirect("/admin")
+                          .flashing(
+                                  "info",
+                                  "Destination: "
+                                          + destId
+                                          + " deleted");
                 });
     }
 }

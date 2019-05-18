@@ -52,7 +52,18 @@
                     </div>
                 </nav>
                 <div class="container">
-                    <div class="row">
+                    @if(request.flash.getOptional("info").isPresent) {
+                        <div class="alert alert-info">
+                        @request.flash.getOptional("info").get()
+                        </div>
+                    }
+                    @if(request.flash.getOptional("error").isPresent) {
+                        <div class="alert alert-danger">
+                        @request.flash.getOptional("error").get()
+                        </div>
+                    }
+
+                <div class="row">
                         <div class="filterWriting">
                             <h2 align="right">Filter by profile</h2>
                         </div>
@@ -209,12 +220,12 @@
                                         <td>@destination.getDestinationId</td>
                                         <td>@destination.getUserEmail</td> <!-- TODO Update to id once user id is there -->
                                         <td>@destination.getName</td>
+                                        <td><button class="btn btn-primary">Edit</button></td>
                                         <td>
                                             <a href="#">
-                                                <button class="btn btn-primary" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Edit</button>
+                                                <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
                                             </a>
                                         </td>
-                                        <td><button class="btn btn-danger">Delete</button></td>
                                         <td><button class="btn btn-info">View</button></td>
                                     </tr>
 

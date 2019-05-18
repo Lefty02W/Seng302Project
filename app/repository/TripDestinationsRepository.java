@@ -85,11 +85,19 @@ public class TripDestinationsRepository {
      * @return the result of the check with and optional id list of the trips which contain the destination within a completion stage
      */
     public CompletionStage<Optional<List<Integer>>> checkDestinationExists(int destinationId) {
-        return supplyAsync(() -> {
-            List<Integer> foundIds = ebeanServer.find(TripDestination.class).where()
-                    .eq("destination_id", destinationId).findIds();
-            return Optional.of(foundIds);
-        }, executionContext);
+        return supplyAsync(
+            () -> {
+              List<Integer> foundIds =
+                  ebeanServer
+                      .find(TripDestination.class)
+                      .where()
+                      .eq("destination_id", destinationId)
+                      .select("tripId")
+                      .findSingleAttributeList();
+              if (foundIds.size() == 0) return Optional.empty();
+              else return Optional.of(foundIds);
+            },
+            executionContext);
     }
 
 }
