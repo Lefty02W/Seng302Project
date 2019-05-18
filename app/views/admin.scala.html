@@ -1,6 +1,6 @@
-@import play.mvc.Http
+@@import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], selectedProfile: Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], tripToView: Trip)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -16,11 +16,11 @@
     <script src="@routes.Assets.at("javascripts/jquery.dataTables.js")" type="text/javascript"></script>
     <script src="@routes.Assets.at("javascripts/dataTables.bootstrap4.js")" type="text/javascript"></script>
 
-
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/admin.css")">
-    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
+
 
     <head>
         <title>TravelEA | Destinations</title>
@@ -130,34 +130,17 @@
                                         <th>Alter Admin</th>
                                     </tr>
                                 </thead>
-                                @if(selectedProfile == null) {
-                                    @for(profile <- profiles) {
-                                        <tr>
-                                            <td>Profile Id</td>
-                                            <td>@profile.getEmail</td>
-                                            <td>
-                                                <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
-                                                    <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
-                                                </a> </td>
-                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
-                                            <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
-                                            <td>@profile.isAdmin</td>
-                                                <!-- TODO Update to id once deadbolt is working -->
-                                            <td><button class="btn btn-info">Admin</button></td>
-                                        </tr>
-
-                                    }
-                                }else{
+                                @for(profile <- profiles) {
                                     <tr>
                                         <td>Profile Id</td>
-                                        <td>@selectedProfile.getEmail</td>
+                                        <td>@profile.getEmail</td>
                                         <td>
-                                            <a href="@routes.AdminController.showEditProfile(selectedProfile.getEmail)">
+                                            <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
                                                 <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                             </a> </td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
-                                        <td><button class="btn btn-primary" onclick="showProfile(selectedProfile)">View</button></td>
-                                        <td>@selectedProfile.isAdmin</td>
+                                        <td><button class="btn btn-primary" onclick="showProfile(profile)">View</button></td>
+                                        <td>@profile.isAdmin</td>
                                             <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
                                     </tr>
@@ -188,11 +171,13 @@
                                         <td>@trip.getName</td>
                                         <td><button class="btn btn-primary">Edit</button></td>
                                         <td>
-                                            <a href="#">
-                                                <button class="btn btn-danger" onclick="fillDeleteValues('/admin/trips/@trip.getTripId/delete')">Delete</button>
+                                            <button class="btn btn-danger" onclick="fillDeleteValues('/admin/trips/@trip.getTripId/delete')">Delete</button>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/trips/@trip.getTripId">
+                                                <button class="btn btn-info">View</button>
                                             </a>
                                         </td>
-                                        <td><button class="btn btn-info">View</button></td>
                                     </tr>
 
                                 }
@@ -222,11 +207,11 @@
                                         <td>@destination.getName</td>
                                         <td><button class="btn btn-primary">Edit</button></td>
                                         <td>
-                                            <a href="#">
-                                                <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
-                                            </a>
+                                            <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
                                         </td>
-                                        <td><button class="btn btn-info">View</button></td>
+                                        <td>
+                                            <button class="btn btn-info">View</button>
+                                        </td>
                                     </tr>
 
                                 }
@@ -408,6 +393,14 @@
             });
         } );
 
+        $(document).ready(function() {
+            $('#tripDestTable').DataTable({
+                "searching": false,
+                "pageLength": 8,
+                "lengthChange": false
+            });
+        } );
+
 
         function fillDeleteValues(route){
             var a = document.getElementById("confirmDeleteHrf");
@@ -450,4 +443,50 @@
             </div>
         </div>
     </div>
+
+
+    @if(tripToView != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#viewTripModal').modal('show');
+                });
+        </script>
+        <div class="modal" id="viewTripModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h3>@tripToView.getName</h3>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    <div class="modal-body">
+                        <h3 class="dark-header">Destinations Visited</h3>
+                        <table id="tripDestTable" class="trip-table">
+                            <thead>
+                                <tr>
+                                    <th>Order</th>
+                                    <th>Destination Name</th>
+                                    <th>Dates</th>
+                            </thead>
+                            @for(tripDestination <- tripToView.getDestinations) {
+                                <tr>
+                                    <td>Destination @tripDestination.getDestOrder</td>
+                                    <td>@tripDestination.getDestinationName</td>
+                                    <td>@tripDestination.getDisplayDates</td>
+                                </tr>
+                            }
+
+                        </table>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <a href="@routes.AdminController.show()">
+                            <button type="button" class="btn-secondary">Close</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </html>

@@ -68,4 +68,5 @@ GET     /admin/:profileId/profile                 controllers.AdminController.sh
 
 ## Admin Trips
 GET     /admin/trips/:tripId/delete     controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
+GET     /admin/trips/:tripId            controllers.AdminController.viewTrip(request: Request, tripId: Integer)
 GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)

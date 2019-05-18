@@ -20,20 +20,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.redirect;
 
+
+/**
+ * This class provides the api endpoint functionality for the admin page of the site
+ */
 public class AdminController {
 
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
     private final TripRepository tripRepository;
     private final Form<Profile> profileEditForm;
-    private final FormFactory profileFormFactory;
     private final TripDestinationsRepository tripDestinationsRepository;
 
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
+
+    private String adminEndpoint = "/admin";
+
     @Inject
     public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext,
                            MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
@@ -44,7 +51,6 @@ public class AdminController {
         this.destinationRepository = destinationRepository;
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
-        this.profileFormFactory = profileFormFactory;
         this.tripRepository = tripRepository;
         this.tripDestinationsRepository = tripDestinationsRepository;
     }
@@ -58,9 +64,8 @@ public class AdminController {
      * @return
      */
     public CompletionStage<Result> deleteProfile (Http.Request request, String email){
-        System.out.println("yeet");
         return profileRepository.delete(email).thenApplyAsync(userEmail -> {
-            return redirect("/admin");
+            return redirect(adminEndpoint);
         }, httpExecutionContext.current());
     }
 
@@ -72,12 +77,14 @@ public class AdminController {
      * @param request the http request
      * @return the rendered page with status ok
      */
-    public Result show(Http.Request request) {
-        List<Profile> profiles = Profile.find.all();
-        List<Trip> trips = Trip.find.all();
-        List<Destination> destinations = Destination.find.all();
+    public CompletionStage<Result> show(Http.Request request) {
+        return supplyAsync(() -> {
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
 
-        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, request, messagesApi.preferred(request)));
+        });
     }
 
 
@@ -115,7 +122,7 @@ public class AdminController {
 
         return profileRepository.update(profile, profile.getPassword(),
                 id).thenApplyAsync(x -> {
-            return redirect("/admin");
+            return redirect(adminEndpoint);
         }, httpExecutionContext.current());
     }
 
@@ -127,11 +134,11 @@ public class AdminController {
      */
     public Result showProfile(Http.Request request, String email) {
         Profile profile = profileRepository.getProfileById(email);
-        List<Profile> profiles = Profile.find.all();
+        List<Profile> profiles = new ArrayList<>();
         profiles.add(profile);
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
         List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
-        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, profile, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -144,12 +151,32 @@ public class AdminController {
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
         return tripRepository.delete(tripId).thenApplyAsync( x -> {
-           return redirect("/admin")
+           return redirect(adminEndpoint)
                    .flashing(
                            "info",
                            "Trip: " + tripId + " deleted");
         });
     }
+
+    /**
+     * Endpoint method allowing an admin to view a selected trip
+     *
+     * @apiNote /admin/trips/:tripId
+     * @param request the request sent to view the trip
+     * @param tripId the id of the trip to view
+     * @return the admin page rendered with the view trip modal with status ok
+     */
+    public CompletionStage<Result> viewTrip(Http.Request request, Integer tripId) {
+        return supplyAsync(() -> {
+            Trip trip = tripRepository.getTrip(tripId);
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+
+            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, trip, request, messagesApi.preferred(request)));
+        });
+    }
+
 
     /**
      * Endpoint method to delete a destination from the database
@@ -165,18 +192,16 @@ public class AdminController {
             .thenApplyAsync(
                 result -> {
                   if (result.isPresent()) {
-                    if (result.get().size() > 0) {
-                      return redirect("/admin")
+                      return redirect(adminEndpoint)
                           .flashing(
                               "error",
                               "Destination: "
                                   + destId
                                   + " is used within the following trips: "
                                   + result.get());
-                    }
                   }
                   destinationRepository.delete(destId);
-                  return redirect("/admin")
+                  return redirect(adminEndpoint)
                           .flashing(
                                   "info",
                                   "Destination: "
@@ -184,4 +209,5 @@ public class AdminController {
                                           + " deleted");
                 });
     }
+
 }

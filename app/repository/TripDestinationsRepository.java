@@ -94,7 +94,7 @@ public class TripDestinationsRepository {
                       .eq("destination_id", destinationId)
                       .select("tripId")
                       .findSingleAttributeList();
-              if (foundIds.size() == 0) return Optional.empty();
+              if (foundIds.isEmpty()) return Optional.empty();
               else return Optional.of(foundIds);
             },
             executionContext);
