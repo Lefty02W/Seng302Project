@@ -469,7 +469,7 @@
                                     <th>Destination Name</th>
                                     <th>Dates</th>
                             </thead>
-                            @for(tripDestination <- tripToView.getDestinations) {
+                            @for(tripDestination <- tripToView.getOrderedDestiantions().values()) {
                                 <tr>
                                     <td>Destination @tripDestination.getDestOrder</td>
                                     <td>@tripDestination.getDestinationName</td>
@@ -482,7 +482,7 @@
                         <!-- footer -->
                     <div class="modal-footer">
                         <a href="@routes.AdminController.show()">
-                            <button type="button" class="btn-secondary">Close</button>
+                            <button class="btn btn-secondary">Close</button>
                         </a>
                     </div>
                 </div>
