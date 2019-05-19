@@ -208,13 +208,15 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Integer>> delete(Integer profileId) {
         return supplyAsync(() -> {
-            try {
-                final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class).setId(profileId).findOne());
-                profileOptional.ifPresent(Model::delete);
-                return profileOptional.map(p -> p.getProfileId());
-            } catch (Exception e) {
-                return Optional.empty();
-            }
+            Transaction txn = ebeanServer.beginTransaction();
+            String deleteQuery = "delete * from profile Where profile_id = ?";
+            SqlUpdate query = Ebean.createSqlUpdate(deleteQuery);
+            query.setParameter(1, profileId);
+            query.execute();
+            txn.commit();
+            Integer value;
+            value = parseInt(query.getGeneratedKey().toString()); // Id of the newly created profile
+            return Optional.of(value);
         }, executionContext);
     }
 
