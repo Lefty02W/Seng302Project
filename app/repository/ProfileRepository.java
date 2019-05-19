@@ -102,9 +102,6 @@ public class ProfileRepository {
                 query.setGetGeneratedKeys(true); // Need to set the ID of the generated key
                 query.execute();
                 txn.commit();
-                System.out.println("__________________________");
-                System.out.println("__________________________");
-                System.out.println(query.getGeneratedKey());
                 value = parseInt(query.getGeneratedKey().toString()); // Id of the newly created profile
                 for (String passportName: profile.getPassportsList()) {
                     System.out.println("YEEETETETETE: "+passportName + value);

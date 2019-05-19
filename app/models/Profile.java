@@ -178,7 +178,6 @@ public class Profile extends Model {
             i++;
             TravellerType travellerType = new TravellerType(i, travellerTypesString);
             this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
-
         }
     }
 
@@ -306,10 +305,10 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getTravellerTypesList() {
-        ArrayList<TravellerType> nationalityObjects = new ArrayList<TravellerType>(travellerTypes.values());
+        ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
         ArrayList<String> toReturn = new ArrayList<>();
-        for (TravellerType nationality : nationalityObjects) {
-            toReturn.add(nationality.getTravellerTypeName());
+        for (TravellerType type : typeObjects) {
+            toReturn.add(type.getTravellerTypeName());
         }
         return toReturn;
     }

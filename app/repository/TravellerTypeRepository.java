@@ -52,7 +52,11 @@ public class TravellerTypeRepository {
      * @return Optional completion stage holding the id of the entry that has been created
      */
     public Optional<Integer> insert(TravellerType travellerTypes) {
-        ebeanServer.insert(travellerTypes);
+        try {
+            ebeanServer.insert(travellerTypes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return Optional.of(travellerTypes.getTravellerTypeId());
     }
 

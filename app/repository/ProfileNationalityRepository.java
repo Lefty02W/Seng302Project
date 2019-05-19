@@ -30,28 +30,31 @@ public class ProfileNationalityRepository {
      * @param nationality The nationality to add
      * @return
      */
-    public CompletionStage<Optional<Integer>> insertProfileNationality(Nationality nationality, Integer profileId) {
-        return supplyAsync(() -> {
-            Optional<Integer> idOpt = nationalityRepository.getNationalityId(nationality.getNationalityName());
-            Integer nationalityId;
-            if (!idOpt.isPresent()) {
-                nationalityId = nationalityRepository.insert(nationality).get();
-            } else {
-                nationalityId = idOpt.get();
-            }
-            Transaction txn = ebeanServer.beginTransaction();
-            String qry = "INSERT into profile_nationality (profile, nationality) " +
-                    "VALUES (?, ?)";
-            try {
-                SqlUpdate query = Ebean.createSqlUpdate(qry);
-                query.setParameter(1, profileId);
-                query.setParameter(2, nationalityId);
-                query.execute();
-                txn.commit();
-            } finally {
-                txn.end();
-            }
-            return idOpt;
-        }, executionContext);
+    public Optional<Integer> insertProfileNationality(Nationality nationality, Integer profileId) {
+        Integer idOpt;
+        try {
+            idOpt = nationalityRepository.getNationalityId(nationality.getNationalityName()).get();
+        } catch(Exception e) {
+            idOpt = null;
+        }
+        Integer nationalityId;
+        if (idOpt == null) {
+            nationalityId = nationalityRepository.insert(nationality).get();
+        } else {
+            nationalityId = idOpt;
+        }
+        Transaction txn = ebeanServer.beginTransaction();
+        String qry = "INSERT into profile_nationality (profile, nationality) " +
+                "VALUES (?, ?)";
+        try {
+            SqlUpdate query = Ebean.createSqlUpdate(qry);
+            query.setParameter(1, profileId);
+            query.setParameter(2, nationalityId);
+            query.execute();
+            txn.commit();
+        } finally {
+            txn.end();
+        }
+        return Optional.of(nationalityId);
     }
 }
