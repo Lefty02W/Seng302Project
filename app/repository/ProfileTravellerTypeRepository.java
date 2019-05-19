@@ -58,4 +58,18 @@ public class ProfileTravellerTypeRepository {
         }
         return Optional.of(travellerId);
     }
+
+    public void removeAll(Integer profileId) {
+        Transaction txn = ebeanServer.beginTransaction();
+        String qry = "DELETE from profile_traveller_type where profile " +
+                "= ?";
+        try {
+            SqlUpdate query = Ebean.createSqlUpdate(qry);
+            query.setParameter(1, profileId);
+            query.execute();
+            txn.commit();
+        } finally {
+            txn.end();
+        }
+    }
 }

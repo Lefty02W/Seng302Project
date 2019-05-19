@@ -132,16 +132,16 @@ public class ProfileRepository {
      * @param password String of unhashed password.
      * @return
      */
-    public CompletionStage<Optional<String>> update(Profile newProfile, String password, String oldEmail) {
+    public CompletionStage<Optional<Integer>> update(Profile newProfile, String password, int userId) {
 
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             String updateQuery = "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, " +
                     "password = ?, birth_date = ?, gender = ?, passports = ?, nationalities = ?, traveller_types = ?, " +
-                    "admin = ? WHERE email = ?";
-            Optional<String> value = Optional.empty();
+                    "admin = ? WHERE id = ?";
+            Optional<Integer> value = Optional.empty();
             try {
-                if (ebeanServer.find(Profile.class).setId(oldEmail).findOne() != null) {
+                if (ebeanServer.find(Profile.class).setId(userId).findOne() != null) {
                     SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
                     query.setParameter(1, newProfile.getFirstName());
                     query.setParameter(2, newProfile.getMiddleName());
@@ -150,14 +150,26 @@ public class ProfileRepository {
                     query.setParameter(5, password);
                     query.setParameter(6, newProfile.getBirthDate());
                     query.setParameter(7, newProfile.getGender());
-                    query.setParameter(8, newProfile.getPassports());
-                    query.setParameter(9, newProfile.getNationalities());
-                    query.setParameter(10, newProfile.getTravellerTypes());
                     query.setParameter(11, newProfile.isAdmin());
-                    query.setParameter(12, oldEmail);
+                    query.setParameter(12, userId);
                     query.execute();
                     txn.commit();
-                    value = Optional.of(newProfile.getEmail());
+                    profileNationalityRepository.removeAll(userId);
+                    profilePassportCountryRepository.removeAll(userId);
+                    profileTravellerTypeRepository.removeAll(userId);
+                    for (String passportName: newProfile.getPassportsList()) {
+                        System.out.println("YEEETETETETE: "+passportName + value);
+                        profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(0, passportName), userId);
+                    }
+                    for (String nationalityName: newProfile.getNationalityList()) {
+                        System.out.println("YEEETETETETE 2: "+nationalityName);
+                        profileNationalityRepository.insertProfileNationality(new Nationality(0, nationalityName), userId);
+                    }
+                    for (String travellerTypeName: newProfile.getTravellerTypesList()) {
+                        System.out.println("YEEETETETETE 3: "+travellerTypeName);
+                        profileTravellerTypeRepository.insertProfileTravellerType(new TravellerType(0, travellerTypeName), userId);
+                    }
+                    value = Optional.of(newProfile.getProfileId());
                 }
             } finally {
                 txn.end();

@@ -56,4 +56,18 @@ public class ProfilePassportCountryRepository {
         }
         return Optional.of(passportId);
     }
+
+    public void removeAll(Integer profileId) {
+        Transaction txn = ebeanServer.beginTransaction();
+        String qry = "DELETE from profile_passport_country where profile " +
+                "= ?";
+        try {
+            SqlUpdate query = Ebean.createSqlUpdate(qry);
+            query.setParameter(1, profileId);
+            query.execute();
+            txn.commit();
+        } finally {
+            txn.end();
+        }
+    }
 }
