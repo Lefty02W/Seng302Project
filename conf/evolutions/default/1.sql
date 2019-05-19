@@ -80,6 +80,18 @@ create table image (
   constraint pk_image primary key (image_id)
 );
 
+create table nationality (
+  nationality_id                integer auto_increment not null,
+  nationality_name              varchar(255),
+  constraint pk_nationality primary key (nationality_id)
+);
+
+create table passport_country (
+  passport_country_id           integer auto_increment not null,
+  passport_name                 varchar(255),
+  constraint pk_passport_country primary key (passport_country_id)
+);
+
 create table profile (
   email                         varchar(255) not null,
   first_name                    varchar(255),
@@ -94,6 +106,11 @@ create table profile (
   admin                         tinyint(1) default 0 not null,
   time_created                  datetime(6),
   constraint pk_profile primary key (email)
+);
+
+create table traveller_types (
+  traveller_type_id             integer not null,
+  traveller_type_name           varchar(255)
 );
 
 create table trip (
@@ -120,7 +137,13 @@ drop table if exists destination;
 
 drop table if exists image;
 
+drop table if exists nationality;
+
+drop table if exists passport_country;
+
 drop table if exists profile;
+
+drop table if exists traveller_types;
 
 drop table if exists trip;
 
