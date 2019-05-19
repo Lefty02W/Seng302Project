@@ -1,7 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], tripToView: Trip)(implicit request: Http.Request, messages: play.i18n.Messages)
-@import models.Profile; var x = currentUser
+@import models.Profile; var profileToView = currentUser
+@import models.Destination; var destToView = new Destination();
 
 <!DOCTYPE html>
 <html>
@@ -139,7 +140,7 @@
                                                 <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                             </a> </td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
-                                        <td><button class="btn btn-primary" onclick="@(x = profile);showProfile()">View</button></td>
+                                        <td><button class="btn btn-primary" onclick="@(profileToView = profile);showProfile()">View</button></td>
                                         <td>@profile.isAdmin</td>
                                             <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
@@ -210,7 +211,7 @@
                                             <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-info">View</button>
+                                            <button class="btn btn-info" onclick="@(destToView = destination);showDest()">View</button>
                                         </td>
                                     </tr>
 
@@ -419,35 +420,49 @@
         }
 
         function showProfile() {
-            document.getElementById("viewProfileTitile").innerHTML = "Profile: @x.getEmail";
-            document.getElementById("viewFirstName").innerHTML = "First Name: @x.getFirstName";
-            document.getElementById("viewMiddleName").innerHTML = "Middle Name: @x.getMiddleName";
-            document.getElementById("viewLastName").innerHTML = "Last Name: @x.getLastName";
-            document.getElementById("viewEmail").innerHTML = "Email: @x.getEmail";
-            document.getElementById("viewBirthDate").innerHTML = "Birth Date: @x.getBirthString";
-            document.getElementById("viewGender").innerHTML = "Gender: @x.getGender";
+            document.getElementById("viewProfileTitle").innerHTML = "Profile: @profileToView.getEmail";
+            document.getElementById("viewFirstName").innerHTML = "First Name: @profileToView.getFirstName";
+            document.getElementById("viewMiddleName").innerHTML = "Middle Name: @profileToView.getMiddleName";
+            document.getElementById("viewLastName").innerHTML = "Last Name: @profileToView.getLastName";
+            document.getElementById("viewEmail").innerHTML = "Email: @profileToView.getEmail";
+            document.getElementById("viewBirthDate").innerHTML = "Birth Date: @profileToView.getBirthString";
+            document.getElementById("viewGender").innerHTML = "Gender: @profileToView.getGender";
 
-            @for(typeText <- x.getTravellerTypesList) {
+            @for(typeText <- profileToView.getTravellerTypesList) {
                 var travellerType = document.createElement("LI");
                 var typeValue = document.createTextNode("@typeText");
                 travellerType.appendChild(typeValue);
                 document.getElementById("viewTravellerTypeList").appendChild(travellerType);
             }
 
-            @for(nationality <- x.getNationalityList) {
+            @for(nationality <- profileToView.getNationalityList) {
                 var nationalityItem = document.createElement("LI");
                 var textValue = document.createTextNode("@nationality");
                 nationalityItem.appendChild(textValue);
                 document.getElementById("viewNationalitiesList").appendChild(nationalityItem);
             }
 
-            @for(passport <- x.getPassportsList) {
+            @for(passport <- profileToView.getPassportsList) {
                 var country = document.createElement("LI");
                 var countryValue = document.createTextNode("@passport");
                 country.appendChild(countryValue);
                 document.getElementById("viewPassportsList").appendChild(country);
             }
             $('#viewProfileModal').modal('show');
+        }
+
+        function showDest() {
+            document.getElementById("viewDestTitle").innerHTML = "Destination: @destToView.getDestinationId";
+            document.getElementById("viewDestUser").innerHTML = "Owner: @destToView.getUserEmail";
+            document.getElementById("viewDestName").innerHTML = "Name: @destToView.getName";
+            document.getElementById("viewDestType").innerHTML = "Type: @destToView.getType";
+            document.getElementById("viewDestCountry").innerHTML = "Country: @destToView.getCountry";
+            document.getElementById("viewDestDistrict").innerHTML = "District: @destToView.getDistrict";
+            document.getElementById("viewDestLat").innerHTML = "Latitude: @destToView.getLatitude";
+            document.getElementById("viewDestLng").innerHTML = "Longitude: @destToView.getLongitude";
+            document.getElementById("viewDestVis").innerHTML = "Is Public: @destToView.getVisible";
+
+            $('#viewDestModal').modal('show');
         }
 
 
@@ -527,7 +542,7 @@
             <div class="modal-content">
                     <!-- header -->
                 <div class="modal-header">
-                    <h4 id="viewProfileTitile" class="modal-title"></h4>
+                    <h4 id="viewProfileTitle" class="modal-title"></h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                     <!-- body -->
@@ -558,6 +573,43 @@
                                     <li>Passport Countries
                                         <ul id="viewPassportsList"></ul>
                                     </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="viewDestModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 id="viewDestTitle" class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- body -->
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="row">
+                            <div class="col">
+                                <ul>
+                                    <li id="viewDestUser"></li>
+                                    <li id="viewDestName"></li>
+                                    <li id="viewDestType"></li>
+                                    <li id="viewDestCountry"></li>
+                                    <li id="viewDestDistrict"></li>
+                                    <li id="viewDestLat"></li>
+                                    <li id="viewDestLng"></li>
+                                    <li id="viewDestVis"></li>
                                 </ul>
                             </div>
                         </div>
