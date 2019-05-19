@@ -63,12 +63,26 @@ public class ProfileRepository {
 
 
     /**
-     * Finds one profile using a given email as a query
-     * @param email the users email
+     * Finds one profile using its id as a query
+     * @param profileId the users profile id
      * @return a Profile object that matches the email
      */
-    public CompletionStage<Optional<Profile>> lookup(String email) {
-        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Profile.class).setId(email).findOne()), executionContext);
+    public CompletionStage<Optional<Profile>> lookup(int profileId) {
+        return supplyAsync(() -> {
+            String qry = "Select * from profile where profile_id = ?";
+            List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
+            Profile profile = null;
+            if (!rowList.get(0).isEmpty()) {
+                SqlRow p = rowList.get(0);
+                Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(profileId).get();
+                Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
+                Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
+                profile = new Profile(profileId, p.getString("first_name"),  p.getString("middle_name"), p.getString("last_name")
+                , p.getString("email"), p.getDate("birthDate"), passportCountries, p.getString("gender"), p.getDate("time_created")
+                , nationalities, travellerTypes);
+            }
+            return Optional.of(profile);
+        }, executionContext);
     }
 
 

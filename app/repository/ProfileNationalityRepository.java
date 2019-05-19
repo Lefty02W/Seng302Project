@@ -58,6 +58,16 @@ public class ProfileNationalityRepository {
         return Optional.of(nationalityId);
     }
 
+    public Optional<Map<Integer, Nationality>> getList(Integer profileId){
+        String qry = "Select * from profile_nationality where profile = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
+        Map<Integer, Nationality> nationalities = null;
+        for (SqlRow aRowList : rowList) {
+            nationalities.put(aRowList.getInteger("nationality"), nationalityRepository.findById(aRowList.getInteger("nationality")).get());
+        }
+        return Optional.of(nationalities);
+    }
+
     public void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_nationality where profile " +

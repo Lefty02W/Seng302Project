@@ -93,10 +93,8 @@ public class PassportCountryRepository {
      * @param id id of the entry to be found.
      * @return CompletionStage holding an Optional of the PassportCountry if found
      */
-    public CompletionStage<Optional<PassportCountry>> findById(int id) {
-        return supplyAsync(() ->
-                Optional.ofNullable(ebeanServer.find(PassportCountry.class).where()
-                        .eq("passport_country_id", id).findOne()), executionContext);
+    public Optional<PassportCountry> findById(int id) {
+            return Optional.ofNullable(ebeanServer.find(PassportCountry.class).where().eq("passport_country_id", id).findOne());
     }
 
     /**

@@ -59,6 +59,17 @@ public class ProfileTravellerTypeRepository {
         return Optional.of(travellerId);
     }
 
+    public Optional<Map<Integer, TravellerType>> getList(Integer profileId){
+        String qry = "Select * from profile_traveller_type where profile = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
+        Map<Integer, TravellerType> travellerTypeList = null;
+        for (SqlRow aRowList : rowList) {
+            travellerTypeList.put(aRowList.getInteger("traveller_type"), travellerTypeRepository.findById(aRowList.getInteger("traveller_type")).get());
+        }
+        return Optional.of(travellerTypeList);
+    }
+
+
     public void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_traveller_type where profile " +

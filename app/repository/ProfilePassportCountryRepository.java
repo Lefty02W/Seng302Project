@@ -57,6 +57,16 @@ public class ProfilePassportCountryRepository {
         return Optional.of(passportId);
     }
 
+    public Optional<Map<Integer, PassportCountry>> getList(Integer profileId){
+        String qry = "Select * from profile_passport_country where profile = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
+        Map<Integer, PassportCountry> passportList = null;
+        for (SqlRow aRowList : rowList) {
+            passportList.put(aRowList.getInteger("passport_country"), passportCountryRepository.findById(aRowList.getInteger("passport_country")).get());
+        }
+        return Optional.of(passportList);
+    }
+
     public void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_passport_country where profile " +

@@ -78,33 +78,32 @@ public class Profile extends Model {
      * @param firstName
      * @param lastName
      * @param email
-     * @param password
      * @param birthDate
      * @param passports
      * @param gender
      * @param timeCreated
      * @param nationalities
      * @param travellerTypes
-     * @param trips
-     * @param isAdmin
      */
-    public Profile(Integer profileId, String firstName, String lastName, String email, String password, Date birthDate,
+    public Profile(Integer profileId, String firstName, String middleName,
+                   String lastName, String email, Date birthDate,
                    Map<Integer, PassportCountry> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
-                   Map<Integer, TravellerType> travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+                   Map<Integer, TravellerType> travellerTypes) {
         System.out.println("Owo not this one");
         this.profileId = profileId;
         this.firstName = firstName;
+        this.middleName = middleName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
         this.birthDate = birthDate;
         this.passports = passports;
         this.gender = gender;
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
-        this.trips = trips;
-        this.admin = isAdmin;
+        //this.trips = trips;
+        //this.admin = isAdmin;
+        //, ArrayList<Trip> trips, boolean isAdmin
 
     }
 

@@ -66,10 +66,8 @@ public class NationalityRepository {
      * @param id id of the entry to be found.
      * @return CompletionStage holding an Optional of the Nationality if found
      */
-    public CompletionStage<Optional<Nationality>> findById(int id) {
-        return supplyAsync(() ->
-                 Optional.ofNullable(ebeanServer.find(Nationality.class).where()
-                .eq("nationality_id", id).findOne()), executionContext);
+    public Optional<Nationality> findById(int id) {
+        return Optional.ofNullable(ebeanServer.find(Nationality.class).where().eq("nationality_id", id).findOne());
     }
 
     /**
