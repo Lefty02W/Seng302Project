@@ -46,13 +46,10 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
-    @Constraints.Required
     private String passportsForm;
 
-    @Constraints.Required
     private String nationalitiesForm;
 
-    @Constraints.Required
     private String travellerTypesForm;
 
     private Map<Integer, PassportCountry> passports;

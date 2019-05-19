@@ -32,7 +32,6 @@ public class ProfileRepository {
         this.profileTravellerTypeRepository = new ProfileTravellerTypeRepository(ebeanConfig, executionContext);
     }
 
-
     /**
      * Method for login to check if there is a traveller account under the supplied email
      *
@@ -40,25 +39,33 @@ public class ProfileRepository {
      * @return boolean if profile exists or not
      */
     public boolean checkProfileExists(String email) {
-        Profile existingEmail = ebeanServer.find(Profile.class).where().like("email", email).findOne();
-        return existingEmail != null;
+        String selectQuery = "Select * from profile WHERE email = ?";
+        SqlRow row = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findOne();
+        if (row != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 
     /**
      * Method to validate if the given email and password match an account in the database
-     *
      * @param email users email input
      * @param password users password input
      * @return
      */
     public boolean validate(String email, String password) {
-        //TODO improve this please
-        Profile profile = ebeanServer.find(Profile.class).where().like("email", email).findOne();
-        if (profile == null) {
+        String selectQuery = "Select * from profile WHERE email = ? and password = ?";
+        SqlRow row = ebeanServer.createSqlQuery(selectQuery)
+                .setParameter(1, email)
+                .setParameter(2, password)
+                .findOne();
+        if (row != null) {
+            return true;
+        } else {
             return false;
         }
-        return profile.getEmail().equals(email) && profile.getPassword().equals(password);
     }
 
 
@@ -196,15 +203,15 @@ public class ProfileRepository {
     /**
      * Deletes a profile from the database that matches the given email
      *
-     * @param email the users email
+     * @param id the users id
      * @return an optional profile
      */
-    public CompletionStage<Optional<String>> delete(String email) {
+    public CompletionStage<Optional<Integer>> delete(Integer profileId) {
         return supplyAsync(() -> {
             try {
-                final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class).setId(email).findOne());
+                final Optional<Profile> profileOptional = Optional.ofNullable(ebeanServer.find(Profile.class).setId(profileId).findOne());
                 profileOptional.ifPresent(Model::delete);
-                return profileOptional.map(p -> p.getEmail());
+                return profileOptional.map(p -> p.getProfileId());
             } catch (Exception e) {
                 return Optional.empty();
             }
