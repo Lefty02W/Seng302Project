@@ -9,12 +9,12 @@ Feature: Login
     # And he presses OK
     # Then the login page should be shown
 
-  Scenario: Log in an existing user
-    Given John is at the login page
-    When he fills in his email with "john.gherkin.doe@travelea.com"
-    And he fills in his password with "password"
-    And he presses Login
-    Then the profile page should be shown
+#  Scenario: Log in an existing user
+#    Given John is at the login page
+#    When he fills in his email with "john.gherkin.doe@travelea.com"
+#    And he fills in his password with "password"
+#    And he presses Login
+#    Then the profile page should be shown
 
   Scenario: Log in with incorrect Password
     Given John is at the login page
