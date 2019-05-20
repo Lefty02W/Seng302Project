@@ -167,7 +167,7 @@ public class ProfileController extends Controller {
     private List<Image> getUserPhotos(Http.Request request){
         Profile profile = SessionController.getCurrentUser(request);
         try {
-            Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getEmail());
+            Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getProfileId());
             imageList = imageListTemp.get();
         } catch (NoSuchElementException e) {
             imageList = new ArrayList<Image>();
@@ -528,7 +528,7 @@ public class ProfileController extends Controller {
         Profile currentProfile = SessionController.getCurrentUser(request);
         List<Image> displayImageList = getUserPhotos(request);
 
-        Optional<Image> image = imageRepository.getProfilePicture(currentProfile.getEmail());
+        Optional<Image> image = imageRepository.getProfilePicture(currentProfile.getProfileId());
         Image profilePicture;
         if (image == null) {
             profilePicture = null;
@@ -560,7 +560,7 @@ public class ProfileController extends Controller {
         }
         TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
         List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(SessionController.getCurrentUser(request).getEmail());
+        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(SessionController.getCurrentUser(request).getProfileId());
         try {
             destinationsList = destListTemp.get();
         } catch (NoSuchElementException e) {

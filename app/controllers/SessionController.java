@@ -7,6 +7,7 @@ import models.Profile;
 import models.Trip;
 import models.TripDestination;
 import play.mvc.Http;
+import repository.ProfileRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,7 @@ public class SessionController {
             stringId = connected.get();
             int id = Integer.parseInt(stringId);
             Profile profile = Profile.find.byId(stringId);
-
-            profile.setDestinations(getUserDestinations(profile.getEmail()));
+            profile.setDestinations(getUserDestinations(profile.getProfileId()));
             getUsersTrips(profile);
             return profile;
         } else {
@@ -46,15 +46,15 @@ public class SessionController {
      * @param email
      * @return destinations, list of all user destination
      */
-    private static ArrayList<Destination> getUserDestinations(String email) {
+    private static ArrayList<Destination> getUserDestinations(Integer id) {
         ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
                 .where()
-                .eq("user_email", email)
+                .eq("profile_id", id)
                 .findList());
 
         ArrayList<Destination> publicDestinations = new ArrayList<>(Destination.find.query()
                 .where()
-                .not(Expr.eq("user_email", email))
+                .not(Expr.eq("profile_id", id))
                 .eq("visible", "1")
                 .findList());
         destinations.addAll(publicDestinations);
@@ -73,7 +73,7 @@ public class SessionController {
         TreeMap <Integer, Trip> tripMap = new TreeMap<>();
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
-                .eq("email", currentUser.getEmail())
+                .eq("profile_id", currentUser.getProfileId())
                 .findList();
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();

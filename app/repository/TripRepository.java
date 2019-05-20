@@ -61,7 +61,8 @@ public class TripRepository {
     for (TripDestination tripDestination : tripDestinations) {
             tripDestination.setTripId(trip.getId());
             Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
-            if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
+            //if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
+            if (dest.getVisible() == 1) {
                 makeAdmin(dest);
             }
             ebeanServer.insert(tripDestination);
@@ -70,10 +71,10 @@ public class TripRepository {
     }
 
     private void makeAdmin(Destination destination) {
-        destinationRepository.followDesination(destination.getDestinationId(), destination.getUserEmail());
+//        destinationRepository.followDesination(destination.getDestinationId(), destination.getUserEmail());
         Destination targetDestination = ebeanServer.find(Destination.class).setId(destination.getDestinationId()).findOne();
-        //TODO set as default admin
-        targetDestination.setUserEmail("admin@admin.com");
+        //TODO work around this problem
+//        targetDestination.setUserEmail("admin@admin.com");
         targetDestination.update();
     }
 

@@ -24,7 +24,7 @@ public class DestinationsControllerTest extends ProvideApplication {
      */
     @Test
     public void showEditDestination() {
-        ArrayList<Destination> destinationList = profileRepository.getDestinations("john@gmail.com").get();
+        ArrayList<Destination> destinationList = profileRepository.getDestinations(0).get();
         loginUser();
         System.out.println(destinationList.get(0).getDestinationId());
         Http.RequestBuilder request = Helpers.fakeRequest()

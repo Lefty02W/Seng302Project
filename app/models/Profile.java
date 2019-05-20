@@ -6,9 +6,11 @@ import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
+import repository.ProfileRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,16 +48,20 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
+    @Transient
     private String passportsForm;
 
+    @Transient
     private String nationalitiesForm;
 
+    @Transient
     private String travellerTypesForm;
 
     private Map<Integer, PassportCountry> passports;
     private Map<Integer, Nationality> nationalities;
     private Map<Integer, TravellerType> travellerTypes;
 
+    @Transient
     private boolean admin;
 
     //@Formats.DateTime(pattern="dd-MM-yyyy")
@@ -150,7 +156,6 @@ public class Profile extends Model {
         }
         this.trips = trips;
         this.admin = isAdmin;
-
     }
 
     public void initProfile() {

@@ -4,6 +4,8 @@ import io.ebean.*;
 import models.Image;
 import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -83,14 +85,14 @@ public class ImageRepository {
         query.execute();
     }
 
-    public Optional<Image> getProfilePicture(String email) {
-        String sql = "select image_id from image where is_profile_pic = 1 and email = ?";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, email).findList();
+    public Optional<Image> getProfilePicture(int profileId) {
+        String sql = "select photo_id from personal_photo where personal_photo_id = 1 and profile_id = ?"; //todo change photo_id = 1 and actually implement it
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         if (rowList.size() < 1) {
             return null;
         } else {
             SqlRow row = rowList.get(0);
-            int id = row.getInteger("image_id");
+            int id = row.getInteger("photo_id");
             return getImage(id);
         }
     }
@@ -129,15 +131,21 @@ public class ImageRepository {
     /**
      * Function to get all the images created by the signed in user.
      *
-     * @param email String of logged in users email
+     * @param profileId  of logged in users id
      * @return imageList list of images uploaded by the user
      */
-    public Optional<List<Image>> getImages(String email) {
-        List<Image> imageList =
-                ebeanServer.find(Image.class)
-                        .where().eq("email", email)
-                        .findList();
-        return Optional.of(imageList);
+    public Optional<List<Image>> getImages(int profileId) {
+        try {
+            List<Image> imageList =
+                    ebeanServer.find(Image.class)
+                            .where().eq("profile_id", profileId)
+                            .findList();
+            return Optional.of(imageList);
+        } catch (PersistenceException e) {
+            List<Image> imageList = new ArrayList<>();
+            return Optional.of(imageList);
+        }
+
     }
 
 

@@ -227,7 +227,7 @@ public class TripsController extends Controller {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
         Profile currentUser = SessionController.getCurrentUser(request);
-        trip.setEmail(currentUser.getEmail());
+        trip.setProfileId(currentUser.getProfileId());
         if (orderedCurrentDestinations.size() < 2) {
             return redirect("/trips/create").flashing("info", "A trip must have at least two destinations");
         } else {
@@ -250,7 +250,7 @@ public class TripsController extends Controller {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
         Profile currentUser = SessionController.getCurrentUser(request);
-        trip.setEmail(currentUser.getEmail());
+        trip.setProfileId(currentUser.getProfileId());
         if (orderedCurrentDestinations.size() < 2){
             return redirect("/trips/"+id+"/edit").flashing("info", "A trip must have at least two destinations");
         } else {

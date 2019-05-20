@@ -86,8 +86,8 @@ public class DestinationsController extends Controller {
                 destinationsList = new ArrayList<>();
             }
         } else{
-            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(user.getEmail());
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getProfileId());
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(user.getProfileId());
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());
@@ -95,7 +95,7 @@ public class DestinationsController extends Controller {
                 destinationsList = new ArrayList<>();
             }
         }
-        Optional<ArrayList<Integer>> followedTemp = destinationRepository.getFollowedDestinationIds(user.getEmail());
+        Optional<ArrayList<Integer>> followedTemp = destinationRepository.getFollowedDestinationIds(user.getProfileId());
         try {
             followedDestinationIds = followedTemp.get();
         } catch (NoSuchElementException e) {
@@ -104,8 +104,8 @@ public class DestinationsController extends Controller {
         return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
     }
 
-    public Result follow(Http.Request request, String email, int destId, boolean isPublic) {
-        Optional<ArrayList<Integer>> followedTemp = destinationRepository.followDesination(destId, email);
+    public Result follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
+        Optional<ArrayList<Integer>> followedTemp = destinationRepository.followDesination(destId, profileId);
         try {
             followedDestinationIds = followedTemp.get();
         } catch (NoSuchElementException e) {
@@ -114,18 +114,18 @@ public class DestinationsController extends Controller {
         return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
     }
 
-    public Result unfollow(Http.Request request, String email, int destId, boolean isPublic) {
+    public Result unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
         //TODO make it so you can not unfollow destinations inside a trip
 
-        Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, email);
+        Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, profileId);
         try {
             followedDestinationIds = followedTemp.get();
         } catch (NoSuchElementException e) {
             followedDestinationIds = new ArrayList<>();
         }
         if (!isPublic) {
-            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(email);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(email);
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profileId);
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());
@@ -213,7 +213,7 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
-        destination.setUserEmail(user.getEmail());
+        destination.setProfileId(user.getProfileId());
         destination.setVisible(visibility);
         if(destinationRepository.checkValid(destination, user.getEmail())) {
             return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");

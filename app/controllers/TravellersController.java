@@ -219,8 +219,8 @@ public class TravellersController extends Controller {
      * @param email email for a particular user you want to view the photos of
      * @return
      */
-    private List<Image> getTravellersPhotos(String email) {
-        Optional<List<Image>> imageListTemp = imageRepository.getImages(email);
+    private List<Image> getTravellersPhotos(int profileId) {
+        Optional<List<Image>> imageListTemp = imageRepository.getImages(profileId);
         try {
             imageList = imageListTemp.get();
         } catch(NoSuchElementException e) {
@@ -236,8 +236,8 @@ public class TravellersController extends Controller {
      * @return render traveller photo page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result displayTravellersPhotos(String email) {
-        List<Image> displayImageList = getTravellersPhotos(email);
+    public Result displayTravellersPhotos(Integer profileId) {
+        List<Image> displayImageList = getTravellersPhotos(profileId);
         return ok(travellersPhotos.render(displayImageList));
     }
 

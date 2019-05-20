@@ -165,33 +165,33 @@ public class DestinationRepository {
         }
     }
 
-    public Optional<ArrayList<Integer>> followDesination(int destId, String email) {
+    public Optional<ArrayList<Integer>> followDesination(int destId, int profileId) {
         String updateQuery = "INSERT into follow_destination(profile_email, destination_id) values (?, ?)";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-        query.setParameter(1, email);
+        query.setParameter(1, profileId);
         query.setParameter(2, destId);
         query.execute();
-        return getFollowedDestinationIds(email);
+        return getFollowedDestinationIds(profileId);
     }
 
-    public Optional<ArrayList<Integer>> unfollowDesination(int destId, String email) {
+    public Optional<ArrayList<Integer>> unfollowDesination(int destId, int profileId) {
         String updateQuery = "DELETE from follow_destination where profile_email = ? and destination_id =  ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-        query.setParameter(1, email);
+        query.setParameter(1, profileId);
         query.setParameter(2, destId);
         query.execute();
-        return getFollowedDestinationIds(email);
+        return getFollowedDestinationIds(profileId);
     }
 
-    public Optional<ArrayList<Destination>> getFollowedDesinations(String email) {
+    public Optional<ArrayList<Destination>> getFollowedDesinations(int profileId) {
         String updateQuery = "Select D.destination_id, D.user_email, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where profile_email = ?";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, email).findList();
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
         for (SqlRow aRowList : rowList) {
             destToAdd = new Destination();
             destToAdd.setDestinationId(aRowList.getInteger("destination_id"));
-            destToAdd.setUserEmail(aRowList.getString("user_email"));
+            destToAdd.setProfileId(aRowList.getInteger("profile_id"));
             destToAdd.setName(aRowList.getString("name"));
             destToAdd.setType(aRowList.getString("type"));
             destToAdd.setCountry(aRowList.getString("country"));
@@ -204,9 +204,9 @@ public class DestinationRepository {
         return Optional.of(destList);
     }
 
-    public Optional<ArrayList<Integer>> getFollowedDestinationIds(String email) {
+    public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId) {
         String updateQuery = "Select destination_id from follow_destination where profile_email = ?";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, email).findList();
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Integer> destIdList = new ArrayList<>();
         for (SqlRow aRowList : rowList) {
             int id = aRowList.getInteger("destination_id");
@@ -223,7 +223,7 @@ public class DestinationRepository {
         for (SqlRow aRowList : rowList) {
             destToAdd = new Destination();
             destToAdd.setDestinationId(aRowList.getInteger("destination_id"));
-            destToAdd.setUserEmail(aRowList.getString("user_email"));
+            destToAdd.setProfileId(aRowList.getInteger("profile_id"));
             destToAdd.setName(aRowList.getString("name"));
             destToAdd.setType(aRowList.getString("type"));
             destToAdd.setCountry(aRowList.getString("country"));

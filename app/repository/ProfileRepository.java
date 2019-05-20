@@ -276,15 +276,15 @@ public class ProfileRepository {
      * @param email user email
      * @return destList arrayList of destinations registered by the user
      */
-    public Optional<ArrayList<Destination>> getDestinations(String email) {
-        String sql = ("select * from destination where user_email = ?");
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, email).findList();
+    public Optional<ArrayList<Destination>> getDestinations(int profileId) {
+        String sql = ("select * from destination where profile_id = ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination dest;
         for (SqlRow aRowList : rowList) {
             dest = new Destination();
             dest.setDestinationId(aRowList.getInteger("destination_id"));
-            dest.setUserEmail(aRowList.getString("user_email"));
+            dest.setProfileId(aRowList.getInteger("profile_id"));
             dest.setName(aRowList.getString("name"));
             dest.setType(aRowList.getString("type"));
             dest.setCountry(aRowList.getString("country"));
