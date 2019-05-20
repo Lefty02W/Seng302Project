@@ -57,8 +57,8 @@ public class LoginController extends Controller {
         if (checkUser(login.email, login.password)){
             // Validate the login credentials
             Login loginData = currentLoginForm.get();
-            CompletionStage<Optional<Profile>> profileOptional = profileRepository.lookup(loginData.email);
-            return profileRepository.lookup(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
+            CompletionStage<Optional<Profile>> profileOptional = profileRepository.lookupEmail(loginData.email);
+            return profileRepository.lookupEmail(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
                     return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getEmail());

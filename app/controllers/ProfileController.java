@@ -104,8 +104,8 @@ public class ProfileController extends Controller {
      * @return a render of the editDestinations profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> showEdit (String email){
-        return profileRepository.lookup(email).thenApplyAsync(optionalProfile -> {
+    public CompletionStage<Result> showEdit (Integer profileId){
+        return profileRepository.lookup(profileId).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
                 Form<Profile> currentProfileForm = profileForm.fill(toEditProfile);
