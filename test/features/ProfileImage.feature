@@ -1,7 +1,7 @@
 Feature: Changing profile image
 
   Background:
-    Given John has logged in with email "john.gherkin.doe@travelea.com" and password "password"
+    Given John has logged in with email "admin@admin.com" and password "admin"
     And he has clicked Change Profile Picture button
 
   Scenario:
