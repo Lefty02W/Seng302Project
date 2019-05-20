@@ -26,10 +26,11 @@ public class SessionController {
      */
     static Profile getCurrentUser(Http.Request request) {
         Optional<String> connected = request.session().getOptional("connected");
-        String email;
+        String stringId;
         if (connected.isPresent()) {
-            email = connected.get();
-            Profile profile = Profile.find.byId(email);
+            stringId = connected.get();
+            int id = Integer.parseInt(stringId);
+            Profile profile = Profile.find.byId(stringId);
 
             profile.setDestinations(getUserDestinations(profile.getEmail()));
             getUsersTrips(profile);

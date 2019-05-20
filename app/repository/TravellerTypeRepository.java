@@ -66,7 +66,7 @@ public class TravellerTypeRepository {
      * @return Optional completion stage holding the object of type T found using the given id.
      */
     public Optional<TravellerType> findById(int id) {
-        return Optional.ofNullable(ebeanServer.find(TravellerType.class).setId(id).findOne());
+        return Optional.ofNullable(ebeanServer.find(TravellerType.class).where().eq("traveller_type_id", id).findOne());
     }
 
     /**

@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -61,7 +62,7 @@ public class ProfileNationalityRepository {
     public Optional<Map<Integer, Nationality>> getList(Integer profileId){
         String qry = "Select * from profile_nationality where profile = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
-        Map<Integer, Nationality> nationalities = null;
+        Map<Integer, Nationality> nationalities = new TreeMap<>();
         for (SqlRow aRowList : rowList) {
             nationalities.put(aRowList.getInteger("nationality"), nationalityRepository.findById(aRowList.getInteger("nationality")).get());
         }
