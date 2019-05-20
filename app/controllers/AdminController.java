@@ -34,6 +34,7 @@ public class AdminController {
     private final DestinationRepository destinationRepository;
     private final TripRepository tripRepository;
     private final Form<Profile> profileEditForm;
+    private final Form<Profile> profileCreateForm;
     private final TripDestinationsRepository tripDestinationsRepository;
 
     private MessagesApi messagesApi;
@@ -45,7 +46,7 @@ public class AdminController {
     public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext,
                            MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
                                        destinationRepository, TripRepository tripRepository, TripDestinationsRepository
-                           tripDestinationsRepository){
+                           tripDestinationsRepository) {
         this.profileEditForm = profileFormFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
@@ -53,6 +54,7 @@ public class AdminController {
         this.messagesApi = messagesApi;
         this.tripRepository = tripRepository;
         this.tripDestinationsRepository = tripDestinationsRepository;
+        this.profileCreateForm = profileFormFactory.form(Profile.class);
     }
 
     /**
@@ -64,9 +66,8 @@ public class AdminController {
      * @return
      */
     public CompletionStage<Result> deleteProfile (Http.Request request, String email){
-        return profileRepository.delete(email).thenApplyAsync(userEmail -> {
-            return redirect(adminEndpoint);
-        }, httpExecutionContext.current());
+        return profileRepository.delete(email).thenApplyAsync(userEmail -> redirect(adminEndpoint)
+        , httpExecutionContext.current());
     }
 
 
@@ -83,7 +84,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
 
-            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
         });
     }
 
@@ -103,7 +104,7 @@ public class AdminController {
 
         Profile editProfile = profileRepository.getProfileById(id);
         Form<Profile> profileForm = profileEditForm.fill(editProfile);
-        return ok(admin.render(profiles, trips, destinations, editProfile, profileForm, null, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, destinations, editProfile, profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -121,9 +122,8 @@ public class AdminController {
         profile.setPassports(profile.getPassports().replaceAll("\\s",""));
 
         return profileRepository.update(profile, profile.getPassword(),
-                id).thenApplyAsync(x -> {
-            return redirect(adminEndpoint);
-        }, httpExecutionContext.current());
+                id).thenApplyAsync(x -> redirect(adminEndpoint)
+        , httpExecutionContext.current());
     }
 
     /**
@@ -138,7 +138,25 @@ public class AdminController {
         profiles.add(profile);
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
         List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
-        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+    }
+
+
+    /**
+     * Method to allow an admin to create a new user profile
+     *
+     * @apiNote /admin/profile/create
+     * @param request
+     * @return
+     */
+    public CompletionStage<Result> createProfile(Http.Request request) {
+            Form<Profile> profileForm = profileCreateForm.bindFromRequest(request);
+            Profile profile = profileForm.get();
+            //TODO Update when drop downs implemented
+
+            return profileRepository.insert(profile)
+                    .thenApplyAsync(email -> redirect(adminEndpoint)
+                    );
     }
 
     /**
@@ -150,12 +168,11 @@ public class AdminController {
      * @return a redirect to /admin
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
-        return tripRepository.delete(tripId).thenApplyAsync( x -> {
-           return redirect(adminEndpoint)
+        return tripRepository.delete(tripId).thenApplyAsync( x -> redirect(adminEndpoint)
                    .flashing(
                            "info",
-                           "Trip: " + tripId + " deleted");
-        });
+                           "Trip: " + tripId + " deleted")
+        );
     }
 
     /**
@@ -173,7 +190,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
 
-            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, trip, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, trip, profileCreateForm, request, messagesApi.preferred(request)));
         });
     }
 
