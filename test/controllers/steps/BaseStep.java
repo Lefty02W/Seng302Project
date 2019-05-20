@@ -32,7 +32,7 @@ public class BaseStep {
 
             application = fakeApplication();         // Create a fake application instance
             ChromeOptions options = new ChromeOptions();
-            options.addArguments("--headless");
+//            options.addArguments("--headless");
             driver = new ChromeDriver(options);      // Use Chrome
 
             testServer = Helpers.testServer(port, application);
