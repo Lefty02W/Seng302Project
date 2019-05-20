@@ -57,7 +57,7 @@ deploy-dev:
     name: development
     url: http://csse-s302g7.canterbury.ac.nz:8443
   only:
-    - dev@seng302-2019/team-700
+    - fix/dedicated-server@seng302-2019/team-700
 
 
 deploy-prod:
