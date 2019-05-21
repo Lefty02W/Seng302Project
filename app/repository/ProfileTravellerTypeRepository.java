@@ -1,8 +1,6 @@
 package repository;
 
 import io.ebean.*;
-import models.Nationality;
-import models.PassportCountry;
 import models.TravellerType;
 import play.db.ebean.EbeanConfig;
 
@@ -11,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.concurrent.CompletionStage;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class ProfileTravellerTypeRepository {
 
@@ -65,19 +61,14 @@ public class ProfileTravellerTypeRepository {
      * @param profileId The given user ID
      * @return
      */
-    public Optional<Map<Integer, TravellerType>> getList(Integer profileId){
+    public Optional<Map<Integer, TravellerType>> getList(Integer profileId) {
         String qry = "Select * from profile_traveller_type where profile = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
         Map<Integer, TravellerType> travellerTypeList = new TreeMap<>();
         for (SqlRow aRowList : rowList) {
-            try {
-                System.out.println("PLEASE: "+travellerTypeRepository.findById(aRowList.getInteger("traveller_type")).get().getTravellerTypeName());
-                travellerTypeList.put(aRowList.getInteger("traveller_type"), travellerTypeRepository.findById(aRowList.getInteger("traveller_type")).get());
-            } catch (Exception e) {
-
-            }
+            Optional<TravellerType> typeOp = travellerTypeRepository.findById(aRowList.getInteger("traveller_type"));
+            typeOp.ifPresent(travellerType -> travellerTypeList.put(aRowList.getInteger("traveller_type"), travellerType));
         }
-        System.out.println("PLEASE2: "+travellerTypeList.get(2).getTravellerTypeName());
         return Optional.of(travellerTypeList);
     }
 

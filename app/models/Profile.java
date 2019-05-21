@@ -1,21 +1,16 @@
 package models;
 
-import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
-import repository.ProfileRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.reverseOrder;
 
 //import org.mindrot.jbcrypt.BCrypt;
 
@@ -115,7 +110,6 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
-        System.out.println("PLEASE4: "+travellerTypes.get(2).getTravellerTypeName());
         //this.trips = trips;
         //this.admin = isAdmin;
         //, ArrayList<Trip> trips, boolean isAdmin

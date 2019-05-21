@@ -107,7 +107,6 @@ public class ProfileRepository {
                 Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(p.getInteger("profile_id")).get();
                 Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(p.getInteger("profile_id")).get();
                 Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(p.getInteger("profile_id")).get();
-                System.out.println("PLEASE3: "+travellerTypes.get(2).getTravellerTypeName());
                 profile = new Profile(p.getInteger("profile_id"), p.getString("first_name"),  p.getString("middle_name"), p.getString("last_name")
                         , p.getString("email"), p.getDate("birthDate"), passportCountries, p.getString("gender"), p.getDate("time_created")
                         , nationalities, travellerTypes);
