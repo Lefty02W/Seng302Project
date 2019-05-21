@@ -234,7 +234,7 @@
 
                                 <div id="passports" class="row justify-content-center">
 
-                                @if(currentUser.getPassports.isEmpty) {
+                                @if(currentUser.getPassportsList.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no passports associated with your profile
                                     </div>
@@ -685,24 +685,25 @@
                                         }
                                     </select>
                                 </div>
+
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
                                     <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@currentUser.getEntryDate>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
-                                    <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@currentUser.getEmail>
+                                    < class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
+                                        <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@currentUser.getEmail>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                    <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required value=@currentUser.getNationalities>
+                                    <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required value=@currentUser.getNationalityList>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
-                                    <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField" value=@currentUser.getPassports>
+                                    <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField" value=@currentUser.getPassportsList>
                                 </div>
 
 

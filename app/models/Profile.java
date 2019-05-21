@@ -32,6 +32,7 @@ public class Profile extends Model {
     @Constraints.Required
     private String firstName;
 
+    @Constraints.Required
     private String middleName;
 
     @Constraints.Required
@@ -40,6 +41,7 @@ public class Profile extends Model {
     @Constraints.Required
     private String email;
 
+    @Constraints.Required
     private String password;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
@@ -57,23 +59,31 @@ public class Profile extends Model {
     @Transient
     private String travellerTypesForm;
 
+    @Transient
     private Map<Integer, PassportCountry> passports;
+    @Transient
     private Map<Integer, Nationality> nationalities;
+    @Transient
     private Map<Integer, TravellerType> travellerTypes;
 
     @Transient
     private boolean admin;
 
-    //@Formats.DateTime(pattern="dd-MM-yyyy")
+    @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date timeCreated;
 
+    @Transient
     private ArrayList<Destination> destinations = new ArrayList<>();
+    @Transient
     private ArrayList<Trip> trips;
+    @Transient
     TreeMultimap<Long, Integer> tripsMap = TreeMultimap.create();
+    @Transient
     TreeMap <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
-
+    @Transient
     private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    @Transient
     private static SimpleDateFormat dateFormatsort = new SimpleDateFormat("dd/MM/YYY");
 
     /**
@@ -288,30 +298,44 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getPassportsList() {
-        ArrayList<PassportCountry> passportObjects = new ArrayList<PassportCountry>(passports.values());
-        ArrayList<String> toReturn = new ArrayList<>();
-        for (PassportCountry passport : passportObjects) {
-            toReturn.add(passport.getPassportName());
+        if (!(passports == null)) {
+            ArrayList<PassportCountry> passportObjects = new ArrayList<PassportCountry>(passports.values());
+            ArrayList<String> toReturn = new ArrayList<>();
+            for (PassportCountry passport : passportObjects) {
+                System.out.println("HEREHER: "+passport.getPassportName());
+                toReturn.add(passport.getPassportName());
+            }
+
+            return toReturn;
+        } else {
+            return new ArrayList<String>();
         }
-        return toReturn;
     }
 
     public ArrayList<String> getNationalityList() {
-        ArrayList<Nationality> nationalityObjects = new ArrayList<Nationality>(nationalities.values());
-        ArrayList<String> toReturn = new ArrayList<>();
-        for (Nationality nationality : nationalityObjects) {
-            toReturn.add(nationality.getNationalityName());
+        if (!(nationalities == null)) {
+            ArrayList<Nationality> nationalityObjects = new ArrayList<Nationality>(nationalities.values());
+            ArrayList<String> toReturn = new ArrayList<>();
+            for (Nationality nationality : nationalityObjects) {
+                toReturn.add(nationality.getNationalityName());
+            }
+            return toReturn;
+        } else {
+            return new ArrayList<String>();
         }
-        return toReturn;
     }
 
     public ArrayList<String> getTravellerTypesList() {
-        ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
-        ArrayList<String> toReturn = new ArrayList<>();
-        for (TravellerType type : typeObjects) {
-            toReturn.add(type.getTravellerTypeName());
+        if (!(travellerTypes == null)) {
+            ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
+            ArrayList<String> toReturn = new ArrayList<>();
+            for (TravellerType type : typeObjects) {
+                toReturn.add(type.getTravellerTypeName());
+            }
+            return toReturn;
+        } else {
+            return new ArrayList<String>();
         }
-        return toReturn;
     }
 
     public TreeMultimap<Long, Integer> getTrips() {

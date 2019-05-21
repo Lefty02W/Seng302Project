@@ -70,7 +70,11 @@ public class ProfileTravellerTypeRepository {
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
         Map<Integer, TravellerType> travellerTypeList = new TreeMap<>();
         for (SqlRow aRowList : rowList) {
-            travellerTypeList.put(aRowList.getInteger("traveller_type"), travellerTypeRepository.findById(aRowList.getInteger("traveller_type")).get());
+            try {
+                travellerTypeList.put(aRowList.getInteger("traveller_type"), travellerTypeRepository.findById(aRowList.getInteger("traveller_type")).get());
+            } catch (Exception e) {
+
+            }
         }
 
         return Optional.of(travellerTypeList);
