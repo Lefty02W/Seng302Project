@@ -59,6 +59,11 @@ public class ProfileNationalityRepository {
         return Optional.of(nationalityId);
     }
 
+    /**
+     * Gets a list of the users nationalities
+     * @param profileId The given user ID
+     * @return
+     */
     public Optional<Map<Integer, Nationality>> getList(Integer profileId){
         String qry = "Select * from profile_nationality where profile = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
@@ -69,6 +74,10 @@ public class ProfileNationalityRepository {
         return Optional.of(nationalities);
     }
 
+    /**
+     * Removes all of the nationality linking rows corresponding to the sent in user
+     * @param profileId The given user ID
+     */
     public void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_nationality where profile " +

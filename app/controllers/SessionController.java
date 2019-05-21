@@ -43,7 +43,7 @@ public class SessionController {
 
     /**
      * Get the users destination list
-     * @param email
+     * @param id
      * @return destinations, list of all user destination
      */
     private static ArrayList<Destination> getUserDestinations(Integer id) {

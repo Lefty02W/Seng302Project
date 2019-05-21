@@ -60,6 +60,11 @@ public class ProfileTravellerTypeRepository {
         return Optional.of(travellerId);
     }
 
+    /**
+     * Gets a list of the users travelers types
+     * @param profileId The given user ID
+     * @return
+     */
     public Optional<Map<Integer, TravellerType>> getList(Integer profileId){
         String qry = "Select * from profile_traveller_type where profile = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
@@ -71,7 +76,10 @@ public class ProfileTravellerTypeRepository {
         return Optional.of(travellerTypeList);
     }
 
-
+    /**
+     * Removes all of the traveller type linking rows corresponding to the sent in user
+     * @param profileId The given user ID
+     */
     public void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_traveller_type where profile " +
