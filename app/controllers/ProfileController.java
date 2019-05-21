@@ -190,7 +190,8 @@ public class ProfileController extends Controller {
         }
 
         TemporaryFile tempFile = picture.getRef();
-        String filepath = "public/personalphotos/" + fileName;
+        System.out.println(System.getProperty("----------" + "user.dir"));
+        String filepath = System.getProperty("user.dir") + "/public/personalphotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
 
 

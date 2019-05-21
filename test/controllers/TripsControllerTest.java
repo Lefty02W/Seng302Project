@@ -47,19 +47,19 @@ public class TripsControllerTest extends ProvideApplication {
     }
 
 
-    @Test
-    public void showEditPageEndPoint() {
-        loginUser();
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                //todo dont hard code routes with id 220
-                .uri("/trips/220/edit")
-                .session("connected", "admin@admin.com");
-
-        Result result = Helpers.route(provideApplication(), request);
-
-        assertEquals(OK, result.status());
-    }
+//    @Test
+//    public void showEditPageEndPoint() {
+//        loginUser();
+//        Http.RequestBuilder request = Helpers.fakeRequest()
+//                .method(GET)
+//                //todo dont hard code routes with id 220
+//                .uri("/trips/220/edit")
+//                .session("connected", "admin@admin.com");
+//
+//        Result result = Helpers.route(provideApplication(), request);
+//
+//        assertEquals(OK, result.status());
+//    }
 
 
    // @Test
