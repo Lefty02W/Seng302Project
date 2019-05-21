@@ -1,7 +1,4 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
-@import controllers.TravellersController
+
 @(imageList: List[Image])
 
 <!DOCTYPE html>
@@ -59,10 +56,10 @@
                         <h1>Traveller Photos</h1>
                         <div id="travellersPhotos">
                             <div class="row">
-                                @for(image <- imageList) {
-                                    @if(image.getVisible == 1) {
+                                @for(imageDate <- imageList) {
+                                    @if(imageDate.getVisible == 1) {
                                         <div class="card">
-                                            <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName">
+                                            <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(imageDate.getImageId, 0)" alt="@imageDate.getName">
                                         </div>
                                     }
                                 }
@@ -95,15 +92,15 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
-            // Method that gets the image data from on the image clicked and displays
+            // Method that gets the imageDate data from on the imageDate clicked and displays
             // it in its original resolution in a new modal
-            function expand(image, text) {
+            function expand(imageDate, text) {
                 // Get the modal
                 var modal = document.getElementById('expandImageModal');
                 var modalImg = document.getElementById('expandedImage');
                 var captionText = document.getElementById("caption");
                 modal.style.display = "block";
-                modalImg.src = image;
+                modalImg.src = imageDate;
                 captionText.innerHTML = text;
 
                 // Get the <span> element that closes the modal

@@ -52,11 +52,10 @@ public class DestinationRepository {
      * @return destinations, list of all user destinations
      */
     public ArrayList<Destination> getUserDestinations(String email) {
-        ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(Destination.find.query()
                 .where()
                 .eq("user_email", email)
                 .findList());
-        return destinations;
     }
 
     /**
@@ -65,11 +64,10 @@ public class DestinationRepository {
      * @return destinations, list of all public destinations
      */
     public ArrayList<Destination> getPublicDestinations() {
-        ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(Destination.find.query()
                 .where()
                 .eq("visible", 1)
                 .findList());
-        return destinations;
     }
 
 
@@ -98,7 +96,7 @@ public class DestinationRepository {
                 final Optional<Destination> destinationOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
                         .setId(destID).findOne());
                 destinationOptional.ifPresent(Model::delete);
-                return Optional.of(String.format("Destination %s deleted", destinationOptional.map(p -> p.getName())));
+                return Optional.of(String.format("Destination %s deleted", destinationOptional.map((Destination p) -> p.getName())));
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -156,13 +154,7 @@ public class DestinationRepository {
                 .eq("country", destination.getCountry())
                 .eq("visible", "1")
                 .findOne());
-        if (publicDestinations != null) {
-            return true;
-        } else if (destinations != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return publicDestinations != null || destinations != null;
     }
 
     public Optional<ArrayList<Integer>> followDesination(int destId, String email) {
@@ -256,18 +248,11 @@ public class DestinationRepository {
                 .eq("country", destination.getCountry())
                 .eq("visible", "1")
                 .findOne());
-        if (publicDestination != null) {
-            if (publicDestination.getDestinationId() != id) {
-                return true;
-            }
+        if (publicDestination != null && publicDestination.getDestinationId() != id) {
+            return true;
         }
 
-        if (destinations != null) {
-            if (destinations.getDestinationId() != id) {
-                return true;
-            }
-        }
+        return destinations != null && destinations.getDestinationId() != id;
 
-        return false;
     }
 }

@@ -271,19 +271,19 @@
                                     </div>
 
                                     <div class="row">
-                                    @for(image <- imageList) {
+                                    @for(imageDate <- imageList) {
                                         <div class="card">
                                             <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                            src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
-                                            name="@image.getImageId">
+                                            src="@routes.ProfileController.displayPhotos(imageDate.getImageId, 0)" alt="@imageDate.getName"
+                                            name="@imageDate.getImageId">
                                             <div clasas="card-body">
-                                            @if(image.getVisible == 1) {
-                                                <p class="card-text"> @image.displayVisibility(image.getVisible) 🌏</p>
-                                                <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                            @if(imageDate.getVisible == 1) {
+                                                <p class="card-text"> @imageDate.displayVisibility(imageDate.getVisible) 🌏</p>
+                                                <a href="@routes.ProfileController.updatePrivacy(imageDate.getImageId)">
                                                     <button>Make Private</button></a>
                                             } else {
-                                                <p class="card-text"> @image.displayVisibility(image.getVisible) 🔒</p>
-                                                <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                                <p class="card-text"> @imageDate.displayVisibility(imageDate.getVisible) 🔒</p>
+                                                <a href="@routes.ProfileController.updatePrivacy(imageDate.getImageId)">
                                                     <button>Make Public</button></a>
                                             }
                                             </div>
@@ -465,16 +465,16 @@
                     <div class="col">
                         <div id="photosCard" class="card-large lower-card">
                             <div class="row">
-                            @for(image <- imageList) {
+                            @for(imageDate <- imageList) {
                                 <div class="card">
                                     <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                    src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
-                                    name="@image.getImageId">
+                                    src="@routes.ProfileController.displayPhotos(imageDate.getImageId, 0)" alt="@imageDate.getName"
+                                    name="@imageDate.getImageId">
                                     <div class="card-body">
-                                        <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
-                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
+                                        <input type="hidden" id="photoId" name="photoId" value="@imageDate.getImageId">
+                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(imageDate.getImageId)">
                                             <button type="submit">Crop this myself</button></a>
-                                        <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
+                                        <a href="@routes.ProfileController.setDemoProfilePicture(imageDate.getImageId)">
                                             <button type="submit">AutoCrop</button></a>
                                     </div>
                                         <!-- The Expanded Image Modal -->
@@ -509,7 +509,7 @@
                     @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
                         @CSRF.formField
                         <div class="modal-body">
-                            <input type="file" id="image" name="image">
+                            <input type="file" id="imageDate" name="imageDate">
                             <input type="hidden" id="visible" name="visible" value="Public" hidden>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
                             <button type="submit" id="autoCropped" name="autoCropped" value="true">
@@ -576,7 +576,7 @@
                     @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
                         @CSRF.formField
                         <div class="modal-body">
-                            <input type="file" id="image" name="image">
+                            <input type="file" id="imageDate" name="imageDate">
                             <label>
                                 Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="false" hidden>
@@ -771,16 +771,16 @@
                 $("#wrapper").toggleClass("toggled");
             });
 
-            // Method that gets the image data from on the image clicked and displays
+            // Method that gets the imageDate data from on the imageDate clicked and displays
             // it in its original resolution in a new modal
-            function expand(image, text, id) {
+            function expand(imageDate, text, id) {
                 // Get the modal
                 var modal = document.getElementById('expandImageModal');
                 var modalImg = document.getElementById('expandedImage');
                 var captionText = document.getElementById("caption");
 
                 modal.style.display = "block";
-                modalImg.src = image;
+                modalImg.src = imageDate;
                 captionText.innerHTML = text;
 
                 // Get the <span> element that closes the modal

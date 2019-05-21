@@ -9,12 +9,12 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 /**
- * Image class containing all the attributes of an image object.
- * email - The email of the user the image is linked to.
+ * Image class containing all the attributes of an imageDate object.
+ * email - The email of the user the imageDate is linked to.
  * imageId - Auto incrementing primary key
- * image - A Blob (Binary Large Object) byte array of the file converted into bytes.
+ * imageDate - A Blob (Binary Large Object) byte array of the file converted into bytes.
  * visible - A tinyInt, 1 or 0 meaning 'public' or 'private' access.
- * contentType - The extension of a file uploaded (image/png, image/gif etc.).
+ * contentType - The extension of a file uploaded (imageDate/png, imageDate/gif etc.).
  * name - The name of the uploaded file.
  */
 @Entity
@@ -28,7 +28,7 @@ public class Image extends Model {
 
     @Lob
     @Constraints.Required
-    private byte[] image;
+    private byte[] imageDate;
 
     @Constraints.Required
     private Integer visible;
@@ -55,16 +55,16 @@ public class Image extends Model {
     private Integer isProfilePic;
 
     /**
-     * Constructor for image
+     * Constructor for imageDate
      * @param email
-     * @param image
+     * @param imageDate
      * @param contentType
      * @param visible
      * @param name
      */
-    public Image(String email, byte[] image, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
+    public Image(String email, byte[] imageDate, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
         this.email = email;
-        this.image = image;
+        this.imageDate = imageDate;
         this.visible = visible;
         this.contentType = contentType;
         this.name = name;
@@ -75,7 +75,7 @@ public class Image extends Model {
         this.isProfilePic = isProfilePic;
     }
 
-    // Finder for image
+    // Finder for imageDate
     public static final Finder<Integer, Image> find = new Finder<>(Image.class);
 
     public Integer getIsProfilePic() { return isProfilePic; }
@@ -99,11 +99,11 @@ public class Image extends Model {
     }
 
     public byte[] getImage() {
-        return image;
+        return imageDate;
     }
 
     public void setImage(byte[] image) {
-        this.image = image;
+        this.imageDate = image;
     }
 
     public Integer getVisible() {
@@ -164,10 +164,10 @@ public class Image extends Model {
 
 
     /**
-     * Method to test if the image visibility is 1 or 0 and returns a string 'Public' or 'Private'
+     * Method to test if the imageDate visibility is 1 or 0 and returns a string 'Public' or 'Private'
      * respectively. Used only for display on the frontend.
      *
-     * @param visibility Integer specifying the saved content type of an image
+     * @param visibility Integer specifying the saved content type of an imageDate
      * @return a String 'Public' or 'Private'
      */
     public String displayVisibility(Integer visibility) {

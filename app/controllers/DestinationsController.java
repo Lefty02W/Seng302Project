@@ -1,6 +1,6 @@
 package controllers;
 
-import com.google.common.collect.TreeMultimap;
+import controllers.LoginController.Login;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -14,12 +14,10 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
-import repository.TripRepository;
 import views.html.createDestinations;
-import views.html.login;
 import views.html.destinations;
 import views.html.editDestinations;
-import controllers.LoginController.Login;
+import views.html.login;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-import static java.util.Collections.addAll;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
@@ -45,7 +42,6 @@ public class DestinationsController extends Controller {
     private final Form<Login> loginForm;
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
-    private final TripRepository tripRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -58,14 +54,13 @@ public class DestinationsController extends Controller {
      */
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
-                                  ProfileRepository profileRepository, TripRepository tripRepository) {
+                                  ProfileRepository profileRepository) {
         this.form = formFactory.form(Destination.class);
         this.userForm = formFactory.form(Profile.class);
         this.loginForm = formFactory.form(Login.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
-        this.tripRepository = tripRepository;
     }
 
     /**
