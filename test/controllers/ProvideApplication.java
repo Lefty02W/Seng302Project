@@ -82,8 +82,8 @@ public class ProvideApplication extends WithApplication {
         }
     }
 
-    public ArrayList<Destination> getUserDest(String email) {
-        return destinationRepository.getUserDestinations(email);
+    public ArrayList<Destination> getUserDest(int id) {
+        return destinationRepository.getUserDestinations(id);
     }
 
 

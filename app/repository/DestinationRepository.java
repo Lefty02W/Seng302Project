@@ -48,15 +48,14 @@ public class DestinationRepository {
     /**
      * Get the users destination list
      *
-     * @param id
+     * @param id the id of the user profile
      * @return destinations, list of all user destinations
      */
     public ArrayList<Destination> getUserDestinations(int id) {
-        ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(Destination.find.query()
                 .where()
                 .eq("profile_id", id)
                 .findList());
-        return destinations;
     }
 
     /**
@@ -65,11 +64,10 @@ public class DestinationRepository {
      * @return destinations, list of all public destinations
      */
     public ArrayList<Destination> getPublicDestinations() {
-        ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(Destination.find.query()
                 .where()
                 .eq("visible", 1)
                 .findList());
-        return destinations;
     }
 
 
