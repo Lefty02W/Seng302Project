@@ -110,10 +110,12 @@ public class Profile extends Model {
         this.email = email;
         this.birthDate = birthDate;
         this.passports = passports;
+
         this.gender = gender;
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
+        System.out.println("PLEASE4: "+travellerTypes.get(2).getTravellerTypeName());
         //this.trips = trips;
         //this.admin = isAdmin;
         //, ArrayList<Trip> trips, boolean isAdmin
@@ -326,10 +328,13 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getTravellerTypesList() {
+        System.out.println(travellerTypes);
         if (!(travellerTypes == null)) {
             ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
             ArrayList<String> toReturn = new ArrayList<>();
+            System.out.println("NO");
             for (TravellerType type : typeObjects) {
+                System.out.println("WHAT");
                 toReturn.add(type.getTravellerTypeName());
             }
             return toReturn;

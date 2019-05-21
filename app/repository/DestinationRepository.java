@@ -48,13 +48,13 @@ public class DestinationRepository {
     /**
      * Get the users destination list
      *
-     * @param email
+     * @param id
      * @return destinations, list of all user destinations
      */
-    public ArrayList<Destination> getUserDestinations(String email) {
+    public ArrayList<Destination> getUserDestinations(int id) {
         ArrayList<Destination> destinations = new ArrayList<>(Destination.find.query()
                 .where()
-                .eq("user_email", email)
+                .eq("profile_id", id)
                 .findList());
         return destinations;
     }
@@ -141,13 +141,13 @@ public class DestinationRepository {
      * class to check if destination is already available to user
      * return true if already in else false
      */
-    public boolean checkValid(Destination destination, String email) {
+    public boolean checkValid(Destination destination, int id) {
         Destination destinations = (Destination.find.query()
                 .where()
                 .eq("name", destination.getName())
                 .eq("type", destination.getType())
                 .eq("country", destination.getCountry())
-                .eq("user_email", email)
+                .eq("profile_id", id)
                 .findOne());
         Destination publicDestinations = (Destination.find.query()
                 .where()
@@ -166,7 +166,7 @@ public class DestinationRepository {
     }
 
     public Optional<ArrayList<Integer>> followDesination(int destId, int profileId) {
-        String updateQuery = "INSERT into follow_destination(profile_email, destination_id) values (?, ?)";
+        String updateQuery = "INSERT into follow_destination(profile_id, destination_id) values (?, ?)";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, profileId);
         query.setParameter(2, destId);
@@ -175,7 +175,7 @@ public class DestinationRepository {
     }
 
     public Optional<ArrayList<Integer>> unfollowDesination(int destId, int profileId) {
-        String updateQuery = "DELETE from follow_destination where profile_email = ? and destination_id =  ?";
+        String updateQuery = "DELETE from follow_destination where profile_id = ? and destination_id =  ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, profileId);
         query.setParameter(2, destId);
@@ -184,7 +184,7 @@ public class DestinationRepository {
     }
 
     public Optional<ArrayList<Destination>> getFollowedDesinations(int profileId) {
-        String updateQuery = "Select D.destination_id, D.user_email, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where profile_email = ?";
+        String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where D.profile_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
@@ -205,7 +205,7 @@ public class DestinationRepository {
     }
 
     public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId) {
-        String updateQuery = "Select destination_id from follow_destination where profile_email = ?";
+        String updateQuery = "Select destination_id from follow_destination where profile_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Integer> destIdList = new ArrayList<>();
         for (SqlRow aRowList : rowList) {
@@ -217,7 +217,7 @@ public class DestinationRepository {
 
     public Optional<ArrayList<Destination>> getAdminDestinations() {
         ArrayList<Destination> destList = new ArrayList<>();
-        String selectQuery = "Select * from destination where user_email IN (select email from profile where admin = 1)";
+        String selectQuery = "Select * from destination where profile_id IN (select profile_id from admin)";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).findList();
         Destination destToAdd;
         for (SqlRow aRowList : rowList) {
@@ -241,13 +241,13 @@ public class DestinationRepository {
      * class to check if destination is already available to user
      * return true if already in else false
      */
-    public boolean checkValidEdit(Destination destination, String email, int id) {
+    public boolean checkValidEdit(Destination destination, int  profileId, int id) {
         Destination destinations = (Destination.find.query()
                 .where()
                 .eq("name", destination.getName())
                 .eq("type", destination.getType())
                 .eq("country", destination.getCountry())
-                .eq("user_email", email)
+                .eq("profile_id", profileId)
                 .findOne());
         Destination publicDestination = (Destination.find.query()
                 .where()

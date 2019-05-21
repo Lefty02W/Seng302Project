@@ -51,7 +51,6 @@ public class LoginController extends Controller {
      * @return either login failed  with incorrect info or successful login and go to user  page
      */
     public CompletionStage<Result> login(Http.Request request){
-
         Form<Login> currentLoginForm = loginForm.bindFromRequest(request);
         Login login = currentLoginForm.get();
         if (checkUser(login.email, login.password)){

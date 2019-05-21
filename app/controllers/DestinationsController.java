@@ -186,7 +186,7 @@ public class DestinationsController extends Controller {
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
-        if(destinationRepository.checkValidEdit(dest, user.getEmail(), id)) {
+        if(destinationRepository.checkValidEdit(dest, user.getProfileId(), id)) {
             return redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create");
         }
         if(longLatCheck(dest)){
@@ -215,7 +215,7 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setProfileId(user.getProfileId());
         destination.setVisible(visibility);
-        if(destinationRepository.checkValid(destination, user.getEmail())) {
+        if(destinationRepository.checkValid(destination, user.getProfileId())) {
             return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
 
         }
@@ -252,7 +252,7 @@ public class DestinationsController extends Controller {
             // Get all trips
             List<Trip> trips = Trip.find.query()
                     .where()
-                    .eq("email", profile.getEmail())
+                    .eq("profile_id", profile.getProfileId())
                     .findList();
 
             // Iterate through each trip

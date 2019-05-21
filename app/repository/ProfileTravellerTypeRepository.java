@@ -71,12 +71,13 @@ public class ProfileTravellerTypeRepository {
         Map<Integer, TravellerType> travellerTypeList = new TreeMap<>();
         for (SqlRow aRowList : rowList) {
             try {
+                System.out.println("PLEASE: "+travellerTypeRepository.findById(aRowList.getInteger("traveller_type")).get().getTravellerTypeName());
                 travellerTypeList.put(aRowList.getInteger("traveller_type"), travellerTypeRepository.findById(aRowList.getInteger("traveller_type")).get());
             } catch (Exception e) {
 
             }
         }
-
+        System.out.println("PLEASE2: "+travellerTypeList.get(2).getTravellerTypeName());
         return Optional.of(travellerTypeList);
     }
 

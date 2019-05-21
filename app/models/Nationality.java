@@ -1,6 +1,7 @@
 package models;
 
 import io.ebean.Finder;
+import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,7 +10,9 @@ import javax.persistence.Id;
 public class Nationality {
 
     @Id
+    @Constraints.Required
     private int nationality_id;
+    @Constraints.Required
     private String nationality_name;
 
     public static final Finder<String, Nationality> find = new Finder<>(Nationality.class);

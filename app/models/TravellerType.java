@@ -3,6 +3,7 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
+import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +12,9 @@ import javax.persistence.Id;
 public class TravellerType extends Model {
 
     @Id
+    @Constraints.Required
     private int travellerTypeId;
+    @Constraints.Required
     private String travellerTypeName;
 
     public static final Finder<String, TravellerType> find = new Finder<>(TravellerType.class);
