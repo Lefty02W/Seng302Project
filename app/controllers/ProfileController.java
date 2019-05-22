@@ -200,7 +200,7 @@ public class ProfileController extends Controller {
                 Profile currentUser = SessionController.getCurrentUser(request);
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
-                Image image = new Image(currentUser.getEmail(), System.getProperty("user.dir") + "/personalPhotos/" + fileName, contentType, visibility, fileName);
+                Image image = new Image(currentUser.getEmail(), "personalPhotos/" + fileName, contentType, visibility, fileName);
                 System.out.println(image);
                 savePhoto(image); // Save photo, given a successful upload
                 showPhotoModal = true;
