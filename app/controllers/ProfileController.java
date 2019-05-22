@@ -155,8 +155,8 @@ public class ProfileController extends Controller {
      */
     public Result displayPhotos (Integer id){
         Image image = Image.find.byId(id);
-        System.out.println(image.getPath());
-        return ok(image.getPath());
+        System.out.println(Objects.requireNonNull(image).getPath());
+        return ok(Objects.requireNonNull(image).getPath());
     }
 
 
@@ -190,8 +190,8 @@ public class ProfileController extends Controller {
         }
 
         TemporaryFile tempFile = picture.getRef();
-        System.out.println(System.getProperty("----------" + "user.dir"));
-        String filepath = System.getProperty("user.dir") + "/public/personalphotos/" + fileName;
+        System.out.println(System.getProperty("user.dir"));
+        String filepath = System.getProperty("user.dir") + "/personalPhotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
 
 
@@ -200,7 +200,7 @@ public class ProfileController extends Controller {
                 Profile currentUser = SessionController.getCurrentUser(request);
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
-                Image image = new Image(currentUser.getEmail(), "personalphotos/" + fileName, contentType, visibility, fileName);
+                Image image = new Image(currentUser.getEmail(), System.getProperty("user.dir") + "/personalPhotos/" + fileName, contentType, visibility, fileName);
                 System.out.println(image);
                 savePhoto(image); // Save photo, given a successful upload
                 showPhotoModal = true;
