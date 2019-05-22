@@ -1,7 +1,7 @@
 package controllers;
 
 import org.junit.Before;
-import play.Application;
+import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -12,39 +12,36 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
-import org.junit.Test;
 
 /**
  * Test Set for profile controller
  */
 public class ProfileControllerTest extends ProvideApplication{
 
-    private Application app;
-
     @Before
     public void setUp() {
         app = super.provideApplication();
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin@admin.com");
-        formData.put("password", "admin123");
+        formData.put("email", "john@gmail.com");
+        formData.put("password", "password");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/login")
                 .bodyForm(formData);
 
-        Result result = Helpers.route(provideApplication(), request);
+        Helpers.route(provideApplication(), request);
     }
 
     /**
      * Testing profile GET endpoint /profile/editDestinations/:id
      */
-    //@Test
+    @Test
     public void showEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/profile/admin@admin.com/editDestinations")
-                .session("connected", "admin@admin.com");
+                .uri("/profile/john@gmail.comedit")
+                .session("connected", "john@gmail.com");
 
         Result result = Helpers.route(provideApplication(), request);
     }
@@ -53,14 +50,14 @@ public class ProfileControllerTest extends ProvideApplication{
     /**
      * Testing profile POST endpoint /profile
      */
-    //@Test
+    @Test
     public void update() {
         loginUser();
         Map<String, String> profileData = new HashMap<>();
         profileData.put("firstName", "admin");
         profileData.put("middleName", "admin");
         profileData.put("lastName", "admin");
-        profileData.put("email", "admin@admin.com");
+        profileData.put("email", "john@gmail.com");
         profileData.put("birthDate", "2016-05-08");
         profileData.put("gender", "male");
         profileData.put("travellerTypes", "Backpacker");
@@ -73,10 +70,9 @@ public class ProfileControllerTest extends ProvideApplication{
                 .method("POST")
                 .uri("/profile")
                 .bodyForm(profileData)
-                .session("connected", "admin@admin.com");
+                .session("connected", "john@gmail.com");
 
         Result result = Helpers.route(provideApplication(),request);
-        //System.out.println(Helpers.contentAsString(result));
 
 
         assertEquals(303, result.status());
@@ -85,13 +81,13 @@ public class ProfileControllerTest extends ProvideApplication{
     /**
      * Testing profile GET endpoint /profile
      */
-    //@Test // Having issues with this test will sort at a later date
+    @Test // Having issues with this test will sort at a later date
     public void show() {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile")
-                .session("connected", "admin@admin.com");
+                .session("connected", "john@gmail.com");
 
         Result result = Helpers.route(provideApplication(),request);
 

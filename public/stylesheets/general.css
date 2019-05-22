@@ -16,7 +16,7 @@
 }
 
 body {
-    background-color: white;
+    background-color: #f5f5f5;
 }
 
 /* Style for a large card */
@@ -25,8 +25,9 @@ body {
     transition: 0.3s;
     margin-top: 20px;
     text-align: center;
-    background: #ede1d1;
+    background: white;
     overflow:auto;
+    height: 50%;
     border-radius: 0.25rem;
     padding-left: 25px;
     padding-right: 25px;
@@ -42,7 +43,6 @@ body {
     border-radius: 0.25rem;
     overflow: hidden;
 }
-
 
 
 /* Adding hover affect to large cards */
@@ -72,11 +72,11 @@ td {
 }
 
 th {
-    border: 3px solid #ca6636;
+    border: 3px solid #205723;
 }
 
 
-.trip-table {
+.trip-table, user-table {
     border: solid 1px #DDEEEE;
     border-collapse: collapse;
     border-spacing: 0;
@@ -86,15 +86,23 @@ th {
 .trip-table thead th {
     display: none;
 }
-.trip-table tr:nth-child(even) {
+.trip-table, user-table tr:nth-child(even) {
     background-color: #f2f2f2
 }
 
-.trip-table tbody td {
+.trip-table, user-table tbody td {
     border: solid 1px #DDEEEE;
     color: #333;
     padding: 10px;
     text-shadow: 1px 1px 1px #fff;
+}
+
+.button-hover {
+    opacity: 0.8;
+}
+
+.button-hover:hover{
+    opacity: 1;
 }
 
 /* Text input style */
@@ -103,7 +111,7 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     margin: 8px 0;
     display: inline-block;
     box-sizing: border-box;
-    border-color: #ca6636;
+    border-color: #205723;
     border-width: 0 0 2px;
     outline: 0;
 }
@@ -112,7 +120,8 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 
 .btn {
-    width: 5vw;
+    /*width: 5vw;*/
+    width: auto;
 }
 
 .button-edit {
@@ -143,13 +152,17 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 
 .button-add {
-    background-color: #ca6636;
+    background-color: #205723;
     color: white;
 }
 
 
 h3, h4, h5, h6 {
     color: #ede1d1;
+}
+
+.primaryText {
+    color: #205723;
 }
 
 

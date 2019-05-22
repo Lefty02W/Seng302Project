@@ -17,9 +17,6 @@ import views.html.travellersPhotos;
 import javax.inject.Inject;
 import java.util.*;
 
-//TODO Fix table in html - types field needs to wrap
-//TODO Fix data format in table
-//TODO Stop fields from clearing when you press search
 /**
  * This class is the controller for the travellers.scala.html file, it provides the route to the
  * travellers page
@@ -224,7 +221,7 @@ public class TravellersController extends Controller {
         try {
             imageList = imageListTemp.get();
         } catch(NoSuchElementException e) {
-            imageList = new ArrayList<Image>();
+            imageList = new ArrayList<>();
         }
         return imageList;
     }

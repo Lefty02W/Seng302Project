@@ -43,7 +43,7 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
-# Windows image file caches
+# Windows imageDate file caches
 Thumbs.db
 ehthumbs.db
 

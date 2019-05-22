@@ -1,6 +1,5 @@
 package models;
 
-import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultimap;
 import io.ebean.Finder;
 import io.ebean.Model;
@@ -10,12 +9,10 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.reverseOrder;
-
-//import org.mindrot.jbcrypt.BCrypt;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.TreeMap;
 
 /**
  * This class holds the data for a profile
@@ -56,13 +53,12 @@ public class Profile extends Model {
     private Date timeCreated;
 
     private ArrayList<Destination> destinations = new ArrayList<>();
-    private ArrayList<Trip> trips;
     TreeMultimap<Long, Integer> tripsMap = TreeMultimap.create();
     TreeMap <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
 
-    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-    private static SimpleDateFormat dateFormatsort = new SimpleDateFormat("dd/MM/YYY");
+    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/yyyy");
 
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
@@ -77,8 +73,8 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
-        this.trips = trips;
         this.admin = isAdmin;
+
     }
 
     // Finder for profile
@@ -106,8 +102,6 @@ public class Profile extends Model {
     }
 
     public void setPassword(String password) {
-        //Hash the password for added security
-       // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
         this.password = password;
     }
 
@@ -215,28 +209,10 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        return dateFormatsort.format(birthDate);
-    }
-
-    /**
-     * format the traveller types
-     * @return
-     */
-    public String getFormattedTravellerTypes() {
-        ArrayList<String> types = getTravellerTypesList();
-        if (types.size() <= 3) {
-            return travellerTypes;
-        } else {
-            String typeString = types.get(0);
-            for (int i = 1; i < types.size(); i++) {
-                if (i % 3 == 0) {
-                    typeString += "\n";
-                }
-                typeString += ", " + types.get(i);
-            }
-
-            return typeString;
+        if (birthDate != null) {
+            return dateFormatSort.format(birthDate);
         }
+        return "";
     }
 
 

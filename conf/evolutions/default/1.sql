@@ -61,17 +61,29 @@ create table destination (
   district                      varchar(255),
   latitude                      double not null,
   longitude                     double not null,
+  visible                       integer not null,
   constraint pk_destination primary key (destination_id)
 );
 
 create table image (
   image_id                      integer auto_increment not null,
   email                         varchar(255),
-  image                         longblob,
+  image_date                    longblob,
   visible                       integer,
   content_type                  varchar(255),
   name                          varchar(255),
+  crop_x                        integer not null,
+  crop_y                        integer not null,
+  crop_width                    integer not null,
+  crop_height                   integer not null,
+  is_profile_pic                integer,
   constraint pk_image primary key (image_id)
+);
+
+create table nationality (
+  nationality_id                integer auto_increment not null,
+  nationality_name              varchar(255),
+  constraint pk_nationality primary key (nationality_id)
 );
 
 create table profile (
@@ -88,6 +100,11 @@ create table profile (
   admin                         tinyint(1) default 0 not null,
   time_created                  datetime(6),
   constraint pk_profile primary key (email)
+);
+
+create table traveller_types (
+  traveller_type_id             integer not null,
+  traveller_type_name           varchar(255)
 );
 
 create table trip (
@@ -114,7 +131,11 @@ drop table if exists destination;
 
 drop table if exists image;
 
+drop table if exists nationality;
+
 drop table if exists profile;
+
+drop table if exists traveller_types;
 
 drop table if exists trip;
 

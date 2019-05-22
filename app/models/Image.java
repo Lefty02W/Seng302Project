@@ -38,6 +38,20 @@ public class Image extends Model {
     @Constraints.Required
     private String name;
 
+    //this causes issues when signing in a new user as it searches for images in repo with feature cropx, cropy ect
+    @Constraints.Required
+    private int cropX;
+
+    @Constraints.Required
+    private int cropY;
+
+    @Constraints.Required
+    private int cropWidth;
+
+    @Constraints.Required
+    private int cropHeight;
+
+    private Integer isProfilePic;
 
     /**
      * Constructor for image
@@ -53,10 +67,19 @@ public class Image extends Model {
         this.contentType = contentType;
         this.visible = visible;
         this.name = name;
+        this.cropX = cropX;
+        this.cropY = cropY;
+        this.cropWidth = cropWidth;
+        this.cropHeight = cropHeight;
+        this.isProfilePic = isProfilePic;
     }
 
     // Finder for image
     public static final Finder<Integer, Image> find = new Finder<>(Image.class);
+
+    public Integer getIsProfilePic() { return isProfilePic; }
+
+    public void setIsProfilePic(Integer isProfilePic) { this.isProfilePic = isProfilePic; }
 
     public String getEmail() {
         return email;
@@ -100,6 +123,38 @@ public class Image extends Model {
 
     public void setpath(String path) {
         this.path = path;
+    }
+
+    public int getCropX() {
+        return cropX;
+    }
+
+    public void setCropX(int cropX) {
+        this.cropX = cropX;
+    }
+
+    public int getCropY() {
+        return cropY;
+    }
+
+    public void setCropY(int cropY) {
+        this.cropY = cropY;
+    }
+
+    public int getCropWidth() {
+        return cropWidth;
+    }
+
+    public void setCropWidth(int cropWidth) {
+        this.cropWidth = cropWidth;
+    }
+
+    public int getCropHeight() {
+        return cropHeight;
+    }
+
+    public void setCropHeight(int cropHeight) {
+        this.cropHeight = cropHeight;
     }
 
 

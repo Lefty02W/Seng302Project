@@ -37,8 +37,8 @@ public class ProvideApplication extends WithApplication {
 
     void loginUser() {
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin@admin.com");
-        formData.put("password", "admin");
+        formData.put("email", "john@gmail.com");
+        formData.put("password", "password");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
@@ -67,8 +67,8 @@ public class ProvideApplication extends WithApplication {
             profileRepository.insert(new Profile("Jenny", "Smith", "jenny@gmail.com",
                     "password", new Date(), "NZ", "Female", new Date(), "NZ",
                     "Thrillseeker", new ArrayList<Trip>(), false));
-            destinationRepository.insert(new Destination("john@gmail.com", "China", "Country", "China", "China", 67.08, 102.75));
-            destinationRepository.insert(new Destination("john@gmail.com", "Rome", "City", "Italy", "Rome", 69.08, 109.75));
+            destinationRepository.insert(new Destination("john@gmail.com", "China", "Country", "China", "China", 67.08, 102.75, 0));
+            destinationRepository.insert(new Destination("john@gmail.com", "Rome", "City", "Italy", "Rome", 69.08, 109.75, 1));
             System.out.println(destinationRepository.getUserDestinations("john@gmail.com"));
             setUpComplete = true;
         }
