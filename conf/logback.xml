@@ -36,14 +36,14 @@
   <!-- https://hibernate.atlassian.net/browse/HV-1323 -->
   <logger name="org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator" level="ERROR" />
 
-  <!--<root level="WARN">-->
-      <!--<appender-ref ref="ASYNCFILE" />-->
-      <!--<appender-ref ref="ASYNCSTDOUT" />-->
-  <!--</root>-->
-
-  Quick fix for import ebeans issue. Will look into this later.
   <root level="WARN">
-    <appender-ref ref="STDOUT" />
+      <appender-ref ref="ASYNCFILE" />
+      <appender-ref ref="ASYNCSTDOUT" />
   </root>
+
+  <!--Quick fix for import ebeans issue. Will look into this later.-->
+  <!--<root level="WARN">-->
+    <!--<appender-ref ref="STDOUT" />-->
+  <!--</root>-->
 
 </configuration>
