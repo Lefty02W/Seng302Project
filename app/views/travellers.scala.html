@@ -92,7 +92,7 @@
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Photos</th>@if(current.isAdmin){<th>Admin Controls}</th>
+                                    <tr><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Photos</th>
                                 </thead>
                                     @for(user <- users) {
                                         <tr>
@@ -114,23 +114,6 @@
                                                 <button type="submit" class="viewPicButton">View</button>
                                             </a>
                                             </td>
-                                            @if(current.isAdmin) {
-                                                @if(user.isAdmin && user.getEmail != "admin") {
-                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
-                                                        @CSRF.formField
-                                                        <td><button class="cancelBttn" type="submit" >
-                                                            Remove Admin</button></td>
-                                                    }
-                                                } else if (!user.isAdmin) {
-                                                    @form(routes.ProfileController.updateAdmin(user.getEmail)) {
-                                                        @CSRF.formField
-                                                        <td><button type="submit">
-                                                            Make Admin</button></td>
-                                                    }
-                                                } else {
-                                                    <td>Master Admin</td>
-                                                }
-                                            }
                                         </tr>
                                     }
                             </table>

@@ -20,7 +20,7 @@ public class TravellersControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/travellers")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(), request);
 

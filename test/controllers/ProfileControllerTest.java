@@ -40,8 +40,8 @@ public class ProfileControllerTest extends ProvideApplication{
     public void showEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/profile/john@gmail.comedit")
-                .session("connected", "john@gmail.com");
+                .uri("/profile/john@gmail.com/edit")
+                .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(), request);
     }
@@ -60,9 +60,9 @@ public class ProfileControllerTest extends ProvideApplication{
         profileData.put("email", "john@gmail.com");
         profileData.put("birthDate", "2016-05-08");
         profileData.put("gender", "male");
-        profileData.put("travellerTypes", "Backpacker");
-        profileData.put("nationalities", "NZ");
-        profileData.put("passports", "NZ");
+        profileData.put("travellerTypesForm", "Backpacker");
+        profileData.put("nationalitiesForm", "NZ");
+        profileData.put("passportsForm", "NZ");
 
 
 
@@ -70,7 +70,7 @@ public class ProfileControllerTest extends ProvideApplication{
                 .method("POST")
                 .uri("/profile")
                 .bodyForm(profileData)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(),request);
 
@@ -87,7 +87,7 @@ public class ProfileControllerTest extends ProvideApplication{
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(),request);
 

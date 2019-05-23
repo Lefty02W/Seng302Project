@@ -38,7 +38,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/login")
                 .bodyForm(loginForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         loginResult = Helpers.route(provideApplication(), request);
 
@@ -82,7 +82,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/profile")
                 .bodyForm(editForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         redirectResultEdit = Helpers.route(provideApplication(), request);
     }
@@ -95,7 +95,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
-        Profile profile = Profile.find.byId("john@gmail.com");
+        Profile profile = Profile.find.byId(1);
         if (profile == null) {
             fail();
         }
@@ -113,7 +113,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/profile")
                 .bodyForm(editForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
         try {
             redirectResultEdit = Helpers.route(provideApplication(), request);
             fail();
@@ -130,7 +130,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("my edit is not saved")
     public void myEditIsNotSaved() {
-        Profile profile = Profile.find.byId("john@gmail.com");
+        Profile profile = Profile.find.byId(1);
         if (profile == null) {
             fail();
         }
