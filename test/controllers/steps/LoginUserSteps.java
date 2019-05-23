@@ -28,7 +28,6 @@ public class LoginUserSteps extends ProvideApplication {
         redirectLoginResult = Helpers.route(provideApplication(), request);
 
         assertEquals(200, redirectLoginResult.status());
-
     }
 
 
