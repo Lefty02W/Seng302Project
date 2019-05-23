@@ -65,10 +65,9 @@ public class TripsController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profile -> {
-            Profile toSend = profile.get();
-            toSend.setTripMaps(tripRepository.getUsersTrips(profId));
-            toSend.setTrips(tripRepository.getUsersTripsOrder(profId));
             if (profile.isPresent()) {
+                Profile toSend = profile.get();
+                toSend = tripRepository.setUserTrips(toSend);
                 showEmptyEdit = false;
                 orderedCurrentDestinations.clear();
                 TreeMultimap<Long, Integer> tripsMap = profile.get().getTrips();

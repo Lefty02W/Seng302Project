@@ -6,6 +6,7 @@ import io.ebean.EbeanServer;
 import io.ebean.Model;
 import io.ebean.Transaction;
 import models.Destination;
+import models.Profile;
 import models.Trip;
 import models.TripDestination;
 import play.db.ebean.EbeanConfig;
@@ -95,20 +96,25 @@ public class TripRepository {
     }
 
 
-    public TreeMultimap<Long, Integer> getUsersTripsOrder(Integer ProfileId) {
+    /**
+     * Takes in a user and sets ups the users trips from the database
+     * @param currentUser User that gets trips set
+     * @return currentUser user after trips have been set
+     */
+    public Profile setUserTrips(Profile currentUser) {
+        TreeMultimap<Long, Integer> trips = TreeMultimap.create();
+        TreeMap <Integer, Trip> tripMap = new TreeMap<>();
+        // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
-                .eq("profile_id", ProfileId)
+                .eq("profile_id", currentUser.getProfileId())
                 .findList();
-        TreeMultimap<Long, Integer> tripList = TreeMultimap.create();
-
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();
-            TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
+            // Getting the tripDestinations out of the database for each trip returned
             List<TripDestination> tripDests = TripDestination.find.query()
                     .where()
                     .eq("trip_id", trip.getId())
                     .findList();
-
             for (TripDestination tripDest : tripDests) {
                 // Getting the destinations for each tripDestination
                 List<Destination> destinations = Destination.find.query()
@@ -116,42 +122,19 @@ public class TripRepository {
                         .eq("destination_id", tripDest.getDestinationId())
                         .findList();
                 tripDest.setDestination(destinations.get(0));
-                orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
+                tripDestinations.add(tripDest);
             }
-            trip.setOrderedDestiantions(orderedDestiantions);
-            tripList.put(trip.getFirstDate(), trip.getId());
+            trip.setDestinations(tripDestinations);
+            trips.put(trip.getFirstDate(), trip.getId());
+            tripMap.put(trip.getId(), trip);
         }
-        return tripList;
-    };
+        // Returning the trips found
+        currentUser.setTrips(trips);
+        currentUser.setTripMaps(tripMap);
+        return currentUser;
+    }
 
-    public Map<Integer, Trip> getUsersTrips(Integer ProfileId) {
-        List<Trip> result = Trip.find.query().where()
-                .eq("profile_id", ProfileId)
-                .findList();
-        Map<Integer, Trip> tripList = new TreeMap<>();
 
-        for (Trip trip : result) {
-            ArrayList<TripDestination> tripDestinations = new ArrayList<>();
-            TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
-            List<TripDestination> tripDests = TripDestination.find.query()
-                    .where()
-                    .eq("trip_id", trip.getId())
-                    .findList();
-
-            for (TripDestination tripDest : tripDests) {
-                // Getting the destinations for each tripDestination
-                List<Destination> destinations = Destination.find.query()
-                        .where()
-                        .eq("destination_id", tripDest.getDestinationId())
-                        .findList();
-                tripDest.setDestination(destinations.get(0));
-                orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
-            }
-            trip.setOrderedDestiantions(orderedDestiantions);
-            tripList.put(trip.getId(), trip);
-        }
-        return tripList;
-    };
 
     /**
      * code to return trip from id

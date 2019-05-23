@@ -558,15 +558,16 @@ public class ProfileController extends Controller {
                     showCropPhotoModal = false;
                     widthHeight = getWidthHeight();
                 }
-                TreeMultimap<Long, Integer> tripsMap = profileRec.get().getTrips();
+                Profile toSend = tripRepository.setUserTrips(profileRec.get());
+                TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileRec.get().getProfileId());
+                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(toSend.getProfileId());
                 try {
                     destinationsList = destListTemp.get();
                 } catch (NoSuchElementException e) {
                     destinationsList = new ArrayList<>();
                 }
-                return ok(profile.render(profileRec.get(), imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, destinationsList, isTooSmall,request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, destinationsList, isTooSmall,request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }
