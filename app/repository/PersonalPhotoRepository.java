@@ -5,14 +5,17 @@ import io.ebean.EbeanServer;
 import io.ebean.SqlUpdate;
 import io.ebean.Transaction;
 import models.PersonalPhoto;
+import models.Photo;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 
 public class PersonalPhotoRepository implements ModelUpdatableRepository<PersonalPhoto> {
     private final EbeanServer ebeanServer;
@@ -73,12 +76,46 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
         }, executionContext);
     }
 
+    /**
+     * Inserts a new personal photo into the database
+     *
+     * @param photo the personal photo to be inserted
+     * @return Optional of the photo id in a completion stage
+     */
     public CompletionStage<Optional<Integer>> insert(PersonalPhoto photo) {
-
+        return supplyAsync(() -> {
+           ebeanServer.insert(photo);
+           return Optional.of(photo.getPersonalPhotoId());
+        }, executionContext);
     }
 
+    /**
+     * Method to find a certain personal photo by id
+     *
+     * @param id id of the entry to be found.
+     * @return Optional PersonalPhoto wrapped in a completion stage
+     */
     public CompletionStage<Optional<PersonalPhoto>> findById(int id) {
+        return supplyAsync(() -> {
+            return Optional.ofNullable(ebeanServer.find(PersonalPhoto.class).where().eq("personal_photo_id", id).findOne());
+        });
+    }
 
+    /**
+     * Method to find all users that are for a passed user
+     *
+     * @param profileId the id of the user to find photos for
+     * @return Optional Map holding all personalPhotos found
+     */
+    public CompletionStage<Optional<List<Photo>>> getAllProfilePhotos(int profileId) {
+        return supplyAsync(() -> {
+            List<Photo> photos = new ArrayList<>();
+            List<Integer> photoIds = ebeanServer.find(PersonalPhoto.class).where().eq("profile_id", profileId).findIds();
+            for (int photoId : photoIds) {
+                photos.add(ebeanServer.find(Photo.class).where().eq("photo)id", photoId).findOne());
+            }
+            return Optional.of(photos);
+        });
     }
 
 }

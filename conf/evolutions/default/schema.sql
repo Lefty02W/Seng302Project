@@ -1,8 +1,38 @@
-CREATE TABLE photo
+-- we don't know how to generate schema seng302-2019-team700-test (class Schema) :(
+create table if not exists admin
+(
+	admin_id int auto_increment
+		primary key,
+	profile_id int not null,
+	is_master tinyint(1) default '0' not null
+)
+;
+
+create table if not exists nationality
+(
+	nationality_id int auto_increment
+		primary key,
+	nationality_name varchar(50) not null,
+	constraint nationality_nationality_name_uindex
+		unique (nationality_name)
+)
+;
+
+create table if not exists passport_country
+(
+	passport_country_id int auto_increment
+		primary key,
+	passport_name varchar(50) not null,
+	constraint passport_country_passport_name_uindex
+		unique (passport_name)
+)
+;
+
+create table if not exists photo
 (
 	photo_id int auto_increment
 		primary key,
-	photo longblob null,
+	image longblob null,
 	visible tinyint(1) not null,
 	content_type varchar(50) not null,
 	name varchar(255) not null,
@@ -11,12 +41,13 @@ CREATE TABLE photo
 	crop_width int default '100' not null,
 	crop_height int default '100' not null,
 	path varchar(255) null
-);
+)
+;
 
-
-CREATE TABLE profile
+create table if not exists profile
 (
-	profile_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	profile_id int auto_increment
+		primary key,
 	first_name varchar(50) not null,
 	middle_name varchar(50) null,
 	last_name varchar(50) not null,
@@ -24,114 +55,131 @@ CREATE TABLE profile
 	password varchar(255) not null,
 	birth_date date not null,
 	gender varchar(20) not null,
-	time_created timestamp default CURRENT_TIMESTAMP not null
-);
+	time_created timestamp default CURRENT_TIMESTAMP not null,
+	constraint profile_email_uindex
+		unique (email)
+)
+;
 
-
-CREATE TABLE personal_photo
-(
-	personal_photo_id INT PRIMARY KEY AUTO_INCREMENT,
-	profile_id INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
-	photo_id INT NOT NULL REFERENCES photo ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-
-CREATE TABLE admin
-(
-	admin_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	profile_id INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
-	is_master TINYINT(1) NOT NULL DEFAULT '0'
-);
-
-
-create table destination
+create table if not exists destination
 (
 	destination_id int auto_increment
 		primary key,
-	profile_id INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
+	profile_id int not null,
 	name varchar(255) not null,
 	type varchar(255) not null,
 	country varchar(255) not null,
 	district varchar(255) null,
 	latitude double null,
 	longitude double null,
-	visible tinyint(1) default '0' not null
-);
+	visible tinyint(1) default '0' not null,
+	constraint destination_profile__fk
+		foreign key (profile_id) references profile (profile_id)
+)
+;
 
-
-create table follow_destination
+create table if not exists follow_destination
 (
-	destination_follow_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	profile_id INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
-	destination_id INT NOT NULL REFERENCES destination ON UPDATE CASCADE ON DELETE CASCADE
-);
+	destination_follow_id int auto_increment
+		primary key,
+	profile_id int not null,
+	destination_id int not null,
+	constraint follow_destination_destination__fk
+		foreign key (destination_id) references destination (destination_id),
+	constraint follow_destination_profile__fk
+		foreign key (profile_id) references profile (profile_id)
+)
+;
 
-
-create table trip
+create table if not exists personal_photo
 (
-	trip_id int auto_increment primary key,
+	personal_photo_id int auto_increment
+		primary key,
+	profile_id int not null,
+	photo_id int not null,
+	is_profile_photo tinyint(1) not null,
+	constraint personal_photo__profile_id_fk
+		foreign key (profile_id) references profile (profile_id),
+	constraint personal_photo_photo_photo_id_fk
+		foreign key (photo_id) references photo (photo_id)
+)
+;
+
+create table if not exists profile_nationality
+(
+	profile_nationality_id int auto_increment
+		primary key,
+	profile int not null,
+	nationality int not null,
+	constraint profile_nationality_nationality_nationality_id_fk
+		foreign key (nationality) references nationality (nationality_id),
+	constraint profile_nationality_profile_profile_id_fk
+		foreign key (profile) references profile (profile_id)
+)
+;
+
+create table if not exists profile_passport_country
+(
+	profile_passport_country_id int auto_increment
+		primary key,
+	profile int not null,
+	passport_country int not null,
+	constraint profile_passport_country_passport_country_passport_country_id_fk
+		foreign key (passport_country) references passport_country (passport_country_id),
+	constraint profile_passport_country_profile_profile_id_fk
+		foreign key (passport_country) references profile (profile_id)
+)
+;
+
+create table if not exists traveller_type
+(
+	traveller_type_id int auto_increment
+		primary key,
+	traveller_type_name varchar(50) not null,
+	constraint traveller_type_traveller_type_name_uindex
+		unique (traveller_type_name)
+)
+;
+
+create table if not exists profile_traveller_type
+(
+	profile_traveller_type_id int auto_increment
+		primary key,
+	profile int not null,
+	traveller_type int not null,
+	constraint profile_traveller_type_profile_profile_id_fk
+		foreign key (profile) references profile (profile_id),
+	constraint profile_traveller_type_traveller_type_traveller_type_id_fk
+		foreign key (traveller_type) references traveller_type (traveller_type_id)
+)
+;
+
+create table if not exists trip
+(
+	trip_id int auto_increment
+		primary key,
 	name varchar(255) not null,
-	profile_id INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE
-);
+	profile_id int not null,
+	constraint trip_profile_profile_id_fk
+		foreign key (profile_id) references profile (profile_id)
+)
+;
 
-
-create table trip_destination
+create table if not exists trip_destination
 (
-	trip_destination_id int auto_increment primary key,
+	trip_destination_id int auto_increment
+		primary key,
 	trip_id int not null,
 	destination_id int not null,
 	arrival date null,
 	departure date null,
 	dest_order int null,
 	constraint destination_fk
-	foreign key (destination_id) references destination (destination_id)
-		on update cascade on delete cascade,
+		foreign key (destination_id) references destination (destination_id)
+			on update cascade on delete cascade,
 	constraint trip_fk
-	foreign key (trip_id) references trip (trip_id)
-		on update cascade on delete cascade
-);
+		foreign key (trip_id) references trip (trip_id)
+			on update cascade on delete cascade
+)
+;
 
-
-CREATE TABLE nationality
-(
-	nationality_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	nationality_name VARCHAR(50) NOT NULL UNIQUE
-);
-
-
-CREATE TABLE passport_country
-(
-	passport_country_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	passport_name VARCHAR(50) NOT NULL UNIQUE
-);
-
-
-CREATE TABLE traveller_type
-(
-	traveller_type_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	traveller_type_name VARCHAR(50) NOT NULL UNIQUE
-);
-
-
-CREATE TABLE profile_nationality
-(
-	profile_nationality_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	profile INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
-	natioanlity INT NOT NULL REFERENCES nationality ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-
-CREATE TABLE profile_passport_country
-(
-	profile_passport_country_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	profile INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
-	passport_country INT NOT NULL REFERENCES passport_country ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-
-CREATE TABLE profile_traveller_type
-(
-	profile_traveller_type_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	profile INT NOT NULL REFERENCES profile ON UPDATE CASCADE ON DELETE CASCADE,
-	traveller_type INT NOT NULL REFERENCES traveller_type ON UPDATE CASCADE ON DELETE CASCADE
-);

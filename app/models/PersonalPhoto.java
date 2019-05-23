@@ -18,6 +18,10 @@ public class PersonalPhoto {
         this.photoId = photoId;
     }
 
+    public int getPersonalPhotoId() {
+        return personalPhotoId;
+    }
+
     public int getProfileId() {
         return profileId;
     }

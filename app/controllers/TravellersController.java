@@ -1,7 +1,7 @@
 package controllers;
 
-import models.Image;
 import models.PartnerFormData;
+import models.Photo;
 import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
@@ -30,7 +30,7 @@ public class TravellersController extends Controller {
     private final Form<PartnerFormData> form;
     private MessagesApi messagesApi;
     private final PhotoRepository photoRepository;
-    private List<Image> imageList = new ArrayList<>();
+    private List<Photo> photoList = new ArrayList<>();
 
     @Inject
     public TravellersController(FormFactory formFactory, MessagesApi messagesApi, PhotoRepository photoRepository) {
@@ -67,7 +67,7 @@ public class TravellersController extends Controller {
             resultData = searchTravelTypes(resultData, searchData);
         }
 
-        return ok(travellers.render(form, resultData, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, resultData, photoList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 
 
@@ -219,14 +219,14 @@ public class TravellersController extends Controller {
      * @param profileId id for a particular user you want to return the photos from
      * @return
      */
-    private List<Image> getTravellersPhotos(int profileId) {
-        Optional<List<Image>> imageListTemp = photoRepository.getImages(profileId);
+    private List<Photo> getTravellersPhotos(int profileId) {
+        Optional<List<Photo>> imageListTemp = photoRepository.getImages(profileId);
         try {
-            imageList = imageListTemp.get();
+            photoList = imageListTemp.get();
         } catch(NoSuchElementException e) {
-            imageList = new ArrayList<Image>();
+            photoList = new ArrayList<Photo>();
         }
-        return imageList;
+        return photoList;
     }
 
 
@@ -237,8 +237,8 @@ public class TravellersController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result displayTravellersPhotos(Integer profileId) {
-        List<Image> displayImageList = getTravellersPhotos(profileId);
-        return ok(travellersPhotos.render(displayImageList));
+        List<Photo> displayPhotoList = getTravellersPhotos(profileId);
+        return ok(travellersPhotos.render(displayPhotoList));
     }
 
 
@@ -250,6 +250,6 @@ public class TravellersController extends Controller {
     public Result show(Http.Request request) {
         List<Profile> profiles = Profile.find.all();
 
-        return ok(travellers.render(form, profiles, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+        return ok(travellers.render(form, profiles, photoList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
     }
 }
