@@ -6,11 +6,13 @@ public class PersonalPhoto {
     private int personalPhotoId;
     private int profileId;
     private int photoId;
+    private int isProfilePicture;
 
-    public PersonalPhoto(int personalPhotoId, int profileId, int photoId) {
+    public PersonalPhoto(int personalPhotoId, int profileId, int photoId, int isProfilePicture) {
         this.personalPhotoId = personalPhotoId;
         this.profileId = profileId;
         this.photoId = photoId;
+        this.isProfilePicture = isProfilePicture;
     }
 
     public PersonalPhoto(int profileId, int photoId) {
@@ -28,6 +30,10 @@ public class PersonalPhoto {
 
     public int getPhotoId() {
         return photoId;
+    }
+
+    public int getIsProfilePicture() {
+        return isProfilePicture;
     }
 }
 

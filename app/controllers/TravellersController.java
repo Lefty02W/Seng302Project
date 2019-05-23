@@ -1,7 +1,7 @@
 package controllers;
 
-import models.PartnerFormData;
 import models.Photo;
+import models.PartnerFormData;
 import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;

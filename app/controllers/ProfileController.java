@@ -14,6 +14,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import repository.PersonalPhotoRepository;
 import repository.PhotoRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
@@ -54,6 +55,8 @@ public class ProfileController extends Controller {
     private final TripRepository tripRepository;
     private Photo demoProfilePicture = null;
     private static boolean showCropPhotoModal = false;
+    PersonalPhotoRepository personalPhotoRepository;
+
 
 
 
@@ -78,7 +81,8 @@ public class ProfileController extends Controller {
 
 
     @Inject
-    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, PhotoRepository photoRepository, TripRepository tripRepository)
+    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, PersonalPhotoRepository personalPhotoRepository,
+            HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, PhotoRepository photoRepository, TripRepository tripRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -90,6 +94,8 @@ public class ProfileController extends Controller {
             this.profileRepository = profileRepository;
             this.tripRepository = tripRepository;
             this.photoRepository = photoRepository;
+            this.personalPhotoRepository = personalPhotoRepository;
+
 
         }
 
@@ -351,7 +357,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
-        photoRepository.removeProfilePic(currentUser.getEmail());
+        personalPhotoRepository.removeProfilePic(currentUser.getProfileId());
         demoProfilePicture.setIsProfilePic(1);
         try {
             //Optional<Photo> image = photoRepository.getImage(demoProfilePicture.getImageId());
@@ -525,7 +531,7 @@ public class ProfileController extends Controller {
         Profile currentProfile = SessionController.getCurrentUser(request);
         List<Photo> displayPhotoList = getUserPhotos(request);
 
-        Optional<Photo> image = photoRepository.getProfilePicture(currentProfile.getProfileId());
+        Optional<Photo> image = personalPhotoRepository.getProfilePicture(currentProfile.getProfileId());
         Photo profilePicture;
         if (image == null) {
             profilePicture = null;
