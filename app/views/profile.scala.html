@@ -422,17 +422,17 @@
                         <h2 class="modal-title center-col">Change Profile Picture</h2>
                     </div>
                     <div class="modal-body">
-                        <div class="container" id="profilePhoto">
-                            <p>@isTooSmall</p>
-                            @if(defaultProfilePicture == 1) {
-                                @if(profilePicture == null) {
-                                    <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
-                                } else {
-                                    <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">
-                                }
-                            } else {
-                            <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
-                            }
+                        @*<div class="container" id="profilePhoto">*@
+                            @*<p>@isTooSmall</p>*@
+@*//                            @if(defaultProfilePicture == 1) {*@
+@*//                                @if(profilePicture == null) {*@
+                                    @*<img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">*@
+                                @*} else {*@
+                                    @*<img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">*@
+                                @*}*@
+                            @*} else {*@
+                            @*<img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">*@
+                            @*}*@
                         </div>
 
                         <div class="row">
@@ -471,10 +471,10 @@
                                     src="@System.getProperty("user.dir")/@image.getPath" alt="@image.getName"
                                     name="@image.getImageId">
                                     <div class="card-body">
-                                        <input type="hidden" id="photoId" name="photoId" value="@imageDate.getImageId">
-                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(imageDate.getImageId)">
+                                        <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
+                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
                                             <button type="submit">Crop this myself</button></a>
-                                        <a href="@routes.ProfileController.setDemoProfilePicture(imageDate.getImageId)">
+                                        <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
                                             <button type="submit">AutoCrop</button></a>
                                     </div>
                                         <!-- The Expanded Image Modal -->
@@ -534,31 +534,31 @@
                     </div>
 
                     <div class="modal-body">
-                        <div class="container" id="profilePhoto">
-                            <p id="center-text">All parameters are specified in pixels</p>
-                            <img class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(0)" name="demoProfilePicture">
-                            <p style="text-align: center;">@widthHeight</p>
+                        @*<div class="container" id="profilePhoto">*@
+                            @*<p id="center-text">All parameters are specified in pixels</p>*@
+                            @*<img class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(0)" name="demoProfilePicture">*@
+                            @*<p style="text-align: center;">@widthHeight</p>*@
 
-                            @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
-                                @CSRF.formField
-                                <div class="row">
-                                    <input type="number" id="widthHeight" name="widthHeight" min="200" value="500">
-                                    Width and Height
-                                </div>
-                                <div class="row">
-                                    <input type="number" id="cropX" name="cropX" min="0" value="0">Margin left
-                                </div>
-                                    <input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom
-                                </div>
+@*//                            @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {*@
+@*//                                @CSRF.formField*@
+                                @*<div class="row">*@
+                                    @*<input type="number" id="widthHeight" name="widthHeight" min="200" value="500">*@
+                                    @*Width and Height*@
+                                @*</div>*@
+                                @*<div class="row">*@
+                                    @*<input type="number" id="cropX" name="cropX" min="0" value="0">Margin left*@
+                                @*</div>*@
+                                    @*<input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom*@
+                                @*</div>*@
                             </div>
-                        <div class="row">
-                            <div class="center-col">
-                                <button id="acceptCrop" type="submit">Accept</button>
-                                <button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
-                                    Close</button>
-                            </div>
-                            }
-                        </div>
+                        @*<div class="row">*@
+                            @*<div class="center-col">*@
+                                @*<button id="acceptCrop" type="submit">Accept</button>*@
+                                @*<button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">*@
+                                    @*Close</button>*@
+                            @*</div>*@
+                            @*}*@
+                        @*</div>*@
                     </div>
                 </div>
             </div>
@@ -575,7 +575,7 @@
                     @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
                         @CSRF.formField
                         <div class="modal-body">
-                            <input type="file" id="imageDate" name="imageDate">
+                            <input type="file" id="image" name="image">
                             <label>
                                 Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="false" hidden>

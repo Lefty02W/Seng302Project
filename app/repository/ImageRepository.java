@@ -38,7 +38,7 @@ public class ImageRepository {
                 if (ebeanServer.find(Image.class).setId(oldID).findOne() != null) {
                     SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
                     query.setParameter(1, newImage.getEmail());
-                    query.setParameter(2, newImage.getImage());
+                    query.setParameter(2, null);
                     query.setParameter(3, newImage.getVisible());
                     query.setParameter(4, newImage.getType());
                     query.setParameter(5, newImage.getName());
@@ -46,7 +46,8 @@ public class ImageRepository {
                     query.setParameter(7, newImage.getCropY());
                     query.setParameter(8, newImage.getCropWidth());
                     query.setParameter(9, newImage.getCropHeight());
-                    query.setParameter(10, newImage.getIsProfilePic());
+                    query.setParameter(10, newImage.getPath());
+                    query.setParameter(11, newImage.getIsProfilePic());
                     query.setParameter(12, oldID);
                     query.execute();
                     txn.commit();

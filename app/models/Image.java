@@ -61,11 +61,11 @@ public class Image extends Model {
      * @param visible
      * @param name
      */
-    public Image(String email, String path, String contentType, Integer visible, String name){
+    public Image(String email, String path, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
         this.email = email;
         this.path = path;
-        this.contentType = contentType;
         this.visible = visible;
+        this.contentType = contentType;
         this.name = name;
         this.cropX = cropX;
         this.cropY = cropY;
