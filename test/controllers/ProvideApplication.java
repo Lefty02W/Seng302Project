@@ -11,10 +11,7 @@ import play.test.Helpers;
 import play.test.WithApplication;
 import repository.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ProvideApplication extends WithApplication {
 
@@ -27,6 +24,7 @@ public class ProvideApplication extends WithApplication {
     protected PassportCountryRepository passportRepository;
 
     private static boolean setUpComplete = false;
+    protected Optional<Profile> profile;
 
 
     @Override
@@ -35,7 +33,7 @@ public class ProvideApplication extends WithApplication {
     }
 
 
-    void loginUser() {
+    Integer loginUser() {
         Map<String, String> formData = new HashMap<>();
         formData.put("email", "john@gmail.com");
         formData.put("password", "password");
@@ -46,6 +44,13 @@ public class ProvideApplication extends WithApplication {
                 .bodyForm(formData);
 
         Result result = Helpers.route(provideApplication(), request);
+
+        for (Profile profile : Profile.find.all()) {
+            if (profile.getEmail().equals("john@gmail.com")) {
+                return profile.getProfileId();
+            }
+        }
+        return 0;
     }
 
     @Before
@@ -79,6 +84,13 @@ public class ProvideApplication extends WithApplication {
                         return "done";
             });
             setUpComplete = true;
+        }
+
+        List<Profile> profiles = Profile.find.all();
+        if (profiles.isEmpty()) {
+            profile = Optional.empty();
+        } else {
+            profile = Optional.of(profiles.get(0));
         }
     }
 

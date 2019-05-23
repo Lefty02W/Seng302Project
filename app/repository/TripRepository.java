@@ -4,7 +4,6 @@ import com.google.common.collect.TreeMultimap;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
-import io.ebean.Transaction;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -12,9 +11,11 @@ import models.TripDestination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.CompletionStage;
-import repository.TripDestinationsRepository;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -73,7 +74,7 @@ public class TripRepository {
     }
 
     private void makeAdmin(Destination destination) {
-        destinationRepository.followDesination(destination.getDestinationId(), destination.getProfileId());
+//        destinationRepository.followDesination(destination.getDestinationId(), destination.getProfileId());
         Destination targetDestination = ebeanServer.find(Destination.class).setId(destination.getDestinationId()).findOne();
         Optional<Integer> profileId = profileRepository.getAdminId();
         if (profileId.isPresent()) {

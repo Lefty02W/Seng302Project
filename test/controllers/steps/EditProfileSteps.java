@@ -40,7 +40,8 @@ public class EditProfileSteps extends ProvideApplication {
                 .bodyForm(loginForm);
 
         loginResult = Helpers.route(provideApplication(), request);
-
+    System.out.println(Profile.find.all().get(0).getEmail());
+    System.out.println(loginResult.redirectLocation());
         assertEquals(303, loginResult.status());
     }
 
@@ -65,7 +66,7 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("firstName", string);
     }
 
-    @When("I change my traveller type s to {string}")
+    @When("I change my traveller types to {string}")
     public void iChangeMyTravellerTypesTo(String string) {
         editForm.put("travellerTypes", string);
     }

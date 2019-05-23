@@ -43,7 +43,7 @@ public class CreateDestinationSteps extends ProvideApplication {
         Result destinationResult = Helpers.route(provideApplication(), requestDest);
         assertEquals(200, destinationResult.status());
 
-        // TODO check on trips page
+
     }
 
     @When("user clicks on the add new destination button")

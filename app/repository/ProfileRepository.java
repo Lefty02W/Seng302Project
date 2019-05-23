@@ -162,43 +162,50 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Integer>> update(Profile newProfile, int userId) {
 
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            String updateQuery = "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, " +
-                    "birth_date = ?, gender = ? " +
-                    "WHERE profile_id = ?";
-            Optional<Integer> value = Optional.empty();
-            try {
-                if (ebeanServer.find(Profile.class).setId(userId).findOne() != null) {
-                    SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-                    query.setParameter(1, newProfile.getFirstName());
-                    query.setParameter(2, newProfile.getMiddleName());
-                    query.setParameter(3, newProfile.getLastName());
-                    query.setParameter(4, newProfile.getEmail());
-                    query.setParameter(5, newProfile.getBirthDate());
-                    query.setParameter(6, newProfile.getGender());
-                    query.setParameter(7, userId);
-                    query.execute();
-                    txn.commit();
-                    profileNationalityRepository.removeAll(userId);
-                    profilePassportCountryRepository.removeAll(userId);
-                    profileTravellerTypeRepository.removeAll(userId);
-                    for (String passportName: newProfile.getPassportsList()) {
-                        profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(0, passportName), userId);
-                    }
-                    for (String nationalityName: newProfile.getNationalityList()) {
-                        profileNationalityRepository.insertProfileNationality(new Nationality(0, nationalityName), userId);
-                    }
-                    for (String travellerTypeName: newProfile.getTravellerTypesList()) {
-                        profileTravellerTypeRepository.insertProfileTravellerType(new TravellerType(0, travellerTypeName), userId);
-                    }
-                    value = Optional.of(userId);
-                }
-            } finally {
-                txn.end();
+    return supplyAsync(
+        () -> {
+          Transaction txn = ebeanServer.beginTransaction();
+          String updateQuery =
+              "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, "
+                  + "birth_date = ?, gender = ? "
+                  + "WHERE profile_id = ?";
+          Optional<Integer> value = Optional.empty();
+          try {
+            System.out.println(Profile.find.all());
+            if (ebeanServer.find(Profile.class).setId(userId).findOne() != null) {
+              SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+              query.setParameter(1, newProfile.getFirstName());
+              query.setParameter(2, newProfile.getMiddleName());
+              query.setParameter(3, newProfile.getLastName());
+              query.setParameter(4, newProfile.getEmail());
+              query.setParameter(5, newProfile.getBirthDate());
+              query.setParameter(6, newProfile.getGender());
+              query.setParameter(7, userId);
+              query.execute();
+              txn.commit();
+              profileNationalityRepository.removeAll(userId);
+              profilePassportCountryRepository.removeAll(userId);
+              profileTravellerTypeRepository.removeAll(userId);
+              for (String passportName : newProfile.getPassportsList()) {
+                profilePassportCountryRepository.insertProfilePassportCountry(
+                    new PassportCountry(0, passportName), userId);
+              }
+              for (String nationalityName : newProfile.getNationalityList()) {
+                profileNationalityRepository.insertProfileNationality(
+                    new Nationality(0, nationalityName), userId);
+              }
+              for (String travellerTypeName : newProfile.getTravellerTypesList()) {
+                profileTravellerTypeRepository.insertProfileTravellerType(
+                    new TravellerType(0, travellerTypeName), userId);
+              }
+              value = Optional.of(userId);
             }
-            return value;
-        }, executionContext);
+          } finally {
+            txn.end();
+          }
+          return value;
+        },
+        executionContext);
     }
 
 

@@ -9,6 +9,7 @@ import play.test.Helpers;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * Testing endpoints related to the destination controller
@@ -20,17 +21,22 @@ public class DestinationsControllerTest extends ProvideApplication {
      */
     @Test
     public void showEditDestination() {
-        ArrayList<Destination> destinationList = profileRepository.getDestinations(1).get();
-        loginUser();
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("GET")
-                .uri("/destinations/" + destinationList.get(0).getDestinationId() + "/edit")
-                .session("connected", "0");
+        if (profile.isPresent()) {
+            Integer userId = profile.get().getProfileId();
+            ArrayList<Destination> destinationList = profileRepository.getDestinations(userId).get();
+            loginUser();
+            Http.RequestBuilder request = Helpers.fakeRequest()
+                    .method("GET")
+                    .uri("/destinations/" + destinationList.get(0).getDestinationId() + "/edit")
+                    .session("connected", userId.toString());
 
-        Result result = Helpers.route(provideApplication(), request);
+            Result result = Helpers.route(provideApplication(), request);
 
 
-        assertEquals(200, result.status());
+            assertEquals(200, result.status());
+        } else {
+            fail();
+        }
     }
 
 }
