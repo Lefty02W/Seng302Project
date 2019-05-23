@@ -17,5 +17,13 @@ public class PersonalPhoto {
         this.profileId = profileId;
         this.photoId = photoId;
     }
+
+    public int getProfileId() {
+        return profileId;
+    }
+
+    public int getPhotoId() {
+        return photoId;
+    }
 }
 

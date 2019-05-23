@@ -3,7 +3,6 @@ package repository;
 import io.ebean.*;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
-
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -14,43 +13,47 @@ import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * A image repository that executes database operations in a different
- * execution context handles all interactions with the image table .
+ * A photo repository that executes database operations in a different
+ * execution context handles all interactions with the photo table .
  */
-public class ImageRepository {
+public class PhotoRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
 
     @Inject
-    public ImageRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext){
+    public PhotoRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext){
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
     }
 
 
-    public CompletionStage<Optional<String>> update(Photo newPhoto, int oldID) {
+    /**
+     * Update image in the photo table in the database by accessing it with the image Id
+     * @param newImage New image with recent updates to be finalized in the database
+     * @param oldID Id of the image to be changed
+     * @return
+     */
+    public CompletionStage<Optional<String>> update(Photo newImage, int oldID) {
 
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            String updateQuery = "UPDATE image SET email = ?, image = ?, visible = ?, content_type = ?, " +
+            String updateQuery = "UPDATE photo SET image = ?, visible = ?, content_type = ?, " +
                     "name = ?, crop_x = ?, crop_y = ?, crop_width = ?, crop_height = ?, " +
-                    "is_profile_pic = ? WHERE image_id = ?";
+                    "is_profile_pic = ? WHERE photo_id = ?";
             Optional<String> value = Optional.empty();
             try {
                 if (ebeanServer.find(Photo.class).setId(oldID).findOne() != null) {
                     SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-                    query.setParameter(1, newPhoto.getEmail());
-                    query.setParameter(2, newPhoto.getImage());
-                    query.setParameter(3, newPhoto.getVisible());
-                    query.setParameter(4, newPhoto.getType());
-                    query.setParameter(5, newPhoto.getName());
-                    query.setParameter(6, newPhoto.getCropX());
-                    query.setParameter(7, newPhoto.getCropY());
-                    query.setParameter(8, newPhoto.getCropWidth());
-                    query.setParameter(9, newPhoto.getCropHeight());
-                    query.setParameter(10, newPhoto.getIsProfilePic());
-                    query.setParameter(12, oldID);
+                    query.setParameter(1, newImage.getImage());
+                    query.setParameter(2, newImage.getVisible());
+                    query.setParameter(3, newImage.getType());
+                    query.setParameter(4, newImage.getName());
+                    query.setParameter(5, newImage.getCropX());
+                    query.setParameter(6, newImage.getCropY());
+                    query.setParameter(7, newImage.getCropWidth());
+                    query.setParameter(8, newImage.getCropHeight());
+                    query.setParameter(9, oldID);
                     query.execute();
                     txn.commit();
                     value = Optional.of("Updated");
@@ -63,34 +66,32 @@ public class ImageRepository {
     }
 
     /**
-     * Inserts an photo object into the ebean database server
+     * Inserts an image object into the ebean database server
      *
-     * @param photo Photo object to insert into the database
-     * @return the photo id
+     * @param image Image object to insert into the database
+     * @return the image id
      */
-    public CompletionStage<Integer> insert(Photo photo){
+    public CompletionStage<Integer> insert(Photo image){
         return supplyAsync(() -> {
-            try {
-                ebeanServer.insert(photo);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return photo.getImageId();
+            ebeanServer.insert(image);
+            return image.getImageId();
         }, executionContext);
     }
 
+    //TODO needs to be in personal photo repository
     public void removeProfilePic(String email) {
-        String updateQuery = "UPDATE image SET is_profile_pic = 0 where email = ?";
+        String updateQuery = "UPDATE photo SET is_profile_pic = 0 where email = ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, email);
         query.execute();
     }
 
+    //TODO needs to be in personal photo repository
     public Optional<Photo> getProfilePicture(int profileId) {
         String sql = "select photo_id from personal_photo where personal_photo_id = 1 and profile_id = ?"; //todo change photo_id = 1 and actually implement it
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         if (rowList.size() < 1) {
-            return null;
+            return Optional.empty();
         } else {
             SqlRow row = rowList.get(0);
             int id = row.getInteger("photo_id");
@@ -99,7 +100,7 @@ public class ImageRepository {
     }
 
     /**
-     * Update image visibility in database using Photo model object,
+     * Update image visibility in database using Image model object,
      * Checks if it is 1 'public' and changes it to 0 'private' and vice versa.
      *
      * @param id Integer with the images 'visible' value. Either 1 or 0.
@@ -110,16 +111,16 @@ public class ImageRepository {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Integer> value = Optional.empty();
             try {
-                Photo targetPhoto = ebeanServer.find(Photo.class).setId(id).findOne();
-                if (targetPhoto != null) {
-                    if(targetPhoto.getVisible() == 1) {
-                        targetPhoto.setVisible(0); // Public to private
+                Photo targetImage = ebeanServer.find(Photo.class).setId(id).findOne();
+                if (targetImage != null) {
+                    if(targetImage.getVisible() == 1) {
+                        targetImage.setVisible(0); // Public to private
                     } else {
-                        targetPhoto.setVisible(1); // Private to public
+                        targetImage.setVisible(1); // Private to public
                     }
-                    targetPhoto.update();
+                    targetImage.update();
                     txn.commit();
-                    value = Optional.of(targetPhoto.getVisible());
+                    value = Optional.of(targetImage.getVisible());
                 }
             } finally {
                 txn.end();
@@ -135,16 +136,17 @@ public class ImageRepository {
      * @param profileId  of logged in users id
      * @return imageList list of images uploaded by the user
      */
+    //TODO needs to be in personal photo repository
     public Optional<List<Photo>> getImages(int profileId) {
         try {
-            List<Photo> photoList =
+            List<Photo> imageList =
                     ebeanServer.find(Photo.class)
                             .where().eq("profile_id", profileId)
                             .findList();
-            return Optional.of(photoList);
+            return Optional.of(imageList);
         } catch (PersistenceException e) {
-            List<Photo> photoList = new ArrayList<>();
-            return Optional.of(photoList);
+            List<Photo> imageList = new ArrayList<>();
+            return Optional.of(imageList);
         }
 
     }
@@ -157,11 +159,11 @@ public class ImageRepository {
      */
     public Optional<Photo> getImage(Integer id) {
 
-        Photo photo =
+        Photo image =
                 ebeanServer.find(Photo.class)
-                .where().eq("image_id", id)
-                .findOne();
+                        .where().eq("photo_id", id)
+                        .findOne();
 
-        return Optional.of(photo);
+        return Optional.of(image);
     }
 }
