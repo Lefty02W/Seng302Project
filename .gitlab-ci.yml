@@ -59,7 +59,7 @@ deploy-dev:
     - cd /opt/dev_server
     - sudo unzip seng302-team-700-0.0.1-SNAPSHOT.zip
     - sudo rm -rf /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/photos/*
-    - sudo mv -a /opt/photos /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/
+    - sudo mv /opt/photos /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/
     - sudo systemctl restart development_server
   environment:
     name: development
