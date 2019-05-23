@@ -1,6 +1,7 @@
 package roles;
 
 
+import controllers.SessionController;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -23,13 +24,16 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
      */
 
     public CompletionStage<Result> call(Http.Request req) {
+        boolean isAdmin = SessionController.getCurrentUser(req).isAdmin();
 
-        if (configuration.value().equals("admin")) {
-
+        /* TODO replace check to ensure user role matches configuration.value()
+            This will require the database structure set up
+         */
+        if (configuration.value().equals("admin") && isAdmin) {
             System.out.println("Calling annotation action for "+ req);
-            return supplyAsync(() -> redirect("/login").flashing("success", "Visibility updated."));
+            return delegate.call(req);  // Allow the request proceed
         }
 
-        return delegate.call(req);
+        return supplyAsync(() -> redirect("/profile").flashing("invalid", "You must be an admin"));
     }
 }
