@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 /**
- * Image class containing all the attributes of an image object.
+ * Photo class containing all the attributes of an image object.
  * email - The email of the user the image is linked to.
  * imageId - Auto incrementing primary key
  * image - A Blob (Binary Large Object) byte array of the file converted into bytes.
@@ -18,7 +18,7 @@ import javax.persistence.Lob;
  * name - The name of the uploaded file.
  */
 @Entity
-public class Image extends Model {
+public class Photo extends Model {
 
     @Constraints.Required
     private String email;
@@ -62,7 +62,7 @@ public class Image extends Model {
      * @param visible
      * @param name
      */
-    public Image(String email, byte[] image, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
+    public Photo(String email, byte[] image, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
         this.email = email;
         this.image = image;
         this.visible = visible;
@@ -76,7 +76,7 @@ public class Image extends Model {
     }
 
     // Finder for image
-    public static final Finder<Integer, Image> find = new Finder<>(Image.class);
+    public static final Finder<Integer, Photo> find = new Finder<>(Photo.class);
 
     public Integer getIsProfilePic() { return isProfilePic; }
 

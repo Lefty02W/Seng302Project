@@ -3,7 +3,7 @@ CREATE TABLE photo
 (
 	photo_id int auto_increment
 		primary key,
-	image longblob null,
+	photo longblob null,
 	visible tinyint(1) not null,
 	content_type varchar(50) not null,
 	name varchar(255) not null,
@@ -141,7 +141,7 @@ CREATE TABLE profile_traveller_type
 
 drop table if exists destination;
 
-drop table if exists image;
+drop table if exists photo;
 
 drop table if exists nationality;
 
