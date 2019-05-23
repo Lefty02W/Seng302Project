@@ -59,25 +59,26 @@ public class ProvideApplication extends WithApplication {
         passportRepository = app.injector().instanceOf(PassportCountryRepository.class);
 
 
+        passportRepository.insert(new PassportCountry("Australia"));
+        nationalityRepository.insert(new Nationality("Yeet"));
+        nationalityRepository.insert(new Nationality("UK"));
+        nationalityRepository.insert(new Nationality("NZ"));
+        nationalityRepository.insert(new Nationality("EU"));
+        nationalityRepository.insert(new Nationality("USA"));
+        passportRepository.insert(new PassportCountry("New Zealand"));
+
+
+        profileRepository.insert(new Profile("John", "James", "john@gmail.com",
+                "password", new Date(), "NZ", "Male", new Date(), "NZ",
+                "Backpacker,GapYear", new ArrayList<Trip>(), false)).thenApplyAsync(id -> {
+            if (id.isPresent()) {
+                destinationRepository.insert(new Destination(id.get(), "China", "Country", "China", "China", 67.08, 102.75, 0));
+                destinationRepository.insert(new Destination(id.get(), "Rome", "City", "Italy", "Rome", 69.08, 109.75, 1));
+            }
+            return "done";
+        });
         if (!setUpComplete) {
-            passportRepository.insert(new PassportCountry("Australia"));
-            nationalityRepository.insert(new Nationality("Yeet"));
-            nationalityRepository.insert(new Nationality("UK"));
-            nationalityRepository.insert(new Nationality("NZ"));
-            nationalityRepository.insert(new Nationality("EU"));
-            nationalityRepository.insert(new Nationality("USA"));
-            passportRepository.insert(new PassportCountry("New Zealand"));
 
-
-            profileRepository.insert(new Profile("John", "James", "john@gmail.com",
-                    "password", new Date(), "NZ", "Male", new Date(), "NZ",
-                    "Backpacker,GapYear", new ArrayList<Trip>(), false)).thenApplyAsync(id -> {
-                        if (id.isPresent()) {
-                            destinationRepository.insert(new Destination(id.get(), "China", "Country", "China", "China", 67.08, 102.75, 0));
-                            destinationRepository.insert(new Destination(id.get(), "Rome", "City", "Italy", "Rome", 69.08, 109.75, 1));
-                        }
-                        return "done";
-            });
             setUpComplete = true;
         }
     }
