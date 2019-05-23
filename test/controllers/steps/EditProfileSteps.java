@@ -37,8 +37,7 @@ public class EditProfileSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/login")
-                .bodyForm(loginForm)
-                .session("connected", "1");
+                .bodyForm(loginForm);
 
         loginResult = Helpers.route(provideApplication(), request);
 
