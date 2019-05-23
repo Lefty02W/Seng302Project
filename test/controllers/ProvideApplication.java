@@ -18,7 +18,7 @@ import java.util.Map;
 public class ProvideApplication extends WithApplication {
 
     protected DestinationRepository destinationRepository;
-    protected ImageRepository imageRepository;
+    protected PhotoRepository photoRepository;
     protected ProfileRepository profileRepository;
     protected TripDestinationsRepository tripDestinationsRepository;
     protected TripRepository tripRepository;
@@ -51,7 +51,7 @@ public class ProvideApplication extends WithApplication {
     public void setUpDb() {
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
-        imageRepository = app.injector().instanceOf(ImageRepository.class);
+        photoRepository = app.injector().instanceOf(PhotoRepository.class);
         tripDestinationsRepository = app.injector().instanceOf(TripDestinationsRepository.class);
         tripRepository = app.injector().instanceOf(TripRepository.class);
         nationalityRepository = app.injector().instanceOf(NationalityRepository.class);

@@ -5,7 +5,6 @@ import com.google.common.collect.TreeMultimap;
 import models.Destination;
 import models.Image;
 import models.Profile;
-import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -15,11 +14,9 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import repository.ImageRepository;
+import repository.PhotoRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
-import scala.Option;
-import scala.util.Try;
 import views.html.editProfile;
 import views.html.profile;
 
@@ -49,7 +46,7 @@ public class ProfileController extends Controller {
     private final FormFactory profileFormFactory;
     private final FormFactory imageFormFactory;
     private final ProfileRepository profileRepository;
-    private final ImageRepository imageRepository;
+    private final PhotoRepository photoRepository;
     private byte[] imageBytes;
     private List<Image> imageList = new ArrayList<>();
     private static Boolean showPhotoModal = false;
@@ -81,7 +78,7 @@ public class ProfileController extends Controller {
 
 
     @Inject
-    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, ImageRepository imageRepository, TripRepository tripRepository)
+    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, PhotoRepository photoRepository, TripRepository tripRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -92,7 +89,7 @@ public class ProfileController extends Controller {
             this.imageFormFactory = imageFormFactory;
             this.profileRepository = profileRepository;
             this.tripRepository = tripRepository;
-            this.imageRepository = imageRepository;
+            this.photoRepository = photoRepository;
 
         }
 
@@ -100,7 +97,7 @@ public class ProfileController extends Controller {
     /**
      * Method to retrieve a users profile details and return a filled form to be edited.
      *
-     * @param email String of the users email
+     * @param profileId id of the user to edit
      * @return a render of the editDestinations profile page
      */
     @Security.Authenticated(SecureSession.class)
@@ -167,7 +164,7 @@ public class ProfileController extends Controller {
     private List<Image> getUserPhotos(Http.Request request){
         Profile profile = SessionController.getCurrentUser(request);
         try {
-            Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getProfileId());
+            Optional<List<Image>> imageListTemp = photoRepository.getImages(profile.getProfileId());
             imageList = imageListTemp.get();
         } catch (NoSuchElementException e) {
             imageList = new ArrayList<Image>();
@@ -176,7 +173,7 @@ public class ProfileController extends Controller {
     }
 
     /**
-     * Inserts an Image object into the ImageRepository to be stored on the database
+     * Inserts an Image object into the PhotoRepository to be stored on the database
      *
      * @param id Image object containing email, id, byte array of images and visible info
      * @return a redirect to the profile page.
@@ -184,7 +181,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> updatePrivacy (Integer id){
         try {
-            imageRepository.updateVisibility(id);
+            photoRepository.updateVisibility(id);
             showPhotoModal = true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -336,14 +333,14 @@ public class ProfileController extends Controller {
 
 
     /**
-     * Call to ImageRepository to be insert an image in tsavePhotohe database
+     * Call to PhotoRepository to be insert an image in tsavePhotohe database
      *
      * @param image Image object containing email, id, byte array of image and visible info
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
     private Result savePhoto(Image image){
-        imageRepository.insert(image);
+        photoRepository.insert(image);
         return redirect(routes.ProfileController.show());
     }
 
@@ -354,11 +351,11 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
-        imageRepository.removeProfilePic(currentUser.getEmail());
+        photoRepository.removeProfilePic(currentUser.getEmail());
         demoProfilePicture.setIsProfilePic(1);
         try {
-            //Optional<Image> image = imageRepository.getImage(demoProfilePicture.getImageId());
-            imageRepository.update(demoProfilePicture, demoProfilePicture.getImageId());
+            //Optional<Image> image = photoRepository.getImage(demoProfilePicture.getImageId());
+            photoRepository.update(demoProfilePicture, demoProfilePicture.getImageId());
         } catch (NullPointerException e) {
             savePhoto(demoProfilePicture);
         }
@@ -388,7 +385,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setDemoProfilePicture(Integer imageId) {
         showChangeProfilePictureModal = true;
-        Optional<Image> image = imageRepository.getImage(imageId);
+        Optional<Image> image = photoRepository.getImage(imageId);
         demoProfilePicture = image.get();
         return supplyAsync(() -> redirect("/profile"));
     }
@@ -443,7 +440,7 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setImageToBeManuallyCropped(Integer imageId) {
-        Optional<Image> optionalImage = imageRepository.getImage(imageId);
+        Optional<Image> optionalImage = photoRepository.getImage(imageId);
         demoProfilePicture = optionalImage.get();
         showCropPhotoModal = true;
         return supplyAsync(() -> redirect("/profile"));
@@ -528,7 +525,7 @@ public class ProfileController extends Controller {
         Profile currentProfile = SessionController.getCurrentUser(request);
         List<Image> displayImageList = getUserPhotos(request);
 
-        Optional<Image> image = imageRepository.getProfilePicture(currentProfile.getProfileId());
+        Optional<Image> image = photoRepository.getProfilePicture(currentProfile.getProfileId());
         Image profilePicture;
         if (image == null) {
             profilePicture = null;

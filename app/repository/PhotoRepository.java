@@ -13,43 +13,47 @@ import java.util.concurrent.CompletionStage;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
- * A image repository that executes database operations in a different
- * execution context handles all interactions with the image table .
+ * A photo repository that executes database operations in a different
+ * execution context handles all interactions with the photo table .
  */
-public class ImageRepository {
+public class PhotoRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
 
     @Inject
-    public ImageRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext){
+    public PhotoRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext){
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
     }
 
 
+    /**
+     * Update image in the photo table in the database by accessing it with the image Id
+     * @param newImage New image with recent updates to be finalized in the database
+     * @param oldID Id of the image to be changed
+     * @return
+     */
     public CompletionStage<Optional<String>> update(Image newImage, int oldID) {
 
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            String updateQuery = "UPDATE image SET email = ?, image = ?, visible = ?, content_type = ?, " +
+            String updateQuery = "UPDATE photo SET image = ?, visible = ?, content_type = ?, " +
                     "name = ?, crop_x = ?, crop_y = ?, crop_width = ?, crop_height = ?, " +
-                    "is_profile_pic = ? WHERE image_id = ?";
+                    "is_profile_pic = ? WHERE photo_id = ?";
             Optional<String> value = Optional.empty();
             try {
                 if (ebeanServer.find(Image.class).setId(oldID).findOne() != null) {
                     SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-                    query.setParameter(1, newImage.getEmail());
-                    query.setParameter(2, newImage.getImage());
-                    query.setParameter(3, newImage.getVisible());
-                    query.setParameter(4, newImage.getType());
-                    query.setParameter(5, newImage.getName());
-                    query.setParameter(6, newImage.getCropX());
-                    query.setParameter(7, newImage.getCropY());
-                    query.setParameter(8, newImage.getCropWidth());
-                    query.setParameter(9, newImage.getCropHeight());
-                    query.setParameter(10, newImage.getIsProfilePic());
-                    query.setParameter(12, oldID);
+                    query.setParameter(1, newImage.getImage());
+                    query.setParameter(2, newImage.getVisible());
+                    query.setParameter(3, newImage.getType());
+                    query.setParameter(4, newImage.getName());
+                    query.setParameter(5, newImage.getCropX());
+                    query.setParameter(6, newImage.getCropY());
+                    query.setParameter(7, newImage.getCropWidth());
+                    query.setParameter(8, newImage.getCropHeight());
+                    query.setParameter(9, oldID);
                     query.execute();
                     txn.commit();
                     value = Optional.of("Updated");
@@ -69,22 +73,20 @@ public class ImageRepository {
      */
     public CompletionStage<Integer> insert(Image image){
         return supplyAsync(() -> {
-            try {
-                ebeanServer.insert(image);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ebeanServer.insert(image);
             return image.getImageId();
         }, executionContext);
     }
 
+    //TODO needs to be in personal photo repository
     public void removeProfilePic(String email) {
-        String updateQuery = "UPDATE image SET is_profile_pic = 0 where email = ?";
+        String updateQuery = "UPDATE photo SET is_profile_pic = 0 where email = ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, email);
         query.execute();
     }
 
+    //TODO needs to be in personal photo repository
     public Optional<Image> getProfilePicture(int profileId) {
         String sql = "select photo_id from personal_photo where personal_photo_id = 1 and profile_id = ?"; //todo change photo_id = 1 and actually implement it
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
@@ -134,6 +136,7 @@ public class ImageRepository {
      * @param profileId  of logged in users id
      * @return imageList list of images uploaded by the user
      */
+    //TODO needs to be in personal photo repository
     public Optional<List<Image>> getImages(int profileId) {
         try {
             List<Image> imageList =
@@ -158,7 +161,7 @@ public class ImageRepository {
 
         Image image =
                 ebeanServer.find(Image.class)
-                .where().eq("image_id", id)
+                .where().eq("photo_id", id)
                 .findOne();
 
         return Optional.of(image);

@@ -10,7 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import repository.ImageRepository;
+import repository.PhotoRepository;
 import views.html.travellers;
 import views.html.travellersPhotos;
 
@@ -29,14 +29,14 @@ public class TravellersController extends Controller {
 
     private final Form<PartnerFormData> form;
     private MessagesApi messagesApi;
-    private final ImageRepository imageRepository;
+    private final PhotoRepository photoRepository;
     private List<Image> imageList = new ArrayList<>();
 
     @Inject
-    public TravellersController(FormFactory formFactory, MessagesApi messagesApi, ImageRepository imageRepository) {
+    public TravellersController(FormFactory formFactory, MessagesApi messagesApi, PhotoRepository photoRepository) {
         this.form = formFactory.form(PartnerFormData.class);
         this.messagesApi = messagesApi;
-        this.imageRepository = imageRepository;
+        this.photoRepository = photoRepository;
     }
 
 
@@ -216,11 +216,11 @@ public class TravellersController extends Controller {
 
     /**
      * Method to retrieve all uploaded profile images from the database for a particular traveller
-     * @param email email for a particular user you want to view the photos of
+     * @param profileId id for a particular user you want to return the photos from
      * @return
      */
     private List<Image> getTravellersPhotos(int profileId) {
-        Optional<List<Image>> imageListTemp = imageRepository.getImages(profileId);
+        Optional<List<Image>> imageListTemp = photoRepository.getImages(profileId);
         try {
             imageList = imageListTemp.get();
         } catch(NoSuchElementException e) {
@@ -232,7 +232,7 @@ public class TravellersController extends Controller {
 
     /**
      * this method shows the travellers photos on a new page
-     * @param email
+     * @param profileId id for a particular user you want to displays the images for
      * @return render traveller photo page
      */
     @Security.Authenticated(SecureSession.class)
