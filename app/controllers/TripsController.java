@@ -13,6 +13,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
 import views.html.trips;
@@ -40,10 +41,11 @@ public class TripsController extends Controller {
     private final Form<TripDestination> formTrip;
     private final TripRepository tripRepository;
     private final ProfileRepository profileRepository;
+    private final DestinationRepository destinationRepository;
     private boolean showEmptyEdit = false;
 
     @Inject
-    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi, ProfileRepository profileRepository) {
+    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
         this.form = formFactory.form(Trip.class);
         this.tripRepository = tripRepository;
         this.messagesApi = messagesApi;
@@ -51,6 +53,7 @@ public class TripsController extends Controller {
         this.destinationsList = new ArrayList<>();
         this.orderedCurrentDestinations = new TreeMap<>();
         this.profileRepository = profileRepository;
+        this.destinationRepository = destinationRepository;
     }
 
     /**
@@ -92,8 +95,17 @@ public class TripsController extends Controller {
     public CompletionStage<Result> showCreate(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList = new ArrayList<>();
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profId);
+            try {
+                destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
             if (profile.isPresent()) {
-                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), profile.get(), null, request, messagesApi.preferred(request)));
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), null, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/trips");
             }
@@ -112,13 +124,22 @@ public class TripsController extends Controller {
     public CompletionStage<Result> showEdit(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList = new ArrayList<>();
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profId);
+            try {
+                destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
             if (profile.isPresent()) {
                 Trip trip = tripRepository.getTrip(id);
                 Form<Trip> tripForm = form.fill(trip);
                 if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
                     orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
                 }
-                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), profile.get(), id, null, request, messagesApi.preferred(request)));
+                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, null, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/trips");
             }
@@ -392,9 +413,18 @@ public class TripsController extends Controller {
     public CompletionStage<Result> createTripDestinationCreate(Http.Request request, Integer order) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList = new ArrayList<>();
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profId);
+            try {
+                destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
             if (profile.isPresent()) {
                 TripDestination dest = orderedCurrentDestinations.get(order);
-                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), profile.get(), dest, request, messagesApi.preferred(request)));
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), dest, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/trips");
             }
@@ -412,9 +442,18 @@ public class TripsController extends Controller {
     public CompletionStage<Result> editTripDestinationCreate(Http.Request request, Integer order, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList = new ArrayList<>();
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profId);
+            try {
+                destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
             if (profile.isPresent()) {
                 TripDestination dest = orderedCurrentDestinations.get(order);
-                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), profile.get(), id, dest, request, messagesApi.preferred(request)));
+                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, dest, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }
