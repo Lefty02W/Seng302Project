@@ -295,7 +295,7 @@ public class ProfileController extends Controller {
         }
         TemporaryFile tempFile = picture.getRef();
         System.out.println(System.getProperty("user.dir"));
-        String filepath = System.getProperty("user.dir") + "/personalPhotos/" + fileName;
+        String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
 
 
@@ -309,7 +309,7 @@ public class ProfileController extends Controller {
 //                cropInfo crop = autoCrop(this.imageBytes);
 
 //                int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
-                Image image = new Image(currentUser.getEmail(), "personalPhotos/" + fileName, contentType, visibility, fileName, 0, 0, 0, 0, 0);
+                Image image = new Image(currentUser.getEmail(), "photos/personalPhotos/" + fileName, contentType, visibility, fileName, 0, 0, 0, 0, 0);
                 savePhoto(image); // Save photo, given a successful upload
 //                if (isProfilePicture == 0) { //case not setting as the new profile picture
 //                    savePhoto(image); // Save photo, given a successful upload
