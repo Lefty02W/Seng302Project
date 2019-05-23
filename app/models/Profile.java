@@ -21,7 +21,6 @@ import java.util.*;
 public class Profile extends Model {
 
     @Id
-    @Constraints.Required
     private Integer profileId;
 
     @Constraints.Required
@@ -59,6 +58,9 @@ public class Profile extends Model {
     private Map<Integer, Nationality> nationalities;
     @Transient
     private Map<Integer, TravellerType> travellerTypes;
+    // Finder for profile
+    public static final Finder<Integer, Profile> find = new Finder<>(Profile.class);
+
 
     @Transient
     private boolean admin;
@@ -73,12 +75,12 @@ public class Profile extends Model {
     @Transient
     TreeMultimap<Long, Integer> tripsMap = TreeMultimap.create();
     @Transient
-    TreeMap <Integer, Trip> tripsTripMap = new TreeMap<>();
+    Map <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
     @Transient
-    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
     @Transient
-    private static SimpleDateFormat dateFormatsort = new SimpleDateFormat("dd/MM/YYY");
+    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYY");
 
     /**
      * Traditional constructor for profile. Used when retrieving a Profile from DB.
@@ -104,7 +106,6 @@ public class Profile extends Model {
         this.email = email;
         this.birthDate = birthDate;
         this.passports = passports;
-
         this.gender = gender;
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
@@ -132,7 +133,7 @@ public class Profile extends Model {
      */
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
-                  String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -163,6 +164,10 @@ public class Profile extends Model {
         this.admin = isAdmin;
     }
 
+    /**
+     * A function to turn the profile class created by the create user form. It is required to turn the
+     * , separated strings into maps.
+     */
     public void initProfile() {
         this.passports = new HashMap<>();
         int i = 1;
@@ -204,8 +209,7 @@ public class Profile extends Model {
         return profileId;
     }
 
-    // Finder for profile
-    public static final Finder<String, Profile> find = new Finder<>(Profile.class);
+
 
     //--------------Setters----------------------
     public void setEmail(String email) {
@@ -230,7 +234,7 @@ public class Profile extends Model {
 
     public void setPassword(String password) {
         //Hash the password for added security
-       // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
+        // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
         this.password = password;
     }
 
@@ -243,7 +247,7 @@ public class Profile extends Model {
         this.admin = isAdmin;
     }
     public String getEntryDate() {
-        return dateFormatEntry.format(birthDate);
+        return dateFormatEntry.format(timeCreated);
     }
 
     //Getters
@@ -325,14 +329,55 @@ public class Profile extends Model {
         if (!(travellerTypes == null)) {
             ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
             ArrayList<String> toReturn = new ArrayList<>();
-            System.out.println("NO");
             for (TravellerType type : typeObjects) {
-                System.out.println("WHAT");
                 toReturn.add(type.getTravellerTypeName());
             }
             return toReturn;
         } else {
             return new ArrayList<String>();
+        }
+    }
+
+    public String getTravellerTypesString() {
+        if (!(travellerTypes.isEmpty())) {
+            ArrayList<TravellerType> typeObjects = new ArrayList<>(travellerTypes.values());
+            StringBuilder toReturn = new StringBuilder();
+            for (TravellerType type : typeObjects) {
+                toReturn.append(type.getTravellerTypeName() + ", ");
+            }
+            return toReturn.toString().substring(0, toReturn.length() - 2);
+        } else {
+            return "";
+        }
+    }
+
+    public String getNationalityString() {
+        if (!(nationalities.isEmpty())) {
+            ArrayList<Nationality> nationalityObjects = new ArrayList<>(nationalities.values());
+            StringBuilder toReturn = new StringBuilder();
+            for (Nationality nationality : nationalityObjects) {
+                System.out.println("Yeet + "+nationality.getNationalityName());
+                toReturn.append(nationality.getNationalityName() + ",");
+            }
+            System.out.println("ahhh + "+toReturn.toString().substring(0, toReturn.length() - 1));
+            return toReturn.toString().substring(0, toReturn.length() - 1);
+        } else {
+            return "";
+        }
+    }
+
+
+    public String getPassportsString() {
+        if (!(passports.isEmpty())) {
+
+            ArrayList<PassportCountry> passportObjects = new ArrayList<>(passports.values());
+            StringBuilder toReturn = new StringBuilder();
+            for (PassportCountry passport : passportObjects) {
+                toReturn.append(passport.getPassportName() + ", ");
+            }
+            return toReturn.toString().substring(0, toReturn.length()-2);
+        } else {
+            return "";
         }
     }
 
@@ -348,11 +393,11 @@ public class Profile extends Model {
         this.tripsMap = trips;
     }
 
-    public void setTripMaps(TreeMap<Integer, Trip> trips) {
+    public void setTripMaps(Map<Integer, Trip> trips) {
         this.tripsTripMap = trips;
     }
 
-    public TreeMap<Integer, Trip> getTripsMap() {
+    public Map<Integer, Trip> getTripsMap() {
         return tripsTripMap;
     }
 
@@ -370,7 +415,8 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        return dateFormatsort.format(birthDate);
+        System.out.println(birthDate);
+        return dateFormatSort.format(birthDate);
     }
 
 

@@ -75,65 +75,85 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     @Security.Authenticated(SecureSession.class)
-    public Result show(Http.Request request, boolean isPublic) {
+    public CompletionStage<Result> show(Http.Request request, boolean isPublic) {
         destinationsList.clear();
-        Profile user = SessionController.getCurrentUser(request);
-        if (isPublic) {
-            ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
-            try {
-                destinationsList = destListTemp;
-            } catch (NoSuchElementException e) {
-                destinationsList = new ArrayList<>();
+        Integer userId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(userId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                if (isPublic) {
+                    ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
+                    try {
+                        destinationsList = destListTemp;
+                    } catch (NoSuchElementException e) {
+                        destinationsList = new ArrayList<>();
+                    }
+                } else {
+                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(userId);
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(userId);
+                    try {
+                        destinationsList = destListTemp.get();
+                        destinationsList.addAll(followedListTemp.get());
+                    } catch (NoSuchElementException e) {
+                        destinationsList = new ArrayList<>();
+                    }
+                }
+                Optional<ArrayList<Integer>> followedTemp = destinationRepository.getFollowedDestinationIds(userId);
+                try {
+                    followedDestinationIds = followedTemp.get();
+                } catch (NoSuchElementException e) {
+                    followedDestinationIds = new ArrayList<>();
+                }
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
             }
-        } else{
-            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getProfileId());
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(user.getProfileId());
-            try {
-                destinationsList = destListTemp.get();
-                destinationsList.addAll(followedListTemp.get());
-            } catch (NoSuchElementException e) {
-                destinationsList = new ArrayList<>();
-            }
-        }
-        Optional<ArrayList<Integer>> followedTemp = destinationRepository.getFollowedDestinationIds(user.getProfileId());
-        try {
-            followedDestinationIds = followedTemp.get();
-        } catch (NoSuchElementException e) {
-            followedDestinationIds = new ArrayList<>();
-        }
-        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+        });
     }
 
-    public Result follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
-        Optional<ArrayList<Integer>> followedTemp = destinationRepository.followDesination(destId, profileId);
-        try {
-            followedDestinationIds = followedTemp.get();
-        } catch (NoSuchElementException e) {
-            followedDestinationIds = new ArrayList<>();
-        }
-        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Optional<ArrayList<Integer>> followedTemp = destinationRepository.followDesination(destId, profileId);
+                try {
+                    followedDestinationIds = followedTemp.get();
+                } catch (NoSuchElementException e) {
+                    followedDestinationIds = new ArrayList<>();
+                }
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
+            }
+        });
     }
 
-    public Result unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
-        //TODO make it so you can not unfollow destinations inside a trip
+    public CompletionStage<Result> unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                //TODO make it so you can not unfollow destinations inside a trip
 
-        Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, profileId);
-        try {
-            followedDestinationIds = followedTemp.get();
-        } catch (NoSuchElementException e) {
-            followedDestinationIds = new ArrayList<>();
-        }
-        if (!isPublic) {
-            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profileId);
-            try {
-                destinationsList = destListTemp.get();
-                destinationsList.addAll(followedListTemp.get());
-            } catch (NoSuchElementException e) {
-                destinationsList = new ArrayList<>();
+                Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, profileId);
+                try {
+                    followedDestinationIds = followedTemp.get();
+                } catch (NoSuchElementException e) {
+                    followedDestinationIds = new ArrayList<>();
+                }
+                if (!isPublic) {
+                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profileId);
+                    try {
+                        destinationsList = destListTemp.get();
+                        destinationsList.addAll(followedListTemp.get());
+                    } catch (NoSuchElementException e) {
+                        destinationsList = new ArrayList<>();
+                    }
+                }
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
             }
-        }
-        return ok(destinations.render(destinationsList, SessionController.getCurrentUser(request), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+        });
     }
 
     /**
@@ -180,13 +200,13 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result update(Http.Request request, Integer id) {
-        Profile user = SessionController.getCurrentUser(request);
+        Integer userId = SessionController.getCurrentUserId(request);
         Form<Destination> destinationForm = form.bindFromRequest(request);
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
-        if(destinationRepository.checkValidEdit(dest, user.getProfileId(), id)) {
+        if(destinationRepository.checkValidEdit(dest, userId, id)) {
             return redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create");
         }
         if(longLatCheck(dest)){
@@ -205,17 +225,17 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result saveDestination(Http.Request request) {
-        Profile user = SessionController.getCurrentUser(request);
-        if (user == null) {
+        Integer userId = SessionController.getCurrentUserId(request);
+        if (userId == null) {
             return ok(login.render(loginForm, userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
-        destination.setProfileId(user.getProfileId());
+        destination.setProfileId(userId);
         destination.setVisible(visibility);
-        if(destinationRepository.checkValid(destination, user.getProfileId())) {
+        if(destinationRepository.checkValid(destination, userId)) {
             return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
 
         }
@@ -246,13 +266,13 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
-        Profile profile = SessionController.getCurrentUser(request);
+        Integer profileId = SessionController.getCurrentUserId(request);
 
         return supplyAsync(() -> {
             // Get all trips
             List<Trip> trips = Trip.find.query()
                     .where()
-                    .eq("profile_id", profile.getProfileId())
+                    .eq("profile_id", profileId)
                     .findList();
 
             // Iterate through each trip

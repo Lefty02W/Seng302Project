@@ -182,7 +182,8 @@ public class DestinationRepository {
     }
 
     public Optional<ArrayList<Destination>> getFollowedDesinations(int profileId) {
-        String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where D.profile_id = ?";
+        String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where follow_destination.profile_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
