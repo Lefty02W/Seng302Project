@@ -44,7 +44,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
                     SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
                     query.setParameter(1, photo.getProfileId());
                     query.setParameter(2, photo.getPhotoId());
-                    query.setParameter(2, photo.getIsProfilePicture());
+                    query.setParameter(2, photo.getIsProfilePhoto());
                     query.setParameter(3, id);
                     query.execute();
                     txn.commit();
@@ -79,7 +79,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      * @param profileId Id of the user to remove profile picture
      */
     public void removeProfilePic(int profileId) {
-        String updateQuery = "UPDATE personal_photo SET is_profile_picture = 0 where profile_id = ?";
+        String updateQuery = "UPDATE personal_photo SET is_profile_photo = 0 where profile_id = ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, profileId);
         query.execute();
@@ -92,7 +92,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      * @return an optional of the given users profile picture
      */
     public Optional<Photo> getProfilePicture(int profileId) {
-        String sql = "select photo_id from personal_photo where is_profile_picture = 1 and profile_id = ?";
+        String sql = "select photo_id from personal_photo where is_profile_photo = 1 and profile_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         if (rowList.isEmpty()) {
             return Optional.empty();
@@ -111,7 +111,12 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      */
     public CompletionStage<Optional<Integer>> insert(PersonalPhoto photo) {
         return supplyAsync(() -> {
-           ebeanServer.insert(photo);
+            try {
+                ebeanServer.insert(photo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
            return Optional.of(photo.getPersonalPhotoId());
         }, executionContext);
     }
@@ -134,15 +139,13 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      * @param profileId the id of the user to find photos for
      * @return Optional Map holding all personalPhotos found
      */
-    public CompletionStage<Optional<List<Photo>>> getAllProfilePhotos(int profileId) {
-        return supplyAsync(() -> {
-            List<Photo> photos = new ArrayList<>();
-            List<Integer> photoIds = ebeanServer.find(PersonalPhoto.class).where().eq("profile_id", profileId).findIds();
-            for (int photoId : photoIds) {
-                photoRepository.getImage(photoId).ifPresent(photos::add);
-            }
-            return Optional.of(photos);
-        });
+    public Optional<List<Photo>> getAllProfilePhotos(int profileId) {
+        List<Photo> photos = new ArrayList<>();
+        List<PersonalPhoto> photosFound = ebeanServer.find(PersonalPhoto.class).where().eq("profile_id", profileId).findList();
+        for (PersonalPhoto photo : photosFound) {
+            photoRepository.getImage(photo.getPhotoId()).ifPresent(photos::add);
+        }
+        return Optional.of(photos);
     }
 
 }

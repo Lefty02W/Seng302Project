@@ -109,7 +109,7 @@
                         </div>
                         <div class="container" id="profilePhoto">
                         @if(profilePicture != null) {
-                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)"
+                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getPhotoId, 1)"
                             alt="Profile picture">
                         } else {
                             <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
@@ -274,16 +274,16 @@
                                     @for(photo <- photoList) {
                                         <div class="card">
                                             <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                            src="@routes.ProfileController.displayPhotos(photo.getImageId, 0)" alt="@photo.getName"
-                                            name="@photo.getImageId">
+                                            src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
+                                            name="@photo.getPhotoId">
                                             <div clasas="card-body">
                                             @if(photo.getVisible == 1) {
                                                 <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🌏</p>
-                                                <a href="@routes.ProfileController.updatePrivacy(photo.getImageId)">
+                                                <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
                                                     <button>Make Private</button></a>
                                             } else {
                                                 <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🔒</p>
-                                                <a href="@routes.ProfileController.updatePrivacy(photo.getImageId)">
+                                                <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
                                                     <button>Make Public</button></a>
                                             }
                                             </div>
@@ -428,7 +428,7 @@
                                 @if(profilePicture == null) {
                                     <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
                                 } else {
-                                    <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">
+                                    <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getPhotoId, 1)" name="demoProfilePicture">
                                 }
                             } else {
                             <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
@@ -468,13 +468,13 @@
                             @for(photo <- photoList) {
                                 <div class="card">
                                     <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                    src="@routes.ProfileController.displayPhotos(photo.getImageId, 0)" alt="@photo.getName"
-                                    name="@photo.getImageId">
+                                    src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
+                                    name="@photo.getPhotoId">
                                     <div class="card-body">
-                                        <input type="hidden" id="photoId" name="photoId" value="@photo.getImageId">
-                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getImageId)">
+                                        <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
+                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getPhotoId)">
                                             <button type="submit">Crop this myself</button></a>
-                                        <a href="@routes.ProfileController.setDemoProfilePicture(photo.getImageId)">
+                                        <a href="@routes.ProfileController.setDemoProfilePicture(photo.getPhotoId)">
                                             <button type="submit">AutoCrop</button></a>
                                     </div>
                                         <!-- The Expanded Photo Modal -->
@@ -509,7 +509,7 @@
                     @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
                         @CSRF.formField
                         <div class="modal-body">
-                            <input type="file" id="photo" name="photo">
+                            <input type="file" id="image" name="image">
                             <input type="hidden" id="visible" name="visible" value="Public" hidden>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
                             <button type="submit" id="autoCropped" name="autoCropped" value="true">
@@ -576,7 +576,7 @@
                     @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
                         @CSRF.formField
                         <div class="modal-body">
-                            <input type="file" id="photo" name="photo">
+                            <input type="file" id="image" name="image">
                             <label>
                                 Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="false" hidden>

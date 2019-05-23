@@ -52,10 +52,10 @@ POST    /profile/photo               controllers.ProfileController.uploadPhoto(r
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer, autoCrop: Integer)
 GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
 GET     /profile/changeProfilePictureModal   controllers.ProfileController.getDemoProfilePicture(displayCropped: Integer)
-GET     /profile/changeprofilePictureModal/:imageId  controllers.ProfileController.setDemoProfilePicture(imageId: Integer)
+GET     /profile/changeprofilePictureModal/:photoId  controllers.ProfileController.setDemoProfilePicture(photoId: Integer)
 GET     /profile/cancel     controllers.ProfileController.resetDemoProfilePicture()
 GET     /profile/save         controllers.ProfileController.setProfilePicture(request: Request)
-GET     /profile/selectPhotoModal/:imageId  controllers.ProfileController.setImageToBeManuallyCropped(imageId : Integer)
+GET     /profile/selectPhotoModal/:photoId  controllers.ProfileController.setImageToBeManuallyCropped(photoId : Integer)
 GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWithCroppingInfo(request: Request)
 
 #Admins

@@ -3,6 +3,7 @@ package controllers;
 
 import com.google.common.collect.TreeMultimap;
 import models.Destination;
+import models.PersonalPhoto;
 import models.Photo;
 import models.Profile;
 import play.data.Form;
@@ -96,7 +97,6 @@ public class ProfileController extends Controller {
             this.photoRepository = photoRepository;
             this.personalPhotoRepository = personalPhotoRepository;
 
-
         }
 
 
@@ -130,13 +130,8 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> update (Http.Request request){
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
-        System.out.println(currentProfileForm);
         Profile profile = currentProfileForm.get();
         profile.initProfile();
-        // Could improve on this
-//        profile.setNationalities(profile.getNationalityList().replaceAll("\\s",""));
-//        profile.setPassports(profile.getPassportsList().replaceAll("\\s",""));
-
         return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),
                 SessionController.getCurrentUser(request).getProfileId()).thenApplyAsync(x -> {
             return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profile.getEmail());
@@ -170,7 +165,7 @@ public class ProfileController extends Controller {
     private List<Photo> getUserPhotos(Http.Request request){
         Profile profile = SessionController.getCurrentUser(request);
         try {
-            Optional<List<Photo>> imageListTemp = photoRepository.getImages(profile.getProfileId());
+            Optional<List<Photo>> imageListTemp = personalPhotoRepository.getAllProfilePhotos(profile.getProfileId());
             photoList = imageListTemp.get();
         } catch (NoSuchElementException e) {
             photoList = new ArrayList<Photo>();
@@ -186,13 +181,11 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> updatePrivacy (Integer id){
-        try {
+        return supplyAsync(() -> {
             photoRepository.updateVisibility(id);
             showPhotoModal = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Visibility updated."));
+            return redirect("/profile").flashing("success", "Visibility updated.");
+        });
     }
 
     /**
@@ -210,8 +203,6 @@ public class ProfileController extends Controller {
             try {
                 InputStream in = new ByteArrayInputStream(photo.getImage());
                 BufferedImage buffImage = ImageIO.read(in);
-                System.out.println(buffImage.getWidth());
-                System.out.println(buffImage.getHeight());
                 buffImage = buffImage.getSubimage(photo.getCropX(), photo.getCropY(), photo.getCropWidth(), photo.getCropHeight());
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(buffImage, photo.getType().split("/")[1], baos);
@@ -219,8 +210,6 @@ public class ProfileController extends Controller {
                 imageDisplay = baos.toByteArray();
                 baos.close();
             } catch (Exception e) {
-                System.out.println(e);
-                System.out.println("dadddddddddddddddddy");
                 imageDisplay = Objects.requireNonNull(photo).getImage();
             }
             return ok(imageDisplay).as(photo.getType());
@@ -298,7 +287,7 @@ public class ProfileController extends Controller {
             return supplyAsync(() -> redirect("/profile").flashing("invalid", "No image selected."));
 
         }
-        String fileName = picture.getFilename(); // long fileSize = picture.getFileSize();
+        String fileName = picture.getFilename();
         String contentType = picture.getContentType();
 
         // Check valid content type for image
@@ -316,10 +305,10 @@ public class ProfileController extends Controller {
                 cropInfo crop = autoCrop(this.imageBytes);
 
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
-                Photo photo = new Photo(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight(), (isProfilePicture == 0) ? 0 : 1);
+                Photo photo = new Photo(this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight());
 
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
-                    savePhoto(photo); // Save photo, given a successful upload
+                    savePhoto(photo, SessionController.getCurrentUser(request).getProfileId()); // Save photo, given a successful upload
                     showPhotoModal = true;
                 } else { //case photo is being set
                     if (imageData.autoCropped.equals("true")) {
@@ -345,9 +334,13 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    private Result savePhoto(Photo photo){
-        photoRepository.insert(photo);
-        return redirect(routes.ProfileController.show());
+    private CompletionStage<Result> savePhoto(Photo photo, int profileId){
+        return photoRepository.insert(photo).thenApplyAsync(photoId -> {
+            return personalPhotoRepository.insert(new PersonalPhoto(profileId, photoId))
+            .thenApplyAsync(id -> {
+                return id;
+            });
+        }).thenApply(result -> redirect("/profile"));
     }
 
     /**
@@ -358,12 +351,11 @@ public class ProfileController extends Controller {
     public CompletionStage<Result> setProfilePicture(Http.Request request) {
         Profile currentUser = SessionController.getCurrentUser(request);
         personalPhotoRepository.removeProfilePic(currentUser.getProfileId());
-        demoProfilePicture.setIsProfilePic(1);
+        //TODO needs to call to set profile pic
         try {
-            //Optional<Photo> image = photoRepository.getImage(demoProfilePicture.getImageId());
-            photoRepository.update(demoProfilePicture, demoProfilePicture.getImageId());
+            photoRepository.update(demoProfilePicture, demoProfilePicture.getPhotoId());
         } catch (NullPointerException e) {
-            savePhoto(demoProfilePicture);
+            savePhoto(demoProfilePicture, SessionController.getCurrentUser(request).getProfileId());
         }
         return supplyAsync(() -> redirect("/profile").flashing("success", "Profile picture updated"));
     }
@@ -375,7 +367,7 @@ public class ProfileController extends Controller {
      * @return a number, 1 if the default profile picture should be used on the modal and 0 if not
      */
     @Security.Authenticated(SecureSession.class)
-    public Integer isDefaultProfilePicture() {
+    private Integer isDefaultProfilePicture() {
         if (demoProfilePicture == null) {
             return 1;
         }
@@ -493,7 +485,7 @@ public class ProfileController extends Controller {
      * @return a string telling the user the width and height of the cropped image
      */
     @Security.Authenticated(SecureSession.class)
-    public String getWidthHeight() {
+    private String getWidthHeight() {
         try {
             InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
             BufferedImage buffImage = ImageIO.read(in);
@@ -533,11 +525,7 @@ public class ProfileController extends Controller {
 
         Optional<Photo> image = personalPhotoRepository.getProfilePicture(currentProfile.getProfileId());
         Photo profilePicture;
-        if (image == null) {
-            profilePicture = null;
-        } else {
-            profilePicture = image.get();
-        }
+        profilePicture = image.orElse(null);
 
         Integer defaultProfilePicture = isDefaultProfilePicture();
         String isTooSmall = "";

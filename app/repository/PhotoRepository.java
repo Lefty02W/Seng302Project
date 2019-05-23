@@ -1,8 +1,12 @@
 package repository;
 
-import io.ebean.*;
+import io.ebean.Ebean;
+import io.ebean.EbeanServer;
+import io.ebean.SqlUpdate;
+import io.ebean.Transaction;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
+
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import java.util.ArrayList;
@@ -74,7 +78,7 @@ public class PhotoRepository {
     public CompletionStage<Integer> insert(Photo photo){
         return supplyAsync(() -> {
             ebeanServer.insert(photo);
-            return photo.getImageId();
+            return photo.getPhotoId();
         }, executionContext);
     }
 
@@ -144,6 +148,7 @@ public class PhotoRepository {
                         .where().eq("photo_id", id)
                         .findOne();
 
-        return Optional.of(photo);
+        System.out.println(photo);
+        return Optional.ofNullable(photo);
     }
 }

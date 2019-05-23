@@ -1,18 +1,21 @@
 package models;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PersonalPhoto {
 
 
     private int personalPhotoId;
     private int profileId;
     private int photoId;
-    private int isProfilePicture;
+    private int isProfilePhoto;
 
-    public PersonalPhoto(int personalPhotoId, int profileId, int photoId, int isProfilePicture) {
+    public PersonalPhoto(int personalPhotoId, int profileId, int photoId, int isProfilePhoto) {
         this.personalPhotoId = personalPhotoId;
         this.profileId = profileId;
         this.photoId = photoId;
-        this.isProfilePicture = isProfilePicture;
+        this.isProfilePhoto = isProfilePhoto;
     }
 
     public PersonalPhoto(int profileId, int photoId) {
@@ -32,8 +35,8 @@ public class PersonalPhoto {
         return photoId;
     }
 
-    public int getIsProfilePicture() {
-        return isProfilePicture;
+    public int getIsProfilePhoto() {
+        return isProfilePhoto;
     }
 }
 
