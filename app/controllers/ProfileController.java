@@ -331,6 +331,28 @@ public class ProfileController extends Controller {
 
 
     /**
+     * Method to serve an image to the frontend. Uses the image path url
+     * @param id image id that is to be rendered
+     * @return rendered image file to be displayed
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result photoAt(Integer id){
+        Image image = Image.find.byId(id);
+        File imageFilePath = new File(image.getPath());
+        if (imageFilePath.exists()) {
+            try {
+                return ok(new FileInputStream(imageFilePath)).as(image.getType());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            return notFound(imageFilePath.getAbsoluteFile());
+        }
+        return ok();
+    }
+
+
+    /**
      * Call to ImageRepository to be insert an image in tsavePhotohe database
      *
      * @param image Image object containing email, id, byte array of image and visible info

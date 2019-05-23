@@ -109,7 +109,7 @@
                         </div>
                         <div class="container" id="profilePhoto">
                         @if(profilePicture != null) {
-                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)"
+                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getImageId)"
                             alt="Profile picture">
                         } else {
                             <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
@@ -274,7 +274,7 @@
                                     @for(image <- imageList) {
                                         <div class="card">
                                             <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                            src="@System.getProperty("user.dir")/@image.getPath" alt="@image.getName"
+                                            src="@routes.ProfileController.photoAt(image.getImageId)" alt="@image.getName"
                                             name="@image.getImageId">
                                             <div class="card-body">
                                             @if(image.getVisible == 1) {
@@ -468,7 +468,7 @@
                             @for(image <- imageList) {
                                 <div class="card">
                                     <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                    src="@System.getProperty("user.dir")/@image.getPath" alt="@image.getName"
+                                    src="@routes.ProfileController.photoAt(image.getImageId)" alt="@image.getName"
                                     name="@image.getImageId">
                                     <div class="card-body">
                                         <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
