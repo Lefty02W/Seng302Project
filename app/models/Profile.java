@@ -21,7 +21,6 @@ import java.util.*;
 public class Profile extends Model {
 
     @Id
-    @Constraints.Required
     private Integer profileId;
 
     @Constraints.Required
@@ -36,7 +35,6 @@ public class Profile extends Model {
     @Constraints.Required
     private String email;
 
-    @Constraints.Required
     private String password;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
@@ -135,7 +133,7 @@ public class Profile extends Model {
      */
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
-                  String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -236,7 +234,7 @@ public class Profile extends Model {
 
     public void setPassword(String password) {
         //Hash the password for added security
-       // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
+        // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
         this.password = password;
     }
 
@@ -331,14 +329,55 @@ public class Profile extends Model {
         if (!(travellerTypes == null)) {
             ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
             ArrayList<String> toReturn = new ArrayList<>();
-            System.out.println("NO");
             for (TravellerType type : typeObjects) {
-                System.out.println("WHAT");
                 toReturn.add(type.getTravellerTypeName());
             }
             return toReturn;
         } else {
             return new ArrayList<String>();
+        }
+    }
+
+    public String getTravellerTypesString() {
+        if (!(travellerTypes.isEmpty())) {
+            ArrayList<TravellerType> typeObjects = new ArrayList<>(travellerTypes.values());
+            StringBuilder toReturn = new StringBuilder();
+            for (TravellerType type : typeObjects) {
+                toReturn.append(type.getTravellerTypeName() + ", ");
+            }
+            return toReturn.toString().substring(0, toReturn.length() - 2);
+        } else {
+            return "";
+        }
+    }
+
+    public String getNationalityString() {
+        if (!(nationalities.isEmpty())) {
+            ArrayList<Nationality> nationalityObjects = new ArrayList<>(nationalities.values());
+            StringBuilder toReturn = new StringBuilder();
+            for (Nationality nationality : nationalityObjects) {
+                System.out.println("Yeet + "+nationality.getNationalityName());
+                toReturn.append(nationality.getNationalityName() + ",");
+            }
+            System.out.println("ahhh + "+toReturn.toString().substring(0, toReturn.length() - 1));
+            return toReturn.toString().substring(0, toReturn.length() - 1);
+        } else {
+            return "";
+        }
+    }
+
+
+    public String getPassportsString() {
+        if (!(passports.isEmpty())) {
+
+            ArrayList<PassportCountry> passportObjects = new ArrayList<>(passports.values());
+            StringBuilder toReturn = new StringBuilder();
+            for (PassportCountry passport : passportObjects) {
+                toReturn.append(passport.getPassportName() + ", ");
+            }
+            return toReturn.toString().substring(0, toReturn.length()-2);
+        } else {
+            return "";
         }
     }
 

@@ -181,8 +181,8 @@ public class ProfileRepository {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             String updateQuery = "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, " +
-                    "birth_date = ?, gender = ?, " +
-                    "admin = ? WHERE id = ?";
+                    "birth_date = ?, gender = ?" +
+                    "WHERE profile_id = ?";
             Optional<Integer> value = Optional.empty();
             try {
                 if (ebeanServer.find(Profile.class).setId(userId).findOne() != null) {
@@ -193,8 +193,8 @@ public class ProfileRepository {
                     query.setParameter(4, newProfile.getEmail());
                     query.setParameter(5, newProfile.getBirthDate());
                     query.setParameter(6, newProfile.getGender());
-                    query.setParameter(7, newProfile.isAdmin());
-                    query.setParameter(8, userId);
+                    //query.setParameter(7, newProfile.isAdmin());
+                    query.setParameter(7, userId);
                     query.execute();
                     txn.commit();
                     profileNationalityRepository.removeAll(userId);
