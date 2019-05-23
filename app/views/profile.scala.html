@@ -48,10 +48,11 @@
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
             </div>
+        </div>
                 <!-- /#sidebar-wrapper -->
 
                 <!-- Page Content -->
-            <div id="page-content-wrapper">
+        <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
@@ -449,7 +450,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary">New Photo</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#newProfilePhotoModal" data-dismiss="modal">New Photo</button>
                                 <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Close</button>
                             </div>
                         </div>
@@ -457,6 +458,35 @@
                 </div>
             </div>
 
+        </div>
+
+        <div class="modal fade" id="newProfilePhotoModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title center-col">Upload Picture</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="upload-demo-wrap">
+                                <div id="upload-demo"></div>
+                            </div>
+                            <div class="actions">
+                                <a class="btn file-btn">
+                                    <span>Upload</span>
+                                    <input type="file" id="upload" accept="image/*" value="Choose an Image"/>
+                                </a>
+                                <button class="upload-result">Result</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal">Go</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -717,6 +747,19 @@
                     "sDom": '<"top"pfl>rt<"bottom"><"clear">',
                     "autoWidth": false
                 });
+            });
+
+            $uploadCrop = $('#upload-demo').croppie({
+                enableExif: true,
+                viewport: {
+                    width: 200,
+                    height: 200,
+                    type: 'circle'
+                },
+                boundary: {
+                    width: 300,
+                    height: 300
+                }
             });
 
             var closeBtns = document.getElementsByClassName("close");
