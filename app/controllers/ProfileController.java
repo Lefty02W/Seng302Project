@@ -300,7 +300,7 @@ public class ProfileController extends Controller {
                 Photo photo = new Photo(this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight());
 
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
-                    savePhoto(photo, SessionController.getCurrentUserId(request)); // Save photo, given a successful upload
+                    savePhoto(photo, SessionController.getCurrentUserId(request)).thenApply(result -> redirect("/profile")); // Save photo, given a successful upload
                     showPhotoModal = true;
                 } else { //case photo is being set
                     if (imageData.autoCropped.equals("true")) {
