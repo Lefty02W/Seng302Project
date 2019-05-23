@@ -1,5 +1,6 @@
 package repository;
 
+import com.google.common.collect.TreeMultimap;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
@@ -10,10 +11,7 @@ import models.TripDestination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 import repository.TripDestinationsRepository;
 
@@ -57,17 +55,17 @@ public class TripRepository {
      * @param tripDestinations
      */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
-    ebeanServer.insert(trip);
-    for (TripDestination tripDestination : tripDestinations) {
-            tripDestination.setTripId(trip.getId());
-            Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
-            //if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
-            if (dest.getVisible() == 1) {
-                makeAdmin(dest);
-            }
+        ebeanServer.insert(trip);
+        System.out.println("yote");
+        for (TripDestination tripDestination : tripDestinations) {
+                tripDestination.setTripId(trip.getId());
+                Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
+                //if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
+                if (dest.getVisible() == 1) {
+                    makeAdmin(dest);
+                }
             ebeanServer.insert(tripDestination);
-
-            }
+        }
     }
 
     private void makeAdmin(Destination destination) {
@@ -96,6 +94,64 @@ public class TripRepository {
         }, executionContext);
     }
 
+
+    public TreeMultimap<Long, Integer> getUsersTripsOrder(Integer ProfileId) {
+        List<Trip> result = Trip.find.query().where()
+                .eq("profile_id", ProfileId)
+                .findList();
+        TreeMultimap<Long, Integer> tripList = TreeMultimap.create();
+
+        for (Trip trip : result) {
+            ArrayList<TripDestination> tripDestinations = new ArrayList<>();
+            TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
+            List<TripDestination> tripDests = TripDestination.find.query()
+                    .where()
+                    .eq("trip_id", trip.getId())
+                    .findList();
+
+            for (TripDestination tripDest : tripDests) {
+                // Getting the destinations for each tripDestination
+                List<Destination> destinations = Destination.find.query()
+                        .where()
+                        .eq("destination_id", tripDest.getDestinationId())
+                        .findList();
+                tripDest.setDestination(destinations.get(0));
+                orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
+            }
+            trip.setOrderedDestiantions(orderedDestiantions);
+            tripList.put(trip.getFirstDate(), trip.getId());
+        }
+        return tripList;
+    };
+
+    public Map<Integer, Trip> getUsersTrips(Integer ProfileId) {
+        List<Trip> result = Trip.find.query().where()
+                .eq("profile_id", ProfileId)
+                .findList();
+        Map<Integer, Trip> tripList = new TreeMap<>();
+
+        for (Trip trip : result) {
+            ArrayList<TripDestination> tripDestinations = new ArrayList<>();
+            TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
+            List<TripDestination> tripDests = TripDestination.find.query()
+                    .where()
+                    .eq("trip_id", trip.getId())
+                    .findList();
+
+            for (TripDestination tripDest : tripDests) {
+                // Getting the destinations for each tripDestination
+                List<Destination> destinations = Destination.find.query()
+                        .where()
+                        .eq("destination_id", tripDest.getDestinationId())
+                        .findList();
+                tripDest.setDestination(destinations.get(0));
+                orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
+            }
+            trip.setOrderedDestiantions(orderedDestiantions);
+            tripList.put(trip.getId(), trip);
+        }
+        return tripList;
+    };
 
     /**
      * code to return trip from id

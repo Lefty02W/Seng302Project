@@ -77,7 +77,7 @@ public class Profile extends Model {
     @Transient
     TreeMultimap<Long, Integer> tripsMap = TreeMultimap.create();
     @Transient
-    TreeMap <Integer, Trip> tripsTripMap = new TreeMap<>();
+    Map <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
     @Transient
     private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
@@ -354,11 +354,11 @@ public class Profile extends Model {
         this.tripsMap = trips;
     }
 
-    public void setTripMaps(TreeMap<Integer, Trip> trips) {
+    public void setTripMaps(Map<Integer, Trip> trips) {
         this.tripsTripMap = trips;
     }
 
-    public TreeMap<Integer, Trip> getTripsMap() {
+    public Map<Integer, Trip> getTripsMap() {
         return tripsTripMap;
     }
 

@@ -65,12 +65,15 @@ public class TripsController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            Profile toSend = profile.get();
+            toSend.setTripMaps(tripRepository.getUsersTrips(profId));
+            toSend.setTrips(tripRepository.getUsersTripsOrder(profId));
             if (profile.isPresent()) {
                 showEmptyEdit = false;
                 orderedCurrentDestinations.clear();
                 TreeMultimap<Long, Integer> tripsMap = profile.get().getTrips();
                 List<Integer> tripValues = new ArrayList<>(tripsMap.values());
-                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, profile.get(), request, messagesApi.preferred(request)));
+                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, toSend, request, messagesApi.preferred(request)));
         } else {
                 return redirect("/profile");
             }
@@ -267,6 +270,7 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result save(Http.Request request) {
+        System.out.println("here");
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
         Integer currentUserId = SessionController.getCurrentUserId(request);
@@ -274,6 +278,7 @@ public class TripsController extends Controller {
         if (orderedCurrentDestinations.size() < 2) {
             return redirect("/trips/create").flashing("info", "A trip must have at least two destinations");
         } else {
+            System.out.println("oof");
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.insert(trip, tripDestinations);
             return redirect("/trips");
