@@ -165,7 +165,7 @@ public class ProfileRepository {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             String updateQuery = "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, " +
-                    "birth_date = ?, gender = ?" +
+                    "birth_date = ?, gender = ? " +
                     "WHERE profile_id = ?";
             Optional<Integer> value = Optional.empty();
             try {
