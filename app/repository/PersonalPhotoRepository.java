@@ -13,7 +13,9 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-
+/**
+ * This class provides database access methods for handling PersonalPhotos
+ */
 public class PersonalPhotoRepository implements ModelUpdatableRepository<PersonalPhoto> {
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;

@@ -1,6 +1,6 @@
 package controllers;
 
-import com.google.common.collect.TreeMultimap;
+import controllers.LoginController.Login;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -14,12 +14,10 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
-import repository.TripRepository;
 import views.html.createDestinations;
-import views.html.login;
 import views.html.destinations;
 import views.html.editDestinations;
-import controllers.LoginController.Login;
+import views.html.login;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-import static java.util.Collections.addAll;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
@@ -45,7 +42,6 @@ public class DestinationsController extends Controller {
     private final Form<Login> loginForm;
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
-    private final TripRepository tripRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -58,14 +54,13 @@ public class DestinationsController extends Controller {
      */
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
-                                  ProfileRepository profileRepository, TripRepository tripRepository) {
+                                  ProfileRepository profileRepository) {
         this.form = formFactory.form(Destination.class);
         this.userForm = formFactory.form(Profile.class);
         this.loginForm = formFactory.form(Login.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
-        this.tripRepository = tripRepository;
     }
 
     /**
@@ -88,21 +83,10 @@ public class DestinationsController extends Controller {
                         destinationsList = new ArrayList<>();
                     }
                 } else {
-                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(userId);
-                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(userId);
-                    try {
-                        destinationsList = destListTemp.get();
-                        destinationsList.addAll(followedListTemp.get());
-                    } catch (NoSuchElementException e) {
-                        destinationsList = new ArrayList<>();
-                    }
+                    profileRepository.getDestinations(userId).ifPresent(dests -> destinationsList.addAll(dests));
+                    destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
                 }
-                Optional<ArrayList<Integer>> followedTemp = destinationRepository.getFollowedDestinationIds(userId);
-                try {
-                    followedDestinationIds = followedTemp.get();
-                } catch (NoSuchElementException e) {
-                    followedDestinationIds = new ArrayList<>();
-                }
+                destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/destinations");
@@ -114,12 +98,7 @@ public class DestinationsController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
-                Optional<ArrayList<Integer>> followedTemp = destinationRepository.followDesination(destId, profileId);
-                try {
-                    followedDestinationIds = followedTemp.get();
-                } catch (NoSuchElementException e) {
-                    followedDestinationIds = new ArrayList<>();
-                }
+                destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/destinations");
@@ -133,7 +112,7 @@ public class DestinationsController extends Controller {
             if (profile.isPresent()) {
                 //TODO make it so you can not unfollow destinations inside a trip
 
-                Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDesination(destId, profileId);
+                Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDestination(destId, profileId);
                 try {
                     followedDestinationIds = followedTemp.get();
                 } catch (NoSuchElementException e) {
@@ -141,7 +120,7 @@ public class DestinationsController extends Controller {
                 }
                 if (!isPublic) {
                     Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
-                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDesinations(profileId);
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId);
                     try {
                         destinationsList = destListTemp.get();
                         destinationsList.addAll(followedListTemp.get());
@@ -252,10 +231,7 @@ public class DestinationsController extends Controller {
         if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
             return false;
         }
-        if (destination.getLongitude() > 180 || destination.getLongitude() < -180) {
-                return false;
-        }
-        return true;
+        return !(destination.getLongitude() > 180) && !(destination.getLongitude() < -180);
     }
 
 

@@ -93,10 +93,14 @@ public class LoginController extends Controller {
      */
     public Result save(Http.Request request){
         Form<Profile> userForm = profileForm.bindFromRequest(request);
-        Profile profile = userForm.value().get();
-        profile.initProfile();
-        profileRepository.insert(profile);
-        return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
+        Optional<Profile> profOpt = userForm.value();
+        if (profOpt.isPresent()) {
+            Profile profile = profOpt.get();
+            profile.initProfile();
+            profileRepository.insert(profile);
+            return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
+        }
+        return redirect("/").flashing("info", "Profile save failed");
     }
 
     /**

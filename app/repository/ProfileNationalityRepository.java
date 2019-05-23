@@ -2,7 +2,6 @@ package repository;
 
 import io.ebean.*;
 import models.Nationality;
-import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -10,9 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.concurrent.CompletionStage;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+/**
+ * This class provides database access functionality for handling profile nationalities
+ */
 public class ProfileNationalityRepository {
 
     private final EbeanServer ebeanServer;

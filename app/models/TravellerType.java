@@ -24,6 +24,10 @@ public class TravellerType extends Model {
         travellerTypeName = name;
     }
 
+    public TravellerType(String travellerTypeName) {
+        this.travellerTypeName = travellerTypeName;
+    }
+
     public int getTravellerTypeId() {
         return travellerTypeId;
     }

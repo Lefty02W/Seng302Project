@@ -1,8 +1,9 @@
 package repository;
 
-import io.ebean.*;
-import models.PassportCountry;
-import models.TravellerType;
+import io.ebean.Ebean;
+import io.ebean.EbeanServer;
+import io.ebean.Model;
+import io.ebean.SqlRow;
 import models.TravellerType;
 import play.db.ebean.EbeanConfig;
 
@@ -52,11 +53,7 @@ public class TravellerTypeRepository {
      * @return Optional completion stage holding the id of the entry that has been created
      */
     public Optional<Integer> insert(TravellerType travellerTypes) {
-        try {
-            ebeanServer.insert(travellerTypes);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ebeanServer.insert(travellerTypes);
         return Optional.of(travellerTypes.getTravellerTypeId());
     }
 

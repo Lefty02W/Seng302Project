@@ -26,7 +26,6 @@ public class Profile extends Model {
     @Constraints.Required
     private String firstName;
 
-    @Constraints.Required
     private String middleName;
 
     @Constraints.Required
@@ -98,7 +97,6 @@ public class Profile extends Model {
                    String lastName, String email, Date birthDate,
                    Map<Integer, PassportCountry> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
                    Map<Integer, TravellerType> travellerTypes) {
-        System.out.println("Owo not this one");
         this.profileId = profileId;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -184,7 +182,8 @@ public class Profile extends Model {
             this.nationalities.put(nationality.getNationalityId(), nationality);
         }
         i = 1;
-        this.travellerTypes =new HashMap<>();
+        this.travellerTypes = new HashMap<>();
+        this.travellerTypes = new HashMap<>();
         for (String travellerTypesString : (travellerTypesForm.split(","))) {
             i++;
             TravellerType travellerType = new TravellerType(i, travellerTypesString);
@@ -301,7 +300,6 @@ public class Profile extends Model {
             ArrayList<PassportCountry> passportObjects = new ArrayList<PassportCountry>(passports.values());
             ArrayList<String> toReturn = new ArrayList<>();
             for (PassportCountry passport : passportObjects) {
-                System.out.println("HEREHER: "+passport.getPassportName());
                 toReturn.add(passport.getPassportName());
             }
 
@@ -325,7 +323,6 @@ public class Profile extends Model {
     }
 
     public ArrayList<String> getTravellerTypesList() {
-        System.out.println(travellerTypes);
         if (!(travellerTypes == null)) {
             ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
             ArrayList<String> toReturn = new ArrayList<>();
@@ -356,10 +353,8 @@ public class Profile extends Model {
             ArrayList<Nationality> nationalityObjects = new ArrayList<>(nationalities.values());
             StringBuilder toReturn = new StringBuilder();
             for (Nationality nationality : nationalityObjects) {
-                System.out.println("Yeet + "+nationality.getNationalityName());
                 toReturn.append(nationality.getNationalityName() + ",");
             }
-            System.out.println("ahhh + "+toReturn.toString().substring(0, toReturn.length() - 1));
             return toReturn.toString().substring(0, toReturn.length() - 1);
         } else {
             return "";
@@ -415,7 +410,6 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        System.out.println(birthDate);
         return dateFormatSort.format(birthDate);
     }
 

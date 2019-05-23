@@ -4,7 +4,6 @@ import com.google.common.collect.TreeMultimap;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
-import io.ebean.Transaction;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -12,9 +11,11 @@ import models.TripDestination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.concurrent.CompletionStage;
-import repository.TripDestinationsRepository;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -26,27 +27,13 @@ public class TripRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
-    private final TripDestinationsRepository tripDestinationsRepository;
     private final DestinationRepository destinationRepository;
 
     @Inject
-    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, TripDestinationsRepository tripDestinationsRepository, DestinationRepository destinationRepository) {
+    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, DestinationRepository destinationRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
-        this.tripDestinationsRepository = tripDestinationsRepository;
         this.destinationRepository = destinationRepository;
-    }
-
-    /**
-     * insert trip destination into the database
-     * @param tripDestination
-     * @return trip id
-     */
-    public CompletionStage<Integer> insertTripDestination(TripDestination tripDestination) {
-        return supplyAsync(() -> {
-            ebeanServer.insert(tripDestination);
-            return tripDestination.getTripId();
-        }, executionContext);
     }
 
 
@@ -57,11 +44,9 @@ public class TripRepository {
      */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
         ebeanServer.insert(trip);
-        System.out.println("yote");
         for (TripDestination tripDestination : tripDestinations) {
                 tripDestination.setTripId(trip.getId());
                 Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
-                //if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
                 if (dest.getVisible() == 1) {
                     makeAdmin(dest);
                 }
@@ -70,7 +55,7 @@ public class TripRepository {
     }
 
     private void makeAdmin(Destination destination) {
-//        destinationRepository.followDesination(destination.getDestinationId(), destination.getUserEmail());
+//        destinationRepository.followDestination(destination.getDestinationId(), destination.getUserEmail());
         Destination targetDestination = ebeanServer.find(Destination.class).setId(destination.getDestinationId()).findOne();
         //TODO work around this problem
 //        targetDestination.setUserEmail("admin@admin.com");

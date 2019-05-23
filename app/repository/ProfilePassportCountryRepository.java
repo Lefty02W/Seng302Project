@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.concurrent.CompletionStage;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+/**
+ * This class provides database access methods for profile passport countries
+ */
 public class ProfilePassportCountryRepository {
 
     private final EbeanServer ebeanServer;

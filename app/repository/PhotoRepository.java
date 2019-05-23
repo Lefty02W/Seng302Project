@@ -8,9 +8,6 @@ import models.Photo;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -111,28 +108,6 @@ public class PhotoRepository {
             }
             return value;
         }, executionContext);
-    }
-
-
-    /**
-     * Function to get all the images created by the signed in user.
-     *
-     * @param profileId  of logged in users id
-     * @return imageList list of images uploaded by the user
-     */
-    //TODO needs to be in personal photo repository
-    public Optional<List<Photo>> getImages(int profileId) {
-        try {
-            List<Photo> photoList =
-                    ebeanServer.find(Photo.class)
-                            .where().eq("profile_id", profileId)
-                            .findList();
-            return Optional.of(photoList);
-        } catch (PersistenceException e) {
-            List<Photo> photoList = new ArrayList<>();
-            return Optional.of(photoList);
-        }
-
     }
 
 

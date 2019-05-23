@@ -15,10 +15,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import repository.PersonalPhotoRepository;
-import repository.PhotoRepository;
-import repository.ProfileRepository;
-import repository.TripRepository;
+import repository.*;
 import views.html.editProfile;
 import views.html.profile;
 
@@ -52,9 +49,11 @@ public class ProfileController extends Controller {
     private static boolean showChangeProfilePictureModal = false;
     private Photo demoProfilePicture = null;
     private static boolean showCropPhotoModal = false;
+    private static boolean showPhotoModal = false;
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
-    private static Boolean showPhotoModal = false;
+    private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
+
 
 
 
@@ -80,7 +79,7 @@ public class ProfileController extends Controller {
 
     @Inject
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, PersonalPhotoRepository personalPhotoRepository,
-            HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, PhotoRepository photoRepository, TripRepository tripRepository)
+            HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, PhotoRepository photoRepository, TripRepository tripRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -91,6 +90,7 @@ public class ProfileController extends Controller {
             this.photoRepository = photoRepository;
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
+            this.profileTravellerTypeRepository = profileTravellerTypeRepository;
         }
 
 
@@ -128,7 +128,7 @@ public class ProfileController extends Controller {
         Profile profileNew = currentProfileForm.get();
         profileNew.initProfile();
         return profileRepository.update(profileNew, profId).thenApplyAsync(x -> {
-            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profileNew.getEmail());
+            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profId.toString());
         }, httpExecutionContext.current());
     }
 
@@ -517,7 +517,6 @@ public class ProfileController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.lookup(profId).thenApplyAsync(profileRec -> {
             if (profileRec.isPresent()) {
-                //Profile currentProfile = SessionController.getCurrentUser(request);
                 List<Photo> displayImageList = getUserPhotos(request);
 
                 Optional<Photo> image = personalPhotoRepository.getProfilePicture(profId);

@@ -41,11 +41,7 @@ public class ProfileRepository {
     public boolean checkProfileExists(String email) {
         String selectQuery = "Select * from profile WHERE email = ?";
         SqlRow row = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findOne();
-        if (row != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return row != null;
     }
 
 
@@ -61,11 +57,7 @@ public class ProfileRepository {
                 .setParameter(1, email)
                 .setParameter(2, password)
                 .findOne();
-        if (row != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return row != null;
     }
 
 
@@ -88,8 +80,7 @@ public class ProfileRepository {
                 , p.getString("email"), p.getDate("birth_date"), passportCountries, p.getString("gender"), p.getDate("time_created")
                 , nationalities, travellerTypes);
             }
-            System.out.println("ABNANWRHNAWR: "+profile.getBirthDate());
-            return Optional.of(profile);
+            return Optional.ofNullable(profile);
         }, executionContext);
     }
 
@@ -112,7 +103,7 @@ public class ProfileRepository {
                         , p.getString("email"), p.getDate("birthDate"), passportCountries, p.getString("gender"), p.getDate("time_created")
                         , nationalities, travellerTypes);
             }
-            return Optional.of(profile);
+            return Optional.ofNullable(profile);
         }, executionContext);
     }
 
@@ -131,9 +122,6 @@ public class ProfileRepository {
                     "password, birth_date, gender) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
             Integer value = null;
-//            System.out.println("Info\n"+profile.getFirstName()+"\n"+profile.getMiddleName()+"\n"+profile.getLastName()+
-//                    "\n"+profile.getEmail()+"\n"+profile.getPassword()+"\n"+profile.getBirthDate()+"\n"+profile.getGender()
-//            +"\n"+profile.getPassportsList().get(0));
             try {
                 SqlUpdate query = Ebean.createSqlUpdate(qry);
                 query.setParameter(1, profile.getFirstName());
@@ -143,29 +131,25 @@ public class ProfileRepository {
                 query.setParameter(5, profile.getPassword());
                 query.setParameter(6, profile.getBirthDate());
                 query.setParameter(7, profile.getGender());
-                //query.setParameter(8, profile.isAdmin());
                 query.setGetGeneratedKeys(true); // Need to set the ID of the generated key
                 query.execute();
                 txn.commit();
                 value = parseInt(query.getGeneratedKey().toString()); // Id of the newly created profile
                 for (String passportName: profile.getPassportsList()) {
-                    System.out.println("YEEETETETETE: "+passportName + value);
-                    profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(0, passportName), value);
+                    profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(passportName), value);
                 }
                 for (String nationalityName: profile.getNationalityList()) {
-                    System.out.println("YEEETETETETE 2: "+nationalityName);
-                    profileNationalityRepository.insertProfileNationality(new Nationality(0, nationalityName), value);
+                    profileNationalityRepository.insertProfileNationality(new Nationality(nationalityName), value);
                 }
                 for (String travellerTypeName: profile.getTravellerTypesList()) {
-                    System.out.println("YEEETETETETE 3: "+travellerTypeName);
-                    profileTravellerTypeRepository.insertProfileTravellerType(new TravellerType(0, travellerTypeName), value);
+                    profileTravellerTypeRepository.insertProfileTravellerType(new TravellerType(travellerTypeName), value);
                 }
         } catch(Exception e) {
-            System.out.println("Search This: "+e);
+            System.err.println("Search This: "+e);
         } finally {
             txn.end();
         }
-            return Optional.of(value);
+            return Optional.ofNullable(value);
         }, executionContext);
     }
 
@@ -193,7 +177,6 @@ public class ProfileRepository {
                     query.setParameter(4, newProfile.getEmail());
                     query.setParameter(5, newProfile.getBirthDate());
                     query.setParameter(6, newProfile.getGender());
-                    //query.setParameter(7, newProfile.isAdmin());
                     query.setParameter(7, userId);
                     query.execute();
                     txn.commit();
@@ -201,18 +184,15 @@ public class ProfileRepository {
                     profilePassportCountryRepository.removeAll(userId);
                     profileTravellerTypeRepository.removeAll(userId);
                     for (String passportName: newProfile.getPassportsList()) {
-                        System.out.println("YEEETETETETE: "+passportName + value);
                         profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(0, passportName), userId);
                     }
                     for (String nationalityName: newProfile.getNationalityList()) {
-                        System.out.println("YEEETETETETE 2: "+nationalityName);
                         profileNationalityRepository.insertProfileNationality(new Nationality(0, nationalityName), userId);
                     }
                     for (String travellerTypeName: newProfile.getTravellerTypesList()) {
-                        System.out.println("YEEETETETETE 3: "+travellerTypeName);
                         profileTravellerTypeRepository.insertProfileTravellerType(new TravellerType(0, travellerTypeName), userId);
                     }
-                    value = Optional.of(newProfile.getProfileId());
+                    value = Optional.of(userId);
                 }
             } finally {
                 txn.end();

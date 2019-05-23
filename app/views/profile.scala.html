@@ -620,9 +620,9 @@
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value=@currentUser.getTravellerTypes>
+                                        <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value=@currentUser.getTravellerTypesString>
                                     </div>
-                                    <select class="selectpicker" multiple title="Traveller Type" id="travellerTypesForm" data-width="100%" required>
+                                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
                                         @if(currentUser.getTravellerTypesList.contains("ThrillSeeker")) {
                                             <option value="ThrillSeeker" selected>ThrillSeeker</option>
                                         } else {
@@ -728,7 +728,7 @@
         <!-- Menu Toggle Script -->
     <script>
             function fillVals() {
-                $('#travellerTypes').val($('#typeDropdown').val());
+                $('#travellerTypesForm').val($('#typeDropdown').val());
             }
 
             $(document).ready(function() {

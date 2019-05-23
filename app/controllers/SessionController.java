@@ -1,18 +1,9 @@
 package controllers;
 
-import com.google.common.collect.TreeMultimap;
-import io.ebean.Expr;
-import models.Destination;
-import models.Profile;
-import models.Trip;
-import models.TripDestination;
-import play.mvc.Http;
-import repository.ProfileRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import play.mvc.Http;
+
 import java.util.Optional;
-import java.util.TreeMap;
 
 /**
  * This class manages sessions cookies
@@ -30,8 +21,7 @@ public class SessionController {
         String stringId;
         if (connected.isPresent()) {
             stringId = connected.get();
-            int id = Integer.parseInt(stringId);
-            return id;
+            return Integer.parseInt(stringId);
         } else {
             return null;
         }

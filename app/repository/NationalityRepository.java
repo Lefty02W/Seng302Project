@@ -84,7 +84,7 @@ public class NationalityRepository {
         } catch(Exception e) {
             nationalityId = null;
         }
-        return Optional.of(nationalityId);
+        return Optional.ofNullable(nationalityId);
     }
 
     /**

@@ -156,14 +156,10 @@ public class DestinationRepository {
                 .findOne());
         if (publicDestinations != null) {
             return true;
-        } else if (destinations != null) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return destinations != null;
     }
 
-    public Optional<ArrayList<Integer>> followDesination(int destId, int profileId) {
+    public Optional<ArrayList<Integer>> followDestination(int destId, int profileId) {
         String updateQuery = "INSERT into follow_destination(profile_id, destination_id) values (?, ?)";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, profileId);
@@ -172,7 +168,7 @@ public class DestinationRepository {
         return getFollowedDestinationIds(profileId);
     }
 
-    public Optional<ArrayList<Integer>> unfollowDesination(int destId, int profileId) {
+    public Optional<ArrayList<Integer>> unfollowDestination(int destId, int profileId) {
         String updateQuery = "DELETE from follow_destination where profile_id = ? and destination_id =  ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, profileId);
@@ -181,7 +177,7 @@ public class DestinationRepository {
         return getFollowedDestinationIds(profileId);
     }
 
-    public Optional<ArrayList<Destination>> getFollowedDesinations(int profileId) {
+    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where follow_destination.profile_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
@@ -255,18 +251,14 @@ public class DestinationRepository {
                 .eq("country", destination.getCountry())
                 .eq("visible", "1")
                 .findOne());
-        if (publicDestination != null) {
-            if (publicDestination.getDestinationId() != id) {
-                return true;
-            }
+        if (publicDestination != null && publicDestination.getDestinationId() != id) {
+            return true;
         }
 
-        if (destinations != null) {
-            if (destinations.getDestinationId() != id) {
-                return true;
-            }
+        if (destinations == null) {
+            return false;
         }
+        return destinations.getDestinationId() != id;
 
-        return false;
     }
 }

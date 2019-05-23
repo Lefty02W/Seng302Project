@@ -1,7 +1,7 @@
 package controllers;
 
-import models.Photo;
 import models.PartnerFormData;
+import models.Photo;
 import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
@@ -10,12 +10,16 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import repository.PhotoRepository;
+import repository.PersonalPhotoRepository;
 import repository.ProfileRepository;
 import views.html.travellers;
 import views.html.travellersPhotos;
+
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 
@@ -28,15 +32,15 @@ public class TravellersController extends Controller {
 
     private final Form<PartnerFormData> form;
     private MessagesApi messagesApi;
-    private final PhotoRepository photoRepository;
+    private final PersonalPhotoRepository personalPhotoRepository;
     private final ProfileRepository profileRepository;
     private List<Photo> photoList = new ArrayList<>();
 
     @Inject
-     public TravellersController(FormFactory formFactory, MessagesApi messagesApi, PhotoRepository photoRepository, ProfileRepository profileRepository) {
+     public TravellersController(FormFactory formFactory, MessagesApi messagesApi, PersonalPhotoRepository personalPhotoRepository, ProfileRepository profileRepository) {
         this.form = formFactory.form(PartnerFormData.class);
         this.messagesApi = messagesApi;
-        this.photoRepository = photoRepository;
+        this.personalPhotoRepository = personalPhotoRepository;
         this.profileRepository = profileRepository;
     }
 
@@ -227,12 +231,7 @@ public class TravellersController extends Controller {
      * @return
      */
     private List<Photo> getTravellersPhotos(int profileId) {
-        Optional<List<Photo>> imageListTemp = photoRepository.getImages(profileId);
-        try {
-            photoList = imageListTemp.get();
-        } catch(NoSuchElementException e) {
-            photoList = new ArrayList<Photo>();
-        }
+        personalPhotoRepository.getAllProfilePhotos(profileId).ifPresent(photos -> photoList = photos);
         return photoList;
     }
 
