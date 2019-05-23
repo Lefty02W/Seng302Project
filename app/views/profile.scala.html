@@ -34,6 +34,7 @@
     </head>
 
     <body>
+
         <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
@@ -421,7 +422,6 @@
         </div>
 
         <div class="modal fade" id="changeProfilePicture">
-
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
 
@@ -429,81 +429,37 @@
                         <h2 class="modal-title center-col">Change Profile Picture</h2>
                     </div>
                     <div class="modal-body">
-                        @*<div class="container" id="profilePhoto">*@
-                            @*<p>@isTooSmall</p>*@
-@*//                            @if(defaultProfilePicture == 1) {*@
-@*//                                @if(profilePicture == null) {*@
-                                    @*<img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">*@
-                                @*} else {*@
-                                    @*<img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">*@
-                                @*}*@
-                            @*} else {*@
-                            @*<img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">*@
-                            @*}*@
-                        </div>
-
-                        <div class="row">
-                            <div class="center-col">
-                                <button type="button" class="btn-outline-primary" id="uploadPhotoButton" data-toggle="modal" data-target="#addProfileModal" data-dismiss="modal">
-                                    Upload new photo</button>
-                                <button type="button" class="selectPhotoButton" data-toggle="modal" data-target="#selectPhotoModal" data-dismiss="modal">
-                                    Select existing photo</button>
+                        <div class="col">
+                            <div id="photosCard" class="card-large lower-card">
+                                <div class="row">
+                                @for(image <- imageList) {
+                                    <div class="card">
+                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                        src="@routes.ProfileController.photoAt(image.getImageId)" alt="@image.getName"
+                                        name="@image.getImageId">
+                                        <div class="card-body">
+                                            <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
+                                            <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
+                                                <button type="submit">Crop this myself</button></a>
+                                            <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
+                                                <button type="submit">Select</button></a>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">New Photo</button>
+                                <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Close</button>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <div class="center-col">
-                            <a href="@routes.ProfileController.resetDemoProfilePicture()">
-                                <button type="button">Cancel</button></a>
-                            <a href="@routes.ProfileController.setProfilePicture()">
-                                <button type="submit">Submit</button></a>
-                        </div>
-                    </div>
                 </div>
             </div>
 
         </div>
-        <div class="modal fade" id="selectPhotoModal">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h2 class="modal-title">Select profile Picture</h2>
-                    </div>
-                    <div class="col">
-                        <div id="photosCard" class="card-large lower-card">
-                            <div class="row">
-                            @for(image <- imageList) {
-                                <div class="card">
-                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                    src="@routes.ProfileController.photoAt(image.getImageId)" alt="@image.getName"
-                                    name="@image.getImageId">
-                                    <div class="card-body">
-                                        <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
-                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
-                                            <button type="submit">Crop this myself</button></a>
-                                        <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
-                                            <button type="submit">AutoCrop</button></a>
-                                    </div>
-                                        <!-- The Expanded Image Modal -->
-                                    <div id="expandImageModal" class="modal">
-                                        <span class="close">&times;</span>
-                                        <img class="modal-content" id="expandedImage">
-                                        <div id="caption"></div>
-                                        <div id="id"></div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" style="width: 10vw;
-                            float: right" class="changeProfilePictureButton"
-                        data-toggle="modal" data-target="#changeProfilePicture">Close</button>
-                    </div>
-                </div>
-            </div>
 
-        </div>
+
 
         <div class="modal fade" id="addProfileModal">
             <div class="modal-dialog modal-dialog-centered">
