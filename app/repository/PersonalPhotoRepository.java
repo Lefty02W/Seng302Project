@@ -8,7 +8,6 @@ import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -140,7 +139,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
             List<Photo> photos = new ArrayList<>();
             List<Integer> photoIds = ebeanServer.find(PersonalPhoto.class).where().eq("profile_id", profileId).findIds();
             for (int photoId : photoIds) {
-                photos.add(ebeanServer.find(Photo.class).where().eq("photo)id", photoId).findOne());
+                photoRepository.getImage(photoId).ifPresent(photos::add);
             }
             return Optional.of(photos);
         });
