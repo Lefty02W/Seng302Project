@@ -450,7 +450,10 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#newProfilePhotoModal" data-dismiss="modal">New Photo</button>
+                                <button type="submit" class="btn btn-primary" data-toggle="modal"
+                                data-target="#newProfilePhotoModal" data-dismiss="modal">
+                                    New Photo
+                                </button>
                                 <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Close</button>
                             </div>
                         </div>
@@ -481,7 +484,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" data-dismiss="modal">Go</button>
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="cropImage()">Go</button>
                         <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancel</button>
                     </div>
                 </div>
@@ -764,17 +767,35 @@
                 }
             });
 
-                $('#upload-image').on('change', function(){
-                    var reader = new FileReader();
-                    reader.onload = function (event) {
-                        $uploadCrop.croppie('bind', {
-                            url: event.target.result
-                        }).then(function(){
-                            console.log('jQuery bind complete');
-                        });
-                    }
-                    reader.readAsDataURL(this.files[0]);
+            $('#upload-image').on('change', function(){
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    $uploadCrop.croppie('bind', {
+                        url: event.target.result
+                    }).then(function(){
+                        console.log('jQuery bind complete');
+                    });
+                };
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            function cropImage() {
+                $uploadCrop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (response) {
+                    console.log(response);
+
+                    $.ajax({
+                        url:"/profile/photo",
+                        headers: {
+                            'Csrf-Token': '@play.filters.csrf.CSRF.getToken.map(_.value)'
+                        },
+                        type: "POST",
+                        data:{"image": response.data}
+                    })
                 });
+            }
 
 
             var closeBtns = document.getElementsByClassName("close");

@@ -96,11 +96,6 @@ create table profile (
   constraint pk_profile primary key (email)
 );
 
-create table traveller_types (
-  traveller_type_id             integer not null,
-  traveller_type_name           varchar(255)
-);
-
 create table trip (
   trip_id                       integer auto_increment not null,
   name                          varchar(255),
@@ -126,8 +121,6 @@ drop table if exists destination;
 drop table if exists image;
 
 drop table if exists profile;
-
-drop table if exists traveller_types;
 
 drop table if exists trip;
 
