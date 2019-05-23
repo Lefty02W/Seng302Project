@@ -60,6 +60,9 @@ public class Profile extends Model {
     private Map<Integer, Nationality> nationalities;
     @Transient
     private Map<Integer, TravellerType> travellerTypes;
+    // Finder for profile
+    public static final Finder<Integer, Profile> find = new Finder<>(Profile.class);
+
 
     @Transient
     private boolean admin;
@@ -77,9 +80,9 @@ public class Profile extends Model {
     TreeMap <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
     @Transient
-    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
     @Transient
-    private static SimpleDateFormat dateFormatsort = new SimpleDateFormat("dd/MM/YYY");
+    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYY");
 
     /**
      * Traditional constructor for profile. Used when retrieving a Profile from DB.
@@ -105,7 +108,6 @@ public class Profile extends Model {
         this.email = email;
         this.birthDate = birthDate;
         this.passports = passports;
-
         this.gender = gender;
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
@@ -164,6 +166,10 @@ public class Profile extends Model {
         this.admin = isAdmin;
     }
 
+    /**
+     * A function to turn the profile class created by the create user form. It is required to turn the
+     * , separated strings into maps.
+     */
     public void initProfile() {
         this.passports = new HashMap<>();
         int i = 1;
@@ -205,8 +211,7 @@ public class Profile extends Model {
         return profileId;
     }
 
-    // Finder for profile
-    public static final Finder<String, Profile> find = new Finder<>(Profile.class);
+
 
     //--------------Setters----------------------
     public void setEmail(String email) {
@@ -244,7 +249,7 @@ public class Profile extends Model {
         this.admin = isAdmin;
     }
     public String getEntryDate() {
-        return dateFormatEntry.format(birthDate);
+        return dateFormatEntry.format(timeCreated);
     }
 
     //Getters
@@ -371,7 +376,8 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        return dateFormatsort.format(birthDate);
+        System.out.println(birthDate);
+        return dateFormatSort.format(birthDate);
     }
 
 

@@ -11,11 +11,13 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.ImageRepository;
+import repository.ProfileRepository;
 import views.html.travellers;
 import views.html.travellersPhotos;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.CompletionStage;
 
 //TODO Fix table in html - types field needs to wrap
 //TODO Fix data format in table
@@ -30,13 +32,15 @@ public class TravellersController extends Controller {
     private final Form<PartnerFormData> form;
     private MessagesApi messagesApi;
     private final ImageRepository imageRepository;
+    private final ProfileRepository profileRepository;
     private List<Image> imageList = new ArrayList<>();
 
     @Inject
-    public TravellersController(FormFactory formFactory, MessagesApi messagesApi, ImageRepository imageRepository) {
+    public TravellersController(FormFactory formFactory, MessagesApi messagesApi, ImageRepository imageRepository, ProfileRepository profileRepository) {
         this.form = formFactory.form(PartnerFormData.class);
         this.messagesApi = messagesApi;
         this.imageRepository = imageRepository;
+        this.profileRepository = profileRepository;
     }
 
 
@@ -47,27 +51,33 @@ public class TravellersController extends Controller {
      * @return renders traveller view with queried list of travellers
      */
     @Security.Authenticated(SecureSession.class)
-    public Result search(Http.Request request){
-        Form<PartnerFormData> searchForm = form.bindFromRequest(request);
-        PartnerFormData searchData = searchForm.get();
-        List<Profile> resultData = Profile.find.all();
+    public CompletionStage<Result> search(Http.Request request){
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Form<PartnerFormData> searchForm = form.bindFromRequest(request);
+                PartnerFormData searchData = searchForm.get();
+                List<Profile> resultData = Profile.find.all();
 
-        if (searchForm.get().searchGender != ""){
-            resultData = listGender(resultData, searchData);
-        }
-        if (searchForm.get().searchNationality != ""){
-            resultData = searchNat(resultData, searchData);
-        }
+                if (searchForm.get().searchGender != ""){
+                    resultData = listGender(resultData, searchData);
+                }
+                if (searchForm.get().searchNationality != ""){
+                    resultData = searchNat(resultData, searchData);
+                }
 
-        if (searchForm.get().searchAgeRange != null){
-            resultData = searchAge(resultData, searchData);
-        }
+                if (searchForm.get().searchAgeRange != null){
+                    resultData = searchAge(resultData, searchData);
+                }
 
-        if (searchForm.get().searchTravellerTypes != ""){
-            resultData = searchTravelTypes(resultData, searchData);
-        }
-
-        return ok(travellers.render(form, resultData, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+                if (searchForm.get().searchTravellerTypes != ""){
+                    resultData = searchTravelTypes(resultData, searchData);
+                }
+                return ok(travellers.render(form, resultData, imageList, profile.get(), request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/travellers");
+            }
+        });
     }
 
 
@@ -216,7 +226,7 @@ public class TravellersController extends Controller {
 
     /**
      * Method to retrieve all uploaded profile images from the database for a particular traveller
-     * @param email email for a particular user you want to view the photos of
+     * @param profileId id for a particular user you want to view the photos of
      * @return
      */
     private List<Image> getTravellersPhotos(int profileId) {
@@ -232,7 +242,7 @@ public class TravellersController extends Controller {
 
     /**
      * this method shows the travellers photos on a new page
-     * @param email
+     * @param profileId id of the user
      * @return render traveller photo page
      */
     @Security.Authenticated(SecureSession.class)
@@ -247,9 +257,16 @@ public class TravellersController extends Controller {
      * @return
      */
     @Security.Authenticated(SecureSession.class)
-    public Result show(Http.Request request) {
-        List<Profile> profiles = Profile.find.all();
+    public CompletionStage<Result> show(Http.Request request) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                List<Profile> profiles = Profile.find.all();
 
-        return ok(travellers.render(form, profiles, imageList, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, profiles, imageList, profile.get(), request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/profile");
+            }
+        });
     }
 }

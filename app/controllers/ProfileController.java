@@ -100,7 +100,7 @@ public class ProfileController extends Controller {
     /**
      * Method to retrieve a users profile details and return a filled form to be edited.
      *
-     * @param email String of the users email
+     * @param profileId integer of the users id
      * @return a render of the editDestinations profile page
      */
     @Security.Authenticated(SecureSession.class)
@@ -126,17 +126,12 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> update (Http.Request request){
+        Integer profId = SessionController.getCurrentUserId(request);
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
-        System.out.println(currentProfileForm);
-        Profile profile = currentProfileForm.get();
-        profile.initProfile();
-        // Could improve on this
-//        profile.setNationalities(profile.getNationalityList().replaceAll("\\s",""));
-//        profile.setPassports(profile.getPassportsList().replaceAll("\\s",""));
-
-        return profileRepository.update(profile, SessionController.getCurrentUser(request).getPassword(),
-                SessionController.getCurrentUser(request).getProfileId()).thenApplyAsync(x -> {
-            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profile.getEmail());
+        Profile profileNew = currentProfileForm.get();
+        profileNew.initProfile();
+        return profileRepository.update(profileNew, profId).thenApplyAsync(x -> {
+            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profileNew.getEmail());
         }, httpExecutionContext.current());
     }
 
@@ -165,9 +160,9 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     private List<Image> getUserPhotos(Http.Request request){
-        Profile profile = SessionController.getCurrentUser(request);
+        Integer profileId = SessionController.getCurrentUserId(request);
         try {
-            Optional<List<Image>> imageListTemp = imageRepository.getImages(profile.getProfileId());
+            Optional<List<Image>> imageListTemp = imageRepository.getImages(profileId);
             imageList = imageListTemp.get();
         } catch (NoSuchElementException e) {
             imageList = new ArrayList<Image>();
@@ -306,14 +301,15 @@ public class ProfileController extends Controller {
         File file = tempFile.path().toFile();
         return supplyAsync(() -> {
             try {
-                Profile currentUser = SessionController.getCurrentUser(request);
+                //Profile currentUser = SessionController.getCurrentUser(request);
                 this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
                 cropInfo crop = autoCrop(this.imageBytes);
 
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
-                Image image = new Image(currentUser.getEmail(), this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight(), (isProfilePicture == 0) ? 0 : 1);
+                // TODO change this email to integer profile ID when image model fixed.
+                Image image = new Image("bla bla", this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight(), (isProfilePicture == 0) ? 0 : 1);
 
                 if (isProfilePicture == 0) { //case not setting as the new profile picture
                     savePhoto(image); // Save photo, given a successful upload
@@ -353,8 +349,9 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request) {
-        Profile currentUser = SessionController.getCurrentUser(request);
-        imageRepository.removeProfilePic(currentUser.getEmail());
+        //Profile currentUser = SessionController.getCurrentUser(request);
+        //TODO change to profile ID once image table fixed
+        imageRepository.removeProfilePic("bla bla");
         demoProfilePicture.setIsProfilePic(1);
         try {
             //Optional<Image> image = imageRepository.getImage(demoProfilePicture.getImageId());
@@ -524,49 +521,56 @@ public class ProfileController extends Controller {
      * @return a page render of the users profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result show (Http.Request request){
-        Profile currentProfile = SessionController.getCurrentUser(request);
-        List<Image> displayImageList = getUserPhotos(request);
+    public CompletionStage<Result> show (Http.Request request){
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profileRec -> {
+            if (profileRec.isPresent()) {
+                //Profile currentProfile = SessionController.getCurrentUser(request);
+                List<Image> displayImageList = getUserPhotos(request);
 
-        Optional<Image> image = imageRepository.getProfilePicture(currentProfile.getProfileId());
-        Image profilePicture;
-        if (image == null) {
-            profilePicture = null;
-        } else {
-            profilePicture = image.get();
-        }
+                Optional<Image> image = imageRepository.getProfilePicture(profileRec.get().getProfileId());
+                Image profilePicture;
+                if (image == null) {
+                    profilePicture = null;
+                } else {
+                    profilePicture = image.get();
+                }
 
-        Integer defaultProfilePicture = isDefaultProfilePicture();
-        String isTooSmall = "";
-        if (defaultProfilePicture == 0) { //case a demo profile picture is to be uploaded
-            isTooSmall = isValidSizedPhoto(demoProfilePicture);
-            if (isTooSmall != "") { //case the demo Profile picture is too small to be set as
-                demoProfilePicture = null;
-                defaultProfilePicture = 1;
-                showChangeProfilePictureModal = true;
-                showCropPhotoModal = false;
+                Integer defaultProfilePicture = isDefaultProfilePicture();
+                String isTooSmall = "";
+                if (defaultProfilePicture == 0) { //case a demo profile picture is to be uploaded
+                    isTooSmall = isValidSizedPhoto(demoProfilePicture);
+                    if (isTooSmall != "") { //case the demo Profile picture is too small to be set as
+                        demoProfilePicture = null;
+                        defaultProfilePicture = 1;
+                        showChangeProfilePictureModal = true;
+                        showCropPhotoModal = false;
+                    }
+                }
+                // Get the current show photo modal state
+                // Ensure state is false for next refresh action
+                Boolean show = showPhotoModal = false;
+                Boolean showChangeProfile = showChangeProfilePictureModal;
+                showChangeProfilePictureModal = false;
+                String widthHeight = "Width and Height is unknown";
+                Boolean showCropPhoto = showCropPhotoModal;
+                if (showCropPhoto) {
+                    showCropPhotoModal = false;
+                    widthHeight = getWidthHeight();
+                }
+                TreeMultimap<Long, Integer> tripsMap = profileRec.get().getTrips();
+                List<Integer> tripValues= new ArrayList<>(tripsMap.values());
+                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileRec.get().getProfileId());
+                try {
+                    destinationsList = destListTemp.get();
+                } catch (NoSuchElementException e) {
+                    destinationsList = new ArrayList<>();
+                }
+                return ok(profile.render(profileRec.get(), imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, destinationsList, isTooSmall,request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/profile");
             }
-        }
-        // Get the current show photo modal state
-        // Ensure state is false for next refresh action
-        Boolean show = showPhotoModal = false;
-        Boolean showChangeProfile = showChangeProfilePictureModal;
-        showChangeProfilePictureModal = false;
-        String widthHeight = "Width and Height is unknown";
-        Boolean showCropPhoto = showCropPhotoModal;
-        if (showCropPhoto) {
-            showCropPhotoModal = false;
-            widthHeight = getWidthHeight();
-        }
-        TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
-        List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(SessionController.getCurrentUser(request).getProfileId());
-        try {
-            destinationsList = destListTemp.get();
-        } catch (NoSuchElementException e) {
-            destinationsList = new ArrayList<>();
-        }
-        return ok(profile.render(currentProfile, imageForm, displayImageList, show, showChangeProfile, tripValues, defaultProfilePicture, profilePicture, showCropPhoto, widthHeight, destinationsList, isTooSmall,request, messagesApi.preferred(request)));
+        });
     }
 
 }

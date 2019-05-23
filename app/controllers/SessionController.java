@@ -21,20 +21,17 @@ import java.util.TreeMap;
 public class SessionController {
 
     /**
-     * Get the currently logged in user
+     * Get the Id of the currently logged in user
      * @param request
      * @return Web page showing connected user's email
      */
-    static Profile getCurrentUser(Http.Request request) {
+    static Integer getCurrentUserId(Http.Request request) {
         Optional<String> connected = request.session().getOptional("connected");
         String stringId;
         if (connected.isPresent()) {
             stringId = connected.get();
             int id = Integer.parseInt(stringId);
-            Profile profile = Profile.find.byId(stringId);
-            profile.setDestinations(getUserDestinations(profile.getProfileId()));
-            getUsersTrips(profile);
-            return profile;
+            return id;
         } else {
             return null;
         }

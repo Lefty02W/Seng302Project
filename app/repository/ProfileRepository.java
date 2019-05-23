@@ -85,9 +85,10 @@ public class ProfileRepository {
                 Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
                 Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
                 profile = new Profile(profileId, p.getString("first_name"),  p.getString("middle_name"), p.getString("last_name")
-                , p.getString("email"), p.getDate("birthDate"), passportCountries, p.getString("gender"), p.getDate("time_created")
+                , p.getString("email"), p.getDate("birth_date"), passportCountries, p.getString("gender"), p.getDate("time_created")
                 , nationalities, travellerTypes);
             }
+            System.out.println("ABNANWRHNAWR: "+profile.getBirthDate());
             return Optional.of(profile);
         }, executionContext);
     }
@@ -173,15 +174,14 @@ public class ProfileRepository {
      * Update profile in database using Profile model object,
      * and the raw password from an input field, which will be set if it is not null.
      * @param newProfile Profile object with new details
-     * @param password String of unhashed password.
      * @return
      */
-    public CompletionStage<Optional<Integer>> update(Profile newProfile, String password, int userId) {
+    public CompletionStage<Optional<Integer>> update(Profile newProfile, int userId) {
 
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             String updateQuery = "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, " +
-                    "password = ?, birth_date = ?, gender = ?, passports = ?, nationalities = ?, traveller_types = ?, " +
+                    "birth_date = ?, gender = ?, " +
                     "admin = ? WHERE id = ?";
             Optional<Integer> value = Optional.empty();
             try {
@@ -191,11 +191,10 @@ public class ProfileRepository {
                     query.setParameter(2, newProfile.getMiddleName());
                     query.setParameter(3, newProfile.getLastName());
                     query.setParameter(4, newProfile.getEmail());
-                    query.setParameter(5, password);
-                    query.setParameter(6, newProfile.getBirthDate());
-                    query.setParameter(7, newProfile.getGender());
-                    query.setParameter(11, newProfile.isAdmin());
-                    query.setParameter(12, userId);
+                    query.setParameter(5, newProfile.getBirthDate());
+                    query.setParameter(6, newProfile.getGender());
+                    query.setParameter(7, newProfile.isAdmin());
+                    query.setParameter(8, userId);
                     query.execute();
                     txn.commit();
                     profileNationalityRepository.removeAll(userId);
@@ -226,7 +225,7 @@ public class ProfileRepository {
     /**
      * Deletes a profile from the database that matches the given email
      *
-     * @param id the users id
+     * @param profileId the users id
      * @return an optional profile
      */
     public CompletionStage<Optional<Integer>> delete(Integer profileId) {
@@ -272,7 +271,7 @@ public class ProfileRepository {
 
     /**
      * Function to get all the destinations created by the signed in user.
-     * @param email user email
+     * @param profileId users profile Id
      * @return destList arrayList of destinations registered by the user
      */
     public Optional<ArrayList<Destination>> getDestinations(int profileId) {

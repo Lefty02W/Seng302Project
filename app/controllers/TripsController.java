@@ -13,6 +13,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import repository.ProfileRepository;
 import repository.TripRepository;
 import views.html.trips;
 import views.html.tripsCard;
@@ -38,16 +39,18 @@ public class TripsController extends Controller {
     private final Form<Trip> form;
     private final Form<TripDestination> formTrip;
     private final TripRepository tripRepository;
+    private final ProfileRepository profileRepository;
     private boolean showEmptyEdit = false;
 
     @Inject
-    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi) {
+    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi, ProfileRepository profileRepository) {
         this.form = formFactory.form(Trip.class);
         this.tripRepository = tripRepository;
         this.messagesApi = messagesApi;
         this.formTrip = formFactory.form(TripDestination.class);
         this.destinationsList = new ArrayList<>();
         this.orderedCurrentDestinations = new TreeMap<>();
+        this.profileRepository = profileRepository;
     }
 
     /**
@@ -56,12 +59,19 @@ public class TripsController extends Controller {
      * @return a render of the trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result show(Http.Request request) {
-        showEmptyEdit = false;
-        orderedCurrentDestinations.clear();
-        TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
-        List<Integer> tripValues = new ArrayList<>(tripsMap.values());
-        return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+    public CompletionStage<Result> show(Http.Request request) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                showEmptyEdit = false;
+                orderedCurrentDestinations.clear();
+                TreeMultimap<Long, Integer> tripsMap = profile.get().getTrips();
+                List<Integer> tripValues = new ArrayList<>(tripsMap.values());
+                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, profile.get(), request, messagesApi.preferred(request)));
+        } else {
+                return redirect("/profile");
+            }
+        });
     }
 
     /**
@@ -79,9 +89,15 @@ public class TripsController extends Controller {
      * @return the result
      */
     @Security.Authenticated(SecureSession.class)
-    public Result showCreate(Http.Request request) {
-        Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), currentUser, null, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> showCreate(Http.Request request) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), profile.get(), null, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/trips");
+            }
+        });
     }
 
 
@@ -93,14 +109,20 @@ public class TripsController extends Controller {
      * @return a render of the editDestinations trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result showEdit(Http.Request request, Integer id) {
-        Profile currentUser = SessionController.getCurrentUser(request);
-        Trip trip = tripRepository.getTrip(id);
-        Form<Trip> tripForm = form.fill(trip);
-        if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
-            orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
-        }
-        return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), currentUser, id, null, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> showEdit(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Trip trip = tripRepository.getTrip(id);
+                Form<Trip> tripForm = form.fill(trip);
+                if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
+                    orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
+                }
+                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), profile.get(), id, null, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/trips");
+            }
+        });
     }
 
 
@@ -226,8 +248,8 @@ public class TripsController extends Controller {
     public Result save(Http.Request request) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
-        Profile currentUser = SessionController.getCurrentUser(request);
-        trip.setProfileId(currentUser.getProfileId());
+        Integer currentUserId = SessionController.getCurrentUserId(request);
+        trip.setProfileId(currentUserId);
         if (orderedCurrentDestinations.size() < 2) {
             return redirect("/trips/create").flashing("info", "A trip must have at least two destinations");
         } else {
@@ -249,8 +271,8 @@ public class TripsController extends Controller {
     public Result saveEdit(Http.Request request, int id) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
-        Profile currentUser = SessionController.getCurrentUser(request);
-        trip.setProfileId(currentUser.getProfileId());
+        Integer currentUserId = SessionController.getCurrentUserId(request);
+        trip.setProfileId(currentUserId);
         if (orderedCurrentDestinations.size() < 2){
             return redirect("/trips/"+id+"/edit").flashing("info", "A trip must have at least two destinations");
         } else {
@@ -367,10 +389,16 @@ public class TripsController extends Controller {
      * @return a render of the create trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result createTripDestinationCreate(Http.Request request, Integer order) {
-        TripDestination dest = orderedCurrentDestinations.get(order);
-        Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), currentUser, dest, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> createTripDestinationCreate(Http.Request request, Integer order) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                TripDestination dest = orderedCurrentDestinations.get(order);
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), profile.get(), dest, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/trips");
+            }
+        });
     }
 
     /**
@@ -381,10 +409,16 @@ public class TripsController extends Controller {
      * @return a render of the create trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result editTripDestinationCreate(Http.Request request, Integer order, Integer id) {
-        TripDestination dest = orderedCurrentDestinations.get(order);
-        Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), currentUser, id, dest, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> editTripDestinationCreate(Http.Request request, Integer order, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                TripDestination dest = orderedCurrentDestinations.get(order);
+                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), profile.get(), id, dest, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/profile");
+            }
+        });
     }
 
 
