@@ -54,7 +54,7 @@ END
 $$
 create table destination (
   destination_id                integer auto_increment not null,
-  user_email                    varchar(255),
+  profile_id                    integer not null,
   name                          varchar(255),
   type                          varchar(255),
   country                       varchar(255),
@@ -63,21 +63,6 @@ create table destination (
   longitude                     double not null,
   visible                       integer not null,
   constraint pk_destination primary key (destination_id)
-);
-
-create table image (
-  image_id                      integer auto_increment not null,
-  email                         varchar(255),
-  image                         longblob,
-  visible                       integer,
-  content_type                  varchar(255),
-  name                          varchar(255),
-  crop_x                        integer not null,
-  crop_y                        integer not null,
-  crop_width                    integer not null,
-  crop_height                   integer not null,
-  is_profile_pic                integer,
-  constraint pk_image primary key (image_id)
 );
 
 create table nationality (
@@ -92,31 +77,49 @@ create table passport_country (
   constraint pk_passport_country primary key (passport_country_id)
 );
 
+create table personal_photo (
+  personal_photo_id             integer not null,
+  profile_id                    integer not null,
+  photo_id                      integer not null,
+  is_profile_photo              integer not null
+);
+
+create table photo (
+  photo_id                      integer auto_increment not null,
+  image                         longblob,
+  visible                       integer,
+  content_type                  varchar(255),
+  name                          varchar(255),
+  crop_x                        integer not null,
+  crop_y                        integer not null,
+  crop_width                    integer not null,
+  crop_height                   integer not null,
+  constraint pk_photo primary key (photo_id)
+);
+
 create table profile (
-  email                         varchar(255) not null,
+  profile_id                    integer auto_increment not null,
   first_name                    varchar(255),
   middle_name                   varchar(255),
   last_name                     varchar(255),
+  email                         varchar(255),
   password                      varchar(255),
   birth_date                    datetime(6),
   gender                        varchar(255),
-  passports                     varchar(255),
-  nationalities                 varchar(255),
-  traveller_types               varchar(255),
-  admin                         tinyint(1) default 0 not null,
   time_created                  datetime(6),
-  constraint pk_profile primary key (email)
+  constraint pk_profile primary key (profile_id)
 );
 
-create table traveller_types (
-  traveller_type_id             integer not null,
-  traveller_type_name           varchar(255)
+create table traveller_type (
+  traveller_type_id             integer auto_increment not null,
+  traveller_type_name           varchar(255),
+  constraint pk_traveller_type primary key (traveller_type_id)
 );
 
 create table trip (
   trip_id                       integer auto_increment not null,
   name                          varchar(255),
-  email                         varchar(255),
+  profile_id                    integer not null,
   constraint pk_trip primary key (trip_id)
 );
 
@@ -135,15 +138,17 @@ create table trip_destination (
 
 drop table if exists destination;
 
-drop table if exists image;
-
 drop table if exists nationality;
 
 drop table if exists passport_country;
 
+drop table if exists personal_photo;
+
+drop table if exists photo;
+
 drop table if exists profile;
 
-drop table if exists traveller_types;
+drop table if exists traveller_type;
 
 drop table if exists trip;
 

@@ -133,7 +133,7 @@
                                 </thead>
                                 @for(profile <- profiles) {
                                     <tr>
-                                        <td>Profile Id</td>
+                                        <td>@profile.getProfileId</td>
                                         <td>@profile.getEmail</td>
                                         <td>
                                             <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
@@ -168,7 +168,7 @@
                                 @for(trip <- trips) {
                                     <tr>
                                         <td>@trip.getTripId</td>
-                                        <td>@trip.getEmail</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@trip.getProfileId</td> <!-- TODO Update to id once user id is there -->
                                         <td>@trip.getName</td>
                                         <td><button class="btn btn-primary">Edit</button></td>
                                         <td>
@@ -204,7 +204,7 @@
                                 @for(destination <- destinations) {
                                     <tr>
                                         <td>@destination.getDestinationId</td>
-                                        <td>@destination.getUserEmail</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@destination.getProfileId</td> <!-- TODO Update to id once user id is there -->
                                         <td>@destination.getName</td>
                                         <td><button class="btn btn-primary">Edit</button></td>
                                         <td>
@@ -260,49 +260,51 @@
                                         <div class="hidden-div-edit">
                                             <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required value=@currentUser.getTravellerTypes>
                                         </div>
+                                        @if(currentUser.getTravellerTypes != null) {
                                         <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
-                                            @if(currentUser.getTravellerTypes.contains("ThrillSeeker")) {
+                                            @if(currentUser.getTravellerTypes.get("ThrillSeeker") != null) {
                                                 <option value="ThrillSeeker" selected>ThrillSeeker</option>
                                             } else {
                                                 <option value="ThrillSeeker">ThrillSeeker</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Gap Year")) {
+                                            @if(currentUser.getTravellerTypes.get("Gap Year") != null) {
                                                 <option value="Gap Year" selected>Gap Year</option>
                                             } else {
                                                 <option value="Gap Year">Gap Year</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Backpacker")) {
+                                            @if(currentUser.getTravellerTypes.get("Backpacker") != null) {
                                                 <option value="Backpacker" selected>Backpacker</option>
                                             } else {
                                                 <option value="Backpacker">Backpacker</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Groupie")) {
+                                            @if(currentUser.getTravellerTypes.get("Groupie") != null) {
                                                 <option value="Groupie" selected>Groupie</option>
                                             } else {
                                                 <option value="Groupie">Groupie</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Frequent Weekender")) {
+                                            @if(currentUser.getTravellerTypes.get("Frequent Weekender") != null) {
                                                 <option value="Frequent Weekender" selected>Frequent Weekender</option>
                                             } else {
                                                 <option value="Frequent Weekender">Frequent Weekender</option>>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Functional/business Traveller")) {
+                                            @if(currentUser.getTravellerTypes.get("Functional/business Traveller") != null) {
                                                 <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
                                             } else {
                                                 <option value="Functional/business Traveller">Functional/business Traveller</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Holidaymaker")) {
+                                            @if(currentUser.getTravellerTypes.get("Holidaymaker") != null) {
                                                 <option value="Holidaymaker" selected>Holidaymaker</option>
                                             } else {
                                                 <option value="Holidaymaker">Holidaymaker</option>
                                             }
                                         </select>
+                                        }
                                     </div>
                                     <div class="row">
                                         <select class="selectpicker" id="gender" name="gender" data-width="100%" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
@@ -425,7 +427,8 @@
             document.getElementById("viewMiddleName").innerHTML = "Middle Name: @profileToView.getMiddleName";
             document.getElementById("viewLastName").innerHTML = "Last Name: @profileToView.getLastName";
             document.getElementById("viewEmail").innerHTML = "Email: @profileToView.getEmail";
-            document.getElementById("viewBirthDate").innerHTML = "Birth Date: @profileToView.getBirthString";
+            //TODO Fix get birthdate//
+            @*document.getElementById("viewBirthDate").innerHTML = "Birth Date: @profileToView.getBirthString";*@
             document.getElementById("viewGender").innerHTML = "Gender: @profileToView.getGender";
 
             @for(typeText <- profileToView.getTravellerTypesList) {
@@ -453,7 +456,7 @@
 
         function showDest() {
             document.getElementById("viewDestTitle").innerHTML = "Destination: @destToView.getDestinationId";
-            document.getElementById("viewDestUser").innerHTML = "Owner: @destToView.getUserEmail";
+            @*document.getElementById("viewDestUser").innerHTML = "Owner: @destToView.getProfileId";*@
             document.getElementById("viewDestName").innerHTML = "Name: @destToView.getName";
             document.getElementById("viewDestType").innerHTML = "Type: @destToView.getType";
             document.getElementById("viewDestCountry").innerHTML = "Country: @destToView.getCountry";

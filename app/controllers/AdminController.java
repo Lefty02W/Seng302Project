@@ -62,11 +62,13 @@ public class AdminController {
      *
      * @apiNote
      * @param request
-     * @param email the email of the user who is to be deleted
+     * @param id the id of the user who is to be deleted
      * @return
      */
-    public CompletionStage<Result> deleteProfile (Http.Request request, String email){
-        return profileRepository.delete(email).thenApplyAsync(userEmail -> redirect(adminEndpoint)
+    public CompletionStage<Result> deleteProfile (Http.Request request, String id){
+
+
+        return profileRepository.delete(Integer.parseInt(id)).thenApplyAsync(userEmail -> redirect(adminEndpoint)
         , httpExecutionContext.current());
     }
 
@@ -118,11 +120,11 @@ public class AdminController {
     public CompletionStage<Result> update (Http.Request request, String id){
         Form<Profile> currentProfileForm = profileEditForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
-        profile.setNationalities(profile.getNationalities().replaceAll("\\s",""));
-        profile.setPassports(profile.getPassports().replaceAll("\\s",""));
+        profile.setNationalities(profile.getNationalities());
+        profile.setPassports(profile.getPassports());
 
-        return profileRepository.update(profile, profile.getPassword(),
-                id).thenApplyAsync(x -> redirect(adminEndpoint)
+        return profileRepository.update(profile, Integer.parseInt(id))
+                .thenApplyAsync(x -> redirect(adminEndpoint)
         , httpExecutionContext.current());
     }
 
@@ -137,7 +139,7 @@ public class AdminController {
         List<Profile> profiles = new ArrayList<>();
         profiles.add(profile);
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
-        List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
+        List<Destination> destinations = destinationRepository.getUserDestinations(profile.getProfileId());
         return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
     }
 
@@ -203,28 +205,28 @@ public class AdminController {
      * @param destId the id of the destination to delete
      * @return a redirect to /admin
      */
-    public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
-        return tripDestinationsRepository
-            .checkDestinationExists(destId)
-            .thenApplyAsync(
-                result -> {
-                  if (result.isPresent()) {
-                      return redirect(adminEndpoint)
-                          .flashing(
-                              "error",
-                              "Destination: "
-                                  + destId
-                                  + " is used within the following trips: "
-                                  + result.get());
-                  }
-                  destinationRepository.delete(destId);
-                  return redirect(adminEndpoint)
-                          .flashing(
-                                  "info",
-                                  "Destination: "
-                                          + destId
-                                          + " deleted");
-                });
-    }
+//    public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
+//        return tripDestinationsRepository
+//            .checkDestinationExists(destId)
+//            .thenApplyAsync(
+//                result -> {
+//                  if (result.isPresent()) {
+//                      return redirect(adminEndpoint)
+//                          .flashing(
+//                              "error",
+//                              "Destination: "
+//                                  + destId
+//                                  + " is used within the following trips: "
+//                                  + result.get());
+//                  }
+//                  destinationRepository.delete(destId);
+//                  return redirect(adminEndpoint)
+//                          .flashing(
+//                                  "info",
+//                                  "Destination: "
+//                                          + destId
+//                                          + " deleted");
+//                });
+//    }
 
 }

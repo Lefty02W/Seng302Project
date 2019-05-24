@@ -72,6 +72,7 @@ public class ProfileRepository {
     }
 
 
+
     /**
      * Finds one profile using its id as a query
      * @param profileId the users profile id

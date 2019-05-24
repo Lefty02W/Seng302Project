@@ -410,7 +410,7 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        return dateFormatSort.format(birthDate);
+        return dateFormatSort.format(this.birthDate);
     }
 
 
