@@ -43,6 +43,8 @@ public class EditProfileSteps extends ProvideApplication {
     System.out.println(Profile.find.all().get(0).getEmail());
     System.out.println(loginResult.redirectLocation());
         assertEquals(303, loginResult.status());
+
+        assertEquals("/profile", loginResult.redirectLocation().get());
     }
 
     @Given("I am on the edit profile page")
@@ -58,7 +60,6 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("nationalities", "password");
         editForm.put("travellerTypes", "Backpacker,Gap Year");
 
-        assertEquals("/profile", loginResult.redirectLocation().get());
     }
 
     @When("I change my first name to {string}")

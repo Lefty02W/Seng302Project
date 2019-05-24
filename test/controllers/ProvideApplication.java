@@ -1,6 +1,9 @@
 package controllers;
 
-import models.*;
+import models.Destination;
+import models.Nationality;
+import models.PassportCountry;
+import models.Profile;
 import org.junit.Before;
 import play.Application;
 import play.Mode;
@@ -74,15 +77,15 @@ public class ProvideApplication extends WithApplication {
             passportRepository.insert(new PassportCountry("New Zealand"));
 
 
-            profileRepository.insert(new Profile("John", "James", "john@gmail.com",
-                    "password", new Date(), "NZ", "Male", new Date(), "NZ",
-                    "Backpacker,GapYear", new ArrayList<Trip>(), false)).thenApplyAsync(id -> {
-                        if (id.isPresent()) {
-                            destinationRepository.insert(new Destination(id.get(), "China", "Country", "China", "China", 67.08, 102.75, 0));
-                            destinationRepository.insert(new Destination(id.get(), "Rome", "City", "Italy", "Rome", 69.08, 109.75, 1));
-                        }
-                        return "done";
-            });
+//            profileRepository.insert(new Profile("John", "James", "john@gmail.com",
+//                    "password", new Date(), "NZ", "Male", new Date(), "NZ",
+//                    "Backpacker,GapYear", new ArrayList<Trip>(), false)).thenApplyAsync(id -> {
+//                        if (id.isPresent()) {
+//                            destinationRepository.insert(new Destination(id.get(), "China", "Country", "China", "China", 67.08, 102.75, 0));
+//                            destinationRepository.insert(new Destination(id.get(), "Rome", "City", "Italy", "Rome", 69.08, 109.75, 1));
+//                        }
+//                        return "done";
+//            });
             setUpComplete = true;
         }
 
