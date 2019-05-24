@@ -85,7 +85,14 @@ public class RolesRepository {
      * @param roleName  The name of the role to add to user
      */
     public void setProfileRole(Integer profileId, String roleName) {
-        Integer roleId = getRoleFromName(roleName).get();
+        Optional<Integer> role = getRoleFromName(roleName);
+        Integer roleId;
+        // If the role does not exist, stop
+        if (role.isPresent()) {
+            roleId = role.get();
+        } else {
+            return;
+        }
         Transaction transaction = ebeanServer.beginTransaction();
         String queryString = "INSERT INTO profile_roles(profile_id, role_id) VALUES(?, ?)";
         try {
