@@ -278,6 +278,8 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadPhoto(Http.Request request) {
+        System.out.println(request.body().asMultipartFormData().asFormUrlEncoded());
+        System.out.println("In uploadPhoto function ****************************************************************");
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
         Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
