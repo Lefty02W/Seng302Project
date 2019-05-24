@@ -1,17 +1,27 @@
 package controllers;
 
+import akka.stream.javadsl.FileIO;
+import akka.stream.javadsl.Source;
+import akka.util.ByteString;
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
+import static play.test.Helpers.POST;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Test Set for profile controller
@@ -93,4 +103,31 @@ public class ProfileControllerTest extends ProvideApplication{
 
         assertEquals(OK, result.status());
     }
+
+    @Test
+    public void testFileUpload() throws IOException {
+        File file = getPersonalPhoto();
+        Http.MultipartFormData.Part<Source<ByteString, ?>> part =
+                new Http.MultipartFormData.FilePart<>(
+                        "image",
+                        "Selection_256.png",
+                        "image/png",
+                        FileIO.fromPath(file.toPath()),
+                        Files.size(file.toPath()));
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                    .method(POST)
+                    .uri("/profile/photo")
+                    .session("connected", "admin@admin.com")
+                    .bodyRaw(
+                            Collections.singletonList(part),
+                            play.libs.Files.singletonTemporaryFileCreator(),
+                            app.asScala().materializer());
+
+        // Checks for successful redirect to the profile page after successful image upload
+        Result redirectPhotoUploadResult = Helpers.route(provideApplication(), request);
+            assertEquals(303, redirectPhotoUploadResult.status());
+    }
+
+
 }

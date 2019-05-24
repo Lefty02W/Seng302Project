@@ -296,7 +296,6 @@ public class ProfileController extends Controller {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Invalid file type!"));
         }
         TemporaryFile tempFile = picture.getRef();
-        System.out.println(System.getProperty("user.dir"));
         String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
 
@@ -309,7 +308,6 @@ public class ProfileController extends Controller {
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
 //                cropInfo crop = autoCrop(this.imageBytes);
-
 //                int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 Image image = new Image(currentUser.getEmail(), "photos/personalPhotos/" + fileName, contentType, visibility, fileName, 0, 0, 0, 0, 0);
                 savePhoto(image); // Save photo, given a successful upload
@@ -327,8 +325,9 @@ public class ProfileController extends Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return ok();
+            return ok("File uploaded");
         }).thenApply(result -> redirect(profileEndpoint));
+
     }
 
 
@@ -362,7 +361,6 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     private Result savePhoto(Image image){
-        System.out.println("TRYING TO SAVE TO REPOSITORY");
         imageRepository.insert(image);
         return redirect(routes.ProfileController.show());
     }
