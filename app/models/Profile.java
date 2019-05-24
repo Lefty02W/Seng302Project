@@ -82,6 +82,10 @@ public class Profile extends Model {
     @Transient
     private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
 
+    @Transient
+    private List<String> roles = new ArrayList<>();
+
+
     /**
      * Traditional constructor for profile. Used when retrieving a Profile from DB.
      * @param firstName
@@ -93,11 +97,12 @@ public class Profile extends Model {
      * @param timeCreated
      * @param nationalities
      * @param travellerTypes
+     * @param roles
      */
     public Profile(Integer profileId, String firstName, String middleName,
                    String lastName, String email, Date birthDate,
                    Map<Integer, PassportCountry> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
-                   Map<Integer, TravellerType> travellerTypes) {
+                   Map<Integer, TravellerType> travellerTypes, List<String> roles) {
         this.profileId = profileId;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -449,4 +454,6 @@ public class Profile extends Model {
     public void setNationalities(Map<Integer, Nationality> nationalities) {
         this.nationalities = nationalities;
     }
+
+    public List<String> getRoles() { return this.roles; }
 }
