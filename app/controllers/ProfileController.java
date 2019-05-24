@@ -127,7 +127,6 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    @RestrictAnnotation()
     public CompletionStage<Result> update (Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);

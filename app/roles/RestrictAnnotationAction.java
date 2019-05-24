@@ -12,6 +12,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
  * The business logic ("action") for each role is defined here.
+ * This is essentially a middleware class
  **/
 public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
 
@@ -24,16 +25,21 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
      */
 
     public CompletionStage<Result> call(Http.Request req) {
-        boolean isAdmin = SessionController.getCurrentUser(req).isAdmin();
+
+        //TODO Get roles of the user here.
+        //boolean isAdmin = SessionController.getCurrentUserId(req);
 
         /* TODO replace check to ensure user role matches configuration.value()
             This will require the database structure set up
          */
-        if (configuration.value().equals("admin") && isAdmin) {
+        //TODO change this to check if user's roles contains configuration.value.
+        // If so we are authorized, and the request should be called.
+        if (configuration.value().equals("admin")) {
             System.out.println("Calling annotation action for "+ req);
             return delegate.call(req);  // Allow the request proceed
         }
 
+        // Otherwise we are not authorized, and the user should be redirected.
         return supplyAsync(() -> redirect("/profile").flashing("invalid", "You must be an admin"));
     }
 }
