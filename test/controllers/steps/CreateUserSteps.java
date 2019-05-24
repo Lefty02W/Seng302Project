@@ -93,7 +93,7 @@ public class CreateUserSteps extends ProvideApplication {
 
     @Then("his account should be saved")
     public void saved_account() {
-        profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
+        profileRepository.lookupEmail("john.gherkin.doe@travelea.com").thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> {
                 assertEquals("John", profile.getFirstName());
                 assertEquals("Gherkin", profile.getMiddleName());
