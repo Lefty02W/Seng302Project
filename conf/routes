@@ -70,7 +70,10 @@ GET     /admin/trips/:tripId            controllers.AdminController.viewTrip(req
 GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)
 
 ## Admin Profiles
-GET     /admin/:profileId/profile                 controllers.AdminController.showProfile(request: Request, profileId: String)
+GET     /admin/:profileId/profile                 controllers.AdminController.showEditProfile(request: Request, profileId: String)
 GET     /admin/:id/update                controllers.AdminController.showEditProfile(request: Request, id: String)
 GET   /admin/:email/delete         controllers.AdminController.deleteProfile(request: Request, email: String)
 POST    /admin/profile/create       controllers.AdminController.createProfile(request: Request)
+
+## Admin Destinations
+GET     /admin/destinations/:destId         controllers.AdminController.showDestination(request: Request,destId : Integer, isEdit : Boolean)

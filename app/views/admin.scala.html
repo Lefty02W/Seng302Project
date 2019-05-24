@@ -1,8 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(profiles : List[Profile], trips : List[Trip], destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], tripToView: Trip, createProfileForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(profiles : List[Profile], trips : List[Trip], currentDestination : Destination, destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], tripToView: Trip, createProfileForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
 @import models.Profile; var profileToView = currentUser
-@import models.Destination; var destToView = new Destination();
+@import models.Destination; var destToView = currentDestination
 
 <!DOCTYPE html>
 <html>
@@ -211,7 +211,9 @@
                                             <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-info" onclick="@(destToView = destination);showDest()">View</button>
+                                            <a href="@routes.AdminController.showDestination(destination.getDestinationId, false)">
+                                                <button class="btn btn-info" >View</button>
+                                            </a>
                                         </td>
                                     </tr>
 
@@ -451,20 +453,6 @@
             $('#viewProfileModal').modal('show');
         }
 
-        function showDest() {
-            document.getElementById("viewDestTitle").innerHTML = "Destination: @destToView.getDestinationId";
-            document.getElementById("viewDestUser").innerHTML = "Owner: @destToView.getUserEmail";
-            document.getElementById("viewDestName").innerHTML = "Name: @destToView.getName";
-            document.getElementById("viewDestType").innerHTML = "Type: @destToView.getType";
-            document.getElementById("viewDestCountry").innerHTML = "Country: @destToView.getCountry";
-            document.getElementById("viewDestDistrict").innerHTML = "District: @destToView.getDistrict";
-            document.getElementById("viewDestLat").innerHTML = "Latitude: @destToView.getLatitude";
-            document.getElementById("viewDestLng").innerHTML = "Longitude: @destToView.getLongitude";
-            document.getElementById("viewDestVis").innerHTML = "Is Public: @destToView.getVisible";
-
-            $('#viewDestModal').modal('show');
-        }
-
 
     </script>
     <div class="modal" id="conformationDeleteModal">
@@ -587,42 +575,48 @@
         </div>
     </div>
 
-
-    <div class="modal" id="viewDestModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                    <!-- header -->
-                <div class="modal-header">
-                    <h4 id="viewDestTitle" class="modal-title"></h4>
-                    <button type="button" class="close" data-dismiss="modal"></button>
-                </div>
-                    <!-- body -->
-                <div class="modal-body">
-                    <div class="row">
+    @if(currentDestination != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#viewDestModal').modal('show');
+                });
+                </script>
+        <div class="modal" id="viewDestModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4>Destination</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    <div class="modal-body">
                         <div class="row">
-                            <div class="col">
-                                <ul>
-                                    <li id="viewDestUser"></li>
-                                    <li id="viewDestName"></li>
-                                    <li id="viewDestType"></li>
-                                    <li id="viewDestCountry"></li>
-                                    <li id="viewDestDistrict"></li>
-                                    <li id="viewDestLat"></li>
-                                    <li id="viewDestLng"></li>
-                                    <li id="viewDestVis"></li>
-                                </ul>
+                            <div class="row">
+                                <div class="col">
+                                    <ul>
+                                        <li>@currentDestination.getDestinationId</li>
+                                        <li>@currentDestination.getName</li>
+                                        <li>@currentDestination.getType</li>
+                                        <li>@currentDestination.getCountry</li>
+                                        <li>@currentDestination.getDistrict</li>
+                                        <li>@currentDestination.getLatitude</li>
+                                        <li>@currentDestination.getLongitude</li>
+                                        <li>@currentDestination.getVisible</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                </div>
-                    <!-- footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+}
 
 
     <div class="modal fade" id="createProfileModal">

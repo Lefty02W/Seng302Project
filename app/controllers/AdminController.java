@@ -57,6 +57,19 @@ public class AdminController {
         this.profileCreateForm = profileFormFactory.form(Profile.class);
     }
 
+
+
+
+    public CompletionStage<Result> showDestination(Http.Request request, Integer destId, Boolean isedit) {
+        return supplyAsync(() -> {
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+            Destination currentDestination = destinationRepository.lookup(destId);
+            return ok(admin.render(profiles, trips, currentDestination, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+        });
+    }
+
     /**
      * Function to delete a profile with the given email from the database using the profile controller method
      *
@@ -84,7 +97,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
 
-            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, null, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
         });
     }
 
@@ -104,7 +117,7 @@ public class AdminController {
 
         Profile editProfile = profileRepository.getProfileById(id);
         Form<Profile> profileForm = profileEditForm.fill(editProfile);
-        return ok(admin.render(profiles, trips, destinations, editProfile, profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips,null, destinations, editProfile, profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
     }
 
     /**
@@ -138,7 +151,7 @@ public class AdminController {
         profiles.add(profile);
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
         List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
-        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, null, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
     }
 
 
@@ -190,7 +203,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
 
-            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, trip, profileCreateForm, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, null, destinations, null, profileEditForm, trip, profileCreateForm, request, messagesApi.preferred(request)));
         });
     }
 
