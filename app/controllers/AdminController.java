@@ -2,6 +2,7 @@ package controllers;
 
 import models.Destination;
 import models.Profile;
+import models.RoutedObject;
 import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
@@ -66,7 +67,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
             Destination currentDestination = destinationRepository.lookup(destId);
-            return ok(admin.render(profiles, trips, currentDestination, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, currentDestination, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
         });
     }
 
@@ -83,21 +84,21 @@ public class AdminController {
         , httpExecutionContext.current());
     }
 
-
     /**
-     * Endpoint method to show the admin page on the site
+     * Endpoint method to retrieve profile data for the admin to view
      *
-     * @apiNote /admin
-     * @param request the http request
-     * @return the rendered page with status ok
+     * @apiNote GET /admin/profile/:id/view
+     * @param request the request sent from the client to view a given profile
+     * @param id the id of the profile to view
+     * @return CompletionStage holding either a redirect or ok to the /admin page
      */
-    public CompletionStage<Result> show(Http.Request request) {
-        return supplyAsync(() -> {
-            List<Profile> profiles = Profile.find.all();
-            List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
-
-            return ok(admin.render(profiles, trips, null, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> viewProfile(Http.Request request, Integer id) {
+        return profileRepository.lookup(id).thenApplyAsync(profOpt -> {
+            if (profOpt.isPresent()) {
+                return ok(admin.render(Profile.find.all(), Trip.find.all(), null, Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/admin");
+            }
         });
     }
 
@@ -117,13 +118,33 @@ public class AdminController {
             List<Destination> destinations = Destination.find.all();
             if (profileOpt.isPresent()) {
                 Form<Profile> profileForm = profileEditForm.fill(profileOpt.get());
-                return ok(admin.render(profiles, trips,null, destinations, profileOpt.get(), profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+                System.out.println(profileOpt.get().getTravellerTypes());
+                return ok(admin.render(profiles, trips,null, destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin").flashing("info", "User profile not found"); //TODO look into sending an actual not found response
             }
         });
 
-        }
+    }
+
+
+    /**
+     * Endpoint method to show the admin page on the site
+     *
+     * @apiNote /admin
+     * @param request the http request
+     * @return the rendered page with status ok
+     */
+    public CompletionStage<Result> show(Http.Request request) {
+        return supplyAsync(() -> {
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+
+            return ok(admin.render(profiles, trips, null, destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+        });
+    }
+
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form via the admin
@@ -133,7 +154,7 @@ public class AdminController {
      * @param request Http request
      * @return a redirect to the profile page
      */
-    public CompletionStage<Result> update (Http.Request request, Integer id){
+    public CompletionStage<Result> updateProfile (Http.Request request, Integer id){
         Form<Profile> currentProfileForm = profileEditForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
         profile.initProfile(); //TODO I don't know if this is what sets up the types/countries

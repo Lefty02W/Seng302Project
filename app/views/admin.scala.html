@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(profiles : List[Profile], trips : List[Trip], currentDestination : Destination, destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], tripToView: Trip, createProfileForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
-@import models.Profile; var profileToView = currentUser
+@(profiles : List[Profile], trips : List[Trip], currentDestination : Destination, destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile], tripToView: Trip, createProfileForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import models.Profile; var profileToView = null
 @import models.Destination; var destToView = currentDestination
 
 <!DOCTYPE html>
@@ -52,6 +52,7 @@
                         <h2>Admin</h2> <!-- TODO align this in the center -->
                     </div>
                 </nav>
+
                 <div class="container">
                     @if(request.flash.getOptional("info").isPresent) {
                         <div class="alert alert-info">
@@ -137,10 +138,14 @@
                                         <td>@profile.getEmail</td>
                                         <td>
                                             <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
-                                                <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
+                                                <button type="button" class="btn btn-primary" id="editProfileButton">Edit</button>
                                             </a> </td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/@profile.getProfileId/delete')">Delete</button></td>
-                                        <td><button class="btn btn-primary" onclick="@(profileToView = profile);showProfile()">View</button></td>
+                                        <td>
+                                            <a href="@routes.AdminController.viewProfile(profile.getProfileId())">
+                                                <button class="btn btn-secondary">View</button>
+                                            </a>
+                                            </td>
                                         <td>@profile.isAdmin</td>
                                             <!-- TODO Update to id once deadbolt is working -->
                                         <td><button class="btn btn-info">Admin</button></td>
@@ -224,7 +229,7 @@
                 </div>
             </div>
         </div>
-        @if(currentUser != null) {
+        @if(profile.isEdit && profile.getObject != null) {
         <script type="text/javascript">
                 $(window).on('load', function () {
                     $('#editProfileModal').modal('show');
@@ -239,67 +244,67 @@
                         <div class="modal-header">
                             <h2 class="modal-title ">Edit Profile</h2>
                         </div>
-                        @form(routes.AdminController.update(currentUser.getProfileId())) {
+                        @form(routes.AdminController.updateProfile(profile.getObject.getProfileId())) {
                             @CSRF.formField
                             <div class="modal-body">
                                 <div class="col">
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">First Name*</small>
-                                            <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@currentUser.getFirstName>
+                                            <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@profile.getObject.getFirstName>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Middle Name</small>
-                                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@currentUser.getMiddleName>
+                                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@profile.getObject.getMiddleName>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Last Name*</small>
-                                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@currentUser.getLastName>
+                                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@profile.getObject.getLastName>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="hidden-div-edit">
-                                            <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required value=@currentUser.getTravellerTypes>
+                                            <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value=@profile.getObject.getTravellerTypes>
                                         </div>
                                         <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
-                                            @if(currentUser.getTravellerTypesList.contains("ThrillSeeker")) {
+                                            @if(profile.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
                                                 <option value="ThrillSeeker" selected>ThrillSeeker</option>
                                             } else {
                                                 <option value="ThrillSeeker">ThrillSeeker</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypesList.contains("Gap Year")) {
+                                            @if(profile.getObject.getTravellerTypesList.contains("Gap Year")) {
                                                 <option value="Gap Year" selected>Gap Year</option>
                                             } else {
                                                 <option value="Gap Year">Gap Year</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypesList.contains("Backpacker")) {
+                                            @if(profile.getObject.getTravellerTypesList.contains("Backpacker")) {
                                                 <option value="Backpacker" selected>Backpacker</option>
                                             } else {
                                                 <option value="Backpacker">Backpacker</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypesList.contains("Groupie")) {
+                                            @if(profile.getObject.getTravellerTypesList.contains("Groupie")) {
                                                 <option value="Groupie" selected>Groupie</option>
                                             } else {
                                                 <option value="Groupie">Groupie</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypesList.contains("Frequent Weekender")) {
+                                            @if(profile.getObject.getTravellerTypesList.contains("Frequent Weekender")) {
                                                 <option value="Frequent Weekender" selected>Frequent Weekender</option>
                                             } else {
                                                 <option value="Frequent Weekender">Frequent Weekender</option>>
                                             }
 
-                                            @if(currentUser.getTravellerTypesList.contains("Functional/business Traveller")) {
+                                            @if(profile.getObject.getTravellerTypesList.contains("Functional/business Traveller")) {
                                                 <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
                                             } else {
                                                 <option value="Functional/business Traveller">Functional/business Traveller</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypesList.contains("Holidaymaker")) {
+                                            @if(profile.getObject.getTravellerTypesList.contains("Holidaymaker")) {
                                                 <option value="Holidaymaker" selected>Holidaymaker</option>
                                             } else {
                                                 <option value="Holidaymaker">Holidaymaker</option>
@@ -308,17 +313,17 @@
                                     </div>
                                     <div class="row">
                                         <select class="selectpicker" id="gender" name="gender" data-width="100%" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
-                                            @if(currentUser.getGender == "Male") {
+                                            @if(profile.getObject.getGender == "Male") {
                                                 <option selected>Male</option>
                                             } else {
                                                 <option>Male</option>
                                             }
-                                            @if(currentUser.getGender == "Female") {
+                                            @if(profile.getObject.getGender == "Female") {
                                                 <option selected>Female</option>
                                             } else {
                                                 <option>Female</option>
                                             }
-                                            @if(currentUser.getGender == "Other") {
+                                            @if(profile.getObject.getGender == "Other") {
                                                 <option selected>Other</option>
                                             } else {
                                                 <option>Other</option>
@@ -327,22 +332,22 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
-                                            <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@currentUser.getEntryDate>
+                                            <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@profile.getObject.getEntryDate>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
-                                            <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@currentUser.getEmail>
+                                            <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@profile.getObject.getEmail>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                            <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required value=@currentUser.getNationalities>
+                                            <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value=@profile.getObject.getNationalities>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
-                                            <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField" value=@currentUser.getPassports>
+                                            <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value=@profile.getObject.getPassports>
                                         </div>
 
 
@@ -364,6 +369,11 @@
 
     <script>
         var email;
+        function fillVals() {
+            $('#travellerTypesForm').val($('#typeDropdown').val());
+        }
+
+
         $(document).ready(function() {
             $('#profileTable').DataTable({
                 "searching": false,
@@ -419,38 +429,6 @@
         function chooseAdmin() {
             var e = document.getElementById("profileSelect");
             alert(e.value);
-        }
-
-        function showProfile() {
-            document.getElementById("viewProfileTitle").innerHTML = "Profile: @profileToView.getEmail";
-            document.getElementById("viewFirstName").innerHTML = "First Name: @profileToView.getFirstName";
-            document.getElementById("viewMiddleName").innerHTML = "Middle Name: @profileToView.getMiddleName";
-            document.getElementById("viewLastName").innerHTML = "Last Name: @profileToView.getLastName";
-            document.getElementById("viewEmail").innerHTML = "Email: @profileToView.getEmail";
-            document.getElementById("viewBirthDate").innerHTML = "Birth Date: @profileToView.getBirthString";
-            document.getElementById("viewGender").innerHTML = "Gender: @profileToView.getGender";
-
-            @for(typeText <- profileToView.getTravellerTypesList) {
-                var travellerType = document.createElement("LI");
-                var typeValue = document.createTextNode("@typeText");
-                travellerType.appendChild(typeValue);
-                document.getElementById("viewTravellerTypeList").appendChild(travellerType);
-            }
-
-            @for(nationality <- profileToView.getNationalityList) {
-                var nationalityItem = document.createElement("LI");
-                var textValue = document.createTextNode("@nationality");
-                nationalityItem.appendChild(textValue);
-                document.getElementById("viewNationalitiesList").appendChild(nationalityItem);
-            }
-
-            @for(passport <- profileToView.getPassportsList) {
-                var country = document.createElement("LI");
-                var countryValue = document.createTextNode("@passport");
-                country.appendChild(countryValue);
-                document.getElementById("viewPassportsList").appendChild(country);
-            }
-            $('#viewProfileModal').modal('show');
         }
 
 
@@ -525,55 +503,80 @@
         </div>
     }
 
-    <div class="modal" id="viewProfileModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                    <!-- header -->
-                <div class="modal-header">
-                    <h4 id="viewProfileTitle" class="modal-title"></h4>
-                    <button type="button" class="close" data-dismiss="modal"></button>
-                </div>
-                    <!-- body -->
-                <div class="modal-body">
-                    <div id="profileImageRow" class="row">
 
+    @if(profile.isView && profile.getObject != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#viewProfileModal').modal('show');
+                });
+        </script>
+
+        <div class="modal" id="viewProfileModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Profile: @profile.getObject.getProfileId - @profile.getObject.getLastName, @profile.getObject.getFirstName</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
-                    <div class="row">
+                        <!-- body -->
+                    <div class="modal-body">
+                        <div id="profileImageRow" class="row">
+
+                        </div>
                         <div class="row">
-                            <div class="col">
-                                <ul>
-                                    <li id="viewFirstName"></li>
-                                    <li id="viewMiddleName"></li>
-                                    <li id="viewLastName"></li>
-                                    <li id="viewEmail"></li>
-                                    <li id="viewBirthDate"></li>
-                                    <li id="viewGender"></li>
-                                </ul>
+                            <div class="row">
+                                <div class="col">
+                                    <ul>
+                                        <li id="viewFirstName">First Name:  @profile.getObject.getFirstName</li>
+                                        @if(profile.getObject.getMiddleName != "") {
+                                            <li id="viewMiddleName">Middle Name: @profile.getObject.getMiddleName</li>
+                                        }
+                                        <li id="viewLastName">Last Name: @profile.getObject.getLastName</li>
+
+                                    </ul>
+                                </div>
+                                <div class="col">
+                                    <li id="viewEmail">Email: @profile.getObject.getEmail</li>
+                                    <li id="viewBirthDate">Birth Date: @profile.getObject.getBirthString</li>
+                                    <li id="viewGender">Gender: @profile.getObject.getGender</li>
+                                </div>
                             </div>
-                            <div class="col">
+                            <div class="row">
                                 <ul>
                                     <li>Traveller Types
-                                        <ul id="viewTravellerTypeList"></ul>
+                                        <ul id="viewTravellerTypeList">
+                                        @for(travelType <- profile.getObject.getTravellerTypesList) {
+                                            <li>@travelType</li>
+                                        }
+                                        </ul>
                                     </li>
                                     <li>Nationalities
-                                        <ul id="viewNationalitiesList"></ul>
+                                        <ul id="viewNationalitiesList">
+                                        @for(nationality <- profile.getObject.getNationalityList) {
+                                            <li>@nationality</li>
+                                        }</ul>
                                     </li>
                                     <li>Passport Countries
-                                        <ul id="viewPassportsList"></ul>
+                                        <ul id="viewPassportsList">
+                                        @for(passport <- profile.getObject.getPassportsList) {
+                                            <li>@passport</li>
+                                        }</ul>
                                     </li>
                                 </ul>
                             </div>
                         </div>
-                    </div>
 
-                </div>
-                    <!-- footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+
 
     @if(currentDestination != null) {
         <script type="text/javascript">
@@ -710,6 +713,11 @@
                 console.log($('#typeDropdown').val());
                 $('#travellerTypes').val($('#typeDropdown').val());
             }
+
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
 
     </script>
 

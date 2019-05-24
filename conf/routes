@@ -61,7 +61,7 @@ GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWit
 # Admins
 POST    /admin/:id                controllers.ProfileController.updateAdmin(request: Request, id: Integer)
 GET     /admin                       controllers.AdminController.show(request: Request)
-POST   /admin                       controllers.AdminController.update(request: Request, id: Integer)
+
 
 
 ## Admin Trips
@@ -70,9 +70,13 @@ GET     /admin/trips/:tripId            controllers.AdminController.viewTrip(req
 GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)
 
 ## Admin Profiles
-GET     /admin/:profileId/profile                 controllers.AdminController.showEditProfile(request: Request, profileId: Integer)
-GET     /admin/:id/update                controllers.AdminController.showEditProfile(request: Request, id: Integer)
+GET     /admin/profile/:id/edit                controllers.AdminController.showEditProfile(request: Request, id: Integer)
+POST   /admin/profile/:id/edit                      controllers.AdminController.updateProfile(request: Request, id: Integer)
+
 GET   /admin/:profileId/delete         controllers.AdminController.deleteProfile(request: Request, profileId: Integer)
+
+GET     /admin/profile/:id/view              controllers.AdminController.viewProfile(request: Request, id: Integer)
+
 POST    /admin/profile/create       controllers.AdminController.createProfile(request: Request)
 
 ## Admin Destinations
