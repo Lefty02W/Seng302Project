@@ -69,6 +69,7 @@ public class CreateDestinationSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/destinations")
+                .bodyForm(destForm)
                 .session("connected", "1");
         redirectDestination = Helpers.route(provideApplication(), request);
         assertEquals(303, redirectDestination.status());
