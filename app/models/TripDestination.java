@@ -30,9 +30,8 @@ public class TripDestination extends Model {
 
     private Destination destination;
     public static final Finder<String, TripDestination> find = new Finder<>(TripDestination.class);
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/YYYY HH:mm a");
-    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-    private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm");
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm a");
+    private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
 
     /**
@@ -156,7 +155,7 @@ public class TripDestination extends Model {
         return destOrder;
     }
 
-    public void setDestOrder(int dest_order) {
-        this.destOrder = dest_order;
+    public void setDestOrder(int destOrder) {
+        this.destOrder = destOrder;
     }
 }

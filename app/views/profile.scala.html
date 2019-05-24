@@ -380,7 +380,7 @@
                                                 <th>Arrival Time</th>
                                         </thead>
                                         @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
-                                            <tr>
+                                            <tr>return dateFormatSort.format(birthDate);
                                                 <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
                                                 <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
                                                 <td>
@@ -499,7 +499,7 @@
 
         </div>
 
-        <div class="modal fade" id="addProfileModal">getPassports
+        <div class="modal fade" id="addProfileModal">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
 
@@ -676,7 +676,7 @@
                                         @if(currentUser.getGender == "Female") {
                                             <option selected>Female</option>
                                         } else {
-                                            <optgetPassportsion>Female</optgetPassportsion>
+                                            <option>Female</option>
                                         }
                                         @if(currentUser.getGender == "Other") {
                                             <option selected>Other</option>

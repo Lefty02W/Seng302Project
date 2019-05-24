@@ -5,14 +5,11 @@ import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-//import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * This class holds the data for a profile
@@ -74,14 +71,13 @@ public class Profile extends Model {
     @Transient
     private ArrayList<Trip> trips;
     @Transient
-    TreeMultimap<Long, Integer> tripsMap = TreeMultimap.create();
+    private TreeMultimap<Long, Integer> tripsMap = TreeMultimap.create();
     @Transient
-    Map <Integer, Trip> tripsTripMap = new TreeMap<>();
+    private Map <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
-    @Transient
     private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-    @Transient
     private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
+
 
     /**
      * Traditional constructor for profile. Used when retrieving a Profile from DB.
@@ -113,7 +109,6 @@ public class Profile extends Model {
         //this.trips = trips;
         //this.admin = isAdmin;
         //, ArrayList<Trip> trips, boolean isAdmin
-
     }
 
     /**
@@ -147,13 +142,13 @@ public class Profile extends Model {
         this.gender = gender;
         this.timeCreated = timeCreated;
 
-        this.nationalities =new HashMap<>();
+        this.nationalities = new HashMap<>();
         for (String nationalityString : (nationalities.split(","))) {
 
             Nationality nationality = new Nationality(0, nationalityString);
             this.nationalities.put(nationality.getNationalityId(), nationality);
         }
-        this.travellerTypes =new HashMap<>();
+        this.travellerTypes = new HashMap<>();
         for (String travellerTypesString : (travellerTypes.split(","))) {
 
             TravellerType travellerType = new TravellerType(0, travellerTypesString);
@@ -177,7 +172,7 @@ public class Profile extends Model {
             this.passports.put(passport.getPassportId(), passport);
         }
         i = 1;
-        this.nationalities =new HashMap<>();
+        this.nationalities = new HashMap<>();
         for (String nationalityString : (nationalitiesForm.split(","))) {
             i++;
             Nationality nationality = new Nationality(i, nationalityString);
@@ -192,19 +187,6 @@ public class Profile extends Model {
             this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
         }
     }
-
-//    @Constraints.Required
-//    private String passportsForm;
-//
-//    @Constraints.Required
-//    private String nationalitiesForm;
-//
-//    @Constraints.Required
-//    private String travellerTypesForm;
-//
-//    private Map<Integer, PassportCountry> passports;
-//    private Map<Integer, Nationality> nationalities;
-//    private Map<Integer, TravellerType> travellerTypes;
 
     public Integer getProfileId() {
         return profileId;
@@ -412,7 +394,10 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        return dateFormatSort.format(birthDate);
+        if (birthDate != null) {
+            return dateFormatSort.format(birthDate);
+        }
+        return "";
     }
 
 

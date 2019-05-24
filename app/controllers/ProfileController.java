@@ -18,7 +18,6 @@ import play.mvc.Security;
 import repository.*;
 import views.html.editProfile;
 import views.html.profile;
-
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
@@ -26,7 +25,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
-
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -53,7 +51,7 @@ public class ProfileController extends Controller {
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
-
+    private final String profileEndpoint = "/profile";
 
 
 
@@ -63,17 +61,17 @@ public class ProfileController extends Controller {
      */
     public static class ImageData {
         public String visible = "Private";
-        public String isNewProfilePicture;
-        public String autoCropped = "true";
+        String isNewProfilePicture;
+        String autoCropped = "true";
     }
 
     /**
      * a class to recieve information from a form for getting cropping image data
      */
     public static class CropImageData {
-        public int widthHeight;
-        public int cropX;
-        public int cropY;
+        int widthHeight;
+        int cropX;
+        int cropY;
     }
 
 
@@ -157,12 +155,8 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     private List<Photo> getUserPhotos(Http.Request request){
         Integer profileId = SessionController.getCurrentUserId(request);
-        try {
-            Optional<List<Photo>> imageListTemp = personalPhotoRepository.getAllProfilePhotos(profileId);
-            imageListTemp.ifPresent(photos -> photoList = photos);
-        } catch (NoSuchElementException e) {
-            photoList = new ArrayList<>();
-        }
+        Optional<List<Photo>> imageListTemp = personalPhotoRepository.getAllProfilePhotos(profileId);
+        imageListTemp.ifPresent(photos -> photoList = photos);
         return photoList;
     }
 
@@ -277,7 +271,7 @@ public class ProfileController extends Controller {
         Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
         ImageData imageData = uploadedImageForm.get();
         if (picture == null) {
-            return supplyAsync(() -> redirect("/profile").flashing("invalid", "No image selected."));
+            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "No image selected."));
 
         }
         String fileName = picture.getFilename();
@@ -285,7 +279,7 @@ public class ProfileController extends Controller {
 
         // Check valid content type for image
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
-            return supplyAsync(() -> redirect("/profile").flashing("invalid", "Invalid file type!"));
+            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Invalid file type!"));
         }
         TemporaryFile tempFile = picture.getRef();
         File file = tempFile.path().toFile();
@@ -293,7 +287,6 @@ public class ProfileController extends Controller {
             try {
                 this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
-                // Initialize Photo object
                 cropInfo crop = autoCrop(this.imageBytes);
 
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
@@ -315,7 +308,7 @@ public class ProfileController extends Controller {
                 e.printStackTrace();
             }
             return ok();
-        }).thenApply(result -> redirect("/profile"));
+        }).thenApply(result -> redirect(profileEndpoint));
     }
 
 
@@ -349,7 +342,7 @@ public class ProfileController extends Controller {
         } catch (NullPointerException e) {
             savePhoto(demoProfilePicture, profileId);
         }
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Profile picture updated"));
+        return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Profile picture updated"));
     }
     
     
@@ -378,7 +371,7 @@ public class ProfileController extends Controller {
             showChangeProfilePictureModal = true;
             Optional<Photo> image = photoRepository.getImage(imageId);
             image.ifPresent(photo -> demoProfilePicture = photo);
-            return redirect("/profile");
+            return redirect(profileEndpoint);
         });
     }
 
@@ -390,7 +383,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> resetDemoProfilePicture() {
         demoProfilePicture = null;
-        return supplyAsync(() -> redirect("/profile").flashing("success", "Changes cancelled"));
+        return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Changes cancelled"));
     }
 
 
@@ -402,7 +395,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result getDemoProfilePicture(Integer displayCropped) {
         if (demoProfilePicture == null) {
-            return redirect("/profile").flashing("invalid", "No image selected.");
+            return redirect(profileEndpoint).flashing("invalid", "No image selected.");
         }
         if (displayCropped == 1) {
             byte[] imageDisplay;
@@ -415,7 +408,6 @@ public class ProfileController extends Controller {
                 imageDisplay = baos.toByteArray();
                 baos.close();
             } catch (Exception e) {
-                System.out.println(e);
                 imageDisplay = Objects.requireNonNull(demoProfilePicture).getImage();
             }
             return ok(imageDisplay).as(demoProfilePicture.getType());
@@ -435,7 +427,7 @@ public class ProfileController extends Controller {
         Optional<Photo> optionalImage = photoRepository.getImage(imageId);
         optionalImage.ifPresent(image -> demoProfilePicture = image);
         showCropPhotoModal = true;
-        return supplyAsync(() -> redirect("/profile"));
+        return supplyAsync(() -> redirect(profileEndpoint));
     }
 
 
@@ -451,7 +443,7 @@ public class ProfileController extends Controller {
             Form<CropImageData> uploadedCropImageDataForm = cropImageDataForm.bindFromRequest(request);
             CropImageData cropImageData = uploadedCropImageDataForm.get();
             if (cropImageData == null) {
-                return supplyAsync(() -> redirect("/profile").flashing("invalid", "No image selected."));
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "No image selected."));
             }
             InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
             BufferedImage buffImage = ImageIO.read(in);
@@ -462,14 +454,14 @@ public class ProfileController extends Controller {
                     demoProfilePicture.setCropX(cropImageData.cropX);
                     demoProfilePicture.setCropY(cropImageData.cropY);
                     showChangeProfilePictureModal = true;
-                    return supplyAsync(() -> redirect("/profile"));
+                    return supplyAsync(() -> redirect(profileEndpoint));
                 }
-                return supplyAsync(() -> redirect("/profile").flashing("invalid", "Cropped image exceeds original image height"));
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Cropped image exceeds original image height"));
             }
-            return supplyAsync(() -> redirect("/profile").flashing("invalid", "cropped image exceeds original image width"));
+            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "cropped image exceeds original image width"));
         } catch (IOException e) {
             showChangeProfilePictureModal = false;
-            return supplyAsync(() -> redirect("/profile").flashing("invalid", "Somthing went wrong while cropping the photo"));
+            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Somthing went wrong while cropping the photo"));
         }
     }
 

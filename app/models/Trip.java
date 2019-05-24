@@ -111,12 +111,12 @@ public class Trip extends Model {
      * @return travel time
      */
     public Long getTravelTime() {
-        if (destinations.size() > 0) {
+        if (!destinations.isEmpty()) {
             this.destinations = sortDestinationsByOrder(destinations);
             TripDestination startDest = destinations.get(0);
             TripDestination endDest = destinations.get(destinations.size() - 1);
             if (startDest.getArrival() == null || endDest.getDeparture() == null) {
-                return null; //TODO fix this or remove this
+                return null;
             }
             long diff = endDest.getDeparture().getTime() - startDest.getArrival().getTime();
             return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
@@ -191,7 +191,6 @@ public class Trip extends Model {
      */
     public String getDestinationNames() {
         this.destinations = sortDestinationsByOrder(destinations);
-        //TODO fix this to get name not id
         String names = "" + destinations.get(0).getDestinationName();
         for (int i = 1; i < destinations.size(); i++) {
             names += ", " + destinations.get(i).getDestinationName();
@@ -206,7 +205,7 @@ public class Trip extends Model {
      * @return sorted destination list
      */
     public ArrayList<TripDestination> sortDestinationsByOrder(ArrayList<TripDestination> array) {
-        ArrayList<TripDestination> temp = new ArrayList<TripDestination>();
+        ArrayList<TripDestination> temp = new ArrayList<>();
         if (array == null) {
             return temp;
         }
