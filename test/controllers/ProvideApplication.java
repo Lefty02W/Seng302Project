@@ -54,6 +54,7 @@ public class ProvideApplication extends WithApplication {
 
 
     public void injectRepositories() {
+        app = provideApplication();
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
         photoRepository = app.injector().instanceOf(PhotoRepository.class);
