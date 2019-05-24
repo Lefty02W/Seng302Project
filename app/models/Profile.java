@@ -107,7 +107,7 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
-        this.roles = new ArrayList<>();
+        this.roles = roles;
 
     }
 
@@ -437,7 +437,7 @@ public class Profile extends Model {
     /**
      * Check the user has a given role name by searching their roles list.
      */
-    public boolean hasRole(String role) {return  this.roles.contains(role);}
+    public boolean hasRole(String role) {return this.roles.contains(role);}
 
     public void setPassports(Map<Integer, PassportCountry> passports) {
         this.passports = passports;

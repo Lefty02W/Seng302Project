@@ -29,7 +29,7 @@ import static play.mvc.Results.redirect;
 /**
  * This class provides the api endpoint functionality for the admin page of the site
  */
-@RestrictAnnotation
+@RestrictAnnotation()
 public class AdminController {
 
     private final ProfileRepository profileRepository;

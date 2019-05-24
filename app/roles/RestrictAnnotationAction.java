@@ -1,14 +1,23 @@
 package roles;
 
 
+import controllers.LoginController;
 import controllers.SessionController;
+import models.Destination;
+import models.Profile;
+import play.data.FormFactory;
+import play.i18n.MessagesApi;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.DestinationRepository;
+import repository.ProfileRepository;
 import repository.RolesRepository;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -17,9 +26,16 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * The business logic ("action") for each role is defined here.
  * This is essentially a middleware class
  **/
+
 public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
 
     private RolesRepository rolesRepository;
+
+
+    @Inject
+    public RestrictAnnotationAction(RolesRepository rolesRepository) {
+        this.rolesRepository = rolesRepository;
+    }
 
 
     /**
@@ -31,18 +47,22 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
      */
     public CompletionStage<Result> call(Http.Request req) {
 
-        //TODO Get roles of the user here.
+        //Get roles of the user here.
         Integer profileId = SessionController.getCurrentUserId(req);
         List<String> profileRoles = new ArrayList<>();
 
-        /* TODO replace check to ensure user role matches configuration.value()
+        /* Replace check to ensure user role matches configuration.value()
             This will require the database structure set up
          */
+        Optional<List<String>> roles = rolesRepository.getProfileRoles(profileId);
+        if(roles.isPresent()){
+            profileRoles = roles.get();
+        }
 
-        //TODO change this to check if user's roles contains configuration.value.
+        //Change this to check if user's roles contains configuration.value.
         // If so we are authorized, and the request should be called.
         if (profileRoles.contains(configuration.value())) {
-            System.out.println("Calling annotation action for "+ req);
+            System.out.println("Calling admin action for "+ req);
             return delegate.call(req);  // Allow the request proceed
         }
 
