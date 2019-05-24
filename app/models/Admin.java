@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @MappedSuperclass
 public class Admin extends Profile {
@@ -32,13 +33,15 @@ public class Admin extends Profile {
      * @param nationalities
      * @param travellerTypes
      * @param trips
-     * @param isAdmin
+     * @param roles
      * @param admin_id
      * @param profile_id
      * @param is_master
      */
-    public Admin(String firstName, String lastName, String email, String password, Date birthDate, String passports, String gender, Date timeCreated, String nationalities, String travellerTypes, ArrayList<Trip> trips, boolean isAdmin, Integer admin_id, Integer profile_id, Integer is_master) {
-        super(firstName, lastName, email, password, birthDate, passports, gender, timeCreated, nationalities, travellerTypes, trips, isAdmin);
+    public Admin(String firstName, String lastName, String email, String password, Date birthDate, String passports,
+                 String gender, Date timeCreated, String nationalities, String travellerTypes, ArrayList<Trip> trips,
+                 List<String> roles, Integer admin_id, Integer profile_id, Integer is_master) {
+        super(firstName, lastName, email, password, birthDate, passports, gender, timeCreated, nationalities, travellerTypes, trips);
         this.admin_id = admin_id;
         this.profile_id = profile_id;
         this.is_master = is_master;
