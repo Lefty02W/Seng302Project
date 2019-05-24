@@ -31,8 +31,8 @@ public class LoginControllerTest extends WithApplication {
     @Test
     public void login() {
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin@admin.com");
-        formData.put("password", "admin123");
+        formData.put("email", "john@gmail.com");
+        formData.put("password", "password");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")

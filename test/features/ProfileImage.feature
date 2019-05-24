@@ -8,7 +8,7 @@ Feature: Changing profile image
 #    Given John clicks Upload new photo
 #    And he clicks the Crop this myself button without selecting a photo
 #    Then an error message should be shown telling John to select a photo
-
+#
 #  Scenario:
 #    Given John clicks Upload new photo
 #    And he clicks the Crop this myself button with a photo selected

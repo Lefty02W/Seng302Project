@@ -30,7 +30,7 @@ public class TripDestinationsRepository {
     }
 
     /**
-     * insert trip destination into database
+     * Insert trip destination into database
      * @param tripDestination
      * @return
      */
@@ -38,26 +38,6 @@ public class TripDestinationsRepository {
         return supplyAsync(() -> {
             ebeanServer.insert(tripDestination);
             return tripDestination.getTripId();
-        }, executionContext);
-    }
-
-    public CompletionStage<Integer> editTrip(TripDestination tripDestination, int tripDestinationId) {
-        return supplyAsync(() -> {
-            try (Transaction txn = ebeanServer.beginTransaction()) {
-                TripDestination tripDestEdit = ebeanServer.find(TripDestination.class).setId(tripDestinationId).findOne();
-                if (tripDestEdit != null) {
-                    tripDestEdit.setArrival(tripDestination.getArrival());
-                    tripDestEdit.setDeparture(tripDestination.getDeparture());
-                    tripDestEdit.setDestination(tripDestination.getDestination());
-                    tripDestEdit.setDestinationId(tripDestination.getDestinationId());
-                    tripDestEdit.setDestOrder(tripDestination.getDestOrder());
-                    //tripDestEdit.setTripDestinationId(tripDestination.getTripDestinationId());
-                    tripDestEdit.setTripId(tripDestination.getTripId());
-                    tripDestEdit.update();
-                }
-                txn.commit();
-            }
-            return tripDestination.getTripDestinationId();
         }, executionContext);
     }
 
@@ -71,7 +51,7 @@ public class TripDestinationsRepository {
             try {
                 final Optional<TripDestination> tripDestOptional = Optional.ofNullable(ebeanServer.find(TripDestination.class).setId(tripDestinationId).findOne());
                 tripDestOptional.ifPresent(Model::delete);
-                return tripDestOptional.map(p -> p.getTripDestinationId());
+                return tripDestOptional.map(TripDestination::getTripDestinationId);
             } catch (Exception e) {
                 return Optional.empty();
             }

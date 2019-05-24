@@ -51,17 +51,16 @@ public class LoginController extends Controller {
      * @return either login failed  with incorrect info or successful login and go to user  page
      */
     public CompletionStage<Result> login(Http.Request request){
-
         Form<Login> currentLoginForm = loginForm.bindFromRequest(request);
         Login login = currentLoginForm.get();
         if (checkUser(login.email, login.password)){
             // Validate the login credentials
             Login loginData = currentLoginForm.get();
-            CompletionStage<Optional<Profile>> profileOptional = profileRepository.lookup(loginData.email);
-            return profileRepository.lookup(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
+            CompletionStage<Optional<Profile>> profileOptional = profileRepository.lookupEmail(loginData.email);
+            return profileRepository.lookupEmail(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
-                    return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getEmail());
+                    return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getProfileId().toString());
                 }
                 return notFound("Login failed");
             }, httpExecutionContext.current());
@@ -94,9 +93,14 @@ public class LoginController extends Controller {
      */
     public Result save(Http.Request request){
         Form<Profile> userForm = profileForm.bindFromRequest(request);
-        Profile profile = userForm.value().get();
-        profileRepository.insert(profile);
-        return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
+        Optional<Profile> profOpt = userForm.value();
+        if (profOpt.isPresent()) {
+            Profile profile = profOpt.get();
+            profile.initProfile();
+            profileRepository.insert(profile);
+            return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
+        }
+        return redirect("/").flashing("info", "Profile save failed");
     }
 
     /**

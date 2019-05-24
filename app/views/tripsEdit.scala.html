@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
 
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], currentUser: Profile, id: Integer, toEdit: TripDestination)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], destinationList: List[Destination], currentUser: Profile, id: Integer, toEdit: TripDestination)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -76,7 +76,7 @@
                                     <div class="col">
                                         <h5>Destination</h5>
                                         <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                        @for(destination <- currentUser.getDestinations) {
+                                        @for(destination <- destinationList) {
                                             <option value=@destination.getDestinationId>@destination.getName</option>
                                         }
                                         </select>
@@ -119,10 +119,10 @@
                                                 <td>@tripDestination.getArrivalString</td>
                                                 <td> <!--onclick="fillModal(this)-->
                                                     <a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder, id)">
-                                                        <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
+                                                        <input type="photo" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
                                                     </a>
                                                     <a href="@routes.TripsController.deleteDestinationEditTrip(tripDestination.getDestOrder, id)">
-                                                        <input type="image" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
+                                                        <input type="photo" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
                                                     </a>
                                                 </td>
                                             </tr>

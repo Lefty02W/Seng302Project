@@ -1,10 +1,9 @@
-package controllers.steps;
+package controllers.steps.Destinations;
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import models.Destination;
 import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -31,7 +30,7 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/login")
                 .bodyForm(loginForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result loginResult = Helpers.route(provideApplication(), request);
     }
@@ -41,11 +40,9 @@ public class CreateDestinationSteps extends ProvideApplication {
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/destinations/show/false")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
         Result destinationResult = Helpers.route(provideApplication(), requestDest);
         assertEquals(200, destinationResult.status());
-
-        // TODO check on trips page
     }
 
     @When("user clicks on the add new destination button")
@@ -53,7 +50,7 @@ public class CreateDestinationSteps extends ProvideApplication {
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/destinations/create")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
         Result destinationResult = Helpers.route(provideApplication(), requestDest);
         Assert.assertEquals(200, destinationResult.status());
     }
@@ -72,7 +69,8 @@ public class CreateDestinationSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/destinations")
-                .session("connected", "john@gmail.com");
+                .bodyForm(destForm)
+                .session("connected", "1");
         redirectDestination = Helpers.route(provideApplication(), request);
         assertEquals(303, redirectDestination.status());
     }
@@ -85,13 +83,16 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @When("he fills in Longitude as {string}")
     public void heFillsInLongitudeAs(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        destForm.put("Longitude", string);
     }
 
     @Then("the Create Destination page should be shown")
     public void theCreateDestinationPageShouldBeShown() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        if (redirectDestination.redirectLocation().isPresent()) {
+            assertEquals("/destinations/create", redirectDestination.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
+
 }

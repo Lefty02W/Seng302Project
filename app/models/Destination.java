@@ -16,7 +16,7 @@ public class Destination extends Model {
     @Id
     @Constraints.Required
     private int destinationId;
-    private String userEmail;
+    private int profileId;
     @Constraints.Required
     private String name;
     @Constraints.Required
@@ -50,9 +50,9 @@ public class Destination extends Model {
      * @param latitude the destinations latitude
      * @param longitude the destinations longitude
      */
-    public Destination(int destinationId, String userEmail, String name, String type, String country, String district, double latitude, double longitude, int visible) {
+    public Destination(int destinationId, int profileId, String name, String type, String country, String district, double latitude, double longitude, int visible) {
         this.destinationId = destinationId;
-        this.userEmail = userEmail;
+        this.profileId = profileId;
         this.name = name;
         this.type = type;
         this.country = country;
@@ -72,8 +72,8 @@ public class Destination extends Model {
      * @param latitude the destinations latitude
      * @param longitude the destinations longitude
      */
-    public Destination(String userEmail, String name, String type, String country, String district, double latitude, double longitude, int visible) {
-        this.userEmail = userEmail;
+    public Destination(int profileId, String name, String type, String country, String district, double latitude, double longitude, int visible) {
+        this.profileId = profileId;
         this.name = name;
         this.type = type;
         this.country = country;
@@ -144,10 +144,10 @@ public class Destination extends Model {
     }
 
     /**
-     * Returns the user email of the destination
-     * @return
+     * Returns the user id of the destination
+     * @return profileId
      */
-    public String getUserEmail() { return userEmail; }
+    public int getProfileId() { return profileId; }
 
     /**
      * Sets the country of the destination
@@ -207,10 +207,10 @@ public class Destination extends Model {
 
     /**
      * Sets the userEmail of the destination
-     * @param userEmail
+     * @param profileId
      */
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
     }
 
     public int getVisible() { return visible; }

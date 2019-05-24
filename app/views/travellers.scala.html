@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(searchForm: Form[PartnerFormData], users: List[Profile], imageList: List[Image], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -110,8 +110,8 @@
                                                 <li>@travellerType</li>
                                             }</ul>
                                             </td>
-                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getEmail)">
-                                                <button type="submit" class="btn btn-primary">View</button>
+                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">
+                                                <button type="submit" class="viewPicButton">View</button>
                                             </a>
                                             </td>
                                         </tr>

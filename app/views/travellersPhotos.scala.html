@@ -1,8 +1,4 @@
-@import play.mvc.Http
-@import views.html.helper.form
-@import views.html.helper.CSRF
-@import controllers.TravellersController
-@(imageList: List[Image])
+@(photoList: List[Photo])
 
 <!DOCTYPE html>
 <html>
@@ -51,7 +47,7 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    @if(imageList.isEmpty) {
+                    @if(photoList.isEmpty) {
                         <h1>This traveller has not uploaded any photos.</h1>
                         <a href="@routes.TravellersController.show()"><button style="float: right">
                             Back to Travellers</button></a>
@@ -59,10 +55,10 @@
                         <h1>Traveller Photos</h1>
                         <div id="travellersPhotos">
                             <div class="row">
-                                @for(image <- imageList) {
-                                    @if(image.getVisible == 1) {
+                                @for(photo <- photoList) {
+                                    @if(photo.getVisible == 1) {
                                         <div class="card">
-                                            <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName">
+                                            <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName">
                                         </div>
                                     }
                                 }
@@ -79,7 +75,7 @@
                 </div>
             </div>
 
-                <!-- The Expanded Image Modal -->
+                <!-- The Expanded Photo Modal -->
             <div id="expandImageModal" class="modal">
                 <span class="close">&times;</span>
                 <img class="modal-content" id="expandedImage">
@@ -95,15 +91,14 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
-            // Method that gets the image data from on the image clicked and displays
-            // it in its original resolution in a new modal
-            function expand(image, text) {
+
+            function expand(photo, text) {
                 // Get the modal
                 var modal = document.getElementById('expandImageModal');
                 var modalImg = document.getElementById('expandedImage');
                 var captionText = document.getElementById("caption");
                 modal.style.display = "block";
-                modalImg.src = image;
+                modalImg.src = photo;
                 captionText.innerHTML = text;
 
                 // Get the <span> element that closes the modal

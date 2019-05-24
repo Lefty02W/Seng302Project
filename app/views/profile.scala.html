@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Image, showCropPhotoModal: Boolean, widthHeight: String, destinationsList: List[Destination], isTooSmall: String)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Photo, showCropPhotoModal: Boolean, widthHeight: String, destinationsList: List[Destination], isTooSmall: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -111,7 +111,7 @@
                         </div>
                         <div class="container" id="profilePhoto">
                         @if(profilePicture != null) {
-                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)"
+                            <img id="profileImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getPhotoId, 1)"
                             alt="Profile picture">
                         } else {
                             <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
@@ -235,7 +235,7 @@
 
                                 <div id="passports" class="row justify-content-center">
 
-                                @if(currentUser.getPassports.isEmpty) {
+                                @if(currentUser.getPassportsList.isEmpty) {
                                     <div class="alert alert-info" role="alert">
                                         You have no passports associated with your profile
                                     </div>
@@ -272,23 +272,23 @@
                                     </div>
 
                                     <div class="row">
-                                    @for(image <- imageList) {
+                                    @for(photo <- photoList) {
                                         <div class="card">
                                             <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                            src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
-                                            name="@image.getImageId">
+                                            src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
+                                            name="@photo.getPhotoId">
                                             <div clasas="card-body">
-                                            @if(image.getVisible == 1) {
-                                                <p class="card-text"> @image.displayVisibility(image.getVisible) 🌏</p>
-                                                <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                            @if(photo.getVisible == 1) {
+                                                <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🌏</p>
+                                                <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
                                                     <button>Make Private</button></a>
                                             } else {
-                                                <p class="card-text"> @image.displayVisibility(image.getVisible) 🔒</p>
-                                                <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
+                                                <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🔒</p>
+                                                <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
                                                     <button>Make Public</button></a>
                                             }
                                             </div>
-                                                <!-- The Expanded Image Modal -->
+                                                <!-- The Expanded Photo Modal -->
                                             <div id="expandImageModal" class="modal">
                                                 <span class="close">&times;</span>
                                                 <img class="modal-content" id="expandedImage">
@@ -381,7 +381,7 @@
                                                 <th>Arrival Time</th>
                                         </thead>
                                         @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
-                                            <tr>
+                                            <tr>return dateFormatSort.format(birthDate);
                                                 <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
                                                 <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
                                                 <td>
@@ -429,11 +429,11 @@
                                 @if(profilePicture == null) {
                                     <img id="profileImagePreview" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")" name="demoProfilePicture">
                                 } else {
-                                    <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getImageId, 1)" name="demoProfilePicture">
+                                    <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.displayPhotos(profilePicture.getPhotoId, 1)" name="demoProfilePicture">
                                 }
                             } else {
-                            <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
-                            }
+                                <img id="profileImagePreview" class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(1)" name="demoProfilePicture">
+                                }
                         </div>
 
                         <div class="row">
@@ -466,19 +466,19 @@
                     <div class="col">
                         <div id="photosCard" class="card-large lower-card">
                             <div class="row">
-                            @for(image <- imageList) {
+                            @for(photo <- photoList) {
                                 <div class="card">
                                     <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                    src="@routes.ProfileController.displayPhotos(image.getImageId, 0)" alt="@image.getName"
-                                    name="@image.getImageId">
+                                    src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
+                                    name="@photo.getPhotoId">
                                     <div class="card-body">
-                                        <input type="hidden" id="photoId" name="photoId" value="@image.getImageId">
-                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(image.getImageId)">
+                                        <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
+                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getPhotoId)">
                                             <button type="submit">Crop this myself</button></a>
-                                        <a href="@routes.ProfileController.setDemoProfilePicture(image.getImageId)">
+                                        <a href="@routes.ProfileController.setDemoProfilePicture(photo.getPhotoId)">
                                             <button type="submit">AutoCrop</button></a>
                                     </div>
-                                        <!-- The Expanded Image Modal -->
+                                        <!-- The Expanded Photo Modal -->
                                     <div id="expandImageModal" class="modal">
                                         <span class="close">&times;</span>
                                         <img class="modal-content" id="expandedImage">
@@ -550,20 +550,20 @@
                                 <div class="row">
                                     <input type="number" id="cropX" name="cropX" min="0" value="0">Margin left
                                 </div>
-                                    <input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom
-                                </div>
+                                <input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom
                             </div>
-                        <div class="row">
-                            <div class="center-col">
-                                <button id="acceptCrop" type="submit">Accept</button>
-                                <button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
-                                    Close</button>
-                            </div>
-                            }
+                    </div>
+                    <div class="row">
+                        <div class="center-col">
+                            <button id="acceptCrop" type="submit">Accept</button>
+                            <button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">
+                                Close</button>
                         </div>
+                        }
                     </div>
                 </div>
             </div>
+        </div>
         </div>
 
         <div class="modal fade" id="addPhotoModal">
@@ -611,61 +611,61 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">Middle Name</small>
-                                    <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@currentUser.getMiddleName>
+                                        <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@currentUser.getMiddleName>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">Last Name*</small>
-                                    <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@currentUser.getLastName>
+                                        <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@currentUser.getLastName>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required value=@currentUser.getTravellerTypes>
+                                        <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value=@currentUser.getTravellerTypesString>
                                     </div>
-                                        <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
-                                            @if(currentUser.getTravellerTypes.contains("ThrillSeeker")) {
-                                                <option value="ThrillSeeker" selected>ThrillSeeker</option>
-                                            } else {
-                                                <option value="ThrillSeeker">ThrillSeeker</option>
-                                            }
+                                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                        @if(currentUser.getTravellerTypesList.contains("ThrillSeeker")) {
+                                            <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                        } else {
+                                            <option value="ThrillSeeker">ThrillSeeker</option>
+                                        }
 
-                                            @if(currentUser.getTravellerTypes.contains("Gap Year")) {
-                                                <option value="Gap Year" selected>Gap Year</option>
-                                            } else {
-                                                <option value="Gap Year">Gap Year</option>
-                                            }
+                                        @if(currentUser.getTravellerTypesList.contains("Gap Year")) {
+                                            <option value="Gap Year" selected>Gap Year</option>
+                                        } else {
+                                            <option value="Gap Year">Gap Year</option>
+                                        }
 
-                                            @if(currentUser.getTravellerTypes.contains("Backpacker")) {
-                                                <option value="Backpacker" selected>Backpacker</option>
-                                            } else {
-                                                <option value="Backpacker">Backpacker</option>
-                                            }
+                                        @if(currentUser.getTravellerTypesList.contains("Backpacker")) {
+                                            <option value="Backpacker" selected>Backpacker</option>
+                                        } else {
+                                            <option value="Backpacker">Backpacker</option>
+                                        }
 
-                                            @if(currentUser.getTravellerTypes.contains("Groupie")) {
-                                                <option value="Groupie" selected>Groupie</option>
-                                            } else {
-                                                <option value="Groupie">Groupie</option>
-                                            }
+                                        @if(currentUser.getTravellerTypesList.contains("Groupie")) {
+                                            <option value="Groupie" selected>Groupie</option>
+                                        } else {
+                                            <option value="Groupie">Groupie</option>
+                                        }
 
-                                            @if(currentUser.getTravellerTypes.contains("Frequent Weekender")) {
-                                                <option value="Frequent Weekender" selected>Frequent Weekender</option>
-                                            } else {
-                                                <option value="Frequent Weekender">Frequent Weekender</option>>
-                                            }
+                                        @if(currentUser.getTravellerTypesList.contains("Frequent Weekender")) {
+                                            <option value="Frequent Weekender" selected>Frequent Weekender</option>
+                                        } else {
+                                            <option value="Frequent Weekender">Frequent Weekender</option>>
+                                        }
 
-                                            @if(currentUser.getTravellerTypes.contains("Functional/business Traveller")) {
-                                                <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
-                                            } else {
-                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
-                                            }
+                                        @if(currentUser.getTravellerTypesList.contains("Functional/business Traveller")) {
+                                            <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
+                                        } else {
+                                            <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                        }
 
-                                            @if(currentUser.getTravellerTypes.contains("Holidaymaker")) {
-                                                <option value="Holidaymaker" selected>Holidaymaker</option>
-                                            } else {
-                                                <option value="Holidaymaker">Holidaymaker</option>
-                                            }
-                                        </select>
+                                        @if(currentUser.getTravellerTypesList.contains("Holidaymaker")) {
+                                            <option value="Holidaymaker" selected>Holidaymaker</option>
+                                        } else {
+                                            <option value="Holidaymaker">Holidaymaker</option>
+                                        }
+                                    </select>
                                 </div>
                                 <div class="row">
                                     <select class="selectpicker" id="gender" name="gender" data-width="100%" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
@@ -686,24 +686,25 @@
                                         }
                                     </select>
                                 </div>
+
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
-                                    <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@currentUser.getEntryDate>
+                                        <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@currentUser.getEntryDate>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
+                                    <class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
                                     <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@currentUser.getEmail>
-                                    </div>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                    <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required value=@currentUser.getNationalities>
-                                    </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
+                                    <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value=@currentUser.getNationalityString>
                                 </div>
-                                <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
-                                    <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField" value=@currentUser.getPassports>
+                            </div>
+                            <div class="row">
+                                <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
+                                    <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value=@currentUser.getPassportsString>
                                 </div>
 
 
@@ -717,7 +718,7 @@
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 
 
     </body>
@@ -725,11 +726,11 @@
 
 
 
-    <!-- Menu Toggle Script -->
-        <script>
-                function fillVals() {
-                    $('#travellerTypes').val($('#typeDropdown').val());
-                }
+        <!-- Menu Toggle Script -->
+    <script>
+            function fillVals() {
+                $('#travellerTypesForm').val($('#typeDropdown').val());
+            }
 
             $(document).ready(function() {
                 $('#destsTable').DataTable({
@@ -772,16 +773,16 @@
                 $("#wrapper").toggleClass("toggled");
             });
 
-            // Method that gets the image data from on the image clicked and displays
+            // Method that gets the photo data from on the photo clicked and displays
             // it in its original resolution in a new modal
-            function expand(image, text, id) {
+            function expand(photo, text, id) {
                 // Get the modal
                 var modal = document.getElementById('expandImageModal');
                 var modalImg = document.getElementById('expandedImage');
                 var captionText = document.getElementById("caption");
 
                 modal.style.display = "block";
-                modalImg.src = image;
+                modalImg.src = photo;
                 captionText.innerHTML = text;
 
                 // Get the <span> element that closes the modal
