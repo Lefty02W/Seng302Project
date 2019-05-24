@@ -1,8 +1,6 @@
 package repository;
 
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import io.ebean.SqlRow;
+import io.ebean.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -14,6 +12,7 @@ import java.util.Optional;
 /**
  * Repository to handle database access calls.
  * For managing interactions with the roles link and roles table.
+ * @author George
  */
 public class RolesRepository {
 
@@ -26,26 +25,28 @@ public class RolesRepository {
 
     /**
      * Retrieves the role of a user based on the role id
+     *
      * @param roleId The ID of the role to retrieve name of
      * @return An optional string type of the role's name
      */
-    public Optional<String> getRoleById(Integer roleId) {
-        String query = "select role_name from roles where role_id = ?";
+    private Optional<String> getRoleById(Integer roleId) {
+        String query = "SELECT role_name FROM roles WHERE role_id = ?";
         SqlRow rowList = ebeanServer.createSqlQuery(query).setParameter(1, roleId).findOne();
         String role = rowList.getString("role_name");
 
 
-        return Optional.of(role);
+        return Optional.ofNullable(role);
     }
 
 
     /**
      * Gets the role of a user profile based on the profile id
+     *
      * @param profileId The ID of the profile to retrieve its roles
      * @return An optional string list of the profile roles
      */
     public Optional<List<String>> getProfileRoles(Integer profileId) {
-        String sql = ("select role_id from profile_roles where profile_id = ?");
+        String sql = ("SELECT role_id FROM profile_roles WHERE profile_id = ?");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         List<String> roles = new ArrayList<>();
         for (SqlRow row : rowList) {
@@ -58,6 +59,42 @@ public class RolesRepository {
 
 
         return Optional.of(roles);
+    }
+
+
+    /**
+     * Retrieves the ID of a role based on its name
+     *
+     * @param roleName
+     * @return The role ID if a matching role name exists on database
+     */
+    private Optional<Integer> getRoleFromName(String roleName) {
+        Integer roleId;
+        String query = "SELECT FROM roles WHERE role_name = ?";
+        SqlRow row = ebeanServer.createSqlQuery(query).setParameter(1, roleName).findOne();
+        roleId = row.getInteger("role_id");
+
+        return Optional.ofNullable(roleId);
+    }
+
+
+    /**
+     * Add a role for a user based on the role name
+     *
+     * @param profileId The ID of the profile to add role for
+     * @param roleName  The name of the role to add to user
+     */
+    public void setProfileRole(Integer profileId, String roleName) {
+        Integer roleId = getRoleFromName(roleName).get();
+        Transaction transaction = ebeanServer.beginTransaction();
+        String queryString = "INSERT INTO profile_roles(profile_id, role_id) VALUES(?, ?)";
+        try {
+            SqlUpdate query = Ebean.createSqlUpdate(queryString);
+            query.setParameter(1, profileId);
+            query.setParameter(2, roleId);
+        } finally {
+            transaction.end();
+        }
     }
 
 }
