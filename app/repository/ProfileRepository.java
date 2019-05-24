@@ -46,6 +46,17 @@ public class ProfileRepository {
 
 
     /**
+     * Method for getting a profile
+     *
+     * @param email String of the email to get
+     * @return Profile class of the user
+     */
+    public Profile getProfileById(String email) {
+        Profile existingEmail = ebeanServer.find(Profile.class).where().like("email", email).findOne();
+        return existingEmail;
+    }
+
+    /**
      * Method to validate if the given email and password match an account in the database
      * @param email users email input
      * @param password users password input

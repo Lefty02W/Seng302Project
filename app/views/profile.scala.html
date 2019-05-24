@@ -39,6 +39,8 @@
                     <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                    <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Admin</a>
+
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -114,7 +116,6 @@
                         } else {
                             <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
                             alt="Profile picture">
-
                             }
 
                         </div>

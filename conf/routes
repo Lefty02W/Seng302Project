@@ -58,7 +58,19 @@ GET     /profile/save         controllers.ProfileController.setProfilePicture(re
 GET     /profile/selectPhotoModal/:photoId  controllers.ProfileController.setImageToBeManuallyCropped(photoId : Integer)
 GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWithCroppingInfo(request: Request)
 
-#Admins
+# Admins
 POST    /admin/:email                controllers.ProfileController.updateAdmin(request: Request, email: String)
+GET     /admin                       controllers.AdminController.show(request: Request)
+POST   /admin                       controllers.AdminController.update(request: Request, id: String)
 
 
+## Admin Trips
+GET     /admin/trips/:tripId/delete     controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
+GET     /admin/trips/:tripId            controllers.AdminController.viewTrip(request: Request, tripId: Integer)
+GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)
+
+## Admin Profiles
+GET     /admin/:profileId/profile                 controllers.AdminController.showProfile(request: Request, profileId: String)
+GET     /admin/:id/update                controllers.AdminController.showEditProfile(request: Request, id: String)
+GET   /admin/:email/delete         controllers.AdminController.deleteProfile(request: Request, email: String)
+POST    /admin/profile/create       controllers.AdminController.createProfile(request: Request)
