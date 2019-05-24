@@ -81,8 +81,7 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @When("he fills in Longitude as {string}")
     public void heFillsInLongitudeAs(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        destForm.put("longitude", string);
     }
 
     @Then("the Create Destination page should be shown")

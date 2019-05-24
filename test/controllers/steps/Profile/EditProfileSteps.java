@@ -131,7 +131,7 @@ public class EditProfileSteps extends ProvideApplication {
             redirectResultEdit = Helpers.route(provideApplication(), request);
             fail();
         } catch (IllegalStateException e) {
-            assertEquals("<[Error(s) binding form: {\"travellerTypesForm\":[\"This field is required\"]}]>", e.getMessage());
+            assertEquals("Error(s) binding form: {\"travellerTypesForm\":[\"This field is required\"]}", e.getMessage());
         }
 
     }
