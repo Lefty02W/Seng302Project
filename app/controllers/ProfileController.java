@@ -16,6 +16,11 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import play.mvc.*;
+import repository.ImageRepository;
+import repository.ProfileRepository;
+import repository.TripRepository;
+import roles.RestrictAnnotation;
 import views.html.editProfile;
 import views.html.profile;
 
@@ -122,6 +127,7 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
+    @RestrictAnnotation()
     public CompletionStage<Result> update (Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
