@@ -99,10 +99,14 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
-        //TODO get user from db and check data
-//        assertEquals("Jenny", profile.get().getFirstName());
-//        assertEquals("Backpacker, Thrillseeker", profile.get().getTravellerTypesString());
-//        assertEquals("Max", profile.get().getMiddleName());
+        profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
+            if (profileOpt.isPresent()) {
+                assertEquals("Jenny", profileOpt.get().getFirstName());
+                assertEquals("Backpacker, Thrillseeker", profileOpt.get().getTravellerTypesString());
+                assertEquals("Max", profileOpt.get().getMiddleName());
+            }
+            return "done";
+        });
     }
     // Scenario: I can perform an editDestinations of my profile - end
 
@@ -115,6 +119,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .uri("/profile")
                 .bodyForm(editForm)
                 .session("connected", "1");
+        System.out.println(editForm);
         try {
             redirectResultEdit = Helpers.route(provideApplication(), request);
             fail();
