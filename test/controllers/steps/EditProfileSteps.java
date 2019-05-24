@@ -9,6 +9,7 @@ import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import scala.concurrent.java8.FuturesConvertersImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,8 +58,11 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("gender", "Male");
         editForm.put("nationalities", "password");
         editForm.put("travellerTypes", "Backpacker,Gap Year");
-
-        assertEquals("/profile", loginResult.redirectLocation().get());
+        if (loginResult.redirectLocation().isPresent()) {
+            assertEquals("/profile", loginResult.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
 
     @When("I change my first name to {string}")
@@ -90,18 +94,21 @@ public class EditProfileSteps extends ProvideApplication {
     @Then("I am redirected to my profile page")
     public void iAmRedirectedToMyProfilePage() {
         assertEquals(303, redirectResultEdit.status());
-        assertEquals("/profile", redirectResultEdit.redirectLocation().get());
+        if (redirectResultEdit.redirectLocation().isPresent()) {
+            assertEquals("/profile", redirectResultEdit.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
-        Profile profile = Profile.find.byId(1);
-        if (profile == null) {
+        if (!profile.isPresent()) {
             fail();
         }
-        assertEquals("Jenny", profile.getFirstName());
-        assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypes());
-        assertEquals("Max", profile.getMiddleName());
+        assertEquals("Jenny", profile.get().getFirstName());
+        assertEquals("Backpacker, Thrillseeker", profile.get().getTravellerTypesString());
+        assertEquals("Max", profile.get().getMiddleName());
     }
     // Scenario: I can perform an editDestinations of my profile - end
 
@@ -130,10 +137,9 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("my edit is not saved")
     public void myEditIsNotSaved() {
-        Profile profile = Profile.find.byId(1);
-        if (profile == null) {
+        if (!profile.isPresent()) {
             fail();
         }
-        assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypes());
+        assertEquals("Backpacker, Thrillseeker", profile.get().getTravellerTypesString());
     }
 }
