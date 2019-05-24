@@ -82,7 +82,7 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @When("he fills in Longitude as {string}")
     public void heFillsInLongitudeAs(String string) {
-        destForm.put("longitude", string);
+        destForm.put("Longitude", string);
     }
 
     @Then("the Create Destination page should be shown")
