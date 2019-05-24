@@ -22,6 +22,7 @@ public class ProfileRepository {
     private final ProfilePassportCountryRepository profilePassportCountryRepository;
     private final ProfileNationalityRepository profileNationalityRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
+    private final RolesRepository rolesRepository;
 
     @Inject
     public ProfileRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
@@ -30,6 +31,7 @@ public class ProfileRepository {
         this.profilePassportCountryRepository = new ProfilePassportCountryRepository(ebeanConfig, executionContext);
         this.profileNationalityRepository = new ProfileNationalityRepository(ebeanConfig, executionContext);
         this.profileTravellerTypeRepository = new ProfileTravellerTypeRepository(ebeanConfig, executionContext);
+        this.rolesRepository = new RolesRepository(ebeanConfig);
     }
 
     /**
@@ -74,6 +76,27 @@ public class ProfileRepository {
 
 
     /**
+     * Create a profile instance from data of an SQL Row result
+     * @param row The SQL query result as a row
+     * @return A profile made based on data from row
+     */
+    private Profile profileFromRow(SqlRow row) {
+        Integer profileId = row.getInteger("profile_id");
+        Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(profileId).get();
+        Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
+        Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
+        List<String> roles = rolesRepository.getProfileRoles(profileId).get();
+        Profile profile = new Profile(row.getInteger("profile_id"), row.getString("first_name"),
+                row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
+                row.getDate("birthDate"), passportCountries, row.getString("gender"),
+                row.getDate("time_created") , nationalities, travellerTypes, roles);
+
+
+        return profile;
+    }
+
+
+    /**
      * Finds one profile using its id as a query
      * @param profileId the users profile id
      * @return a Profile object that matches the email
@@ -84,14 +107,7 @@ public class ProfileRepository {
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
             Profile profile = null;
             if (!rowList.get(0).isEmpty()) {
-                SqlRow p = rowList.get(0);
-                Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(profileId).get();
-                Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
-                Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
-                //TODO call function in role repo and get the users role then add into constructor
-                profile = new Profile(profileId, p.getString("first_name"),  p.getString("middle_name"), p.getString("last_name")
-                , p.getString("email"), p.getDate("birth_date"), passportCountries, p.getString("gender"), p.getDate("time_created")
-                , nationalities, travellerTypes);
+               profile = profileFromRow(rowList.get(0));
             }
             return Optional.ofNullable(profile);
         }, executionContext);
@@ -108,14 +124,7 @@ public class ProfileRepository {
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, email).findList();
             Profile profile = null;
             if (!rowList.get(0).isEmpty()) {
-                SqlRow p = rowList.get(0);
-                Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(p.getInteger("profile_id")).get();
-                Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(p.getInteger("profile_id")).get();
-                Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(p.getInteger("profile_id")).get();
-                //TODO call function in role repo and get the users role then add into constructor
-                profile = new Profile(p.getInteger("profile_id"), p.getString("first_name"),  p.getString("middle_name"), p.getString("last_name")
-                        , p.getString("email"), p.getDate("birthDate"), passportCountries, p.getString("gender"), p.getDate("time_created")
-                        , nationalities, travellerTypes);
+                profile = profileFromRow(rowList.get(0));
             }
             return Optional.ofNullable(profile);
         }, executionContext);
