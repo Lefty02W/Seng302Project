@@ -18,13 +18,18 @@ import play.mvc.Security;
 import repository.*;
 import views.html.editProfile;
 import views.html.profile;
+
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
+
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -270,6 +275,7 @@ public class ProfileController extends Controller {
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
         Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
         ImageData imageData = uploadedImageForm.get();
+        uploadedImageForm.field("isNewProfilePicture").value().ifPresent(val -> imageData.isNewProfilePicture = val);
         if (picture == null) {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "No image selected."));
 
@@ -289,6 +295,7 @@ public class ProfileController extends Controller {
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 cropInfo crop = autoCrop(this.imageBytes);
 
+                System.out.println(imageData.isNewProfilePicture);
                 int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 Photo photo = new Photo(this.imageBytes, contentType, visibility, fileName, 0, 0, crop.getCropWidth(), crop.getCropHeight());
 
