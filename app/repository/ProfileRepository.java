@@ -227,19 +227,12 @@ public class ProfileRepository {
      * Deletes a profile from the database that matches the given email
      *
      * @param profileId the users id
-     * @return an optional profile
+     * @return an optional profile id
      */
     public CompletionStage<Optional<Integer>> delete(Integer profileId) {
         return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            String deleteQuery = "delete * from profile Where profile_id = ?";
-            SqlUpdate query = Ebean.createSqlUpdate(deleteQuery);
-            query.setParameter(1, profileId);
-            query.execute();
-            txn.commit();
-            Integer value;
-            value = parseInt(query.getGeneratedKey().toString()); // Id of the newly created profile
-            return Optional.of(value);
+            ebeanServer.delete(Profile.class, profileId);
+            return Optional.of(profileId);
         }, executionContext);
     }
 
