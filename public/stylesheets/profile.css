@@ -212,7 +212,7 @@ img.thumbnail {
     padding: 15px;
 }
 
-#profileTabs, #photosCard {
+#profileTabs, #photosCard, #photosTabCard {
     margin-left: auto;
     margin-right: auto;
 }
@@ -265,6 +265,10 @@ img.thumbnail {
 
 #photosCard {
     height: 500px;
+}
+
+#photosTabCard {
+    height: auto;
 }
 
 #center-text {
