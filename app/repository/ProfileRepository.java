@@ -258,7 +258,19 @@ public class ProfileRepository {
                 Profile targetProfile = ebeanServer.find(Profile.class).setId(clickedProfileEmail).findOne();
                 if (targetProfile != null) {
 
-                    targetProfile.setAdmin(!targetProfile.isAdmin());
+                    List<String> roles = targetProfile.getRoles();
+
+                    if(targetProfile.hasRole("admin")) {
+
+                        roles.remove("admin");
+                    } else{
+
+                        roles.add("admin");
+
+                    }
+
+                    targetProfile.setRoles(roles);
+
                     targetProfile.update();
                     txn.commit();
                     value = Optional.of(clickedProfileEmail);

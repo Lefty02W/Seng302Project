@@ -8,6 +8,7 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -62,7 +63,7 @@ public class Profile extends Model {
 
 
     @Transient
-    private boolean admin;
+    private List<String> roles;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date timeCreated;
@@ -108,9 +109,7 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
-        //this.trips = trips;
-        //this.admin = isAdmin;
-        //, ArrayList<Trip> trips, boolean isAdmin
+        this.roles = new ArrayList<>();
 
     }
 
@@ -127,11 +126,11 @@ public class Profile extends Model {
      * @param nationalities
      * @param travellerTypes
      * @param trips
-     * @param isAdmin
+     * @param roles
      */
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
-                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+                   String travellerTypes, ArrayList<Trip> trips, ArrayList<String> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -159,7 +158,7 @@ public class Profile extends Model {
 
         }
         this.trips = trips;
-        this.admin = isAdmin;
+        this.roles = roles;
     }
 
     /**
@@ -191,18 +190,6 @@ public class Profile extends Model {
         }
     }
 
-//    @Constraints.Required
-//    private String passportsForm;
-//
-//    @Constraints.Required
-//    private String nationalitiesForm;
-//
-//    @Constraints.Required
-//    private String travellerTypesForm;
-//
-//    private Map<Integer, PassportCountry> passports;
-//    private Map<Integer, Nationality> nationalities;
-//    private Map<Integer, TravellerType> travellerTypes;
 
     public Integer getProfileId() {
         return profileId;
@@ -241,10 +228,10 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-
-    public void setAdmin(boolean isAdmin){
-        this.admin = isAdmin;
+    public void setRoles(List<String> newRoles){
+        this.roles = newRoles;
     }
+
     public String getEntryDate() {
         return dateFormatEntry.format(timeCreated);
     }
@@ -438,7 +425,14 @@ public class Profile extends Model {
         this.travellerTypesForm = travellerTypesForm;
     }
 
-    public boolean isAdmin() { return this.admin; }
+
+    public List<String> getRoles() { return this.roles; }
+
+
+    /**
+     * Check the user has a given role name by searching their roles list.
+     */
+    public boolean hasRole(String role) {return  this.roles.contains(role);}
 
     public void setPassports(Map<Integer, PassportCountry> passports) {
         this.passports = passports;

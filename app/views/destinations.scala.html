@@ -113,7 +113,7 @@
                                     <td>@destination.getLongitude() <input type="hidden" name="destinationLongitude" value="@destination.getLongitude()" /></td>
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
 
-                                    @if(destination.getProfileId == currentUser.getProfileId | currentUser.isAdmin) {
+                                    @if(destination.getProfileId == currentUser.getProfileId | currentUser.hasRole("admin")) {
                                         @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                             @CSRF.formField
                                             <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
