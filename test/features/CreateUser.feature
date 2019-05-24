@@ -17,11 +17,7 @@ Feature: Sign Up
     And he presses OK
     Then the login page should be shown
 
-
-  As a user
-  I want to sign up
-  So that I can manage my travels (Test backend)
-  Scenario: Sign up a new user
+  Scenario: Sign up a new user backend
     Given John is at the sign up page
     When he enters the First Name "John"
     And he enters the Middle Name "Gherkin"
