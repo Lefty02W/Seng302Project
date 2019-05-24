@@ -1,7 +1,7 @@
-package controllers.steps;
+package controllers.steps.Profile;
 
 
-import controllers.ProvideApplication;
+import controllers.steps.BaseStep;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -11,17 +11,8 @@ import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
-import play.mvc.Http;
-import play.mvc.Result;
-import play.test.Helpers;
-import repository.ProfileRepository;
 
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 
 /**

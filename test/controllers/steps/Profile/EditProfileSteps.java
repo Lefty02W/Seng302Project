@@ -1,4 +1,4 @@
-package controllers.steps;
+package controllers.steps.Profile;
 
 
 import controllers.ProvideApplication;
@@ -131,7 +131,7 @@ public class EditProfileSteps extends ProvideApplication {
             redirectResultEdit = Helpers.route(provideApplication(), request);
             fail();
         } catch (IllegalStateException e) {
-            assertEquals("travellerTypesForm\":[\"This field is required\"]", e.getMessage());
+            assertEquals("<[Error(s) binding form: {\"travellerTypesForm\":[\"This field is required\"]}]>", e.getMessage());
         }
 
     }

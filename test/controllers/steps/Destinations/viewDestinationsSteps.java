@@ -1,20 +1,15 @@
-package controllers.steps;
+package controllers.steps.Destinations;
 
 import controllers.ProvideApplication;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
-import play.filters.csrf.CSRF;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class viewDestinationsSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
