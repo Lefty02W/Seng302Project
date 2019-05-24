@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class CreateDestinationSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
@@ -86,7 +87,11 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @Then("the Create Destination page should be shown")
     public void theCreateDestinationPageShouldBeShown() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        if (redirectDestination.redirectLocation().isPresent()) {
+            assertEquals("/destinations/create", redirectDestination.redirectLocation().get())
+        } else {
+            fail();
+        }
     }
+
 }

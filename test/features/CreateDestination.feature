@@ -19,5 +19,5 @@ Feature: Create a destination
     And he fills in Type with "City"
     And he fills in Country with "New Zealand"
     And he fills in Longitude as "200"
-    And he presses Save then Create Destination page should be shown
-    Then the created destination is stored in the database
+    And he presses Save
+    Then the Create Destination page should be shown
