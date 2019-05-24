@@ -1,8 +1,8 @@
-@import play.mvc.Http
+@@import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles : List[Profile], trips : List[Trip], currentDestination : Destination, destinations : List[Destination], currentUser : Profile, profileForm: Form[Profile], tripToView: Trip, createProfileForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
-@import models.Profile; var profileToView = currentUser
-@import models.Destination; var destToView = currentDestination
+@@import models.Profile; var profileToView = currentUser
+@@import models.Destination; var destToView = currentDestination
 
 <!DOCTYPE html>
 <html>
@@ -74,7 +74,7 @@
                                 <option value="@profile.getEmail">@profile.getFirstName</option>
                             }
                             </select>
-                            <a href="/admin/admin%40admin.com/profile">
+                            <a href="/admin/admin%40admin.com/profile"> @*TODO alter to fill with correct href with profile id*@
                                 <button class="btn btn-primary" type="submit" id="searchBttn">Search</button>
                             </a>
                             <a href="@routes.AdminController.show()">
@@ -136,10 +136,10 @@
                                         <td>Profile Id</td>
                                         <td>@profile.getEmail</td>
                                         <td>
-                                            <a href="@routes.AdminController.showEditProfile(profile.getEmail)">
+                                            <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
                                                 <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">Edit</button>
                                             </a> </td>
-                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/jack%40test.co.nz/delete')">Delete</button></td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/@profile.getProfileId/delete')">Delete</button></td>
                                         <td><button class="btn btn-primary" onclick="@(profileToView = profile);showProfile()">View</button></td>
                                         <td>@profile.isAdmin</td>
                                             <!-- TODO Update to id once deadbolt is working -->
@@ -168,7 +168,7 @@
                                 @for(trip <- trips) {
                                     <tr>
                                         <td>@trip.getTripId</td>
-                                        <td>@trip.getEmail</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@trip.getProfileId</td> <!-- TODO Update to id once user id is there -->
                                         <td>@trip.getName</td>
                                         <td><button class="btn btn-primary">Edit</button></td>
                                         <td>
@@ -204,7 +204,7 @@
                                 @for(destination <- destinations) {
                                     <tr>
                                         <td>@destination.getDestinationId</td>
-                                        <td>@destination.getUserEmail</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@destination.getProfileId</td> <!-- TODO Update to id once user id is there -->
                                         <td>@destination.getName</td>
                                         <td><button class="btn btn-primary">Edit</button></td>
                                         <td>
@@ -239,7 +239,7 @@
                         <div class="modal-header">
                             <h2 class="modal-title ">Edit Profile</h2>
                         </div>
-                        @form(routes.AdminController.update(currentUser.getEmail())) {
+                        @form(routes.AdminController.update(currentUser.getProfileId())) {
                             @CSRF.formField
                             <div class="modal-body">
                                 <div class="col">
@@ -263,43 +263,43 @@
                                             <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required value=@currentUser.getTravellerTypes>
                                         </div>
                                         <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
-                                            @if(currentUser.getTravellerTypes.contains("ThrillSeeker")) {
+                                            @if(currentUser.getTravellerTypesList.contains("ThrillSeeker")) {
                                                 <option value="ThrillSeeker" selected>ThrillSeeker</option>
                                             } else {
                                                 <option value="ThrillSeeker">ThrillSeeker</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Gap Year")) {
+                                            @if(currentUser.getTravellerTypesList.contains("Gap Year")) {
                                                 <option value="Gap Year" selected>Gap Year</option>
                                             } else {
                                                 <option value="Gap Year">Gap Year</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Backpacker")) {
+                                            @if(currentUser.getTravellerTypesList.contains("Backpacker")) {
                                                 <option value="Backpacker" selected>Backpacker</option>
                                             } else {
                                                 <option value="Backpacker">Backpacker</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Groupie")) {
+                                            @if(currentUser.getTravellerTypesList.contains("Groupie")) {
                                                 <option value="Groupie" selected>Groupie</option>
                                             } else {
                                                 <option value="Groupie">Groupie</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Frequent Weekender")) {
+                                            @if(currentUser.getTravellerTypesList.contains("Frequent Weekender")) {
                                                 <option value="Frequent Weekender" selected>Frequent Weekender</option>
                                             } else {
                                                 <option value="Frequent Weekender">Frequent Weekender</option>>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Functional/business Traveller")) {
+                                            @if(currentUser.getTravellerTypesList.contains("Functional/business Traveller")) {
                                                 <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
                                             } else {
                                                 <option value="Functional/business Traveller">Functional/business Traveller</option>
                                             }
 
-                                            @if(currentUser.getTravellerTypes.contains("Holidaymaker")) {
+                                            @if(currentUser.getTravellerTypesList.contains("Holidaymaker")) {
                                                 <option value="Holidaymaker" selected>Holidaymaker</option>
                                             } else {
                                                 <option value="Holidaymaker">Holidaymaker</option>

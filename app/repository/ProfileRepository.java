@@ -246,21 +246,21 @@ public class ProfileRepository {
 
     /**
      * Used to update (add or remove) admin privilege to another user from the Travellers page.
-     * @param clickedProfileEmail the email of the user that is going to have admin privilege updated.
+     * @param clickedId the id of the user that is going to have admin privilege updated.
      * @return The email member who had their admin updated.
      */
-    public CompletionStage<Optional<String>> updateAdminPrivelege(String clickedProfileEmail) {
+    public CompletionStage<Optional<Integer>> updateAdminPrivelege(Integer clickedId) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<String> value = Optional.empty();
+            Optional<Integer> value = Optional.empty();
             try {
-                Profile targetProfile = ebeanServer.find(Profile.class).setId(clickedProfileEmail).findOne();
+                Profile targetProfile = ebeanServer.find(Profile.class).setId(clickedId).findOne();
                 if (targetProfile != null) {
 
                     targetProfile.setAdmin(!targetProfile.isAdmin());
                     targetProfile.update();
                     txn.commit();
-                    value = Optional.of(clickedProfileEmail);
+                    value = Optional.of(clickedId);
                 }
             } finally {
                 txn.end();

@@ -140,12 +140,12 @@ public class ProfileController extends Controller {
      * Called by either the make or remove admin buttons to update admin privilege in database.
      *
      * @param request
-     * @param email The email of the user who is having admin privilege updated
+     * @param id The id of the user who is having admin privilege updated
      * @return Result, redrects to the travellers page.
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> updateAdmin (Http.Request request, String email){
-        return profileRepository.updateAdminPrivelege(email).thenApplyAsync(clickedEmail -> redirect("/travellers")
+    public CompletionStage<Result> updateAdmin (Http.Request request, Integer id){
+        return profileRepository.updateAdminPrivelege(id).thenApplyAsync(profileId -> redirect("/travellers")
         , httpExecutionContext.current());
     }
 

@@ -75,11 +75,11 @@ public class AdminController {
      *
      * @apiNote
      * @param request
-     * @param email the email of the user who is to be deleted
+     * @param id the id of the user who is to be deleted
      * @return
      */
-    public CompletionStage<Result> deleteProfile (Http.Request request, String email){
-        return profileRepository.delete(email).thenApplyAsync(userEmail -> redirect(adminEndpoint)
+    public CompletionStage<Result> deleteProfile (Http.Request request, Integer id){
+        return profileRepository.delete(id).thenApplyAsync(userEmail -> redirect(adminEndpoint)
         , httpExecutionContext.current());
     }
 
@@ -110,15 +110,20 @@ public class AdminController {
      * @param id of the profile to be edited
      * @return a redirect to the admin page
      */
-    public Result showEditProfile(Http.Request request, String id) {
-        List<Profile> profiles = Profile.find.all();
-        List<Trip> trips = Trip.find.all();
-        List<Destination> destinations = Destination.find.all();
+    public CompletionStage<Result> showEditProfile(Http.Request request, Integer id) {
+        return profileRepository.lookup(id).thenApplyAsync(profileOpt -> {
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+            if (profileOpt.isPresent()) {
+                Form<Profile> profileForm = profileEditForm.fill(profileOpt.get());
+                return ok(admin.render(profiles, trips,null, destinations, profileOpt.get(), profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/admin").flashing("info", "User profile not found"); //TODO look into sending an actual not found response
+            }
+        });
 
-        Profile editProfile = profileRepository.getProfileById(id);
-        Form<Profile> profileForm = profileEditForm.fill(editProfile);
-        return ok(admin.render(profiles, trips,null, destinations, editProfile, profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
-    }
+        }
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form via the admin
@@ -128,14 +133,11 @@ public class AdminController {
      * @param request Http request
      * @return a redirect to the profile page
      */
-    public CompletionStage<Result> update (Http.Request request, String id){
+    public CompletionStage<Result> update (Http.Request request, Integer id){
         Form<Profile> currentProfileForm = profileEditForm.bindFromRequest(request);
         Profile profile = currentProfileForm.get();
-        profile.setNationalities(profile.getNationalities().replaceAll("\\s",""));
-        profile.setPassports(profile.getPassports().replaceAll("\\s",""));
-
-        return profileRepository.update(profile, profile.getPassword(),
-                id).thenApplyAsync(x -> redirect(adminEndpoint)
+        profile.initProfile(); //TODO I don't know if this is what sets up the types/countries
+        return profileRepository.update(profile, id).thenApplyAsync(x -> redirect(adminEndpoint)
         , httpExecutionContext.current());
     }
 
@@ -150,7 +152,7 @@ public class AdminController {
         List<Profile> profiles = new ArrayList<>();
         profiles.add(profile);
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
-        List<Destination> destinations = destinationRepository.getUserDestinations(profile.getEmail());
+        List<Destination> destinations = destinationRepository.getUserDestinations(profile.getProfileId());
         return ok(admin.render(profiles, trips, null, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
     }
 
