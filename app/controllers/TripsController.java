@@ -43,6 +43,12 @@ public class TripsController extends Controller {
     private final DestinationRepository destinationRepository;
     private boolean showEmptyEdit = false;
 
+    private static final String createEndpoint = "/trips/create";
+    private static final String dateFlashingMessage = "The arrival date must be before the departure date";
+    private static final String tripsEndPoint = "/trips";
+    private static final String editUrl = "/edit";
+    private static final String dupDestFlashing = "The same destination cannot be after itself in a trip";
+
     @Inject
     public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
         this.form = formFactory.form(Trip.class);
@@ -162,13 +168,13 @@ public class TripsController extends Controller {
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
         if(!checkDates(tripDestination)) {
-            return redirect("/trips/create").flashing("info", "The arrival date must be before the departure date");
+            return redirect(createEndpoint).flashing("info", dateFlashingMessage);
         }
         if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
-            return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect(createEndpoint).flashing("info", "The same destination cannot be after itself in a trip");
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
-        return redirect("/trips/create");
+        return redirect(createEndpoint);
     }
 
 
@@ -271,11 +277,11 @@ public class TripsController extends Controller {
         Integer currentUserId = SessionController.getCurrentUserId(request);
         trip.setProfileId(currentUserId);
         if (orderedCurrentDestinations.size() < 2) {
-            return redirect("/trips/create").flashing("info", "A trip must have at least two destinations");
+            return redirect(createEndpoint).flashing("info", "A trip must have at least two destinations");
         } else {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.insert(trip, tripDestinations);
-            return redirect("/trips");
+            return redirect(tripsEndPoint);
         }
     }
 
@@ -294,12 +300,12 @@ public class TripsController extends Controller {
         Integer currentUserId = SessionController.getCurrentUserId(request);
         trip.setProfileId(currentUserId);
         if (orderedCurrentDestinations.size() < 2){
-            return redirect("/trips/"+id+"/edit").flashing("info", "A trip must have at least two destinations");
+            return redirect("/trips/"+id+editUrl).flashing("info", "A trip must have at least two destinations");
         } else {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.delete(id);
             tripRepository.insert(trip, tripDestinations);
-            return redirect("/trips");
+            return redirect(tripsEndPoint);
         }
     }
 
@@ -313,7 +319,7 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> delete(Integer tripId) {
         return tripRepository.delete(tripId).thenApplyAsync(v ->
-             redirect("/trips")
+             redirect(tripsEndPoint)
         );
     }
 
@@ -333,7 +339,7 @@ public class TripsController extends Controller {
         int order = tripDestination.getDestOrder();
         setDates(tripDestination, tripDestForm);
         if(!checkDates(tripDestination)) {
-            return redirect("/trips/" + tripId + "/edit").flashing("info", "The arrival date must be before the departure date");
+            return redirect("/trips/" + tripId + editUrl).flashing("info", dateFlashingMessage);
         }
         TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
         removeTripDestination(oldLocation);
@@ -342,9 +348,9 @@ public class TripsController extends Controller {
         if (invalid()){
             orderedCurrentDestinations.clear();
             orderedCurrentDestinations.putAll(tempCurrentDestMap);
-            return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/" + tripId + editUrl).flashing("info", dupDestFlashing);
         }
-        return redirect("/trips/" + tripId + "/edit");
+        return redirect("/trips/" + tripId + editUrl);
     }
 
     private boolean invalid() {
@@ -467,11 +473,11 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
         if (orderInvalidDelete(orderedCurrentDestinations.get(order)) ) {
-            return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/" + tripId + editUrl).flashing("info", dupDestFlashing);
         }
         removeTripDestination(order);
         showEmptyEdit = true;
-        return redirect("/trips/" + tripId + "/edit");
+        return redirect("/trips/" + tripId + editUrl);
     }
 
     /**
@@ -490,13 +496,13 @@ public class TripsController extends Controller {
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
         if(!checkDates(tripDestination)) {
-            return redirect("/trips/create").flashing("info", "The arrival date must be before the departure date");
+            return redirect(createEndpoint).flashing("info", dateFlashingMessage);
         }
         if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
-            return redirect("/trips/" + id + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/" + id + editUrl).flashing("info", dupDestFlashing);
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
-        return redirect("/trips/"+id+"/edit");
+        return redirect("/trips/"+id+editUrl);
     }
 
 
@@ -515,7 +521,7 @@ public class TripsController extends Controller {
         setDates(tripDestination, tripDestForm);
         int order = tripDestination.getDestOrder();
         if(!checkDates(tripDestination)) {
-            return redirect("/trips/create").flashing("info", "The arrival date must be before the departure date");
+            return redirect(createEndpoint).flashing("info", dateFlashingMessage);
         }
         TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
         removeTripDestination(oldLocation);
@@ -524,9 +530,9 @@ public class TripsController extends Controller {
         if (invalid()){
             orderedCurrentDestinations.clear();
             orderedCurrentDestinations.putAll(tempCurrentDestMap);
-            return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect(createEndpoint).flashing("info", dupDestFlashing);
         }
-        return redirect("/trips/create");
+        return redirect(createEndpoint);
     }
 
 
@@ -540,10 +546,10 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result deleteDestination(Http.Request request, Integer order) {
         if (orderInvalidDelete(orderedCurrentDestinations.get(order)) ) {
-            return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect(createEndpoint).flashing("info", dupDestFlashing);
             }
         removeTripDestination(order);
-        return redirect("/trips/create");
+        return redirect(createEndpoint);
     }
 
 }

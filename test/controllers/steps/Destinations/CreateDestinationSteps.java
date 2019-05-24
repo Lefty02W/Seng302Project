@@ -1,4 +1,4 @@
-package controllers.steps;
+package controllers.steps.Destinations;
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class CreateDestinationSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
@@ -42,8 +43,6 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .session("connected", "1");
         Result destinationResult = Helpers.route(provideApplication(), requestDest);
         assertEquals(200, destinationResult.status());
-
-
     }
 
     @When("user clicks on the add new destination button")
@@ -70,6 +69,7 @@ public class CreateDestinationSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/destinations")
+                .bodyForm(destForm)
                 .session("connected", "1");
         redirectDestination = Helpers.route(provideApplication(), request);
         assertEquals(303, redirectDestination.status());
@@ -83,13 +83,16 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @When("he fills in Longitude as {string}")
     public void heFillsInLongitudeAs(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        destForm.put("Longitude", string);
     }
 
     @Then("the Create Destination page should be shown")
     public void theCreateDestinationPageShouldBeShown() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        if (redirectDestination.redirectLocation().isPresent()) {
+            assertEquals("/destinations/create", redirectDestination.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
+
 }

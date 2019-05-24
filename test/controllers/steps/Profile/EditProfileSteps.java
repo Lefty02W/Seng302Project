@@ -1,10 +1,12 @@
-package controllers.steps;
+package controllers.steps.Profile;
 
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -98,7 +100,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
-        System.out.println(profileRepository);
+        injectRepositories();
         profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
             if (profileOpt.isPresent()) {
                 assertEquals("Jenny", profileOpt.get().getFirstName());
@@ -112,6 +114,11 @@ public class EditProfileSteps extends ProvideApplication {
 
     // Scenario: I cannot save my profile with no traveller types - end
     // Includes steps from above
+
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
+
     @When("I try to save the edit")
     public void iTryToSaveTheEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -119,7 +126,14 @@ public class EditProfileSteps extends ProvideApplication {
                 .uri("/profile")
                 .bodyForm(editForm)
                 .session("connected", "1");
-        redirectResultEdit = Helpers.route(provideApplication(), request);
+
+        try {
+            redirectResultEdit = Helpers.route(provideApplication(), request);
+            fail();
+        } catch (IllegalStateException e) {
+            assertEquals("Error(s) binding form: {\"travellerTypesForm\":[\"This field is required\"]}", e.getMessage());
+        }
+
     }
 
     @Then("I am not redirected to the profile page")
@@ -129,6 +143,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("my edit is not saved")
     public void myEditIsNotSaved() {
+        injectRepositories();
         profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypesString()));
             return "done";

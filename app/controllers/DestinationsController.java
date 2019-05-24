@@ -231,7 +231,7 @@ public class DestinationsController extends Controller {
         if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
             return false;
         }
-        return !(destination.getLongitude() > 180) && !(destination.getLongitude() < -180);
+        return !(destination.getLongitude() > 180 || destination.getLongitude() < -180);
     }
 
 

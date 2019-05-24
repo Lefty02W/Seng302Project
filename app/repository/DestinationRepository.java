@@ -96,7 +96,7 @@ public class DestinationRepository {
                 final Optional<Destination> destinationOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
                         .setId(destID).findOne());
                 destinationOptional.ifPresent(Model::delete);
-                return Optional.of(String.format("Destination %s deleted", destinationOptional.map(p -> p.getName())));
+                return Optional.of(String.format("Destination %s deleted", destinationOptional.map((Destination p) -> p.getName())));
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -154,9 +154,7 @@ public class DestinationRepository {
                 .eq("country", destination.getCountry())
                 .eq("visible", "1")
                 .findOne());
-        if (publicDestinations != null) {
-            return true;
-        } else return destinations != null;
+        return publicDestinations != null || destinations != null;
     }
 
     public Optional<ArrayList<Integer>> followDestination(int destId, int profileId) {
@@ -255,10 +253,7 @@ public class DestinationRepository {
             return true;
         }
 
-        if (destinations == null) {
-            return false;
-        }
-        return destinations.getDestinationId() != id;
+        return destinations != null && destinations.getDestinationId() != id;
 
     }
 }
