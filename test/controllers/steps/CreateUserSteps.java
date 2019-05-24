@@ -1,6 +1,7 @@
 package controllers.steps;
 
 
+import controllers.ProvideApplication;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
@@ -10,136 +11,102 @@ import cucumber.api.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
+import play.mvc.Http;
+import play.mvc.Result;
+import play.test.Helpers;
+import repository.ProfileRepository;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
 /**
  * Implements steps for testing CreateUser
  */
-public class CreateUserSteps extends BaseStep {
+public class CreateUserSteps extends ProvideApplication {
 
-    @Before
-    public void setup() {
-        setUp();
+    private Map<String, String> createForm = new HashMap<>();
+
+    @When("he enters the First Name {string}")
+    public void enter_first_name(String firstName) {
+        createForm.put("firstName", firstName);
+    }
+
+    @When("he enters the Middle Name {string}")
+    public void enter_middle_name(String middleName) {
+        createForm.put("middleName", middleName);
+    }
+
+    @When("he enters the Last Name {string}")
+    public void enter_last_name(String lastName) {
+        createForm.put("lastName", lastName);
+    }
+
+    @When("he enters the Email {string}")
+    public void enter_email(String email) {
+        createForm.put("email", email);
+    }
+
+    @When("he enters the Password {string}")
+    public void enter_password(String password) {
+        createForm.put("password", password);
+    }
+
+    @When("he enters the Gender {string}")
+    public void enter_gender(String gender) {
+        createForm.put("gender", gender);
+    }
+
+    @When("he enters the Birth date {string}")
+    public void enter_DOB(String DOB) {
+        createForm.put("birthDate", DOB);
+    }
+
+    @When("he enters the Nationalities {string}")
+    public void enter_nationalities(String nat) {
+        createForm.put("nationalitiesForm", nat);
+    }
+
+    @When("he enters the Passport {string}")
+    public void enter_passports(String passport) {
+        createForm.put("passportsForm", passport);
+    }
+
+    @When("he chooses {string} in Traveller Type")
+    public void enter_traveller_type(String travellerType) {
+        createForm.put("travellerTypesForm", travellerType);
     }
 
 
-    @After
-    public void teardown() {
-        tearDown();
+    @When("he submits")
+    public void he_submits() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/user/create")
+                .bodyForm(createForm)
+                .session("connected", "1");
     }
 
-
-    @Given("John is at the sign up page")
-    public void at_sign_up_page() throws InterruptedException {
-        setUp();
-        driver.get(loginPage);
-        element = driver.findElement(By.id("createUserButton"));
-        element.click();
-        element = driver.findElement(By.id("createProfileModal"));
-
-        Assert.assertNotNull(element);
-    }
-
-
-    @When("he fills in First Name with {string}")
-    public void fill_first_name(String firstName) {
-        element = driver.findElement(By.id("firstName"));
-        element.click();
-        element.sendKeys(firstName);
-        Assert.assertEquals(firstName, element.getAttribute("value"));
-    }
-
-
-    @And("he fills in Middle Name with {string}")
-    public void fill_middle_name(String middleName) { ;
-        element = driver.findElement(By.id("middleName"));
-        element.sendKeys(middleName);
-
-        Assert.assertEquals(middleName, element.getAttribute("value"));
-    }
-
-
-    @And("he fills in Last Name with {string}")
-    public void fill_last_name(String lastName) {
-        element = driver.findElement(By.id("lastName"));
-        element.sendKeys(lastName);
-        Assert.assertEquals(lastName, element.getAttribute("value"));
-    }
-
-
-    @And("he fills in Email with {string}")
-    public void fill_email(String email) {
-        element = driver.findElement(By.className("createEmail"));
-        element.sendKeys(email);
-        Assert.assertEquals(email, element.getAttribute("value"));
-    }
-
-
-    @And("he fills in Password with {string}")
-    public void fill_password(String password) {
-        element = driver.findElement(By.className("createPassword"));
-        element.sendKeys(password);
-        Assert.assertEquals(password, element.getAttribute("value"));
-    }
-
-
-    @And("he fills in Gender with {string}")
-    public void fill_gender(String gender) {
-        Select genderSelect = new Select(driver.findElement(By.id("gender")));
-        genderSelect.selectByVisibleText(gender);
-
-        Assert.assertEquals(gender, genderSelect.getFirstSelectedOption().getAttribute("value"));
-    }
-
-
-    @And("he fills in Birth date with {string}")
-    public void fill_birth_date(String birthDate) throws ParseException {
-        element = driver.findElement(By.id("birthDate"));
-        element.sendKeys(birthDate);
-
-        Assert.assertNotNull(element.getAttribute("value"));
-    }
-
-
-    @And("he fills in Nationalities with {string}")
-    public void fill_nationality(String nationality) {
-        element = driver.findElement(By.id("nationalitiesForm"));
-        element.sendKeys(nationality);
-
-        Assert.assertEquals(nationality, element.getAttribute("value"));
-    }
-
-
-    @And("he fills in Passport with {string}")
-    public void fill_passport(String passport) {
-        element = driver.findElement(By.id("passportsForm"));
-        element.sendKeys(passport);
-
-        Assert.assertEquals(passport, element.getAttribute("value"));
-    }
-
-
-    @And("he selects {string} from Traveller Type")
-    public void select_traveller_type(String type) {
-        Select travellerTypes = new Select(driver.findElement(By.id("typeDropdown")));
-        travellerTypes.selectByValue(type);
-
-        Assert.assertEquals(type, travellerTypes.getFirstSelectedOption().getAttribute("value"));
-    }
-
-
-    @And("he presses OK")
-    public void press_ok() {
-        element = driver.findElement(By.id("createButton"));
-        element.click();
-    }
-
-
-    @Then("the login page should be shown")
-    public void login() {
-        // Ensure sign up modal is no longer on page
-        Assert.assertEquals(0, driver.findElements(By.id("createUserModal")).size());
+    @Then("his account should be saved")
+    public void saved_account() {
+        profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
+            profileOpt.ifPresent(profile -> {
+                assertEquals("John", profile.getFirstName());
+                assertEquals("Gherkin", profile.getMiddleName());
+                assertEquals("Doe", profile.getLastName());
+                assertEquals("john.gherkin.doe@travelea.com", profile.getEmail());
+                assertEquals("password", profile.getPassword());
+                assertEquals("Male", profile.getGender());
+                assertEquals("01/04/2019", profile.getBirthString());
+                assertEquals("New Zealand, China", profile.getNationalityString());
+                assertEquals("New Zealand, China", profile.getPassportsString());
+                assertEquals("Holidaymaker, Thrillseeker", profile.getTravellerTypesString());
+            });
+            return "done";
+        });
     }
 }
