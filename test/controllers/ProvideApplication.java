@@ -2,7 +2,6 @@ package controllers;
 
 import models.Destination;
 import models.Profile;
-import org.junit.Before;
 import play.Application;
 import play.Mode;
 import play.inject.guice.GuiceApplicationBuilder;
@@ -53,8 +52,8 @@ public class ProvideApplication extends WithApplication {
         return 0;
     }
 
-    @Before
-    public void setUpDb() {
+
+    public void injectRepositories() {
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
         photoRepository = app.injector().instanceOf(PhotoRepository.class);

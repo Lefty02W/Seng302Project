@@ -2,26 +2,15 @@ package controllers.steps;
 
 
 import controllers.ProvideApplication;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.Select;
 import play.mvc.Http;
-import play.mvc.Result;
 import play.test.Helpers;
-import repository.ProfileRepository;
 
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 
 /**
@@ -93,6 +82,7 @@ public class CreateUserSteps extends ProvideApplication {
 
     @Then("his account should be saved")
     public void saved_account() {
+        injectRepositories();
         profileRepository.lookupEmail("john.gherkin.doe@travelea.com").thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> {
                 assertEquals("John", profile.getFirstName());
