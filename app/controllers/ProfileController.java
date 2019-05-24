@@ -17,7 +17,6 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
 import play.mvc.*;
-import repository.ImageRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
 import roles.RestrictAnnotation;

@@ -62,9 +62,6 @@ public class Profile extends Model {
     public static final Finder<Integer, Profile> find = new Finder<>(Profile.class);
 
 
-    @Transient
-    private List<String> roles;
-
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date timeCreated;
 
@@ -80,10 +77,10 @@ public class Profile extends Model {
     @Transient
     private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
     @Transient
-    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
+    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
 
     @Transient
-    private List<String> roles = new ArrayList<>();
+    private List<String> roles;
 
 
     /**
@@ -402,7 +399,14 @@ public class Profile extends Model {
      * @return the formatted date string
      */
     public String getBirthString() {
-        return dateFormatSort.format(this.birthDate);
+
+        if (birthDate != null) {
+
+            return dateFormatSort.format(birthDate);
+
+        }
+
+        return "";
     }
 
 
@@ -454,6 +458,4 @@ public class Profile extends Model {
     public void setNationalities(Map<Integer, Nationality> nationalities) {
         this.nationalities = nationalities;
     }
-
-    public List<String> getRoles() { return this.roles; }
 }
