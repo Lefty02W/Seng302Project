@@ -5,3 +5,6 @@ INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_d
 
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude) values
   (1, 'Tokyo', 'City', 'Japan', 'Japan', 17.68, 67.98);
+
+INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude) values
+  (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98);

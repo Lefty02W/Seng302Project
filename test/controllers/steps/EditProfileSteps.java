@@ -12,7 +12,6 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 /**
@@ -68,7 +67,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @When("I change my traveller types to {string}")
     public void iChangeMyTravellerTypesTo(String string) {
-        editForm.put("travellerTypes", string);
+        editForm.put("travellerTypesForm", string);
     }
 
     @When("I change my middle name to {string}")
@@ -99,12 +98,15 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
-        if (!profile.isPresent()) {
-            fail();
-        }
-        assertEquals("Jenny", profile.get().getFirstName());
-        assertEquals("Backpacker, Thrillseeker", profile.get().getTravellerTypesString());
-        assertEquals("Max", profile.get().getMiddleName());
+        System.out.println(profileRepository);
+        profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
+            if (profileOpt.isPresent()) {
+                assertEquals("Jenny", profileOpt.get().getFirstName());
+                assertEquals("Backpacker, Thrillseeker", profileOpt.get().getTravellerTypesString());
+                assertEquals("Max", profileOpt.get().getMiddleName());
+            }
+            return "done";
+        });
     }
     // Scenario: I can perform an editDestinations of my profile - end
 
@@ -117,13 +119,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .uri("/profile")
                 .bodyForm(editForm)
                 .session("connected", "1");
-        try {
-            redirectResultEdit = Helpers.route(provideApplication(), request);
-            fail();
-        } catch (IllegalStateException e) {
-            assertTrue(true);
-        }
-
+        redirectResultEdit = Helpers.route(provideApplication(), request);
     }
 
     @Then("I am not redirected to the profile page")
@@ -133,9 +129,9 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("my edit is not saved")
     public void myEditIsNotSaved() {
-        if (!profile.isPresent()) {
-            fail();
-        }
-        assertEquals("Backpacker, Thrillseeker", profile.get().getTravellerTypesString());
+        profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
+            profileOpt.ifPresent(profile -> assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypesString()));
+            return "done";
+        });
     }
 }

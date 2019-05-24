@@ -79,7 +79,7 @@ public class Profile extends Model {
     @Transient
     private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
     @Transient
-    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYY");
+    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
 
     /**
      * Traditional constructor for profile. Used when retrieving a Profile from DB.
