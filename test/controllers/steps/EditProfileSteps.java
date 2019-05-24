@@ -127,9 +127,13 @@ public class EditProfileSteps extends ProvideApplication {
                 .bodyForm(editForm)
                 .session("connected", "1");
 
-        expectedEx.expect(IllegalStateException.class);
-        expectedEx.expectMessage("travellerTypesForm\":[\"This field is required\"]");
-        redirectResultEdit = Helpers.route(provideApplication(), request);
+        try {
+            redirectResultEdit = Helpers.route(provideApplication(), request);
+            fail();
+        } catch (IllegalStateException e) {
+            assertEquals("travellerTypesForm\":[\"This field is required\"]", e.getMessage());
+        }
+
     }
 
     @Then("I am not redirected to the profile page")
