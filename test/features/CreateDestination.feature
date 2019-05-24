@@ -12,12 +12,12 @@ Feature: Create a destination
     And he presses Save
     Then he is redirected to the destinations page
 
-    Scenario:  Create a destination invalid longitude
-      Given User is at the destinations page
-      When user clicks on the add new destination button
-      And he fills in Name with "Christchurch"
-      And he fills in Type with "City"
-      And he fills in Country with "New Zealand"
-      And he fills in Longitude as "200"
-      And he presses Save then Create Destination page should be shown
-      Then the created destination is stored in the database
+  Scenario:  Create a destination invalid longitude
+    Given User is at the destinations page
+    When user clicks on the add new destination button
+    And he fills in Name with "Christchurch"
+    And he fills in Type with "City"
+    And he fills in Country with "New Zealand"
+    And he fills in Longitude as "200"
+    And he presses Save then Create Destination page should be shown
+    Then the created destination is stored in the database

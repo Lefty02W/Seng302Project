@@ -42,8 +42,6 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .session("connected", "1");
         Result destinationResult = Helpers.route(provideApplication(), requestDest);
         assertEquals(200, destinationResult.status());
-
-
     }
 
     @When("user clicks on the add new destination button")
