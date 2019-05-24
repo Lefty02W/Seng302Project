@@ -20,6 +20,7 @@ public class DestinationsControllerTest extends ProvideApplication {
      */
     @Test
     public void showEditDestination() {
+        injectRepositories();
         ArrayList<Destination> destinationList = profileRepository.getDestinations(1).get();
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()

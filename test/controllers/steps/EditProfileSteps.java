@@ -5,6 +5,8 @@ import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -112,6 +114,11 @@ public class EditProfileSteps extends ProvideApplication {
 
     // Scenario: I cannot save my profile with no traveller types - end
     // Includes steps from above
+
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
+
     @When("I try to save the edit")
     public void iTryToSaveTheEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -119,6 +126,9 @@ public class EditProfileSteps extends ProvideApplication {
                 .uri("/profile")
                 .bodyForm(editForm)
                 .session("connected", "1");
+
+        expectedEx.expect(IllegalStateException.class);
+        expectedEx.expectMessage("travellerTypesForm\":[\"This field is required\"]");
         redirectResultEdit = Helpers.route(provideApplication(), request);
     }
 
