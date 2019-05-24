@@ -13,6 +13,7 @@ import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TripDestinationsRepository;
 import repository.TripRepository;
+import roles.RestrictAnnotation;
 import views.html.admin;
 
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ import static play.mvc.Results.redirect;
 /**
  * This class provides the api endpoint functionality for the admin page of the site
  */
+@RestrictAnnotation
 public class AdminController {
 
     private final ProfileRepository profileRepository;
