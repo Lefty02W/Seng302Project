@@ -5,11 +5,9 @@ import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import scala.concurrent.java8.FuturesConvertersImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,8 +39,6 @@ public class EditProfileSteps extends ProvideApplication {
                 .bodyForm(loginForm);
 
         loginResult = Helpers.route(provideApplication(), request);
-        System.out.println(Profile.find.all().get(0).getEmail());
-        System.out.println(loginResult.redirectLocation());
         assertEquals("/profile", loginResult.redirectLocation().get());
     }
 
@@ -54,10 +50,10 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("email", "john@gmail.com");
         editForm.put("password", "password");
         editForm.put("birthDate", "1970-01-13");
-        editForm.put("passports", "NZ");
+        editForm.put("passportsForm", "NZ");
         editForm.put("gender", "Male");
-        editForm.put("nationalities", "password");
-        editForm.put("travellerTypes", "Backpacker,Gap Year");
+        editForm.put("nationalitiesForm", "password");
+        editForm.put("travellerTypesForm", "Backpacker,Gap Year");
         if (loginResult.redirectLocation().isPresent()) {
             assertEquals("/profile", loginResult.redirectLocation().get());
         } else {
