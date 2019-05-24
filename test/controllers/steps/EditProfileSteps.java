@@ -41,9 +41,9 @@ public class EditProfileSteps extends ProvideApplication {
                 .bodyForm(loginForm);
 
         loginResult = Helpers.route(provideApplication(), request);
-    System.out.println(Profile.find.all().get(0).getEmail());
-    System.out.println(loginResult.redirectLocation());
-        assertEquals(303, loginResult.status());
+        System.out.println(Profile.find.all().get(0).getEmail());
+        System.out.println(loginResult.redirectLocation());
+        assertEquals("/profile", loginResult.redirectLocation().get());
     }
 
     @Given("I am on the edit profile page")
