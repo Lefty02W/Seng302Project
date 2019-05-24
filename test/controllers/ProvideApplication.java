@@ -53,7 +53,7 @@ public class ProvideApplication extends WithApplication {
     }
 
 
-    public void injectRepositories() {
+    protected void injectRepositories() {
         app = provideApplication();
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
@@ -64,7 +64,7 @@ public class ProvideApplication extends WithApplication {
         passportRepository = app.injector().instanceOf(PassportCountryRepository.class);
     }
 
-    public ArrayList<Destination> getUserDest(int id) {
+    protected ArrayList<Destination> getUserDest(int id) {
         return destinationRepository.getUserDestinations(id);
     }
 

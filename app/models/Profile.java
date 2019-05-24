@@ -46,9 +46,11 @@ public class Profile extends Model {
     private String passportsForm;
 
     @Transient
+    @Constraints.Required
     private String nationalitiesForm;
 
     @Transient
+    @Constraints.Required
     private String travellerTypesForm;
 
     @Transient
