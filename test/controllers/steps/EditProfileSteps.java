@@ -12,7 +12,6 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 /**
@@ -99,6 +98,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
+        System.out.println(profileRepository);
         profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
             if (profileOpt.isPresent()) {
                 assertEquals("Jenny", profileOpt.get().getFirstName());
@@ -119,14 +119,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .uri("/profile")
                 .bodyForm(editForm)
                 .session("connected", "1");
-        System.out.println(editForm);
-        try {
-            redirectResultEdit = Helpers.route(provideApplication(), request);
-            fail();
-        } catch (IllegalStateException e) {
-            assertTrue(true);
-        }
-
+        redirectResultEdit = Helpers.route(provideApplication(), request);
     }
 
     @Then("I am not redirected to the profile page")

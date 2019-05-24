@@ -62,7 +62,6 @@ public class ProvideApplication extends WithApplication {
         tripRepository = app.injector().instanceOf(TripRepository.class);
         nationalityRepository = app.injector().instanceOf(NationalityRepository.class);
         passportRepository = app.injector().instanceOf(PassportCountryRepository.class);
-
     }
 
     public ArrayList<Destination> getUserDest(int id) {
