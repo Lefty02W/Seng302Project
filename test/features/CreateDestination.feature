@@ -13,7 +13,7 @@ Feature: Create a destination
     Then he is redirected to the destinations page
 
   Scenario:  Create a destination invalid longitude
-    Given User is at the destinations page
+    Given user is at the destinations page
     When user clicks on the add new destination button
     And he fills in Name with "Christchurch"
     And he fills in Type with "City"
