@@ -95,11 +95,12 @@ public class ProfileRepository {
 
 
     /**
-     * Finds one profile using its id as a query
-     * @param profileId the users profile id
-     * @return a Profile object that matches the email
+     * This method finds a profile in the database using a given profile id
+     *
+     * @param profileId the id of the profile to find
+     * @return CompletionStage holding an optional of the profile found
      */
-    public CompletionStage<Optional<Profile>> lookup(int profileId) {
+    public CompletionStage<Optional<Profile>> findById(int profileId) {
         return supplyAsync(() -> {
             String qry = "Select * from profile where profile_id = ?";
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
@@ -192,7 +193,6 @@ public class ProfileRepository {
                   + "WHERE profile_id = ?";
           Optional<Integer> value = Optional.empty();
           try {
-            System.out.println(Profile.find.all());
             if (ebeanServer.find(Profile.class).setId(userId).findOne() != null) {
               SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
               query.setParameter(1, newProfile.getFirstName());
@@ -235,7 +235,7 @@ public class ProfileRepository {
      * Deletes a profile from the database that matches the given email
      *
      * @param profileId the users id
-     * @return an optional profile
+     * @return an optional profile id
      */
     public CompletionStage<Optional<Integer>> delete(Integer profileId) {
         return supplyAsync(() -> {
@@ -254,15 +254,15 @@ public class ProfileRepository {
 
     /**
      * Used to update (add or remove) admin privilege to another user from the Travellers page.
-     * @param clickedProfileEmail the email of the user that is going to have admin privilege updated.
+     * @param clickedId the id of the user that is going to have admin privilege updated.
      * @return The email member who had their admin updated.
      */
-    public CompletionStage<Optional<String>> updateAdminPrivelege(String clickedProfileEmail) {
+    public CompletionStage<Optional<Integer>> updateAdminPrivelege(Integer clickedId) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<String> value = Optional.empty();
+            Optional<Integer> value = Optional.empty();
             try {
-                Profile targetProfile = ebeanServer.find(Profile.class).setId(clickedProfileEmail).findOne();
+                Profile targetProfile = ebeanServer.find(Profile.class).setId(clickedId).findOne();
                 if (targetProfile != null) {
 
                     List<String> roles = targetProfile.getRoles();
@@ -280,7 +280,7 @@ public class ProfileRepository {
 
                     targetProfile.update();
                     txn.commit();
-                    value = Optional.of(clickedProfileEmail);
+                    value = Optional.of(clickedId);
                 }
             } finally {
                 txn.end();

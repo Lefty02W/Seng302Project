@@ -110,7 +110,7 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showEdit (Integer profileId){
-        return profileRepository.lookup(profileId).thenApplyAsync(optionalProfile -> {
+        return profileRepository.findById(profileId).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
                 Form<Profile> currentProfileForm = profileForm.fill(toEditProfile);
@@ -144,12 +144,12 @@ public class ProfileController extends Controller {
      * Called by either the make or remove admin buttons to update admin privilege in database.
      *
      * @param request
-     * @param email The email of the user who is having admin privilege updated
+     * @param id The id of the user who is having admin privilege updated
      * @return Result, redrects to the travellers page.
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> updateAdmin (Http.Request request, String email){
-        return profileRepository.updateAdminPrivelege(email).thenApplyAsync(clickedEmail -> redirect("/travellers")
+    public CompletionStage<Result> updateAdmin (Http.Request request, Integer id){
+        return profileRepository.updateAdminPrivelege(id).thenApplyAsync(profileId -> redirect("/travellers")
         , httpExecutionContext.current());
     }
 
@@ -518,7 +518,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profileRec -> {
+        return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
             if (profileRec.isPresent()) {
                 List<Photo> displayImageList = getUserPhotos(request);
 

@@ -19,7 +19,7 @@ Feature: Login
 
   Scenario: Log in with incorrect Email
     Given John is at the login page
-    When he fills in his email with "john.doe@travelea.com"
+    When he fills in his email with "johnfdsgf.doe@travelea.com"
     And he fills in his password with "password"
     And he presses Login
     Then he is not redirected to the profile page
