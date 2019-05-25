@@ -5,7 +5,6 @@ import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,11 +78,9 @@ public class PassportCountryRepository {
      * @return CompletionStage holding an Optional of the nationalities database id
      */
     public Optional<Integer> insert(PassportCountry passport) {
-        try {
-            ebeanServer.insert(passport);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        ebeanServer.insert(passport);
+
 
         return Optional.of(passport.getPassportId());
     }

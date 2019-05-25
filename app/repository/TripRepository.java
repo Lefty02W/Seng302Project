@@ -60,14 +60,12 @@ public class TripRepository {
      */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
         ebeanServer.insert(trip);
-        System.out.println("yote");
         for (TripDestination tripDestination : tripDestinations) {
                 tripDestination.setTripId(trip.getId());
                 Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
                 //if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
                 if (dest.getVisible() == 1) {
-                   // makeAdmin(dest);
-                    System.out.println("Make Admin");
+                   //TODO Swap to ownership of global admin
                 }
             ebeanServer.insert(tripDestination);
         }
