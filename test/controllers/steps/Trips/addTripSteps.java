@@ -106,7 +106,7 @@ public class addTripSteps extends ProvideApplication {
     public void userPressesAddDestinationWithoutSelectingADestination() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/trips/create")
+                .uri("/trips/1/create")
                 .bodyForm(destForm)
                 .session("connected", "1");
 
@@ -121,6 +121,6 @@ public class addTripSteps extends ProvideApplication {
 
     @Then("stay on create trips page")
     public void stayOnCreateTripsPage() {
-        assertEquals("/trips/create", destResult.redirectLocation().get());
+        assertEquals("/trips/1/create", destResult.redirectLocation().get());
     }
 }
