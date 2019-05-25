@@ -286,11 +286,23 @@ public class AdminController {
      * @return
      */
     public CompletionStage<Result> editDestination(Http.Request request, Integer destId) {
-        return supplyAsync(() -> {
             Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
             Destination destination = destForm.get();
-           return destinationRepository.update(destination, destId);
-        }).thenApply(string -> redirect("/admin"));
+           return destinationRepository.update(destination, destId).thenApplyAsync(string -> redirect("/admin"));
+    }
+
+
+    /**
+     * Endpoint method for an admin to add a new destination for a user
+     *
+     * @apiNote POST /admin/destinations
+     * @param request the client request to add a destination
+     * @return CompletionStage holding redirect to the /admin page
+     */
+    public CompletionStage<Result> addDestination(Http.Request request) {
+        Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
+        Destination destination = destForm.get();
+        return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin"));
     }
 
 }
