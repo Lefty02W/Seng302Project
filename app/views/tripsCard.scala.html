@@ -59,7 +59,7 @@
                 <div class="container-fluid">
 
                     <div class="row">
-                        <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
+                        <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" class="button-add">
                             Add New Trip
                         </button> </a>
                     </div>
