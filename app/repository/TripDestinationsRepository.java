@@ -60,11 +60,11 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
-    public List<TripDestination> getTripDestsWithDestId(Integer destinationId) {
-        return TripDestination.find.query()
+    public Optional<List<TripDestination>> getTripDestsWithDestId(Integer destinationId) {
+        return Optional.of(TripDestination.find.query()
                 .where()
                 .eq("destination_id", destinationId)
-                .findList();
+                .findList());
     }
 
     public void editTripId(TripDestination tripDestination, Integer newDestinationId) {

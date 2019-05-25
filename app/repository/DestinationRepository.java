@@ -110,10 +110,9 @@ public class DestinationRepository {
      * @param Id             The ID of the destination to editDestinations
      * @return
      */
-    public CompletionStage<Optional<String>> update(Destination newDestination, Integer Id) {
-        return supplyAsync(() -> {
+    public Optional<Integer> update(Destination newDestination, Integer Id) {
             Transaction txn = ebeanServer.beginTransaction();
-            Optional<String> value = Optional.empty();
+            Optional<Integer> value = Optional.empty();
             try {
                 Destination targetDestination = ebeanServer.find(Destination.class).setId(Id).findOne();
                 if (targetDestination != null) {
@@ -126,13 +125,13 @@ public class DestinationRepository {
                     targetDestination.setVisible(newDestination.getVisible());
                     targetDestination.update();
                     txn.commit();
-                    value = Optional.of(String.format("Destination %s edited", newDestination.getDestinationId()));
+
+                    value = Optional.of(Id);
                 }
             } finally {
                 txn.end();
             }
             return value;
-        }, executionContext);
     }
 
     /**

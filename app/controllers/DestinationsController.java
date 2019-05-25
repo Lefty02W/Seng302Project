@@ -192,7 +192,11 @@ public class DestinationsController extends Controller {
             return redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create");
         }
         if(longLatCheck(dest)){
-            destinationRepository.update(dest, id);
+            Optional<Integer> destId = destinationRepository.update(dest, id);
+            if (visibility == 1 && destId.isPresent()) {
+                dest.setDestinationId(destId.get());
+                newPublicDestination(dest);
+            }
             return redirect(destShowRoute);
         } else {
             return redirect("/destinations/" + id +"/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
@@ -223,7 +227,6 @@ public class DestinationsController extends Controller {
         if(longLatCheck(destination)){
             destinationRepository.insert(destination);
             if (visibility == 1) {
-                System.out.println("here");
                 newPublicDestination(destination);
             }
             return redirect(destShowRoute);
@@ -288,18 +291,23 @@ public class DestinationsController extends Controller {
      * @param newPublicDestination, the new private destination
      * @return true if change is successful, else false
      */
-    public void newPublicDestination(Destination newPublicDestination) {
-        Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
-        if (destinationList.isPresent()) {
-            for (Destination destination : destinationList.get()) {
-                destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
-                List<TripDestination> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
-                for (TripDestination tripDestination : tripDestinationList) {
-                    tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
+    public String newPublicDestination(Destination newPublicDestination) {
+            Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
+            if (destinationList.isPresent()) {
+                for (Destination destination : destinationList.get()) {
+                    if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
+                        destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
+                        Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
+                        if (tripDestinationList.isPresent()) {
+                            for (TripDestination tripDestination : tripDestinationList.get()) {
+                                tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
+                            }
+                        }
+                        destinationRepository.delete(destination.getDestinationId());
+                    }
                 }
-                destinationRepository.delete(destination.getDestinationId());
             }
-        }
+            return "success";
     }
 
 }
