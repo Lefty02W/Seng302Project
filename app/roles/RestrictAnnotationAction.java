@@ -1,17 +1,10 @@
 package roles;
 
 
-import controllers.LoginController;
 import controllers.SessionController;
-import models.Destination;
-import models.Profile;
-import play.data.FormFactory;
-import play.i18n.MessagesApi;
 import play.mvc.Action;
 import play.mvc.Http;
 import play.mvc.Result;
-import repository.DestinationRepository;
-import repository.ProfileRepository;
 import repository.RolesRepository;
 
 import javax.inject.Inject;
@@ -45,6 +38,7 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
      * @param req The http request of the "tagged" method
      * @return Either a redirect call if not authorized, or the requested call if they are.
      */
+    @Override
     public CompletionStage<Result> call(Http.Request req) {
 
         //Get roles of the user here.
@@ -62,7 +56,6 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
         //Change this to check if user's roles contains configuration.value.
         // If so we are authorized, and the request should be called.
         if (profileRoles.contains(configuration.value())) {
-            System.out.println("Calling admin action for "+ req);
             return delegate.call(req);  // Allow the request proceed
         }
 
