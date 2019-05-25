@@ -31,7 +31,7 @@ public class ProfileRepository {
         this.profilePassportCountryRepository = new ProfilePassportCountryRepository(ebeanConfig, executionContext);
         this.profileNationalityRepository = new ProfileNationalityRepository(ebeanConfig, executionContext);
         this.profileTravellerTypeRepository = new ProfileTravellerTypeRepository(ebeanConfig, executionContext);
-        this.rolesRepository = new RolesRepository(ebeanConfig);
+        this.rolesRepository = new RolesRepository(ebeanConfig, executionContext);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ProfileRepository {
      * @return
      */
     public boolean validate(String email, String password) {
-        String selectQuery = "Select * from profile WHERE email = ? and password = ?";
+        String selectQuery = "SELECT * FROM profile WHERE email = ? and password = ?";
         SqlRow row = ebeanServer.createSqlQuery(selectQuery)
                 .setParameter(1, email)
                 .setParameter(2, password)
@@ -86,13 +86,11 @@ public class ProfileRepository {
         Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
         Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
         List<String> roles = rolesRepository.getProfileRoles(profileId).get();
-        Profile profile = new Profile(row.getInteger("profile_id"), row.getString("first_name"),
+
+        return new Profile(row.getInteger("profile_id"), row.getString("first_name"),
                 row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
                 row.getDate("birthDate"), passportCountries, row.getString("gender"),
                 row.getDate("time_created") , nationalities, travellerTypes, roles);
-
-
-        return profile;
     }
 
 
@@ -141,7 +139,7 @@ public class ProfileRepository {
         return supplyAsync(() -> {
             profile.setTimeCreated(new Date());
             Transaction txn = ebeanServer.beginTransaction();
-            String qry = "INSERT into profile (first_name, middle_name, last_name, email, " +
+            String qry = "INSERT INTO profile (first_name, middle_name, last_name, email, " +
                     "password, birth_date, gender) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
             Integer value = null;
@@ -242,7 +240,7 @@ public class ProfileRepository {
     public CompletionStage<Optional<Integer>> delete(Integer profileId) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            String deleteQuery = "delete * from profile Where profile_id = ?";
+            String deleteQuery = "DELETE * FROM profile Where profile_id = ?";
             SqlUpdate query = Ebean.createSqlUpdate(deleteQuery);
             query.setParameter(1, profileId);
             query.execute();
@@ -298,7 +296,7 @@ public class ProfileRepository {
      * @return destList arrayList of destinations registered by the user
      */
     public Optional<ArrayList<Destination>> getDestinations(int profileId) {
-        String sql = ("select * from destination where profile_id = ?");
+        String sql = ("SELECT * FROM destination WHERE profile_id = ?");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination dest;
