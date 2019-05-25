@@ -17,9 +17,14 @@ import java.util.Optional;
 public class RolesRepository {
 
     private final EbeanServer ebeanServer;
+    private ProfileRepository profileRepository;
+    private final DatabaseExecutionContext context;
+    private final EbeanConfig config;
 
     @Inject
-    public RolesRepository(EbeanConfig ebeanConfig) {
+    public RolesRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext context) {
+        this.config = ebeanConfig;
+        this.context = context;
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
     }
 
@@ -65,14 +70,16 @@ public class RolesRepository {
     /**
      * Retrieves the ID of a role based on its name
      *
-     * @param roleName
+     * @param roleName The name of the role get ID of
      * @return The role ID if a matching role name exists on database
      */
     private Optional<Integer> getRoleFromName(String roleName) {
-        Integer roleId;
+        Integer roleId = null;
         String query = "SELECT FROM roles WHERE role_name = ?";
         SqlRow row = ebeanServer.createSqlQuery(query).setParameter(1, roleName).findOne();
-        roleId = row.getInteger("role_id");
+        if (!row.isEmpty()) {
+            roleId = row.getInteger("role_id");
+        }
 
         return Optional.ofNullable(roleId);
     }
@@ -86,13 +93,31 @@ public class RolesRepository {
      */
     public void setProfileRole(Integer profileId, String roleName) {
         Optional<Integer> role = getRoleFromName(roleName);
-        Integer roleId;
         // If the role does not exist, stop
-        if (role.isPresent()) {
-            roleId = role.get();
-        } else {
-            return;
-        }
+        role.ifPresent(integer -> addProfileRole(profileId, integer));
+    }
+
+
+    /**
+     * Set the profile role based on the profile email and role name
+     * @param profileEmail The email of the profile to set role for
+     * @param roleName The name of the role to set for profile
+     */
+    public void setProfileRole(String profileEmail, String roleName) {
+        this.profileRepository =  new ProfileRepository(this.config, context);
+        Integer profileId = profileRepository.getProfileById(profileEmail).getProfileId();
+        Optional<Integer> role = getRoleFromName(roleName);
+        // If the role does not exist, stop
+        role.ifPresent(integer -> addProfileRole(profileId, integer));
+    }
+
+
+    /**
+     * Add a role to a profile given the profile ID and role ID
+     * @param profileId The ID of the profile to set role for
+     * @param roleId The ID of the role to link to profile
+     */
+    private void addProfileRole(Integer profileId, Integer roleId) {
         Transaction transaction = ebeanServer.beginTransaction();
         String queryString = "INSERT INTO profile_roles(profile_id, role_id) VALUES(?, ?)";
         try {
