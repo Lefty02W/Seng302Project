@@ -67,7 +67,7 @@ GET     /admin                       controllers.AdminController.show(request: R
 ## Admin Trips
 GET     /admin/trips/:tripId/delete     controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
 GET     /admin/trips/:tripId            controllers.AdminController.viewTrip(request: Request, tripId: Integer)
-GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)
+
 
 ## Admin Profiles
 GET     /admin/profile/:id/edit                controllers.AdminController.showEditProfile(request: Request, id: Integer)
@@ -81,3 +81,5 @@ POST    /admin/profile/create       controllers.AdminController.createProfile(re
 
 ## Admin Destinations
 GET     /admin/destinations/:destId         controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)
+POST    /admin/destinations/:destId         controllers.AdminController.editDestination(request: Request, destId : Integer)
+GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)

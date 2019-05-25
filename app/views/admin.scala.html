@@ -1,8 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(profiles : List[Profile], trips : List[Trip], currentDestination : Destination, destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile], tripToView: Trip, createProfileForm : Form[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
-@import models.Profile; var profileToView = null
-@import models.Destination; var destToView = currentDestination
+@(profiles : List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
+        destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
+        tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -211,7 +211,10 @@
                                         <td>@destination.getDestinationId</td>
                                         <td>@destination.getProfileId</td> <!-- TODO Update to id once user id is there -->
                                         <td>@destination.getName</td>
-                                        <td><button class="btn btn-primary">Edit</button></td>
+                                        <td>
+                                            <a href="@routes.AdminController.showDestination(destination.getDestinationId, true)">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a></td>
                                         <td>
                                             <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
                                         </td>
@@ -441,6 +444,8 @@
 
 
     </script>
+
+
     <div class="modal" id="conformationDeleteModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -477,7 +482,7 @@
                 <div class="modal-content">
                         <!-- header -->
                     <div class="modal-header">
-                        <h3>@tripToView.getName</h3>
+                        <h3>Trip: @tripToView.getTripId, @tripToView.getName</h3>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
                         <!-- body -->
@@ -586,7 +591,7 @@
     }
 
 
-    @if(currentDestination != null) {
+    @if(destination.isView && destination.getObject != null) {
         <script type="text/javascript">
                 $(window).on('load', function () {
                     $('#viewDestModal').modal('show');
@@ -597,7 +602,7 @@
                 <div class="modal-content">
                         <!-- header -->
                     <div class="modal-header">
-                        <h4>Destination</h4>
+                        <h4>Destination: @destination.getObject.getDestinationId</h4>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
                         <!-- body -->
@@ -606,14 +611,13 @@
                             <div class="row">
                                 <div class="col">
                                     <ul>
-                                        <li>@currentDestination.getDestinationId</li>
-                                        <li>@currentDestination.getName</li>
-                                        <li>@currentDestination.getType</li>
-                                        <li>@currentDestination.getCountry</li>
-                                        <li>@currentDestination.getDistrict</li>
-                                        <li>@currentDestination.getLatitude</li>
-                                        <li>@currentDestination.getLongitude</li>
-                                        <li>@currentDestination.getVisible</li>
+                                        <li>Name: @destination.getObject.getName</li>
+                                        <li>Type: @destination.getObject.getType</li>
+                                        <li>Country: @destination.getObject.getCountry</li>
+                                        <li>District: @destination.getObject.getDistrict</li>
+                                        <li>Latitude: @destination.getObject.getLatitude</li>
+                                        <li>Longitude: @destination.getObject.getLongitude</li>
+                                        <li>Visibility: @destination.getObject.getVisible</li>
                                     </ul>
                                 </div>
                             </div>
@@ -628,6 +632,85 @@
             </div>
         </div>
 }
+
+
+    @if(destination.isEdit && destination.getObject != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#editDestModal').modal('show');
+                });
+        </script>
+        <div class="modal" id="editDestModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4>Destination: @destination.getObject.getDestinationId</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    @form(routes.AdminController.editDestination(destination.getObject.getDestinationId)) {
+                        @CSRF.formField
+                        <div class="modal-body">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col"></div>
+                                            <div class="col"></div>
+                                            <label>Name</label>
+                                            <input type="text" id="name" placeholder="Name" name="name" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col"></div>
+                                            <div class="col"></div>
+                                            <label for="type">Type</label>
+                                            <input type="text" id="type" placeholder="Type" name="type" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col"></div>
+                                            <div class="col"></div>
+                                            <label>District</label>
+                                            <input type="text" id="district" placeholder="District" name="district">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col"></div>
+                                            <div class="col"></div>
+                                            <label>Country</label>
+                                            <input type="text" id="country" placeholder="Country" name="country" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col"></div>
+                                            <div class="col"></div>
+                                            <label>Latitude</label>
+                                            <input type="number" step="0.01" id="latitude" value=0.0 name="latitude">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Longitude</label>
+                                            </div>
+                                            <div class="col">
+                                                <input type="number" step="0.01" id="longitude" value=0.0 name="longitude">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <label>Make Public</label>
+                                            </div>
+                                            <div class="col">
+                                                <input type="checkbox" id="visible" name="visible" value="Public" class="check-box">
+                                            </div>
+                                        </div>
+                                    </div>
+                        </div>
+                            <!-- footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 
 
     <div class="modal fade" id="createProfileModal">
