@@ -120,9 +120,14 @@ public class AdminController {
 
 
 
+    /**
+     * Endpoint method to show the edit trips page on the site
+     *
+     * @apiNote /trip
+     * @param request the http request
+     * @return the rendered page with status ok
+     */
     public CompletionStage<Result> editTrip(Http.Request request, Integer tripId, Integer profileId) {
-        System.out.println(tripId);
-        System.out.println(profileId);
         return supplyAsync(() -> {
             List<Profile> profiles = Profile.find.all();
             List<Trip> trips = Trip.find.all();

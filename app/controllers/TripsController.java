@@ -283,7 +283,10 @@ public class TripsController extends Controller {
         } else {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.insert(trip, tripDestinations);
-            return redirect("/trips/" + userId + "/create");
+            if(userId != SessionController.getCurrentUserId(request)) {
+                return redirect("/admin");
+            }
+            return redirect(tripsEndPoint);
         }
     }
 
