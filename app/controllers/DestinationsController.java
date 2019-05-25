@@ -14,6 +14,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
+import repository.TripDestinationsRepository;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -41,6 +42,7 @@ public class DestinationsController extends Controller {
     private final Form<Profile> userForm;
     private final Form<Login> loginForm;
     private final DestinationRepository destinationRepository;
+    private final TripDestinationsRepository tripDestinationsRepository;
     private final ProfileRepository profileRepository;
     private String destShowRoute = "/destinations/show/false";
 
@@ -54,13 +56,14 @@ public class DestinationsController extends Controller {
      */
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
-                                  ProfileRepository profileRepository) {
+                                  ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository) {
         this.form = formFactory.form(Destination.class);
         this.userForm = formFactory.form(Profile.class);
         this.loginForm = formFactory.form(Login.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
+        this.tripDestinationsRepository = tripDestinationsRepository;
     }
 
     /**
@@ -216,10 +219,13 @@ public class DestinationsController extends Controller {
         destination.setVisible(visibility);
         if(destinationRepository.checkValid(destination, userId)) {
             return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
-
         }
         if(longLatCheck(destination)){
             destinationRepository.insert(destination);
+            if (visibility == 1) {
+                System.out.println("here");
+                newPublicDestination(destination);
+            }
             return redirect(destShowRoute);
         } else {
             return redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
@@ -274,7 +280,26 @@ public class DestinationsController extends Controller {
 
             return redirect("/destinations/show/false").flashing("success", "Destination Deleted");
         });
+    }
 
+    /**
+     * This function will inspect all private destinations for all users and swap any private destinations for the
+     * new public destination
+     * @param newPublicDestination, the new private destination
+     * @return true if change is successful, else false
+     */
+    public void newPublicDestination(Destination newPublicDestination) {
+        Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
+        if (destinationList.isPresent()) {
+            for (Destination destination : destinationList.get()) {
+                destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
+                List<TripDestination> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
+                for (TripDestination tripDestination : tripDestinationList) {
+                    tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
+                }
+                destinationRepository.delete(destination.getDestinationId());
+            }
+        }
     }
 
 }

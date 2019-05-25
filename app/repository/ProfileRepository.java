@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.*;
 import models.*;
+import org.checkerframework.checker.nullness.Opt;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -253,6 +254,22 @@ public class ProfileRepository {
         }, executionContext);
     }
 
+    /**
+     * returns a list of all users Id's
+     * @return a list of integers of the profile Ids of all the users
+     */
+    public CompletionStage<Optional<List<Integer>>> getAllUsersId() {
+        return supplyAsync(() -> {
+            String qry = "Select profile_id from profile";
+            List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).findList();
+            List<Integer> profileIdList = new ArrayList<>();
+            for (SqlRow aRowList : rowList) {
+                profileIdList.add(aRowList.getInteger("profile_id"));
+            }
+            return Optional.of(profileIdList);
+        }, executionContext);
+    }
+
 
     /**
      * Function to get all the destinations created by the signed in user.
@@ -284,4 +301,5 @@ public class ProfileRepository {
         //TODO Implement it to find admin id ideally default admin but any is fine
         return Optional.of(0);
     }
+
 }

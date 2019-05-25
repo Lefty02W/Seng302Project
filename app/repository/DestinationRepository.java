@@ -157,6 +157,24 @@ public class DestinationRepository {
         return publicDestinations != null || destinations != null;
     }
 
+    /**
+     * Checks to see if a user has any destinations that are the same as the destination1 passed in
+     * @param destination1 the
+     * @param id the users id
+     * @return Optional destination, if there is a destination the same as destination1 then that destination will be
+     * returned
+     */
+    public Optional<List<Destination>> checkForSameDestination(Destination destination1) {
+            List<Destination> destinations = (Destination.find.query()
+                    .where()
+                    .eq("name", destination1.getName())
+                    .eq("type", destination1.getType())
+                    .eq("country", destination1.getCountry())
+                    .findList());
+            return Optional.of(destinations);
+    }
+
+
     public Optional<ArrayList<Integer>> followDestination(int destId, int profileId) {
         String updateQuery = "INSERT into follow_destination(profile_id, destination_id) values (?, ?)";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);

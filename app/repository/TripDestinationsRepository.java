@@ -3,10 +3,14 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
+import io.ebean.Transaction;
+import models.Destination;
 import models.TripDestination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -54,6 +58,27 @@ public class TripDestinationsRepository {
                 return Optional.empty();
             }
         }, executionContext);
+    }
+
+    public List<TripDestination> getTripDestsWithDestId(Integer destinationId) {
+        return TripDestination.find.query()
+                .where()
+                .eq("destination_id", destinationId)
+                .findList();
+    }
+
+    public void editTripId(TripDestination tripDestination, Integer newDestinationId) {
+        Transaction txn = ebeanServer.beginTransaction();
+        try {
+            TripDestination targetTripDestination = ebeanServer.find(TripDestination.class).setId(tripDestination.getTripDestinationId()).findOne();
+            if (targetTripDestination != null) {
+                targetTripDestination.setDestinationId(newDestinationId);
+                targetTripDestination.update();
+                txn.commit();
+            }
+        } finally {
+            txn.end();
+        }
     }
 
 }
