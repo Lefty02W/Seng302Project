@@ -61,31 +61,6 @@ public class ProfileRepository {
     }
 
 
-//    /**
-//     * Finds one profile using its id as a query
-//     * @param profileId the users profile id
-//     * @return a Profile object that matches the email
-//     */
-//    public CompletionStage<Optional<Profile>> findById(int profileId) {
-//        return supplyAsync(() -> {
-//            String qry = "Select * from profile where profile_id = ?";
-//            List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
-//            Profile profile = null;
-//            if (!rowList.get(0).isEmpty()) {
-//                SqlRow p = rowList.get(0);
-//                Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(profileId).get();
-//                Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
-//                Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
-//                //TODO call function in role repo and get the users role then add into constructor
-//                profile = new Profile(profileId, p.getString("first_name"),  p.getString("middle_name"), p.getString("last_name")
-//                , p.getString("email"), p.getDate("birth_date"), passportCountries, p.getString("gender"), p.getDate("time_created")
-//                , nationalities, travellerTypes);
-//            }
-//            return Optional.ofNullable(profile);
-//        }, executionContext);
-//    }
-
-
     /**
      * This method finds a profile in the database using a given profile id
      *
