@@ -196,7 +196,7 @@ create table if not exists trip_destination
 )
 ;
 
-create table roles
+create table if not exists roles
 (
 	role_id int auto_increment,
 	role_name varchar(128) null,
@@ -211,8 +211,6 @@ alter table roles
 	add primary key (role_id)
 ;
 
-
-
 create table if not exists profile_roles
 (
 	profile_role_id int auto_increment
@@ -225,6 +223,7 @@ create table if not exists profile_roles
 		foreign key (role_id) references roles (role_id)
 )
 ;
+
 
 # --- !Downs
 
@@ -258,6 +257,7 @@ drop table if exists profile_passport_country;
 
 drop table if exists profile_traveller_type;
 
+drop table if exists roles;
+
 drop table if exists profile_roles;
 
-drop table if exists roles;
