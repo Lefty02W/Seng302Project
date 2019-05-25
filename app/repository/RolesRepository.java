@@ -17,7 +17,6 @@ import java.util.Optional;
 public class RolesRepository {
 
     private final EbeanServer ebeanServer;
-    private ProfileRepository profileRepository;
     private final DatabaseExecutionContext context;
     private final EbeanConfig config;
 
@@ -104,7 +103,7 @@ public class RolesRepository {
      * @param roleName The name of the role to set for profile
      */
     public void setProfileRole(String profileEmail, String roleName) {
-        this.profileRepository =  new ProfileRepository(this.config, context);
+        ProfileRepository profileRepository =  new ProfileRepository(this.config, context);
         Integer profileId = profileRepository.getProfileById(profileEmail).getProfileId();
         Optional<Integer> role = getRoleFromName(roleName);
         // If the role does not exist, stop
