@@ -46,18 +46,6 @@ public class ProfileRepository {
         return row != null;
     }
 
-
-    /**
-     * Method for getting a profile
-     *
-     * @param email String of the email to get
-     * @return Profile class of the user
-     */
-    public Profile getProfileById(String email) {
-        Profile existingEmail = ebeanServer.find(Profile.class).where().like("email", email).findOne();
-        return existingEmail;
-    }
-
     /**
      * Method to validate if the given email and password match an account in the database
      * @param email users email input
@@ -71,6 +59,51 @@ public class ProfileRepository {
                 .setParameter(2, password)
                 .findOne();
         return row != null;
+    }
+
+
+    /**
+     * Method to get all profiles, their roles will also be filled.
+     * @return List of all profiles
+     */
+    public List<Profile> getAll() {
+        String selectQuery = "SELECT * FROM profile";
+
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).findList();
+        List<Profile> allProfiles = new ArrayList<>();
+
+        for (SqlRow row : rows){
+
+            allProfiles.add(profileFromRow(row));
+
+        }
+
+        return allProfiles;
+
+    }
+
+
+
+
+    /**
+     * Method for getting a profile
+     *
+     * @param email String of the email to get
+     * @return Profile class of the user
+     */
+    public Profile getProfileById(String email) {
+        return ebeanServer.find(Profile.class).where().like("email", email).findOne();
+    }
+
+
+    /**
+     * Method for getting a profile
+     *
+     * @param userId String of the email to get
+     * @return Profile class of the user
+     */
+    public Profile getProfileByProfileId(Integer userId) {
+        return ebeanServer.find(Profile.class).setId(userId).findOne();
     }
 
 

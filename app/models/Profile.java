@@ -181,7 +181,6 @@ public class Profile extends Model {
         }
         i = 1;
         this.travellerTypes = new HashMap<>();
-        this.travellerTypes = new HashMap<>();
         for (String travellerTypesString : (travellerTypesForm.split(","))) {
             i++;
             TravellerType travellerType = new TravellerType(i, travellerTypesString);
@@ -435,7 +434,6 @@ public class Profile extends Model {
     public boolean hasRole(String role) {
 
         if (this.roles != null) {
-
             return this.roles.contains(role);
         } else {
 
