@@ -717,7 +717,6 @@
                         @CSRF.formField
                         <div class="modal-body" id="submitImage">
                             <input type="image" id="imageDisplay" class="imageFromCroppie" name="image">
-                            @*hide*@
                             <input type="file" id="image" name="image">
                             <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
                         </div>
@@ -800,6 +799,13 @@
                 reader.readAsDataURL(this.files[0]);
             });
 
+            function srcToFile(src, fileName, mimeType){
+                return (fetch(src)
+                                .then(function(res){return res.arrayBuffer();})
+                                .then(function(buf){return new File([buf], fileName, {type:mimeType});})
+                );
+            }
+
             function cropImage() {
                 $uploadCrop.croppie('result', {
                     type: 'canvas',
@@ -809,10 +815,20 @@
                     console.log($('#upload-image').files);
                     $('#acceptChangeModal').modal();
                     $('#submitImage').children('#imageDisplay').attr('src', response);
-                    var file = [response];
-                    $('#submitImage').children('#image').files = response;
+                    // var file = [response];
+                    srcToFile(response, 'logo.png', 'image/png')
+                            .then(function(file){
+                                console.log(file);
+                                var fd = new FormData();
+                                fd.append('file1', file);
+                                //TODO: Try to send request on bind from upload picture modal
+                                // console.log($('#submitImage').children('#image').attr("body", file));
+                                $('#submitImage').children('#image').attr("value", file.valueOf());
+                            })
+
+
                     // $('#submitImage').children('#image').name = "asddas";
-                    console.log($('#submitImage').children('#image').files);
+
 
                     @*$.ajax({*@
                         @*url:"/profile/photo",*@
