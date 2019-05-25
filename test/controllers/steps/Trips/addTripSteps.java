@@ -52,7 +52,7 @@ public class addTripSteps extends ProvideApplication {
 
         Http.RequestBuilder requestTrip = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/trips/create")
+                .uri("/trips/1/create")
                 .session("connected", "1");
         Result tripResult = Helpers.route(provideApplication(), requestTrip);
         Assert.assertEquals(200, tripResult.status());
