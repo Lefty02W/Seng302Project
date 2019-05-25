@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(profiles : List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
+@(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
 
@@ -85,11 +85,13 @@
                                     </tr>
                                 </thead>
                                 <tr>
-                                    <td>1</td>
-                                    <td>email</td>
-                                    <td>John</td>
-                                    <td>Master</td>
-                                    <td><button class="btn btn-primary">Alter Permissions</button></td>
+                                    @for(profile <- adminProfiles) {
+                                        <td>@profile.getProfileId</td>
+                                        <td>@profile.getEmail</td>
+                                        <td>@profile.getFirstName</td>
+                                        <td>@profile.getLastName</td>
+                                        <td><button class="btn btn-primary">Alter Permissions</button></td>
+                                    }
                                 </tr>
                             </table>
                         </div>
