@@ -73,7 +73,7 @@ public class DestinationsController extends Controller {
     public CompletionStage<Result> show(Http.Request request, boolean isPublic) {
         destinationsList.clear();
         Integer userId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(userId).thenApplyAsync(profile -> {
+        return profileRepository.findById(userId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 if (isPublic) {
                     ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
@@ -96,7 +96,7 @@ public class DestinationsController extends Controller {
 
     public CompletionStage<Result> follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
@@ -108,7 +108,7 @@ public class DestinationsController extends Controller {
 
     public CompletionStage<Result> unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 //TODO make it so you can not unfollow destinations inside a trip
 
