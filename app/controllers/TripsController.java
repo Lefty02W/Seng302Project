@@ -299,7 +299,7 @@ public class TripsController extends Controller {
     public Result saveEdit(Http.Request request, int id, Integer userId) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
-        Integer currentUserId = SessionController.getCurrentUserId(request);
+        Integer currentUserId = userId;
         trip.setProfileId(currentUserId);
         if (orderedCurrentDestinations.size() < 2){
             return redirect("/trips/"+userId+"/"+id+editUrl).flashing("info", "A trip must have at least two destinations");
