@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 
@@ -33,49 +34,39 @@ public class ProfileControllerTest extends ProvideApplication{
         Helpers.route(provideApplication(), request);
     }
 
-    /**
-     * Testing profile GET endpoint /profile/editDestinations/:id
-     */
-    @Test
-    public void showEdit() {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/profile/john@gmail.comedit")
-                .session("connected", "john@gmail.com");
-
-        Result result = Helpers.route(provideApplication(), request);
-    }
-
 
     /**
      * Testing profile POST endpoint /profile
      */
     @Test
     public void update() {
-        loginUser();
-        Map<String, String> profileData = new HashMap<>();
-        profileData.put("firstName", "admin");
-        profileData.put("middleName", "admin");
-        profileData.put("lastName", "admin");
-        profileData.put("email", "john@gmail.com");
-        profileData.put("birthDate", "2016-05-08");
-        profileData.put("gender", "male");
-        profileData.put("travellerTypes", "Backpacker");
-        profileData.put("nationalities", "NZ");
-        profileData.put("passports", "NZ");
+        Integer userId = loginUser();
+        if (userId != 0) {
+            Map<String, String> profileData = new HashMap<>();
+            profileData.put("firstName", "admin");
+            profileData.put("middleName", "admin");
+            profileData.put("lastName", "admin");
+            profileData.put("email", "john@gmail.com");
+            profileData.put("birthDate", "2016-05-08");
+            profileData.put("gender", "male");
+            profileData.put("travellerTypesForm", "Backpacker");
+            profileData.put("nationalitiesForm", "NZ");
+            profileData.put("passportsForm", "NZ");
+
+            Http.RequestBuilder request = Helpers.fakeRequest()
+                    .method("POST")
+                    .uri("/profile")
+                    .bodyForm(profileData)
+                    .session("connected", userId.toString());
+
+            Result result = Helpers.route(provideApplication(),request);
 
 
+            assertEquals(303, result.status());
+        } else {
+            fail();
+        }
 
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("POST")
-                .uri("/profile")
-                .bodyForm(profileData)
-                .session("connected", "john@gmail.com");
-
-        Result result = Helpers.route(provideApplication(),request);
-
-
-        assertEquals(303, result.status());
     }
 
     /**
@@ -87,7 +78,7 @@ public class ProfileControllerTest extends ProvideApplication{
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(),request);
 

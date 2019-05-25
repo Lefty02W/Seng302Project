@@ -59,7 +59,6 @@ deploy-dev:
   only:
     - dev@seng302-2019/team-700
 
-
 deploy-prod:
   stage: deploy
   script:

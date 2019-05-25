@@ -1,5 +1,4 @@
 @import play.mvc.Http
-@import views.html.helper.CSRF
 @(tripForm : Form[Trip], destinations: List[Destination], trips: List[Integer], currentUser : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -73,10 +72,10 @@
                                             <td>@currentUser.getTripById(trip).getDestinationNames</td>
                                             <td>
                                                 <a href="@routes.TripsController.showEdit(trip)" >
-                                                    <input type="image" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon">
+                                                    <input type="photo" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon">
                                                 </a>
                                                 <a href="@routes.TripsController.delete(trip)">
-                                                    <input type="image" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
+                                                    <input type="photo" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
                                                 </a>
                                             </td>
                                         </tr>

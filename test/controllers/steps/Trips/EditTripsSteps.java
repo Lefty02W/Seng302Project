@@ -1,4 +1,4 @@
-package controllers.steps;
+package controllers.steps.Trips;
 
 import controllers.ProvideApplication;
 import cucumber.api.PendingException;
@@ -31,7 +31,7 @@ public class EditTripsSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/login")
                 .bodyForm(loginForm)
-                .session("connected", arg0);
+                .session("connected", "1");
 
         Result loginResult = Helpers.route(provideApplication(), request);
 

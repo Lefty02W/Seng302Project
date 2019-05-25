@@ -1,25 +1,24 @@
-package controllers.steps;
+package controllers.steps.Profile;
 
 
+import controllers.steps.BaseStep;
 import cucumber.api.java.After;
-import cucumber.api.java.AfterStep;
 import cucumber.api.java.Before;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.api.java.en.And;
 import org.junit.Assert;
-
-import org.openqa.selenium.support.ui.Select;
-import java.text.ParseException;
-
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.Select;
+
+import java.text.ParseException;
 
 
 /**
  * Implements steps for testing CreateUser
  */
-public class CreateUserSteps extends BaseStep {
+public class CreateUserSeleniumSteps extends BaseStep {
 
     @Before
     public void setup() {
@@ -107,7 +106,7 @@ public class CreateUserSteps extends BaseStep {
 
     @And("he fills in Nationalities with {string}")
     public void fill_nationality(String nationality) {
-        element = driver.findElement(By.id("nationalities"));
+        element = driver.findElement(By.id("nationalitiesForm"));
         element.sendKeys(nationality);
 
         Assert.assertEquals(nationality, element.getAttribute("value"));
@@ -116,7 +115,7 @@ public class CreateUserSteps extends BaseStep {
 
     @And("he fills in Passport with {string}")
     public void fill_passport(String passport) {
-        element = driver.findElement(By.id("passports"));
+        element = driver.findElement(By.id("passportsForm"));
         element.sendKeys(passport);
 
         Assert.assertEquals(passport, element.getAttribute("value"));

@@ -1,11 +1,12 @@
-package controllers.steps;
+package controllers.steps.Profile;
 
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import models.Profile;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -13,7 +14,6 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
 /**
@@ -37,12 +37,10 @@ public class EditProfileSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/login")
-                .bodyForm(loginForm)
-                .session("connected", "john@gmail.com");
+                .bodyForm(loginForm);
 
         loginResult = Helpers.route(provideApplication(), request);
-
-        assertEquals(303, loginResult.status());
+        assertEquals("/profile", loginResult.redirectLocation().get());
     }
 
     @Given("I am on the edit profile page")
@@ -53,12 +51,15 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("email", "john@gmail.com");
         editForm.put("password", "password");
         editForm.put("birthDate", "1970-01-13");
-        editForm.put("passports", "NZ");
+        editForm.put("passportsForm", "NZ");
         editForm.put("gender", "Male");
-        editForm.put("nationalities", "password");
-        editForm.put("travellerTypes", "Backpacker,Gap Year");
-
-        assertEquals("/profile", loginResult.redirectLocation().get());
+        editForm.put("nationalitiesForm", "password");
+        editForm.put("travellerTypesForm", "Backpacker,Gap Year");
+        if (loginResult.redirectLocation().isPresent()) {
+            assertEquals("/profile", loginResult.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
 
     @When("I change my first name to {string}")
@@ -66,9 +67,9 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("firstName", string);
     }
 
-    @When("I change my traveller type s to {string}")
+    @When("I change my traveller types to {string}")
     public void iChangeMyTravellerTypesTo(String string) {
-        editForm.put("travellerTypes", string);
+        editForm.put("travellerTypesForm", string);
     }
 
     @When("I change my middle name to {string}")
@@ -82,7 +83,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/profile")
                 .bodyForm(editForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         redirectResultEdit = Helpers.route(provideApplication(), request);
     }
@@ -90,35 +91,47 @@ public class EditProfileSteps extends ProvideApplication {
     @Then("I am redirected to my profile page")
     public void iAmRedirectedToMyProfilePage() {
         assertEquals(303, redirectResultEdit.status());
-        assertEquals("/profile", redirectResultEdit.redirectLocation().get());
+        if (redirectResultEdit.redirectLocation().isPresent()) {
+            assertEquals("/profile", redirectResultEdit.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
-        Profile profile = Profile.find.byId("john@gmail.com");
-        if (profile == null) {
-            fail();
-        }
-        assertEquals("Jenny", profile.getFirstName());
-        assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypes());
-        assertEquals("Max", profile.getMiddleName());
+        injectRepositories();
+        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
+            if (profileOpt.isPresent()) {
+                assertEquals("Jenny", profileOpt.get().getFirstName());
+                assertEquals("Backpacker, Thrillseeker", profileOpt.get().getTravellerTypesString());
+                assertEquals("Max", profileOpt.get().getMiddleName());
+            }
+            return "done";
+        });
     }
     // Scenario: I can perform an editDestinations of my profile - end
 
     // Scenario: I cannot save my profile with no traveller types - end
     // Includes steps from above
+
+    @Rule
+    public ExpectedException expectedEx = ExpectedException.none();
+
+
     @When("I try to save the edit")
     public void iTryToSaveTheEdit() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/profile")
                 .bodyForm(editForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
+
         try {
             redirectResultEdit = Helpers.route(provideApplication(), request);
             fail();
         } catch (IllegalStateException e) {
-            assertTrue(true);
+            assertEquals("Error(s) binding form: {\"travellerTypesForm\":[\"This field is required\"]}", e.getMessage());
         }
 
     }
@@ -130,10 +143,10 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("my edit is not saved")
     public void myEditIsNotSaved() {
-        Profile profile = Profile.find.byId("john@gmail.com");
-        if (profile == null) {
-            fail();
-        }
-        assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypes());
+        injectRepositories();
+        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
+            profileOpt.ifPresent(profile -> assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypesString()));
+            return "done";
+        });
     }
 }

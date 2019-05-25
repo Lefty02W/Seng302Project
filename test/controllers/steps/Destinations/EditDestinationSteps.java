@@ -1,16 +1,11 @@
-package controllers.steps;
+package controllers.steps.Destinations;
 
 import controllers.ProvideApplication;
-import cucumber.api.java.After;
-import cucumber.api.java.AfterStep;
-import cucumber.api.java.Before;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.Destination;
-import models.Profile;
-import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -37,10 +32,14 @@ public class EditDestinationSteps extends ProvideApplication{
                 .method("GET")
                 .uri("/destinations/" + id + "/edit")
                 .bodyForm(loginForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result editPageResult = Helpers.route(provideApplication(), request);
-        assertEquals("/destinations/" + id + "/edit", editPageResult.redirectLocation().get());
+        if (editPageResult.redirectLocation().isPresent()) {
+            assertEquals("/destinations/" + id + "/edit", editPageResult.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
 
     @Given("the user has a destination with id {string}")
@@ -49,7 +48,7 @@ public class EditDestinationSteps extends ProvideApplication{
         if (destination == null) {
             fail();
         }
-        assertEquals("john@gmail.com", destination.getUserEmail());
+        assertEquals(1, destination.getProfileId());
     }
 
     @When("user changes Name to {string}")
@@ -73,7 +72,7 @@ public class EditDestinationSteps extends ProvideApplication{
                 .method("POST")
                 .uri("/destinations/512")
                 .bodyForm(destForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         redirectDestinationEdit = Helpers.route(provideApplication(), request);
         assertEquals(303, redirectDestinationEdit.status());
@@ -82,7 +81,11 @@ public class EditDestinationSteps extends ProvideApplication{
     @Then("user is redirected to the destination page")
     public void iAmRedirectedToMyProfilePage() {
         assertEquals(303, redirectDestinationEdit.status());
-        assertEquals("/destinations/show/false", redirectDestinationEdit.redirectLocation().get());
+        if (redirectDestinationEdit.redirectLocation().isPresent()) {
+            assertEquals("/destinations/show/false", redirectDestinationEdit.redirectLocation().get());
+        } else {
+            fail();
+        }
     }
 
     @Then("the destination is displayed with the updated fields")

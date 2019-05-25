@@ -1,18 +1,18 @@
-package controllers.steps;
+package controllers.steps.Profile;
 
 import controllers.ProvideApplication;
-import controllers.SessionController;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import play.api.mvc.Session;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class LoginUserSteps extends ProvideApplication {
 
@@ -28,7 +28,6 @@ public class LoginUserSteps extends ProvideApplication {
         redirectLoginResult = Helpers.route(provideApplication(), request);
 
         assertEquals(200, redirectLoginResult.status());
-
     }
 
 
@@ -50,7 +49,7 @@ public class LoginUserSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/login")
                 .bodyForm(loginForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         loginResult = Helpers.route(provideApplication(), request);
     }

@@ -1,4 +1,4 @@
-package controllers.steps;
+package controllers.steps.Trips;
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
@@ -31,7 +31,7 @@ public class addTripSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/login")
                 .bodyForm(loginForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result loginResult = Helpers.route(provideApplication(), request);
 
@@ -39,7 +39,7 @@ public class addTripSteps extends ProvideApplication {
         Http.RequestBuilder requestTrip = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/trips")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result tripResult = Helpers.route(provideApplication(), requestTrip);
 
@@ -53,7 +53,7 @@ public class addTripSteps extends ProvideApplication {
         Http.RequestBuilder requestTrip = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/trips/create")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
         Result tripResult = Helpers.route(provideApplication(), requestTrip);
         Assert.assertEquals(200, tripResult.status());
 
@@ -61,7 +61,7 @@ public class addTripSteps extends ProvideApplication {
 
     @When("user selects a destination called {string}")
     public void userSelectsADestinationCalled(String string) {
-     ArrayList<Destination> userDestinations = getUserDest("john@gmail.com");
+     ArrayList<Destination> userDestinations = getUserDest(1);
         throw new cucumber.api.PendingException();
 
     }
@@ -108,7 +108,7 @@ public class addTripSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/trips/create")
                 .bodyForm(destForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         destResult = Helpers.route(provideApplication(), request);
     }

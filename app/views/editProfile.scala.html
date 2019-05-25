@@ -100,43 +100,43 @@
                                             </div>
                                             <div>
                                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" required>
-                                                    @if(user.getTravellerTypes().contains("ThrillSeeker")) {
+                                                    @if(user.getTravellerTypesList().contains("ThrillSeeker")) {
                                                         <option value="ThrillSeeker" selected>ThrillSeeker</option>
                                                     } else {
                                                         <option value="ThrillSeeker">ThrillSeeker</option>
                                                     }
 
-                                                    @if(user.getTravellerTypes().contains("Gap Year")) {
+                                                    @if(user.getTravellerTypesList().contains("Gap Year")) {
                                                         <option value="Gap Year" selected>Gap Year</option>
                                                     } else {
                                                         <option value="Gap Year">Gap Year</option>
                                                     }
 
-                                                    @if(user.getTravellerTypes().contains("Backpacker")) {
+                                                    @if(user.getTravellerTypesList().contains("Backpacker")) {
                                                         <option value="Backpacker" selected>Backpacker</option>
                                                     } else {
                                                         <option value="Backpacker">Backpacker</option>
                                                     }
 
-                                                    @if(user.getTravellerTypes().contains("Groupie")) {
+                                                    @if(user.getTravellerTypesList().contains("Groupie")) {
                                                         <option value="Groupie" selected>Groupie</option>
                                                     } else {
                                                         <option value="Groupie">Groupie</option>
                                                     }
 
-                                                    @if(user.getTravellerTypes().contains("Frequent Weekender")) {
+                                                    @if(user.getTravellerTypesList().contains("Frequent Weekender")) {
                                                         <option value="Frequent Weekender" selected>Frequent Weekender</option>
                                                     } else {
                                                         <option value="Frequent Weekender">Frequent Weekender</option>>
                                                     }
 
-                                                    @if(user.getTravellerTypes().contains("Functional/business Traveller")) {
+                                                    @if(user.getTravellerTypesList().contains("Functional/business Traveller")) {
                                                         <option value="functional/business Traveller" selected>Functional/business Traveller</option>
                                                     } else {
                                                         <option value="functional/business Traveller">functional/business Traveller</option>
                                                     }
 
-                                                    @if(user.getTravellerTypes().contains("Holidaymaker")) {
+                                                    @if(user.getTravellerTypesList().contains("Holidaymaker")) {
                                                         <option value="Holidaymaker" selected>Holidaymaker</option>
                                                     } else {
                                                         <option value="Holidaymaker">Holidaymaker</option>
