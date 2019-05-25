@@ -17,7 +17,6 @@ import views.html.admin;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -125,7 +124,9 @@ public class AdminController {
         List<Integer> adminIdList = rolesRepository.getProfileIdFromRoleName("admin");
         List<Profile> adminProfiles = new ArrayList<>();
         for(Integer id : adminIdList){
-            adminProfiles.add(profileRepository.getProfileByProfileId(id));
+            Profile profile = profileRepository.getProfileByProfileId(id);
+            rolesRepository.getProfileRoles(id).ifPresent(profile::setRoles);
+            adminProfiles.add(profile);
         }
         return adminProfiles;
     }
@@ -161,7 +162,6 @@ public class AdminController {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
-            System.out.println(getAdmins());
             return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm,null, request, messagesApi.preferred(request)));
         });
     }
@@ -248,7 +248,7 @@ public class AdminController {
      *
      * @apiNote /admin/:userId/admin
      * @param request the request sent to view the trip
-     * @param user the id of the user to promote
+     * @param userId the id of the user to promote
      * @return the admin page rendered with the new admin
      */
     public Result makeAdmin(Http.Request request, Integer userId) {
@@ -262,7 +262,7 @@ public class AdminController {
      *
      * @apiNote /admin/:userId/admin/remove
      * @param request the request sent to view the trip
-     * @param user the id of the user to promote
+     * @param userId the id of the user to promote
      * @return the admin page rendered with the admin removed
      */
     public Result removeAdmin(Http.Request request, Integer userId) {
