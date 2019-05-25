@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -77,11 +78,9 @@ public class DestinationRepository {
      * @param dest The destination to insert
      * @return
      */
-    public CompletionStage<String> insert(Destination dest) {
-        return supplyAsync(() -> {
+    public Optional<Integer> insert(Destination dest) {
             ebeanServer.insert(dest);
-            return String.format("Destination %s added", dest.getName());
-        }, executionContext);
+            return Optional.of(dest.getDestinationId());
     }
 
     /**
@@ -125,7 +124,6 @@ public class DestinationRepository {
                     targetDestination.setVisible(newDestination.getVisible());
                     targetDestination.update();
                     txn.commit();
-
                     value = Optional.of(Id);
                 }
             } finally {

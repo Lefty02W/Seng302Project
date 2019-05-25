@@ -21,10 +21,7 @@ import views.html.editDestinations;
 import views.html.login;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -225,8 +222,9 @@ public class DestinationsController extends Controller {
             return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
         }
         if(longLatCheck(destination)){
-            destinationRepository.insert(destination);
-            if (visibility == 1) {
+            Optional<Integer> destId = destinationRepository.insert(destination);
+            if (visibility == 1 && destId.isPresent()) {
+                destination.setDestinationId(destId.get());
                 newPublicDestination(destination);
             }
             return redirect(destShowRoute);
@@ -243,13 +241,11 @@ public class DestinationsController extends Controller {
         return !(destination.getLongitude() > 180 || destination.getLongitude() < -180);
     }
 
-
     /**
      * Deletes a destination in the database
      * @param id ID of the destination to delete
-     * @return
+     * @return a redirect to the destinations page
      */
-    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
         Integer profileId = SessionController.getCurrentUserId(request);
 
@@ -287,27 +283,37 @@ public class DestinationsController extends Controller {
 
     /**
      * This function will inspect all private destinations for all users and swap any private destinations for the
-     * new public destination
+     * new public destination if they are the same.
+     * This function will also make the owner of the newPublicDestination follow the newly public destination and
+     * transfer editing rights to the admins
      * @param newPublicDestination, the new private destination
      * @return true if change is successful, else false
      */
     public String newPublicDestination(Destination newPublicDestination) {
-            Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
-            if (destinationList.isPresent()) {
-                for (Destination destination : destinationList.get()) {
-                    if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
-                        destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
-                        Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
-                        if (tripDestinationList.isPresent()) {
-                            for (TripDestination tripDestination : tripDestinationList.get()) {
-                                tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
-                            }
+        Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
+        if (destinationList.isPresent()) {
+            for (Destination destination : destinationList.get()) {
+                if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
+                    destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
+                    Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
+                    if (tripDestinationList.isPresent()) {
+                        for (TripDestination tripDestination : tripDestinationList.get()) {
+                            tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
                         }
-                        destinationRepository.delete(destination.getDestinationId());
                     }
+                    destinationRepository.delete(destination.getDestinationId());
                 }
             }
-            return "success";
+//            System.out.println("yoyo your boi here " + newPublicDestination.getDestinationId());
+//            Integer usersId = newPublicDestination.getProfileId();
+//            Optional<Integer> adminId = profileRepository.getAdminId();
+//            if (adminId.isPresent()) {
+//                newPublicDestination.setProfileId(adminId.get());
+//            }
+//            destinationRepository.followDestination(newPublicDestination.getDestinationId(), usersId);
+//            destinationRepository.update(newPublicDestination, newPublicDestination.getDestinationId());
+        }
+        return "success";
     }
 
 }
