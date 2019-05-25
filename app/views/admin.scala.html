@@ -84,15 +84,15 @@
                                         <th>Alter Permission</th>
                                     </tr>
                                 </thead>
-                                <tr>
                                     @for(profile <- adminProfiles) {
+                                        <tr>
                                         <td>@profile.getProfileId</td>
                                         <td>@profile.getEmail</td>
                                         <td>@profile.getFirstName</td>
                                         <td>@profile.getLastName</td>
                                         <td><button class="btn btn-primary">Alter Permissions</button></td>
+                                        </tr>
                                     }
-                                </tr>
                             </table>
                         </div>
                             <!-- Profile table -->
@@ -131,7 +131,19 @@
                                             </td>
                                         <td>@profile.hasRole("admin")</td>
                                             <!-- TODO Update to id once deadbolt is working -->
-                                        <td><button class="btn btn-info">Admin</button></td>
+                                        @if(profile.hasRole("admin")) {
+                                        <td>
+                                            <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
+                                                <button class="btn btn-info">Remove Admin</button>
+                                            </a>
+                                        </td>
+                                        } else {
+                                            <td>
+                                            <a href="@routes.AdminController.makeAdmin(profile.getProfileId())">
+                                                <button class="btn btn-info">Make Admin</button>
+                                            </a>
+                                            </td>
+                                                }
                                     </tr>
                                 }
                             </table>

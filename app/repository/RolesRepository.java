@@ -42,6 +42,14 @@ public class RolesRepository {
         return Optional.ofNullable(role);
     }
 
+    public void removeRole(Integer userId){
+        Transaction txn = ebeanServer.beginTransaction();
+        String query = "DELETE FROM profile_roles WHERE profile_id = ?";
+        SqlUpdate deleteQuery = Ebean.createSqlUpdate(query);
+        deleteQuery.setParameter(1, userId);
+        deleteQuery.execute();
+        txn.commit();
+    }
 
     /**
      * Gets the role of a user profile based on the profile id
@@ -121,18 +129,6 @@ public class RolesRepository {
     }
 
 
-    /**
-     * Set the profile role based on the profile email and role name
-     * @param profileEmail The email of the profile to set role for
-     * @param roleName The name of the role to set for profile
-     */
-    public void setProfileRole(String profileEmail, String roleName) {
-        ProfileRepository profileRepository =  new ProfileRepository(this.config, context);
-        Integer profileId = profileRepository.getProfileById(profileEmail).getProfileId();
-        Optional<Integer> role = getRoleFromName(roleName);
-        // If the role does not exist, stop
-        role.ifPresent(integer -> addProfileRole(profileId, integer));
-    }
 
 
     /**
@@ -142,11 +138,14 @@ public class RolesRepository {
      */
     private void addProfileRole(Integer profileId, Integer roleId) {
         Transaction transaction = ebeanServer.beginTransaction();
-        String queryString = "INSERT INTO profile_roles(profile_id, role_id) VALUES(?, ?)";
+        String queryString = "INSERT INTO profile_roles(profile_id, role_id) VALUES (?, ?)";
         try {
             SqlUpdate query = Ebean.createSqlUpdate(queryString);
             query.setParameter(1, profileId);
             query.setParameter(2, roleId);
+            query.setGetGeneratedKeys(true); // Need to set the ID of the generated key
+            query.execute();
+            transaction.commit();
         } finally {
             transaction.end();
         }

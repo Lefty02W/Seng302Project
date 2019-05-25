@@ -79,6 +79,8 @@ GET   /admin/:profileId/delete         controllers.AdminController.deleteProfile
 GET     /admin/profile/:id/view              controllers.AdminController.viewProfile(request: Request, id: Integer)
 
 POST    /admin/profile/create       controllers.AdminController.createProfile(request: Request)
+GET    /admin/:userId/admin             controllers.AdminController.makeAdmin(request: Request, userId: Integer)
+GET   /admin/:userId/admin/remove       controllers.AdminController.removeAdmin(request: Request, userId: Integer)
 
 ## Admin Destinations
 GET     /admin/destinations/:destId         controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)

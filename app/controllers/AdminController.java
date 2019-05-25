@@ -244,6 +244,33 @@ public class AdminController {
 
 
     /**
+     * Endpoint method allowing an admin to make another use an admin
+     *
+     * @apiNote /admin/:userId/admin
+     * @param request the request sent to view the trip
+     * @param user the id of the user to promote
+     * @return the admin page rendered with the new admin
+     */
+    public Result makeAdmin(Http.Request request, Integer userId) {
+        String roleName = "admin";
+        rolesRepository.setProfileRole(userId, roleName);
+        return redirect(adminEndpoint);
+    }
+
+    /**
+     * Endpoint method allowing an admin to remove another use an admin
+     *
+     * @apiNote /admin/:userId/admin/remove
+     * @param request the request sent to view the trip
+     * @param user the id of the user to promote
+     * @return the admin page rendered with the admin removed
+     */
+    public Result removeAdmin(Http.Request request, Integer userId) {
+        rolesRepository.removeRole(userId);
+        return redirect(adminEndpoint);
+    }
+
+    /**
      * Endpoint method to delete a destination from the database
      *
      * @apiNote /admin/destinations/:destId/delete
