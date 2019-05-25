@@ -69,7 +69,7 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 Profile toSend = profile.get();
                 toSend = tripRepository.setUserTrips(toSend);
@@ -101,7 +101,7 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showCreate(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
             Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
@@ -130,7 +130,7 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showEdit(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
             Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
@@ -413,7 +413,7 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createTripDestinationCreate(Http.Request request, Integer order) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
             Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
@@ -442,7 +442,7 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editTripDestinationCreate(Http.Request request, Integer order, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
             Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);

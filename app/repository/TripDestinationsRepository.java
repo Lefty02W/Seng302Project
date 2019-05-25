@@ -3,10 +3,12 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
+import io.ebean.Transaction;
 import models.TripDestination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -54,6 +56,28 @@ public class TripDestinationsRepository {
                 return Optional.empty();
             }
         }, executionContext);
+    }
+
+    /**
+     * Method to check if a passed destination to be delete is within a trip in the database
+     *
+     * @param destinationId the id of the destination to check
+     * @return the result of the check with and optional id list of the trips which contain the destination within a completion stage
+     */
+    public CompletionStage<Optional<List<Integer>>> checkDestinationExists(int destinationId) {
+        return supplyAsync(
+            () -> {
+              List<Integer> foundIds =
+                  ebeanServer
+                      .find(TripDestination.class)
+                      .where()
+                      .eq("destination_id", destinationId)
+                      .select("tripId")
+                      .findSingleAttributeList();
+              if (foundIds.isEmpty()) return Optional.empty();
+              else return Optional.of(foundIds);
+            },
+            executionContext);
     }
 
 }

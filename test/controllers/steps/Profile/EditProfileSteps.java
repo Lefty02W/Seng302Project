@@ -101,7 +101,7 @@ public class EditProfileSteps extends ProvideApplication {
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
         injectRepositories();
-        profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
+        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
             if (profileOpt.isPresent()) {
                 assertEquals("Jenny", profileOpt.get().getFirstName());
                 assertEquals("Backpacker, Thrillseeker", profileOpt.get().getTravellerTypesString());
@@ -144,7 +144,7 @@ public class EditProfileSteps extends ProvideApplication {
     @Then("my edit is not saved")
     public void myEditIsNotSaved() {
         injectRepositories();
-        profileRepository.lookup(1).thenApplyAsync(profileOpt -> {
+        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypesString()));
             return "done";
         });

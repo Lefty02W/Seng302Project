@@ -2,6 +2,7 @@ package controllers;
 
 import models.Destination;
 import models.Profile;
+import models.RoutedObject;
 import models.Trip;
 import play.data.Form;
 import play.data.FormFactory;
@@ -36,6 +37,7 @@ public class AdminController {
     private final DestinationRepository destinationRepository;
     private final TripRepository tripRepository;
     private final Form<Profile> profileEditForm;
+    private final Form<Destination> destinationEditForm;
     private final Form<Profile> profileCreateForm;
     private final TripDestinationsRepository tripDestinationsRepository;
 
@@ -45,19 +47,23 @@ public class AdminController {
     private String adminEndpoint = "/admin";
 
     @Inject
-    public AdminController(FormFactory profileFormFactory, HttpExecutionContext httpExecutionContext,
+    public AdminController(FormFactory formFactory, HttpExecutionContext httpExecutionContext,
                            MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
                                        destinationRepository, TripRepository tripRepository, TripDestinationsRepository
                            tripDestinationsRepository) {
-        this.profileEditForm = profileFormFactory.form(Profile.class);
+        this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.tripRepository = tripRepository;
         this.tripDestinationsRepository = tripDestinationsRepository;
-        this.profileCreateForm = profileFormFactory.form(Profile.class);
+        this.profileCreateForm = formFactory.form(Profile.class);
+        this.destinationEditForm = formFactory.form(Destination.class);
     }
+
+
+
 
     /**
      * Function to delete a profile with the given email from the database using the profile controller method
@@ -67,11 +73,51 @@ public class AdminController {
      * @param id the id of the user who is to be deleted
      * @return
      */
-    public CompletionStage<Result> deleteProfile (Http.Request request, String id){
-
-
-        return profileRepository.delete(Integer.parseInt(id)).thenApplyAsync(userEmail -> redirect(adminEndpoint)
+    public CompletionStage<Result> deleteProfile (Http.Request request, Integer id){
+        return profileRepository.delete(id).thenApplyAsync(userEmail -> redirect(adminEndpoint)
         , httpExecutionContext.current());
+    }
+
+    /**
+     * Endpoint method to retrieve profile data for the admin to view
+     *
+     * @apiNote GET /admin/profile/:id/view
+     * @param request the request sent from the client to view a given profile
+     * @param id the id of the profile to view
+     * @return CompletionStage holding either a redirect or ok to the /admin page
+     */
+    public CompletionStage<Result> viewProfile(Http.Request request, Integer id) {
+        return profileRepository.findById(id).thenApplyAsync(profOpt -> {
+            if (profOpt.isPresent()) {
+                return ok(admin.render(Profile.find.all(), Trip.find.all(), new RoutedObject<Destination>(null, false, false), Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm,null, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/admin");
+            }
+        });
+    }
+
+
+    /**
+     * Create model for editing a users profile in the admin page
+     *
+     * @apiNote
+     * @param request
+     * @param id of the profile to be edited
+     * @return a redirect to the admin page
+     */
+    public CompletionStage<Result> showEditProfile(Http.Request request, Integer id) {
+        return profileRepository.findById(id).thenApplyAsync(profileOpt -> {
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+            if (profileOpt.isPresent()) {
+                Form<Profile> profileForm = profileEditForm.fill(profileOpt.get());
+                return ok(admin.render(profiles, trips,new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm,null, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/admin").flashing("info", "User profile not found"); //TODO look into sending an actual not found response
+            }
+        });
+
     }
 
 
@@ -88,28 +134,10 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
 
-            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm,null, request, messagesApi.preferred(request)));
         });
     }
 
-
-    /**
-     * Create model for editing a users profile in the admin page
-     *
-     * @apiNote
-     * @param request
-     * @param id of the profile to be edited
-     * @return a redirect to the admin page
-     */
-    public Result showEditProfile(Http.Request request, String id) {
-        List<Profile> profiles = Profile.find.all();
-        List<Trip> trips = Trip.find.all();
-        List<Destination> destinations = Destination.find.all();
-
-        Profile editProfile = profileRepository.getProfileById(id);
-        Form<Profile> profileForm = profileEditForm.fill(editProfile);
-        return ok(admin.render(profiles, trips, destinations, editProfile, profileForm, null, profileCreateForm, request, messagesApi.preferred(request)));
-    }
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form via the admin
@@ -119,13 +147,15 @@ public class AdminController {
      * @param request Http request
      * @return a redirect to the profile page
      */
-    public CompletionStage<Result> update (Http.Request request, String id){
+    public CompletionStage<Result> updateProfile (Http.Request request, Integer id){
         Form<Profile> currentProfileForm = profileEditForm.bindFromRequest(request);
+        System.out.println(currentProfileForm);
         Profile profile = currentProfileForm.get();
+        profile.initProfile(); //TODO I don't know if this is what sets up the types/countries
         profile.setNationalities(profile.getNationalities());
         profile.setPassports(profile.getPassports());
 
-        return profileRepository.update(profile, Integer.parseInt(id))
+        return profileRepository.update(profile, id)
                 .thenApplyAsync(x -> redirect(adminEndpoint)
         , httpExecutionContext.current());
     }
@@ -142,7 +172,7 @@ public class AdminController {
         profiles.add(profile);
         List<Trip> trips = new ArrayList<>(); // TODO Needs to read the users trips
         List<Destination> destinations = destinationRepository.getUserDestinations(profile.getProfileId());
-        return ok(admin.render(profiles, trips, destinations, null, profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
+        return ok(admin.render(profiles, trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm,null, request, messagesApi.preferred(request)));
     }
 
 
@@ -156,7 +186,7 @@ public class AdminController {
     public CompletionStage<Result> createProfile(Http.Request request) {
             Form<Profile> profileForm = profileCreateForm.bindFromRequest(request);
             Profile profile = profileForm.get();
-            //TODO Update when drop downs implemented
+            profile.initProfile();
 
             return profileRepository.insert(profile)
                     .thenApplyAsync(email -> redirect(adminEndpoint)
@@ -194,7 +224,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
 
-            return ok(admin.render(profiles, trips, destinations, null, profileEditForm, trip, profileCreateForm, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, trip, profileCreateForm,null, request, messagesApi.preferred(request)));
         });
     }
 
@@ -207,28 +237,66 @@ public class AdminController {
      * @param destId the id of the destination to delete
      * @return a redirect to /admin
      */
-//    public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
-//        return tripDestinationsRepository
-//            .checkDestinationExists(destId)
-//            .thenApplyAsync(
-//                result -> {
-//                  if (result.isPresent()) {
-//                      return redirect(adminEndpoint)
-//                          .flashing(
-//                              "error",
-//                              "Destination: "
-//                                  + destId
-//                                  + " is used within the following trips: "
-//                                  + result.get());
-//                  }
-//                  destinationRepository.delete(destId);
-//                  return redirect(adminEndpoint)
-//                          .flashing(
-//                                  "info",
-//                                  "Destination: "
-//                                          + destId
-//                                          + " deleted");
-//                });
-//    }
+    public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
+        return tripDestinationsRepository
+            .checkDestinationExists(destId)
+            .thenApplyAsync(
+                result -> {
+                  if (result.isPresent()) {
+                      return redirect(adminEndpoint)
+                          .flashing(
+                              "error",
+                              "Destination: "
+                                  + destId
+                                  + " is used within the following trips: "
+                                  + result.get());
+                  }
+                  destinationRepository.delete(destId);
+                  return redirect(adminEndpoint)
+                          .flashing(
+                                  "info",
+                                  "Destination: "
+                                          + destId
+                                          + " deleted");
+                });
+    }
+
+    /**
+     * Endpoint method to get a destination object to the view to edit or view
+     *
+     * @apiNote GET /admin/destinations/:destId?isEdit
+     * @param request the get request sent by the client
+     * @param destId the id of the destination to view
+     * @param isEdit boolean holding if the request is for an edit operation
+     * @return CompletionStage holding result rendering the admin  page with the desired destination
+     */
+    public CompletionStage<Result> showDestination(Http.Request request, Integer destId, Boolean isEdit) {
+        return supplyAsync(() -> {
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+            Destination currentDestination = destinationRepository.lookup(destId);
+            RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, isEdit, !isEdit);
+            if (isEdit) destinationEditForm.fill(currentDestination);
+            return ok(admin.render(profiles, trips, toSend, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, request, messagesApi.preferred(request)));
+        });
+    }
+
+
+    /**
+     * Endpoint method to save an admins edit of a destination
+     *
+     * @apiNote POST /admin/destinations/:destId
+     * @param request
+     * @param destId
+     * @return
+     */
+    public CompletionStage<Result> editDestination(Http.Request request, Integer destId) {
+        return supplyAsync(() -> {
+            Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
+            Destination destination = destForm.get();
+           return destinationRepository.update(destination, destId);
+        }).thenApply(string -> redirect("/admin"));
+    }
 
 }
