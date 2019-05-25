@@ -430,14 +430,21 @@ public class Profile extends Model {
         this.travellerTypesForm = travellerTypesForm;
     }
 
-
     public List<String> getRoles() { return this.roles; }
 
-
     /**
-     * Check the user has a given role name by searching their roles list.
+     * Check the user has a given role name by searching their roles list, if present.
      */
-    public boolean hasRole(String role) {return this.roles.contains(role);}
+    public boolean hasRole(String role) {
+
+        if (this.roles != null) {
+
+            return this.roles.contains(role);
+        } else {
+
+            return false;
+        }
+    }
 
     public void setPassports(Map<Integer, PassportCountry> passports) {
         this.passports = passports;

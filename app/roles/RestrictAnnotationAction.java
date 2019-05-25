@@ -53,7 +53,6 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
             profileRoles = roles.get();
         }
 
-        //Change this to check if user's roles contains configuration.value.
         // If so we are authorized, and the request should be called.
         if (profileRoles.contains(configuration.value())) {
             return delegate.call(req);  // Allow the request proceed
