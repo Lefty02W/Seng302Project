@@ -23,6 +23,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
 
     private RolesRepository rolesRepository;
+    private final static String GLOBAL_ADMIN_ROLE = "global_admin";
 
 
     @Inject
@@ -54,7 +55,7 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
         }
 
         // If so we are authorized, and the request should be called.
-        if (profileRoles.contains(configuration.value())) {
+        if (profileRoles.contains(configuration.value()) || profileRoles.contains(GLOBAL_ADMIN_ROLE)) {
             return delegate.call(req);  // Allow the request proceed
         }
 
