@@ -59,7 +59,7 @@
                 <div class="container-fluid">
 
                     <div class="row">
-                        <a id="addTripButton" href="@routes.TripsController.showCreate()"><button type="button" class="button-add">
+                        <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" class="button-add">
                             Add New Trip
                         </button> </a>
                     </div>
@@ -96,7 +96,7 @@
                                        </div>
 
                                        <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
-                                           <a href="@routes.TripsController.showEdit(trip)"><button type="submit" class="btn btn-primary">Edit</button></a>  <!-- Need to change to the correct style of button -->
+                                           <a href="@routes.TripsController.showEdit(trip, currentUser.getProfileId)"><button type="submit" class="btn btn-primary">Edit</button></a>  <!-- Need to change to the correct style of button -->
                                            <a href="@routes.TripsController.delete(trip)"><button type="submit" class="btn btn-outline-secondary">Delete</button></a>
                                        </div>
                                    </div>
