@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
 
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], destinationList: List[Destination], currentUser: Profile, id: Integer, toEdit: TripDestination)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], destinationList: List[Destination], currentUser: Profile, id: Integer, toEdit: TripDestination, userId: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -51,7 +51,7 @@
                     <h2>Edit Trip</h2>
                     </div>
                 </nav>
-                @helper.form(routes.TripsController.saveEdit(id)) {
+                @helper.form(routes.TripsController.saveEdit(id,userId)) {
                     @CSRF.formField
                     <div class="row">
                         <div class="tripNameInput">
@@ -70,7 +70,7 @@
                                     </div>
                                 }
                                 <h3>Add Destination</h3>
-                                @helper.form(routes.TripsController.addDestinationEditTrip(id)) {
+                                @helper.form(routes.TripsController.addDestinationEditTrip(id,userId)) {
                                     @CSRF.formField
                                 <div class="container">
                                     <div class="col">
@@ -118,10 +118,10 @@
                                                 <td>@tripDestination.getDepartureString</td>
                                                 <td>@tripDestination.getArrivalString</td>
                                                 <td> <!--onclick="fillModal(this)-->
-                                                    <a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder, id)">
+                                                    <a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder, id, userId)">
                                                         <input type="photo" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
                                                     </a>
-                                                    <a href="@routes.TripsController.deleteDestinationEditTrip(tripDestination.getDestOrder, id)">
+                                                    <a href="@routes.TripsController.deleteDestinationEditTrip(tripDestination.getDestOrder, id, userId)">
                                                         <input type="photo" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
                                                     </a>
                                                 </td>
@@ -243,7 +243,7 @@
 
                     <!-- Modal body -->
                 <div class="modal-body">
-                @helper.form(routes.TripsController.updateDestinationEdit(id, toEdit.getDestOrder)) {
+                @helper.form(routes.TripsController.updateDestinationEdit(id, toEdit.getDestOrder, userId)) {
                     @CSRF.formField
                     <div class="col" id="formItems">
                         <h5>Destination Order</h5>

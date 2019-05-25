@@ -128,28 +128,30 @@ public class TripsController extends Controller {
      * @return a render of the editDestinations trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> showEdit(Http.Request request, Integer id) {
+    public CompletionStage<Result> showEdit(Http.Request request, Integer id, Integer userId) {
         Integer profId = SessionController.getCurrentUserId(request);
+        if(userId != null) {
+            profId = userId;
+        }
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
-            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
-            try {
-                destinationsList = destListTemp.get();
-                destinationsList.addAll(followedListTemp.get());
-            } catch (NoSuchElementException e) {
-                destinationsList = new ArrayList<>();
-            }
             if (profile.isPresent()) {
+                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profile.get().getProfileId());
+                Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profile.get().getProfileId());
+                try {
+                    destinationsList = destListTemp.get();
+                    destinationsList.addAll(followedListTemp.get());
+                } catch (NoSuchElementException e) {
+                    destinationsList = new ArrayList<>();
+                }
                 Trip trip = tripRepository.getTrip(id);
                 Form<Trip> tripForm = form.fill(trip);
                 if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
                     orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
                 }
-                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, null, request, messagesApi.preferred(request)));
-            } else {
-                return redirect("/trips");
+                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, null, userId, request, messagesApi.preferred(request)));
             }
+            return redirect("/trips");
         });
     }
 
@@ -294,13 +296,14 @@ public class TripsController extends Controller {
      * @return a redirect to the trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result saveEdit(Http.Request request, int id) {
+    public Result saveEdit(Http.Request request, int id, Integer userId) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
         Integer currentUserId = SessionController.getCurrentUserId(request);
         trip.setProfileId(currentUserId);
         if (orderedCurrentDestinations.size() < 2){
-            return redirect("/trips/"+id+editUrl).flashing("info", "A trip must have at least two destinations");
+            return redirect("/trips/"+userId+"/"+id+editUrl).flashing("info", "A trip must have at least two destinations");
+
         } else {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.delete(id);
@@ -332,7 +335,7 @@ public class TripsController extends Controller {
      * @return redirects to the editDestinations trip page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation) {
+    public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation, Integer userId) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
@@ -348,9 +351,9 @@ public class TripsController extends Controller {
         if (invalid()){
             orderedCurrentDestinations.clear();
             orderedCurrentDestinations.putAll(tempCurrentDestMap);
-            return redirect("/trips/" + tripId + editUrl).flashing("info", dupDestFlashing);
+            return redirect("/trips/" + userId + "/" + tripId + editUrl).flashing("info", dupDestFlashing);
         }
-        return redirect("/trips/" + tripId + editUrl);
+        return redirect("/trips/" + userId + "/" + tripId + editUrl);
     }
 
     private boolean invalid() {
@@ -440,7 +443,7 @@ public class TripsController extends Controller {
      * @return a render of the create trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> editTripDestinationCreate(Http.Request request, Integer order, Integer id) {
+    public CompletionStage<Result> editTripDestinationCreate(Http.Request request, Integer order, Integer id, Integer userId) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
@@ -454,7 +457,7 @@ public class TripsController extends Controller {
             }
             if (profile.isPresent()) {
                 TripDestination dest = orderedCurrentDestinations.get(order);
-                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, dest, request, messagesApi.preferred(request)));
+                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, dest, userId, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }
@@ -471,13 +474,13 @@ public class TripsController extends Controller {
      * @return redirection to the editDestinations page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
+    public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId, Integer userId) {
         if (orderInvalidDelete(orderedCurrentDestinations.get(order)) ) {
-            return redirect("/trips/" + tripId + editUrl).flashing("info", dupDestFlashing);
+            return redirect("/trips/" + userId + "/" + tripId + editUrl).flashing("info", dupDestFlashing);
         }
         removeTripDestination(order);
         showEmptyEdit = true;
-        return redirect("/trips/" + tripId + editUrl);
+        return redirect("/trips/"+ userId + "/"  + tripId + editUrl);
     }
 
     /**
@@ -489,20 +492,20 @@ public class TripsController extends Controller {
      * @return redirection tot he editDestinations page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result addDestinationEditTrip(Http.Request request, int id) {
+    public Result addDestinationEditTrip(Http.Request request, int id, Integer userId) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
         if(!checkDates(tripDestination)) {
-            return redirect(createEndpoint).flashing("info", dateFlashingMessage);
+            return redirect("/trips/" + userId + "/" + id + editUrl).flashing("info", dateFlashingMessage);
         }
         if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
-            return redirect("/trips/" + id + editUrl).flashing("info", dupDestFlashing);
+            return redirect("/trips/" + userId + "/" + id + editUrl).flashing("info", dupDestFlashing);
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
-        return redirect("/trips/"+id+editUrl);
+        return redirect("/trips/" + userId + "/" + id + editUrl);
     }
 
 

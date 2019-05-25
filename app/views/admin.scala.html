@@ -115,7 +115,7 @@
                                 </thead>
                                 @for(profile <- profiles) {
                                     <tr>
-                                        <td>Profile Id</td>
+                                        <td>@profile.getProfileId</td>
                                         <td>@profile.getEmail</td>
                                         <td>
                                             <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
@@ -135,8 +135,9 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col text-center">
                                 <h2 align="center">User Trips</h2>
+                                <button class="btn btn-primary"  >Add Trip</button>
                             </div>
                         </div>
                         <div class="row">
@@ -154,9 +155,13 @@
                                 @for(trip <- trips) {
                                     <tr>
                                         <td>@trip.getTripId</td>
-                                        <td>@trip.getProfileId</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@trip.getProfileId</td>
                                         <td>@trip.getName</td>
-                                        <td><button class="btn btn-primary">Edit</button></td>
+                                        <td>
+                                        <a href="@routes.TripsController.showEdit(trip.getTripId, trip.getProfileId)">
+                                            <button class="btn btn-primary">Edit</button>
+                                        </a>
+                                        </td>
                                         <td>
                                             <button class="btn btn-danger" onclick="fillDeleteValues('/admin/trips/@trip.getTripId/delete')">Delete</button>
                                         </td>

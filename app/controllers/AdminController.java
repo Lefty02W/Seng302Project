@@ -119,6 +119,19 @@ public class AdminController {
     }
 
 
+
+    public CompletionStage<Result> editTrip(Http.Request request, Integer tripId, Integer profileId) {
+        System.out.println(tripId);
+        System.out.println(profileId);
+        return supplyAsync(() -> {
+            List<Profile> profiles = Profile.find.all();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+
+            return ok(admin.render(profiles, trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm,null, request, messagesApi.preferred(request)));
+        });
+    }
+
     /**
      * Endpoint method to show the admin page on the site
      *
