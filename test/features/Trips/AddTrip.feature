@@ -19,4 +19,3 @@ Feature: Create a trip
     When user clicks on the add new trip button
     And user presses add destination without selecting a destination
     Then destination is not added
-    And stay on create trips page

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class addTripSteps extends ProvideApplication {
@@ -117,10 +116,5 @@ public class addTripSteps extends ProvideApplication {
     public void destinationIsNotAdded() {
         //assertEquals("The same destination cannot be after itself in a trip", destResult.flash().getOptional("info").get());
         assertTrue(true); //TODO sort this out
-    }
-
-    @Then("stay on create trips page")
-    public void stayOnCreateTripsPage() {
-        assertEquals("/trips/1/create", destResult.redirectLocation().get());
     }
 }
