@@ -152,11 +152,10 @@ public class AdminController {
         System.out.println(currentProfileForm);
         Profile profile = currentProfileForm.get();
         profile.initProfile(); //TODO I don't know if this is what sets up the types/countries
-        return profileRepository.update(profile, id).thenApplyAsync(x -> redirect(adminEndpoint)
         profile.setNationalities(profile.getNationalities());
         profile.setPassports(profile.getPassports());
 
-        return profileRepository.update(profile, Integer.parseInt(id))
+        return profileRepository.update(profile, id)
                 .thenApplyAsync(x -> redirect(adminEndpoint)
         , httpExecutionContext.current());
     }
