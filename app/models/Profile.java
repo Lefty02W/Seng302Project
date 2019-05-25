@@ -5,6 +5,7 @@ import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
@@ -75,8 +76,8 @@ public class Profile extends Model {
     @Transient
     private Map <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
-    private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
+    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
 
 
     /**

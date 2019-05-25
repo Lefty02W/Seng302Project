@@ -106,7 +106,7 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showEdit (Integer profileId){
-        return profileRepository.lookup(profileId).thenApplyAsync(optionalProfile -> {
+        return profileRepository.findById(profileId).thenApplyAsync(optionalProfile -> {
             if (optionalProfile.isPresent()) {
                 Profile toEditProfile = optionalProfile.get();
                 Form<Profile> currentProfileForm = profileForm.fill(toEditProfile);
@@ -514,7 +514,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profileRec -> {
+        return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
             if (profileRec.isPresent()) {
                 List<Photo> displayImageList = getUserPhotos(request);
 

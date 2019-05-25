@@ -54,7 +54,7 @@ public class TravellersController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> search(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 Form<PartnerFormData> searchForm = form.bindFromRequest(request);
                 PartnerFormData searchData = searchForm.get();
@@ -255,7 +255,7 @@ public class TravellersController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.lookup(profId).thenApplyAsync(profile -> {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 List<Profile> profiles = Profile.find.all();
 
