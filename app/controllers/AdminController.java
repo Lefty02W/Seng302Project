@@ -93,7 +93,7 @@ public class AdminController {
      * @return CompletionStage holding either a redirect or ok to the /admin page
      */
     public CompletionStage<Result> viewProfile(Http.Request request, Integer id) {
-        return profileRepository.lookup(id).thenApplyAsync(profOpt -> {
+        return profileRepository.findById(id).thenApplyAsync(profOpt -> {
             if (profOpt.isPresent()) {
                 return ok(admin.render(Profile.find.all(), Trip.find.all(), null, Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm, request, messagesApi.preferred(request)));
             } else {
@@ -112,7 +112,7 @@ public class AdminController {
      * @return a redirect to the admin page
      */
     public CompletionStage<Result> showEditProfile(Http.Request request, Integer id) {
-        return profileRepository.lookup(id).thenApplyAsync(profileOpt -> {
+        return profileRepository.findById(id).thenApplyAsync(profileOpt -> {
             List<Profile> profiles = Profile.find.all();
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
@@ -156,6 +156,7 @@ public class AdminController {
      */
     public CompletionStage<Result> updateProfile (Http.Request request, Integer id){
         Form<Profile> currentProfileForm = profileEditForm.bindFromRequest(request);
+        System.out.println(currentProfileForm);
         Profile profile = currentProfileForm.get();
         profile.initProfile(); //TODO I don't know if this is what sets up the types/countries
         return profileRepository.update(profile, id).thenApplyAsync(x -> redirect(adminEndpoint)
@@ -188,7 +189,7 @@ public class AdminController {
     public CompletionStage<Result> createProfile(Http.Request request) {
             Form<Profile> profileForm = profileCreateForm.bindFromRequest(request);
             Profile profile = profileForm.get();
-            //TODO Update when drop downs implemented
+            profile.initProfile();
 
             return profileRepository.insert(profile)
                     .thenApplyAsync(email -> redirect(adminEndpoint)
