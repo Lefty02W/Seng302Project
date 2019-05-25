@@ -74,13 +74,37 @@ public class RolesRepository {
      */
     private Optional<Integer> getRoleFromName(String roleName) {
         Integer roleId = null;
-        String query = "SELECT FROM roles WHERE role_name = ?";
+        String query = "SELECT * FROM roles WHERE role_name = ?";
         SqlRow row = ebeanServer.createSqlQuery(query).setParameter(1, roleName).findOne();
         if (!row.isEmpty()) {
             roleId = row.getInteger("role_id");
         }
 
         return Optional.ofNullable(roleId);
+    }
+
+    /**
+     * Retrieves a list of profile ids for a given role name.
+     *
+     * @param roleName The name of the role get ID of
+     * @return The role ID if a matching role name exists on database
+     */
+    public List<Integer> getProfileIdFromRoleName(String roleName) {
+        Optional<Integer> roleId = getRoleFromName(roleName);
+        List<Integer> profileIds = new ArrayList<>();
+
+        if(roleId.isPresent()){
+
+            String query = "SELECT * FROM profile_roles WHERE role_id = ?";
+            List<SqlRow> rows = ebeanServer.createSqlQuery(query).setParameter(1, roleId.get()).findList();
+
+            for(SqlRow row: rows ) {
+
+                profileIds.add(row.getInteger("profile_id"));
+
+            }
+        }
+        return profileIds;
     }
 
 
