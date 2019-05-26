@@ -56,7 +56,7 @@ body {
 }
 
 /* Table Styling*/
-table {
+.table-general {
     border-collapse: collapse;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(0,0,0,0.1);
@@ -64,14 +64,13 @@ table {
     background-color: #e8f5e9;
 }
 
-th,
-td {
+.table-general th, td {
     padding: 1vh;
     background-color: rgba(255,255,255,0.2);
     color: #376238;
 }
 
-th {
+.table-general th {
     border: 3px solid #205723;
 }
 

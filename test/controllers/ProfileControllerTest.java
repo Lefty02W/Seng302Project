@@ -17,7 +17,7 @@ import static play.test.Helpers.GET;
 /**
  * Test Set for profile controller
  */
-public class ProfileControllerTest extends ProvideApplication{
+public class ProfileControllerTest extends ProvideApplication {
 
     @Before
     public void setUp() {

@@ -31,15 +31,3 @@ Feature: Sign Up
     And he chooses "Holidaymaker, Thrillseeker" in Traveller Type
     And he submits
     Then his account should be saved
-
-
-
-#  editForm.put("firstName", "John");
-#  editForm.put("lastName", "James");
-#  editForm.put("email", "john@gmail.com");
-#  editForm.put("password", "password");
-#  editForm.put("birthDate", "1970-01-13");
-#  editForm.put("passportsForm", "NZ");
-#  editForm.put("gender", "Male");
-#  editForm.put("nationalitiesForm", "password");
-#  editForm.put("travellerTypesForm", "Backpacker,Gap Year");

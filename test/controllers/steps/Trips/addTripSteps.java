@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class addTripSteps extends ProvideApplication {
@@ -52,7 +51,7 @@ public class addTripSteps extends ProvideApplication {
 
         Http.RequestBuilder requestTrip = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/trips/create")
+                .uri("/trips/1/create")
                 .session("connected", "1");
         Result tripResult = Helpers.route(provideApplication(), requestTrip);
         Assert.assertEquals(200, tripResult.status());
@@ -106,7 +105,7 @@ public class addTripSteps extends ProvideApplication {
     public void userPressesAddDestinationWithoutSelectingADestination() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/trips/create")
+                .uri("/trips/1/create")
                 .bodyForm(destForm)
                 .session("connected", "1");
 
@@ -117,10 +116,5 @@ public class addTripSteps extends ProvideApplication {
     public void destinationIsNotAdded() {
         //assertEquals("The same destination cannot be after itself in a trip", destResult.flash().getOptional("info").get());
         assertTrue(true); //TODO sort this out
-    }
-
-    @Then("stay on create trips page")
-    public void stayOnCreateTripsPage() {
-        assertEquals("/trips/create", destResult.redirectLocation().get());
     }
 }

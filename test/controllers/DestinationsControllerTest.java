@@ -5,7 +5,6 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;

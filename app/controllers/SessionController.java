@@ -16,7 +16,7 @@ public class SessionController {
      * @param request
      * @return Web page showing connected user's email
      */
-    static Integer getCurrentUserId(Http.Request request) {
+    public static Integer getCurrentUserId(Http.Request request) {
         Optional<String> connected = request.session().getOptional("connected");
         String stringId;
         if (connected.isPresent()) {
