@@ -339,17 +339,16 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result photoAt(Integer id){
         Image image = Image.find.byId(id);
-        File imageFilePath = new File(image.getPath());
-        if (imageFilePath.exists()) {
-            try {
+
+        try {
+            File imageFilePath = new File(Objects.requireNonNull(image).getPath());
+            if (imageFilePath.exists()) {
                 return ok(new FileInputStream(imageFilePath)).as(image.getType());
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        } else {
             return notFound(imageFilePath.getAbsoluteFile());
+        } catch(NullPointerException | IOException e) {
+            return redirect(profileEndpoint); //  When there an id of a photo does not exist
         }
-        return redirect(profileEndpoint); //  When there an id of a photo does not exist
     }
 
 

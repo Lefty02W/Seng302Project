@@ -157,4 +157,16 @@ public class ProfileControllerTest extends ProvideApplication{
 
         assertEquals(NOT_FOUND, result.status());
     }
+
+    @Test
+    public void noIdPhotoDisplay() throws IOException {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/profile/photo?id=100")
+                .session("connected", "john@gmail.com");
+
+        Result result = Helpers.route(provideApplication(), request);
+
+        assertEquals(303, result.status());
+    }
 }
