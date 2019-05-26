@@ -49,13 +49,13 @@ public class ProvideApplication extends WithApplication {
 
     protected void injectRepositories() {
         app = provideApplication();
-        app.injector().instanceOf(ProfileRepository.class);
         app.injector().instanceOf(PhotoRepository.class);
         app.injector().instanceOf(TripDestinationsRepository.class);
         app.injector().instanceOf(TripRepository.class);
         app.injector().instanceOf(NationalityRepository.class);
         app.injector().instanceOf(PassportCountryRepository.class);
 
+        profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
     }
 
