@@ -219,25 +219,21 @@ public class DestinationRepository {
     }
 
     /**
-     * Checks to see if exactly 1 person follows this destination, if true this is its first follower, will change
+     * Checks to see if destination is owned by an admin, if true this is its first follower, will change
      * ownership to admins and set the previous owner to follow destination
      * @param destId the id of the destination
      * @return boolean false if nothing happened, true if ownership was changed to admins
      */
     public boolean setOwnerAsAdmin(int destId) {
-        String alreadyExistsQuery = "SELECT * FROM follow_destination where destination_id = ?";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(alreadyExistsQuery).setParameter(1, destId).findList();
-        System.out.println("here");
-        if (rowList.size() == 1) {
-            System.out.println("is true");
-            Destination destination = lookup(destId);
-            int profileId = destination.getProfileId();
-            Optional<Integer> optionalAdminId = profileRepository.getAdminId();
-            if (optionalAdminId.isPresent()) {
-                Integer adminId = optionalAdminId.get();
+        Destination destination = lookup(destId);
+        int profileId = destination.getProfileId();
+        Optional<Integer> optionalAdminId = profileRepository.getAdminId();
+        if (optionalAdminId.isPresent()) {
+            Integer adminId = optionalAdminId.get();
+            if (destination.getProfileId() != adminId) {
                 destination.setProfileId(adminId);
-                followDestination(destination.getDestinationId(), profileId);
                 updateProfileId(destination, destination.getDestinationId());
+                followDestination(destination.getDestinationId(), profileId);
                 return true;
             }
             return false;
