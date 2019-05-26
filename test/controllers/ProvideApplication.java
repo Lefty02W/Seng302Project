@@ -26,7 +26,7 @@ public class ProvideApplication extends WithApplication {
     }
 
 
-    Integer loginUser() {
+    protected Integer loginUser() {
         Map<String, String> formData = new HashMap<>();
         formData.put("email", "john@gmail.com");
         formData.put("password", "password");

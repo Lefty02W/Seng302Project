@@ -59,7 +59,7 @@ GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWit
 
 # Admins
 POST    /admin/:id                controllers.ProfileController.updateAdmin(request: Request, id: Integer)
-GET     /admin                       controllers.AdminController.show(request: Request)
+GET     /admin                    controllers.AdminController.show(request: Request)
 
 
 
