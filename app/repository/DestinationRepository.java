@@ -21,7 +21,6 @@ public class DestinationRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
-    private final ProfileRepository profileRepository;
     private final RolesRepository rolesRepository;
 
 
@@ -32,10 +31,9 @@ public class DestinationRepository {
      * @param executionContext
      */
     @Inject
-    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, ProfileRepository profileRepository, RolesRepository roleRepository) {
+    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, RolesRepository roleRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
-        this.profileRepository = profileRepository;
         this.rolesRepository = roleRepository;
     }
 
@@ -143,6 +141,7 @@ public class DestinationRepository {
     /**
      * Update function to change only the profileId of a destination since the other update cannot handle this
      * Preconditions: The newDestinations profileId is a valid profileId
+     *
      * @param newDestination
      * @param destinationId
      * @return
@@ -189,23 +188,25 @@ public class DestinationRepository {
 
     /**
      * Checks to see if a user has any destinations that are the same as the destination1 passed in
+     *
      * @param destination1 the destination
      * @return Optional destination list, if there is a destination the same as destination1 then that destination will be
      * returned
      */
     public Optional<List<Destination>> checkForSameDestination(Destination destination1) {
-            List<Destination> destinations = (Destination.find.query()
-                    .where()
-                    .eq("name", destination1.getName())
-                    .eq("type", destination1.getType())
-                    .eq("country", destination1.getCountry())
-                    .findList());
-            return Optional.of(destinations);
+        List<Destination> destinations = (Destination.find.query()
+                .where()
+                .eq("name", destination1.getName())
+                .eq("type", destination1.getType())
+                .eq("country", destination1.getCountry())
+                .findList());
+        return Optional.of(destinations);
     }
 
     /**
      * Method to follow a destination for a user
-     * @param destId Id of the entered destination
+     *
+     * @param destId    Id of the entered destination
      * @param profileId Id of the entered profile
      * @return Optional array of integers of the followed users id
      */
@@ -221,7 +222,8 @@ public class DestinationRepository {
 
     /**
      * Method to allow a user to unfollow a given destination
-     * @param destId Id of the destination to be unfollowed
+     *
+     * @param destId    Id of the destination to be unfollowed
      * @param profileId Id of the user that wants to unfollow a destination
      * @return Optional list of integers for the followed destination ids
      */
@@ -237,6 +239,7 @@ public class DestinationRepository {
     /**
      * Checks to see if destination is owned by an admin, if true this is its first follower, will change
      * ownership to admins and set the previous owner to follow destination
+     *
      * @param destId the id of the destination
      */
     private void setOwnerAsAdmin(int destId) {
@@ -255,6 +258,7 @@ public class DestinationRepository {
 
     /**
      * Method returns all of the users followed destinations
+     *
      * @param profileId User if of the followed destinations to return
      * @return Optional array list of destinations followed by the user
      */
@@ -282,6 +286,7 @@ public class DestinationRepository {
 
     /**
      * Method returns all followed destinations ids from a user
+     *
      * @param profileId User id for the user followed destinations
      * @return Optional array list of integers of the followed destination ids
      */
@@ -297,36 +302,10 @@ public class DestinationRepository {
     }
 
     /**
-     * Method to return all of the admins destinations
-     * @return Optional array of destinations owned by the admin
-     */
-    public Optional<ArrayList<Destination>> getAdminDestinations() {
-        ArrayList<Destination> destList = new ArrayList<>();
-        String selectQuery = "Select * from destination where profile_id IN (select profile_id from admin)";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).findList();
-        Destination destToAdd;
-        for (SqlRow aRowList : rowList) {
-            destToAdd = new Destination();
-            destToAdd.setDestinationId(aRowList.getInteger("destination_id"));
-            destToAdd.setProfileId(aRowList.getInteger("profile_id"));
-            destToAdd.setName(aRowList.getString("name"));
-            destToAdd.setType(aRowList.getString("type"));
-            destToAdd.setCountry(aRowList.getString("country"));
-            destToAdd.setDistrict(aRowList.getString("district"));
-            destToAdd.setLatitude(aRowList.getDouble("latitude"));
-            destToAdd.setLongitude(aRowList.getDouble("longitude"));
-            destToAdd.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
-            destList.add(destToAdd);
-        }
-        return Optional.of(destList);
-    }
-
-
-    /**
      * class to check if destination is already available to user
      * return true if already in else false
      */
-    public boolean checkValidEdit(Destination destination, int  profileId, int id) {
+    public boolean checkValidEdit(Destination destination, int profileId) {
         List<Destination> destinations = (Destination.find.query()
                 .where()
                 .eq("name", destination.getName())
@@ -343,7 +322,6 @@ public class DestinationRepository {
                 .eq("visible", 1)
                 .findList());
 
-        return !destinations.isEmpty() && !publicDestinations.isEmpty();
+        return !destinations.isEmpty() || !publicDestinations.isEmpty();
     }
-
 }

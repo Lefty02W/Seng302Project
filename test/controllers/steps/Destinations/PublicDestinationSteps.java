@@ -99,7 +99,7 @@ public class PublicDestinationSteps extends ProvideApplication {
             boolean match = false;
             for (Integer destId: listDests) {
                 Destination destination = destinationRepository.lookup(destId);
-                if (destination.getName() == name && destination.getType() == type && destination.getCountry() == country
+                if (destination.getName().equals(name) && destination.getType().equals(type) && destination.getCountry().equals(country)
                         && destination.getVisible() == 1) {
                     match = true;
                 }

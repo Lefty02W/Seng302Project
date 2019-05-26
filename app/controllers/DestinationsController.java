@@ -37,8 +37,6 @@ public class DestinationsController extends Controller {
     private List<Destination> destinationsList = new ArrayList<>();
     private List<Integer> followedDestinationIds = new ArrayList<>();
     private final Form<Destination> form;
-    private final Form<Profile> userForm;
-    private final Form<Login> loginForm;
     private final DestinationRepository destinationRepository;
     private final TripDestinationsRepository tripDestinationsRepository;
     private final ProfileRepository profileRepository;
@@ -56,8 +54,6 @@ public class DestinationsController extends Controller {
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository) {
         this.form = formFactory.form(Destination.class);
-        this.userForm = formFactory.form(Profile.class);
-        this.loginForm = formFactory.form(Login.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
@@ -97,9 +93,10 @@ public class DestinationsController extends Controller {
 
     /**
      * Method to follow a destination called from the destinations page and used from an endpoint
+     *
      * @param profileId Id of the profile to follow destination
-     * @param destId Id of the destination to be followed
-     * @param isPublic Boolean of the destination if is public or not
+     * @param destId    Id of the destination to be followed
+     * @param isPublic  Boolean of the destination if is public or not
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
@@ -116,9 +113,10 @@ public class DestinationsController extends Controller {
 
     /**
      * Method to unfollow a destination called from the destinations page and used from an endpoint
+     *
      * @param profileId Id of the profile to unfollow destination
-     * @param destId Id of the destination to be unfollowed
-     * @param isPublic Boolean of the destination if is public or not
+     * @param destId    Id of the destination to be unfollowed
+     * @param isPublic  Boolean of the destination if is public or not
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
@@ -154,7 +152,7 @@ public class DestinationsController extends Controller {
      * Displays a page to create a destination
      *
      * @param request
-     * @return
+     * @return redirect
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showCreate(Http.Request request) {
@@ -165,7 +163,7 @@ public class DestinationsController extends Controller {
                 dest.setLatitude(0.0);
                 dest.setLongitude(0.0);
                 Form<Destination> destinationForm = form.fill(dest);
-                return ok(createDestinations.render(destinationForm, profile.get(),request, messagesApi.preferred(request)));
+                return ok(createDestinations.render(destinationForm, profile.get(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -176,8 +174,8 @@ public class DestinationsController extends Controller {
      * This method displays the editDestinations page for the destinations to the user
      *
      * @param request
-     * @param id
-     * @return
+     * @param id      of the destination
+     * @return redirect to destination
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> edit(Http.Request request, Integer id) {
@@ -204,7 +202,7 @@ public class DestinationsController extends Controller {
      *
      * @param request
      * @param id      The ID of the destination to editDestinations.
-     * @return
+     * @return redirect
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> update(Http.Request request, Integer id) {
@@ -214,10 +212,10 @@ public class DestinationsController extends Controller {
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
-        if(destinationRepository.checkValidEdit(dest, userId, id)) {
-            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("success", "This destination is already registered and unavailable to create"));
+        if (destinationRepository.checkValidEdit(dest, userId)) {
+            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
         }
-        if(longLatCheck(dest)){
+        if (longLatCheck(dest)) {
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
                 if (visibility == 1) {
                     if (destId.isPresent()) {
@@ -228,7 +226,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -236,7 +234,7 @@ public class DestinationsController extends Controller {
      * Adds a new destination to the database
      *
      * @param request
-     * @return
+     * @return redirect
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> saveDestination(Http.Request request) {
@@ -247,10 +245,10 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
-        if(destinationRepository.checkValidEdit(destination, userId, -1)) {
+        if (destinationRepository.checkValidEdit(destination, userId)) {
             return supplyAsync(() -> redirect("/destinations/create").flashing("success", "This destination is already registered and unavailable to create"));
         }
-        if(longLatCheck(destination)){
+        if (longLatCheck(destination)) {
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
                 if (visibility == 1) {
                     if (destId.isPresent()) {
@@ -266,11 +264,11 @@ public class DestinationsController extends Controller {
     }
 
 
-
     /**
      * Function to check if the long and lat are valid
-     * @param destination  destination to check lat and long values
-     * @return Boolean true
+     *
+     * @param destination destination to check lat and long values
+     * @return Boolean true if longitude and latitude are valid
      */
     private boolean longLatCheck(Destination destination) {
         if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
@@ -281,6 +279,7 @@ public class DestinationsController extends Controller {
 
     /**
      * Deletes a destination in the database
+     *
      * @param id ID of the destination to delete
      * @return a redirect to the destinations page
      */
@@ -298,24 +297,25 @@ public class DestinationsController extends Controller {
     /**
      * This function will inspect all private destinations for all users and swap any private destinations for the
      * new public destination if they are the same.
+     *
      * @param newPublicDestination, the new private destination
      */
     private void newPublicDestination(Destination newPublicDestination) {
-            Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
-            if (destinationList.isPresent()) {
-                for (Destination destination : destinationList.get()) {
-                    if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
-                        destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
-                        Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
-                        if (tripDestinationList.isPresent()) {
-                            for (TripDestination tripDestination : tripDestinationList.get()) {
-                                tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
-                            }
+        Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
+        if (destinationList.isPresent()) {
+            for (Destination destination : destinationList.get()) {
+                if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
+                    destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
+                    Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
+                    if (tripDestinationList.isPresent()) {
+                        for (TripDestination tripDestination : tripDestinationList.get()) {
+                            tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
                         }
-                        destinationRepository.delete(destination.getDestinationId());
                     }
+                    destinationRepository.delete(destination.getDestinationId());
                 }
             }
+        }
     }
 
 }
