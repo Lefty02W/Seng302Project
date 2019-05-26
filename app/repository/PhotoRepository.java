@@ -123,7 +123,6 @@ public class PhotoRepository {
                         .where().eq("photo_id", id)
                         .findOne();
 
-        System.out.println(photo);
         return Optional.ofNullable(photo);
     }
 }

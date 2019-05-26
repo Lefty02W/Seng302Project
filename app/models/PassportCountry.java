@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
+/**
+ * Model class to hold a possible passport country for a profile
+ */
 public class PassportCountry {
 
     @Id
@@ -22,7 +25,6 @@ public class PassportCountry {
         this.passport_country_id = passport_country_id;
         this.passport_name = passport_name;
     }
-
 
 
     public PassportCountry(String passport_name) {
