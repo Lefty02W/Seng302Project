@@ -20,6 +20,7 @@ import views.html.destinations;
 import views.html.editDestinations;
 import views.html.login;
 
+import javax.annotation.processing.Completion;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
@@ -192,7 +193,7 @@ public class DestinationsController extends Controller {
      * @return
      */
     @Security.Authenticated(SecureSession.class)
-    public Result update(Http.Request request, Integer id) {
+    public CompletionStage<Result> update(Http.Request request, Integer id) {
         Integer userId = SessionController.getCurrentUserId(request);
         Form<Destination> destinationForm = form.bindFromRequest(request);
         String visible = destinationForm.field("visible").value().get();
@@ -200,17 +201,20 @@ public class DestinationsController extends Controller {
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
         if(destinationRepository.checkValidEdit(dest, userId, id)) {
-            return redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create");
+            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create"));
         }
         if(longLatCheck(dest)){
-            Optional<Integer> destId = destinationRepository.update(dest, id);
-            if (visibility == 1 && destId.isPresent()) {
-                dest.setDestinationId(destId.get());
-                newPublicDestination(dest);
-            }
-            return redirect(destShowRoute);
+            return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
+                if (visibility == 1) {
+                    if (destId.isPresent()) {
+                        dest.setDestinationId(destId.get());
+                        newPublicDestination(dest);
+                    }
+                }
+                return redirect(destShowRoute);
+            });
         } else {
-            return redirect("/destinations/" + id +"/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
+            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -221,31 +225,33 @@ public class DestinationsController extends Controller {
      * @return
      */
     @Security.Authenticated(SecureSession.class)
-    public Result saveDestination(Http.Request request) {
+    public CompletionStage<Result> saveDestination(Http.Request request) {
+        System.out.println("here me boiii");
         Integer userId = SessionController.getCurrentUserId(request);
-        if (userId == null) {
-            return ok(login.render(loginForm, userForm, request, messagesApi.preferred(request)));
-        }
         Form<Destination> destinationForm = form.bindFromRequest(request);
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
-        if(destinationRepository.checkValid(destination, userId)) {
-            return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
+        if(destinationRepository.checkValidEdit(destination, userId, userId)) {
+            return supplyAsync(() -> redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create"));
         }
-        if (longLatCheck(destination)) {
-            Optional<Integer> destId = destinationRepository.insert(destination);
-            if (visibility == 1 && destId.isPresent()) {
-                destination.setDestinationId(destId.get());
-                newPublicDestination(destination);
-            }
-            return redirect(destShowRoute);
+        if(longLatCheck(destination)){
+            return destinationRepository.insert(destination).thenApplyAsync(destId -> {
+                if (visibility == 1) {
+                    if (destId.isPresent()) {
+                        destination.setDestinationId(destId.get());
+                        newPublicDestination(destination);
+                    }
+                }
+                return redirect(destShowRoute);
+            });
         } else {
-            return redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
+            return supplyAsync(() -> redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
+
 
 
     private boolean longLatCheck(Destination destination) {
@@ -298,8 +304,6 @@ public class DestinationsController extends Controller {
     /**
      * This function will inspect all private destinations for all users and swap any private destinations for the
      * new public destination if they are the same.
-     * This function will also make the owner of the newPublicDestination follow the newly public destination and
-     * transfer editing rights to the admins
      * @param newPublicDestination, the new private destination
      * @return true if change is successful, else false
      */

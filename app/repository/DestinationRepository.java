@@ -80,9 +80,11 @@ public class DestinationRepository {
      * @param dest The destination to insert
      * @return
      */
-    public Optional<Integer> insert(Destination dest) {
+    public CompletionStage<Optional<Integer>> insert(Destination dest) {
+        return supplyAsync(() -> {
             ebeanServer.insert(dest);
             return Optional.of(dest.getDestinationId());
+        }, executionContext);
     }
 
     /**
@@ -111,7 +113,8 @@ public class DestinationRepository {
      * @param Id             The ID of the destination to editDestinations
      * @return
      */
-    public Optional<Integer> update(Destination newDestination, Integer Id) {
+    public CompletionStage<Optional<Integer>> update(Destination newDestination, Integer Id) {
+        return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Optional<Integer> value = Optional.empty();
             try {
@@ -126,13 +129,15 @@ public class DestinationRepository {
                     targetDestination.setVisible(newDestination.getVisible());
                     targetDestination.update();
                     txn.commit();
-                    value = Optional.of(Id);
+                    value = Optional.of(targetDestination.getDestinationId());
                 }
             } finally {
                 txn.end();
             }
             return value;
+        }, executionContext);
     }
+
 
     /**
      * and update function to change only the profileId of a destination since the other update cannot handle this
@@ -231,6 +236,7 @@ public class DestinationRepository {
         if (optionalAdminId.isPresent()) {
             Integer adminId = optionalAdminId.get();
             if (destination.getProfileId() != adminId) {
+                System.out.println();
                 destination.setProfileId(adminId);
                 updateProfileId(destination, destination.getDestinationId());
                 followDestination(destination.getDestinationId(), profileId);

@@ -82,6 +82,11 @@ public class TripDestinationsRepository {
             executionContext);
     }
 
+    /**
+     * returns all tripDestinations with a given destination
+     * @param destinationId the id of the destination
+     * @return an optional list of TripDestinations
+     */
     public Optional<List<TripDestination>> getTripDestsWithDestId(Integer destinationId) {
         return Optional.of(TripDestination.find.query()
                 .where()
@@ -89,6 +94,11 @@ public class TripDestinationsRepository {
                 .findList());
     }
 
+    /**
+     * edits the destination id in a tripDestination
+     * @param tripDestination the tripDestination to be edited
+     * @param newDestinationId the new destinationId
+     */
     public void editTripId(TripDestination tripDestination, Integer newDestinationId) {
         Transaction txn = ebeanServer.beginTransaction();
         try {
@@ -102,8 +112,5 @@ public class TripDestinationsRepository {
             txn.end();
         }
     }
-
-}
-
 
 }
