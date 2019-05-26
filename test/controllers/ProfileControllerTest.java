@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static play.mvc.Http.Status.NOT_FOUND;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.POST;
@@ -104,13 +105,16 @@ public class ProfileControllerTest extends ProvideApplication{
         assertEquals(OK, result.status());
     }
 
+    // Need to refactor these tests to work with the in memory database
+    // After Dev into refactor-personal-photo merge
+
     @Test
-    public void testFileUpload() throws IOException {
+    public void fileUpload() throws IOException {
         File file = getPersonalPhoto();
         Http.MultipartFormData.Part<Source<ByteString, ?>> part =
                 new Http.MultipartFormData.FilePart<>(
                         "image",
-                        "Selection_256.png",
+                        "defaultPic.jpg",
                         "image/png",
                         FileIO.fromPath(file.toPath()),
                         Files.size(file.toPath()));
@@ -129,5 +133,28 @@ public class ProfileControllerTest extends ProvideApplication{
             assertEquals(303, redirectPhotoUploadResult.status());
     }
 
+    @Test
+    public void validPhotoDisplay() throws IOException {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/profile/photo?id=50")
+                .session("connected", "john@gmail.com");
 
+        Result result = Helpers.route(provideApplication(), request);
+
+        assertEquals(OK, result.status());
+    }
+
+    // Test when photo exists but does not belong to the session user
+    @Test
+    public void invalidPhotoDisplay() throws IOException {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/profile/photo?id=71")
+                .session("connected", "john@gmail.com");
+
+        Result result = Helpers.route(provideApplication(), request);
+
+        assertEquals(NOT_FOUND, result.status());
+    }
 }

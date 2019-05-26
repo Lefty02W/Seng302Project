@@ -307,7 +307,7 @@ public class ProfileController extends Controller {
                 this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 // Initialize Image object
-//                cropInfo crop = autoCrop(this.imageBytes);
+//                cropInfo crop = autoCrop(this.imageBytes);x
 //                int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 Image image = new Image(currentUser.getEmail(), "photos/personalPhotos/" + fileName, contentType, visibility, fileName, 0, 0, 0, 0, 0);
                 savePhoto(image); // Save photo, given a successful upload
@@ -349,7 +349,7 @@ public class ProfileController extends Controller {
         } else {
             return notFound(imageFilePath.getAbsoluteFile());
         }
-        return ok();
+        return redirect(profileEndpoint); //  When there an id of a photo does not exist
     }
 
 
