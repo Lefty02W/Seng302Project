@@ -122,7 +122,7 @@ public class ProfileControllerTest extends ProvideApplication{
         Http.RequestBuilder request = Helpers.fakeRequest()
                     .method(POST)
                     .uri("/profile/photo")
-                    .session("connected", "admin@admin.com")
+                    .session("connected", "john@gmail.com")
                     .bodyRaw(
                             Collections.singletonList(part),
                             play.libs.Files.singletonTemporaryFileCreator(),
@@ -137,7 +137,7 @@ public class ProfileControllerTest extends ProvideApplication{
     public void validPhotoDisplay() throws IOException {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/profile/photo?id=50")
+                .uri("/profile/photo?id=94")
                 .session("connected", "john@gmail.com");
 
         Result result = Helpers.route(provideApplication(), request);
