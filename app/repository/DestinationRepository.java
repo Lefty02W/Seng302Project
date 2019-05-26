@@ -327,24 +327,13 @@ public class DestinationRepository {
      * return true if already in else false
      */
     public boolean checkValidEdit(Destination destination, int  profileId, int id) {
-        Destination destinations = (Destination.find.query()
+        List<Destination> destinations = (Destination.find.query()
                 .where()
                 .eq("name", destination.getName())
                 .eq("type", destination.getType())
                 .eq("country", destination.getCountry())
-                .eq("profile_id", profileId)
-                .findOne());
-        Destination publicDestination = (Destination.find.query()
-                .where()
-                .eq("name", destination.getName())
-                .eq("type", destination.getType())
-                .eq("country", destination.getCountry())
-                .eq("visible", "1")
-                .findOne());
-        if (publicDestination != null && publicDestination.getDestinationId() != id) {
-            return true;
-        }
-
-        return destinations != null && destinations.getDestinationId() != id;
+                .findList());
+        return !destinations.isEmpty();
     }
+
 }

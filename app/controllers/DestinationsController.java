@@ -90,7 +90,7 @@ public class DestinationsController extends Controller {
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
-                return redirect("/destinations");
+                return redirect(destShowRoute);
             }
         });
     }
@@ -109,7 +109,7 @@ public class DestinationsController extends Controller {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
-                return redirect("/destinations");
+                return redirect(destShowRoute);
             }
         });
     }
@@ -145,7 +145,7 @@ public class DestinationsController extends Controller {
                 }
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
-                return redirect("/destinations");
+                return redirect(destShowRoute);
             }
         });
     }
@@ -167,7 +167,7 @@ public class DestinationsController extends Controller {
                 Form<Destination> destinationForm = form.fill(dest);
                 return ok(createDestinations.render(destinationForm, profile.get(),request, messagesApi.preferred(request)));
             } else {
-                return redirect("/destinations");
+                return redirect(destShowRoute);
             }
         });
     }
@@ -194,7 +194,7 @@ public class DestinationsController extends Controller {
                 Form<Destination> destinationForm = form.fill(destination);
                 return ok(editDestinations.render(id, destination, destinationForm, profile.get(), request, messagesApi.preferred(request)));
             } else {
-                return redirect("/destinations");
+                return redirect(destShowRoute);
             }
         });
     }
@@ -215,7 +215,7 @@ public class DestinationsController extends Controller {
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
         if(destinationRepository.checkValidEdit(dest, userId, id)) {
-            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if(longLatCheck(dest)){
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
@@ -228,7 +228,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect("/destinations/" + id +"/edit").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -247,8 +247,8 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
-        if(destinationRepository.checkValidEdit(destination, userId, userId)) {
-            return supplyAsync(() -> redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create"));
+        if(destinationRepository.checkValidEdit(destination, userId, -1)) {
+            return supplyAsync(() -> redirect("/destinations/create").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if(longLatCheck(destination)){
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
@@ -261,7 +261,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect("/destinations/create").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -287,11 +287,11 @@ public class DestinationsController extends Controller {
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
         return tripDestinationsRepository.checkDestinationExists(id).thenApplyAsync(result -> {
             if (result.isPresent()) {
-                return redirect("/destinations").flashing("error", "Destination: " + id +
+                return redirect(destShowRoute).flashing("success", "Destination: " + id +
                         " is used within the following trips: " + result.get());
             }
             destinationRepository.delete(id);
-            return redirect("/destinations").flashing("info", "Destination: " + id + " deleted");
+            return redirect(destShowRoute).flashing("failure", "Destination: " + id + " deleted");
         });
     }
 
