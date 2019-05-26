@@ -327,7 +327,7 @@ public class ProfileController extends Controller {
 
 
     /**
-     * Call to PhotoRepository to be insert an photo in tsavePhotohe database
+     * Call to PhotoRepository to be insert an photo in the database
      *
      * @param photo Photo object containing email, id, byte array of photo and visible info
      * @return a redirect to the profile page
