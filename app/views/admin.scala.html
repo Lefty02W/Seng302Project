@@ -81,8 +81,7 @@
                                         <th>AdminID</th>
                                         <th>Email</th>
                                         <th>Name</th>
-                                        <th>Permission Level</th>
-                                        <th>Alter Permission</th>
+                                        <th>Permissions</th>
                                     </tr>
                                 </thead>
                                     @for(profile <- adminProfiles) {
@@ -91,7 +90,6 @@
                                         <td>@profile.getEmail</td>
                                         <td>@profile.getFirstName</td>
                                         <td>@profile.getRoles</td>
-                                        <td><button class="btn btn-primary">Alter Permissions</button></td>
                                         </tr>
                                     }
                             </table>
@@ -112,7 +110,7 @@
                                         <th>Edit</th>
                                         <th>Delete</th>
                                         <th>View</th>
-                                        <th>Admin</th>
+                                        <th>Permissions</th>
                                         <th>Alter Admin</th>
                                     </tr>
                                 </thead>
