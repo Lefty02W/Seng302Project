@@ -31,8 +31,8 @@ public class TripDestinationsRepository {
 
     /**
      * Insert trip destination into database
-     * @param tripDestination
-     * @return
+     * @param tripDestination trip destination to be inserted
+     * @return Id of the newly inserted trip
      */
     public CompletionStage<Integer> insert(TripDestination tripDestination) {
         return supplyAsync(() -> {
@@ -42,9 +42,9 @@ public class TripDestinationsRepository {
     }
 
     /**
-     * delete tripdestination from database
-     * @param tripDestinationId
-     * @return
+     * remove a trip destination from the database
+     * @param tripDestinationId Id of the trip to be deleted
+     * @return optional of the deleted trip destinations id
      */
     public CompletionStage<Optional<Integer>> delete(int tripDestinationId) {
         return supplyAsync(() -> {
@@ -57,6 +57,7 @@ public class TripDestinationsRepository {
             }
         }, executionContext);
     }
+
 
     /**
      * Method to check if a passed destination to be delete is within a trip in the database
@@ -78,6 +79,38 @@ public class TripDestinationsRepository {
               else return Optional.of(foundIds);
             },
             executionContext);
+    }
+
+    /**
+     * returns all tripDestinations with a given destination
+     * @param destinationId the id of the destination
+     * @return an optional list of TripDestinations
+     */
+    public Optional<List<TripDestination>> getTripDestsWithDestId(Integer destinationId) {
+        return Optional.of(TripDestination.find.query()
+                .where()
+                .eq("destination_id", destinationId)
+                .findList());
+    }
+
+    /**
+     * Method to update the trip destination ID inside a trip
+     * called when a trip destination needs to be replaced by a new public destination
+     * @param tripDestination Trip destination to be updated
+     * @param newDestinationId new destination Id for the trip destination
+     */
+    public void editTripId(TripDestination tripDestination, Integer newDestinationId) {
+        Transaction txn = ebeanServer.beginTransaction();
+        try {
+            TripDestination targetTripDestination = ebeanServer.find(TripDestination.class).setId(tripDestination.getTripDestinationId()).findOne();
+            if (targetTripDestination != null) {
+                targetTripDestination.setDestinationId(newDestinationId);
+                targetTripDestination.update();
+                txn.commit();
+            }
+        } finally {
+            txn.end();
+        }
     }
 
 }

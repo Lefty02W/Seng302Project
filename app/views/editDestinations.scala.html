@@ -1,6 +1,5 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@import helper._
 @(id: Integer, destination: Destination, destinationForm : Form[Destination], currentProfile : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -55,12 +54,17 @@
                     </div>
                 </nav>
                 <div class="container-fluid">
-                    <div id="table-card" class="card-large">
-                        @if(request.flash.getOptional("info").isPresent) {
-                            <div class="alert alert-info">
-                            @request.flash.getOptional("info").get()
-                            </div>
-                        }
+                    @if(request.flash.getOptional("success").isPresent) {
+                        <div class="alert alert-success">
+                        @request.flash.getOptional("success").get()
+                        </div>
+                    }
+
+                    @if(request.flash.getOptional("failure").isPresent) {
+                        <div class="alert alert-failure">
+                        @request.flash.getOptional("failure").get()
+                        </div>
+                    }
                         <h3>Edit destination</h3>
                         @helper.form(routes.DestinationsController.update(id)) {
                             <fieldset>

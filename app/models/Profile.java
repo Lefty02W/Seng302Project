@@ -275,11 +275,14 @@ public class Profile extends Model {
         return travellerTypes;
     }
 
-
     public void setTravellerTypes(Map<Integer, TravellerType> travellerTypes) {
         this.travellerTypes = travellerTypes;
     }
 
+    /**
+     * Return the passports as a readable list
+     * @return Array of Strings of passsports
+     */
     public ArrayList<String> getPassportsList() {
         if (!(passports == null)) {
             ArrayList<PassportCountry> passportObjects = new ArrayList<PassportCountry>(passports.values());
@@ -294,6 +297,10 @@ public class Profile extends Model {
         }
     }
 
+    /**
+     * Return the nationality as a readable list
+     * @return Array of Strings of nationalitys
+     */
     public ArrayList<String> getNationalityList() {
         if (!(nationalities == null)) {
             ArrayList<Nationality> nationalityObjects = new ArrayList<Nationality>(nationalities.values());
@@ -307,6 +314,10 @@ public class Profile extends Model {
         }
     }
 
+    /**
+     * Return the travellers types as a readable list
+     * @return Array of Strings of traveller types
+     */
     public ArrayList<String> getTravellerTypesList() {
         if (!(travellerTypes == null)) {
             ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
@@ -320,6 +331,10 @@ public class Profile extends Model {
         }
     }
 
+    /**
+     * Return the traveller types as a single string
+     * @return String of all traveller types
+     */
     public String getTravellerTypesString() {
         if (!(travellerTypes.isEmpty())) {
             ArrayList<TravellerType> typeObjects = new ArrayList<>(travellerTypes.values());
@@ -333,6 +348,10 @@ public class Profile extends Model {
         }
     }
 
+    /**
+     * Return the nationality as a single string
+     * @return String of all nationality
+     */
     public String getNationalityString() {
         if (!(nationalities.isEmpty())) {
             ArrayList<Nationality> nationalityObjects = new ArrayList<>(nationalities.values());
@@ -346,7 +365,10 @@ public class Profile extends Model {
         }
     }
 
-
+    /**
+     * Return the passports as a single string
+     * @return String of all passports
+     */
     public String getPassportsString() {
         if (!(passports.isEmpty())) {
 

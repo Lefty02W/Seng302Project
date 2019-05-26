@@ -712,7 +712,11 @@
                                                 <label>Make Public</label>
                                             </div>
                                             <div class="row">
-                                                <input type="checkbox" id="visible" name="visible" value="@destination.getObject.getVisible" class="check-box">
+                                                @if(destination.getObject.getVisible == 1) {
+                                                    <input type="checkbox" id="visible" name="visible" value="1" class="check-box" checked>
+                                                } else {
+                                                    <input type="checkbox" id="visible" name="visible" value="1" class="check-box">
+                                                }
                                             </div>
                                         </div>
                                     </div>

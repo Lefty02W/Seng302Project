@@ -101,6 +101,7 @@ public class TripRepository {
         List<Trip> result = Trip.find.query().where()
                 .eq("profile_id", currentUser.getProfileId())
                 .findList();
+
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();
             // Getting the tripDestinations out of the database for each trip returned
