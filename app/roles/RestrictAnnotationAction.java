@@ -23,7 +23,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
 
     private RolesRepository rolesRepository;
-    private final static String GLOBAL_ADMIN_ROLE = "global_admin";
+    private static final String GLOBAL_ADMIN_ROLE = "global_admin";
 
 
     @Inject
