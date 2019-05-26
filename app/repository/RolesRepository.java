@@ -88,7 +88,7 @@ public class RolesRepository {
         Integer roleId = null;
         String query = "SELECT * FROM roles WHERE role_name = ?";
         SqlRow row = ebeanServer.createSqlQuery(query).setParameter(1, roleName).findOne();
-        if (!row.isEmpty()) {
+        if (row != null) {
             roleId = row.getInteger("role_id");
         }
 
