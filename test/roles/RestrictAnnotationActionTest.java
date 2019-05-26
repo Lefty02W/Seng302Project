@@ -21,9 +21,10 @@ public class RestrictAnnotationActionTest extends ProvideApplication{
     /**
      * Testing profile GET endpoint /admin.
      * Should send redirect as this user is non-admin.
+     * This tests the annotation as the whole admin controller is restricted by the custom annotation.
      */
-    @Test // Having issues with this test will sort at a later date
-    public void show() {
+    @Test
+    public void attemptToShowAdminPage() {
         loginUser();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
@@ -34,12 +35,5 @@ public class RestrictAnnotationActionTest extends ProvideApplication{
 
         assertEquals(303, result.status());
     }
-
-
-
-
-
-
-
 
 }
