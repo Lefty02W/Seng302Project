@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
-import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -188,9 +187,8 @@ public class DestinationRepository {
 
     /**
      * Checks to see if a user has any destinations that are the same as the destination1 passed in
-     * @param destination1 the
-     * @param id the users id
-     * @return Optional destination, if there is a destination the same as destination1 then that destination will be
+     * @param destination1 the destination
+     * @return Optional destination list, if there is a destination the same as destination1 then that destination will be
      * returned
      */
     public Optional<List<Destination>> checkForSameDestination(Destination destination1) {
@@ -227,24 +225,19 @@ public class DestinationRepository {
      * Checks to see if destination is owned by an admin, if true this is its first follower, will change
      * ownership to admins and set the previous owner to follow destination
      * @param destId the id of the destination
-     * @return boolean false if nothing happened, true if ownership was changed to admins
      */
-    public boolean setOwnerAsAdmin(int destId) {
+    private void setOwnerAsAdmin(int destId) {
         Destination destination = lookup(destId);
         int profileId = destination.getProfileId();
         Optional<Integer> optionalAdminId = profileRepository.getAdminId();
         if (optionalAdminId.isPresent()) {
-            Integer adminId = optionalAdminId.get();
+            int adminId = optionalAdminId.get();
             if (destination.getProfileId() != adminId) {
-                System.out.println();
                 destination.setProfileId(adminId);
                 updateProfileId(destination, destination.getDestinationId());
                 followDestination(destination.getDestinationId(), profileId);
-                return true;
             }
-            return false;
         }
-        return false;
     }
 
 

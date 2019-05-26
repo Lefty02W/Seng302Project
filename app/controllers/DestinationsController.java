@@ -18,11 +18,12 @@ import repository.TripDestinationsRepository;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
-import views.html.login;
 
-import javax.annotation.processing.Completion;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -95,6 +96,7 @@ public class DestinationsController extends Controller {
         });
     }
 
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
@@ -107,6 +109,7 @@ public class DestinationsController extends Controller {
         });
     }
 
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
@@ -253,6 +256,11 @@ public class DestinationsController extends Controller {
 
 
 
+    /**
+     * Function to check if the long and lat are valid
+     * @param destination  destination to check lat and long values
+     * @return Boolean true
+     */
     private boolean longLatCheck(Destination destination) {
         if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
             return false;
@@ -304,25 +312,23 @@ public class DestinationsController extends Controller {
      * This function will inspect all private destinations for all users and swap any private destinations for the
      * new public destination if they are the same.
      * @param newPublicDestination, the new private destination
-     * @return true if change is successful, else false
      */
-    public String newPublicDestination(Destination newPublicDestination) {
-        Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
-        if (destinationList.isPresent()) {
-            for (Destination destination : destinationList.get()) {
-                if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
-                    destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
-                    Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
-                    if (tripDestinationList.isPresent()) {
-                        for (TripDestination tripDestination : tripDestinationList.get()) {
-                            tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
+    private void newPublicDestination(Destination newPublicDestination) {
+            Optional<List<Destination>> destinationList = destinationRepository.checkForSameDestination(newPublicDestination);
+            if (destinationList.isPresent()) {
+                for (Destination destination : destinationList.get()) {
+                    if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
+                        destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
+                        Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
+                        if (tripDestinationList.isPresent()) {
+                            for (TripDestination tripDestination : tripDestinationList.get()) {
+                                tripDestinationsRepository.editTripId(tripDestination, newPublicDestination.getDestinationId());
+                            }
                         }
+                        destinationRepository.delete(destination.getDestinationId());
                     }
-                    destinationRepository.delete(destination.getDestinationId());
                 }
             }
-        }
-        return "success";
     }
 
 }

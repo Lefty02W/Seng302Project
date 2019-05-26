@@ -4,12 +4,10 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
 import io.ebean.Transaction;
-import models.Destination;
 import models.TripDestination;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -33,8 +31,8 @@ public class TripDestinationsRepository {
 
     /**
      * Insert trip destination into database
-     * @param tripDestination
-     * @return
+     * @param tripDestination trip destination to be inserted
+     * @return Id of the newly inserted trip
      */
     public CompletionStage<Integer> insert(TripDestination tripDestination) {
         return supplyAsync(() -> {
@@ -44,9 +42,9 @@ public class TripDestinationsRepository {
     }
 
     /**
-     * delete tripdestination from database
-     * @param tripDestinationId
-     * @return
+     * remove a trip destination from the database
+     * @param tripDestinationId Id of the trip to be deleted
+     * @return optional of the deleted trip destinations id
      */
     public CompletionStage<Optional<Integer>> delete(int tripDestinationId) {
         return supplyAsync(() -> {
@@ -60,6 +58,12 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
+    /**
+     * Method to get a list of trip destinations that are fro a passed destination id
+     *
+     * @param destinationId the id of the destination for find trip destinations for
+     * @return An optional list of trip destinations holding the result of the query
+     */
     /**
      * Method to check if a passed destination to be delete is within a trip in the database
      *
@@ -95,9 +99,10 @@ public class TripDestinationsRepository {
     }
 
     /**
-     * edits the destination id in a tripDestination
-     * @param tripDestination the tripDestination to be edited
-     * @param newDestinationId the new destinationId
+     * Method to update the trip destination ID inside a trip
+     * called when a trip destination needs to be replaced by a new public destination
+     * @param tripDestination Trip destination to be updated
+     * @param newDestinationId new destination Id for the trip destination
      */
     public void editTripId(TripDestination tripDestination, Integer newDestinationId) {
         Transaction txn = ebeanServer.beginTransaction();

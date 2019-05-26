@@ -14,10 +14,8 @@ import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
 
-public class publicDestinationSteps extends ProvideApplication {
-    private Map<String, String> loginForm = new HashMap<>();
+public class PublicDestinationSteps extends ProvideApplication {
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestination;
 
@@ -33,7 +31,6 @@ public class publicDestinationSteps extends ProvideApplication {
 
     @When("he presses save")
     public void hePressesSave() {
-        System.out.println("yoyo this is the visibile = " + destForm.get("visible"));
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/destinations")
