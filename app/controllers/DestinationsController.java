@@ -96,6 +96,12 @@ public class DestinationsController extends Controller {
         });
     }
 
+    /**
+     * Method to follow a destination called from the destinations page and used from an endpoint
+     * @param profileId Id of the profile to follow destination
+     * @param destId Id of the destination to be followed
+     * @param isPublic Boolean of the destination if is public or not
+     */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
@@ -109,6 +115,12 @@ public class DestinationsController extends Controller {
         });
     }
 
+    /**
+     * Method to unfollow a destination called from the destinations page and used from an endpoint
+     * @param profileId Id of the profile to unfollow destination
+     * @param destId Id of the destination to be unfollowed
+     * @param isPublic Boolean of the destination if is public or not
+     */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);

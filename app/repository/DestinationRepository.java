@@ -139,7 +139,7 @@ public class DestinationRepository {
 
 
     /**
-     * and update function to change only the profileId of a destination since the other update cannot handle this
+     * Update function to change only the profileId of a destination since the other update cannot handle this
      * Preconditions: The newDestinations profileId is a valid profileId
      * @param newDestination
      * @param destinationId
@@ -201,7 +201,12 @@ public class DestinationRepository {
             return Optional.of(destinations);
     }
 
-
+    /**
+     * Method to follow a destination for a user
+     * @param destId Id of the entered destination
+     * @param profileId Id of the entered profile
+     * @return Optional array of integers of the followed users id
+     */
     public Optional<ArrayList<Integer>> followDestination(int destId, int profileId) {
         String updateQuery = "INSERT into follow_destination(profile_id, destination_id) values (?, ?)";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
@@ -212,6 +217,12 @@ public class DestinationRepository {
         return getFollowedDestinationIds(profileId);
     }
 
+    /**
+     * Method to allow a user to unfollow a given destination
+     * @param destId Id of the destination to be unfollowed
+     * @param profileId Id of the user that wants to unfollow a destination
+     * @return Optional list of integers for the followed destination ids
+     */
     public Optional<ArrayList<Integer>> unfollowDestination(int destId, int profileId) {
         String updateQuery = "DELETE from follow_destination where profile_id = ? and destination_id =  ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
@@ -240,8 +251,11 @@ public class DestinationRepository {
         }
     }
 
-
-
+    /**
+     * Method returns all of the users followed destinations
+     * @param profileId User if of the followed destinations to return
+     * @return Optional array list of destinations followed by the user
+     */
     public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where follow_destination.profile_id = ?";
@@ -264,6 +278,11 @@ public class DestinationRepository {
         return Optional.of(destList);
     }
 
+    /**
+     * Method returns all followed destinations ids from a user
+     * @param profileId User id for the user followed destinations
+     * @return Optional array list of integers of the followed destination ids
+     */
     public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId) {
         String updateQuery = "Select destination_id from follow_destination where profile_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
@@ -275,6 +294,10 @@ public class DestinationRepository {
         return Optional.of(destIdList);
     }
 
+    /**
+     * Method to return all of the admins destinations
+     * @return Optional array of destinations owned by the admin
+     */
     public Optional<ArrayList<Destination>> getAdminDestinations() {
         ArrayList<Destination> destList = new ArrayList<>();
         String selectQuery = "Select * from destination where profile_id IN (select profile_id from admin)";

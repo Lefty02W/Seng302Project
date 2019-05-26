@@ -58,12 +58,7 @@ public class TripDestinationsRepository {
         }, executionContext);
     }
 
-    /**
-     * Method to get a list of trip destinations that are fro a passed destination id
-     *
-     * @param destinationId the id of the destination for find trip destinations for
-     * @return An optional list of trip destinations holding the result of the query
-     */
+
     /**
      * Method to check if a passed destination to be delete is within a trip in the database
      *
