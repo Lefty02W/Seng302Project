@@ -106,7 +106,7 @@ public class ProfileControllerTest extends ProvideApplication {
                 new Http.MultipartFormData.FilePart<>(
                         "image",
                         "defaultPic.jpg",
-                        "image/png",
+                        "image/jpg",
                         FileIO.fromPath(file.toPath()),
                         Files.size(file.toPath()));
 
@@ -124,24 +124,24 @@ public class ProfileControllerTest extends ProvideApplication {
             assertEquals(303, redirectPhotoUploadResult.status());
     }
 
-    @Test
-    public void validPhotoDisplay() throws IOException {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method(GET)
-                .uri("/profile/photo?id=94")
-                .session("connected", "john@gmail.com");
-
-        Result result = Helpers.route(provideApplication(), request);
-
-        assertEquals(OK, result.status());
-    }
+//    @Test
+//    public void validPhotoDisplay() {
+//        Http.RequestBuilder request = Helpers.fakeRequest()
+//                .method(GET)
+//                .uri("/profile/photo?id=1")
+//                .session("connected", "john@gmail.com");
+//
+//        Result result = Helpers.route(provideApplication(), request);
+//
+//        assertEquals(OK, result.status());
+//    }
 
     // Test when photo exists but does not belong to the session user
     @Test
-    public void invalidPhotoDisplay() throws IOException {
+    public void invalidPhotoDisplay() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/profile/photo?id=71")
+                .uri("/profile/photo?id=2")
                 .session("connected", "john@gmail.com");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -150,7 +150,7 @@ public class ProfileControllerTest extends ProvideApplication {
     }
 
     @Test
-    public void noIdPhotoDisplay() throws IOException {
+    public void noIdPhotoDisplay() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile/photo?id=100")
