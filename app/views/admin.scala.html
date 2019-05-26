@@ -90,7 +90,7 @@
                                         <td>@profile.getProfileId</td>
                                         <td>@profile.getEmail</td>
                                         <td>@profile.getFirstName</td>
-                                        <td>@profile.hasRole("admin")</td>
+                                        <td>@profile.getRoles</td>
                                         <td><button class="btn btn-primary">Alter Permissions</button></td>
                                         </tr>
                                     }
@@ -130,14 +130,16 @@
                                                 <button class="btn btn-secondary">View</button>
                                             </a>
                                             </td>
-                                        <td>@profile.hasRole("admin")</td>
+                                        <td>@profile.getRoles</td>
                                             <!-- TODO Update to id once deadbolt is working -->
-                                        @if(profile.hasRole("admin")) {
+                                        @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
                                         <td>
                                             <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
                                                 <button class="btn btn-info">Remove Admin</button>
                                             </a>
                                         </td>
+                                        } else if(profile.hasRole("global_admin")){
+                                            <td> global admin </td>
                                         } else {
                                             <td>
                                             <a href="@routes.AdminController.makeAdmin(profile.getProfileId())">

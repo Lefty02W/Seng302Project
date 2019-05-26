@@ -99,12 +99,14 @@ public class RolesRepository {
      */
     public List<Integer> getProfileIdFromRoleName(String roleName) {
         Optional<Integer> roleId = getRoleFromName(roleName);
+        Optional<Integer> roleIdGlobal = getRoleFromName("global_admin");
+
         List<Integer> profileIds = new ArrayList<>();
 
-        if(roleId.isPresent()){
+        if(roleId.isPresent() && roleIdGlobal.isPresent()){
 
-            String query = "SELECT * FROM profile_roles WHERE role_id = ?";
-            List<SqlRow> rows = ebeanServer.createSqlQuery(query).setParameter(1, roleId.get()).findList();
+            String query = "SELECT DISTINCT profile_id FROM profile_roles WHERE role_id = ? OR role_id = ?";
+            List<SqlRow> rows = ebeanServer.createSqlQuery(query).setParameter(1, roleId.get()).setParameter(2, roleIdGlobal.get()).findList();
 
             for(SqlRow row: rows ) {
 
