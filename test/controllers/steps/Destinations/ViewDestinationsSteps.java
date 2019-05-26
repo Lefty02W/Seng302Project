@@ -11,7 +11,7 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-public class viewDestinationsSteps extends ProvideApplication {
+public class ViewDestinationsSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestination;

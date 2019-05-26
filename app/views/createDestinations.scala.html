@@ -56,9 +56,15 @@
                 </nav>
             <div class="container-fluid">
                 <div id="table-card" class="card-large">
-                    @if(request.flash.getOptional("info").isPresent) {
-                        <div class="alert alert-info">
-                        @request.flash.getOptional("info").get()
+                    @if(request.flash.getOptional("success").isPresent) {
+                        <div class="alert alert-success">
+                        @request.flash.getOptional("success").get()
+                        </div>
+                    }
+
+                    @if(request.flash.getOptional("failure").isPresent) {
+                        <div class="alert alert-failure">
+                        @request.flash.getOptional("failure").get()
                         </div>
                     }
                     <h3>Create destination</h3>

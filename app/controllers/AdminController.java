@@ -306,9 +306,9 @@ public class AdminController {
     /**
      * Endpoint method to save an admins edit of a destination
      *
-     * @param request
-     * @param destId
-     * @return
+     * @param request the clients request
+     * @param destId the id of teh destination to edit
+     * @return CompletionStage holding redirect to the "/admin" page
      * @apiNote POST /admin/destinations/:destId
      */
     public CompletionStage<Result> editDestination(Http.Request request, Integer destId) {
