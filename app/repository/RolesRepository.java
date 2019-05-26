@@ -73,7 +73,6 @@ public class RolesRepository {
             }
         }
 
-
         return Optional.of(roles);
     }
 
@@ -157,4 +156,19 @@ public class RolesRepository {
         }
     }
 
+
+    public Optional<Integer> getIdFromRole(String role) {
+        Optional<Integer> roleId = getRoleFromName(role);
+        List<Integer> profileIds = new ArrayList<>();
+        if (roleId.isPresent()) {
+            String query = "SELECT DISTINCT profile_id FROM profile_roles WHERE role_id = ?";
+            List<SqlRow> rows = ebeanServer.createSqlQuery(query).setParameter(1, roleId.get()).findList();
+            for (SqlRow row : rows) {
+
+                profileIds.add(row.getInteger("profile_id"));
+
+            }
+        }
+        return Optional.ofNullable(profileIds.get(0));
+    }
 }

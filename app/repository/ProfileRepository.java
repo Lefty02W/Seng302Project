@@ -368,9 +368,5 @@ public class ProfileRepository {
         return Optional.of(destList);
     }
 
-    public Optional<Integer> getAdminId() {
-        //TODO Implement it to find admin id ideally default admin but any is fine
-        return Optional.of(50);
-    }
 
 }

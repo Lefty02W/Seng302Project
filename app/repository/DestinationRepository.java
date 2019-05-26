@@ -22,6 +22,7 @@ public class DestinationRepository {
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
     private final ProfileRepository profileRepository;
+    private final RolesRepository rolesRepository;
 
 
     /**
@@ -31,10 +32,11 @@ public class DestinationRepository {
      * @param executionContext
      */
     @Inject
-    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, ProfileRepository profileRepository) {
+    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, ProfileRepository profileRepository, RolesRepository roleRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.profileRepository = profileRepository;
+        this.rolesRepository = roleRepository;
     }
 
     /**
@@ -240,7 +242,7 @@ public class DestinationRepository {
     private void setOwnerAsAdmin(int destId) {
         Destination destination = lookup(destId);
         int profileId = destination.getProfileId();
-        Optional<Integer> optionalAdminId = profileRepository.getAdminId();
+        Optional<Integer> optionalAdminId = rolesRepository.getIdFromRole("global_admin");
         if (optionalAdminId.isPresent()) {
             int adminId = optionalAdminId.get();
             if (destination.getProfileId() != adminId) {
