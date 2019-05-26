@@ -107,7 +107,7 @@
                                     </thead>
 
                                     @for(destination <- destinationsList) {
-                                        <tr>
+                                        <tr onclick="setSelectedDestination(@destination.getLatitude, @destination.getLongitude)">
                                             <td>@destination.getName()</td>
                                             <td>@destination.getType()</td>
                                             <td>@destination.getDistrict()</td>
@@ -192,6 +192,7 @@
             }
 
             function addMarkers() {
+                var centerSet = false;
                 @for(destination <- destinationsList) {
                     var marker = new google.maps.Marker({
                        position: {
@@ -200,9 +201,16 @@
                        },
                        map: map
                     });
+                    if (!centerSet) {
+                        centerSet = true;
+                        map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
+                    }
                 }
             }
 
+            function setSelectedDestination(lat, lng) {
+                map.setCenter(new google.maps.LatLng(lat, lng));
+            }
 
 
             $("#menu-toggle").click(function (e) {
