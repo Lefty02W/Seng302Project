@@ -282,7 +282,7 @@ public class ProfileController extends Controller {
 
                 //int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, visibility, fileName, 0, 0, 0, 0);
-                savePhoto(photo, 0); // Save photo, given a successful upload
+                savePhoto(photo, SessionController.getCurrentUserId(request)); // Save photo, given a successful upload
 
                 //if (isProfilePicture == 0) { //case not setting as the new profile picture
                 //    savePhoto(photo, SessionController.getCurrentUserId(request)).thenApply(result -> redirect("/profile")); // Save photo, given a successful upload
