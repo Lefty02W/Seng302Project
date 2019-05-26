@@ -61,9 +61,6 @@ public class Profile extends Model {
     public static final Finder<Integer, Profile> find = new Finder<>(Profile.class);
 
 
-    @Transient
-    private boolean admin;
-
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date timeCreated;
 
@@ -76,8 +73,11 @@ public class Profile extends Model {
     @Transient
     private Map <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
-    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
+    private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
+    @Transient
+    private List<String> roles;
+
 
 
     /**
@@ -91,11 +91,12 @@ public class Profile extends Model {
      * @param timeCreated
      * @param nationalities
      * @param travellerTypes
+     * @param roles
      */
     public Profile(Integer profileId, String firstName, String middleName,
                    String lastName, String email, Date birthDate,
                    Map<Integer, PassportCountry> passports, String gender, Date timeCreated, Map<Integer, Nationality> nationalities,
-                   Map<Integer, TravellerType> travellerTypes) {
+                   Map<Integer, TravellerType> travellerTypes, List<String> roles) {
         this.profileId = profileId;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -107,9 +108,8 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
-        //this.trips = trips;
-        //this.admin = isAdmin;
-        //, ArrayList<Trip> trips, boolean isAdmin
+        this.roles = roles;
+
     }
 
     /**
@@ -125,11 +125,11 @@ public class Profile extends Model {
      * @param nationalities
      * @param travellerTypes
      * @param trips
-     * @param isAdmin
+     * @param roles
      */
     public Profile(String firstName, String lastName, String email, String password, Date birthDate,
                    String passports, String gender, Date timeCreated, String nationalities,
-                   String travellerTypes, ArrayList<Trip> trips, boolean isAdmin) {
+                   String travellerTypes, ArrayList<Trip> trips, ArrayList<String> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -157,7 +157,7 @@ public class Profile extends Model {
 
         }
         this.trips = trips;
-        this.admin = isAdmin;
+        this.roles = roles;
     }
 
     /**
@@ -181,13 +181,13 @@ public class Profile extends Model {
         }
         i = 1;
         this.travellerTypes = new HashMap<>();
-        this.travellerTypes = new HashMap<>();
         for (String travellerTypesString : (travellerTypesForm.split(","))) {
             i++;
             TravellerType travellerType = new TravellerType(i, travellerTypesString);
             this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
         }
     }
+
 
     public Integer getProfileId() {
         return profileId;
@@ -226,10 +226,10 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
-
-    public void setAdmin(boolean isAdmin){
-        this.admin = isAdmin;
+    public void setRoles(List<String> newRoles){
+        this.roles = newRoles;
     }
+
     public String getEntryDate() {
         return dateFormatEntry.format(timeCreated);
     }
@@ -426,7 +426,20 @@ public class Profile extends Model {
         this.travellerTypesForm = travellerTypesForm;
     }
 
-    public boolean isAdmin() { return this.admin; }
+    public List<String> getRoles() { return this.roles; }
+
+    /**
+     * Check the user has a given role name by searching their roles list, if present.
+     */
+    public boolean hasRole(String role) {
+
+        if (this.roles != null) {
+            return this.roles.contains(role);
+        } else {
+
+            return false;
+        }
+    }
 
     public void setPassports(Map<Integer, PassportCountry> passports) {
         this.passports = passports;

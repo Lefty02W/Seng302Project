@@ -242,9 +242,16 @@ public class TravellersController extends Controller {
      * @return render traveller photo page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result displayTravellersPhotos(Integer profileId) {
-        List<Photo> displayPhotoList = getTravellersPhotos(profileId);
-        return ok(travellersPhotos.render(displayPhotoList));
+    public CompletionStage<Result> displayTravellersPhotos(Http.Request request, Integer profileId) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                List<Photo> displayPhotoList = getTravellersPhotos(profileId);
+                return ok(travellersPhotos.render(displayPhotoList, profile.get(),request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/travellers");
+            }
+        });
     }
 
 

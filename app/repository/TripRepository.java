@@ -63,21 +63,10 @@ public class TripRepository {
         for (TripDestination tripDestination : tripDestinations) {
                 tripDestination.setTripId(trip.getId());
                 Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
-                //if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
                 if (dest.getVisible() == 1) {
                    //TODO Swap to ownership of global admin
                 }
             ebeanServer.insert(tripDestination);
-        }
-    }
-
-    private void makeAdmin(Destination destination) {
-//        destinationRepository.followDesination(destination.getDestinationId(), destination.getProfileId());
-        Destination targetDestination = ebeanServer.find(Destination.class).setId(destination.getDestinationId()).findOne();
-        Optional<Integer> profileId = profileRepository.getAdminId();
-        if (profileId.isPresent()) {
-            targetDestination.setProfileId(profileId.get());
-            targetDestination.update();
         }
     }
 

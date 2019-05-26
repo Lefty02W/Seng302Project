@@ -32,6 +32,9 @@ public class Destination extends Model {
     @Constraints.Required
     private int visible;
 
+    /**
+     * This constructor is used by scala variables
+     */
     public Destination() {
 
     }
