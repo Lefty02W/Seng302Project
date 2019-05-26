@@ -22,6 +22,7 @@ public class DestinationRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
+    private final ProfileRepository profileRepository;
 
 
     /**
@@ -31,9 +32,10 @@ public class DestinationRepository {
      * @param executionContext
      */
     @Inject
-    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
+    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, ProfileRepository profileRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
+        this.profileRepository = profileRepository;
     }
 
     /**
@@ -133,6 +135,31 @@ public class DestinationRepository {
     }
 
     /**
+     * and update function to change only the profileId of a destination since the other update cannot handle this
+     * Preconditions: The newDestinations profileId is a valid profileId
+     * @param newDestination
+     * @param destinationId
+     * @return
+     */
+    public Optional<Integer> updateProfileId(Destination newDestination, Integer destinationId) {
+        Transaction txn = ebeanServer.beginTransaction();
+        Optional<Integer> value = Optional.empty();
+        try {
+            Destination targetDestination = ebeanServer.find(Destination.class).setId(destinationId).findOne();
+            if (targetDestination != null) {
+                targetDestination.setProfileId(newDestination.getProfileId());
+                targetDestination.update();
+                txn.commit();
+                value = Optional.of(destinationId);
+            }
+        } finally {
+            txn.end();
+        }
+        return value;
+    }
+
+
+    /**
      * class to check if destination is already available to user
      * return true if already in else false
      */
@@ -178,6 +205,7 @@ public class DestinationRepository {
         query.setParameter(1, profileId);
         query.setParameter(2, destId);
         query.execute();
+        setOwnerAsAdmin(destId);
         return getFollowedDestinationIds(profileId);
     }
 
@@ -189,6 +217,35 @@ public class DestinationRepository {
         query.execute();
         return getFollowedDestinationIds(profileId);
     }
+
+    /**
+     * Checks to see if exactly 1 person follows this destination, if true this is its first follower, will change
+     * ownership to admins and set the previous owner to follow destination
+     * @param destId the id of the destination
+     * @return boolean false if nothing happened, true if ownership was changed to admins
+     */
+    public boolean setOwnerAsAdmin(int destId) {
+        String alreadyExistsQuery = "SELECT * FROM follow_destination where destination_id = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(alreadyExistsQuery).setParameter(1, destId).findList();
+        System.out.println("here");
+        if (rowList.size() == 1) {
+            System.out.println("is true");
+            Destination destination = lookup(destId);
+            int profileId = destination.getProfileId();
+            Optional<Integer> optionalAdminId = profileRepository.getAdminId();
+            if (optionalAdminId.isPresent()) {
+                Integer adminId = optionalAdminId.get();
+                destination.setProfileId(adminId);
+                followDestination(destination.getDestinationId(), profileId);
+                updateProfileId(destination, destination.getDestinationId());
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+
 
     public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
@@ -269,6 +326,5 @@ public class DestinationRepository {
         }
 
         return destinations != null && destinations.getDestinationId() != id;
-
     }
 }

@@ -221,7 +221,7 @@ public class DestinationsController extends Controller {
         if(destinationRepository.checkValid(destination, userId)) {
             return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
         }
-        if(longLatCheck(destination)){
+        if (longLatCheck(destination)) {
             Optional<Integer> destId = destinationRepository.insert(destination);
             if (visibility == 1 && destId.isPresent()) {
                 destination.setDestinationId(destId.get());
@@ -304,14 +304,6 @@ public class DestinationsController extends Controller {
                     destinationRepository.delete(destination.getDestinationId());
                 }
             }
-//            System.out.println("yoyo your boi here " + newPublicDestination.getDestinationId());
-//            Integer usersId = newPublicDestination.getProfileId();
-//            Optional<Integer> adminId = profileRepository.getAdminId();
-//            if (adminId.isPresent()) {
-//                newPublicDestination.setProfileId(adminId.get());
-//            }
-//            destinationRepository.followDestination(newPublicDestination.getDestinationId(), usersId);
-//            destinationRepository.update(newPublicDestination, newPublicDestination.getDestinationId());
         }
         return "success";
     }
