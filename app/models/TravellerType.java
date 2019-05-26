@@ -9,6 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
+/**
+ * Model class to hold a traveller type
+ */
 public class TravellerType extends Model {
 
     @Id

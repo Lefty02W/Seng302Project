@@ -51,11 +51,9 @@ public class NationalityRepository {
      * @return CompletionStage holding an Optional of the nationalities database id
      */
     public Optional<Integer> insert(Nationality nationality) {
-        try {
-            ebeanServer.insert(nationality);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        ebeanServer.insert(nationality);
+
 
         return Optional.of(nationality.getNationalityId());
 
