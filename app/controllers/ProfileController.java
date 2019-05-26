@@ -16,11 +16,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
-import play.mvc.*;
-import repository.ProfileRepository;
-import repository.TripRepository;
-import roles.RestrictAnnotation;
-import views.html.editProfile;
 import views.html.profile;
 
 import javax.imageio.ImageIO;
@@ -99,27 +94,6 @@ public class ProfileController extends Controller {
             this.tripRepository = tripRepository;
             this.profileTravellerTypeRepository = profileTravellerTypeRepository;
         }
-
-
-    /**
-     * Method to retrieve a users profile details and return a filled form to be edited.
-     *
-     * @apiNote GET /profile/:profileId/edit
-     * @param profileId id of the user to edit
-     * @return a render of the editDestinations profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> showEdit (Integer profileId){
-        return profileRepository.findById(profileId).thenApplyAsync(optionalProfile -> {
-            if (optionalProfile.isPresent()) {
-                Profile toEditProfile = optionalProfile.get();
-                Form<Profile> currentProfileForm = profileForm.fill(toEditProfile);
-                return ok(editProfile.render(toEditProfile, currentProfileForm));
-            } else {
-                return notFound("Profile not found.");
-            }
-        }, httpExecutionContext.current());
-    }
 
 
     /**

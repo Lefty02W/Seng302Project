@@ -46,7 +46,6 @@ GET     /travellers/photos           controllers.TravellersController.displayTra
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)
-GET     /profile/:profileId/edit         controllers.ProfileController.showEdit(profileId: Integer)
 POST    /profile                     controllers.ProfileController.update(request: Request)
 POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
 GET     /profile/photo               controllers.ProfileController.displayPhotos(id: Integer, autoCrop: Integer)

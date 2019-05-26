@@ -1,6 +1,5 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@import helper._
 @(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -43,6 +42,7 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
                 </div>
