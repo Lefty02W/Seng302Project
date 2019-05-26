@@ -332,8 +332,18 @@ public class DestinationRepository {
                 .eq("name", destination.getName())
                 .eq("type", destination.getType())
                 .eq("country", destination.getCountry())
+                .eq("profile_id", profileId)
                 .findList());
-        return !destinations.isEmpty();
+
+        List<Destination> publicDestinations = (Destination.find.query()
+                .where()
+                .eq("name", destination.getName())
+                .eq("type", destination.getType())
+                .eq("country", destination.getCountry())
+                .eq("visible", 1)
+                .findList());
+
+        return !destinations.isEmpty() && !publicDestinations.isEmpty();
     }
 
 }
