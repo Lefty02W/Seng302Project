@@ -373,7 +373,6 @@
 
     <script>
         function fillVals() {
-            alert("yeet");
             $('#travellerTypesForm').val($('#typeDropdown').val());
         }
 
@@ -758,7 +757,7 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required>
+                                    <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
                                 </div>
                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
                                     <option value="ThrillSeeker">ThrillSeeker</option>
@@ -794,12 +793,12 @@
                             </div>
                             <div class="row">
                                 <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                    <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required>
+                                    <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
-                                    <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField">
+                                    <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField">
                                 </div>
 
 
