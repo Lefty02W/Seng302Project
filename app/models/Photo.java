@@ -9,22 +9,19 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 
 /**
- * Image class containing all the attributes of an image object.
- * email - The email of the user the image is linked to.
- * imageId - Auto incrementing primary key
+ * Photo class containing all the attributes of an image object.
+ * photoId - Auto incrementing primary key
  * image - A Blob (Binary Large Object) byte array of the file converted into bytes.
  * visible - A tinyInt, 1 or 0 meaning 'public' or 'private' access.
  * contentType - The extension of a file uploaded (image/png, image/gif etc.).
  * name - The name of the uploaded file.
  */
 @Entity
-public class Image extends Model {
+public class Photo extends Model {
 
-    @Constraints.Required
-    private String email;
 
     @Id
-    private Integer imageId;
+    private Integer photoId;
 
     @Constraints.Required
     private String path;
@@ -61,8 +58,7 @@ public class Image extends Model {
      * @param visible
      * @param name
      */
-    public Image(String email, String path, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
-        this.email = email;
+    public Photo(String path, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
         this.path = path;
         this.visible = visible;
         this.contentType = contentType;
@@ -75,26 +71,28 @@ public class Image extends Model {
     }
 
     // Finder for image
-    public static final Finder<Integer, Image> find = new Finder<>(Image.class);
+    public static final Finder<Integer, Photo> find = new Finder<>(Photo.class);
 
     public Integer getIsProfilePic() { return isProfilePic; }
 
     public void setIsProfilePic(Integer isProfilePic) { this.isProfilePic = isProfilePic; }
 
-    public String getEmail() {
-        return email;
+
+
+    public Integer getPhotoId() {
+        return photoId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhotoId(Integer photoId) {
+        this.photoId = photoId;
     }
 
-    public Integer getImageId() {
-        return imageId;
+    public byte[] getImage() {
+        return image;
     }
 
-    public void setImageId(Integer imageId) {
-        this.imageId = imageId;
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     public Integer getVisible() {

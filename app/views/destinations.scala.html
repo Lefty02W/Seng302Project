@@ -1,6 +1,5 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@import helper._
 @(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
@@ -43,6 +42,9 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                        <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                    }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
                 </div>
@@ -113,7 +115,7 @@
                                     <td>@destination.getLongitude() <input type="hidden" name="destinationLongitude" value="@destination.getLongitude()" /></td>
                                     <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
 
-                                    @if(destination.getUserEmail == currentUser.getEmail | currentUser.isAdmin) {
+                                    @if(destination.getProfileId == currentUser.getProfileId || currentUser.hasRole("admin")) {
                                         @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                             @CSRF.formField
                                             <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
@@ -126,13 +128,13 @@
                                         }
                                     } else {
                                         @if(followedDestinationIds contains destination.getDestinationId()) {
-                                            @helper.form(routes.DestinationsController.unfollow(currentUser.getEmail, destination.getDestinationId(), isPublic)) {
+                                            @helper.form(routes.DestinationsController.unfollow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
                                                     Unfollow</button></td>
                                             }
                                         } else {
-                                            @helper.form(routes.DestinationsController.follow(currentUser.getEmail, destination.getDestinationId(), isPublic)) {
+                                            @helper.form(routes.DestinationsController.follow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
                                                 @CSRF.formField
                                                 <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
                                                     Follow</button></td>

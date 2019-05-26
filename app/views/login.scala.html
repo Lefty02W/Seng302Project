@@ -50,7 +50,7 @@
                 <div class="modal-content">
 
                     <div class="modal-header">
-                        <h2 class="modal-title ">Edit Profile</h2>
+                        <h2 class="modal-title ">Create a profile</h2>
                     </div>
                     @form(routes.LoginController.save()) {
                         @CSRF.formField
@@ -73,7 +73,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="travellerTypes" name="travellerTypes" class="hidden-field typesField" required>
+                                        <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
                                     </div>
                                     <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
                                         <option value="ThrillSeeker">ThrillSeeker</option>
@@ -104,17 +104,17 @@
                                 </div>
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">Password*</small>
-                                        <input type="text" id="password" placeholder="Password" name="email" class="inputField createPassword" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')">
+                                        <input type="password" id="password" placeholder="Password" name="password" class="inputField createPassword" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')">
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                        <input type="text" id="nationalities" placeholder="Nationality" name="nationalities" class="inputField" required>
+                                        <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
-                                        <input type="text" id="passports" placeholder="Passport" name="passports" class="inputField">
+                                        <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField">
                                     </div>
 
 
@@ -135,7 +135,7 @@
 
             function fillVals() {
                 console.log($('#typeDropdown').val());
-                $('#travellerTypes').val($('#typeDropdown').val());
+                $('#travellerTypesForm').val($('#typeDropdown').val());
             }
 
     </script>

@@ -26,7 +26,7 @@ public class Trip extends Model {
     private String name;
     @Id
     private int tripId;
-    private String email;
+    private int profileId;
     public static final Finder<String, Trip> find = new Finder<>(Trip.class);
 
     public Trip() {}
@@ -97,12 +97,12 @@ public class Trip extends Model {
         this.name = name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
     }
 
-    public String getEmail() {
-        return email;
+    public int getProfileId() {
+        return profileId;
     }
 
     /**

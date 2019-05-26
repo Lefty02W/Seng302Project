@@ -2,7 +2,7 @@ CREATE TABLE photo
 (
 	photo_id int auto_increment
 		primary key,
-	imageDate longblob null,
+	photo longblob null,
 	visible tinyint(1) not null,
 	content_type varchar(50) not null,
 	name varchar(255) not null,
@@ -95,21 +95,21 @@ create table trip_destination
 CREATE TABLE nationality
 (
 	nationality_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	nationality_name VARCHAR(50) NOT NULL
+	nationality_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 
 CREATE TABLE passport_country
 (
 	passport_country_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	passport_name VARCHAR(50) NOT NULL
+	passport_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 
 CREATE TABLE traveller_type
 (
 	traveller_type_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	traveller_type_name VARCHAR(50) NOT NULL
+	traveller_type_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 

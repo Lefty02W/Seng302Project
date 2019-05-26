@@ -1,4 +1,4 @@
-package controllers.steps;
+package controllers.steps.Trips;
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class addTripSteps extends ProvideApplication {
@@ -31,7 +30,7 @@ public class addTripSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/login")
                 .bodyForm(loginForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result loginResult = Helpers.route(provideApplication(), request);
 
@@ -39,7 +38,7 @@ public class addTripSteps extends ProvideApplication {
         Http.RequestBuilder requestTrip = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/trips")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result tripResult = Helpers.route(provideApplication(), requestTrip);
 
@@ -52,8 +51,8 @@ public class addTripSteps extends ProvideApplication {
 
         Http.RequestBuilder requestTrip = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/trips/create")
-                .session("connected", "john@gmail.com");
+                .uri("/trips/1/create")
+                .session("connected", "1");
         Result tripResult = Helpers.route(provideApplication(), requestTrip);
         Assert.assertEquals(200, tripResult.status());
 
@@ -61,7 +60,7 @@ public class addTripSteps extends ProvideApplication {
 
     @When("user selects a destination called {string}")
     public void userSelectsADestinationCalled(String string) {
-     ArrayList<Destination> userDestinations = getUserDest("john@gmail.com");
+     ArrayList<Destination> userDestinations = getUserDest(1);
         throw new cucumber.api.PendingException();
 
     }
@@ -106,9 +105,9 @@ public class addTripSteps extends ProvideApplication {
     public void userPressesAddDestinationWithoutSelectingADestination() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/trips/create")
+                .uri("/trips/1/create")
                 .bodyForm(destForm)
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         destResult = Helpers.route(provideApplication(), request);
     }
@@ -117,10 +116,5 @@ public class addTripSteps extends ProvideApplication {
     public void destinationIsNotAdded() {
         //assertEquals("The same destination cannot be after itself in a trip", destResult.flash().getOptional("info").get());
         assertTrue(true); //TODO sort this out
-    }
-
-    @Then("stay on create trips page")
-    public void stayOnCreateTripsPage() {
-        assertEquals("/trips/create", destResult.redirectLocation().get());
     }
 }
