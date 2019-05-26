@@ -19,6 +19,7 @@
     <script src="@routes.Assets.at("javascripts/dataTables.bootstrap4.js")" type="text/javascript"></script>
 
 
+
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/destinations.css")">
@@ -91,66 +92,69 @@
                                 Create Destination</button> </a>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            <div id="table-card" class="card-large dest-table table-hover">
+                                    <!-- Table of users -->
+                                <table id="destTable">
+                                    <thead>
+                                        <tr><th>Destination</th>
+                                            <th>Type</th>
+                                            <th>District</th>
+                                            <th>Country</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                    </thead>
 
-                    <div id="table-card" class="card-large dest-table table-hover">
-                            <!-- Table of users -->
-                        <table id="destTable">
-                            <thead>
-                                <tr><th>Destination</th>
-                                    <th>Type</th>
-                                    <th>District</th>
-                                    <th>Latitude</th>
-                                    <th>Longitude</th>
-                                    <th>Country</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
-                            </thead>
+                                    @for(destination <- destinationsList) {
+                                        <tr>
+                                            <td>@destination.getName()</td>
+                                            <td>@destination.getType()</td>
+                                            <td>@destination.getDistrict()</td>
+                                            <td>@destination.getCountry()</td>
 
-                            @for(destination <- destinationsList) {
-                                <tr>
-                                    <td>@destination.getName() <input type="hidden" name="destinationName" value="@destination.getName()" /></td>
-                                    <td>@destination.getType() <input type="hidden" name="destinationType" value="@destination.getType()" /></td>
-                                    <td>@destination.getDistrict() <input type="hidden" name="destinationDistrict" value="@destination.getDistrict()" /></td>
-                                    <td>@destination.getLatitude() <input type="hidden" name="destinationLatitude" value="@destination.getLatitude()" /></td>
-                                    <td>@destination.getLongitude() <input type="hidden" name="destinationLongitude" value="@destination.getLongitude()" /></td>
-                                    <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
-
-                                    @if(destination.getProfileId == currentUser.getProfileId || currentUser.hasRole("admin")) {
-                                        @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
-                                            @CSRF.formField
-                                            <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
-                                                Edit</button> </td>
-                                        }
-                                        @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
-                                            @CSRF.formField
-                                            <td> <button type="submit" class="btn-outline-secondary" style="height: 4vh">
-                                                Delete</button></td>
-                                        }
-                                    } else {
-                                        @if(followedDestinationIds contains destination.getDestinationId()) {
-                                            @helper.form(routes.DestinationsController.unfollow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
-                                                @CSRF.formField
-                                                <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
-                                                    Unfollow</button></td>
+                                            @if(destination.getProfileId == currentUser.getProfileId || currentUser.hasRole("admin")) {
+                                                @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
+                                                    @CSRF.formField
+                                                    <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
+                                                        Edit</button> </td>
+                                                }
+                                                @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
+                                                    @CSRF.formField
+                                                    <td> <button type="submit" class="btn-outline-secondary" style="height: 4vh">
+                                                        Delete</button></td>
+                                                }
+                                            } else {
+                                                @if(followedDestinationIds contains destination.getDestinationId()) {
+                                                    @helper.form(routes.DestinationsController.unfollow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
+                                                        @CSRF.formField
+                                                        <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
+                                                            Unfollow</button></td>
+                                                    }
+                                                } else {
+                                                    @helper.form(routes.DestinationsController.follow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
+                                                        @CSRF.formField
+                                                        <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
+                                                            Follow</button></td>
+                                                    }
+                                                }
+                                                <td></td>
                                             }
-                                        } else {
-                                            @helper.form(routes.DestinationsController.follow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
-                                                @CSRF.formField
-                                                <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
-                                                    Follow</button></td>
-                                            }
-                                        }
-                                        <td></td>
+                                        </tr>
                                     }
-                                </tr>
-                            }
 
-                        </table>
+                                </table>
 
 
-                    </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div id="table-card" class="card-large">
+                                <div id="destinationsMap"></div>
+                            </div>
+                        </div>
 
-
+                </div>
 
                 </div>
 
@@ -175,13 +179,41 @@
 
             });
 
+            var map;
+            function initMap() {
+                var center = {lat: -43.5321, lng: 172.6362}; // TODO set to one of the destinations coords
+                map = new google.maps.Map(document.getElementById('destinationsMap'), {
+                    center: center,
+                    streetViewControl: false,
+                    fullscreenControl: false,
+                    zoom: 8
+                });
+                addMarkers();
+            }
+
+            function addMarkers() {
+                @for(destination <- destinationsList) {
+                    var marker = new google.maps.Marker({
+                       position: {
+                           lat: @destination.getLatitude,
+                           lng: @destination.getLongitude
+                       },
+                       map: map
+                    });
+                }
+            }
+
+
 
             $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
             });
 
     </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWpUHUcDJZHUKrVf3qUiuLnD4ad40Mpew&callback=initMap"
+    async defer></script>
 
 
 </html>

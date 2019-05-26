@@ -43,3 +43,10 @@ div.dataTables_filter {
     padding: 10px;
     text-shadow: 1px 1px 1px #fff;
 }
+
+
+#destinationsMap {
+    height: 100%;
+    width: 100%;
+    padding-top: 5vh;
+}
