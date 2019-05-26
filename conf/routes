@@ -42,7 +42,7 @@ GET     /trips/:id/create             controllers.TripsController.deleteDestinat
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)
 GET     /travellers/search           controllers.TravellersController.search(request: Request)
-GET     /travellers/photos           controllers.TravellersController.displayTravellersPhotos(profileId: Integer)
+GET     /travellers/photos           controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
 
 # Profile
 GET     /profile                     controllers.ProfileController.show(request: Request)
