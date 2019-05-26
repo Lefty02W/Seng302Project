@@ -17,14 +17,8 @@ import java.util.Map;
 
 public class ProvideApplication extends WithApplication {
 
-    protected DestinationRepository destinationRepository;
-    protected PhotoRepository photoRepository;
     protected ProfileRepository profileRepository;
-    protected TripDestinationsRepository tripDestinationsRepository;
-    protected TripRepository tripRepository;
-    protected NationalityRepository nationalityRepository;
-    protected PassportCountryRepository passportRepository;
-
+    private DestinationRepository destinationRepository;
 
     @Override
     public Application provideApplication() {
@@ -55,13 +49,14 @@ public class ProvideApplication extends WithApplication {
 
     protected void injectRepositories() {
         app = provideApplication();
-        profileRepository = app.injector().instanceOf(ProfileRepository.class);
+        app.injector().instanceOf(ProfileRepository.class);
+        app.injector().instanceOf(PhotoRepository.class);
+        app.injector().instanceOf(TripDestinationsRepository.class);
+        app.injector().instanceOf(TripRepository.class);
+        app.injector().instanceOf(NationalityRepository.class);
+        app.injector().instanceOf(PassportCountryRepository.class);
+
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
-        photoRepository = app.injector().instanceOf(PhotoRepository.class);
-        tripDestinationsRepository = app.injector().instanceOf(TripDestinationsRepository.class);
-        tripRepository = app.injector().instanceOf(TripRepository.class);
-        nationalityRepository = app.injector().instanceOf(NationalityRepository.class);
-        passportRepository = app.injector().instanceOf(PassportCountryRepository.class);
     }
 
     protected ArrayList<Destination> getUserDest(int id) {
