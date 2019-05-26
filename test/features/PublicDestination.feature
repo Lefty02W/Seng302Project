@@ -19,5 +19,14 @@ Feature: Public Destinations
     And Steve Miller has a private destination with name "Waiau", type "town", and country "New Zealand"
     When user clicks on the add new destination button
     And user creates a public destination with name "Waiau", type "town", and country NewZealand
-    Then Steve Millers private destination doesnt exist
-    And Steve Miller is following the new public destination
+    Then user with id "2" private destination with name "Waiau", type "town", and country "New Zealand" doesnt exist
+    And user with id "2" is following the new public destination with name "Waiau", type "town", and country "New Zealand"
+
+  Scenario: 2 users have the same private destinations, one user makes their destination public
+    Given User is logged into the application
+    And user is at the destinations page
+    And user with id "1" has a private destination with name "UC", type "uni", and country "New Zealand"
+    And user with id "2" has a private destination with name "UC", type "uni", and country "New Zealand"
+    When user with id "1" updates his private destination with name "UC", type "uni", and country "New Zealand" to be public
+    Then user with id "2" private destination with name "UC", type "uni", and country "New Zealand" doesnt exist
+    And user with id "2" is following the new public destination with name "UC", type "uni", and country "New Zealand"

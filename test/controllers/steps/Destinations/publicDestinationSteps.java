@@ -48,10 +48,11 @@ public class publicDestinationSteps extends ProvideApplication {
         assertEquals("/destinations/create", redirectDestination.redirectLocation().get());
     }
 
-    @Given("Steve Miller has a private destination with name {string}, type {string}, and country {string}")
-    public void steveMillerHasPrivateDestination(String name, String type, String country) {
+    @Given("user with {string} has a private destination with name {string}, type {string}, and country {string}")
+    public void johnJamesHasPrivateDestination(String profileId, String name, String type, String country) {
         Destination destination = new Destination();
-        destination.setProfileId(2);
+        int id = Integer.parseInt(profileId);
+        destination.setProfileId(id);
         destination.setName(name);
         destination.setType(type);
         destination.setCountry(country);
@@ -72,32 +73,55 @@ public class publicDestinationSteps extends ProvideApplication {
     }
 
 
-    @Then("Steve Millers private destination doesnt exist")
-    public void steveMillersProfileDoesntExist() {
+    @Then("user with id {string} private destination with name {string}, type {string}, and country {string} doesnt exist")
+    public void steveMillersProfileDoesntExist(String profileId, String name, String type, String country) {
         injectRepositories();
-        List<Destination> destinationList = destinationRepository.getUserDestinations(2);
+        int id = Integer.parseInt(profileId);
+        List<Destination> destinationList = destinationRepository.getUserDestinations(id);
         for (Destination destination : destinationList) {
             List<String> destDetails = new ArrayList<>();
             destDetails.add(destination.getName());
             destDetails.add(destination.getType());
             destDetails.add(destination.getCountry());
             List<String> oldDest = new ArrayList<>();
-            oldDest.add("Waiau");
-            oldDest.add("town");
-            oldDest.add("New Zealand");
+            oldDest.add(name);
+            oldDest.add(type);
+            oldDest.add(country);
             assertNotEquals(destDetails, oldDest);
         }
     }
 
-    @Then("Steve Miller is following the new public destination")
-    public void steveMillerFollowingNewPublicDest() {
+    @Then("user with id {string} is following the new public destination with name {string}, type {string}, and country {string}")
+    public void steveMillerFollowingNewPublicDest(String profileId, String name, String type, String country) {
         injectRepositories();
-        Optional<ArrayList<Integer>> optionalListDests = destinationRepository.getFollowedDestinationIds(2);
+        int id = Integer.parseInt(profileId);
+        Optional<ArrayList<Integer>> optionalListDests = destinationRepository.getFollowedDestinationIds(id);
         if (optionalListDests.isPresent()) {
             ArrayList<Integer> listDests = optionalListDests.get();
-            assertEquals(1, listDests.size());
+            boolean match = false;
+            for (Integer destId: listDests) {
+                Destination destination = destinationRepository.lookup(destId);
+                if (destination.getName() == name && destination.getType() == type && destination.getCountry() == country
+                        && destination.getVisible() == 1) {
+                    match = true;
+                }
+            }
+            assertEquals(true, match);
         } else {
             Assert.fail();
         }
+    }
+
+    @When("user with id {string} updates his private destination with name {string}, type {string}, and country {string} to be public")
+    public void updatePrivateDestToBePublic(String profileId, String name, String type, String country) {
+        Destination destination = new Destination();
+        int id = Integer.parseInt(profileId);
+        destination.setProfileId(id);
+        destination.setName(name);
+        destination.setType(type);
+        destination.setCountry(country);
+        destination.setVisible(1);
+        injectRepositories();
+        destinationRepository.update(destination, destination.getDestinationId());
     }
 }
