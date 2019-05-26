@@ -226,7 +226,6 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> saveDestination(Http.Request request) {
-        System.out.println("here me boiii");
         Integer userId = SessionController.getCurrentUserId(request);
         Form<Destination> destinationForm = form.bindFromRequest(request);
         String visible = destinationForm.field("visible").value().get();
