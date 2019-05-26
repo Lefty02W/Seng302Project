@@ -142,12 +142,19 @@ public class DestinationsController extends Controller {
      * @return
      */
     @Security.Authenticated(SecureSession.class)
-    public Result showCreate(Http.Request request) {
-        Destination dest = new Destination();
-        dest.setLatitude(0.0);
-        dest.setLongitude(0.0);
-        Form<Destination> destinationForm = form.fill(dest);
-        return ok(createDestinations.render(destinationForm, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> showCreate(Http.Request request) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Destination dest = new Destination();
+                dest.setLatitude(0.0);
+                dest.setLongitude(0.0);
+                Form<Destination> destinationForm = form.fill(dest);
+                return ok(createDestinations.render(destinationForm, profile.get(),request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
+            }
+        });
     }
 
     /**
@@ -158,16 +165,23 @@ public class DestinationsController extends Controller {
      * @return
      */
     @Security.Authenticated(SecureSession.class)
-    public Result edit(Http.Request request, Integer id) {
-        Destination destination = new Destination();
-        for (Destination dest : destinationsList) {
-            if (dest.getDestinationId() == id) {
-                destination = dest;
-                break;
+    public CompletionStage<Result> edit(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Destination destination = new Destination();
+                for (Destination dest : destinationsList) {
+                    if (dest.getDestinationId() == id) {
+                        destination = dest;
+                        break;
+                    }
+                }
+                Form<Destination> destinationForm = form.fill(destination);
+                return ok(editDestinations.render(id, destination, destinationForm, profile.get(), request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
             }
-        }
-        Form<Destination> destinationForm = form.fill(destination);
-        return ok(editDestinations.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
+        });
     }
 
     /**

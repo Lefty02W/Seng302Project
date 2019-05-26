@@ -16,7 +16,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
-import views.html.editProfile;
 import views.html.profile;
 
 import javax.imageio.ImageIO;
@@ -98,27 +97,6 @@ public class ProfileController extends Controller {
 
 
     /**
-     * Method to retrieve a users profile details and return a filled form to be edited.
-     *
-     * @apiNote GET /profile/:profileId/edit
-     * @param profileId id of the user to edit
-     * @return a render of the editDestinations profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> showEdit (Integer profileId){
-        return profileRepository.findById(profileId).thenApplyAsync(optionalProfile -> {
-            if (optionalProfile.isPresent()) {
-                Profile toEditProfile = optionalProfile.get();
-                Form<Profile> currentProfileForm = profileForm.fill(toEditProfile);
-                return ok(editProfile.render(toEditProfile, currentProfileForm));
-            } else {
-                return notFound("Profile not found.");
-            }
-        }, httpExecutionContext.current());
-    }
-
-
-    /**
      * Updates a profile's attributes based on what is retrieved form the form
      * @apiNot POST /profile
      * @param request Http request
@@ -140,12 +118,12 @@ public class ProfileController extends Controller {
      * Called by either the make or remove admin buttons to update admin privilege in database.
      *
      * @param request
-     * @param email The email of the user who is having admin privilege updated
+     * @param id The id of the user who is having admin privilege updated
      * @return Result, redrects to the travellers page.
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> updateAdmin (Http.Request request, String email){
-        return profileRepository.updateAdminPrivelege(email).thenApplyAsync(clickedEmail -> redirect("/travellers")
+    public CompletionStage<Result> updateAdmin (Http.Request request, Integer id){
+        return profileRepository.updateAdminPrivelege(id).thenApplyAsync(profileId -> redirect("/travellers")
         , httpExecutionContext.current());
     }
 
