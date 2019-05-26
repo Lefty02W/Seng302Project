@@ -3,7 +3,6 @@ package controllers;
 import controllers.LoginController.Login;
 import models.Destination;
 import models.Profile;
-import models.Trip;
 import models.TripDestination;
 import play.data.Form;
 import play.data.FormFactory;
@@ -286,37 +285,13 @@ public class DestinationsController extends Controller {
      * @return a redirect to the destinations page
      */
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
-        Integer profileId = SessionController.getCurrentUserId(request);
-
-        return supplyAsync(() -> {
-            // Get all trips
-            List<Trip> trips = Trip.find.query()
-                    .where()
-                    .eq("profile_id", profileId)
-                    .findList();
-
-            // Iterate through each trip
-            // and get it's destinations
-            for (Trip trip : trips) {
-                List<TripDestination> destinations = TripDestination.find.query()
-                        .where()
-                        .eq("trip_id", trip.getId())
-                        .findList();
-
-                // Iterate over each destination
-                for (TripDestination destination : destinations) {
-                    // Cannot delete a destination if there is match
-                    // Since it in a trip
-                    if (destination.getDestinationId() == id) {
-                        return redirect("/destinations/show/false").flashing("failure",
-                                "Destination cannot be deleted as it is part of a trip");
-                    }
-                }
+        return tripDestinationsRepository.checkDestinationExists(id).thenApplyAsync(result -> {
+            if (result.isPresent()) {
+                return redirect("/destinations").flashing("error", "Destination: " + id +
+                        " is used within the following trips: " + result.get());
             }
             destinationRepository.delete(id);
-
-
-            return redirect("/destinations/show/false").flashing("success", "Destination Deleted");
+            return redirect("/destinations").flashing("info", "Destination: " + id + " deleted");
         });
     }
 
