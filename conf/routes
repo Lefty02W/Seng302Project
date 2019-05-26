@@ -55,7 +55,7 @@ GET     /profile/changeprofilePictureModal/:photoId  controllers.ProfileControll
 GET     /profile/cancel     controllers.ProfileController.resetDemoProfilePicture()
 GET     /profile/save         controllers.ProfileController.setProfilePicture(request: Request)
 GET     /profile/selectPhotoModal/:photoId  controllers.ProfileController.setImageToBeManuallyCropped(photoId : Integer)
-GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWithCroppingInfo(request: Request)
+#GET     /proifle/cropPhoto          controllers.ProfileController.uploadPhotoWithCroppingInfo(request: Request)
 GET     /profile/photo        controllers.ProfileController.photoAt(id: Integer)
 
 # Admins

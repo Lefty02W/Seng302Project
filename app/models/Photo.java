@@ -48,17 +48,18 @@ public class Photo extends Model {
     @Constraints.Required
     private int cropHeight;
 
-    private Integer isProfilePic;
-
     /**
-     * Constructor for image
-     * @param email
-     * @param path
-     * @param contentType
-     * @param visible
-     * @param name
+     *
+     * @param path relative path for the image stored in the database
+     * @param contentType content type of the image
+     * @param visible the privacy setting public or private
+     * @param name file name of image
+     * @param cropX x pixel crop
+     * @param cropY y pixel crop
+     * @param cropWidth crop width
+     * @param cropHeight crop height
      */
-    public Photo(String path, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight, int isProfilePic) {
+    public Photo(String path, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight) {
         this.path = path;
         this.visible = visible;
         this.contentType = contentType;
@@ -67,17 +68,10 @@ public class Photo extends Model {
         this.cropY = cropY;
         this.cropWidth = cropWidth;
         this.cropHeight = cropHeight;
-        this.isProfilePic = isProfilePic;
     }
 
     // Finder for image
     public static final Finder<Integer, Photo> find = new Finder<>(Photo.class);
-
-    public Integer getIsProfilePic() { return isProfilePic; }
-
-    public void setIsProfilePic(Integer isProfilePic) { this.isProfilePic = isProfilePic; }
-
-
 
     public Integer getPhotoId() {
         return photoId;
@@ -85,14 +79,6 @@ public class Photo extends Model {
 
     public void setPhotoId(Integer photoId) {
         this.photoId = photoId;
-    }
-
-    public byte[] getImage() {
-        return image;
-    }
-
-    public void setImage(byte[] image) {
-        this.image = image;
     }
 
     public Integer getVisible() {

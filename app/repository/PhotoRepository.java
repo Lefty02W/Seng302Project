@@ -46,7 +46,7 @@ public class PhotoRepository {
             try {
                 if (ebeanServer.find(Photo.class).setId(oldID).findOne() != null) {
                     SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-                    query.setParameter(1, newPhoto.getImage());
+                    query.setParameter(1, newPhoto.getPath());
                     query.setParameter(2, newPhoto.getVisible());
                     query.setParameter(3, newPhoto.getType());
                     query.setParameter(4, newPhoto.getName());
