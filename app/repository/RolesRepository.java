@@ -42,6 +42,10 @@ public class RolesRepository {
         return Optional.ofNullable(role);
     }
 
+    /**
+     * Removes role from user using sql query
+     * @param userId id of the user who's role is changing
+     */
     public void removeRole(Integer userId){
         Transaction txn = ebeanServer.beginTransaction();
         String query = "DELETE FROM profile_roles WHERE profile_id = ?";

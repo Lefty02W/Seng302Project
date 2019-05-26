@@ -50,7 +50,7 @@ public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
             This will require the database structure set up
          */
         Optional<List<String>> roles = rolesRepository.getProfileRoles(profileId);
-        if(roles.isPresent()){
+        if (roles.isPresent()) {
             profileRoles = roles.get();
         }
 

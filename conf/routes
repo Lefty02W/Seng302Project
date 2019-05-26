@@ -66,8 +66,6 @@ GET     /admin                       controllers.AdminController.show(request: R
 ## Admin Trips
 GET     /admin/trips/:tripId/delete     controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
 GET     /admin/trips/:tripId            controllers.AdminController.viewTrip(request: Request, tripId: Integer)
-GET    /admin/:profileId/trips/:tripId/edit       controllers.AdminController.editTrip(request: Request, tripId: Integer, profileId: Integer)
-
 
 ## Admin Profiles
 GET     /admin/profile/:id/edit                controllers.AdminController.showEditProfile(request: Request, id: Integer)
