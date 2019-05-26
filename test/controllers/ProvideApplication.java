@@ -18,7 +18,7 @@ import java.util.Map;
 public class ProvideApplication extends WithApplication {
 
     protected ProfileRepository profileRepository;
-    private DestinationRepository destinationRepository;
+    protected DestinationRepository destinationRepository;
 
     @Override
     public Application provideApplication() {
