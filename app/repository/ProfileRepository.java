@@ -48,7 +48,8 @@ public class ProfileRepository {
 
     /**
      * Method to validate if the given email and password match an account in the database
-     * @param email users email input
+     *
+     * @param email    users email input
      * @param password users password input
      * @return
      */
@@ -64,6 +65,7 @@ public class ProfileRepository {
 
     /**
      * Method to get all profiles, their roles will also be filled.
+     *
      * @return List of all profiles
      */
     public List<Profile> getAll() {
@@ -72,7 +74,7 @@ public class ProfileRepository {
         List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).findList();
         List<Profile> allProfiles = new ArrayList<>();
 
-        for (SqlRow row : rows){
+        for (SqlRow row : rows) {
 
             allProfiles.add(profileFromRow(row));
 
@@ -81,8 +83,6 @@ public class ProfileRepository {
         return allProfiles;
 
     }
-
-
 
 
     /**
@@ -107,9 +107,9 @@ public class ProfileRepository {
     }
 
 
-
     /**
      * Create a profile instance from data of an SQL Row result
+     *
      * @param row The SQL query result as a row
      * @return A profile made based on data from row
      */
@@ -123,7 +123,7 @@ public class ProfileRepository {
         return new Profile(row.getInteger("profile_id"), row.getString("first_name"),
                 row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
                 row.getDate("birthDate"), passportCountries, row.getString("gender"),
-                row.getDate("time_created") , nationalities, travellerTypes, roles);
+                row.getDate("time_created"), nationalities, travellerTypes, roles);
     }
 
 
@@ -139,7 +139,7 @@ public class ProfileRepository {
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
             Profile profile = null;
             if (!rowList.get(0).isEmpty()) {
-               profile = profileFromRow(rowList.get(0));
+                profile = profileFromRow(rowList.get(0));
             }
             return Optional.ofNullable(profile);
         }, executionContext);
@@ -147,6 +147,7 @@ public class ProfileRepository {
 
     /**
      * Finds one profile using its email as a query
+     *
      * @param email the users email
      * @return a Profile object that matches the email
      */
@@ -190,20 +191,20 @@ public class ProfileRepository {
                 query.execute();
                 txn.commit();
                 value = parseInt(query.getGeneratedKey().toString()); // Id of the newly created profile
-                for (String passportName: profile.getPassportsList()) {
+                for (String passportName : profile.getPassportsList()) {
                     profilePassportCountryRepository.insertProfilePassportCountry(new PassportCountry(passportName), value);
                 }
-                for (String nationalityName: profile.getNationalityList()) {
+                for (String nationalityName : profile.getNationalityList()) {
                     profileNationalityRepository.insertProfileNationality(new Nationality(nationalityName), value);
                 }
-                for (String travellerTypeName: profile.getTravellerTypesList()) {
+                for (String travellerTypeName : profile.getTravellerTypesList()) {
                     profileTravellerTypeRepository.insertProfileTravellerType(new TravellerType(travellerTypeName), value);
                 }
-        } catch(Exception e) {
-            System.err.println("Search This: "+e);
-        } finally {
-            txn.end();
-        }
+            } catch (Exception e) {
+                System.err.println("Search This: " + e);
+            } finally {
+                txn.end();
+            }
             return Optional.ofNullable(value);
         }, executionContext);
     }
@@ -212,55 +213,56 @@ public class ProfileRepository {
     /**
      * Update profile in database using Profile model object,
      * and the raw password from an input field, which will be set if it is not null.
+     *
      * @param newProfile Profile object with new details
      * @return
      */
     public CompletionStage<Optional<Integer>> update(Profile newProfile, int userId) {
 
-    return supplyAsync(
-        () -> {
-          Transaction txn = ebeanServer.beginTransaction();
-          String updateQuery =
-              "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, "
-                  + "birth_date = ?, gender = ? "
-                  + "WHERE profile_id = ?";
-          Optional<Integer> value = Optional.empty();
-          try {
-            if (ebeanServer.find(Profile.class).setId(userId).findOne() != null) {
-              SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-              query.setParameter(1, newProfile.getFirstName());
-              query.setParameter(2, newProfile.getMiddleName());
-              query.setParameter(3, newProfile.getLastName());
-              query.setParameter(4, newProfile.getEmail());
-              query.setParameter(5, newProfile.getBirthDate());
-              query.setParameter(6, newProfile.getGender());
-              query.setParameter(7, userId);
-              query.execute();
-              txn.commit();
-              profileNationalityRepository.removeAll(userId);
-              profilePassportCountryRepository.removeAll(userId);
-              profileTravellerTypeRepository.removeAll(userId);
-              for (String passportName : newProfile.getPassportsList()) {
-                profilePassportCountryRepository.insertProfilePassportCountry(
-                    new PassportCountry(0, passportName), userId);
-              }
-              for (String nationalityName : newProfile.getNationalityList()) {
-                profileNationalityRepository.insertProfileNationality(
-                    new Nationality(0, nationalityName), userId);
-              }
-              for (String travellerTypeName : newProfile.getTravellerTypesList()) {
-                profileTravellerTypeRepository.insertProfileTravellerType(
-                    new TravellerType(0, travellerTypeName), userId);
-              }
-            //TODO call function in role repo and edit the users role
-              value = Optional.of(userId);
-            }
-          } finally {
-            txn.end();
-          }
-          return value;
-        },
-        executionContext);
+        return supplyAsync(
+                () -> {
+                    Transaction txn = ebeanServer.beginTransaction();
+                    String updateQuery =
+                            "UPDATE profile SET first_name = ?, middle_name = ?, last_name = ?, email = ?, "
+                                    + "birth_date = ?, gender = ? "
+                                    + "WHERE profile_id = ?";
+                    Optional<Integer> value = Optional.empty();
+                    try {
+                        if (ebeanServer.find(Profile.class).setId(userId).findOne() != null) {
+                            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+                            query.setParameter(1, newProfile.getFirstName());
+                            query.setParameter(2, newProfile.getMiddleName());
+                            query.setParameter(3, newProfile.getLastName());
+                            query.setParameter(4, newProfile.getEmail());
+                            query.setParameter(5, newProfile.getBirthDate());
+                            query.setParameter(6, newProfile.getGender());
+                            query.setParameter(7, userId);
+                            query.execute();
+                            txn.commit();
+                            profileNationalityRepository.removeAll(userId);
+                            profilePassportCountryRepository.removeAll(userId);
+                            profileTravellerTypeRepository.removeAll(userId);
+                            for (String passportName : newProfile.getPassportsList()) {
+                                profilePassportCountryRepository.insertProfilePassportCountry(
+                                        new PassportCountry(0, passportName), userId);
+                            }
+                            for (String nationalityName : newProfile.getNationalityList()) {
+                                profileNationalityRepository.insertProfileNationality(
+                                        new Nationality(0, nationalityName), userId);
+                            }
+                            for (String travellerTypeName : newProfile.getTravellerTypesList()) {
+                                profileTravellerTypeRepository.insertProfileTravellerType(
+                                        new TravellerType(0, travellerTypeName), userId);
+                            }
+                            //TODO call function in role repo and edit the users role
+                            value = Optional.of(userId);
+                        }
+                    } finally {
+                        txn.end();
+                    }
+                    return value;
+                },
+                executionContext);
     }
 
 
@@ -285,6 +287,7 @@ public class ProfileRepository {
 
     /**
      * Used to update (add or remove) admin privilege to another user from the Travellers page.
+     *
      * @param clickedId the id of the user that is going to have admin privilege updated.
      * @return The email member who had their admin updated.
      */
@@ -298,10 +301,10 @@ public class ProfileRepository {
 
                     List<String> roles = targetProfile.getRoles();
 
-                    if(targetProfile.hasRole("admin")) {
+                    if (targetProfile.hasRole("admin")) {
 
                         roles.remove("admin");
-                    } else{
+                    } else {
 
                         roles.add("admin");
 
@@ -323,6 +326,7 @@ public class ProfileRepository {
 
     /**
      * Function to get all the destinations created by the signed in user.
+     *
      * @param profileId users profile Id
      * @return destList arrayList of destinations registered by the user
      */

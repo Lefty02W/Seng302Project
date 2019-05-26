@@ -60,26 +60,12 @@ public class TripRepository {
      */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
         ebeanServer.insert(trip);
-        System.out.println("yote");
         for (TripDestination tripDestination : tripDestinations) {
                 tripDestination.setTripId(trip.getId());
                 Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
-                //if(dest.getVisible() == 1 && !dest.getUserEmail().equals("admin@admin.com")) {
                 if (dest.getVisible() == 1) {
-                   // makeAdmin(dest);
-                    System.out.println("Make Admin");
                 }
             ebeanServer.insert(tripDestination);
-        }
-    }
-
-    private void makeAdmin(Destination destination) {
-//        destinationRepository.followDesination(destination.getDestinationId(), destination.getProfileId());
-        Destination targetDestination = ebeanServer.find(Destination.class).setId(destination.getDestinationId()).findOne();
-        Optional<Integer> profileId = profileRepository.getAdminId();
-        if (profileId.isPresent()) {
-            targetDestination.setProfileId(profileId.get());
-            targetDestination.update();
         }
     }
 
