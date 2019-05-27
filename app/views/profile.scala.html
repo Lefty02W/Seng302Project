@@ -278,7 +278,7 @@
 
                     <div id="photosTab" class="tab-pane fade">
                         <div class="col">
-                            <div id="photosTabCard" class="card-large lower-card">
+                            <div id="photosCard" class="card-large lower-card">
                                 <div id="photoHeading">
                                     <h3 class="primaryText">Personal Photos</h3>
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
@@ -440,7 +440,7 @@
                                         <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
                                         <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getPhotoId)">
                                             <button type="submit">Crop this myself</button></a>
-                                        <a href="@routes.ProfileController.setDemoProfilePicture(photo.getPhotoId)">
+                                        <a href="@routes.ProfileController.setProfilePicture(photo.getPhotoId)">
                                             <button type="submit">Select</button></a>
                                     </div>
                                 </div>

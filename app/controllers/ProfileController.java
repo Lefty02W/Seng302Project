@@ -343,16 +343,20 @@ public class ProfileController extends Controller {
     }
 
     /**
-     * saves the demo profile picture if it is not already saved to the database
+     * Set a profile picture to the database
      * @return a refresh to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> setProfilePicture(Http.Request request) {
+    public CompletionStage<Result> setProfilePicture(Http.Request request, Integer photoId) {
         int profileId = SessionController.getCurrentUserId(request);
-        personalPhotoRepository.removeProfilePic(profileId);
-        // TODO this needs to hold a personalPhoto
         try {
-            photoRepository.update(demoProfilePicture, demoProfilePicture.getPhotoId());
+            personalPhotoRepository.findByPhotoId(photoId).thenApplyAsync(photoOpt -> {
+                if (photoOpt.isPresent()) {
+                    personalPhotoRepository.removeProfilePic(profileId);
+                    personalPhotoRepository.setProfilePic(profileId, photoId);
+                }
+                return photoOpt;
+            });
         } catch (NullPointerException e) {
             savePhoto(demoProfilePicture, profileId);
         }
@@ -555,7 +559,7 @@ public class ProfileController extends Controller {
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
-                return ok(profile.render(toSend, imageForm, displayImageList, null, null, tripValues, null, null, null, null, destinationsList, null,request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, null, null, tripValues, null, profilePicture, null, null, destinationsList, null,request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }
