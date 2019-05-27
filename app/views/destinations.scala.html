@@ -291,13 +291,20 @@
             function addMarkers() {
                 var centerSet = false;
                 @for(destination <- destinationsList) {
+                    var icon;
+                    if(@destination.getVisible === 1) {
+                        icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png';
+                    } else {
+                        icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png';
+                    }
                     var marker = new google.maps.Marker({
                        position: {
                            lat: @destination.getLatitude,
                            lng: @destination.getLongitude
                        },
                        animation: google.maps.Animation.DROP,
-                       map: map
+                       map: map,
+                        icon: icon
                     });
 
                 marker.content = "Name: @destination.getName" +
