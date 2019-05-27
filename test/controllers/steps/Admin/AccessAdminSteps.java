@@ -2,6 +2,7 @@ package controllers.steps.Admin;
 
 
 import controllers.ProvideApplication;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -13,8 +14,8 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -25,6 +26,7 @@ public class AccessAdminSteps extends ProvideApplication {
     private Result adminResult;
     private Map<String, String> loginForm = new HashMap<>();
     private Result loginResult;
+    private Result adminAttemptResult;
 
 
     @Given("I am logged into the application as a non admin")
@@ -91,9 +93,33 @@ public class AccessAdminSteps extends ProvideApplication {
 
 
 
-
     @Then("the admin page should be shown")
     public void theAdminPageShouldBeShown() {
         Assert.assertEquals(200, adminResult.status());
+    }
+
+
+    @When("^I enter the following url \"([^\"]*)\"$")
+    public void iEnterTheFollowingUrl(String arg0) throws Throwable {
+        Http.RequestBuilder requestDest = Helpers.fakeRequest()
+                .method("POST")
+                .uri(urlString)
+                .session("connected", "1");
+        adminAttemptResult = Helpers.route(provideApplication(), requestDest);
+    }
+
+    @Then("^I should be redirected to the \"([^\"]*)\" page$")
+    public void iShouldBeRedirectedToThePage(String arg0) throws Throwable {
+        if (adminAttemptResult.redirectLocation().isPresent()) {
+            assertEquals("/profile", adminAttemptResult.redirectLocation().get());
+        } else {
+            fail();
+        }
+
+    }
+
+    @And("^There should be a flashing present saying {string}$")
+    public void thereShouldBeAFlashingPresentSaying(String string) throws Throwable {
+        System.out.println(adminAttemptResult.flash().getOptional("invalid"));
     }
 }
