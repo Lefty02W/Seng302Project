@@ -181,6 +181,7 @@
 
             var map;
             var markers = [];
+            var InforObj = [];
 
             /**
             * Initialises the map view
@@ -210,11 +211,37 @@
                        animation: google.maps.Animation.DROP,
                        map: map
                     });
+
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: "Test",
+                    maxWidth: 200
+                });
+
+
+
+                marker.addListener('click', function () {
+                        closeOtherInfo();
+                        infowindow.open(map, marker);
+                        InforObj[0] = infowindow;
+                    });
+
                     markers.push(marker);
                     if (!centerSet) {
                         centerSet = true;
                         map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
                     }
+                }
+            }
+
+            function closeOtherInfo() {
+                if (InforObj.length > 0) {
+                    /* detach the info-window from the marker ... undocumented in the API docs */
+                    InforObj[0].set("marker", null);
+                    /* and close it */
+                    InforObj[0].close();
+                    /* blank the array */
+                    InforObj.length = 0;
                 }
             }
 
