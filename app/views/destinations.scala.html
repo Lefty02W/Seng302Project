@@ -299,7 +299,9 @@
                        map: map
                     });
 
-                marker.content = "@destination.getName";
+                marker.content = "Name: @destination.getName" +
+                        "<br> Type: @destination.getType" +
+                        "<br> Country: @destination.getCountry";
 
                 var infoWindow = new google.maps.InfoWindow();
                 google.maps.event.addListener(marker, 'click', function () {
