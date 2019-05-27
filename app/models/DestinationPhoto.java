@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 /**
  * Model class to hold a profile personal photo
  */
-public class destinationPhoto {
+public class DestinationPhoto {
 
 
     private int destinationPhotoId;
@@ -14,7 +14,7 @@ public class destinationPhoto {
     private int photoId;
     private int destinationId;
 
-    public destinationPhoto(int profileId, int photoId, int destinationId) {
+    public DestinationPhoto(int profileId, int photoId, int destinationId) {
         this.profileId = profileId;
         this.photoId = photoId;
         this.destinationId = destinationId;
