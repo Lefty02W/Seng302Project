@@ -363,6 +363,21 @@ public class ProfileController extends Controller {
         return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Profile picture updated"));
     }
 
+    /**
+     * Set a profile picture to the database
+     * @return a refresh to the profile page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> removeProfilePicture(Http.Request request) {
+        int profileId = SessionController.getCurrentUserId(request);
+        try {
+            personalPhotoRepository.removeProfilePic(profileId);
+        } catch (NullPointerException e) {
+            savePhoto(demoProfilePicture, profileId);
+        }
+        return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Profile picture removed"));
+    }
+
 
 
 
