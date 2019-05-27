@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer], photoList : List[Photo])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -152,7 +152,7 @@
                             </div>
                         </div>
 
-                </div>
+                    </div>
                     <div id="table-card" class="card-large">
 
                         <div class="row">
@@ -234,7 +234,7 @@
                             <div id="myPhotosTab" class="tab-pane fade in active show">
                                 <div class="container">
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
-                                    data-target="#selectPhotoModal">Add Photo</button>
+                                    data-target="#linkDestinationPhotoModal">Add Photo</button>
                                     <h2>my photos</h2>
                                 </div>
                             </div>
@@ -244,6 +244,48 @@
                                 </div>
                             </div>
 
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal fade" id="linkDestinationPhotoModal">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="modal-title">Link a Picture to this destination</h2>
+                            </div>
+                            <div class="col">
+                                <div id="photosCard" class="card-large lower-card">
+                                    <div class="row">
+                                    @for(photo <- photoList) {
+                                        <div class="card">
+                                            <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                            src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
+                                            name="@photo.getPhotoId">
+
+                                            <div class="card-body">
+                                                <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
+                                                <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getPhotoId)">
+                                                    <button type="submit">Select</button></a>
+
+                                            </div>
+                                                <!-- The Expanded Photo Modal -->
+                                            <div id="expandImageModal" class="modal">
+                                                <span class="close">&times;</span>
+                                                <img class="modal-content" id="expandedImage">
+                                                <div id="caption"></div>
+                                                <div id="id"></div>
+                                            </div>
+                                        </div>
+                                    }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" data-dismiss="modal" style="width: 10vw;
+                                    float: right" class="changeProfilePictureButton"
+                                data-toggle="modal" data-target="#changeProfilePicture">Close</button>
+                            </div>
                         </div>
                     </div>
 

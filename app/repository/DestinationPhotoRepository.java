@@ -16,13 +16,13 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 /**
  * This class provides database access methods for handling PersonalPhotos
  */
-public class destinationPhotoRepository implements ModelUpdatableRepository<DestinationPhoto> {
+public class DestinationPhotoRepository implements ModelUpdatableRepository<DestinationPhoto> {
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
     private final PhotoRepository photoRepository;
 
     @Inject
-    public destinationPhotoRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, PhotoRepository photoRepository){
+    public DestinationPhotoRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, PhotoRepository photoRepository){
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.photoRepository = photoRepository;

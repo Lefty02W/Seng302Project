@@ -2,6 +2,7 @@ package controllers;
 
 import controllers.LoginController.Login;
 import models.Destination;
+import models.Photo;
 import models.Profile;
 import models.TripDestination;
 import play.data.Form;
@@ -11,9 +12,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import repository.DestinationRepository;
-import repository.ProfileRepository;
-import repository.TripDestinationsRepository;
+import repository.*;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -40,6 +39,7 @@ public class DestinationsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final TripDestinationsRepository tripDestinationsRepository;
     private final ProfileRepository profileRepository;
+    private final PersonalPhotoRepository personalPhotoRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -52,12 +52,14 @@ public class DestinationsController extends Controller {
      */
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
-                                  ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository) {
+                                  ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
+                                  PersonalPhotoRepository personalPhotoRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
         this.tripDestinationsRepository = tripDestinationsRepository;
+        this.personalPhotoRepository = personalPhotoRepository;
     }
 
     /**
@@ -84,7 +86,14 @@ public class DestinationsController extends Controller {
                     destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
                 }
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                Optional<List<Photo>> imageListTemp = personalPhotoRepository.getAllProfilePhotos(profile.get().getProfileId());
+                List<Photo> photoList = new ArrayList<>();
+                if (imageListTemp.isPresent()) {
+                    for (Photo photo : imageListTemp.get()) {
+                        photoList.add(photo);
+                    }
+                }
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, photoList, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -104,7 +113,12 @@ public class DestinationsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                Optional<List<Photo>> optionalUsersPhotos = personalPhotoRepository.getAllProfilePhotos(profile.get().getProfileId());
+                List<Photo> usersPhotos = new ArrayList<>();
+                if (optionalUsersPhotos.isPresent()) {
+                    usersPhotos.equals(optionalUsersPhotos.get());
+                }
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -141,7 +155,12 @@ public class DestinationsController extends Controller {
                         destinationsList = new ArrayList<>();
                     }
                 }
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                Optional<List<Photo>> optionalUsersPhotos = personalPhotoRepository.getAllProfilePhotos(profile.get().getProfileId());
+                List<Photo> usersPhotos = new ArrayList<>();
+                if (optionalUsersPhotos.isPresent()) {
+                    usersPhotos.equals(optionalUsersPhotos.get());
+                }
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
