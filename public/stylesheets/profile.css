@@ -35,6 +35,19 @@
     border-color: #37623B;
 }
 
+.btn-outline-primary {
+    color: #37623B;
+    border-color: #37623B;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #37623B;
+    border-color: #37623B;
+}
+
+
+
 .trip-button {
     width: 100%;
 }
