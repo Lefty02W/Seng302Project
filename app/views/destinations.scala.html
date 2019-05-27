@@ -154,84 +154,97 @@
 
                 </div>
                     <div id="table-card" class="card-large">
-                    <div class="row">
-                        <ul class="nav nav-tabs" id="destinationTabs">
-                            <li class="active"><a data-toggle="tab" href="#photosTab" id="detailsTabLink">Details</a></li>
-                            <li><a data-toggle="tab" href="#destsTab" id="myPhotosTabLink">My Photos</a></li>
-                            <li><a data-toggle="tab" href="#tripsTab" id="worldPhotosTabLink">World Photos</a></li>
-                        </ul>
 
-                    </div>
-                    <div class="tab-content" id="destinationTabsContent">
-                        <div id="informationTab" class="tab-pane fade in active show">
-                            <div class="container">
-                                <div class="row justify-content-center">
-                                    <div class="col-md-2">
-                                        <b>Destination Name :</b>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a>@currentUser.getFirstName</a>
+                        <div class="row">
+                            <ul class="nav nav-tabs" id="destinationTabs">
+                                <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">Details</a></li>
+                                <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
+                                <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">World Photos</a></li>
+                            </ul>
+                        </div>
+                        <div class="tab-content" id="destinationTabsContent">
+
+                            <div id="detailsTab" class="tab-pane fade in active show">
+                                <div class="container">
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>Destination Name :</b>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a>@currentUser.getFirstName</a>
+                                        </div>
+
                                     </div>
 
-                                </div>
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>Type :</b>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a>@currentUser.getMiddleName</a>
+                                        </div>
+                                    </div>
 
-                                <div class="row justify-content-center">
-                                    <div class="col-md-2">
-                                        <b>Type :</b>
+                                    <div id="lastNameRow" class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>Country :</b>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a>@currentUser.getLastName</a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <a>@currentUser.getMiddleName</a>
-                                    </div>
-                                </div>
 
-                                <div id="lastNameRow" class="row justify-content-center">
-                                    <div class="col-md-2">
-                                        <b>Country :</b>
+                                    <div id="emailRow" class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>District :</b>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a>@currentUser.getEmail</a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <a>@currentUser.getLastName</a>
-                                    </div>
-                                </div>
 
-                                <div id="emailRow" class="row justify-content-center">
-                                    <div class="col-md-2">
-                                        <b>District :</b>
+                                    <div id="dobRow" class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>Latitude :</b>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a>@currentUser.getBirthString</a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <a>@currentUser.getEmail</a>
-                                    </div>
-                                </div>
 
-                                <div id="dobRow" class="row justify-content-center">
-                                    <div class="col-md-2">
-                                        <b>Latitude :</b>
+                                    <div id="dobRow" class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>Longitude :</b>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a>@currentUser.getBirthString</a>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <a>@currentUser.getBirthString</a>
-                                    </div>
-                                </div>
 
-                                <div id="dobRow" class="row justify-content-center">
-                                    <div class="col-md-2">
-                                        <b>Longitude :</b>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a>@currentUser.getBirthString</a>
-                                    </div>
-                                </div>
-
-                                <div id="dobRow" class="row justify-content-center">
-                                    <div class="col-md-2">
-                                        <b>Public :</b>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <a>@currentUser.getBirthString</a>
+                                    <div id="dobRow" class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>Public :</b>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <a>@currentUser.getBirthString</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div id="myPhotosTab" class="tab-pane fade in active show">
+                                <div class="container">
+                                    <h2>my photos</h2>
+                                </div>
+                            </div>
+                            <div id="worldPhotosTab" class="tab-pane fade in active show">
+                                <div class="container">
+                                    <h2>world photos</h2>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                    </div>
+
                 </div>
 
             </div>
