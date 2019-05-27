@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Destination;
+import models.Trip;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,20 +18,16 @@ public class AdminControllerTest extends ProvideApplication {
 
     @Before
     public void setUp() throws Exception {
-        profileId = loginUser();
+        profileId = adminLogin();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin")
                 .session("connected", profileId.toString());;
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-    }
 
     @Test
-    public void deleteDestination() {
+    public void deleteValidDestination() {
         injectRepositories();
         List<Destination> destinationList = Destination.find.all();
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -39,7 +36,20 @@ public class AdminControllerTest extends ProvideApplication {
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
 
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+    }
 
-        Assert.assertEquals(303, result.status());
+
+    @Test
+    public void deleteValidTrip() {
+        injectRepositories();
+        List<Trip> trips = Trip.find.all();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/trips/"+ trips.get(0).getId() + "/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
     }
 }
