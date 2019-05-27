@@ -3,6 +3,7 @@ package controllers;
 import models.Destination;
 import models.Profile;
 import models.Trip;
+import models.TripDestination;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -80,5 +81,22 @@ public class AdminControllerTest extends ProvideApplication {
         Integer newSize = profiles.size();
         Integer expected = originalSize - 1;
         Assert.assertEquals(expected, newSize);
+    }
+
+
+    /**
+     * Test deleting a non-existent profile, the application should not crash
+     */
+    @Test
+    public void deleteInvalidProfile() {
+        injectRepositories();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/-1/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+
+
+        Assert.assertEquals(303, result.status());
     }
 }
