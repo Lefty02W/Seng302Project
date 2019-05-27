@@ -299,8 +299,7 @@
                        map: map
                     });
 
-                //var marker = new google.maps.Marker(options);
-                marker.content = "this is some test data and it is very cool";
+                marker.content = "@destination.getName";
 
                 var infoWindow = new google.maps.InfoWindow();
                 google.maps.event.addListener(marker, 'click', function () {
