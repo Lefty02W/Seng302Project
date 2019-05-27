@@ -671,7 +671,7 @@
                 } else {
                     styles = dayStyle;
                 }
-                var center = {lat: -43.5321, lng: 172.6362}; // TODO set to one of the destinations coords
+                var center = {lat: -43.5321, lng: 172.6362};
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
                     center: center,
                     streetViewControl: false,
@@ -763,7 +763,9 @@
                 }
             }
 
-
+            /**
+            * Sets all rows in the table back to the default background colour
+            */
             function clearRows() {
                 var rows = document.getElementById("destTable").rows;
                 for (var i = 1; i < rows.length; i++) {
