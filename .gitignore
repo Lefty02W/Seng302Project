@@ -8,6 +8,7 @@ bin/
 /project/project
 /project/target
 /target
+/photos
 tmp/
 test-result
 server.pid
@@ -43,7 +44,7 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 
-# Windows image file caches
+# Windows photo file caches
 Thumbs.db
 ehthumbs.db
 

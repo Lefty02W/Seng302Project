@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], imageList: List[Image], showPhotoModal: Boolean, trips: List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Photo, showCropPhotoModal: Boolean, widthHeight: String, destinationsList: List[Destination], isTooSmall: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -17,6 +17,8 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/profile.css")">
 
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/croppie.css")"/>
+
 
         <script src="@routes.Assets.at("javascripts/jquery.dataTables.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/dataTables.bootstrap4.js")" type="text/javascript"></script>
@@ -25,332 +27,764 @@
         <script src="@routes.Assets.at("javascripts/bootstrap-select.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/bootstrap.js")" type="text/javascript"></script>
 
+        <script src="@routes.Assets.at("javascripts/croppie.js")" type="text/javascript"></script>
+
+
     </head>
 
     <body>
+
         <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">TravelEA </h2>
                 <div class="list-group list-group-flush">
-                    <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                    <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
-                </div>
-            </div>
-                <!-- /#sidebar-wrapper -->
-
-                <!-- Page Content -->
-            <div id="page-content-wrapper">
-
-                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
-                    <div id="pageTitle">
-                        <h2> Profile</h2> <!-- TODO align this in the center -->
-                    </div>
-                </nav>
-
-                @if(request.flash.getOptional("success").isPresent) {
-                    <div class="alert alert-success">
-                    @request.flash.getOptional("success").get()
-                    </div>
-                }
-
-                @if(request.flash.getOptional("failure").isPresent) {
-                    <div class="alert alert-failure">
-                    @request.flash.getOptional("failure").get()
-                    </div>
-                }
-
-
-                @if(showPhotoModal) {
-                    <script type="text/javascript">
-                        $(window).on('load', function() {
-                            $('#viewPhotoModal').modal('show')
-                        })
-                    </script>
-                }
-
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col">
-                            <div id="personalCard" class="card-large upper-card center-col">
-                                <h3>Personal Information</h3>
-                                <div class="container">
-                                    <div id="firstNameCard" class="card-small">
-                                        <a>First Name: @currentUser.getFirstName</a>
-                                    </div>
-
-                                    <div id="midNameCard" class="card-small">
-                                        <a>Middle Name: @currentUser.getMiddleName</a>
-                                    </div>
-
-                                    <div id="lastNameCard" class="card-small">
-                                        <a>Last Name: @currentUser.getLastName</a>
-                                    </div>
-
-                                    <div id="emailCard" class="card-small">
-                                        <a>Email: @currentUser.getEmail</a>
-                                    </div>
-
-                                    <div id="dobCard" class="card-small">
-                                        <a>Date Of Birth: @currentUser.getBirthString</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="col">
-                            <div id="trips-card" class="card-large upper-card">
-                                <h3>Your Trips</h3>
-
-                                @if(trips.isEmpty) {
-                                    <div class="alert alert-info" role="alert">
-                                        You have no trips associated with your profile
-                                    </div>
-                                } else {
-                                    <div class="col">
-                                    @for(tripId <- trips) {
-                                        <div class="row">
-                                            <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
-                                                <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
-                                                <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div id="tripInfo@tripId" class="collapse collapse-body">
-                                                <table id="tripTable">
-                                                    <thead>
-                                                        <tr><th>Start Date</th><th>N.O. Destinations</th><th>Travel Time (Days)</th>
-                                                    </thead>
-                                                    <tr>
-                                                        <td>
-                                                            @if(currentUser.getTripById(tripId).getStartDate != null) {
-                                                                <span>@currentUser.getTripById(tripId).getStartDate.getTime</span>
-                                                            } else {
-                                                                <span>0</span>
-                                                            }
-                                                            @currentUser.getTripById(tripId).getStartDate</td>
-                                                        <td>@currentUser.getTripById(tripId).getDestinations.size()</td>
-                                                        <td>@currentUser.getTripById(tripId).getTravelTime</td>
-                                                    </tr>
-                                                </table>
-                                                <h4>Destinations Visted</h4>
-                                                <table id="destsTable">
-                                                    <thead>
-                                                        <tr><th>Name</th><th>Country</th><th>Departure Time</th><th>Arrival Time</th>
-                                                    </thead>
-                                                    @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
-                                                        <tr>
-                                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
-                                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
-                                                            <td>
-                                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
-                                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
-                                                                } else {
-                                                                    <span></span>
-                                                                }
-                                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
-                                                            <td>
-                                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture != null) {
-                                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>
-                                                                } else {
-                                                                    <span></span>
-                                                                }
-                                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>
-                                                        </tr>
-                                                    }
-                                                </table>
-                                            </div>
-                                        </div>
-                                    }
-                                    </div>
-
-                                }
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col">
-                            <div id="typesCard" class="card-large lower-card center-col">
-                                <h3>Your Traveller Types</h3>
-
-                                @if(currentUser.getTravellerTypesList.isEmpty) {
-                                    <div class="alert alert-info" role="alert">
-                                        You have no traveller types associated with your profile
-                                    </div>
-                                } else {
-                                    <div class="row">
-                                    @for(index <- 0 until currentUser.getTravellerTypesList.size) {
-                                        <div class="col">
-                                            <div class="card-small card-small-tall">
-                                                <a>@currentUser.getTravellerTypesList.get(index)</a>
-                                            </div>
-                                        </div>
-                                    }
-                                    </div>
-                                }
-
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div id="nationCard" class="card-large lower-card center-col">
-                                <h3>Your Nationalities</h3>
-
-                                @if(currentUser.getNationalityList.isEmpty) {
-                                    <div class="alert alert-info" role="alert">
-                                        You have no nationalities associated with your profile
-                                    </div>
-                                } else {
-                                    <div class="row">
-                                    @for(index <- 0 until currentUser.getNationalityList.size) {
-                                        <div class="col">
-                                            <div class="card-small card-small-tall">
-                                                <a>@currentUser.getNationalityList.get(index)</a>
-                                            </div>
-                                        </div>
-                                    }
-                                    </div>
-                                }
-
-
-                            </div>
-                        </div>
-
-                        <div class="col">
-                            <div id="passportCard" class="card-large lower-card center-col">
-                                <h3>Your Passports</h3>
-
-                                @if(currentUser.getPassports.isEmpty) {
-                                    <div class="alert alert-info" role="alert">
-                                        You have no passports associated with your profile
-                                    </div>
-                                } else {
-                                    <div class="row">
-
-
-                                    @for(index <- 0 until currentUser.getPassportsList.size) {
-                                        <div class="col">
-                                            <div class="card-small card-small-tall">
-                                                <a>@currentUser.getPassportsList.get(index)</a>
-                                            </div>
-                                        </div>
-                                    }
-                                    </div>
-                                }
-
-                            </div>
-
-                        </div>
-
-                        <div class="col">
-                            <div id="photosCard" class="card-large lower-card">
-                                <h3>Personal Photos</h3>
-                                <button type="button" class="viewButton" data-toggle="modal" data-target="#viewPhotoModal">
-                                    View Photos</button>
-                                <button type="button" class="addButton" data-toggle="modal" data-target="#addPhotoModal">
-                                    Add Photos</button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <a href="@routes.ProfileController.showEdit(currentUser.getEmail)"><button type="button"
-                            class="button-editDestinations" style="width: 10vw;
-                                float: right">
-                                Edit Profile
-                            </button>
-                            </a>
-                        </div>
-
-                    </div>
-
+                    <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                        Profile</a>
+                    <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                        Destinations</a>
+                    <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                        Trips</a>
+                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                        Travellers</a>
+                    @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                        <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                            Admin</a>
+                    }
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                        Logout</a>
                 </div>
             </div>
         </div>
-            <div class="modal fade" id="addPhotoModal">
+            <!-- /#sidebar-wrapper -->
 
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+            <!-- Page Content -->
+        <div id="page-content-wrapper">
 
-                        <div class="modal-header">
-                            <h2 class="modal-title">Add Photo</h2>
-                        </div>
-                        @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
-                            @CSRF.formField
-                            <div class="modal-body">
-                                <input type="file" id="image" name="image">
-                                <label>
-                                    Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
-                                <button type="button" data-dismiss="modal">Cancel</button>
-                                <button type="submit">Submit</button>
-                            </div>
+            <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                <div id="pageTitle">
+                    <h2> Profile</h2> <!-- TODO align this in the center -->
+                </div>
+            </nav>
+
+
+            @if(request.flash.getOptional("success").isPresent) {
+                <div class="alert alert-success" id="successAlert">
+                @request.flash.getOptional("success").get()
+                </div>
+            }
+
+            @if(request.flash.getOptional("failure").isPresent) {
+                <div class="alert alert-danger" id="failureAlert">
+                @request.flash.getOptional("failure").get()
+                </div>
+            }
+
+            @if(request.flash.getOptional("invalid").isPresent) {
+                <div class="alert alert-danger" id="invalidAlert">
+                @request.flash.getOptional("invalid").get()
+                </div>
+            }
+
+
+            @if(showPhotoModal) {
+                <script type="text/javascript">
+                        $(window).on('load', function () {
+                            $('#viewPhotoModal').modal('show')
+                        })
+                </script>
+            }
+
+            @if(showChangeProfilePictureModal) {
+                <script type="text/javascript">
+                        $(window).on('load', function () {
+                            $('#changeProfilePicture').modal('show')
+                        })
+                </script>
+            }
+
+            @if(showCropPhotoModal) {
+                <script type="text/javascript">
+                        $(window).on('load', function () {
+                            $('#cropPhotoModal').modal('show')
+                        })
+                </script>
+            }
+
+            <div class="container-fluid">
+
+                <div id="profilePhotoContainer">
+                    <div class="col">
+                        <button type="button" class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                            Change Profile Picture
+                        </button>
+
+                        <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
+                            Edit Profile</button>
+                    </div>
+                    <div class="container" id="profilePhoto">
+                    @if(profilePicture != null) {
+                        <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
+                        alt="Profile picture">
+                    } else {
+                        <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/profile-icon.png")"
+                        alt="Profile picture">
                         }
+                    </div>
+
+                    <div class="container" id="greeting">
+                        <h2 style="text-align: center;">Welcome, @currentUser.getFirstName()!</h2>
                     </div>
                 </div>
 
-            </div>
 
-            <div class="modal fade" id="viewPhotoModal">
+                <div class="row">
+                    <ul class="nav nav-tabs" id="profileTabs">
+                        <li class="active"><a data-toggle="tab" href="#informationTab" id="informationTabLink">
+                            Information</a></li>
+                        <li><a data-toggle="tab" href="#photosTab" id="photosTabLink">Photos</a></li>
+                        <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
+                        <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
+                    </ul>
 
-                <div class="modal-dialog modal-dialog-centered modal-lg">
-                    <div class="modal-content">
+                </div>
+                <div class="tab-content" id="profileTabsContent">
+                    <div id="informationTab" class="tab-pane fade in active show">
+                        <div class="container">
+                            <div id="firstNameRow" class="row justify-content-center">
+                                <div class="col-md-2">
+                                    <b>First Name:</b>
+                                </div>
+                                <div class="col-md-2">
+                                    <a>@currentUser.getFirstName</a>
+                                </div>
 
-                        <div class="modal-header">
-                            <h2 class="modal-title">Photos</h2>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                            @for(image <- imageList) {
-                                <div class="card">
-                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                    src="@routes.Assets.at(image.getPath)" alt="@image.getName"
-                                    name="@image.getImageId">
-                                    <div class="card-body">
-                                        @if(image.getVisible == 1) {
-                                            <p class="card-text"> @image.displayVisibility(image.getVisible) 🌏</p>
-                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
-                                                <button>Make Private</button></a>
-                                        } else {
-                                            <p class="card-text"> @image.displayVisibility(image.getVisible) 🔒</p>
-                                            <a href="@routes.ProfileController.updatePrivacy(image.getImageId)">
-                                                <button>Make Public</button></a>
-                                        }
-                                    </div>
+                            </div>
 
-                                        <!-- The Expanded Image Modal -->
-                                    <div id="expandImageModal" class="modal">
-                                        <span class="close">&times;</span>
-                                        <img class="modal-content" id="expandedImage">
-                                        <div id="caption"></div>
-                                        <div id="id"></div>
+                            <div id="middleNameRow" class="row justify-content-center">
+                                <div class="col-md-2">
+                                    <b>Middle Name:</b>
+                                </div>
+                                <div class="col-md-2">
+                                    <a>@currentUser.getMiddleName</a>
+                                </div>
+                            </div>
+
+                            <div id="lastNameRow" class="row justify-content-center">
+                                <div class="col-md-2">
+                                    <b>Last Name:</b>
+                                </div>
+                                <div class="col-md-2">
+                                    <a>@currentUser.getLastName</a>
+                                </div>
+                            </div>
+
+                            <div id="emailRow" class="row justify-content-center">
+                                <div class="col-md-2">
+                                    <b>Email:</b>
+                                </div>
+                                <div class="col-md-2">
+                                    <a>@currentUser.getEmail</a>
+                                </div>
+                            </div>
+
+                            <div id="dobRow" class="row justify-content-center">
+                                <div class="col-md-2">
+                                    <b>Date Of Birth:</b>
+                                </div>
+                                <div class="col-md-2">
+                                    <a>@currentUser.getBirthString</a>
+                                </div>
+                            </div>
+
+                            <hr/>
+
+                            <div id="typesRow" class="row justify-content-center">
+                            @if(currentUser.getTravellerTypesList.isEmpty) {
+                                <div class="alert alert-info" role="alert">
+                                    You have no traveller types associated with your profile
+                                </div>
+                            } else {
+                                <div class="row justify-content-center">
+                                    <div class="col">
+                                        <a>Traveller Types:
+                                            @for(index <- 0 until currentUser.getTravellerTypesList.size) {
+                                                <li style="padding: 0px;
+                                                    margin-left: 20px;">
+                                                @currentUser.getTravellerTypesList.get(index)
+                                                </li>
+                                            }
+                                        </a>
                                     </div>
                                 </div>
                             }
                             </div>
-                            <button type="button" data-dismiss="modal" style="width: 10vw;
-                                float: right">Close</button>
+
+                            <hr/>
+
+                            <div id="nationalities" class="row justify-content-center">
+                            @if(currentUser.getNationalityList.isEmpty) {
+                                <div class="alert alert-info" role="alert">
+                                    You have no nationalities associated with your profile
+                                </div>
+                            } else {
+                                <div class="row justify-content-center">
+                                    <div class="col">
+                                        <a>Nationalities:
+                                            @for(index <- 0 until currentUser.getNationalityList.size) {
+                                                <li style="padding: 0px;
+                                                    margin-left: 20px;">
+                                                @currentUser.getNationalityList.get(index)
+                                                </li>
+                                            }
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            </div>
+
+                            <hr/>
+
+                            <div id="passports" class="row justify-content-center">
+
+                            @if(currentUser.getPassportsList.isEmpty) {
+                                <div class="alert alert-info" role="alert">
+                                    You have no passports associated with your profile
+                                </div>
+                            } else {
+                                <div class="row justify-content-center">
+                                    <div class="col">
+                                        <a>Passports:
+                                            @for(index <- 0 until currentUser.getPassportsList.size) {
+                                                <li style="padding: 0px;
+                                                    margin-left: 20px;">
+                                                @currentUser.getPassportsList.get(index)
+                                                </li>
+                                            }
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            </div>
+
+                            <hr/>
+
+                        </div>
+
+                    </div>
+
+
+                    <div id="photosTab" class="tab-pane fade">
+                        <div class="col">
+                            <div id="photosCard" class="card-large lower-card">
+                                <div id="photoHeading">
+                                    <h3 class="primaryText">Personal Photos</h3>
+                                    <button class="btn btn-primary" style="right" data-toggle="modal"
+                                    data-target="#addPhotoModal">Add Photo</button>
+                                </div>
+
+                                <div class="row">
+                                @for(photo <- photoList) {
+                                    <div class="card">
+                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                        src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
+                                        name="@photo.getPhotoId">
+                                        <div clasas="card-body">
+                                        @if(photo.getVisible == 1) {
+                                            <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🌏</p>
+                                            <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
+                                                <button>Make Private</button></a>
+                                        } else {
+                                            <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🔒</p>
+                                            <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
+                                                <button>Make Public</button></a>
+                                        }
+                                        </div>
+                                            <!-- The Expanded Photo Modal -->
+                                        <div id="expandImageModal" class="modal">
+                                            <span class="close">&times;</span>
+                                            <img class="modal-content" id="expandedImage">
+                                            <div id="caption"></div>
+                                            <div id="id"></div>
+                                        </div>
+                                    </div>
+                                }
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
+
+                    <div id="destsTab" class="tab-pane fade">
+                        <div id="table-card" class="dest-table table-hover">
+                                <!-- Table of users -->
+                            <table id="destTable">
+                                <thead>
+                                    <tr><th>Destination</th>
+                                        <th>Type</th>
+                                        <th>District</th>
+                                        <th>Latitude</th>
+                                        <th>Longitude</th>
+                                        <th>Country</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                </thead>
+
+                                @for(destination <- destinationsList) {
+                                    <tr>
+                                        <td>@destination.getName() <input type="hidden" name="destinationName" value="@destination.getName()" /></td>
+                                        <td>@destination.getType() <input type="hidden" name="destinationType" value="@destination.getType()" /></td>
+                                        <td>@destination.getDistrict() <input type="hidden" name="destinationDistrict" value="@destination.getDistrict()" /></td>
+                                        <td>@destination.getLatitude() <input type="hidden" name="destinationLatitude" value="@destination.getLatitude()" /></td>
+                                        <td>@destination.getLongitude() <input type="hidden" name="destinationLongitude" value="@destination.getLongitude()" /></td>
+                                        <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
+                                        @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
+                                            @CSRF.formField
+                                            <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
+                                                Edit</button> </td>
+                                        }
+                                        @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
+                                            @CSRF.formField
+                                            <td> <button type="submit" class="btn-outline-secondary" style="height: 4vh">
+                                                Delete</button></td>
+                                        }
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="tripsTab" class="tab-pane fade">
+                    @for(tripId <- trips) {
+                        <div class="row">
+                            <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
+                                <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
+                                <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div id="tripInfo@tripId" class="collapse collapse-body">
+                                <table id="tripTable">
+                                    <thead>
+                                        <tr><th>Start Date</th>
+                                            <th>N.O. Destinations</th>
+                                            <th>Travel Time (Days)</th>
+                                    </thead>
+                                    <tr>
+                                        <td>
+                                            @if(currentUser.getTripById(tripId).getStartDate != null) {
+                                                <span>@currentUser.getTripById(tripId).getStartDate.getTime</span>
+                                            } else {
+                                                <span>0</span>
+                                            }
+                                            @currentUser.getTripById(tripId).getStartDate</td>
+                                        <td>@currentUser.getTripById(tripId).getDestinations.size()</td>
+                                        <td>@currentUser.getTripById(tripId).getTravelTime</td>
+                                    </tr>
+                                </table>
+                                <h4 class="primaryText">Destinations Visited</h4>
+                                <table id="destsTable">
+                                    <thead>
+                                        <tr><th>Name</th>
+                                            <th>Country</th>
+                                            <th>Departure Time</th>
+                                            <th>Arrival Time</th>
+                                    </thead>
+                                    @for(destIndex <- 0 until currentUser.getTripById(tripId).getDestinations.size) {
+                                        <tr>
+                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getName</td>
+                                            <td>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDestination.getCountry</td>
+                                            <td>
+                                                @if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival != null) {
+                                                    <span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival.getTime</span>
+                                                } else {
+                                                    <span></span>
+                                                }
+                                                @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
+                                            <td>
+                                            @*if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime != null) {*@
+                                            @*<span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>*@
+                                            @*} else {*@
+                                            @*<span></span>*@
+                                            @*}*@
+                                            @*currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>*@
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    }
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="modal fade" id="changeProfilePicture">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title center-col">Change Profile Picture</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div id="photosCard" class="card-large lower-card">
+                            <div class="row">
+                            @for(photo <- photoList) {
+                                <div class="card">
+                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                    src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
+                                    name="@photo.getPhotoId">
+                                    <div class="card-body">
+                                        <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
+                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getPhotoId)">
+                                            <button type="submit">Crop this myself</button></a>
+                                        <a href="@routes.ProfileController.setProfilePicture(photo.getPhotoId)">
+                                            <button type="submit">Select</button></a>
+                                    </div>
+                                </div>
+                            }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-toggle="modal"
+                        data-target="#newProfilePhotoModal" data-dismiss="modal">
+                            New Photo
+                        </button>
+                        <button type="button" data-toggle="modal"
+                        data-target="#comfirmRemovePhotoModal" data-dismiss="modal" class="btn btn-outline-danger">
+                            Remove Profile Photo
+                        </button>
+                        <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addProfileModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">Add a new photo as your profile picture</h2>
+                    </div>
+                    @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <input type="file" id="image" name="image">
+                            <input type="hidden" id="visible" name="visible" value="Public" hidden>
+                            <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
+                            <button type="submit" id="autoCropped" name="autoCropped" value="true">
+                                Auto crop this photo</button>
+                            <button type="submit" id="selfCropped" name="autoCropped" value="false">Crop this myself</button>
+                            <button type="button" data-dismiss="modal" class="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                                Cancel</button>
+                        </div>
+                    }
+                    <div class="modal-dialog">
+                        <p>Note that a photo set as profile picture will be set as public</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="cropPhotoModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title center-text">Crop a photo and set it as your profile picture</h2>
+                    </div>
+
+                    <div class="modal-body">
+                        @*<div class="container" id="profilePhoto">*@
+                        @*<p id="center-text">All parameters are specified in pixels</p>*@
+                        @*<img class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(0)" name="demoProfilePicture">*@
+                        @*<p style="text-align: center;">@widthHeight</p>*@
+
+                        @* @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
+                        @CSRF.formField*@
+                        @*<div class="row">*@
+                        @*<input type="number" id="widthHeight" name="widthHeight" min="200" value="500">*@
+                        @*Width and Height*@
+                        @*</div>*@
+                        @*<div class="row">*@
+                        @*<input type="number" id="cropX" name="cropX" min="0" value="0">Margin left*@
+                        @*</div>*@
+                        @*<input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom*@
+                        @*</div>*@
+                        @*</div>*@
+                        @*<div class="row">*@
+                        @*<div class="center-col">*@
+                        @*<button id="acceptCrop" type="submit">Accept</button>*@
+                        @*<button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">*@
+                        @*Close</button>*@
+                        @*</div>*@
+                        @*}*@
+                        @*</div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="addPhotoModal">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">Add Photo</h2>
+                    </div>
+                    @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <input type="file" id="image" name="image">
+                            <label>
+                                Public <input type="checkbox" id="visible" name="visible" value="Public" checked></label>
+                            <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="false" hidden>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal">Cancel</button>
+                            <button type="submit">Submit</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="editProfileModal">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title ">Edit Profile</h2>
+                    </div>
+                    @form(routes.ProfileController.update()) {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                        First Name*</small>
+                                        <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@currentUser.getFirstName>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                        Middle Name</small>
+                                        <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@currentUser.getMiddleName>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                        Last Name*</small>
+                                        <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@currentUser.getLastName>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value=@currentUser.getTravellerTypesString>
+                                    </div>
+                                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                        @if(currentUser.getTravellerTypesList.contains("ThrillSeeker")) {
+                                            <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                        } else {
+                                            <option value="ThrillSeeker">ThrillSeeker</option>
+                                        }
+
+                                        @if(currentUser.getTravellerTypesList.contains("Gap Year")) {
+                                            <option value="Gap Year" selected>Gap Year</option>
+                                        } else {
+                                            <option value="Gap Year">Gap Year</option>
+                                        }
+
+                                        @if(currentUser.getTravellerTypesList.contains("Backpacker")) {
+                                            <option value="Backpacker" selected>Backpacker</option>
+                                        } else {
+                                            <option value="Backpacker">Backpacker</option>
+                                        }
+
+                                        @if(currentUser.getTravellerTypesList.contains("Groupie")) {
+                                            <option value="Groupie" selected>Groupie</option>
+                                        } else {
+                                            <option value="Groupie">Groupie</option>
+                                        }
+
+                                        @if(currentUser.getTravellerTypesList.contains("Frequent Weekender")) {
+                                            <option value="Frequent Weekender" selected>Frequent Weekender</option>
+                                        } else {
+                                            <option value="Frequent Weekender">Frequent Weekender</option>>
+                                        }
+
+                                        @if(currentUser.getTravellerTypesList.contains("Functional/business Traveller")) {
+                                            <option value="Functional/business Traveller" selected>
+                                                Functional/business Traveller</option>
+                                        } else {
+                                            <option value="Functional/business Traveller">
+                                                Functional/business Traveller</option>
+                                        }
+
+                                        @if(currentUser.getTravellerTypesList.contains("Holidaymaker")) {
+                                            <option value="Holidaymaker" selected>Holidaymaker</option>
+                                        } else {
+                                            <option value="Holidaymaker">Holidaymaker</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="row">
+                                    <select class="selectpicker" id="gender" name="gender" data-width="100%" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
+                                        @if(currentUser.getGender == "Male") {
+                                            <option selected>Male</option>
+                                        } else {
+                                            <option>Male</option>
+                                        }
+                                        @if(currentUser.getGender == "Female") {
+                                            <option selected>Female</option>
+                                        } else {
+                                            <option>Female</option>
+                                        }
+                                        @if(currentUser.getGender == "Other") {
+                                            <option selected>Other</option>
+                                        } else {
+                                            <option>Other</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
+                                        <input type="date" id="birthDate" name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')" value=@currentUser.getEntryDate>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
+                                        <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@currentUser.getEmail>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                        Nationalities*</small>
+                                        <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value=@currentUser.getNationalityString>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                        Passport/s</small>
+                                        <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value=@currentUser.getPassportsString>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                    Cancel</button>
+                                <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
+                            </div>
+                            }
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="newProfilePhotoModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title center-col">Upload Picture</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="upload-demo-wrap">
+                                <div id="upload-demo"></div>
+                            </div>
+                            <div class="actions">
+                                <a class="btn file-btn">
+                                    <span>Upload</span>
+                                    <input type="file" id="upload-image" accept="image/*" value="Choose an Image"/>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="cropImage()">
+                            Go</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="comfirmRemovePhotoModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title center-col">Remove this profile picture?</h2>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="upload-demo-wrap">
+                                <div id="upload-demo"></div>
+                            </div>
+                            @if(profilePicture != null) {
+                                <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
+                                alt="Profile picture">
+                            } else {
+                                <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
+                                alt="Profile picture">
+                                }
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <a href="@routes.ProfileController.removeProfilePicture()">
+                            <button type="submit" class="btn btn-danger">Confirm Delete</button></a>
+                        <button type="button" data-dismiss="modal" class="btn btn-outline-primary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="acceptChangeModal">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title">Confirm Change</h2>
+                    </div>
+                    @form(routes.ProfileController.uploadPhoto(), 'enctype -> "multipart/form-data") {
+                        @CSRF.formField
+                        <div class="modal-body" id="submitImage">
+                            <input type="image" id="imageDisplay" class="imageFromCroppie" name="image">
+                            <input type="file" id="image" name="image" hidden>
+                            <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal">Cancel</button>
+                            <button type="submit">Submit</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
     </body>
 
-            <!-- Menu Toggle Script -->
-        <script>
-            $(document).ready(function() {
+
+        <!-- Menu Toggle Script -->
+    <script>
+            function fillVals() {
+                $('#travellerTypesForm').val($('#typeDropdown').val());
+            }
+
+            $(document).ready(function () {
                 $('#destsTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
@@ -378,6 +812,88 @@
                 });
             });
 
+            //Lukes crop stuff do not delete
+
+            $uploadCrop = $('#upload-demo').croppie({
+                enableExif: true,
+                viewport: {
+                    width: 200,
+                    height: 200,
+                    type: 'circle'
+
+                },
+                boundary: {
+                    width: 300,
+                    height: 300
+                }
+            });
+
+            $('#upload-image').on('change', function () {
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    $uploadCrop.croppie('bind', {
+                        url: event.target.result
+                    }).then(function () {
+                        console.log('jQuery bind complete');
+                    });
+                };
+                reader.readAsDataURL(this.files[0]);
+                $('#submitImage').children('#image').attr("files", this.files[0]);
+                $('#submitImage').children('#image').attr("name", this.files[0].name);
+                $('#submitImage').children('#image').attr("name", this.files[0].lastModified);
+                $('#submitImage').children('#image').attr("name", this.files[0].size);
+                $('#submitImage').children('#image').attr("name", this.files[0].type);
+            });
+
+            //not currently using this
+            function srcToFile(src, fileName, mimeType) {
+                return (fetch(src)
+                                .then(function (res) {
+                                    return res.arrayBuffer();
+                                })
+                                .then(function (buf) {
+                                    return new File([buf], fileName, {type: mimeType});
+                                })
+                );
+            }
+
+            function cropImage() {
+                $uploadCrop.croppie('result', {
+                    type: 'canvas',
+                    size: 'viewport'
+                }).then(function (response) {
+                    console.log(response);
+                    console.log($('#upload-image').files);
+                    $('#acceptChangeModal').modal();
+                    $('#submitImage').children('#imageDisplay').attr('src', response);
+                    // var file = [response];
+                    srcToFile(response, 'logo.png', 'image/png')
+                            .then(function (file) {
+                                console.log(file);
+                                var fd = new FormData();
+                                fd.append('file1', file);
+                                //TODO: Try to send request on bind from upload picture modal
+                                // console.log($('#submitImage').children('#image').attr("body", file));
+                                $('#submitImage').children('#image').attr("value", file.valueOf());
+                            })
+
+
+                    // $('#submitImage').children('#image').name = "asddas";
+
+
+                    @*$.ajax({*@
+                    @*url:"/profile/photo",*@
+                    @*headers: {*@
+                    @*'Csrf-Token': '@play.filters.csrf.CSRF.getToken.map(_.value)'*@
+                    @*},*@
+                    @*type: "POST",*@
+                    @*processData: false,  // Important!*@
+                    @*body:{"image": response}*@
+                    @*})*@
+                });
+            }
+
+
             var closeBtns = document.getElementsByClassName("close");
             var i;
 
@@ -386,21 +902,21 @@
                     this.parentElement.style.display = 'none';
                 });
             }
-            $("#menu-toggle").click(function(e) {
+            $("#menu-toggle").click(function (e) {
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
             });
 
-            // Method that gets the image data from on the image clicked and displays
+            // Method that gets the photo data from on the photo clicked and displays
             // it in its original resolution in a new modal
-            function expand(image, text, id) {
+            function expand(photo, text, id) {
                 // Get the modal
                 var modal = document.getElementById('expandImageModal');
                 var modalImg = document.getElementById('expandedImage');
                 var captionText = document.getElementById("caption");
 
                 modal.style.display = "block";
-                modalImg.src = image;
+                modalImg.src = photo;
                 captionText.innerHTML = text;
 
                 // Get the <span> element that closes the modal
@@ -410,6 +926,21 @@
                 span.onclick = function () {
                     modal.style.display = "none";
                 }
+            }
+
+            function selectPhoto() {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("demo").innerHTML = this.responseText;
+                    }
+                };
+                modal.style.display = "none";
+            }
+
+            function setDemoProfilePicture() {
+                var autoCrop = document.getElementById("autoCrop").value;
+                return autoCrop;
             }
     </script>
 </html>

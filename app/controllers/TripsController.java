@@ -2,7 +2,6 @@ package controllers;
 
 import com.google.common.collect.TreeMultimap;
 import com.google.inject.Inject;
-import com.sun.xml.bind.v2.runtime.output.SAXOutput;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -14,12 +13,16 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
+import repository.DestinationRepository;
+import repository.ProfileRepository;
 import repository.TripRepository;
-import views.html.trips;
 import views.html.tripsCard;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -36,16 +39,26 @@ public class TripsController extends Controller {
     private final Form<Trip> form;
     private final Form<TripDestination> formTrip;
     private final TripRepository tripRepository;
+    private final ProfileRepository profileRepository;
+    private final DestinationRepository destinationRepository;
     private boolean showEmptyEdit = false;
 
+    private static final String createEndpoint = "/trips/create";
+    private static final String dateFlashingMessage = "The arrival date must be before the departure date";
+    private static final String tripsEndPoint = "/trips";
+    private static final String editUrl = "/edit";
+    private static final String dupDestFlashing = "The same destination cannot be after itself in a trip";
+
     @Inject
-    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi) {
+    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
         this.form = formFactory.form(Trip.class);
         this.tripRepository = tripRepository;
         this.messagesApi = messagesApi;
         this.formTrip = formFactory.form(TripDestination.class);
         this.destinationsList = new ArrayList<>();
         this.orderedCurrentDestinations = new TreeMap<>();
+        this.profileRepository = profileRepository;
+        this.destinationRepository = destinationRepository;
     }
 
     /**
@@ -54,12 +67,21 @@ public class TripsController extends Controller {
      * @return a render of the trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result show(Http.Request request) {
-        showEmptyEdit = false;
-        orderedCurrentDestinations.clear();
-        TreeMultimap<Long, Integer> tripsMap = SessionController.getCurrentUser(request).getTrips();
-        List<Integer> tripValues = new ArrayList<>(tripsMap.values());
-        return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, SessionController.getCurrentUser(request), request, messagesApi.preferred(request)));
+    public CompletionStage<Result> show(Http.Request request) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Profile toSend = profile.get();
+                toSend = tripRepository.setUserTrips(toSend);
+                showEmptyEdit = false;
+                orderedCurrentDestinations.clear();
+                TreeMultimap<Long, Integer> tripsMap = profile.get().getTrips();
+                List<Integer> tripValues = new ArrayList<>(tripsMap.values());
+                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, toSend, request, messagesApi.preferred(request)));
+        } else {
+                return redirect("/profile");
+            }
+        });
     }
 
     /**
@@ -77,9 +99,25 @@ public class TripsController extends Controller {
      * @return the result
      */
     @Security.Authenticated(SecureSession.class)
-    public Result showCreate(Http.Request request) {
-        Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), currentUser, null, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> showCreate(Http.Request request, Integer userId) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        if(userId != null) {
+            profId = userId;
+        }
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList;
+            if (profile.isPresent()) {
+                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profile.get().getProfileId());
+                Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profile.get().getProfileId());
+                try {
+                    destinationsList = destListTemp.get();
+                    destinationsList.addAll(followedListTemp.get());
+                } catch (NoSuchElementException e) {
+                    destinationsList = new ArrayList<>();
+                }
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), null, userId, request, messagesApi.preferred(request)));            }
+            return redirect("/trips");
+        });
     }
 
 
@@ -91,14 +129,31 @@ public class TripsController extends Controller {
      * @return a render of the editDestinations trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result showEdit(Http.Request request, Integer id) {
-        Profile currentUser = SessionController.getCurrentUser(request);
-        Trip trip = tripRepository.getTrip(id);
-        Form<Trip> tripForm = form.fill(trip);
-        if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
-            orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
+    public CompletionStage<Result> showEdit(Http.Request request, Integer id, Integer userId) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        if(userId != null) {
+            profId = userId;
         }
-        return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), currentUser, id, null, request, messagesApi.preferred(request)));
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList;
+            if (profile.isPresent()) {
+                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profile.get().getProfileId());
+                Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profile.get().getProfileId());
+                try {
+                    destinationsList = destListTemp.get();
+                    destinationsList.addAll(followedListTemp.get());
+                } catch (NoSuchElementException e) {
+                    destinationsList = new ArrayList<>();
+                }
+                Trip trip = tripRepository.getTrip(id);
+                Form<Trip> tripForm = form.fill(trip);
+                if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
+                    orderedCurrentDestinations.putAll(trip.getOrderedDestiantions());
+                }
+                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, null, userId, request, messagesApi.preferred(request)));
+            }
+            return redirect("/trips");
+        });
     }
 
 
@@ -109,18 +164,61 @@ public class TripsController extends Controller {
      * @return the result
      */
     @Security.Authenticated(SecureSession.class)
-    public Result addDestination(Http.Request request) {
+    public Result addDestination(Http.Request request, Integer userId) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
+        setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
-        if(orderedCurrentDestinations.size() >= 1) {
-            if (orderInvalidInsert(tripDestination)) {
-                return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
-            }
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/" + userId + "/create").flashing("info", dateFlashingMessage);
+        }
+        if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
+            return redirect("/trips/" + userId + "/create").flashing("info", "The same destination cannot be after itself in a trip");
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
-        return redirect("/trips/create");
+        return redirect("/trips/" + userId + "/create");
+    }
+
+
+    /**
+     * This method checks that the arrival and departure dates are valid.
+     * In this context valid is that the arrival date is prior to the departure date
+     * @param tripDestination the trip destination to check the dates for
+     * @return a boolean holding true if the dates are valid
+     */
+    private boolean checkDates(TripDestination tripDestination) {
+        // Possibly add check to stop overlap with other destinations in the trip
+        if (tripDestination.getDeparture() != null && tripDestination.getArrival() != null) {
+            return tripDestination.getArrival().getTime() < tripDestination.getDeparture().getTime();
+        }
+        return true;
+    }
+
+
+    /**
+     * This method sets the correct date values for a newly added tripDestination
+     * @param tripDestination the tripDestination to set values for
+     * @param form the form holding the data values
+     */
+    private void setDates(TripDestination tripDestination, Form<TripDestination> form) {
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+        Form.Field arrivalField = form.field("arrival");
+        Form.Field departureField = form.field("departure");
+        try {
+            if (arrivalField.value().isPresent()) {
+                tripDestination.setArrival(formatter.parse(arrivalField.value().get()));
+            }
+        } catch (ParseException e) {
+            tripDestination.setArrival(null);
+        }
+        try {
+            if (departureField.value().isPresent()) {
+                tripDestination.setDeparture(formatter.parse(departureField.value().get()));
+            }
+        } catch (ParseException e) {
+            tripDestination.setDeparture(null);
+        }
     }
 
 
@@ -176,17 +274,19 @@ public class TripsController extends Controller {
      * @return the result
      */
     @Security.Authenticated(SecureSession.class)
-    public Result save(Http.Request request) {
+    public Result save(Http.Request request, Integer userId) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
-        Profile currentUser = SessionController.getCurrentUser(request);
-        trip.setEmail(currentUser.getEmail());
+        trip.setProfileId(userId);
         if (orderedCurrentDestinations.size() < 2) {
-            return redirect("/trips/create").flashing("info", "A trip must have at least two destinations");
+            return redirect("/trips/" + userId + "/create").flashing("info", "A trip must have at least two destinations");
         } else {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.insert(trip, tripDestinations);
-            return redirect("/trips");
+            if(userId != SessionController.getCurrentUserId(request)) {
+                return redirect("/admin");
+            }
+            return redirect(tripsEndPoint);
         }
     }
 
@@ -199,20 +299,19 @@ public class TripsController extends Controller {
      * @return a redirect to the trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result saveEdit(Http.Request request, int id) {
+    public Result saveEdit(Http.Request request, int id, Integer userId) {
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
-        Profile currentUser = SessionController.getCurrentUser(request);
-        trip.setEmail(currentUser.getEmail());
+        Integer currentUserId = userId;
+        trip.setProfileId(currentUserId);
         if (orderedCurrentDestinations.size() < 2){
-            return redirect("/trips/"+id+"/edit").flashing("info", "A trip must have at least two destinations");
+            return redirect("/trips/"+userId+"/"+id+editUrl).flashing("info", "A trip must have at least two destinations");
+
         } else {
-            // TODO still needs to ideally be in a transaction
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.delete(id);
             tripRepository.insert(trip, tripDestinations);
-            // TODO put redirect inside a thenApplyAsync
-            return redirect("/trips");
+            return redirect(tripsEndPoint);
         }
     }
 
@@ -225,9 +324,9 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> delete(Integer tripId) {
-        return tripRepository.delete(tripId).thenApplyAsync(v -> {
-            return redirect("/trips");
-        });
+        return tripRepository.delete(tripId).thenApplyAsync(v ->
+             redirect(tripsEndPoint)
+        );
     }
 
     /**
@@ -239,60 +338,37 @@ public class TripsController extends Controller {
      * @return redirects to the editDestinations trip page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation) {
+    public Result updateDestinationEdit(Http.Request request, Integer tripId, Integer oldLocation, Integer userId) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         int order = tripDestination.getDestOrder();
-        if(orderedCurrentDestinations.size() >= 1) {
-            if(orderOneInvalid(tripDestination, oldLocation)) {
-                tripDestination.setDestOrder(oldLocation);
-                boolean deleteValid = orderInvalidDelete(tripDestination);
-                tripDestination.setDestOrder(order);
-                boolean insertValid = orderInvalidInsert(tripDestination);
-                if (deleteValid || insertValid) {
-                    return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
-                }
-            }
-            removeTripDestination(oldLocation);
-            insertTripDestination(tripDestination, tripDestination.getDestOrder());
-            return redirect("/trips/" + tripId + "/edit");
+        setDates(tripDestination, tripDestForm);
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/" + tripId + editUrl).flashing("info", dateFlashingMessage);
         }
+        TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
+        removeTripDestination(oldLocation);
+        insertTripDestination(tripDestination, tripDestination.getDestOrder());
         orderedCurrentDestinations.put(order, tripDestination);
-        return redirect("/trips/" + tripId + "/edit");
+        if (invalid()){
+            orderedCurrentDestinations.clear();
+            orderedCurrentDestinations.putAll(tempCurrentDestMap);
+            return redirect("/trips/" + userId + "/" + tripId + editUrl).flashing("info", dupDestFlashing);
+        }
+        return redirect("/trips/" + userId + "/" + tripId + editUrl);
     }
 
-    private boolean orderOneInvalid(TripDestination tripDestination, Integer oldLocation) {
-        int order = tripDestination.getDestOrder();
-        if (order == oldLocation + 1) {
-            if (orderedCurrentDestinations.get(order + 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation).getDestinationId() == orderedCurrentDestinations.get(order + 1).getDestinationId()) {
-                    return true;
-                }
+    private boolean invalid() {
+        for(int i = 1; i < orderedCurrentDestinations.size(); i++) {
+            if (orderedCurrentDestinations.get(i + 1) != null && orderedCurrentDestinations.get(i).getDestinationId() == orderedCurrentDestinations.get(i + 1).getDestinationId()) {
+                return true;
             }
-            if (orderedCurrentDestinations.get(oldLocation - 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation - 1).getDestinationId() == orderedCurrentDestinations.get(order).getDestinationId()) {
-                    return true;
-                }
-            }
-            return false;
         }
-        if (order == oldLocation - 1) {
-            if (orderedCurrentDestinations.get(order - 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation).getDestinationId() == orderedCurrentDestinations.get(order - 1).getDestinationId()) {
-
-                    return true;
-                }
-            }
-            if (orderedCurrentDestinations.get(oldLocation + 1) != null) {
-                if (orderedCurrentDestinations.get(oldLocation + 1).getDestinationId() == orderedCurrentDestinations.get(order).getDestinationId()) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        return true;
+        return false;
     }
+
+
 
     /**
      * This checks if a tripDestination can be deleted from its current position
@@ -330,6 +406,9 @@ public class TripsController extends Controller {
         return pos2Invalid || pos1Invalid;
     }
 
+
+
+
     /**
      * create editDestinations trip destination forms and page
      *
@@ -338,10 +417,24 @@ public class TripsController extends Controller {
      * @return a render of the create trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result createTripDestinationCreate(Http.Request request, Integer order) {
-        TripDestination dest = orderedCurrentDestinations.get(order);
-        Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), currentUser, dest, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> createTripDestinationCreate(Http.Request request, Integer order, Integer profId) {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList;
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
+            try {
+                destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
+            if (profile.isPresent()) {
+                TripDestination dest = orderedCurrentDestinations.get(order);
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), dest, profId, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/trips");
+            }
+        });
     }
 
     /**
@@ -352,10 +445,24 @@ public class TripsController extends Controller {
      * @return a render of the create trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result editTripDestinationCreate(Http.Request request, Integer order, Integer id) {
-        TripDestination dest = orderedCurrentDestinations.get(order);
-        Profile currentUser = SessionController.getCurrentUser(request);
-        return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), currentUser, id, dest, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> editTripDestinationCreate(Http.Request request, Integer order, Integer id, Integer profId) {
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            ArrayList<Destination> destinationsList;
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
+            try {
+                destinationsList = destListTemp.get();
+                destinationsList.addAll(followedListTemp.get());
+            } catch (NoSuchElementException e) {
+                destinationsList = new ArrayList<>();
+            }
+            if (profile.isPresent()) {
+                TripDestination dest = orderedCurrentDestinations.get(order);
+                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, dest, profId, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/profile");
+            }
+        });
     }
 
 
@@ -368,13 +475,13 @@ public class TripsController extends Controller {
      * @return redirection to the editDestinations page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId) {
+    public Result deleteDestinationEditTrip(Http.Request request, Integer order, Integer tripId, Integer userId) {
         if (orderInvalidDelete(orderedCurrentDestinations.get(order)) ) {
-            return redirect("/trips/" + tripId + "/edit").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/" + userId + "/" + tripId + editUrl).flashing("info", dupDestFlashing);
         }
         removeTripDestination(order);
         showEmptyEdit = true;
-        return redirect("/trips/" + tripId + "/edit");
+        return redirect("/trips/"+ userId + "/"  + tripId + editUrl);
     }
 
     /**
@@ -386,18 +493,20 @@ public class TripsController extends Controller {
      * @return redirection tot he editDestinations page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result addDestinationEditTrip(Http.Request request, int id) {
+    public Result addDestinationEditTrip(Http.Request request, int id, Integer userId) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
+        setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
-        if(orderedCurrentDestinations.size() >= 1) {
-            if (orderInvalidInsert(tripDestination)) {
-                return redirect("/trips/"+id+"/edit").flashing("info", "The same destination cannot be after itself in a trip");
-            }
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/" + userId + "/" + id + editUrl).flashing("info", dateFlashingMessage);
+        }
+        if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
+            return redirect("/trips/" + userId + "/" + id + editUrl).flashing("info", dupDestFlashing);
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
-        return redirect("/trips/"+id+"/edit");
+        return redirect("/trips/" + userId + "/" + id + editUrl);
     }
 
 
@@ -409,28 +518,27 @@ public class TripsController extends Controller {
      * @return redirection to the create trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result updateDestination(Http.Request request, Integer oldLocation) {
+    public Result updateDestination(Http.Request request, Integer oldLocation, Integer userId) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+        setDates(tripDestination, tripDestForm);
         int order = tripDestination.getDestOrder();
-        if(orderedCurrentDestinations.size() >= 1) {
-            if(orderOneInvalid(tripDestination, oldLocation)) {
-                tripDestination.setDestOrder(oldLocation);
-                boolean deleteValid = orderInvalidDelete(tripDestination);
-                tripDestination.setDestOrder(order);
-                boolean insertValid = orderInvalidInsert(tripDestination);
-                if (deleteValid || insertValid) {
-                    return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
-                }
-            }
-            removeTripDestination(oldLocation);
-            insertTripDestination(tripDestination, tripDestination.getDestOrder());
-            return redirect("/trips/create");
+        if(!checkDates(tripDestination)) {
+            return redirect("/trips/" + userId + "/create").flashing("info", dateFlashingMessage);
         }
+        TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
+        removeTripDestination(oldLocation);
+        insertTripDestination(tripDestination, tripDestination.getDestOrder());
         orderedCurrentDestinations.put(order, tripDestination);
-        return redirect("/trips/create");
+        if (invalid()){
+            orderedCurrentDestinations.clear();
+            orderedCurrentDestinations.putAll(tempCurrentDestMap);
+            return redirect("/trips/" + userId + "/create").flashing("info", dupDestFlashing);
+        }
+        return redirect("/trips/" + userId + "/create");
     }
+
 
     /**
      * Deletes a tripDestination from the current destinations list and changes the order of indirectly affected tripDestinations
@@ -440,12 +548,12 @@ public class TripsController extends Controller {
      * @return redirect to the show create page
      */
     @Security.Authenticated(SecureSession.class)
-    public Result deleteDestination(Http.Request request, Integer order) {
+    public Result deleteDestination(Http.Request request, Integer order, Integer userId) {
         if (orderInvalidDelete(orderedCurrentDestinations.get(order)) ) {
-            return redirect("/trips/create").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/" + userId + "/create").flashing("info", dupDestFlashing);
             }
         removeTripDestination(order);
-        return redirect("/trips/create");
+        return redirect(createEndpoint);
     }
 
 }

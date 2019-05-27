@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
 @import helper._
-@(id: Integer, destination: Destination, destinationForm : Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(id: Integer, destination: Destination, destinationForm : Form[Destination], currentProfile : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -34,9 +34,12 @@
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a style="color: #ca6636" href="@routes.DestinationsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
+                    <a style="color: #ca6636" href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
                     <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    @if( currentProfile.hasRole("global_admin") || currentProfile.hasRole("admin")) {
+                        <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                    }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
             </div>
@@ -53,6 +56,11 @@
                 </nav>
                 <div class="container-fluid">
                     <div id="table-card" class="card-large">
+                        @if(request.flash.getOptional("info").isPresent) {
+                            <div class="alert alert-info">
+                            @request.flash.getOptional("info").get()
+                            </div>
+                        }
                         <h3>Edit destination</h3>
                         @helper.form(routes.DestinationsController.update(id)) {
                             <fieldset>
@@ -90,8 +98,19 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col">
+                                        <label>Make Public</label>
+                                        @if(destination.getVisible == 1) {
+                                            <input type="checkbox" id="visible" name="visible" value="Public" class="check-box" checked>
+                                        } else {
+                                            <input type="checkbox" id="visible" name="visible" value="Public" class="check-box">
+                                        }
+                                    </div>
+                                </div>
+
                             </fieldset>
-                            <a href="@routes.DestinationsController.show()"> <button class="button-delete" style="width: 10vw" type="button">Back</button> </a>
+                            <a href="@routes.DestinationsController.show(false)"> <button class="button-delete" style="width: 10vw" type="button">Back</button> </a>
                             <button type="submit" class="registerButton button-add" style="width: 10vw" id = "saveButton">Save</button>
                         }
 

@@ -4,6 +4,7 @@
 
 #userTable {
     height: 10vh;
+    width: 100%;
 }
 
 #userTable span {
@@ -58,7 +59,7 @@ img.thumbnail {
     background-color: rgba(0,0,0,0.9);
 }
 
-/* Modal Content (Image) */
+/* Modal Content (Photo) */
 #expandedImage.modal-content {
     margin: auto;
     display: block;
@@ -85,7 +86,7 @@ img.thumbnail {
     cursor: pointer;
 }
 
-/* Caption of Modal Image (Image Text) */
+/* Caption of Modal Photo (Photo Text) */
 #caption {
     margin: auto;
     display: block;

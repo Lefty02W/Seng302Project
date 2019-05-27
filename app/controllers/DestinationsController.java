@@ -1,5 +1,6 @@
 package controllers;
 
+import controllers.LoginController.Login;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -13,12 +14,10 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
-import repository.TripRepository;
 import views.html.createDestinations;
-import views.html.login;
 import views.html.destinations;
 import views.html.editDestinations;
-import controllers.LoginController.Login;
+import views.html.login;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -37,13 +36,13 @@ public class DestinationsController extends Controller {
 
     private MessagesApi messagesApi;
     private List<Destination> destinationsList = new ArrayList<>();
+    private List<Integer> followedDestinationIds = new ArrayList<>();
     private final Form<Destination> form;
     private final Form<Profile> userForm;
     private final Form<Login> loginForm;
     private final DestinationRepository destinationRepository;
     private final ProfileRepository profileRepository;
-    private final TripRepository tripRepository;
-    private String destShowRoute = "/destinations";
+    private String destShowRoute = "/destinations/show/false";
 
     /**
      * Constructor for the destination controller class
@@ -55,14 +54,13 @@ public class DestinationsController extends Controller {
      */
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
-                                  ProfileRepository profileRepository, TripRepository tripRepository) {
+                                  ProfileRepository profileRepository) {
         this.form = formFactory.form(Destination.class);
         this.userForm = formFactory.form(Profile.class);
         this.loginForm = formFactory.form(Login.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
-        this.tripRepository = tripRepository;
     }
 
     /**
@@ -72,16 +70,69 @@ public class DestinationsController extends Controller {
      * @return the list of destinations
      */
     @Security.Authenticated(SecureSession.class)
-    public Result show(Http.Request request) {
+    public CompletionStage<Result> show(Http.Request request, boolean isPublic) {
+        destinationsList.clear();
+        Integer userId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(userId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                if (isPublic) {
+                    ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
+                    try {
+                        destinationsList = destListTemp;
+                    } catch (NoSuchElementException e) {
+                        destinationsList = new ArrayList<>();
+                    }
+                } else {
+                    profileRepository.getDestinations(userId).ifPresent(dests -> destinationsList.addAll(dests));
+                    destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
+                }
+                destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
+            }
+        });
+    }
 
-        Profile user = SessionController.getCurrentUser(request);
-        Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(user.getEmail());
-        try {
-            destinationsList = destListTemp.get();
-        } catch (NoSuchElementException e) {
-            destinationsList = new ArrayList<>();
-        }
-        return ok(destinations.render(destinationsList, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> follow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
+            }
+        });
+    }
+
+    public CompletionStage<Result> unfollow(Http.Request request, Integer profileId, int destId, boolean isPublic) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                //TODO make it so you can not unfollow destinations inside a trip
+
+                Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDestination(destId, profileId);
+                try {
+                    followedDestinationIds = followedTemp.get();
+                } catch (NoSuchElementException e) {
+                    followedDestinationIds = new ArrayList<>();
+                }
+                if (!isPublic) {
+                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId);
+                    try {
+                        destinationsList = destListTemp.get();
+                        destinationsList.addAll(followedListTemp.get());
+                    } catch (NoSuchElementException e) {
+                        destinationsList = new ArrayList<>();
+                    }
+                }
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
+            }
+        });
     }
 
     /**
@@ -91,12 +142,19 @@ public class DestinationsController extends Controller {
      * @return
      */
     @Security.Authenticated(SecureSession.class)
-    public Result showCreate(Http.Request request) {
-        Destination dest = new Destination();
-        dest.setLatitude(0.0);
-        dest.setLongitude(0.0);
-        Form<Destination> destinationForm = form.fill(dest);
-        return ok(createDestinations.render(destinationForm, request, messagesApi.preferred(request)));
+    public CompletionStage<Result> showCreate(Http.Request request) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Destination dest = new Destination();
+                dest.setLatitude(0.0);
+                dest.setLongitude(0.0);
+                Form<Destination> destinationForm = form.fill(dest);
+                return ok(createDestinations.render(destinationForm, profile.get(),request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
+            }
+        });
     }
 
     /**
@@ -107,16 +165,23 @@ public class DestinationsController extends Controller {
      * @return
      */
     @Security.Authenticated(SecureSession.class)
-    public Result edit(Http.Request request, Integer id) {
-        Destination destination = new Destination();
-        for (Destination dest : destinationsList) {
-            if (dest.getDestinationId() == id) {
-                destination = dest;
-                break;
+    public CompletionStage<Result> edit(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Destination destination = new Destination();
+                for (Destination dest : destinationsList) {
+                    if (dest.getDestinationId() == id) {
+                        destination = dest;
+                        break;
+                    }
+                }
+                Form<Destination> destinationForm = form.fill(destination);
+                return ok(editDestinations.render(id, destination, destinationForm, profile.get(), request, messagesApi.preferred(request)));
+            } else {
+                return redirect("/destinations");
             }
-        }
-        Form<Destination> destinationForm = form.fill(destination);
-        return ok(editDestinations.render(id, destination, destinationForm, request, messagesApi.preferred(request)));
+        });
     }
 
     /**
@@ -128,10 +193,21 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result update(Http.Request request, Integer id) {
+        Integer userId = SessionController.getCurrentUserId(request);
         Form<Destination> destinationForm = form.bindFromRequest(request);
+        String visible = destinationForm.field("visible").value().get();
+        int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
-        destinationRepository.update(dest, id);
-        return redirect(destShowRoute);
+        dest.setVisible(visibility);
+        if(destinationRepository.checkValidEdit(dest, userId, id)) {
+            return redirect("/destinations/" + id +"/edit").flashing("info", "This destination is already registered and unavailable to create");
+        }
+        if(longLatCheck(dest)){
+            destinationRepository.update(dest, id);
+            return redirect(destShowRoute);
+        } else {
+            return redirect("/destinations/" + id +"/edit").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
+        }
     }
 
     /**
@@ -142,15 +218,34 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result saveDestination(Http.Request request) {
-        Profile user = SessionController.getCurrentUser(request);
-        if (user == null) {
+        Integer userId = SessionController.getCurrentUserId(request);
+        if (userId == null) {
             return ok(login.render(loginForm, userForm, request, messagesApi.preferred(request)));
         }
         Form<Destination> destinationForm = form.bindFromRequest(request);
+        String visible = destinationForm.field("visible").value().get();
+        int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
-        destination.setUserEmail(user.getEmail());
-        destinationRepository.insert(destination);
-        return redirect(destShowRoute);
+        destination.setProfileId(userId);
+        destination.setVisible(visibility);
+        if(destinationRepository.checkValid(destination, userId)) {
+            return redirect("/destinations/create").flashing("info", "This destination is already registered and unavailable to create");
+
+        }
+        if(longLatCheck(destination)){
+            destinationRepository.insert(destination);
+            return redirect(destShowRoute);
+        } else {
+            return redirect("/destinations/create").flashing("info", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid");
+        }
+    }
+
+
+    private boolean longLatCheck(Destination destination) {
+        if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
+            return false;
+        }
+        return !(destination.getLongitude() > 180 || destination.getLongitude() < -180);
     }
 
 
@@ -161,13 +256,13 @@ public class DestinationsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
-        Profile profile = SessionController.getCurrentUser(request);
+        Integer profileId = SessionController.getCurrentUserId(request);
 
         return supplyAsync(() -> {
             // Get all trips
             List<Trip> trips = Trip.find.query()
                     .where()
-                    .eq("email", profile.getEmail())
+                    .eq("profile_id", profileId)
                     .findList();
 
             // Iterate through each trip
@@ -183,7 +278,7 @@ public class DestinationsController extends Controller {
                     // Cannot delete a destination if there is match
                     // Since it in a trip
                     if (destination.getDestinationId() == id) {
-                        return redirect("/destinations").flashing("failure",
+                        return redirect("/destinations/show/false").flashing("failure",
                                 "Destination cannot be deleted as it is part of a trip");
                     }
                 }
@@ -191,7 +286,7 @@ public class DestinationsController extends Controller {
             destinationRepository.delete(id);
 
 
-            return redirect("/destinations").flashing("success", "Destination Deleted");
+            return redirect("/destinations/show/false").flashing("success", "Destination Deleted");
         });
 
     }

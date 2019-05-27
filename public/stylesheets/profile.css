@@ -17,7 +17,7 @@
 }
 
 .card-large {
-    height: 40vh;
+    max-height: 90vh;
 }
 
 .button-edit {
@@ -25,6 +25,15 @@
     width: 10vw;
 }
 
+#photoHeading .btn {
+    /*float: right;*/
+}
+
+.btn-primary, .btn-primary:hover {
+    width: auto;
+    background-color: #37623B;
+    border-color: #37623B;
+}
 
 .trip-button {
     width: 100%;
@@ -35,10 +44,7 @@
     width: 100%;
     padding: 1%;
     cursor: copy;
-}
-
-.lower-card {
-    width: 70%;
+    background: #205723;
 }
 
 .center-col {
@@ -47,13 +53,20 @@
     display:block;
 }
 
+.upper-card {
+    width: 80%;
+}
+
 .lower-card {
     width: 80%;
 }
 
+#selectPhotoModal .lower-card {
+    width: auto;
+}
 
-.upper-card {
-    width: 87%;
+#changeProfilePicture .lower-card {
+    width: auto;
 }
 
 .collapse-body {
@@ -93,6 +106,11 @@ img.thumbnail {
     transition: 0.3s;
 }
 
+#profileImagePreview {
+    border: 1px solid;
+    border-radius: 50%;
+}
+
 #viewPhotoModal .row {
     padding-left: 1rem;
 }
@@ -129,7 +147,7 @@ img.thumbnail {
     background-color: rgba(0,0,0,0.9);
 }
 
-/* Modal Content (Image) */
+/* Modal Content (Photo) */
 #expandedImage.modal-content {
     margin: auto;
     display: block;
@@ -156,7 +174,7 @@ img.thumbnail {
     cursor: pointer;
 }
 
-/* Caption of Modal Image (Image Text) */
+/* Caption of Modal Photo (Photo Text) */
 #caption {
     margin: auto;
     display: block;
@@ -179,10 +197,92 @@ img.thumbnail {
     to {transform:scale(1)}
 }
 
-/*!* 100% Image Width on Smaller Screens *!*/
+#profileImage {
+    border: 1px solid;
+    border-radius: 50%;
+}
+
+#profileTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#profileTabs, li {
+    padding: 15px;
+}
+
+#profileTabs, #photosCard, #photosTabCard {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#destsTab {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#tripsTab {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#profileTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+    /*width: 50%;*/
+}
+
+.nav .nav-tabs, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
+    font-size: 18pt;
+}
+
+#selectPhotoModal {
+    /*height: 80vh;*/
+}
+
+#selectPhotoModal .row{
+    max-height: 77vh;
+}
+
+#changeProfilePictureButton {
+    position: absolute;
+    color: white;
+    width: auto;
+    margin-left: 60%;
+    margin-top: 5%;
+    cursor: pointer;
+}
+
+#editProfileButton {
+    position: absolute;
+    color: white;
+    width: auto;
+    margin-left: 60%;
+    margin-top: 8%;
+    cursor: pointer;
+}
+
+#photosCard {
+    height: 500px;
+}
+
+#photosTabCard {
+    height: auto;
+}
+
+#center-text {
+    text-align: center;
+}
+
+/*.btn-outline-primary:hover {*/
+    /*background-color: #37623B;*/
+    /*border-color: #37623B;*/
+/*}*/
+
+/*!* 100% Photo Width on Smaller Screens *!*/
 /*@media only screen and (max-width: 700px){*/
     /*.modal-content {*/
         /*width: 100%;*/
     /*}*/
 /*}*/
-
