@@ -107,7 +107,7 @@
                                     </thead>
 
                                     @for(destination <- destinationsList) {
-                                        <tr onclick="setSelectedDestination(@destination.getLatitude, @destination.getLongitude)">
+                                        <tr onclick="setSelectedDestination(this)">
                                             <td>@destination.getName()</td>
                                             <td>@destination.getType()</td>
                                             <td>@destination.getDistrict()</td>
@@ -180,6 +180,11 @@
             });
 
             var map;
+            var markers = [];
+
+            /**
+            * Initialises the map view
+            */
             function initMap() {
                 var center = {lat: -43.5321, lng: 172.6362}; // TODO set to one of the destinations coords
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
@@ -191,6 +196,9 @@
                 addMarkers();
             }
 
+            /**
+            * Adds all current destinations to the map as markers
+            */
             function addMarkers() {
                 var centerSet = false;
                 @for(destination <- destinationsList) {
@@ -199,8 +207,10 @@
                            lat: @destination.getLatitude,
                            lng: @destination.getLongitude
                        },
+                       animation: google.maps.Animation.DROP,
                        map: map
                     });
+                    markers.push(marker);
                     if (!centerSet) {
                         centerSet = true;
                         map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
@@ -208,8 +218,25 @@
                 }
             }
 
-            function setSelectedDestination(lat, lng) {
-                map.setCenter(new google.maps.LatLng(lat, lng));
+
+            /**
+            * Onclick of a table row sets the center of the map to that destination
+            * and makes the related marker bounce
+            */
+            function setSelectedDestination(row) {
+                var markerToSet = markers[row.rowIndex - 1];
+                map.setCenter(markerToSet.getPosition());
+                clearAnimations();
+                markerToSet.setAnimation(google.maps.Animation.BOUNCE);
+            }
+
+            /**
+            * Stops all marker animations on the map
+            */
+            function clearAnimations() {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setAnimation(null);
+                }
             }
 
 
