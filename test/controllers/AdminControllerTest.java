@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Destination;
+import models.Profile;
 import models.Trip;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,6 +27,10 @@ public class AdminControllerTest extends ProvideApplication {
     }
 
 
+    /**
+     * Tests deleting a valid (one that exists) destination
+     * from the admin page
+     */
     @Test
     public void deleteValidDestination() {
         injectRepositories();
@@ -40,6 +45,9 @@ public class AdminControllerTest extends ProvideApplication {
     }
 
 
+    /**
+     * Test the deletion of a valid trip (i.e. one that exists)
+     */
     @Test
     public void deleteValidTrip() {
         injectRepositories();
@@ -51,5 +59,26 @@ public class AdminControllerTest extends ProvideApplication {
         Result result = Helpers.route(provideApplication(), request);
 
         Assert.assertTrue(result.flash().getOptional("info").isPresent());
+    }
+
+
+    /**
+     * Test a profile deletion by retrieving all profiles
+     * and deleting the first.
+     */
+    @Test
+    public void deleteProfile() {
+        injectRepositories();
+        List<Profile> profiles = Profile.find.all();
+        Integer originalSize = profiles.size();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/"+ profiles.get(0).getProfileId() + "/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+        profiles = Profile.find.all();
+        Integer newSize = profiles.size();
+        Integer expected = originalSize - 1;
+        Assert.assertEquals(expected, newSize);
     }
 }
