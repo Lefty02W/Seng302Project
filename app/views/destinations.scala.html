@@ -228,6 +228,12 @@
                 map.setCenter(markerToSet.getPosition());
                 clearAnimations();
                 markerToSet.setAnimation(google.maps.Animation.BOUNCE);
+                clearRows();
+                if (row.style.backgroundColor === "") {
+                    row.style.backgroundColor = "#A9A9A9";
+                } else {
+                    row.style.backgroundColor = "";
+                }
             }
 
             /**
@@ -236,6 +242,14 @@
             function clearAnimations() {
                 for (var i = 0; i < markers.length; i++) {
                     markers[i].setAnimation(null);
+                }
+            }
+
+
+            function clearRows() {
+                var rows = document.getElementById("destTable").rows;
+                for (var i = 1; i < rows.length; i++) {
+                    rows[i].style.backgroundColor = "";
                 }
             }
 
