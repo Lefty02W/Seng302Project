@@ -68,7 +68,7 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
     public CompletionStage<Optional<Integer>> delete(int id) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            String deleteQuery = "delete * from destination_photo Where destination_photo_id = ?";
+            String deleteQuery = "delete from destination_photo where destination_photo_id = ?";
             SqlUpdate query = Ebean.createSqlUpdate(deleteQuery);
             query.setParameter(1, id);
             query.execute();

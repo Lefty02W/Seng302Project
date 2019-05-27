@@ -19,7 +19,8 @@ POST    /destinations               controllers.DestinationsController.saveDesti
 POST    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
 POST    /destinations/follow/:destId/:isPublic      controllers.DestinationsController.follow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
 POST    /destinations/unfollow/:destId/:isPublic     controllers.DestinationsController.unfollow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
-GET    /destinations/photo/:photoId/:destId        controllers.DestinationsController.linkPhotoToDestination(request: Request, photoId: Integer, destId: Integer)
+GET    /destinations/linkphoto/:photoId/:destId        controllers.DestinationsController.linkPhotoToDestination(request: Request, photoId: Integer, destId: Integer)
+GET    /destinations/unlinkphoto/:photoId/:destId        controllers.DestinationsController.unlinkPhotoFromDestination(request: Request, photoId: Integer, destId: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

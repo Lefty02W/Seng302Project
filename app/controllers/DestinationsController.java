@@ -15,6 +15,7 @@ import views.html.editDestinations;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -352,5 +353,17 @@ public class DestinationsController extends Controller {
             }
             return redirect(destShowRoute).flashing("failure", "Photo was unsuccessfully linked to destination");
         });
+    }
+
+    public CompletionStage<Result> unlinkPhotoFromDestination(Http.Request request, Integer photoId, Integer destinationId) {
+        Integer userId = SessionController.getCurrentUserId(request);
+        Optional<DestinationPhoto> destinationPhoto = destinationPhotoRepository.findByProfileIdDestIdPhotoId(userId, destinationId, photoId);
+        return destinationPhotoRepository.delete(destinationPhoto.get().getDestinationPhotoId()).thenApplyAsync(result -> {
+            if (result.isPresent()) {
+                return redirect(destShowRoute).flashing("success", "Photo was successfully unlinked from destination");
+            }
+            return redirect(destShowRoute).flashing("failure", "Photo was unsuccessfully unlinked from destination");
+        });
+
     }
 }
