@@ -105,7 +105,7 @@
                                     </thead>
 
                                     @for(destination <- destinationsList) {
-                                        <tr onclick="setSelectedDestination(this)">
+                                        <tr onclick="setSelectedDestination(@destination.getDestinationId, this)">
                                             <td>@destination.getName()</td>
                                             <td>@destination.getType()</td>
                                             <td>@destination.getCountry()</td>
@@ -267,6 +267,7 @@
 
             var map;
             var markers = [];
+            var markersMap = new Map();
 
             /**
             * Initialises the map view
@@ -307,9 +308,17 @@
                 google.maps.event.addListener(marker, 'click', function () {
                     infoWindow.setContent(this.content);
                     infoWindow.open(this.getMap(), this);
+                    document.getElementById("nameVal").innerHTML = " @destination.getName";
+                    document.getElementById("typeVal").innerHTML = " @destination.getType";
+                    document.getElementById("countryVal").innerHTML = " @destination.getCountry";
+                    document.getElementById("districtVal").innerHTML = " @destination.getDistrict";
+                    document.getElementById("latVal").innerHTML = " @destination.getLatitude";
+                    document.getElementById("lngVal").innerHTML = " @destination.getLongitude";
+                    document.getElementById("publicVal").innerHTML = " @destination.getVisible";
                 });
 
                     markers.push(marker);
+                    markersMap.set(@destination.getDestinationId, marker);
                     if (!centerSet) {
                         centerSet = true;
                         map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
@@ -322,8 +331,9 @@
             * Onclick of a table row sets the center of the map to that destination
             * and makes the related marker bounce
             */
-            function setSelectedDestination(row) {
-                var markerToSet = markers[row.rowIndex - 1];
+            function setSelectedDestination(destinationId, row) {
+                var markerToSet = markersMap.get(destinationId);
+                new google.maps.event.trigger( markerToSet, 'click' );
                 map.setCenter(markerToSet.getPosition());
                 clearAnimations();
                 markerToSet.setAnimation(google.maps.Animation.BOUNCE);
@@ -336,15 +346,6 @@
                 } else {
                     row.style.backgroundColor = "";
                 }
-                @(toViewDest = new Destination(1, "name", "type", "country", "district", 1.897, 90.54, 1))
-
-                document.getElementById("nameVal").innerHTML = " @toViewDest.getName";
-                document.getElementById("typeVal").innerHTML = " @toViewDest.getType";
-                document.getElementById("countryVal").innerHTML = " @toViewDest.getCountry";
-                document.getElementById("districtVal").innerHTML = " @toViewDest.getDistrict";
-                document.getElementById("latVal").innerHTML = " @toViewDest.getLatitude";
-                document.getElementById("lngVal").innerHTML = " @toViewDest.getLongitude";
-                document.getElementById("publicVal").innerHTML = " @toViewDest.getVisible";
             }
 
             /**
