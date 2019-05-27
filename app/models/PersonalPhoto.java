@@ -3,6 +3,9 @@ package models;
 import javax.persistence.Entity;
 
 @Entity
+/**
+ * Model class to hold a profile personal photo
+ */
 public class PersonalPhoto {
 
 
@@ -10,13 +13,6 @@ public class PersonalPhoto {
     private int profileId;
     private int photoId;
     private int isProfilePhoto;
-
-    public PersonalPhoto(int personalPhotoId, int profileId, int photoId, int isProfilePhoto) {
-        this.personalPhotoId = personalPhotoId;
-        this.profileId = profileId;
-        this.photoId = photoId;
-        this.isProfilePhoto = isProfilePhoto;
-    }
 
     public PersonalPhoto(int profileId, int photoId) {
         this.profileId = profileId;

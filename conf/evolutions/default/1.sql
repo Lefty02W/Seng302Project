@@ -18,6 +18,7 @@ create table if not exists nationality
 )
 ;
 
+
 create table if not exists passport_country
 (
 	passport_country_id int auto_increment

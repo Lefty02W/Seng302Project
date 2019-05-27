@@ -42,7 +42,6 @@ public class Destination extends Model {
     /**
      * Creating a destination
      * @param destinationId the destinations db id
-     * @param userEmail the email of the destination owner
      * @param name the destination name
      * @param type the destination type
      * @param country the destinations country
@@ -64,7 +63,6 @@ public class Destination extends Model {
 
     /**
      * Creating a destination
-     * @param userEmail the email of the destination owner
      * @param name the destination name
      * @param type the destination type
      * @param country the destinations country
@@ -86,129 +84,64 @@ public class Destination extends Model {
     // Finder for destination
     public static final Finder<String, Destination> find = new Finder<>(Destination.class);
 
-    /**
-     * Returns the destination ID
-     * @return
-     */
     public int getDestinationId() {
         return destinationId;
     }
 
-    /**
-     * Sets the destinationId
-     * @param destinationId the destinations db id
-     */
     public void setDestinationId(int destinationId) {
         this.destinationId = destinationId;
     }
 
-
-    /**
-     * Returns the name of the destination
-     * @return
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Sets the name of the destination
-     * @param name
-     */
     public void setName(String name) {
         this.name = name;
     }
 
-    /**
-     * Returns the type of the destination
-     * @return
-     */
     public String getType() {
         return type;
     }
 
-    /**
-     * Sets the type of the destination
-     * @param type
-     */
     public void setType(String type) {
         this.type = type;
     }
 
-    /**
-     * Returns the country of the destination
-     * @return
-     */
     public String getCountry() {
         return country;
     }
 
-    /**
-     * Returns the user id of the destination
-     * @return profileId
-     */
     public int getProfileId() { return profileId; }
 
-    /**
-     * Sets the country of the destination
-     * @param country
-     */
     public void setCountry(String country) {
         this.country = country;
     }
 
-    /**
-     * Returns the district of the destination
-     * @return
-     */
     public String getDistrict() {
         return district;
     }
 
-    /**
-     * Sets the district of the destination
-     * @param district
-     */
     public void setDistrict(String district) {
         this.district = district;
     }
 
-    /**
-     * Returns the latitude of the destination
-     * @return
-     */
     public double getLatitude() {
         return latitude;
     }
 
-    /**
-     * Sets the latitude of the destination
-     * @param latitude
-     */
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    /**
-     * Returns the longitude of the destination
-     * @return
-     */
     public double getLongitude() {
         return longitude;
     }
 
-    /**
-     * Sets the longitude of the destination
-     * @param longitude
-     */
     public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
-    /**
-     * Sets the userEmail of the destination
-     * @param profileId
-     */
     public void setProfileId(int profileId) {
         this.profileId = profileId;
     }

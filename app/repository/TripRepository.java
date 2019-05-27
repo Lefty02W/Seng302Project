@@ -64,6 +64,7 @@ public class TripRepository {
                 tripDestination.setTripId(trip.getId());
                 Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
                 if (dest.getVisible() == 1) {
+                   //TODO Swap to ownership of global admin
                 }
             ebeanServer.insert(tripDestination);
         }
