@@ -33,6 +33,15 @@ div.dataTables_filter {
     float: left;
 }
 
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+}
+
+#legend h4 {
+    color: black;
+}
+
 #destButton {
     margin-left: 0.5vw;
 }

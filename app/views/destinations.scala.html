@@ -146,6 +146,7 @@
                         <div class="col">
                             <div id="table-card" class="card-large">
                                 <div id="destinationsMap"></div>
+                                <div id="legend"><h4>Legend</h4></div>
                             </div>
                         </div>
 
@@ -730,6 +731,14 @@
                         map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
                     }
                 }
+                var legend = document.getElementById('legend');
+                var publicDiv = document.createElement('div');
+                publicDiv.innerHTML = '<img src="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png"> Public Destination';
+                var privateDiv = document.createElement('div');
+                privateDiv.innerHTML = '<img src="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png"> Private Destination';
+                legend.appendChild(publicDiv);
+                legend.appendChild(privateDiv);
+                map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
             }
 
 
