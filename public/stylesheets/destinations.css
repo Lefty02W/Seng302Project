@@ -75,3 +75,20 @@ div.dataTables_filter {
     margin-right: auto;
     /*width: 50%;*/
 }
+
+#photosCard {
+    height: 500px;
+}
+
+img.thumbnail {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 240px;
+    max-width: 240px;
+    margin: auto;
+
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}

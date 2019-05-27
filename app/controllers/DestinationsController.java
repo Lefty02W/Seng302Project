@@ -1,10 +1,6 @@
 package controllers;
 
-import controllers.LoginController.Login;
-import models.Destination;
-import models.Photo;
-import models.Profile;
-import models.TripDestination;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -40,6 +36,7 @@ public class DestinationsController extends Controller {
     private final TripDestinationsRepository tripDestinationsRepository;
     private final ProfileRepository profileRepository;
     private final PersonalPhotoRepository personalPhotoRepository;
+    private final DestinationPhotoRepository destinationPhotoRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -53,13 +50,14 @@ public class DestinationsController extends Controller {
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
-                                  PersonalPhotoRepository personalPhotoRepository) {
+                                  PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
         this.tripDestinationsRepository = tripDestinationsRepository;
         this.personalPhotoRepository = personalPhotoRepository;
+        this.destinationPhotoRepository = destinationPhotoRepository;
     }
 
     /**
@@ -236,11 +234,9 @@ public class DestinationsController extends Controller {
         }
         if (longLatCheck(dest)) {
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
-                if (visibility == 1) {
-                    if (destId.isPresent()) {
-                        dest.setDestinationId(destId.get());
-                        newPublicDestination(dest);
-                    }
+                if (visibility == 1 && destId.isPresent()) {
+                    dest.setDestinationId(destId.get());
+                    newPublicDestination(dest);
                 }
                 return redirect(destShowRoute);
             });
@@ -269,11 +265,9 @@ public class DestinationsController extends Controller {
         }
         if (longLatCheck(destination)) {
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
-                if (visibility == 1) {
-                    if (destId.isPresent()) {
-                        destination.setDestinationId(destId.get());
-                        newPublicDestination(destination);
-                    }
+                if (visibility == 1 && destId.isPresent()) {
+                    destination.setDestinationId(destId.get());
+                    newPublicDestination(destination);
                 }
                 return redirect(destShowRoute);
             });
@@ -337,4 +331,15 @@ public class DestinationsController extends Controller {
         }
     }
 
+
+    public CompletionStage<Result> linkPhotoToDestination(Http.Request request, Integer photoId, Integer destinationId) {
+        Integer userId = SessionController.getCurrentUserId(request);
+        DestinationPhoto destinationPhoto = new DestinationPhoto(userId, photoId, destinationId);
+        return destinationPhotoRepository.insert(destinationPhoto).thenApplyAsync(result -> {
+            if (result.isPresent()) {
+                return redirect(destShowRoute).flashing("success", "Photo was successfully linked to destination");
+            }
+            return redirect(destShowRoute).flashing("failure", "Photo was unsuccessfully linked to destination");
+        });
+    }
 }
