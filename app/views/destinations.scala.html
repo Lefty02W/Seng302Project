@@ -267,7 +267,6 @@
 
             var map;
             var markers = [];
-            var InforObj = [];
 
             /**
             * Initialises the map view
@@ -282,6 +281,8 @@
                 });
                 addMarkers();
             }
+
+
 
             /**
             * Adds all current destinations to the map as markers
@@ -298,36 +299,20 @@
                        map: map
                     });
 
+                //var marker = new google.maps.Marker(options);
+                marker.content = "this is some test data and it is very cool";
 
-                var infowindow = new google.maps.InfoWindow({
-                    content: "Test",
-                    maxWidth: 200
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(marker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(this.getMap(), this);
                 });
-
-
-
-                marker.addListener('click', function () {
-                        closeOtherInfo();
-                        infowindow.open(map, marker);
-                        InforObj[0] = infowindow;
-                    });
 
                     markers.push(marker);
                     if (!centerSet) {
                         centerSet = true;
                         map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
                     }
-                }
-            }
-
-            function closeOtherInfo() {
-                if (InforObj.length > 0) {
-                    /* detach the info-window from the marker ... undocumented in the API docs */
-                    InforObj[0].set("marker", null);
-                    /* and close it */
-                    InforObj[0].close();
-                    /* blank the array */
-                    InforObj.length = 0;
                 }
             }
 
