@@ -433,7 +433,7 @@
                             <div class="row">
                             @for(photo <- photoList) {
                                 <div class="card">
-                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                    <img id="displayImage" class="thumbnail"
                                     src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
                                     name="@photo.getPhotoId">
                                     <div class="card-body">
