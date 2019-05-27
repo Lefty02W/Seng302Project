@@ -224,6 +224,22 @@ create table if not exists profile_roles
 )
 ;
 
+create table if not exists destination_photo
+(
+	destination_photo_id int auto_increment
+		primary key,
+	profile_id int not null,
+	photo_id int not null,
+	destination_id int not null,
+	constraint destination_photo_destination_destination_id_fk
+		foreign key (destination_id) references destination (destination_id),
+	constraint destination_photo_photo_photo_id_fk
+		foreign key (photo_id) references photo (photo_id),
+	constraint destination_photo_profile_profile_id_fk
+		foreign key (profile_id) references profile (profile_id)
+)
+;
+
 
 # --- !Downs
 
@@ -260,4 +276,6 @@ drop table if exists profile_traveller_type;
 drop table if exists roles;
 
 drop table if exists profile_roles;
+
+drop table if exists destination_photo;
 

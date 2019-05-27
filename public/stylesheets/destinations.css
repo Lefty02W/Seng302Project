@@ -50,3 +50,28 @@ div.dataTables_filter {
     width: 100%;
     padding-top: 5vh;
 }
+
+.nav .nav-tabs, #detailsTabLink, #myPhotosTabLink, #worldPhotosTabLink {
+    font-size: 18pt;
+}
+
+#destinationTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#destinationTabs, li {
+    padding: 15px;
+}
+
+#destinationTabs, #photosCard {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#destinationTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+    /*width: 50%;*/
+}
