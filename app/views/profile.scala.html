@@ -295,11 +295,11 @@
                                         @if(photo.getVisible == 1) {
                                             <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🌏</p>
                                             <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
-                                                <button>Make Private</button></a>
+                                                <button class="btn btn-primary">Make Private</button></a>
                                         } else {
                                             <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🔒</p>
                                             <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
-                                                <button>Make Public</button></a>
+                                                <button class="btn btn-primary">Make Public</button></a>
                                         }
                                         </div>
                                             <!-- The Expanded Photo Modal -->
@@ -439,9 +439,9 @@
                                     <div class="card-body">
                                         <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
                                         <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getPhotoId)">
-                                            <button type="submit">Crop this myself</button></a>
+                                            <button class="btn btn-outline-primary" type="submit">Crop this myself</button></a>
                                         <a href="@routes.ProfileController.setProfilePicture(photo.getPhotoId)">
-                                            <button type="submit">Select</button></a>
+                                            <button class="btn btn-outline-primary" type="submit">Select</button></a>
                                     </div>
                                 </div>
                             }
@@ -547,8 +547,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" data-dismiss="modal">Cancel</button>
-                            <button type="submit">Submit</button>
+                            <button class="btn btn-outline-danger" type="button" data-dismiss="modal">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Submit</button>
                         </div>
                     }
                 </div>
