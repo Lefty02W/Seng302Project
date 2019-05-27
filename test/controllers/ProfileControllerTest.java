@@ -4,6 +4,7 @@ import akka.stream.javadsl.FileIO;
 import akka.stream.javadsl.Source;
 import akka.util.ByteString;
 import org.hamcrest.CoreMatchers;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
@@ -120,8 +121,57 @@ public class ProfileControllerTest extends ProvideApplication {
                             app.asScala().materializer());
 
         // Checks for successful redirect to the profile page after successful image upload
-        Result redirectPhotoUploadResult = Helpers.route(provideApplication(), request);
-            assertEquals(303, redirectPhotoUploadResult.status());
+        Result result = Helpers.route(provideApplication(), request);
+        assertEquals(303, result.status());
+    }
+
+    @Test
+    public void invalidContentTypeFileUpload() throws IOException {
+        File file = getPersonalPhoto();
+        Http.MultipartFormData.Part<Source<ByteString, ?>> part =
+
+        new Http.MultipartFormData.FilePart<>(
+                "image",
+                "defaultPic.jpg",
+                "image/bmp",
+                FileIO.fromPath(file.toPath()),
+                Files.size(file.toPath()));
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(POST)
+                .uri("/profile/photo")
+                .session("connected", "john@gmail.com")
+                .bodyRaw(
+                        Collections.singletonList(part),
+                        play.libs.Files.singletonTemporaryFileCreator(),
+                        app.asScala().materializer());
+
+        Result result = Helpers.route(provideApplication(), request);
+        Assert.assertTrue(result.flash().getOptional("invalid").isPresent());
+    }
+
+    @Test
+    public void emptyFileUpload() throws IOException {
+        File file = getPersonalPhoto();
+        Http.MultipartFormData.Part<Source<ByteString, ?>> part =
+        new Http.MultipartFormData.FilePart<>(
+                "",
+                "",
+                "",
+                FileIO.fromPath(file.toPath()),
+                Files.size(file.toPath()));
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(POST)
+                .uri("/profile/photo")
+                .session("connected", "john@gmail.com")
+                .bodyRaw(
+                        Collections.singletonList(part),
+                        play.libs.Files.singletonTemporaryFileCreator(),
+                        app.asScala().materializer());
+
+        Result result = Helpers.route(provideApplication(), request);
+        Assert.assertTrue(result.flash().getOptional("invalid").isPresent());
     }
 
 //    @Test

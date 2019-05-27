@@ -158,39 +158,6 @@ public class ProfileController extends Controller {
         });
     }
 
-    /**
-     * Method to convert image byte arrays into pictures and display them as the appropriate
-     * content type
-     *
-     * @apiNote GET /profile/photo
-     * @param autoCrop used as a boolean, 1 if photo is to be cropped else 0 (note that photo
-     *                 will only be cropped for the profile picture)
-     * @param id image id to be used as primary key to find image object
-     */
-    @Security.Authenticated(SecureSession.class)
-    public Result displayPhotos (Integer id, Integer autoCrop) {
-        Photo photo = Photo.find.byId(id);
-        return ok(Objects.requireNonNull(photo).getPath());
-//        byte[] imageDisplay;
-//        if (autoCrop == 1) {
-//            try {
-//                InputStream in = new ByteArrayInputStream(photo.getImage());
-//                BufferedImage buffImage = ImageIO.read(in);
-//                buffImage = buffImage.getSubimage(photo.getCropX(), photo.getCropY(), photo.getCropWidth(), photo.getCropHeight());
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                ImageIO.write(buffImage, photo.getType().split("/")[1], baos);
-//                baos.flush();
-//                imageDisplay = baos.toByteArray();
-//                baos.close();
-//            } catch (Exception e) {
-//                imageDisplay = Objects.requireNonNull(photo).getImage();
-//            }
-//            return ok(imageDisplay).as(photo.getType());
-//        }else {
-//            imageDisplay = Objects.requireNonNull(photo).getImage();
-//            return ok(imageDisplay).as(photo.getType());
-//        }
-    }
 
     /**
      * A class to store information about a cropped image
@@ -251,7 +218,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadPhoto(Http.Request request) {
         System.out.println(request.body().asMultipartFormData().asFormUrlEncoded());
-        System.out.println("In uploadPhoto function ****************************************************************" + request);
+        System.out.println("In uploadPhoto function **************************************************************** " + request);
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
         Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
@@ -263,23 +230,28 @@ public class ProfileController extends Controller {
         }
         String fileName = picture.getFilename();
         String contentType = picture.getContentType();
+        Long fileSize = picture.getFileSize();
 
         // Check valid content type for image
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Invalid file type!"));
         }
+
+        // Check fileSize is less than 8 MB
+        if (fileSize >= 8000000) {
+            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "File size must not exceed 8 MB!"));
+        }
+
         TemporaryFile tempFile = picture.getRef();
         String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
-
-
         File file = tempFile.path().toFile();
+
         return supplyAsync(() -> {
             try {
                 this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
                 //cropInfo crop = autoCrop(this.imageBytes);
-
                 //int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
                 Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, visibility, fileName, 0, 0, 0, 0);
                 savePhoto(photo, SessionController.getCurrentUserId(request)); // Save photo, given a successful upload
@@ -299,9 +271,8 @@ public class ProfileController extends Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return ok("File uploaded");
-        }).thenApply(result -> redirect(profileEndpoint));
-
+            return redirect(profileEndpoint).flashing("success", fileName + " uploaded");
+        });
     }
 
 
@@ -344,7 +315,7 @@ public class ProfileController extends Controller {
 
     /**
      * Set a profile picture to the database
-     * @return a refresh to the profile page
+     * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request, Integer photoId) {
@@ -364,8 +335,8 @@ public class ProfileController extends Controller {
     }
 
     /**
-     * Set a profile picture to the database
-     * @return a refresh to the profile page
+     * Unsets a a users personal photo as a profile picture
+     * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> removeProfilePicture(Http.Request request) {
