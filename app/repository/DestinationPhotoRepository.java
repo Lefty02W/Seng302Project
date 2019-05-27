@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.*;
 import models.DestinationPhoto;
+import models.PersonalPhoto;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
 
@@ -105,18 +106,22 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
         });
     }
 
+    public Optional<DestinationPhoto> findByProfileIdDestIdPhotoId(int profileId, int destinationId, int photoId) {
+        return Optional.ofNullable(ebeanServer.find(DestinationPhoto.class).where()
+                .eq("profile_id", profileId)
+                .eq("destination_id", destinationId)
+                .eq("photo_id", photoId)
+                .findOne());
+    }
+
     /**
      * Method to find all destination photos that are for a passed user
      *
      * @param profileId the id of the user to find photos for
      * @return Optional Map holding all destinationPhotos found
      */
-    public Optional<List<Photo>> getAllDestinationPhotos(int profileId) {
-        List<Photo> photos = new ArrayList<>();
-        List<DestinationPhoto> photosFound = ebeanServer.find(DestinationPhoto.class).where().eq("profile_id", profileId).findList();
-        for (DestinationPhoto photo : photosFound) {
-            photoRepository.getImage(photo.getPhotoId()).ifPresent(photos::add);
-        }
+    public Optional<List<DestinationPhoto>> getAllDestinationPhotos(int profileId) {
+        List<DestinationPhoto> photos = ebeanServer.find(DestinationPhoto.class).where().eq("profile_id", profileId).findList();
         return Optional.of(photos);
     }
 }

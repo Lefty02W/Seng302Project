@@ -7,6 +7,11 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.Transient;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Photo class containing all the attributes of an image object.
@@ -49,6 +54,9 @@ public class Photo extends Model {
     @Constraints.Required
     private int cropHeight;
 
+    @Transient
+    private Map<Integer, Integer> destinationMap;
+
 
     /**
      * Constructor for image
@@ -66,6 +74,7 @@ public class Photo extends Model {
         this.cropY = cropY;
         this.cropWidth = cropWidth;
         this.cropHeight = cropHeight;
+        this.destinationMap = new HashMap<>();
     }
 
     // Finder for image
@@ -145,6 +154,44 @@ public class Photo extends Model {
         this.cropHeight = cropHeight;
     }
 
+    /**
+     * destinationMap is used to see if a photo is in a destination for a particular user. This is used for choosing
+     * to add another photo to a destination or taking a photo off a destination. This map will be sent to the destinations page
+     *
+     * This method will add the destinationId as the key and isTrue as the value to the map
+     * @param destinationId the id of a destination
+     * @param isTrue boolean for if the photo is shown for that destination
+     * @return
+     */
+    public boolean putInDestinationMap(Integer destinationId, Integer isTrue) {
+        if (isTrue != 0 && isTrue != 1) {
+            return false;
+        }
+        try {
+            destinationMap.put(destinationId, isTrue);
+        } catch (NullPointerException e) {
+            destinationMap = new HashMap<>();
+            destinationMap.put(destinationId, isTrue);
+        }
+        return true;
+    }
+
+    public Map<Integer, Integer> getDestinationMap() {
+        try {
+            return destinationMap;
+        } catch (NullPointerException e) {
+            destinationMap = new HashMap<>();
+            return destinationMap;
+        }
+    }
+
+    public void clearDestinationMap() {
+        try {
+            destinationMap.clear();
+        } catch (NullPointerException e) {
+            destinationMap = new HashMap<>();
+        }
+    }
 
     /**
      * Method to test if the image visibility is 1 or 0 and returns a string 'Public' or 'Private'

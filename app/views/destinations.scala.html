@@ -265,9 +265,16 @@
 
                                             <div class="card-body">
                                                 <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
-                                                <a href="@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, currentUser.getProfileId)">
-                                                    <button class="btn btn-primary" type="submit">Select</button>
-                                                </a>
+
+                                                @if(photo.getDestinationMap.get(8) == 0) {
+                                                    <a href="@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, 8)">
+                                                        <button class="btn btn-primary" type="submit">Link</button>
+                                                    </a>
+                                                }else{
+                                                    <a href="@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, 8)">
+                                                        <button class="btn btn-danger" type="submit">Unlink</button>
+                                                    </a>
+                                                }
 
                                             </div>
                                                 <!-- The Expanded Photo Modal -->

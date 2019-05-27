@@ -14,10 +14,7 @@ import views.html.destinations;
 import views.html.editDestinations;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -84,13 +81,9 @@ public class DestinationsController extends Controller {
                     destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
                 }
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
-                Optional<List<Photo>> imageListTemp = personalPhotoRepository.getAllProfilePhotos(profile.get().getProfileId());
-                List<Photo> photoList = new ArrayList<>();
-                if (imageListTemp.isPresent()) {
-                    for (Photo photo : imageListTemp.get()) {
-                        photoList.add(photo);
-                    }
-                }
+                List<Photo> photoList = getUsersPhotos(profile.get().getProfileId());
+                System.out.println("destinations list : " + destinationsList.size());
+                System.out.println("photos list : " + photoList.size());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, photoList, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
@@ -111,12 +104,8 @@ public class DestinationsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
-                Optional<List<Photo>> optionalUsersPhotos = personalPhotoRepository.getAllProfilePhotos(profile.get().getProfileId());
-                List<Photo> usersPhotos = new ArrayList<>();
-                if (optionalUsersPhotos.isPresent()) {
-                    usersPhotos.equals(optionalUsersPhotos.get());
-                }
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                List<Photo> photoList = getUsersPhotos(profileId);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, photoList, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -153,17 +142,39 @@ public class DestinationsController extends Controller {
                         destinationsList = new ArrayList<>();
                     }
                 }
-                Optional<List<Photo>> optionalUsersPhotos = personalPhotoRepository.getAllProfilePhotos(profile.get().getProfileId());
-                List<Photo> usersPhotos = new ArrayList<>();
-                if (optionalUsersPhotos.isPresent()) {
-                    usersPhotos.equals(optionalUsersPhotos.get());
-                }
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                List<Photo> photoList = getUsersPhotos(profileId);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, photoList, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
         });
     }
+
+
+    /**
+     * A function for getting a Optional list of photos where each photo has a functioning map of which destinations it
+     * is already linked to
+     * @param profileId
+     * @return a map that links a true/false to each destination
+     */
+    private List<Photo> getUsersPhotos(int profileId) {
+        Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
+        if (imageList.isPresent()) {
+            for (Photo destPhoto : imageList.get()) {
+                destPhoto.clearDestinationMap();
+                for (Destination destination: destinationsList) {
+                    if (destinationPhotoRepository.findByProfileIdDestIdPhotoId(profileId, destination.getDestinationId(), destPhoto.getPhotoId()).isPresent()) {
+                        destPhoto.putInDestinationMap(destination.getDestinationId(), 1);
+                    } else {
+                        destPhoto.putInDestinationMap(destination.getDestinationId(), 0);
+                    }
+                }
+            }
+            return imageList.get();
+        }
+        return new ArrayList<>();
+    }
+
 
     /**
      * Displays a page to create a destination

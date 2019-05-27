@@ -149,5 +149,4 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
         }
         return Optional.of(photos);
     }
-
 }
