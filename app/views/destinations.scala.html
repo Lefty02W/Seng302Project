@@ -228,6 +228,9 @@
                 map.setCenter(markerToSet.getPosition());
                 clearAnimations();
                 markerToSet.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                    markerToSet.setAnimation(null)
+                }, 3000);
                 clearRows();
                 if (row.style.backgroundColor === "") {
                     row.style.backgroundColor = "#A9A9A9";
