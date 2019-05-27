@@ -342,12 +342,12 @@
                                         <td>@destination.getCountry() <input type="hidden" name="destinationCountry" value="@destination.getCountry()" /></td>
                                         @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                             @CSRF.formField
-                                            <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
+                                            <td> <button type="submit" class="btn btn-primary"  style="height: 4vh">
                                                 Edit</button> </td>
                                         }
                                         @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                             @CSRF.formField
-                                            <td> <button type="submit" class="btn-outline-secondary" style="height: 4vh">
+                                            <td> <button type="submit" class="btn btn-outline-danger" style="height: 4vh">
                                                 Delete</button></td>
                                         }
                                     </tr>
