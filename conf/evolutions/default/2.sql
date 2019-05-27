@@ -18,7 +18,7 @@ INSERT INTO destination (profile_id, name, type, country, district, latitude, lo
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude) values
   (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98);
 
-INSERT INTO photo (content_type, name, crop_x, crop_y, crop_width, crop_height, path) values
+INSERT INTO photo (visible, content_type, name, crop_x, crop_y, crop_width, crop_height, path) values
   (0, 'image/jpg', 'testPic.jpg', 0, 0, 0, 0, 'photos/personalPhotos/testPic.jpg');
 
 INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
