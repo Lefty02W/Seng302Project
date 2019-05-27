@@ -2,6 +2,11 @@
     height: 60vh;
 }
 
+#btn-card {
+    height: 5vh;
+}
+
+
 #destTable {
     height: 10vh;
 }
@@ -22,6 +27,14 @@ div.dataTables_filter {
     position: center;
     float: right;
     width: 15vw;
+}
+
+#visibilityBtn {
+    float: left;
+}
+
+#destButton {
+    margin-left: 0.5vw;
 }
 
 

@@ -2,7 +2,7 @@
 @import views.html.helper.CSRF
 @(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
 
-
+@import models.Destination; var toViewDest = new Destination()
 
 
 <!DOCTYPE html>
@@ -73,30 +73,29 @@
                     @request.flash.getOptional("failure").get()
                     </div>
                 }
-                @if(!isPublic) {
-                    @helper.form(routes.DestinationsController.show(true)) {
-                        @CSRF.formField
-                        <td> <button type="submit" class="button-add" style="height: 4vh">Show Public</button></td>
-                    }
-                } else {
-                    @helper.form(routes.DestinationsController.show(false)) {
-                        @CSRF.formField
-                        <td> <button type="submit" class="button-add" style="height: 4vh">Show Private</button></td>
-                    }
-                }
 
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col">
-                            <a href="@routes.DestinationsController.showCreate()"> <button id="addDestButton" type="button" class="btn btn-primary button-hover">
-                                Create Destination</button> </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
                             <div id="table-card" class="card-large dest-table table-hover">
-                                    <!-- Table of users -->
-                                <table id="destTable">
+
+                                <div id="btn-row" class="row">
+                                        <a href="@routes.DestinationsController.showCreate()"> <button id="destButton" type="button" class="btn btn-primary">
+                                                Create Destination</button> </a>
+                                        @if(!isPublic) {
+                                            @helper.form(routes.DestinationsController.show(true)) {
+                                            @CSRF.formField
+                                                <button type="submit" id="destButton" class="btn btn-primary">Show Public</button>
+                                            }
+                                        } else {
+                                            @helper.form(routes.DestinationsController.show(false)) {
+                                            @CSRF.formField
+                                                <button type="submit" id="destButton" class="btn btn-primary">Show Private</button>
+                                            }
+                                        }
+                                </div>
+                                <div class="row">
+                                    <table id="destTable">
                                     <thead>
                                         <tr><th>Destination</th>
                                             <th>Type</th>
@@ -114,25 +113,25 @@
                                             @if(destination.getProfileId == currentUser.getProfileId || currentUser.hasRole("admin")) {
                                                 @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                                     @CSRF.formField
-                                                    <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
+                                                    <td> <button type="submit" class="button-editDestinations btn btn-primary" style="height: 4vh">
                                                         Edit</button> </td>
                                                 }
                                                 @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                                     @CSRF.formField
-                                                    <td> <button type="submit" class="btn-outline-secondary" style="height: 4vh">
+                                                    <td> <button type="submit" class="btn btn-outline-secondary" style="height: 4vh">
                                                         Delete</button></td>
                                                 }
                                             } else {
                                                 @if(followedDestinationIds contains destination.getDestinationId()) {
                                                     @helper.form(routes.DestinationsController.unfollow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
                                                         @CSRF.formField
-                                                        <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
+                                                        <td> <button type="submit" class="button-editDestinations btn btn-primary" style="height: 4vh">
                                                             Unfollow</button></td>
                                                     }
                                                 } else {
                                                     @helper.form(routes.DestinationsController.follow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
                                                         @CSRF.formField
-                                                        <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
+                                                        <td> <button type="submit" class="button-editDestinations btn-outline-secondary" style="height: 4vh">
                                                             Follow</button></td>
                                                     }
                                                 }
@@ -140,10 +139,8 @@
                                             }
                                         </tr>
                                     }
-
-                                </table>
-
-
+                                    </table>
+                                </div>
                             </div>
                         </div>
                         <div class="col">
@@ -166,81 +163,79 @@
 
                             <div id="detailsTab" class="tab-pane fade in active show">
                                 <div class="container">
-                                    <div class="row justify-content-center">
+                                    <div id="nameRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Destination Name :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getFirstName</a>
+                                        <div id="nameVal" class="col-md-2">
+                                            <a></a>
                                         </div>
 
                                     </div>
 
-                                    <div class="row justify-content-center">
+                                    <div id="typeRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Type :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getMiddleName</a>
+                                        <div id="typeVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="lastNameRow" class="row justify-content-center">
+                                    <div id="countryRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Country :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getLastName</a>
+                                        <div id="countryVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="emailRow" class="row justify-content-center">
+                                    <div id="districtRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>District :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getEmail</a>
+                                        <div id="districtVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="dobRow" class="row justify-content-center">
+                                    <div id="latRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Latitude :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getBirthString</a>
+                                        <div id="latVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="dobRow" class="row justify-content-center">
+                                    <div id="lngRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Longitude :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getBirthString</a>
+                                        <div id="lngVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="dobRow" class="row justify-content-center">
+                                    <div id="publicRow" class="row justify-content-center">
                                         <div class="col-md-2">
-                                            <b>Public :</b>
+                                            <b>Visibility :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getBirthString</a>
+                                        <div id="publicVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="myPhotosTab" class="tab-pane fade in active show">
+                            <div id="myPhotosTab" class="tab-pane fade">
                                 <div class="container">
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
                                     data-target="#selectPhotoModal">Add Photo</button>
-                                    <h2>my photos</h2>
                                 </div>
                             </div>
-                            <div id="worldPhotosTab" class="tab-pane fade in active show">
+                            <div id="worldPhotosTab" class="tab-pane fade">
                                 <div class="container">
-                                    <h2>world photos</h2>
                                 </div>
                             </div>
 
@@ -257,7 +252,7 @@
                 $('#destTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
-                    "pageLength": 10,
+                    "pageLength": 7,
                     dom: '<l<"toolbar">f>rtip',
                     language: {
                         search: "_INPUT_", //To remove Search Label
@@ -355,6 +350,15 @@
                 } else {
                     row.style.backgroundColor = "";
                 }
+                @(toViewDest = new Destination(1, "name", "type", "country", "district", 1.897, 90.54, 1))
+
+                document.getElementById("nameVal").innerHTML = " @toViewDest.getName";
+                document.getElementById("typeVal").innerHTML = " @toViewDest.getType";
+                document.getElementById("countryVal").innerHTML = " @toViewDest.getCountry";
+                document.getElementById("districtVal").innerHTML = " @toViewDest.getDistrict";
+                document.getElementById("latVal").innerHTML = " @toViewDest.getLatitude";
+                document.getElementById("lngVal").innerHTML = " @toViewDest.getLongitude";
+                document.getElementById("publicVal").innerHTML = " @toViewDest.getVisible";
             }
 
             /**
@@ -382,7 +386,7 @@
 
     </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWpUHUcDJZHUKrVf3qUiuLnD4ad40Mpew&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCyC_ON0GgSmJIfPlL7oke5PZgbR8TLbg&callback=initMap"
     async defer></script>
 
 
