@@ -160,7 +160,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
     }
 
     /**
-     * Method to find all users that are for a passed user
+     * Method to find all photos that are for a passed user
      *
      * @param profileId the id of the user to find photos for
      * @return Optional Map holding all personalPhotos found

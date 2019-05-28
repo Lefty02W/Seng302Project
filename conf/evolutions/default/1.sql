@@ -33,17 +33,13 @@ create table if not exists photo
 (
 	photo_id int auto_increment
 		primary key,
-	image longblob null,
+	path varchar(255) null,
 	visible tinyint(1) not null,
 	content_type varchar(50) not null,
-	name varchar(255) not null,
-	crop_x int default '0' not null,
-	crop_y int default '0' not null,
-	crop_width int default '100' not null,
-	crop_height int default '100' not null,
-	path varchar(255) null
+	name varchar(255) not null
 )
 ;
+
 
 create table if not exists profile
 (
@@ -110,6 +106,7 @@ create table if not exists personal_photo
 			on update cascade on delete cascade
 )
 ;
+
 
 create table if not exists profile_nationality
 (
@@ -226,6 +223,22 @@ create table if not exists profile_roles
 )
 ;
 
+create table if not exists destination_photo
+(
+	destination_photo_id int auto_increment
+		primary key,
+	profile_id int not null,
+	photo_id int not null,
+	destination_id int not null,
+	constraint destination_photo_destination_destination_id_fk
+		foreign key (destination_id) references destination (destination_id),
+	constraint destination_photo_photo_photo_id_fk
+		foreign key (photo_id) references photo (photo_id),
+	constraint destination_photo_profile_profile_id_fk
+		foreign key (profile_id) references profile (profile_id)
+)
+;
+
 
 
 
@@ -264,4 +277,6 @@ drop table if exists profile_traveller_type;
 drop table if exists roles;
 
 drop table if exists profile_roles;
+
+drop table if exists destination_photo;
 
