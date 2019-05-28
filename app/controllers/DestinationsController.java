@@ -102,9 +102,11 @@ public class DestinationsController extends Controller {
 
 
     /**
+     * Endpoint method to update the privacy of a photo
      *
-     * @param id
-     * @return
+     *
+     * @param id the photo id
+     * @return Redirect to teh destinations page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> updatePhotoPrivacy(Integer id){
@@ -211,9 +213,9 @@ public class DestinationsController extends Controller {
      * @return destinations list that was passed in
      */
     private List<Destination> loadWorldDestPhotos(int profileId, List<Destination> destinationsList) {
-        Optional<List<Photo>> optinalImageList = destinationPhotoRepository.getAllDestinationPhotos();
-        if (optinalImageList.isPresent()) {
-            List<Photo> photoList = optinalImageList.get();
+        Optional<List<Photo>> optionalImageList = destinationPhotoRepository.getAllDestinationPhotos();
+        if (optionalImageList.isPresent()) {
+            List<Photo> photoList = optionalImageList.get();
             for (Destination destination : destinationsList) {
                 List<Photo> destPhotoList = new ArrayList<>();
                 for (Photo photo : photoList) {
@@ -229,15 +231,14 @@ public class DestinationsController extends Controller {
     }
 
     /**
-     * @param profileId
+     * Gets all of the users photos
+     *
+     * @param profileId the id of the profile to get photos for
      * @return a list of a users photos
      */
     private List<Photo> getUsersPhotos(int profileId) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
-        if (imageList.isPresent()) {
-            return imageList.get();
-        }
-        return new ArrayList<>();
+        return imageList.orElseGet(ArrayList::new);
     }
 
 
