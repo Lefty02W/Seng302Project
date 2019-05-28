@@ -131,6 +131,13 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
     }
 
 
+    /**
+     * Logic to check if a photo is linked to another destination
+     * @param profileId Id of the profile linked to a photo
+     * @param photoId id of the photo being linked
+     * @param destinationId Id of the destination that the photo and profile is linked to
+     * @return
+     */
     public boolean isLinkedToDestByOtherUser(int profileId, int photoId, int destinationId) {
         List<DestinationPhoto>  destPhotoList = ebeanServer.find(DestinationPhoto.class).where()
                 .eq("photo_id", photoId)

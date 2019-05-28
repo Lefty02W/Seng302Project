@@ -389,6 +389,12 @@ public class DestinationsController extends Controller {
     }
 
 
+    /**
+     * Method to link photo to a given destination
+     * @param photoId Id of the photo to be linked
+     * @param destinationId Id of the destination that needs to be linked to a photo
+     * @return completion stage result redirected to destination
+     */
     public CompletionStage<Result> linkPhotoToDestination(Http.Request request, Integer photoId, Integer destinationId) {
         Integer userId = SessionController.getCurrentUserId(request);
         DestinationPhoto destinationPhoto = new DestinationPhoto(userId, photoId, destinationId);
@@ -400,6 +406,12 @@ public class DestinationsController extends Controller {
         });
     }
 
+    /**
+     * Method to un-link photo to a given destination
+     * @param photoId Id of the photo to be un-linked
+     * @param destinationId Id of the destination that needs to be un-linked to a photo
+     * @return completion stage result redirected to destination
+     */
     public CompletionStage<Result> unlinkPhotoFromDestination(Http.Request request, Integer photoId, Integer destinationId) {
         Integer userId = SessionController.getCurrentUserId(request);
         Optional<DestinationPhoto> destinationPhoto = destinationPhotoRepository.findByProfileIdPhotoIdDestId(userId, photoId, destinationId);
