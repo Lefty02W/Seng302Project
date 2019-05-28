@@ -33,17 +33,13 @@ create table if not exists photo
 (
 	photo_id int auto_increment
 		primary key,
-	image longblob null,
+	path varchar(255) null,
 	visible tinyint(1) not null,
 	content_type varchar(50) not null,
-	name varchar(255) not null,
-	crop_x int default '0' not null,
-	crop_y int default '0' not null,
-	crop_width int default '100' not null,
-	crop_height int default '100' not null,
-	path varchar(255) null
+	name varchar(255) not null
 )
 ;
+
 
 create table if not exists profile
 (
@@ -110,6 +106,7 @@ create table if not exists personal_photo
 			on update cascade on delete cascade
 )
 ;
+
 
 create table if not exists profile_nationality
 (
