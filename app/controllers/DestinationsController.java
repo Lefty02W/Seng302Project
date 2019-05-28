@@ -378,7 +378,6 @@ public class DestinationsController extends Controller {
             for (Destination destination : destinationList.get()) {
                 if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
                     destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
-                    destinationPhotoRepository.updateDestinationId(destination.getDestinationId(), newPublicDestination.getDestinationId());
                     Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
                     if (tripDestinationList.isPresent()) {
                         for (TripDestination tripDestination : tripDestinationList.get()) {
@@ -393,7 +392,6 @@ public class DestinationsController extends Controller {
 
 
     public CompletionStage<Result> linkPhotoToDestination(Http.Request request, Integer photoId, Integer destinationId) {
-        System.out.println("hello fam");
         Integer userId = SessionController.getCurrentUserId(request);
         DestinationPhoto destinationPhoto = new DestinationPhoto(userId, photoId, destinationId);
         return destinationPhotoRepository.insert(destinationPhoto).thenApplyAsync(result -> {
