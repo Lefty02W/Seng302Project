@@ -164,6 +164,17 @@
 
                             <div id="detailsTab" class="tab-pane fade in active show">
                                 <div class="container">
+
+                                    <div id="idRow" class="row justify-content-center">
+                                        <div class="col-md-2">
+                                            <b>Destination Id :</b>
+                                        </div>
+                                        <div id="idVal" class="col-md-2">
+                                            <a></a>
+                                        </div>
+
+                                    </div>
+
                                     <div id="nameRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Destination Name :</b>
@@ -262,7 +273,6 @@
 
                                             <div class="card-body">
                                                 <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
-
                                                 @if(photo.getDestinationMap.get(8) == 0) {
                                                     <a href="@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, 8)">
                                                         <button class="btn btn-primary" type="submit">Link</button>
@@ -766,6 +776,7 @@
                 google.maps.event.addListener(marker, 'click', function () {
                     infoWindow.setContent(this.content);
                     infoWindow.open(this.getMap(), this);
+                    document.getElementById('idVal').innerHTML = " @destination.getDestinationId";
                     document.getElementById("nameVal").innerHTML = " @destination.getName";
                     document.getElementById("typeVal").innerHTML = " @destination.getType";
                     document.getElementById("countryVal").innerHTML = " @destination.getCountry";
@@ -792,6 +803,18 @@
                 map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
             }
 
+
+            function getDestinationId() {
+               var destinationId = null;
+               for(destination <- destinationsList) {
+                    google.maps.event.addListener(marker, 'click', function () {
+                        infoWindow.setContent(this.content);
+                        infoWindow.open(this.getMap(), this);
+                      destinationId = @destination.getDestinationId;
+                    });
+              }
+              return destinationId;
+            }
 
             /**
             * Onclick of a table row sets the center of the map to that destination
