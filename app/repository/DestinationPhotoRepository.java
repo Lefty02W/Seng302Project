@@ -121,12 +121,30 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
      * @param profileId the id of the user to find photos for
      * @return Optional Map holding all destinationPhotos found
      */
-    public Optional<List<DestinationPhoto>> getAllDestinationPhotos() {
-        List<DestinationPhoto> photos = ebeanServer.find(DestinationPhoto.class).findList();
+    public Optional<List<Photo>> getAllDestinationPhotos() {
+        List<DestinationPhoto> destPhotos = ebeanServer.find(DestinationPhoto.class).findList();
+        List<Photo> photos = new ArrayList<>();
+        for (DestinationPhoto destPhoto : destPhotos) {
+            photoRepository.getImage(destPhoto.getPhotoId()).ifPresent(photos::add);
+        }
         return Optional.of(photos);
     }
 
-    public boolean destinationContainsPhoto(int photoId, int destinationId) {
+
+    public boolean isLinkedToDestByOtherUser(int profileId, int photoId, int destinationId) {
+        List<DestinationPhoto>  destPhotoList = ebeanServer.find(DestinationPhoto.class).where()
+                .eq("photo_id", photoId)
+                .eq("destination_id", destinationId)
+                .findList();
+        if (!destPhotoList.isEmpty()) {
+            if (destPhotoList.size() > 1) {
+                return true;
+            }
+            if (destPhotoList.get(0).getProfileId() == profileId) {
+                return false;
+            }
+            return true;
+        }
         return false;
     }
 }

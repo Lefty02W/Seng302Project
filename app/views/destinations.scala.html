@@ -215,8 +215,8 @@
                                 </div>
                             </div>
                             <div id="worldPhotosTab" class="tab-pane fade">
-                                <div class="container">
-                                    <h2>world photos</h2>
+                                <div class="container" id="worldPhotos">
+                                    <a></a>
                                 </div>
                             </div>
 
@@ -732,6 +732,7 @@
 
                             document.getElementById("userPhotos").innerHTML = " ";
                             document.getElementById("photoUpdate").innerHTML = " ";
+                            document.getElementById("worldPhotos").innerHTML = " ";
 
                             document.getElementById("userPhotos").innerHTML = " <button class=\"btn btn-primary\" style=\"right\" data-toggle=\"modal\"\n" +
                                     "                            data-target=\"#linkDestinationPhotoModal\">Link Photo</button>";
@@ -771,6 +772,23 @@
                                     "                            <button class=\"btn btn-primary\" type=\"submit\">Link</button>\n" +
                                     "                            </a>\n" +
                                     "                            </div>\n" +
+                                    "                            <!-- The Expanded Photo Modal -->\n" +
+                                    "                            <div id=\"expandImageModal\" class=\"modal\">\n" +
+                                    "                            <span class=\"close\">&times;</span>\n" +
+                                    "                            <img class=\"modal-content\" id=\"expandedImage\">\n" +
+                                    "                            <div id=\"caption\"></div>\n" +
+                                    "                            <div id=\"id\"></div>\n" +
+                                    "                            </div>\n" +
+                                    "                            </div>";
+                                }
+                            }
+                            @for(photo <- destination.getWorldPhotos){
+                                @if(photo.getVisible == 1) {
+                            document.getElementById("worldPhotos").innerHTML +=
+                                    "                            <div class=\"card\">\n" +
+                                    "                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                                    "                            src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
+                                    "                            name=\"@photo.getPhotoId\">\n" +
                                     "                            <!-- The Expanded Photo Modal -->\n" +
                                     "                            <div id=\"expandImageModal\" class=\"modal\">\n" +
                                     "                            <span class=\"close\">&times;</span>\n" +

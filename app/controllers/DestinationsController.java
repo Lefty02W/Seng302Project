@@ -86,6 +86,7 @@ public class DestinationsController extends Controller {
                 }
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
+                destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
@@ -109,6 +110,7 @@ public class DestinationsController extends Controller {
             if (profile.isPresent()) {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
+                destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
@@ -149,6 +151,7 @@ public class DestinationsController extends Controller {
                 }
 
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
+                destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
@@ -181,11 +184,34 @@ public class DestinationsController extends Controller {
     }
 
 
+    /**
+     * takes in a list of destinations, for each destination loads the photos which are linked to that destination but
+     * not from the current user. ie: the world destination photos
+     * @param profileId, the id of the current user, will not add their destination photos to the list
+     * @param destinationsList, a list of the destinations which it will be adding photos to
+     * @return destinations list that was passed in
+     */
+    private List<Destination> loadWorldDestPhotos(int profileId, List<Destination> destinationsList) {
+        Optional<List<Photo>> optinalImageList = destinationPhotoRepository.getAllDestinationPhotos();
+        if (optinalImageList.isPresent()) {
+            List<Photo> photoList = optinalImageList.get();
+            for (Destination destination : destinationsList) {
+                List<Photo> destPhotoList = new ArrayList<>();
+                for (Photo photo : photoList) {
+                    if (destinationPhotoRepository.isLinkedToDestByOtherUser(profileId, photo.getPhotoId(), destination.getDestinationId())) {
+                        destPhotoList.add(photo);
+                    }
+                }
+                destination.setWorldPhotos(destPhotoList);
+            }
+            return destinationsList;
+        }
+        return destinationsList;
+    }
 
     /**
-     * A function for getting a list of photos
      * @param profileId
-     * @return a map that links a true/false to each destination
+     * @return a list of a users photos
      */
     private List<Photo> getUsersPhotos(int profileId) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
@@ -194,34 +220,6 @@ public class DestinationsController extends Controller {
         }
         return new ArrayList<>();
     }
-
-
-    /**
-     * A function that gives a list of every photo in other destinations with a map on each photo to what destinations
-     * each photo is linked to
-     *
-     * @param profileId, the id of the current user, will not add their destination photos to the list
-     * @return
-     */
-//    private List<Photo> getWorldDestPhotos(int profileId) {
-//        Optional<List<DestinationPhoto>> optinalWorldImageList = destinationPhotoRepository.getAllDestinationPhotos();
-//        if (optinalWorldImageList.isPresent()) {
-//            List<Photo> photoList = new ArrayList<>();
-//            for (DestinationPhoto destPhoto : optinalWorldImageList.get()) {
-//                Optional<Photo> optinalPhoto = photoRepository.getImage(destPhoto.getPhotoId());
-//                if (optinalPhoto.isPresent()) {
-//                    if (!photoList.contains(optinalPhoto.get())) {
-//                        optinalPhoto.get().putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
-//                        photoList.add(optinalPhoto.get());
-//                    } else {
-//                        photoList.get(photoList.indexOf(optinalPhoto.get())).putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
-//                    }
-//                }
-//            }
-//            return photoList;
-//        }
-//        return new ArrayList<>();
-//    }
 
 
     /**
