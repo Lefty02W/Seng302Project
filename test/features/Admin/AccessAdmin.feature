@@ -12,3 +12,10 @@ Feature: Access admin page
     When he fills "/admin" into the URL
     And the admin tries to access the admin page
     Then the admin page should be shown
+
+
+  Scenario: The make admin endpoint cannot be accessed unless an admin is logged in
+    Given I am logged into the application as a non admin
+    When I enter the following url "/admin/1/admin"
+    Then User 1 is not made an admin
+    And There should be a flashing present saying "You do not have permission to do this"

@@ -1,34 +1,50 @@
 package controllers.steps;
 
 import controllers.ProvideApplication;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import play.mvc.Http;
+import play.mvc.Result;
+import play.test.Helpers;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static junit.framework.TestCase.fail;
+import static org.junit.Assert.assertEquals;
 
 public class AdminCreatesDestinationSteps extends ProvideApplication {
 
-    @When("admin selects add destination button")
-    public void adminSelectsAddDestinationButton() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+    private Map<String, String> destForm = new HashMap<>();
+    private Result redirectDestination;
+
+    @When("admin fills the create destination form with correct data")
+    public void adminFillsTheCreateDestinationFormWithCorrectData() {
+        destForm.put("name", "testName");
+        destForm.put("type", "testType");
+        destForm.put("country", "testCountry");
+        System.out.println(destForm.size() + " !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        assertEquals(3, destForm.size());
+
     }
 
-    @When("fills the form with correct data")
-    public void fillsTheFormWithCorrectData() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @When("selects them self as the profile")
+    @And("selects them self as the profile")
     public void selectsThemSelfAsTheProfile() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        destForm.put("profileId", "2");
+        assertEquals(4, destForm.size());
     }
 
     @Then("the admin presses save")
     public void theAdminPressesSave() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/admin/create/destinations")
+                .bodyForm(destForm)
+                .session("connected", "2");
+        redirectDestination = Helpers.route(provideApplication(), request);
+        assertEquals("/admin", redirectDestination.redirectLocation().get());
     }
 
     @Then("the new destination is added to the admins destinations")
@@ -37,8 +53,8 @@ public class AdminCreatesDestinationSteps extends ProvideApplication {
         throw new cucumber.api.PendingException();
     }
 
-    @When("fills the form with correct data including name as {string}")
-    public void fillsTheFormWithCorrectDataIncludingNameAs(String string) {
+    @When("admin fills the form with correct data including name as {string}")
+    public void adminFillsTheFormWithCorrectDataIncludingNameAs(String string) {
         // Write code here that turns the phrase above into concrete actions
         throw new cucumber.api.PendingException();
     }
@@ -51,30 +67,6 @@ public class AdminCreatesDestinationSteps extends ProvideApplication {
 
     @Then("the new destination is added to user {int} destinations")
     public void theNewDestinationIsAddedToUserDestinations(Integer int1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user is logged in to the application")
-    public void userIsLoggedInToTheApplication() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user with id {string} has a private destination with name {string}, type {string}, and country {string}")
-    public void userWithIdHasAPrivateDestinationWithNameTypeAndCountry(String string, String string2, String string3, String string4) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @When("user creates a public destination with name {string}, type {string}, and country NewZealand")
-    public void userCreatesAPublicDestinationWithNameTypeAndCountryNewZealand(String string, String string2) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user is logged into the application")
-    public void userIsLoggedIntoTheApplication() {
         // Write code here that turns the phrase above into concrete actions
         throw new cucumber.api.PendingException();
     }

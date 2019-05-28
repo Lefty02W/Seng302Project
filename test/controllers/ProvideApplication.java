@@ -19,6 +19,7 @@ public class ProvideApplication extends WithApplication {
 
     protected ProfileRepository profileRepository;
     protected DestinationRepository destinationRepository;
+    protected RolesRepository rolesRepository;
 
     @Override
     public Application provideApplication() {
@@ -55,6 +56,7 @@ public class ProvideApplication extends WithApplication {
         app.injector().instanceOf(NationalityRepository.class);
         app.injector().instanceOf(PassportCountryRepository.class);
 
+        rolesRepository = app.injector().instanceOf(RolesRepository.class);
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
     }
