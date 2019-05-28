@@ -13,6 +13,8 @@ import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 public class AdminControllerTest extends ProvideApplication {
 
@@ -74,15 +76,22 @@ public class AdminControllerTest extends ProvideApplication {
 
         List<Profile> profiles = Profile.find.all();
         Integer originalSize = profiles.size();
+
+        Profile toDelete = profiles.get(4);
+
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/"+ profiles.get(0).getProfileId() + "/delete")
+                .uri("/admin/"+ toDelete.getProfileId() + "/delete")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
         profiles = Profile.find.all();
         Integer newSize = profiles.size();
         Integer expected = originalSize - 1;
         Assert.assertEquals(expected, newSize);
+
+        //Add the profile back to the DB so that other tests can use it.
+        profileRepository.insert(toDelete);
+
     }
 
 
