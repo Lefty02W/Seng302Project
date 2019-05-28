@@ -47,9 +47,9 @@ public class AdminCreatesDestinationSteps extends ProvideApplication {
         assertNotNull(request.session());
     }
 
-    @Ignore
     @And("the new destination is added to the admins {int} destinations")
     public void theNewDestinationIsAddedToTheAdminsDestinations(Integer adminId) {
+        injectRepositories();
         assertTrue(profileRepository.getDestinations(adminId).isPresent());
 
     }
@@ -72,11 +72,10 @@ public class AdminCreatesDestinationSteps extends ProvideApplication {
         assertEquals(4, destForm.size());
     }
 
-    @Ignore
     @And("the new destination is added to user {int} destinations")
     public void theNewDestinationIsAddedToUserDestinations(Integer int1) {
-        //ueser has 2 destinations on startup
-
+        //user has 2 destinations on startup
+        injectRepositories();
         assertTrue(profileRepository.getDestinations(int1).isPresent());
 
     }
