@@ -18,11 +18,8 @@ import play.mvc.Security;
 import repository.*;
 import views.html.profile;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,17 +38,13 @@ public class ProfileController extends Controller {
 
     private final Form<Profile> profileForm;
     private final Form<ImageData> imageForm;
-    private final Form<CropImageData> cropImageDataForm;
     private MessagesApi messagesApi;
     private List<Destination> destinationsList = new ArrayList<>();
     private final HttpExecutionContext httpExecutionContext;
     private final ProfileRepository profileRepository;
     private final PhotoRepository photoRepository;
-    private byte[] imageBytes;
     private List<Photo> photoList = new ArrayList<>();
-    private static boolean showChangeProfilePictureModal = false;
     private Photo demoProfilePicture = null;
-    private static boolean showCropPhotoModal = false;
     private static boolean showPhotoModal = false;
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
@@ -67,16 +60,6 @@ public class ProfileController extends Controller {
     public static class ImageData {
         public String visible = "Private";
         String isNewProfilePicture;
-        String autoCropped = "true";
-    }
-
-    /**
-     * a class to recieve information from a form for getting cropping image data
-     */
-    public static class CropImageData {
-        int widthHeight;
-        int cropX;
-        int cropY;
     }
 
 
@@ -86,7 +69,6 @@ public class ProfileController extends Controller {
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
-            this.cropImageDataForm = imageFormFactory.form(CropImageData.class);
             this.messagesApi = messagesApi;
             this.httpExecutionContext = httpExecutionContext;
             this.profileRepository = profileRepository;
@@ -128,6 +110,7 @@ public class ProfileController extends Controller {
         , httpExecutionContext.current());
     }
 
+
     /**
      * Method to query the image repository to retrieve all images uploaded for a
      * logged in user.
@@ -142,6 +125,7 @@ public class ProfileController extends Controller {
         imageListTemp.ifPresent(photos -> photoList = photos);
         return photoList;
     }
+
 
     /**
      * Inserts an Photo object into the PhotoRepository to be stored on the database
@@ -160,52 +144,6 @@ public class ProfileController extends Controller {
 
 
     /**
-     * A class to store information about a cropped image
-     */
-    private class cropInfo {
-        private int cropHeight;
-        private int cropWidth;
-
-        public cropInfo(int cropHeight, int cropWidth) {
-            this.cropHeight = cropHeight;
-            this.cropWidth = cropWidth;
-        }
-
-        public void setCropHeight(int cropHeight) { this.cropHeight = cropHeight; }
-
-        public void setCropWidth(int cropWidth) { this.cropWidth = cropWidth; }
-
-        public int getCropHeight() { return cropHeight; }
-
-        public int getCropWidth() { return cropWidth; }
-    }
-
-    /**
-     * Auto crops the image passed in
-     * @param image The image to be cropped
-     * @return
-     */
-    private cropInfo autoCrop(byte[] image) {
-        cropInfo crop = new cropInfo(100, 100);
-        try {
-            InputStream in = new ByteArrayInputStream(this.imageBytes);
-            BufferedImage buffImage = ImageIO.read(in);
-            crop.setCropWidth(buffImage.getWidth());
-            crop.setCropHeight(buffImage.getHeight());
-            if (crop.getCropWidth() < crop.getCropHeight()) {
-                crop.setCropHeight(crop.getCropWidth());
-            } else {
-                crop.setCropWidth(crop.getCropHeight());
-            }
-        } catch (Exception e) {
-            crop.setCropHeight(100);
-            crop.setCropWidth(100);
-        }
-        return crop;
-    }
-
-
-    /**
      * Retrieves file (image) upload from the front end and converts the image into bytes
      * A new Photo object is created and has its attributes set. If the photo is a normal
      * upload it will be sent to savePhoto and the modal showPhoto is loaded. If the photo
@@ -213,11 +151,10 @@ public class ProfileController extends Controller {
      * profile picture and the modal changeProfilePicture is shown
      *
      * @param request Https request
-     * @return a redirect to the profile page
+     * @return a redirect to the profile page with a flashing response message
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadPhoto(Http.Request request) {
-        System.out.println("In uploadPhoto function **************************************************************** " + request);
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
         Form<ImageData> uploadedImageForm = imageForm.bindFromRequest(request);
@@ -231,12 +168,10 @@ public class ProfileController extends Controller {
         String contentType = picture.getContentType();
         Long fileSize = picture.getFileSize();
 
-        // Check valid content type for image
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Invalid file type!"));
         }
 
-        // Check fileSize is less than 8 MB
         if (fileSize >= 8000000) {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "File size must not exceed 8 MB!"));
         }
@@ -244,31 +179,14 @@ public class ProfileController extends Controller {
         TemporaryFile tempFile = picture.getRef();
         String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
-        File file = tempFile.path().toFile();
 
         return supplyAsync(() -> {
             try {
-                this.imageBytes = Files.readAllBytes(file.toPath());
                 int visibility = (imageData.visible.equals("Public")) ? 1 : 0; // Set visibility
-                //cropInfo crop = autoCrop(this.imageBytes);
-                //int isProfilePicture = (imageData.isNewProfilePicture.equals("true")) ? 1 : 0;
-                Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, visibility, fileName, 0, 0, 0, 0);
+                Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, visibility, fileName);
                 savePhoto(photo, SessionController.getCurrentUserId(request)); // Save photo, given a successful upload
-
-                //if (isProfilePicture == 0) { //case not setting as the new profile picture
-                //    savePhoto(photo, SessionController.getCurrentUserId(request)).thenApply(result -> redirect("/profile")); // Save photo, given a successful upload
-                //    showPhotoModal = true;
-                //} else { //case photo is being set
-                //    if (imageData.autoCropped.equals("true")) {
-                //        demoProfilePicture = photo;
-                //        showChangeProfilePictureModal = true;
-                //    } else {
-                //        demoProfilePicture = photo;
-                //        showCropPhotoModal = true;
-                //    }
-                //}
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (NullPointerException e) {
+                return redirect(profileEndpoint).flashing("invalid", " Error! File not saved");
             }
             return redirect(profileEndpoint).flashing("success", fileName + " uploaded");
         });
@@ -311,6 +229,7 @@ public class ProfileController extends Controller {
         }).thenApply(result -> redirect("/profile"));
     }
 
+
     /**
      * Set a profile picture to the database
      * @return a redirect to the profile page
@@ -318,7 +237,6 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request, Integer photoId) {
         int profileId = SessionController.getCurrentUserId(request);
-        System.out.println("Hello from profile controller");
         try {
             personalPhotoRepository.findByPhotoId(photoId).thenApplyAsync(photoOpt -> {
                 if (photoOpt.isPresent()) {
@@ -332,6 +250,7 @@ public class ProfileController extends Controller {
         }
         return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Profile picture updated"));
     }
+
 
     /**
      * Unsets a a users personal photo as a profile picture
@@ -349,36 +268,6 @@ public class ProfileController extends Controller {
     }
 
 
-
-    /**
-     * @return a number, 1 if the default profile picture should be used on the modal and 0 if not
-     */
-    @Security.Authenticated(SecureSession.class)
-    private Integer isDefaultProfilePicture() {
-        if (demoProfilePicture == null) {
-            return 1;
-        }
-        return 0;
-    }
-
-
-    /**
-     * when a new profile picture is chosen but not confirmed this modal is called, it will set the
-     * demo profile picture from the id, so it can be displayed on the next modal
-     * @param imageId is used to retrieve the image to set it as the demoprofile picture
-     * @return a redirect to the profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> setDemoProfilePicture(Integer imageId) {
-        return supplyAsync(() -> {
-            showChangeProfilePictureModal = true;
-            Optional<Photo> image = photoRepository.getImage(imageId);
-            image.ifPresent(photo -> demoProfilePicture = photo);
-            return redirect(profileEndpoint);
-        });
-    }
-
-
     /**
      * deletes the demoProfilePicture, effectively deleting any changes to the profile picture then refreshes the page
      * @return a redirect to the profile page
@@ -388,117 +277,6 @@ public class ProfileController extends Controller {
         demoProfilePicture = null;
         return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Changes cancelled"));
     }
-
-
-//    /**
-//     * Gives the id of the demo profile picture to be displayed on the change profile picture modal
-//     * @param displayCropped int, if true will display photo as a cropped photo, else will display the cropped photo
-//     * @return the id in an objectsavePhoto
-//     */
-//    @Security.Authenticated(SecureSession.class)
-//    public Result getDemoProfilePicture(Integer displayCropped) {
-//        if (demoProfilePicture == null) {
-//            return redirect(profileEndpoint).flashing("invalid", "No image selected.");
-//        }
-//        if (displayCropped == 1) {
-//            byte[] imageDisplay;
-//            try {
-//                InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
-//                BufferedImage buffImage = ImageIO.read(in).getSubimage(demoProfilePicture.getCropX(), demoProfilePicture.getCropY(), demoProfilePicture.getCropWidth(), demoProfilePicture.getCropHeight());
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                ImageIO.write(buffImage, demoProfilePicture.getType().split("/")[1], baos);
-//                baos.flush();
-//                imageDisplay = baos.toByteArray();
-//                baos.close();
-//            } catch (Exception e) {
-//                imageDisplay = Objects.requireNonNull(demoProfilePicture).getImage();
-//            }
-//            return ok(imageDisplay).as(demoProfilePicture.getType());
-//        }
-//        return ok(demoProfilePicture.getImage()).as(demoProfilePicture.getType());
-//    }
-
-
-    /**
-     * Takes an id and sets that photoId to be the image to be manually cropped, opens the cropping
-     * and refreshes the page
-     * @param imageId the image to be cropped
-     * @return a redirect to the profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> setImageToBeManuallyCropped(Integer imageId) {
-        Optional<Photo> optionalImage = photoRepository.getImage(imageId);
-        optionalImage.ifPresent(image -> demoProfilePicture = image);
-        showCropPhotoModal = true;
-        return supplyAsync(() -> redirect(profileEndpoint));
-    }
-
-
-//    /**
-//     * Validation checks that the cropped image is valid, if so sets the image as the demo profile
-//     * picture, loads the change profile picture modal and reloads the profile page
-//     * @param request gives the form for the sizes of the cropped image
-//     * @return a redirect to the profile page with an error message if needed
-//     */
-//    @Security.Authenticated(SecureSession.class)
-//    public CompletionStage<Result> uploadPhotoWithCroppingInfo(Http.Request request) {
-//        try {
-//            Form<CropImageData> uploadedCropImageDataForm = cropImageDataForm.bindFromRequest(request);
-//            CropImageData cropImageData = uploadedCropImageDataForm.get();
-//            if (cropImageData == null) {
-//                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "No image selected."));
-//            }
-//            InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
-//            BufferedImage buffImage = ImageIO.read(in);
-//            if ((cropImageData.widthHeight + cropImageData.cropX) <= buffImage.getWidth()) {
-//                if ((cropImageData.widthHeight + cropImageData.cropY) <= buffImage.getHeight()) {
-//                    demoProfilePicture.setCropWidth(cropImageData.widthHeight);
-//                    demoProfilePicture.setCropHeight(cropImageData.widthHeight);
-//                    demoProfilePicture.setCropX(cropImageData.cropX);
-//                    demoProfilePicture.setCropY(cropImageData.cropY);
-//                    showChangeProfilePictureModal = true;
-//                    return supplyAsync(() -> redirect(profileEndpoint));
-//                }
-//                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Cropped image exceeds original image height"));
-//            }
-//            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "cropped image exceeds original image width"));
-//        } catch (IOException e) {
-//            showChangeProfilePictureModal = false;
-//            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Somthing went wrong while cropping the photo"));
-//        }
-//    }
-
-
-//    /**
-//     * is used to show the user the dimensions of the image they are editing
-//     * @return a string telling the user the width and height of the cropped image
-//     */
-//    @Security.Authenticated(SecureSession.class)
-//    private String getWidthHeight() {
-//        try {
-//            InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
-//            BufferedImage buffImage = ImageIO.read(in);
-//            return "Width: " + buffImage.getWidth() + " Height: " + buffImage.getHeight();
-//        } catch (IOException e) {
-//            return "width and height is unknown";
-//        }
-//    }
-
-
-//    private String isValidSizedPhoto(Photo photo) {
-//        try {
-//            InputStream in = new ByteArrayInputStream(demoProfilePicture.getImage());
-//            BufferedImage buffImage = ImageIO.read(in);
-//            if (buffImage.getWidth() >= 200 && buffImage.getHeight() >= 200) {
-//                return "";
-//            }
-//            return "The selected photo has dimensions Width: " + buffImage.getWidth() + " Height: " + buffImage.getHeight() +
-//                    ", a photo with dimensions 200 x 200 is needed to be profile picture";
-//        } catch (IOException e) {
-//            return "The selected photo has dimensions that are too small, a photo with dimensions 200 x 200 is needed to be profile picture";
-//        }
-//
-//    }
 
 
     /**
@@ -512,39 +290,15 @@ public class ProfileController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
             if (profileRec.isPresent()) {
                 List<Photo> displayImageList = getUserPhotos(request);
-
+                Boolean show = showPhotoModal = false;
                 Optional<Photo> image = personalPhotoRepository.getProfilePicture(profId);
                 Photo profilePicture;
                 profilePicture = image.orElse(null);
-
-
-//                Integer defaultProfilePicture = isDefaultProfilePicture();
-//                String isTooSmall = "";
-//                if (defaultProfilePicture == 0) { //case a demo profile picture is to be uploaded
-//                    isTooSmall = isValidSizedPhoto(demoProfilePicture);
-//                    if (isTooSmall != "") { //case the demo Profile picture is too small to be set as
-//                        demoProfilePicture = null;
-//                        defaultProfilePicture = 1;
-//                        showChangeProfilePictureModal = true;
-//                        showCropPhotoModal = false;
-//                    }
-//                }
-                // Get the current show photo modal state
-                // Ensure state is false for next refresh action
-//                Boolean show = showPhotoModal = false;
-//                boolean showChangeProfile = showChangeProfilePictureModal;
-//                showChangeProfilePictureModal = false;
-//                String widthHeight = "Width and Height is unknown";
-//                boolean showCropPhoto = showCropPhotoModal;
-//                if (showCropPhoto) {
-//                    showCropPhotoModal = false;
-//                    widthHeight = getWidthHeight();
-//                }
                 Profile toSend = tripRepository.setUserTrips(profileRec.get());
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
-                return ok(profile.render(toSend, imageForm, displayImageList, null, null, tripValues, null, profilePicture, null, null, destinationsList, null,request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }

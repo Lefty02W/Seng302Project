@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, showChangeProfilePictureModal: Boolean, trips: List[Integer], defaultProfilePicture: Integer, profilePicture: Photo, showCropPhotoModal: Boolean, widthHeight: String, destinationsList: List[Destination], isTooSmall: String)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -93,22 +93,6 @@
                 <script type="text/javascript">
                         $(window).on('load', function () {
                             $('#viewPhotoModal').modal('show')
-                        })
-                </script>
-            }
-
-            @if(showChangeProfilePictureModal) {
-                <script type="text/javascript">
-                        $(window).on('load', function () {
-                            $('#changeProfilePicture').modal('show')
-                        })
-                </script>
-            }
-
-            @if(showCropPhotoModal) {
-                <script type="text/javascript">
-                        $(window).on('load', function () {
-                            $('#cropPhotoModal').modal('show')
                         })
                 </script>
             }
@@ -404,12 +388,6 @@
                                                 }
                                                 @currentUser.getTripById(tripId).getDestinations.get(destIndex).getArrival</td>
                                             <td>
-                                            @*if(currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime != null) {*@
-                                            @*<span>@currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture.getTime</span>*@
-                                            @*} else {*@
-                                            @*<span></span>*@
-                                            @*}*@
-                                            @*currentUser.getTripById(tripId).getDestinations.get(destIndex).getDeparture</td>*@
                                         </tr>
                                     }
                                 </table>
@@ -438,8 +416,6 @@
                                     name="@photo.getPhotoId">
                                     <div class="card-body">
                                         <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
-                                        <a href="@routes.ProfileController.setImageToBeManuallyCropped(photo.getPhotoId)">
-                                            <button class="btn btn-outline-primary" type="submit">Crop this myself</button></a>
                                         <a href="@routes.ProfileController.setProfilePicture(photo.getPhotoId)">
                                             <button class="btn btn-outline-primary" type="submit">Select</button></a>
                                     </div>
@@ -485,45 +461,6 @@
                     }
                     <div class="modal-dialog">
                         <p>Note that a photo set as profile picture will be set as public</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="cropPhotoModal">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h2 class="modal-title center-text">Crop a photo and set it as your profile picture</h2>
-                    </div>
-
-                    <div class="modal-body">
-                        @*<div class="container" id="profilePhoto">*@
-                        @*<p id="center-text">All parameters are specified in pixels</p>*@
-                        @*<img class="thumbnail" src="@routes.ProfileController.getDemoProfilePicture(0)" name="demoProfilePicture">*@
-                        @*<p style="text-align: center;">@widthHeight</p>*@
-
-                        @* @form(routes.ProfileController.uploadPhotoWithCroppingInfo()) {
-                        @CSRF.formField*@
-                        @*<div class="row">*@
-                        @*<input type="number" id="widthHeight" name="widthHeight" min="200" value="500">*@
-                        @*Width and Height*@
-                        @*</div>*@
-                        @*<div class="row">*@
-                        @*<input type="number" id="cropX" name="cropX" min="0" value="0">Margin left*@
-                        @*</div>*@
-                        @*<input type="number" id="cropY" name="cropY" min="0" value="0">Margin bottom*@
-                        @*</div>*@
-                        @*</div>*@
-                        @*<div class="row">*@
-                        @*<div class="center-col">*@
-                        @*<button id="acceptCrop" type="submit">Accept</button>*@
-                        @*<button id="closeCrop" type="button" data-toggle="modal" data-target="#changeProfilePicture" data-dismiss="modal">*@
-                        @*Close</button>*@
-                        @*</div>*@
-                        @*}*@
-                        @*</div>*@
                     </div>
                 </div>
             </div>
@@ -735,7 +672,7 @@
                                 <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
                                 alt="Profile picture">
                             } else {
-                                <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/defaultPic.jpg")"
+                                <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/profile-icon.png")"
                                 alt="Profile picture">
                             }
                         </div>
@@ -767,8 +704,8 @@
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" data-dismiss="modal">Cancel</button>
-                            <button type="submit">Submit</button>
+                            <button type="submit" class="btn btn-primary">Confirm</button>
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
                         </div>
                     }
                 </div>
@@ -813,7 +750,6 @@
             });
 
             //Lukes crop stuff do not delete
-
             $uploadCrop = $('#upload-demo').croppie({
                 enableExif: true,
                 viewport: {
@@ -845,18 +781,6 @@
                 $('#submitImage').children('#image').attr("name", this.files[0].type);
             });
 
-            //not currently using this
-            function srcToFile(src, fileName, mimeType) {
-                return (fetch(src)
-                                .then(function (res) {
-                                    return res.arrayBuffer();
-                                })
-                                .then(function (buf) {
-                                    return new File([buf], fileName, {type: mimeType});
-                                })
-                );
-            }
-
             function cropImage() {
                 $uploadCrop.croppie('result', {
                     type: 'canvas',
@@ -866,33 +790,8 @@
                     console.log($('#upload-image').files);
                     $('#acceptChangeModal').modal();
                     $('#submitImage').children('#imageDisplay').attr('src', response);
-                    // var file = [response];
-                    srcToFile(response, 'logo.png', 'image/png')
-                            .then(function (file) {
-                                console.log(file);
-                                var fd = new FormData();
-                                fd.append('file1', file);
-                                //TODO: Try to send request on bind from upload picture modal
-                                // console.log($('#submitImage').children('#image').attr("body", file));
-                                $('#submitImage').children('#image').attr("value", file.valueOf());
-                            })
-
-
-                    // $('#submitImage').children('#image').name = "asddas";
-
-
-                    @*$.ajax({*@
-                    @*url:"/profile/photo",*@
-                    @*headers: {*@
-                    @*'Csrf-Token': '@play.filters.csrf.CSRF.getToken.map(_.value)'*@
-                    @*},*@
-                    @*type: "POST",*@
-                    @*processData: false,  // Important!*@
-                    @*body:{"image": response}*@
-                    @*})*@
                 });
             }
-
 
             var closeBtns = document.getElementsByClassName("close");
             var i;
@@ -926,21 +825,6 @@
                 span.onclick = function () {
                     modal.style.display = "none";
                 }
-            }
-
-            function selectPhoto() {
-                var xhttp = new XMLHttpRequest();
-                xhttp.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        document.getElementById("demo").innerHTML = this.responseText;
-                    }
-                };
-                modal.style.display = "none";
-            }
-
-            function setDemoProfilePicture() {
-                var autoCrop = document.getElementById("autoCrop").value;
-                return autoCrop;
             }
     </script>
 </html>

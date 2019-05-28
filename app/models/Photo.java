@@ -35,39 +35,18 @@ public class Photo extends Model {
     @Constraints.Required
     private String name;
 
-    //this causes issues when signing in a new user as it searches for images in repo with feature cropx, cropy ect
-    @Constraints.Required
-    private int cropX;
-
-    @Constraints.Required
-    private int cropY;
-
-    @Constraints.Required
-    private int cropWidth;
-
-    @Constraints.Required
-    private int cropHeight;
-
     /**
      *
      * @param path relative path for the image stored in the database
      * @param contentType content type of the image
      * @param visible the privacy setting public or private
      * @param name file name of image
-     * @param cropX x pixel crop
-     * @param cropY y pixel crop
-     * @param cropWidth crop width
-     * @param cropHeight crop height
      */
-    public Photo(String path, String contentType, Integer visible, String name, int cropX, int cropY, int cropWidth, int cropHeight) {
+    public Photo(String path, String contentType, Integer visible, String name) {
         this.path = path;
         this.visible = visible;
         this.contentType = contentType;
         this.name = name;
-        this.cropX = cropX;
-        this.cropY = cropY;
-        this.cropWidth = cropWidth;
-        this.cropHeight = cropHeight;
     }
 
     // Finder for image
@@ -107,38 +86,6 @@ public class Photo extends Model {
 
     public void setpath(String path) {
         this.path = path;
-    }
-
-    public int getCropX() {
-        return cropX;
-    }
-
-    public void setCropX(int cropX) {
-        this.cropX = cropX;
-    }
-
-    public int getCropY() {
-        return cropY;
-    }
-
-    public void setCropY(int cropY) {
-        this.cropY = cropY;
-    }
-
-    public int getCropWidth() {
-        return cropWidth;
-    }
-
-    public void setCropWidth(int cropWidth) {
-        this.cropWidth = cropWidth;
-    }
-
-    public int getCropHeight() {
-        return cropHeight;
-    }
-
-    public void setCropHeight(int cropHeight) {
-        this.cropHeight = cropHeight;
     }
 
 
