@@ -25,6 +25,8 @@ public class AdminControllerTest extends ProvideApplication {
                 .method("GET")
                 .uri("/admin")
                 .session("connected", profileId.toString());;
+
+        injectRepositories();
     }
 
 
@@ -34,7 +36,7 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteValidDestination() {
-        injectRepositories();
+
         List<Destination> destinationList = Destination.find.all();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
@@ -51,7 +53,7 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteValidTrip() {
-        injectRepositories();
+
         List<Trip> trips = Trip.find.all();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
@@ -69,7 +71,7 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteProfile() {
-        injectRepositories();
+
         List<Profile> profiles = Profile.find.all();
         Integer originalSize = profiles.size();
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -89,7 +91,7 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteInvalidProfile() {
-        injectRepositories();
+
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin/-1/delete")
