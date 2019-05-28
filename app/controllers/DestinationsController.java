@@ -86,7 +86,8 @@ public class DestinationsController extends Controller {
                 }
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -108,7 +109,8 @@ public class DestinationsController extends Controller {
             if (profile.isPresent()) {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -145,8 +147,10 @@ public class DestinationsController extends Controller {
                         destinationsList = new ArrayList<>();
                     }
                 }
+
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -178,24 +182,13 @@ public class DestinationsController extends Controller {
 
 
     /**
-     * A function for getting a Optional list of photos where each photo has a functioning map of which destinations it
-     * is already linked to
+     * A function for getting a list of photos
      * @param profileId
      * @return a map that links a true/false to each destination
      */
     private List<Photo> getUsersPhotos(int profileId) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         if (imageList.isPresent()) {
-            for (Photo destPhoto : imageList.get()) {
-                destPhoto.clearDestinationMap();
-                for (Destination destination: destinationsList) {
-                    if (destinationPhotoRepository.findByProfileIdDestIdPhotoId(profileId, destination.getDestinationId(), destPhoto.getPhotoId()).isPresent()) {
-                        destPhoto.putInDestinationMap(destination.getDestinationId(), 1);
-                    } else {
-                        destPhoto.putInDestinationMap(destination.getDestinationId(), 0);
-                    }
-                }
-            }
             return imageList.get();
         }
         return new ArrayList<>();
@@ -209,25 +202,25 @@ public class DestinationsController extends Controller {
      * @param profileId, the id of the current user, will not add their destination photos to the list
      * @return
      */
-    private List<Photo> getWorldDestPhotos(int profileId) {
-        Optional<List<DestinationPhoto>> optinalWorldImageList = destinationPhotoRepository.getAllDestinationPhotos();
-        if (optinalWorldImageList.isPresent()) {
-            List<Photo> photoList = new ArrayList<>();
-            for (DestinationPhoto destPhoto : optinalWorldImageList.get()) {
-                Optional<Photo> optinalPhoto = photoRepository.getImage(destPhoto.getPhotoId());
-                if (optinalPhoto.isPresent()) {
-                    if (!photoList.contains(optinalPhoto.get())) {
-                        optinalPhoto.get().putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
-                        photoList.add(optinalPhoto.get());
-                    } else {
-                        photoList.get(photoList.indexOf(optinalPhoto.get())).putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
-                    }
-                }
-            }
-            return photoList;
-        }
-        return new ArrayList<>();
-    }
+//    private List<Photo> getWorldDestPhotos(int profileId) {
+//        Optional<List<DestinationPhoto>> optinalWorldImageList = destinationPhotoRepository.getAllDestinationPhotos();
+//        if (optinalWorldImageList.isPresent()) {
+//            List<Photo> photoList = new ArrayList<>();
+//            for (DestinationPhoto destPhoto : optinalWorldImageList.get()) {
+//                Optional<Photo> optinalPhoto = photoRepository.getImage(destPhoto.getPhotoId());
+//                if (optinalPhoto.isPresent()) {
+//                    if (!photoList.contains(optinalPhoto.get())) {
+//                        optinalPhoto.get().putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
+//                        photoList.add(optinalPhoto.get());
+//                    } else {
+//                        photoList.get(photoList.indexOf(optinalPhoto.get())).putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
+//                    }
+//                }
+//            }
+//            return photoList;
+//        }
+//        return new ArrayList<>();
+//    }
 
 
     /**

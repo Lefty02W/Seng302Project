@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer], usersPhotos : List[Photo])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import models.Destination; var toViewDest = new Destination()
 
@@ -274,6 +274,7 @@
                             <div class="col">
                                 <div id="photosCard" class="card-large lower-card">
                                     <div class="row" id="photoUpdate">
+                                        <a></a>
                                     @*for(photo <- photoList) {*@
                                         @*if(photo.getDestinationMap.get(108) == 0) {*@
                                             @*<div class="card">*@
@@ -790,8 +791,17 @@
                             document.getElementById("latVal").innerHTML = " @destination.getLatitude";
                             document.getElementById("lngVal").innerHTML = " @destination.getLongitude";
                             document.getElementById("publicVal").innerHTML = " @destination.getVisible";
-                            document.getElementById("photoUpdate").innerHTML = "";
-                            document.getElementById("userPhotos").innerHTML = " <img src='@routes.ProfileController.displayPhotos(destination.getUsersPhotos.get(0).getPhotoId, 0)'></img>";
+
+                            document.getElementById("photoUpdate").innerHTML = " ";
+                            document.getElementById("userPhotos").innerHTML = " <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                                    "                                        src=\"@routes.ProfileController.photoAt(destination.getUsersPhotos.get(0).getPhotoId)\" alt=\"@destination.getUsersPhotos.get(0).getName\"\n" +
+                                    "                                        name=\"@destination.getUsersPhotos.get(0).getPhotoId\">";
+
+                           @for(photo <- usersPhotos){
+                                document.getElementById("userPhotos").innerHTML += " <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                                        "                                        src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
+                                        "                                        name=\"@photo.getPhotoId\">";
+                            }
                             console.log(photoList);
                         });
 
