@@ -6,6 +6,7 @@ import akka.util.ByteString;
 import org.hamcrest.CoreMatchers;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -174,20 +175,21 @@ public class ProfileControllerTest extends ProvideApplication {
         Assert.assertTrue(result.flash().getOptional("invalid").isPresent());
     }
 
-//    @Test
-//    public void validPhotoDisplay() {
-//        Http.RequestBuilder request = Helpers.fakeRequest()
-//                .method(GET)
-//                .uri("/profile/photo?id=1")
-//                .session("connected", "john@gmail.com");
-//
-//        Result result = Helpers.route(provideApplication(), request);
-//
-//        assertEquals(OK, result.status());
-//    }
+    @Test
+    public void validPhotoDisplay() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/profile/photo?id=1")
+                .session("connected", "john@gmail.com");
+
+        Result result = Helpers.route(provideApplication(), request);
+
+        assertEquals(OK, result.status());
+    }
 
     // Test when photo exists but does not belong to the session user
     @Test
+    @Ignore
     public void invalidPhotoDisplay() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)

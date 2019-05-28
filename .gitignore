@@ -8,7 +8,7 @@ bin/
 /project/project
 /project/target
 /target
-/photos
+# /photos
 tmp/
 test-result
 server.pid

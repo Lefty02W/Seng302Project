@@ -217,7 +217,6 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadPhoto(Http.Request request) {
-        System.out.println(request.body().asMultipartFormData().asFormUrlEncoded());
         System.out.println("In uploadPhoto function **************************************************************** " + request);
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
@@ -284,7 +283,6 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result photoAt(Integer id){
         Photo image = Photo.find.byId(id);
-
         try {
             File imageFilePath = new File(Objects.requireNonNull(image).getPath());
             if (imageFilePath.exists()) {
@@ -351,7 +349,6 @@ public class ProfileController extends Controller {
 
 
 
-
     /**
      * @return a number, 1 if the default profile picture should be used on the modal and 0 if not
      */
@@ -362,6 +359,7 @@ public class ProfileController extends Controller {
         }
         return 0;
     }
+
 
     /**
      * when a new profile picture is chosen but not confirmed this modal is called, it will set the
