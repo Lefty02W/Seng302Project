@@ -8,6 +8,9 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import controllers.ProvideApplication;
 
 import static org.junit.Assert.assertEquals;
@@ -32,8 +35,26 @@ public class RestrictAnnotationActionTest extends ProvideApplication{
                 .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(),request);
-
+        System.out.println(result.body());
         assertEquals(303, result.status());
+    }
+    /**
+     * Testing profile GET endpoint /admin.
+     * Should send redirect as this user is non-admin.
+     * This tests the annotation as the whole admin controller is restricted by the custom annotation.
+     */
+    @Test
+    public void showAdminPage() {
+
+        adminLogin();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/admin")
+                .session("connected", "4");
+
+        Result result = Helpers.route(provideApplication(),request);
+
+        assertEquals(200, result.status());
     }
 
 }
