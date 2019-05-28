@@ -1,5 +1,6 @@
 package controllers;
 
+import io.ebean.DuplicateKeyException;
 import models.Destination;
 import models.Profile;
 import models.RoutedObject;
@@ -232,7 +233,15 @@ public class AdminController {
      */
     public Result makeAdmin(Http.Request request, Integer userId) {
         String roleName = "admin";
-        rolesRepository.setProfileRole(userId, roleName);
+        try{
+
+            rolesRepository.setProfileRole(userId, roleName);
+        } catch (DuplicateKeyException e){
+
+        return redirect("/admin").flashing("error",
+                "User already has this role.");
+        }
+
         return redirect(adminEndpoint);
     }
 
