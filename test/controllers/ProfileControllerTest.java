@@ -20,7 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static play.mvc.Controller.session;
 import static play.mvc.Http.Status.NOT_FOUND;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
@@ -115,7 +117,7 @@ public class ProfileControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                     .method(POST)
                     .uri("/profile/photo")
-                    .session("connected", "john@gmail.com")
+                    .session("connected", "1")
                     .bodyRaw(
                             Collections.singletonList(part),
                             play.libs.Files.singletonTemporaryFileCreator(),
@@ -141,7 +143,7 @@ public class ProfileControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(POST)
                 .uri("/profile/photo")
-                .session("connected", "john@gmail.com")
+                .session("connected", "1")
                 .bodyRaw(
                         Collections.singletonList(part),
                         play.libs.Files.singletonTemporaryFileCreator(),
@@ -165,7 +167,7 @@ public class ProfileControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(POST)
                 .uri("/profile/photo")
-                .session("connected", "john@gmail.com")
+                .session("connected", "1")
                 .bodyRaw(
                         Collections.singletonList(part),
                         play.libs.Files.singletonTemporaryFileCreator(),
@@ -194,7 +196,7 @@ public class ProfileControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile/photo?id=2")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(), request);
 
@@ -206,10 +208,32 @@ public class ProfileControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile/photo?id=100")
-                .session("connected", "john@gmail.com");
+                .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(), request);
 
         assertEquals(303, result.status());
+    }
+
+    @Test
+    public void setProfilePicture() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/profile/photo/save/1")
+                .session("connected", "1");
+
+        Result result = Helpers.route(provideApplication(), request);
+        Assert.assertTrue(result.flash().getOptional("success").isPresent());
+    }
+
+    @Test
+    public void removeProfilePicture() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/profile/photo/remove")
+                .session("connected", "1");
+
+        Result result = Helpers.route(provideApplication(), request);
+        Assert.assertTrue(result.flash().getOptional("success").isPresent());
     }
 }

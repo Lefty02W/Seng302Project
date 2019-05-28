@@ -318,6 +318,7 @@ public class ProfileController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request, Integer photoId) {
         int profileId = SessionController.getCurrentUserId(request);
+        System.out.println("Hello from profile controller");
         try {
             personalPhotoRepository.findByPhotoId(photoId).thenApplyAsync(photoOpt -> {
                 if (photoOpt.isPresent()) {

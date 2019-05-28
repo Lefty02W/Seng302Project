@@ -213,6 +213,8 @@ img.thumbnail {
 #profileImage {
     border: 1px solid;
     border-radius: 50%;
+    height: 25vh; /* Temporary cropping display for consistent circle until croppie is working */
+    width: 25vh;
 }
 
 #profileTabs {
