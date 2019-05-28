@@ -106,7 +106,7 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
         });
     }
 
-    public Optional<DestinationPhoto> findByProfileIdDestIdPhotoId(int profileId, int destinationId, int photoId) {
+    public Optional<DestinationPhoto> findByProfileIdPhotoIdDestId(int profileId, int photoId, int destinationId) {
         return Optional.ofNullable(ebeanServer.find(DestinationPhoto.class).where()
                 .eq("profile_id", profileId)
                 .eq("destination_id", destinationId)
@@ -123,5 +123,9 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
     public Optional<List<DestinationPhoto>> getAllDestinationPhotos() {
         List<DestinationPhoto> photos = ebeanServer.find(DestinationPhoto.class).findList();
         return Optional.of(photos);
+    }
+
+    public boolean destinationContainsPhoto(int photoId, int destinationId) {
+        return false;
     }
 }

@@ -169,8 +169,9 @@ public class DestinationsController extends Controller {
             for (Destination destination : destinationsList) {
                 List<Photo> destPhotoList = new ArrayList<>();
                 for (Photo photo : imageList.get()) {
-                    if (destinationPhotoRepository.findByProfileIdDestIdPhotoId(profileId, destination.getDestinationId(), profileId).isPresent())
+                    if (destinationPhotoRepository.findByProfileIdPhotoIdDestId(profileId, photo.getPhotoId(), destination.getDestinationId()).isPresent()) {
                         destPhotoList.add(photo);
+                    }
                 }
                 destination.setUsersPhotos(destPhotoList);
             }
@@ -404,7 +405,7 @@ public class DestinationsController extends Controller {
 
     public CompletionStage<Result> unlinkPhotoFromDestination(Http.Request request, Integer photoId, Integer destinationId) {
         Integer userId = SessionController.getCurrentUserId(request);
-        Optional<DestinationPhoto> destinationPhoto = destinationPhotoRepository.findByProfileIdDestIdPhotoId(userId, destinationId, photoId);
+        Optional<DestinationPhoto> destinationPhoto = destinationPhotoRepository.findByProfileIdPhotoIdDestId(userId, photoId, destinationId);
         return destinationPhotoRepository.delete(destinationPhoto.get().getDestinationPhotoId()).thenApplyAsync(result -> {
             if (result.isPresent()) {
                 return redirect(destShowRoute).flashing("success", "Photo was successfully unlinked from destination");
