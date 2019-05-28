@@ -64,7 +64,7 @@
                                 @for(photo <- photoList) {
                                     @if(photo.getVisible == 1) {
                                         <div class="card">
-                                            <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName">
+                                            <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName">
                                         </div>
                                     }
                                 }

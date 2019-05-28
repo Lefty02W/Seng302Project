@@ -217,6 +217,8 @@ create table if not exists profile_roles
 		primary key,
 	profile_id int not null,
 	role_id int not null,
+	constraint profile_roles_unique_pair
+		unique (profile_id, role_id),
 	constraint profile_roles_profile_profile_id_fk
 		foreign key (profile_id) references profile (profile_id),
 	constraint profile_roles_roles_role_id_fk
@@ -239,6 +241,8 @@ create table if not exists destination_photo
 		foreign key (profile_id) references profile (profile_id)
 )
 ;
+
+
 
 
 # --- !Downs

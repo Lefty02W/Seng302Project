@@ -11,6 +11,10 @@ import play.test.Helpers;
 import play.test.WithApplication;
 import repository.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +23,7 @@ public class ProvideApplication extends WithApplication {
 
     protected ProfileRepository profileRepository;
     protected DestinationRepository destinationRepository;
+    protected RolesRepository rolesRepository;
 
     @Override
     public Application provideApplication() {
@@ -47,6 +52,26 @@ public class ProvideApplication extends WithApplication {
     }
 
 
+    protected Integer adminLogin() {
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "admin.jane.doe@travelea.com");
+        formData.put("password", "yolo");
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(provideApplication(), request);
+
+        for (Profile profile : Profile.find.all()) {
+            if (profile.getEmail().equals("admin.jane.doe@travelea.com")) {
+                return profile.getProfileId();
+            }
+        }
+        return 0;
+    }
+
     protected void injectRepositories() {
         app = provideApplication();
         app.injector().instanceOf(PhotoRepository.class);
@@ -54,7 +79,9 @@ public class ProvideApplication extends WithApplication {
         app.injector().instanceOf(TripRepository.class);
         app.injector().instanceOf(NationalityRepository.class);
         app.injector().instanceOf(PassportCountryRepository.class);
+        app.injector().instanceOf(RolesRepository.class);
 
+        rolesRepository = app.injector().instanceOf(RolesRepository.class);
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
     }
@@ -64,4 +91,17 @@ public class ProvideApplication extends WithApplication {
     }
 
 
+    /**
+     * Method to test a photo upload from the personal photos directory
+     * @return tempFile of the locally stored image. Play uses tempFiles by default
+     * @throws IOException if the image file does not exist
+     */
+    public File getPersonalPhoto() throws IOException {
+        String filePath = System.getProperty("user.dir") + "/public/images/" + "defaultPic.jpg";
+        java.nio.file.Path tempFilePath = Files.createTempFile(null, null);
+        byte[] expectedData = filePath.getBytes();
+        Files.write(tempFilePath, expectedData);
+
+        return tempFilePath.toFile();
+    }
 }
