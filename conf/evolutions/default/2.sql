@@ -22,7 +22,6 @@ INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_d
   (7, 'steve', 'miller', 'steve@email', 'password', CURRENT_DATE, 'Male');
 
 
-
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
@@ -51,6 +50,17 @@ INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_o
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (1, 4, CURRENT_DATE, CURRENT_DATE, 1);
 
-INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
-  (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
+INSERT INTO photo (visible, content_type, name, crop_x, crop_y, crop_width, crop_height, path) values
+  (0, 'image/jpg', 'testPic.jpg', 0, 0, 0, 0, 'photos/personalPhotos/testPic1.jpg');
 
+INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
+  (1, 1, 0);
+
+INSERT INTO photo (visible, content_type, name, crop_x, crop_y, crop_width, crop_height, path) values
+  (0, 'image/jpg', 'testPic1.jpg', 0, 0, 0, 0, 'photos/personalPhotos/testPic2.jpg');
+
+INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
+  (2, 2, 0);
+
+INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
+(1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);

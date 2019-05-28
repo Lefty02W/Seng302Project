@@ -11,6 +11,9 @@ import play.test.Helpers;
 import play.test.WithApplication;
 import repository.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,4 +91,17 @@ public class ProvideApplication extends WithApplication {
     }
 
 
+    /**
+     * Method to test a photo upload from the personal photos directory
+     * @return tempFile of the locally stored image. Play uses tempFiles by default
+     * @throws IOException if the image file does not exist
+     */
+    public File getPersonalPhoto() throws IOException {
+        String filePath = System.getProperty("user.dir") + "/public/images/" + "defaultPic.jpg";
+        java.nio.file.Path tempFilePath = Files.createTempFile(null, null);
+        byte[] expectedData = filePath.getBytes();
+        Files.write(tempFilePath, expectedData);
+
+        return tempFilePath.toFile();
+    }
 }
