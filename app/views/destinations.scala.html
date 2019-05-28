@@ -244,7 +244,27 @@
                                 <div class="container">
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
                                     data-target="#linkDestinationPhotoModal">Add Photo</button>
+                                    <div id="photosCard" class="card-large lower-card">
+                                        <div class="row">
+                                            @for(photo <- photoList) {
+                                                @if(photo.getDestinationMap.get(8) == 1) {
+                                                <div class="card">
+                                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                                    src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
+                                                    name="@photo.getPhotoId">
 
+                                                        <!-- The Expanded Photo Modal -->
+                                                    <div id="expandImageModal" class="modal">
+                                                        <span class="close">&times;</span>
+                                                        <img class="modal-content" id="expandedImage">
+                                                        <div id="caption"></div>
+                                                        <div id="id"></div>
+                                                    </div>
+                                                </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div id="worldPhotosTab" class="tab-pane fade">
@@ -331,6 +351,7 @@
             var map;
             var markers = [];
             var markersMap = new Map();
+            var destinationId;
 
             var nightStyle = [
                 {
@@ -772,6 +793,7 @@
                 marker.content = "Name: @destination.getName" +
                         "<br> Type: @destination.getType" +
                         "<br> Country: @destination.getCountry";
+                var destinationId = @destination.getDestinationId;
 
                 var infoWindow = new google.maps.InfoWindow();
                 google.maps.event.addListener(marker, 'click', function () {
