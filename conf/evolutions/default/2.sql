@@ -12,6 +12,9 @@ INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_da
 INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_date, gender) values
   (4, 'Admin', 'Doe', 'admin.jane.doe@travelea.com', 'yolo', CURRENT_DATE, 'Female');
 
+INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_date, gender) values
+(5, 'To', 'Be', 'DELETED@travelea.com', 'swag', CURRENT_DATE, 'Male');
+
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
