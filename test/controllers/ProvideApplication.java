@@ -11,6 +11,7 @@ import play.test.Helpers;
 import play.test.WithApplication;
 import repository.*;
 
+import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +75,7 @@ public class ProvideApplication extends WithApplication {
         app.injector().instanceOf(TripRepository.class);
         app.injector().instanceOf(NationalityRepository.class);
         app.injector().instanceOf(PassportCountryRepository.class);
+        app.injector().instanceOf(RolesRepository.class);
 
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
