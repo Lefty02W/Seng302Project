@@ -795,7 +795,6 @@
                 google.maps.event.addListener(marker, 'click', function () {
                     infoWindow.setContent(this.content);
                     infoWindow.open(this.getMap(), this);
-                    document.getElementById('idVal').innerHTML = " @destination.getDestinationId";
                     document.getElementById("nameVal").innerHTML = " @destination.getName";
                     document.getElementById("typeVal").innerHTML = " @destination.getType";
                     document.getElementById("countryVal").innerHTML = " @destination.getCountry";
@@ -803,8 +802,15 @@
                     document.getElementById("latVal").innerHTML = " @destination.getLatitude";
                     document.getElementById("lngVal").innerHTML = " @destination.getLongitude";
                     document.getElementById("publicVal").innerHTML = " @destination.getVisible";
-                    }
                 });
+
+                markers.push(marker);
+                markersMap.set(@destination.getDestinationId, marker);
+                if (!centerSet) {
+                    centerSet = true;
+                    map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
+                }
+                }
                 var legend = document.getElementById('legend');
                 var publicDiv = document.createElement('div');
                 publicDiv.innerHTML = '<img src="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png"> Public Destination';
@@ -814,6 +820,8 @@
                 legend.appendChild(privateDiv);
                 map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
             }
+
+
 
 
             /**
