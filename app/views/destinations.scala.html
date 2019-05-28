@@ -244,6 +244,7 @@
                                 <div class="container">
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
                                     data-target="#linkDestinationPhotoModal">Add Photo</button>
+
                                 </div>
                             </div>
                             <div id="worldPhotosTab" class="tab-pane fade">
@@ -803,18 +804,6 @@
                 map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
             }
 
-
-            function getDestinationId() {
-               var destinationId = null;
-               for(destination <- destinationsList) {
-                    google.maps.event.addListener(marker, 'click', function () {
-                        infoWindow.setContent(this.content);
-                        infoWindow.open(this.getMap(), this);
-                      destinationId = @destination.getDestinationId;
-                    });
-              }
-              return destinationId;
-            }
 
             /**
             * Onclick of a table row sets the center of the map to that destination
