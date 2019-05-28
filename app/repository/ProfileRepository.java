@@ -2,7 +2,6 @@ package repository;
 
 import io.ebean.*;
 import models.*;
-import org.checkerframework.checker.nullness.Opt;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -139,7 +138,7 @@ public class ProfileRepository {
             String qry = "Select * from profile where profile_id = ?";
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
             Profile profile = null;
-            if (!rowList.get(0).isEmpty()) {
+            if (!rowList.isEmpty()) {
                 profile = profileFromRow(rowList.get(0));
             }
             return Optional.ofNullable(profile);

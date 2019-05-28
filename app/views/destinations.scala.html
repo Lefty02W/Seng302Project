@@ -2,7 +2,7 @@
 @import views.html.helper.CSRF
 @(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer], photoList : List[Photo])(implicit request: Http.Request, messages: play.i18n.Messages)
 
-
+@import models.Destination; var toViewDest = new Destination()
 
 
 <!DOCTYPE html>
@@ -73,30 +73,29 @@
                     @request.flash.getOptional("failure").get()
                     </div>
                 }
-                @if(!isPublic) {
-                    @helper.form(routes.DestinationsController.show(true)) {
-                        @CSRF.formField
-                        <td> <button type="submit" class="button-add" style="height: 4vh">Show Public</button></td>
-                    }
-                } else {
-                    @helper.form(routes.DestinationsController.show(false)) {
-                        @CSRF.formField
-                        <td> <button type="submit" class="button-add" style="height: 4vh">Show Private</button></td>
-                    }
-                }
 
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col">
-                            <a href="@routes.DestinationsController.showCreate()"> <button id="addDestButton" type="button" class="btn btn-primary button-hover">
-                                Create Destination</button> </a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
                             <div id="table-card" class="card-large dest-table table-hover">
-                                    <!-- Table of users -->
-                                <table id="destTable">
+
+                                <div id="btn-row" class="row">
+                                        <a href="@routes.DestinationsController.showCreate()"> <button id="destButton" type="button" class="btn btn-primary">
+                                                Create Destination</button> </a>
+                                        @if(!isPublic) {
+                                            @helper.form(routes.DestinationsController.show(true)) {
+                                            @CSRF.formField
+                                                <button type="submit" id="destButton" class="btn btn-primary">Show Public</button>
+                                            }
+                                        } else {
+                                            @helper.form(routes.DestinationsController.show(false)) {
+                                            @CSRF.formField
+                                                <button type="submit" id="destButton" class="btn btn-primary">Show Private</button>
+                                            }
+                                        }
+                                </div>
+                                <div class="row">
+                                    <table id="destTable">
                                     <thead>
                                         <tr><th>Destination</th>
                                             <th>Type</th>
@@ -106,7 +105,7 @@
                                     </thead>
 
                                     @for(destination <- destinationsList) {
-                                        <tr>
+                                        <tr onclick="setSelectedDestination(@destination.getDestinationId, this)">
                                             <td>@destination.getName()</td>
                                             <td>@destination.getType()</td>
                                             <td>@destination.getCountry()</td>
@@ -114,25 +113,25 @@
                                             @if(destination.getProfileId == currentUser.getProfileId || currentUser.hasRole("admin")) {
                                                 @helper.form(routes.DestinationsController.edit(destination.getDestinationId())) {
                                                     @CSRF.formField
-                                                    <td> <button type="submit" class="button-editDestinations btn-primary" style="height: 4vh">
+                                                    <td> <button type="submit" class="button-editDestinations btn btn-primary" style="height: 4vh">
                                                         Edit</button> </td>
                                                 }
                                                 @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
                                                     @CSRF.formField
-                                                    <td> <button type="submit" class="btn-outline-secondary" style="height: 4vh">
+                                                    <td> <button type="submit" class="btn btn-outline-secondary" style="height: 4vh">
                                                         Delete</button></td>
                                                 }
                                             } else {
                                                 @if(followedDestinationIds contains destination.getDestinationId()) {
                                                     @helper.form(routes.DestinationsController.unfollow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
                                                         @CSRF.formField
-                                                        <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
+                                                        <td> <button type="submit" class="button-editDestinations btn btn-primary" style="height: 4vh">
                                                             Unfollow</button></td>
                                                     }
                                                 } else {
                                                     @helper.form(routes.DestinationsController.follow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
                                                         @CSRF.formField
-                                                        <td> <button type="submit" class="button-editDestinations" style="height: 4vh">
+                                                        <td> <button type="submit" class="button-editDestinations btn-outline-secondary" style="height: 4vh">
                                                             Follow</button></td>
                                                     }
                                                 }
@@ -140,15 +139,14 @@
                                             }
                                         </tr>
                                     }
-
-                                </table>
-
-
+                                    </table>
+                                </div>
                             </div>
                         </div>
                         <div class="col">
                             <div id="table-card" class="card-large">
                                 <div id="destinationsMap"></div>
+                                <div id="legend"><h4>Legend</h4></div>
                             </div>
                         </div>
 
@@ -166,79 +164,78 @@
 
                             <div id="detailsTab" class="tab-pane fade in active show">
                                 <div class="container">
-                                    <div class="row justify-content-center">
+                                    <div id="nameRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Destination Name :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getFirstName</a>
+                                        <div id="nameVal" class="col-md-2">
+                                            <a></a>
                                         </div>
 
                                     </div>
 
-                                    <div class="row justify-content-center">
+                                    <div id="typeRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Type :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getMiddleName</a>
+                                        <div id="typeVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="lastNameRow" class="row justify-content-center">
+                                    <div id="countryRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Country :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getLastName</a>
+                                        <div id="countryVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="emailRow" class="row justify-content-center">
+                                    <div id="districtRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>District :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getEmail</a>
+                                        <div id="districtVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="dobRow" class="row justify-content-center">
+                                    <div id="latRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Latitude :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getBirthString</a>
+                                        <div id="latVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="dobRow" class="row justify-content-center">
+                                    <div id="lngRow" class="row justify-content-center">
                                         <div class="col-md-2">
                                             <b>Longitude :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getBirthString</a>
+                                        <div id="lngVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
 
-                                    <div id="dobRow" class="row justify-content-center">
+                                    <div id="publicRow" class="row justify-content-center">
                                         <div class="col-md-2">
-                                            <b>Public :</b>
+                                            <b>Visibility :</b>
                                         </div>
-                                        <div class="col-md-2">
-                                            <a>@currentUser.getBirthString</a>
+                                        <div id="publicVal" class="col-md-2">
+                                            <a></a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div id="myPhotosTab" class="tab-pane fade in active show">
+                            <div id="myPhotosTab" class="tab-pane fade">
                                 <div class="container">
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
                                     data-target="#linkDestinationPhotoModal">Add Photo</button>
-                                    <h2>my photos</h2>
                                 </div>
                             </div>
-                            <div id="worldPhotosTab" class="tab-pane fade in active show">
+                            <div id="worldPhotosTab" class="tab-pane fade">
                                 <div class="container">
                                     <h2>world photos</h2>
                                 </div>
@@ -307,7 +304,7 @@
                 $('#destTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
-                    "pageLength": 10,
+                    "pageLength": 7,
                     dom: '<l<"toolbar">f>rtip',
                     language: {
                         search: "_INPUT_", //To remove Search Label
@@ -321,29 +318,520 @@
             });
 
             var map;
+            var markers = [];
+            var markersMap = new Map();
+
+            var nightStyle = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#242f3e"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#746855"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#242f3e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.locality",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#263c3f"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#6b9a76"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#38414e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#212a37"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9ca5b3"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#746855"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#1f2835"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#f3d19c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#2f3948"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#17263c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "saturation": -10
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#515c6d"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#17263c"
+                        }
+                    ]
+                }
+            ];
+
+            var dayStyle = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#ebe3cd"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#523735"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#f5f1e6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#c9b2a6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#dcd2be"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#ae9e90"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.natural",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#93817c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#a5b076"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#447530"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f5f1e6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#fdfcf8"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f8c967"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#e9bc62"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway.controlled_access",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#e98d58"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway.controlled_access",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#db8555"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#806b63"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#8f7d77"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#ebe3cd"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#b9d3c2"
+                        },
+                        {
+                            "saturation": -10
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#92998d"
+                        }
+                    ]
+                }
+            ];
+
+            /**
+            * Initialises the map view
+            */
             function initMap() {
-                var center = {lat: -43.5321, lng: 172.6362}; // TODO set to one of the destinations coords
+                var styles;
+                var today = new Date();
+                var hours = today.getHours();
+                if (hours <= 6 || hours >= 21) {
+                    styles = nightStyle;
+                } else {
+                    styles = dayStyle;
+                }
+                var center = {lat: -43.5321, lng: 172.6362};
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
                     center: center,
                     streetViewControl: false,
                     fullscreenControl: false,
-                    zoom: 8
+                    zoom: 8,
+                    styles: styles
                 });
                 addMarkers();
             }
 
+
+
+            /**
+            * Adds all current destinations to the map as markers
+            */
             function addMarkers() {
+                var centerSet = false;
                 @for(destination <- destinationsList) {
+                    var icon;
+                    if(@destination.getVisible === 1) {
+                        icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png';
+                    } else {
+                        icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png';
+                    }
                     var marker = new google.maps.Marker({
                        position: {
                            lat: @destination.getLatitude,
                            lng: @destination.getLongitude
                        },
-                       map: map
+                       animation: google.maps.Animation.DROP,
+                       map: map,
+                        icon: icon
                     });
+
+                marker.content = "Name: @destination.getName" +
+                        "<br> Type: @destination.getType" +
+                        "<br> Country: @destination.getCountry";
+
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(marker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(this.getMap(), this);
+                    document.getElementById("nameVal").innerHTML = " @destination.getName";
+                    document.getElementById("typeVal").innerHTML = " @destination.getType";
+                    document.getElementById("countryVal").innerHTML = " @destination.getCountry";
+                    document.getElementById("districtVal").innerHTML = " @destination.getDistrict";
+                    document.getElementById("latVal").innerHTML = " @destination.getLatitude";
+                    document.getElementById("lngVal").innerHTML = " @destination.getLongitude";
+                    document.getElementById("publicVal").innerHTML = " @destination.getVisible";
+                });
+
+                    markers.push(marker);
+                    markersMap.set(@destination.getDestinationId, marker);
+                    if (!centerSet) {
+                        centerSet = true;
+                        map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
+                    }
+                }
+                var legend = document.getElementById('legend');
+                var publicDiv = document.createElement('div');
+                publicDiv.innerHTML = '<img src="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png"> Public Destination';
+                var privateDiv = document.createElement('div');
+                privateDiv.innerHTML = '<img src="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png"> Private Destination';
+                legend.appendChild(publicDiv);
+                legend.appendChild(privateDiv);
+                map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
+            }
+
+
+            /**
+            * Onclick of a table row sets the center of the map to that destination
+            * and makes the related marker bounce
+            */
+            function setSelectedDestination(destinationId, row) {
+                var markerToSet = markersMap.get(destinationId);
+                new google.maps.event.trigger( markerToSet, 'click' );
+                map.setCenter(markerToSet.getPosition());
+                clearAnimations();
+                markerToSet.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                    markerToSet.setAnimation(null)
+                }, 3000);
+                clearRows();
+                if (row.style.backgroundColor === "") {
+                    row.style.backgroundColor = "#A9A9A9";
+                } else {
+                    row.style.backgroundColor = "";
                 }
             }
 
+            /**
+            * Stops all marker animations on the map
+            */
+            function clearAnimations() {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setAnimation(null);
+                }
+            }
+
+            /**
+            * Sets all rows in the table back to the default background colour
+            */
+            function clearRows() {
+                var rows = document.getElementById("destTable").rows;
+                for (var i = 1; i < rows.length; i++) {
+                    rows[i].style.backgroundColor = "";
+                }
+            }
 
 
             $("#menu-toggle").click(function (e) {
@@ -353,7 +841,7 @@
 
     </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWpUHUcDJZHUKrVf3qUiuLnD4ad40Mpew&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCyC_ON0GgSmJIfPlL7oke5PZgbR8TLbg&callback=initMap"
     async defer></script>
 
 
