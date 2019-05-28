@@ -243,7 +243,7 @@
                             <div id="myPhotosTab" class="tab-pane fade">
                                 <div class="container">
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
-                                    data-target="#linkDestinationPhotoModal">Add Photo</button>
+                                    data-target="#linkDestinationPhotoModal">Link Photo</button>
                                     <div id="photosCard" class="card-large lower-card">
                                         <div class="row">
                                             @for(photo <- photoList) {
@@ -252,7 +252,9 @@
                                                     <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
                                                     src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
                                                     name="@photo.getPhotoId">
-
+                                                    <a href="@routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, 8)">
+                                                        <button class="btn btn-danger" type="submit">Unlink</button>
+                                                    </a>
                                                         <!-- The Expanded Photo Modal -->
                                                     <div id="expandImageModal" class="modal">
                                                         <span class="close">&times;</span>
@@ -287,32 +289,26 @@
                                 <div id="photosCard" class="card-large lower-card">
                                     <div class="row" id="photoUpdate">
                                     @for(photo <- photoList) {
-                                        <div class="card">
-                                            <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                            src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
-                                            name="@photo.getPhotoId">
-
-                                            <div class="card-body">
-                                                <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
-                                                @if(photo.getDestinationMap.get(8) == 0) {
-                                                    <a href="@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, 8)">
+                                        @if(photo.getDestinationMap.get(8) == 0) {
+                                            <div class="card">
+                                                <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                                src="@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)" alt="@photo.getName"
+                                                name="@photo.getPhotoId">
+                                                <div class="card-body" id="photoUpdate">
+                                                    <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
+                                                    <a id="addPhoto" href="@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, 8)">
                                                         <button class="btn btn-primary" type="submit">Link</button>
                                                     </a>
-                                                }else{
-                                                    <a href="@routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, 8)">
-                                                        <button class="btn btn-danger" type="submit">Unlink</button>
-                                                    </a>
-                                                }
-
+                                                </div>
+                                                    <!-- The Expanded Photo Modal -->
+                                                <div id="expandImageModal" class="modal">
+                                                    <span class="close">&times;</span>
+                                                    <img class="modal-content" id="expandedImage">
+                                                    <div id="caption"></div>
+                                                    <div id="id"></div>
+                                                </div>
                                             </div>
-                                                <!-- The Expanded Photo Modal -->
-                                            <div id="expandImageModal" class="modal">
-                                                <span class="close">&times;</span>
-                                                <img class="modal-content" id="expandedImage">
-                                                <div id="caption"></div>
-                                                <div id="id"></div>
-                                            </div>
-                                        </div>
+                                        }
                                     }
                                     </div>
                                 </div>
@@ -798,7 +794,6 @@
                 google.maps.event.addListener(marker, 'click', function () {
                     infoWindow.setContent(this.content);
                     infoWindow.open(this.getMap(), this);
-                    document.getElementById('idVal').innerHTML = " @destination.getDestinationId";
                     document.getElementById("nameVal").innerHTML = " @destination.getName";
                     document.getElementById("typeVal").innerHTML = " @destination.getType";
                     document.getElementById("countryVal").innerHTML = " @destination.getCountry";
@@ -850,12 +845,12 @@
                     }
                 });
 
-                    markers.push(marker);
-                    markersMap.set(@destination.getDestinationId, marker);
-                    if (!centerSet) {
-                        centerSet = true;
-                        map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
-                    }
+                markers.push(marker);
+                markersMap.set(@destination.getDestinationId, marker);
+                if (!centerSet) {
+                    centerSet = true;
+                    map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
+                }
                 }
                 var legend = document.getElementById('legend');
                 var publicDiv = document.createElement('div');
@@ -866,6 +861,8 @@
                 legend.appendChild(privateDiv);
                 map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
             }
+
+
 
 
             /**
