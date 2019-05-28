@@ -76,6 +76,7 @@ public class AdminCreatesDestinationSteps extends ProvideApplication {
     @And("the new destination is added to user {int} destinations")
     public void theNewDestinationIsAddedToUserDestinations(Integer int1) {
         //ueser has 2 destinations on startup
+
         assertTrue(profileRepository.getDestinations(int1).isPresent());
 
     }

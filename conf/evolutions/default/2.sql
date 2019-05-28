@@ -51,7 +51,6 @@ INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_o
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (1, 4, CURRENT_DATE, CURRENT_DATE, 1);
 
-
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
   (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
 
