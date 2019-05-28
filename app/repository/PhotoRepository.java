@@ -28,44 +28,6 @@ public class PhotoRepository {
         this.executionContext = executionContext;
     }
 
-
-    /**
-     * Update image in the photo table in the database by accessing it with the image Id
-     * @param newPhoto New image with recent updates to be finalized in the database
-     * @param oldID Id of the image to be changed
-     * @return
-     */
-    public CompletionStage<Optional<String>> update(Photo newPhoto, int oldID) {
-
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            String updateQuery = "UPDATE photo SET image = ?, visible = ?, content_type = ?, " +
-                    "name = ?, crop_x = ?, crop_y = ?, crop_width = ?, crop_height = ?, " +
-                    "is_profile_pic = ? WHERE photo_id = ?";
-            Optional<String> value = Optional.empty();
-            try {
-                if (ebeanServer.find(Photo.class).setId(oldID).findOne() != null) {
-                    SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-                    query.setParameter(1, newPhoto.getImage());
-                    query.setParameter(2, newPhoto.getVisible());
-                    query.setParameter(3, newPhoto.getType());
-                    query.setParameter(4, newPhoto.getName());
-                    query.setParameter(5, newPhoto.getCropX());
-                    query.setParameter(6, newPhoto.getCropY());
-                    query.setParameter(7, newPhoto.getCropWidth());
-                    query.setParameter(8, newPhoto.getCropHeight());
-                    query.setParameter(9, oldID);
-                    query.execute();
-                    txn.commit();
-                    value = Optional.of("Updated");
-                }
-            } finally {
-                txn.end();
-            }
-            return value;
-        }, executionContext);
-    }
-
     /**
      * Inserts an photo object into the ebean database server
      *

@@ -87,6 +87,18 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
         query.execute();
     }
 
+    /**
+     * Set a profile picture for a given profile
+     * @param profileId Id of the user to add profile picture
+     */
+    public void setProfilePic(int profileId, int photoId) {
+        String updateQuery = "UPDATE personal_photo SET is_profile_photo = 1 where profile_id = ? AND photo_id = ?";
+        SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+        query.setParameter(1, profileId);
+        query.setParameter(2, photoId);
+        query.execute();
+    }
+
 
     /**
      * Get the profile picture of a given user
@@ -132,6 +144,18 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
     public CompletionStage<Optional<PersonalPhoto>> findById(int id) {
         return supplyAsync(() -> {
             return Optional.ofNullable(ebeanServer.find(PersonalPhoto.class).where().eq("personal_photo_id", id).findOne());
+        });
+    }
+
+    /**
+     * Method to find a certain personal photo by its photo id
+     *
+     * @param id id of the entry to be found.
+     * @return Optional PersonalPhoto wrapped in a completion stage
+     */
+    public CompletionStage<Optional<PersonalPhoto>> findByPhotoId(int id) {
+        return supplyAsync(() -> {
+            return Optional.ofNullable(ebeanServer.find(PersonalPhoto.class).where().eq("photo_id", id).findOne());
         });
     }
 

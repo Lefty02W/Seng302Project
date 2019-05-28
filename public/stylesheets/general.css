@@ -182,6 +182,11 @@ h3, h4, h5, h6 {
     left: 0;
 }
 
+.smallThumbnail{
+    width: 25px;
+    height: 25px;
+}
+
 
 .columns-4 {
     display: grid;
