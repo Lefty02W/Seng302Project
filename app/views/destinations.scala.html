@@ -245,7 +245,7 @@
                                     <button class="btn btn-primary" style="right" data-toggle="modal"
                                     data-target="#linkDestinationPhotoModal">Link Photo</button>
                                     <div id="photosCard" class="card-large lower-card">
-                                        <div class="row">
+                                        <div class="row" id="destPhotos">
                                             @for(photo <- photoList) {
                                                 @if(photo.getDestinationMap.get(8) == 1) {
                                                 <div class="card">
@@ -769,88 +769,110 @@
             function addMarkers() {
                 var centerSet = false;
                 @for(destination <- destinationsList) {
-                    var icon;
-                    if(@destination.getVisible === 1) {
-                        icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png';
-                    } else {
-                        icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png';
-                    }
-                    var marker = new google.maps.Marker({
-                       position: {
-                           lat: @destination.getLatitude,
-                           lng: @destination.getLongitude
-                       },
-                       animation: google.maps.Animation.DROP,
-                       map: map,
-                        icon: icon
-                    });
-
-                marker.content = "Name: @destination.getName" +
-                        "<br> Type: @destination.getType" +
-                        "<br> Country: @destination.getCountry";
-                var destinationId = @destination.getDestinationId;
-
-                var infoWindow = new google.maps.InfoWindow();
-                google.maps.event.addListener(marker, 'click', function () {
-                    infoWindow.setContent(this.content);
-                    infoWindow.open(this.getMap(), this);
-                    document.getElementById("nameVal").innerHTML = " @destination.getName";
-                    document.getElementById("typeVal").innerHTML = " @destination.getType";
-                    document.getElementById("countryVal").innerHTML = " @destination.getCountry";
-                    document.getElementById("districtVal").innerHTML = " @destination.getDistrict";
-                    document.getElementById("latVal").innerHTML = " @destination.getLatitude";
-                    document.getElementById("lngVal").innerHTML = " @destination.getLongitude";
-                    document.getElementById("publicVal").innerHTML = " @destination.getVisible";
-                    @for(photo <- photoList) {
-                        console.log("yeet")
-                        if (photo.getDestinationMap.get(destination.getDestinationId) == 0) {
-                            document.getElementById("photoUpdate").innerHTML = "<div class=\"card\">\n" +
-                                    "                                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
-                                    "                                            src=\"@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)\" alt=\"@photo.getName\"\n" +
-                                    "                                            name=\"@photo.getPhotoId\">\n" +
-                                    "\n" +
-                                    "                                            <div class=\"card-body\">\n" +
-                                    "                                                <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\"@photo.getPhotoId\">" +
-                                    "                                                   <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\" \"+photo.getPhotoId+\"\">" +
-                                    "                                           <a href=\" @routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, destination.getDestinationId)\">" +
-                                    "                                           <button class=\"btnbtn - primary\" type=\"submit\">Link</button> </a></div>\n" +
-                                    "                                                <!-- The Expanded Photo Modal -->\n" +
-                                    "                                            <div id=\"expandImageModal\" class=\"modal\">\n" +
-                                    "                                                <span class=\"close\">&times;</span>\n" +
-                                    "                                                <img class=\"modal-content\" id=\"expandedImage\">\n" +
-                                    "                                                <div id=\"caption\"></div>\n" +
-                                    "                                                <div id=\"id\"></div>\n" +
-                                    "                                            </div>\n" +
-                                    "                                        </div>";
+                        var icon;
+                        if(@destination.getVisible === 1) {
+                            icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png';
                         } else {
-                            document.getElementById("photoUpdate").innerHTML = "<div class=\"card\">\n" +
-                                    "                                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
-                                    "                                            src=\"@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)\" alt=\"@photo.getName\"\n" +
-                                    "                                            name=\"@photo.getPhotoId\">\n" +
-                                    "\n" +
-                                    "                                            <div class=\"card-body\">\n" +
-                                    "                                                <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\"@photo.getPhotoId\">" +
-                                    "                                           <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\" photo.getPhotoId\">" +
-                                    "                                            <a href=\" @routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, destination.getDestinationId)\"> " +
-                                    "                                            <button class=\"btnbtn - danger\" type=\"submit\">Unlink</button> </a></div>\n" +
-                                    "                                                <!-- The Expanded Photo Modal -->\n" +
-                                    "                                            <div id=\"expandImageModal\" class=\"modal\">\n" +
-                                    "                                                <span class=\"close\">&times;</span>\n" +
-                                    "                                                <img class=\"modal-content\" id=\"expandedImage\">\n" +
-                                    "                                                <div id=\"caption\"></div>\n" +
-                                    "                                                <div id=\"id\"></div>\n" +
-                                    "                                            </div>\n" +
-                                    "                                        </div>";
+                            icon = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png';
                         }
-                    }
-                });
+                        var marker = new google.maps.Marker({
+                           position: {
+                               lat: @destination.getLatitude,
+                               lng: @destination.getLongitude
+                           },
+                           animation: google.maps.Animation.DROP,
+                           map: map,
+                            icon: icon
+                        });
 
-                markers.push(marker);
-                markersMap.set(@destination.getDestinationId, marker);
-                if (!centerSet) {
-                    centerSet = true;
-                    map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
-                }
+                        marker.content = "Name: @destination.getName" +
+                                "<br> Type: @destination.getType" +
+                                "<br> Country: @destination.getCountry";
+                        var destinationId = @destination.getDestinationId;
+                        var infoWindow = new google.maps.InfoWindow();
+
+                        google.maps.event.addListener(marker, 'click', function () {
+                            infoWindow.setContent(this.content);
+                            infoWindow.open(this.getMap(), this);
+                            document.getElementById("nameVal").innerHTML = " @destination.getName";
+                            document.getElementById("idVal").innerHTML = " @destination.getDestinationId";
+                            document.getElementById("typeVal").innerHTML = " @destination.getType";
+                            document.getElementById("countryVal").innerHTML = " @destination.getCountry";
+                            document.getElementById("districtVal").innerHTML = " @destination.getDistrict";
+                            document.getElementById("latVal").innerHTML = " @destination.getLatitude";
+                            document.getElementById("lngVal").innerHTML = " @destination.getLongitude";
+                            document.getElementById("publicVal").innerHTML = " @destination.getVisible";
+                            document.getElementById("destPhotos").innerHTML = "";
+                            document.getElementById("photoUpdate").innerHTML = "";
+                            console.log(photoList);
+                            @for(photo <- photoList) {
+                                if (photo.getDestinationMap.get(destination.getDestinationId) === 0) {
+                                    document.getElementById("destPhotos").innerHTML += "<div class=\"card\">\n" +
+                                            "                                    <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                                            "                            src=\"@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)\" alt=\"@photo.getName\"\n" +
+                                            "                            name=\"@photo.getPhotoId\">\n" +
+                                            "                                    <a href=\"@routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, 8)\">\n" +
+                                            "                                    <button class=\"btn btn-danger\" type=\"submit\">Unlink</button>\n" +
+                                            "                                    </a>\n" +
+                                            "                                    <!-- The Expanded Photo Modal -->\n" +
+                                            "                                    <div id=\"expandImageModal\" class=\"modal\">\n" +
+                                            "                                    <span class=\"close\">&times;</span>\n" +
+                                            "                            <img class=\"modal-content\" id=\"expandedImage\">\n" +
+                                            "                                    <div id=\"caption\"></div>\n" +
+                                            "                                    <div id=\"id\"></div>\n" +
+                                            "                                    </div>\n" +
+                                            "                                    </div>";
+                                    document.getElementById("photoUpdate").innerHTML += "<div class=\"card\">\n" +
+                                            "                                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                                            "                                            src=\"@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)\" alt=\"@photo.getName\"\n" +
+                                            "                                            name=\"@photo.getPhotoId\">\n" +
+                                            "\n" +
+                                            "                                            <div class=\"card-body\">\n" +
+                                            "                                                <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\"@photo.getPhotoId\">" +
+                                            "                                                   <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\" \"+photo.getPhotoId+\"\">" +
+                                            "                                           <a href=\" @routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, destination.getDestinationId)\">" +
+                                            "                                           <button class=\"btnbtn - primary\" type=\"submit\">Link</button> </a></div>\n" +
+                                            "                                                <!-- The Expanded Photo Modal -->\n" +
+                                            "                                            <div id=\"expandImageModal\" class=\"modal\">\n" +
+                                            "                                                <span class=\"close\">&times;</span>\n" +
+                                            "                                                <img class=\"modal-content\" id=\"expandedImage\">\n" +
+                                            "                                                <div id=\"caption\"></div>\n" +
+                                            "                                                <div id=\"id\"></div>\n" +
+                                            "                                            </div>\n" +
+                                            "                                        </div>";
+                                } else {
+                                    document.getElementById("photoUpdate").innerHTML += "<div class=\"card\">\n" +
+                                            "                                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                                            "                                            src=\"@routes.ProfileController.displayPhotos(photo.getPhotoId, 0)\" alt=\"@photo.getName\"\n" +
+                                            "                                            name=\"@photo.getPhotoId\">\n" +
+                                            "\n" +
+                                            "                                            <div class=\"card-body\">\n" +
+                                            "                                                <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\"@photo.getPhotoId\">" +
+                                            "                                           <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\" photo.getPhotoId\">" +
+                                            "                                            <a href=\" @routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, destination.getDestinationId)\"> " +
+                                            "                                            <button class=\"btnbtn - danger\" type=\"submit\">Unlink</button> </a></div>\n" +
+                                            "                                                <img class=\"modal-content\" id=\"expandedImage\">\n" +
+                                            "                                                <div id=\"caption\"></div>\n" +
+                                            "                                                <div id=\"id\"></div>\n" +
+                                            "                                            </div>\n" +
+                                            "                                        </div>";
+                                }
+                            }
+                        });
+
+
+                        markers.push(marker);
+                        markersMap.set(@destination.getDestinationId, marker);
+                        if (!centerSet) {
+                            centerSet = true;
+                            map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
+                        }
+                        markers.push(marker);
+                        markersMap.set(@destination.getDestinationId, marker);
+                        if (!centerSet) {
+                            centerSet = true;
+                            map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
+                        }
                 }
                 var legend = document.getElementById('legend');
                 var publicDiv = document.createElement('div');
