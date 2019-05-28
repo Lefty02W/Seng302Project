@@ -12,10 +12,11 @@ import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 /**
@@ -99,27 +100,33 @@ public class AccessAdminSteps extends ProvideApplication {
     }
 
 
-    @When("^I enter the following url \"([^\"]*)\"$")
+    @When("I enter the following url \"([^\"]*)\"")
     public void iEnterTheFollowingUrl(String arg0) throws Throwable {
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("POST")
-                .uri(urlString)
+                .uri(arg0)
                 .session("connected", "1");
         adminAttemptResult = Helpers.route(provideApplication(), requestDest);
     }
 
-    @Then("^I should be redirected to the \"([^\"]*)\" page$")
-    public void iShouldBeRedirectedToThePage(String arg0) throws Throwable {
-        if (adminAttemptResult.redirectLocation().isPresent()) {
-            assertEquals("/profile", adminAttemptResult.redirectLocation().get());
-        } else {
-            fail();
-        }
 
+    @And("There should be a flashing present saying {string}")
+    public void thereShouldBeAFlashingPresentSaying(String string) throws Throwable {
+        // Can't find flashing
     }
 
-    @And("^There should be a flashing present saying {string}$")
-    public void thereShouldBeAFlashingPresentSaying(String string) throws Throwable {
-        System.out.println(adminAttemptResult.flash().getOptional("invalid"));
+    @Then("User {int} is not made an admin")
+    public void userIsNotMadeAnAdmin(int arg0) throws Throwable {
+        injectRepositories();
+        Optional<List<String>> roles = rolesRepository.getProfileRoles(1);
+        if (roles.isPresent()) {
+            if (roles.get().size() == 0) {
+                assertTrue(true);
+            } else {
+                fail();
+            }
+        } else {
+            assertTrue(true);
+        }
     }
 }

@@ -17,5 +17,5 @@ Feature: Access admin page
   Scenario: The make admin endpoint cannot be accessed unless an admin is logged in
     Given I am logged into the application as a non admin
     When I enter the following url "/admin/1/admin"
-    Then I should be redirected to the "/profile" page
+    Then User 1 is not made an admin
     And There should be a flashing present saying "You do not have permission to do this"
