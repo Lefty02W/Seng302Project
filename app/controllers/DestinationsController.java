@@ -288,7 +288,7 @@ public class DestinationsController extends Controller {
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
-        if (destinationRepository.checkValidEdit(dest, userId)) {
+            if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(dest)) {
@@ -319,7 +319,7 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
-        if (destinationRepository.checkValidEdit(destination, userId)) {
+        if (destinationRepository.checkValidEdit(destination, userId, null)) {
             return supplyAsync(() -> redirect("/destinations/create").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(destination)) {
@@ -378,6 +378,7 @@ public class DestinationsController extends Controller {
             for (Destination destination : destinationList.get()) {
                 if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
                     destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
+                    destinationPhotoRepository.updateDestinationId(destination.getDestinationId(), newPublicDestination.getDestinationId());
                     Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
                     if (tripDestinationList.isPresent()) {
                         for (TripDestination tripDestination : tripDestinationList.get()) {
