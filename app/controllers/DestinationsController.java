@@ -1,6 +1,9 @@
 package controllers;
 
-import models.*;
+import models.Destination;
+import models.DestinationPhoto;
+import models.Photo;
+import models.TripDestination;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -14,8 +17,10 @@ import views.html.destinations;
 import views.html.editDestinations;
 
 import javax.inject.Inject;
-import java.util.*;
-import java.util.concurrent.CompletionException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -92,6 +97,20 @@ public class DestinationsController extends Controller {
             } else {
                 return redirect(destShowRoute);
             }
+        });
+    }
+
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> updatePhotoPrivacy(Integer id){
+        return supplyAsync(() -> {
+            photoRepository.updateVisibility(id);
+            return redirect("/destinations/show/false").flashing("success", "Visibility updated.");
         });
     }
 

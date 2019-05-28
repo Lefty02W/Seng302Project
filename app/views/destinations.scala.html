@@ -743,6 +743,15 @@
                                             "                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
                                             "                            src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
                                             "                            name=\"@photo.getPhotoId\">\n" +
+                                            "                            <div>@if(photo.getVisible == 1) {\n" +
+                                            "                                            <p class=\"card-text\"> @photo.displayVisibility(photo.getVisible) 🌏</p>\n" +
+                                            "                                            <a href=\"@routes.DestinationsController.updatePhotoPrivacy(photo.getPhotoId)\">\n" +
+                                            "                                                <button class=\"btn btn-primary\">Make Private</button></a>\n" +
+                                            "                                        } else {\n" +
+                                            "                                            <p class=\"card-text\"> @photo.displayVisibility(photo.getVisible) 🔒</p>\n" +
+                                            "                                            <a href=\"@routes.DestinationsController.updatePhotoPrivacy(photo.getPhotoId)\">\n" +
+                                            "                                                <button class=\"btn btn-primary\">Make Public</button></a>\n" +
+                                            "                                        }</div>" +
                                             "                            <div class=\"card-body\">\n" +
                                             "                            <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\"@photo.getPhotoId\">\n" +
                                             "                            <a id=\"addPhoto\" href=\"@routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, destination.getDestinationId)\">\n" +
