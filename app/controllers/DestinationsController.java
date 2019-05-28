@@ -35,6 +35,7 @@ public class DestinationsController extends Controller {
     private final ProfileRepository profileRepository;
     private final PersonalPhotoRepository personalPhotoRepository;
     private final DestinationPhotoRepository destinationPhotoRepository;
+    private final PhotoRepository photoRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -48,7 +49,8 @@ public class DestinationsController extends Controller {
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
-                                  PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository) {
+                                  PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
+                                  PhotoRepository photoRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
@@ -56,6 +58,7 @@ public class DestinationsController extends Controller {
         this.tripDestinationsRepository = tripDestinationsRepository;
         this.personalPhotoRepository = personalPhotoRepository;
         this.destinationPhotoRepository = destinationPhotoRepository;
+        this.photoRepository = photoRepository;
     }
 
     /**
@@ -82,15 +85,14 @@ public class DestinationsController extends Controller {
                     destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
                 }
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
-                List<Photo> photoList = getUsersPhotos(profile.get().getProfileId());
-                System.out.println("destinations list : " + destinationsList.size());
-                System.out.println("photos list : " + photoList.size());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, photoList, request, messagesApi.preferred(request)));
+                destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
         });
     }
+
 
     /**
      * Method to follow a destination called from the destinations page and used from an endpoint
@@ -105,8 +107,8 @@ public class DestinationsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
-                List<Photo> photoList = getUsersPhotos(profileId);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, photoList, request, messagesApi.preferred(request)));
+                destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -143,13 +145,36 @@ public class DestinationsController extends Controller {
                         destinationsList = new ArrayList<>();
                     }
                 }
-                List<Photo> photoList = getUsersPhotos(profileId);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, photoList, request, messagesApi.preferred(request)));
+                destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
         });
     }
+
+    /**
+     * takes in a list of destinations, for each destination loads the photos which are linked to that destination and
+     * owned by the current user into destination.usersPhotos
+     * @param destinationsList
+     * @return destinationsList
+     */
+    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsList) {
+        Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
+        if (imageList.isPresent()) {
+            for (Destination destination : destinationsList) {
+                List<Photo> destPhotoList = new ArrayList<>();
+                for (Photo photo : imageList.get()) {
+                    if (destinationPhotoRepository.findByProfileIdDestIdPhotoId(profileId, destination.getDestinationId(), profileId).isPresent())
+                        destPhotoList.add(photo);
+                }
+                destination.setUsersPhotos(destPhotoList);
+            }
+            return destinationsList;
+        }
+        return destinationsList;
+    }
+
 
 
     /**
@@ -172,6 +197,34 @@ public class DestinationsController extends Controller {
                 }
             }
             return imageList.get();
+        }
+        return new ArrayList<>();
+    }
+
+
+    /**
+     * A function that gives a list of every photo in other destinations with a map on each photo to what destinations
+     * each photo is linked to
+     *
+     * @param profileId, the id of the current user, will not add their destination photos to the list
+     * @return
+     */
+    private List<Photo> getWorldDestPhotos(int profileId) {
+        Optional<List<DestinationPhoto>> optinalWorldImageList = destinationPhotoRepository.getAllDestinationPhotos();
+        if (optinalWorldImageList.isPresent()) {
+            List<Photo> photoList = new ArrayList<>();
+            for (DestinationPhoto destPhoto : optinalWorldImageList.get()) {
+                Optional<Photo> optinalPhoto = photoRepository.getImage(destPhoto.getPhotoId());
+                if (optinalPhoto.isPresent()) {
+                    if (!photoList.contains(optinalPhoto.get())) {
+                        optinalPhoto.get().putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
+                        photoList.add(optinalPhoto.get());
+                    } else {
+                        photoList.get(photoList.indexOf(optinalPhoto.get())).putInDestinationMap(destPhoto.getDestinationId(), optinalPhoto.get().getVisible());
+                    }
+                }
+            }
+            return photoList;
         }
         return new ArrayList<>();
     }
@@ -345,6 +398,7 @@ public class DestinationsController extends Controller {
 
 
     public CompletionStage<Result> linkPhotoToDestination(Http.Request request, Integer photoId, Integer destinationId) {
+        System.out.println("hello fam");
         Integer userId = SessionController.getCurrentUserId(request);
         DestinationPhoto destinationPhoto = new DestinationPhoto(userId, photoId, destinationId);
         return destinationPhotoRepository.insert(destinationPhoto).thenApplyAsync(result -> {
