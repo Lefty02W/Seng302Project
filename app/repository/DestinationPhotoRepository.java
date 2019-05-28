@@ -2,12 +2,9 @@ package repository;
 
 import io.ebean.*;
 import models.DestinationPhoto;
-import models.PersonalPhoto;
-import models.Photo;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -98,7 +95,7 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
      * Method to find a certain destination photo by id
      *
      * @param id id of the entry to be found.
-     * @return Optional DestiantionPhoto wrapped in a completion stage
+     * @return Optional DestinationPhoto wrapped in a completion stage
      */
     public CompletionStage<Optional<DestinationPhoto>> findById(int id) {
         return supplyAsync(() -> {
@@ -123,5 +120,27 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
     public Optional<List<DestinationPhoto>> getAllDestinationPhotos(int profileId) {
         List<DestinationPhoto> photos = ebeanServer.find(DestinationPhoto.class).where().eq("profile_id", profileId).findList();
         return Optional.of(photos);
+    }
+
+    /**
+     * Update destination Id to new destination called when private info is merged from a private into public destination
+     * @param previousDestinationId Previous Destination Id
+     * @param newDestinationId New destination id
+     */
+    public void updateDestinationId(Integer previousDestinationId, Integer newDestinationId) {
+        supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String updateQuery = "UPDATE destination_photo SET destination_id = ? WHERE destination_id = ?";
+            try {
+                SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+                query.setParameter(1, newDestinationId);
+                query.setParameter(2, previousDestinationId);
+                query.execute();
+                txn.commit();
+            } finally {
+                txn.end();
+            }
+            return Optional.of(newDestinationId);
+        }, executionContext);
     }
 }

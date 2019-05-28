@@ -331,6 +331,7 @@ public class DestinationsController extends Controller {
             for (Destination destination : destinationList.get()) {
                 if (destination.getDestinationId() != newPublicDestination.getDestinationId()) {
                     destinationRepository.followDestination(newPublicDestination.getDestinationId(), destination.getProfileId());
+                    destinationPhotoRepository.updateDestinationId(destination.getDestinationId(), newPublicDestination.getDestinationId());
                     Optional<List<TripDestination>> tripDestinationList = tripDestinationsRepository.getTripDestsWithDestId(destination.getDestinationId());
                     if (tripDestinationList.isPresent()) {
                         for (TripDestination tripDestination : tripDestinationList.get()) {
