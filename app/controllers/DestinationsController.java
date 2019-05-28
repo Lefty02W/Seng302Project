@@ -1,8 +1,8 @@
 package controllers;
 
-import controllers.LoginController.Login;
 import models.Destination;
-import models.Profile;
+import models.DestinationPhoto;
+import models.Photo;
 import models.TripDestination;
 import play.data.Form;
 import play.data.FormFactory;
@@ -11,9 +11,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import repository.DestinationRepository;
-import repository.ProfileRepository;
-import repository.TripDestinationsRepository;
+import repository.*;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -40,6 +38,9 @@ public class DestinationsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final TripDestinationsRepository tripDestinationsRepository;
     private final ProfileRepository profileRepository;
+    private final PersonalPhotoRepository personalPhotoRepository;
+    private final DestinationPhotoRepository destinationPhotoRepository;
+    private final PhotoRepository photoRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -52,12 +53,17 @@ public class DestinationsController extends Controller {
      */
     @Inject
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
-                                  ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository) {
+                                  ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
+                                  PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
+                                  PhotoRepository photoRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
         this.profileRepository = profileRepository;
         this.tripDestinationsRepository = tripDestinationsRepository;
+        this.personalPhotoRepository = personalPhotoRepository;
+        this.destinationPhotoRepository = destinationPhotoRepository;
+        this.photoRepository = photoRepository;
     }
 
     /**
@@ -84,12 +90,32 @@ public class DestinationsController extends Controller {
                     destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
                 }
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
+                destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
         });
     }
+
+
+    /**
+     * Endpoint method to update the privacy of a photo
+     *
+     *
+     * @param id the photo id
+     * @return Redirect to teh destinations page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> updatePhotoPrivacy(Integer id){
+        return supplyAsync(() -> {
+            photoRepository.updateVisibility(id);
+            return redirect("/destinations/show/false").flashing("success", "Visibility updated.");
+        });
+    }
+
 
     /**
      * Method to follow a destination called from the destinations page and used from an endpoint
@@ -104,7 +130,10 @@ public class DestinationsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+                destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
+                destinationsList = loadWorldDestPhotos(profileId, destinationsList);
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -141,12 +170,77 @@ public class DestinationsController extends Controller {
                         destinationsList = new ArrayList<>();
                     }
                 }
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, request, messagesApi.preferred(request)));
+
+                destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
+                destinationsList = loadWorldDestPhotos(profileId, destinationsList);
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
         });
     }
+
+    /**
+     * takes in a list of destinations, for each destination loads the photos which are linked to that destination and
+     * owned by the current user into destination.usersPhotos
+     * @param destinationsList
+     * @return destinationsList
+     */
+    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsList) {
+        Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
+        if (imageList.isPresent()) {
+            for (Destination destination : destinationsList) {
+                List<Photo> destPhotoList = new ArrayList<>();
+                for (Photo photo : imageList.get()) {
+                    if (destinationPhotoRepository.findByProfileIdPhotoIdDestId(profileId, photo.getPhotoId(), destination.getDestinationId()).isPresent()) {
+                        destPhotoList.add(photo);
+                    }
+                }
+                destination.setUsersPhotos(destPhotoList);
+            }
+            return destinationsList;
+        }
+        return destinationsList;
+    }
+
+
+    /**
+     * takes in a list of destinations, for each destination loads the photos which are linked to that destination but
+     * not from the current user. ie: the world destination photos
+     * @param profileId, the id of the current user, will not add their destination photos to the list
+     * @param destinationsList, a list of the destinations which it will be adding photos to
+     * @return destinations list that was passed in
+     */
+    private List<Destination> loadWorldDestPhotos(int profileId, List<Destination> destinationsList) {
+        Optional<List<Photo>> optionalImageList = destinationPhotoRepository.getAllDestinationPhotos();
+        if (optionalImageList.isPresent()) {
+            List<Photo> photoList = optionalImageList.get();
+            for (Destination destination : destinationsList) {
+                List<Photo> destPhotoList = new ArrayList<>();
+                for (Photo photo : photoList) {
+                    if (destinationPhotoRepository.isLinkedToDestByOtherUser(profileId, photo.getPhotoId(), destination.getDestinationId())) {
+                        destPhotoList.add(photo);
+                    }
+                }
+                destination.setWorldPhotos(destPhotoList);
+            }
+            return destinationsList;
+        }
+        return destinationsList;
+    }
+
+    /**
+     * Gets all of the users photos
+     *
+     * @param profileId the id of the profile to get photos for
+     * @return a list of a users photos
+     */
+    private List<Photo> getUsersPhotos(int profileId) {
+        Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
+        return imageList.orElseGet(ArrayList::new);
+    }
+
 
     /**
      * Displays a page to create a destination
@@ -212,16 +306,14 @@ public class DestinationsController extends Controller {
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
-        if (destinationRepository.checkValidEdit(dest, userId)) {
+            if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(dest)) {
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
-                if (visibility == 1) {
-                    if (destId.isPresent()) {
-                        dest.setDestinationId(destId.get());
-                        newPublicDestination(dest);
-                    }
+                if (visibility == 1 && destId.isPresent()) {
+                    dest.setDestinationId(destId.get());
+                    newPublicDestination(dest);
                 }
                 return redirect(destShowRoute);
             });
@@ -245,16 +337,14 @@ public class DestinationsController extends Controller {
         Destination destination = destinationForm.value().get();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
-        if (destinationRepository.checkValidEdit(destination, userId)) {
+        if (destinationRepository.checkValidEdit(destination, userId, null)) {
             return supplyAsync(() -> redirect("/destinations/create").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(destination)) {
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
-                if (visibility == 1) {
-                    if (destId.isPresent()) {
-                        destination.setDestinationId(destId.get());
-                        newPublicDestination(destination);
-                    }
+                if (visibility == 1 && destId.isPresent()) {
+                    destination.setDestinationId(destId.get());
+                    newPublicDestination(destination);
                 }
                 return redirect(destShowRoute);
             });
@@ -318,4 +408,39 @@ public class DestinationsController extends Controller {
         }
     }
 
+
+    /**
+     * Method to link photo to a given destination
+     * @param photoId Id of the photo to be linked
+     * @param destinationId Id of the destination that needs to be linked to a photo
+     * @return completion stage result redirected to destination
+     */
+    public CompletionStage<Result> linkPhotoToDestination(Http.Request request, Integer photoId, Integer destinationId) {
+        Integer userId = SessionController.getCurrentUserId(request);
+        DestinationPhoto destinationPhoto = new DestinationPhoto(userId, photoId, destinationId);
+        return destinationPhotoRepository.insert(destinationPhoto).thenApplyAsync(result -> {
+            if (result.isPresent()) {
+                return redirect(destShowRoute).flashing("success", "Photo was successfully linked to destination");
+            }
+            return redirect(destShowRoute).flashing("failure", "Photo was unsuccessfully linked to destination");
+        });
+    }
+
+    /**
+     * Method to un-link photo to a given destination
+     * @param photoId Id of the photo to be un-linked
+     * @param destinationId Id of the destination that needs to be un-linked to a photo
+     * @return completion stage result redirected to destination
+     */
+    public CompletionStage<Result> unlinkPhotoFromDestination(Http.Request request, Integer photoId, Integer destinationId) {
+        Integer userId = SessionController.getCurrentUserId(request);
+        Optional<DestinationPhoto> destinationPhoto = destinationPhotoRepository.findByProfileIdPhotoIdDestId(userId, photoId, destinationId);
+        return destinationPhotoRepository.delete(destinationPhoto.get().getDestinationPhotoId()).thenApplyAsync(result -> {
+            if (result.isPresent()) {
+                return redirect(destShowRoute).flashing("success", "Photo was successfully unlinked from destination");
+            }
+            return redirect(destShowRoute).flashing("failure", "Photo was unsuccessfully unlinked from destination");
+        });
+
+    }
 }
