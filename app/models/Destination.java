@@ -6,6 +6,9 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class holds the data for a profile destination
@@ -31,6 +34,12 @@ public class Destination extends Model {
     private double longitude;
     @Constraints.Required
     private int visible;
+
+    @Transient
+    private List<Photo> usersPhotos = new ArrayList<>();
+
+    @Transient
+    private List<Photo> worldPhotos = new ArrayList<>();
 
     /**
      * This constructor is used by scala variables
@@ -149,4 +158,20 @@ public class Destination extends Model {
     public int getVisible() { return visible; }
 
     public void setVisible(int visible) { this.visible = visible; }
+
+    public List<Photo> getUsersPhotos() {
+        return usersPhotos;
+    }
+
+    public void setUsersPhotos(List<Photo> usersPhotos) {
+        this.usersPhotos = usersPhotos;
+    }
+
+    public List<Photo> getWorldPhotos() {
+        return worldPhotos;
+    }
+
+    public void setWorldPhotos(List<Photo> worldPhotos) {
+        this.worldPhotos = worldPhotos;
+    }
 }

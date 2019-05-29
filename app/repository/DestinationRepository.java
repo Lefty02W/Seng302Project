@@ -305,7 +305,7 @@ public class DestinationRepository {
      * class to check if destination is already available to user
      * return true if already in else false
      */
-    public boolean checkValidEdit(Destination destination, int profileId) {
+    public boolean checkValidEdit(Destination destination, int profileId, Destination previousDestination) {
         List<Destination> destinations = (Destination.find.query()
                 .where()
                 .eq("name", destination.getName())
@@ -321,6 +321,14 @@ public class DestinationRepository {
                 .eq("country", destination.getCountry())
                 .eq("visible", 1)
                 .findList());
+
+        if(previousDestination != null){
+            if(!destinations.isEmpty()){
+                if(destinations.get(0).getName().equals(previousDestination.getName()) && destinations.get(0).getType().equals(previousDestination.getType()) && destinations.get(0).getCountry().equals(previousDestination.getCountry())) {
+                    return false;
+                }
+            }
+        }
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();
     }

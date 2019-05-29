@@ -2,6 +2,11 @@
     height: 60vh;
 }
 
+#btn-card {
+    height: 5vh;
+}
+
+
 #destTable {
     height: 10vh;
 }
@@ -24,6 +29,23 @@ div.dataTables_filter {
     width: 15vw;
 }
 
+#visibilityBtn {
+    float: left;
+}
+
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+}
+
+#legend h4 {
+    color: black;
+}
+
+#destButton {
+    margin-left: 0.5vw;
+}
+
 
 .dest-table {
     border: solid 1px #DDEEEE;
@@ -42,4 +64,58 @@ div.dataTables_filter {
     color: #333;
     padding: 10px;
     text-shadow: 1px 1px 1px #fff;
+}
+
+
+#destinationsMap {
+    height: 100%;
+    width: 100%;
+    padding-top: 5vh;
+}
+
+.nav .nav-tabs, #detailsTabLink, #myPhotosTabLink, #worldPhotosTabLink {
+    font-size: 18pt;
+}
+
+#destinationTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#destinationTabs, li {
+    padding: 15px;
+}
+
+#destinationTabs, #photosCard {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#destinationTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+    /*width: 50%;*/
+}
+
+#photosCard {
+    height: 500px;
+}
+
+img.thumbnail {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 240px;
+    max-width: 240px;
+    margin: auto;
+
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#photosCard {
+    margin-left: auto;
+    margin-right: auto;
 }

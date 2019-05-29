@@ -35,6 +35,19 @@
     border-color: #37623B;
 }
 
+.btn-outline-primary {
+    color: #37623B;
+    border-color: #37623B;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #37623B;
+    border-color: #37623B;
+}
+
+
+
 .trip-button {
     width: 100%;
 }
@@ -65,6 +78,9 @@
     width: auto;
 }
 
+#changeProfilePicture .lower-card {
+    width: auto;
+}
 
 .collapse-body {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
@@ -197,6 +213,8 @@ img.thumbnail {
 #profileImage {
     border: 1px solid;
     border-radius: 50%;
+    height: 25vh; /* Temporary cropping display for consistent circle until croppie is working */
+    width: 25vh;
 }
 
 #profileTabs {
@@ -209,7 +227,7 @@ img.thumbnail {
     padding: 15px;
 }
 
-#profileTabs, #photosCard {
+#profileTabs, #photosCard, #photosTabCard {
     margin-left: auto;
     margin-right: auto;
 }
@@ -262,6 +280,10 @@ img.thumbnail {
 
 #photosCard {
     height: 500px;
+}
+
+#photosTabCard {
+    height: auto;
 }
 
 #center-text {

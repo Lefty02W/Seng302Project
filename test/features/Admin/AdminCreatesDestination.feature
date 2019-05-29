@@ -9,7 +9,7 @@ Feature: Create a destination from admin page
     When admin fills the create destination form with correct data
     And selects them self as the profile
     Then the admin presses save
-    And the new destination is added to the admins destinations
+    And the new destination is added to the admins 2 destinations
 
 
   Scenario: Admin creates a public destination for another user
