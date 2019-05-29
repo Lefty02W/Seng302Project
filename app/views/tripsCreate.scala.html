@@ -127,10 +127,10 @@
                                         <td>@tripDestination.getDepartureString</td>
                                         <td>
                                             <a href="@routes.TripsController.createTripDestinationCreate(tripDestination.getDestOrder, userId)">
-                                                <button data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" type="submit">Edit </button>
+                                                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" type="submit">Edit </button>
                                             </a>
                                             <a href="@routes.TripsController.deleteDestination(tripDestination.getDestOrder, userId)">
-                                                <button type="submit">Delete </button>
+                                                <button class="btn btn-primary" type="submit">Delete </button>
                                             </a>
                                         </td>
 
