@@ -553,7 +553,7 @@ public class TripsController extends Controller {
             return redirect("/trips/" + userId + "/create").flashing("info", dupDestFlashing);
             }
         removeTripDestination(order);
-        return redirect(createEndpoint);
+        return redirect("/trips/" + userId + "/create");
     }
 
 }
