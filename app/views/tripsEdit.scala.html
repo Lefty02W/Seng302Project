@@ -80,7 +80,7 @@
                                         <h5>Destination</h5>
                                         <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                         @for(destination <- destinationList) {
-                                            <option value=@destination.getDestinationId>@destination.getName</option>
+                                            <option value="@destination.getDestinationId">@destination.getName</option>
                                         }
                                         </select>
                                     </div>

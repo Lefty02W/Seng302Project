@@ -255,22 +255,22 @@
                                 <div class="col">
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">First Name*</small>
-                                            <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value=@profile.getObject.getFirstName>
+                                            <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value="@profile.getObject.getFirstName">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Middle Name</small>
-                                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value=@profile.getObject.getMiddleName>
+                                            <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value="@profile.getObject.getMiddleName">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Last Name*</small>
-                                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value=@profile.getObject.getLastName>
+                                            <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value="@profile.getObject.getLastName">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="hidden-div-edit">
-                                            <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value=@profile.getObject.getTravellerTypesString>
+                                            <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value="@profile.getObject.getTravellerTypesString">
                                         </div>
                                         <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%">
                                             @if(profile.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
@@ -337,22 +337,22 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
-                                            <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value=@profile.getObject.getEntryDate>
+                                            <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value="@profile.getObject.getEntryDate">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Email*</small>
-                                            <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value=@profile.getObject.getEmail>
+                                            <input type="text" id="email" placeholder="Email" name="email" class="inputField" required oninvalid="this.setCustomValidity('your.email@@example.com')" oninput="setCustomValidity('')" value="@profile.getObject.getEmail">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                            <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value=@profile.getObject.getNationalityString>
+                                            <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value="@profile.getObject.getNationalityString">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="passportsForm">Passport/s</small>
-                                            <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value=@profile.getObject.getPassportsString>
+                                            <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value="@profile.getObject.getPassportsString">
                                         </div>
 
 
@@ -695,7 +695,7 @@
                                                 <label>Latitude</label>
                                             </div>
                                             <div class="row">
-                                                <input type="number" step="0.01" id="latitude" name="latitude" value=@destination.getObject.getLatitude>
+                                                <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
                                             </div>
                                         </div>
                                         <div class="col">
@@ -703,7 +703,7 @@
                                                 <label>Longitude</label>
                                             </div>
                                             <div class="row">
-                                                <input type="number" step="0.01" id="longitude" name="longitude" value=@destination.getObject.getLongitude>
+                                                <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
                                             </div>
 
                                         </div>

@@ -72,33 +72,33 @@
                                 <div class="row">
                                     <div class="col">
                                         <label>Name</label>
-                                        <input type="text" id="name" placeholder="Name" name="name" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')" value=@destination.getName>
+                                        <input type="text" id="name" placeholder="Name" name="name" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')" value="@destination.getName">
                                     </div>
                                     <div class="col">
                                         <label>Type</label>
-                                        <input type="text" id="type" placeholder="Type" name="type" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')" value=@destination.getType>
+                                        <input type="text" id="type" placeholder="Type" name="type" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')" value="@destination.getType">
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col">
                                         <label>District</label>
-                                        <input type="text" id="district" placeholder="District" name="district" value=@destination.getDistrict >
+                                        <input type="text" id="district" placeholder="District" name="district" value="@destination.getDistrict" >
                                     </div>
                                     <div class="col">
                                         <label>Country</label>
-                                        <input type="text" id="country" placeholder="Country" name="country" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')" value=@destination.getCountry >
+                                        <input type="text" id="country" placeholder="Country" name="country" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')" value="@destination.getCountry" >
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col">
                                         <label>Latitude</label>
-                                        <input type="number" step="0.01" id="latitude" name="latitude" value=@destination.getLatitude>
+                                        <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getLatitude">
                                     </div>
                                     <div class="col">
                                         <label>Longitude</label>
-                                        <input type="number" step="0.01" id="longitude" name="longitude" value=@destination.getLongitude>
+                                        <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getLongitude">
                                     </div>
                                 </div>
 
