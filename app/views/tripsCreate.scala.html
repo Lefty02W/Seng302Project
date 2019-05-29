@@ -83,7 +83,7 @@
                                             <h5>Destination</h5>
                                             <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                             @for(destination <- destinationsList) {
-                                                <option value=@destination.getDestinationId>@destination.getName</option>
+                                                <option value="@destination.getDestinationId">@destination.getName</option>
                                             }
                                             </select>
                                         </div>
@@ -127,10 +127,10 @@
                                         <td>@tripDestination.getDepartureString</td>
                                         <td>
                                             <a href="@routes.TripsController.createTripDestinationCreate(tripDestination.getDestOrder, userId)">
-                                                <input type="photo" class="contract-icon" src="@routes.Assets.at("images/contract.png")" id="delete-icon"  data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" alt="Submit">
+                                                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" type="submit">Edit </button>
                                             </a>
                                             <a href="@routes.TripsController.deleteDestination(tripDestination.getDestOrder, userId)">
-                                                <input type="photo" class="delete-icon" src="@routes.Assets.at("images/delete.png")" id="delete-icon" alt="Submit">
+                                                <button class="btn btn-primary" type="submit">Delete </button>
                                             </a>
                                         </td>
 
@@ -175,8 +175,8 @@
                                 <input id="order" name="destOrder" type="number" value="@toEdit.getDestOrder" min="1" max="@currentDestinationsList.size" required>
 
                                 <h5>Destination</h5>
-                                <select id="destinationId" name="destinationId" title="Select Destination" required>
-                                @for(destination <- currentUser.getDestinations) {
+                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                @for(destination <- destinationsList) {
                                     @if(destination.getDestinationId == toEdit.getDestinationId) {
                                         <option value="@destination.getDestinationId" selected>@destination.getName</option>
                                     } else {
