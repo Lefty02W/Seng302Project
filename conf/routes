@@ -32,6 +32,7 @@ GET     /trips/:userId/create                controllers.TripsController.showCre
 POST    /trips/:userId/:id/editTrip          controllers.TripsController.saveEdit(request: Request, id: Integer, userId: Integer)
 GET     /trips/:userId/:id/edit     controllers.TripsController.showEdit(request: Request, id: Integer, userId: Integer)
 POST    /trips/:userId/:id/edit              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, userId: Integer)
+POST    /trips/:userId/:id/edit              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, userId: Integer)
 GET     /trips/:userId/:id/edit/update       controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer, id: Integer, userId: Integer)
 POST    /trips/update                controllers.TripsController.updateDestination(request: Request, destOrder: Integer, userId: Integer)
 POST    /trips/create/update         controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer, userId: Integer)
@@ -40,7 +41,7 @@ POST    /trips                       controllers.TripsController.save(request: R
 POST    /trips/create                controllers.TripsController.addDestination(request: Request, userId: Integer)
 GET    /trips/:userId/:id/edit/:order/delete       controllers.TripsController.deleteDestinationEditTrip(request: Request, order: Integer, id: Integer, userId: Integer)
 GET     /trips/:id/delete             controllers.TripsController.delete(id: Integer)
-GET     /trips/:id/create             controllers.TripsController.deleteDestination(request: Request, id: Integer, userId: Integer)
+GET     /trips/:id/create/delete            controllers.TripsController.deleteDestination(request: Request, id: Integer, userId: Integer)
 
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)

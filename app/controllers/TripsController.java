@@ -549,11 +549,14 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result deleteDestination(Http.Request request, Integer order, Integer userId) {
+        System.out.println("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+
         if (orderInvalidDelete(orderedCurrentDestinations.get(order)) ) {
             return redirect("/trips/" + userId + "/create").flashing("info", dupDestFlashing);
             }
         removeTripDestination(order);
-        return redirect(createEndpoint);
+        System.out.println("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+        return redirect("/trips/" + userId + "/create");
     }
 
 }
