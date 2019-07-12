@@ -71,6 +71,11 @@ public class AdminController {
      * @apiNote
      */
     public CompletionStage<Result> deleteProfile(Http.Request request, Integer id) {
+        if (rolesRepository.getProfileIdFromRoleName("global_admin").contains(id)){
+
+            return supplyAsync(() ->(redirect("/admin").flashing("error",
+                    "Global admin cannot be deleted.")));
+        }
         return profileRepository.delete(id).thenApplyAsync(userEmail -> redirect(adminEndpoint)
                 , httpExecutionContext.current());
     }
