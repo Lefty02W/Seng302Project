@@ -122,20 +122,27 @@
                                             <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
                                                 <button type="button" class="btn btn-primary" id="editProfileButton">Edit</button>
                                             </a> </td>
-                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/@profile.getProfileId/delete')">Delete</button></td>
+                                        @if(profile.hasRole("global_admin")){
+
+                                            <td><button type="button" disabled class="btn btn-secondary">Delete</button></td>
+
+                                        } else {
+                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/@profile.getProfileId/delete')">Delete</button></td>
+                                        }
+
                                         <td>
-                                            <a href="@routes.AdminController.viewProfile(profile.getProfileId())">
-                                                <button class="btn btn-secondary">View</button>
-                                            </a>
-                                            </td>
+                                        <a href="@routes.AdminController.viewProfile(profile.getProfileId())">
+                                            <button class="btn btn-dark">View</button>
+                                        </a></td>
+
                                         <td>@profile.getRoles</td>
-                                            <!-- TODO Update to id once deadbolt is working -->
+
                                         @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
-                                        <td>
-                                            <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
-                                                <button class="btn btn-info">Remove Admin</button>
-                                            </a>
-                                        </td>
+                                            <td>
+                                                <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
+                                                    <button class="btn btn-info">Remove Admin</button>
+                                                </a>
+                                            </td>
                                         } else if(profile.hasRole("global_admin")){
                                             <td> global admin </td>
                                         } else {
