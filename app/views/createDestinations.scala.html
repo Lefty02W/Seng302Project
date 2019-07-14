@@ -1,4 +1,4 @@
-@import play.mvc.Http
+@@import play.mvc.Http
 @import views.html.helper.CSRF
 @(destinationForm : Form[Destination], currentProfile : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
@@ -75,7 +75,6 @@
                                 <div class="col">
                                     <label>Name</label>
                                     <input type="text" id="name" placeholder="Name" name="name" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
-
                                 </div>
                                 <div class="col">
                                     <label>Type</label>

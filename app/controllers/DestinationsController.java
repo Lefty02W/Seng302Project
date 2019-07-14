@@ -93,7 +93,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -133,7 +133,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -174,7 +174,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
