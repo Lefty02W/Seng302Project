@@ -185,8 +185,10 @@ create table if not exists trip_destination
 
 create table if not exists thumbnail_link
 (
-  photo_id primary key,
-  thumbnail_id primary key,
+  photo_id int,
+  thumbnail_id int,
+
+  primary key (photo_id, thumbnail_id),
 
   constraint photo_id_fk
     foreign key (photo_id) references photo (photo_id)
