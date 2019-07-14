@@ -56,6 +56,7 @@ GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(
 GET     /profile/photo/save/:photoId         controllers.ProfileController.setProfilePicture(request: Request, photoId: Integer)
 GET     /profile/photo/remove        controllers.ProfileController.removeProfilePicture(request: Request)
 GET     /profile/photo        controllers.ProfileController.photoAt(id: Integer)
+GET     /profile/photo/:photoId/delete      controllers.ProfileController.deletePhoto(request: Request, photoId: Integer)
 
 # Admins
 POST    /admin/:id                controllers.ProfileController.updateAdmin(request: Request, id: Integer)
