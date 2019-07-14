@@ -183,3 +183,15 @@ create table if not exists trip_destination
 )
 ;
 
+create table if not exists thumbnail_link
+(
+  photo_id primary key,
+  thumbnail_id primary key,
+
+  constraint photo_id_fk
+    foreign key (photo_id) references photo (photo_id)
+      on update cascade on delete cascade,
+  constraint thumbnail_id
+    foreign key (thumbnail_id) references photo (photo_id)
+      on update cascade on delete cascade
+);
