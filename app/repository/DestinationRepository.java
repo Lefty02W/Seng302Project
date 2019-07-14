@@ -332,4 +332,37 @@ public class DestinationRepository {
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();
     }
+
+    /**
+     * Method called from addRequest method to add the changes made in a request to the actions table
+     *
+     * @param travellerTypeId Id of the traveller type the user wants to add or remove.
+     * @param action tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
+     * @param requestId Integer id of the request the user is making, links the changes to a request
+     * @return optional of the id from the new change after the change is inserted into the destination_changes table
+     */
+    private void addDestinationChange(int travellerTypeId, int action, int requestId){
+        // TODO: 15/07/19 implement method and change method to return integer
+    }
+
+    /**
+     * Method to lodge a traveller type change request
+     * Inserts request into the destination_request Table
+     * 
+     * @param destinationId id of the destination the user wants to update
+     * @param profileId id of the profile making the request
+     */
+    public void createDestinationTravellerTypeChangeRequest(int destinationId, int profileId){
+        // TODO: 15/07/19 implement method and change method signature to return id of the new request
+    }
+
+    /**
+     * Update method to add traveller types to a destination
+     *
+     * @param travellerTypeId id of the traveller type that will be added to the destination
+     * @param destinationId id of the destination that the traveller type will be added to
+     */
+    public void addDestinaionTravellerType(int travellerTypeId, int destinationId){
+        // TODO: 15/07/19 implement method and change method signatur to return id of the added traveller type.
+    }
 }
