@@ -2,7 +2,6 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import io.ebean.SqlUpdate;
 import io.ebean.Transaction;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
@@ -86,5 +85,17 @@ public class PhotoRepository {
                         .findOne();
 
         return Optional.ofNullable(photo);
+    }
+
+    /**
+     * Method to delete a photo from the database using a passed photoId
+     *
+     * @param id The id of the photo to delete
+     */
+    public CompletionStage<Integer> delete(int id) {
+         return supplyAsync(() -> {
+            Photo.find.deleteById(id);
+            return 1;
+         }, executionContext);
     }
 }

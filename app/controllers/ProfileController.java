@@ -83,7 +83,7 @@ public class ProfileController extends Controller {
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form
-     * @apiNot POST /profile
+     * @apiNote POST /profile
      * @param request Http request
      * @return a redirect to the profile page
      */
@@ -307,9 +307,17 @@ public class ProfileController extends Controller {
         });
     }
 
+    /**
+     * Endpoint to handle a request from the user to delete a personal photo
+     *
+     * @apiNote GET /profile/photo/:photoId/delete
+     * @param request
+     * @param photoId
+     * @return
+     */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deletePhoto(Http.Request request, int photoId) {
-        return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Photo deleted"));
+        return photoRepository.delete(photoId).thenApplyAsync(x -> redirect(profileEndpoint).flashing("success", "Photo deleted"));
     }
 
 }
