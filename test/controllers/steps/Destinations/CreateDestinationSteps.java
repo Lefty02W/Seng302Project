@@ -83,7 +83,7 @@ public class CreateDestinationSteps extends ProvideApplication {
     @Then("the Destination page should be shown")
     public void theDestinationPageShouldBeShown() {
         if (redirectDestination.redirectLocation().isPresent()) {
-            assertEquals("/destinations", redirectDestination.redirectLocation().get());
+            assertEquals("/destinations/show/false", redirectDestination.redirectLocation().get());
         } else {
             fail();
         }
