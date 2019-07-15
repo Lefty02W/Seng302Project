@@ -8,74 +8,41 @@ html {
 
 .startUpBox{
     position: fixed;
-    bottom: 150px;
-    left: 250px;
-    height: 400px;
-    width: 500px;
+    bottom: 10vh;
+    left: 10vw;
+    height: 70vh;
+    width: 25vw;
     background-color: #ede1d1;
     opacity: 0.9;
 }
 
-.loginEmail{
-    position: fixed;
-    bottom: 400px;
-    left: 350px;
-    outline: 0;
-    border-width: 0 0 2px;
-    border-color: #ca6636;
+#logo {
+    width: 15vw;
+    height: 10vw;
 }
 
-.loginPassword{
-    position: fixed;
-    bottom: 300px;
-    left: 350px;
-    outline: 0;
-    border-width: 0 0 2px;
-    border-color: #ca6636;
+#logoRow {
+    padding-top: 5vh;
+}
+
+#greeting {
+    padding-top: 7vh;
 }
 
 
-/* Full-width inputs */
-
-
-/* Set a style for all buttons */
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 18px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 150px;
+.loginPassword, .loginEmail {
+    width: 13vw;
 }
 
-/* Add a hover effect for buttons */
-button:hover {
-    opacity: 0.8;
+#loginForm {
+    bottom: -8vh;
+    left: 5vw;
 }
 
-/* Extra style for the cancel button (red) */
-.redButton {
-    padding: 10px 18px;
-    background-color: #ca6636;
-    position: fixed;
-    bottom: 200px;
-    left: 325px;
+#loginButton, #createUserButton {
+    width: 6.5vw;
 }
 
-/* Extra style for login button */
-.loginButton {
-    padding: 10px 18px;
-    background-color: #7cb77b;
-    position: fixed;
-    bottom: 200px;
-    left: 525px;
-}
-
-/* Add padding to containers */
-.container {
-    padding: 16px;
-}
 
 #errorMessage{
     color: #ca6636;
