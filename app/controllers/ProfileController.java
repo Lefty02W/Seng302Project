@@ -19,13 +19,15 @@ import repository.*;
 import views.html.profile;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-import java.nio.file.Paths;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -302,6 +304,24 @@ public class ProfileController extends Controller {
             } else {
                 return redirect("/profile");
             }
+        });
+    }
+
+    /**
+     * Uploads a newly selected profile picture for the user, saving it in the database and
+     * setting it as the user profile picture
+     *
+     * @param request The users request to save the photo
+     * @return
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> uploadProfilePicture(Http.Request request) {
+        return supplyAsync(() -> {
+            //TODO Get photo from form
+            //TODO Auto crop to set size
+            //TODO Save to the database
+            //TODO Set as the profile picture
+            return redirect("/profile");
         });
     }
 
