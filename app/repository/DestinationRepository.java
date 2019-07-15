@@ -3,6 +3,7 @@ package repository;
 import io.ebean.*;
 import models.Destination;
 import models.DestinationChanges;
+import models.DestinationRequest;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -357,8 +358,11 @@ public class DestinationRepository {
      * @param destinationId id of the destination the user wants to update
      * @param profileId id of the profile making the request
      */
-    public void createDestinationTravellerTypeChangeRequest(int destinationId, int profileId){
-        // TODO: 15/07/19 implement method and change method signature to return id of the new request
+    public CompletionStage<Integer> createDestinationTravellerTypeChangeRequest(DestinationRequest destinationRequest){
+        return supplyAsync(() -> {
+            ebeanServer.insert(destinationRequest);
+            return destinationRequest.getId();
+        }, executionContext);
     }
 
     /**
