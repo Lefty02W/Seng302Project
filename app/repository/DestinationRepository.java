@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.*;
 import models.Destination;
+import models.DestinationChanges;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -335,14 +336,18 @@ public class DestinationRepository {
 
     /**
      * Method called from addRequest method to add the changes made in a request to the actions table
-     *
-     * @param travellerTypeId Id of the traveller type the user wants to add or remove.
-     * @param action tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
-     * @param requestId Integer id of the request the user is making, links the changes to a request
-     * @return optional of the id from the new change after the change is inserted into the destination_changes table
+     * @param destinationChanges Object that holds the following attributes to be inserted into the database:
+     *   travellerTypeId: Id of the traveller type the user wants to add or remove.
+     *   action: tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
+     *   requestId: Integer id of the request the user is making, links the changes to a request.
+     * @return Integer CompletionStage of the id from the new change after the change is inserted into the
+     *  destination_changes table
      */
-    private void addDestinationChange(int travellerTypeId, int action, int requestId){
-        // TODO: 15/07/19 implement method and change method to return integer
+    private CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
+        return supplyAsync(() -> {
+            ebeanServer.insert(destinationChanges);
+            return destinationChanges.getId();
+        }, executionContext);
     }
 
     /**
