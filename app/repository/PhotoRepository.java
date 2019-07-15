@@ -87,4 +87,22 @@ public class PhotoRepository {
 
         return Optional.ofNullable(photo);
     }
+
+
+    /**
+     * Delete a thumbnail from the database given the id
+     * @param thumbnail_id - ID of the thumbnail image to delete
+     * @return
+     */
+    public CompletionStage<Void> deleteThumbnail(Integer thumbnail_id) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String deleteQuery = "delete from thumbnail_link where thumbnail_id = ?";
+            SqlUpdate query = Ebean.createSqlUpdate(deleteQuery);
+            query.setParameter(1, thumbnail_id);
+            query.execute();
+            txn.commit();
+            return null;
+        }, executionContext);
+    }
 }
