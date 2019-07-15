@@ -237,6 +237,26 @@
                                 }
                             </table>
                         </div>
+                        <div class="row">
+                            <table id="requestsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Penis</th>
+                                        <th>Email</th>
+                                        <th>Name</th>
+                                        <th>Permissions</th>
+                                    </tr>
+                                </thead>
+                                @for(profile <- adminProfiles) {
+                                    <tr>
+                                        <td>@profile.getProfileId</td>
+                                        <td>@profile.getEmail</td>
+                                        <td>@profile.getFirstName</td>
+                                        <td>@profile.getRoles</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
