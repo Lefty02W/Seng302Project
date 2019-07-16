@@ -321,7 +321,6 @@ public class ProfileController extends Controller {
         if (photoOptional.isPresent()) {
             String filePath = System.getProperty("user.dir") + "/" + photoOptional.get().getPath();
             File file = new File(filePath);
-            System.out.println(filePath);
             if (file.delete()) {
                 return photoRepository.delete(photoId).thenApplyAsync(x -> {
                     return redirect(profileEndpoint).flashing("success", "Photo deleted");
