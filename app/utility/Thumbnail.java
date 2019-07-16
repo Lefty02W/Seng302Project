@@ -2,11 +2,12 @@ package utility;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class Thumbnail {
 
     private static Thumbnail INSTANCE;
+    private static int THUMB_HEIGHT = 100;
+    private static int THUMB_WIDTH = 100;
 
     /**
      * static method to create instance of Thumbnail class
@@ -24,15 +25,14 @@ public class Thumbnail {
     /**
      * This method will take in a buffered image at full size and return
      * a 100x100 pixel thumbnail version of it.
-     * @param sourceImage The BufferedImage object to be converted to thumbnail
-     * @return The thumbnail as a BufferedImage object
+     * Uses the SCALE_SMOOTH option for resizing.
+     * If thumbnail extraction proves to be slow, this can be swapped to SCALE_FAST.
+     * @param sourceImage The Image object to be converted to thumbnail
+     * @return The thumbnail as a Image object
      */
-    public BufferedImage extract(BufferedImage sourceImage) {
+    public Image extract(BufferedImage sourceImage) {
 
-        // check x and y lengths and throw IllegalArgumentException
-        // resize buffered image using:
-            //https://www.techcoil.com/blog/how-to-create-a-thumbnail-of-an-image-in-java-without-using-external-libraries/
-       return null;
+       return sourceImage.getScaledInstance(THUMB_WIDTH, THUMB_HEIGHT, Image.SCALE_SMOOTH);
 
     }
 
