@@ -66,6 +66,37 @@
                         </div>
                     }
 
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 align="center">Requests</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table id="requestsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>User email</th>
+                                    <th>Destination name</th>
+                                    <th>Current traveller types</th>
+                                    <th>Traveller type change</th>
+                                    <th>To be added or deleted</th>
+                                    <th>Approve</th>
+                                    <th>Decline</th>
+                                </tr>
+                            </thead>
+                            @for(profile <- adminProfiles) {
+                                <tr>
+                                    <td>@profile.getProfileId</td>
+                                    <td>@profile.getEmail</td>
+                                    <td>@profile.getFirstName</td>
+                                    <td>@profile.getRoles</td>
+                                    <td>Yeet</td>
+                                    <td><button class="btn btn-success" data-toggle="modal" data-target="#createDestModal">Approve</button></td>
+                                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#createDestModal">Decline</button></td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
 
                     <!-- TODO needs to show all admins - wait for deadbolt -->
                     <div class="col">
@@ -234,26 +265,6 @@
                                         </td>
                                     </tr>
 
-                                }
-                            </table>
-                        </div>
-                        <div class="row">
-                            <table id="requestsTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Penis</th>
-                                        <th>Email</th>
-                                        <th>Name</th>
-                                        <th>Permissions</th>
-                                    </tr>
-                                </thead>
-                                @for(profile <- adminProfiles) {
-                                    <tr>
-                                        <td>@profile.getProfileId</td>
-                                        <td>@profile.getEmail</td>
-                                        <td>@profile.getFirstName</td>
-                                        <td>@profile.getRoles</td>
-                                    </tr>
                                 }
                             </table>
                         </div>
