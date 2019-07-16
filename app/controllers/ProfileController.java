@@ -341,7 +341,23 @@ public class ProfileController extends Controller {
             }
 
 
-            TemporaryFile tempFile = picture.getRef();
+            File img = picture.getRef().path().toFile();
+
+            try {
+                BufferedImage image = ImageIO.read(img );
+                Image thumbnail = Thumbnail.getInstance().extract(image);
+
+                //TODO Save 'thumbnail' object in DB.
+                //TODO Save 'thumbnail' object in VM. Note this may need transformation as it is an Image object.
+
+            } catch (IOException e) {
+
+                return supplyAsync(() ->redirect(profileEndpoint).flashing("invalid", " Error! Thumbnail not saved"));
+            }
+
+
+
+        TemporaryFile tempFile = picture.getRef();
             String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
             tempFile.copyTo(Paths.get(filepath), true);
 
