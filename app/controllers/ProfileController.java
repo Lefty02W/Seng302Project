@@ -16,9 +16,13 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import utility.Thumbnail;
 import views.html.profile;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -176,6 +180,21 @@ public class ProfileController extends Controller {
 
         if (fileSize >= 8000000) {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "File size must not exceed 8 MB!"));
+        }
+
+
+        File img = picture.getRef().path().toFile();
+
+        try {
+            BufferedImage image = ImageIO.read(img );
+            Image thumbnail = Thumbnail.getInstance().extract(image);
+
+            //TODO Save thumbnail in DB.
+            //TODO Save thumbnail in VM.
+
+        } catch (IOException e) {
+
+            return supplyAsync(() ->redirect(profileEndpoint).flashing("invalid", " Error! Thumbnail not saved"));
         }
 
         TemporaryFile tempFile = picture.getRef();
