@@ -637,10 +637,10 @@
                     @form(routes.ProfileController.uploadProfilePicture(), 'enctype -> "multipart/form-data") {
                         @CSRF.formField
                         <div class="modal-body">
-                            <input type="file" id="upload-image" accept="image/*" value="Choose an Image"/>
+                            <input type="file" id="image" name="image" accept="image/*" value="Choose an Image"/>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" data-dismiss="modal">
+                            <button type="submit" class="btn btn-primary">
                                 Save</button>
                             <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancel</button>
                         </div>

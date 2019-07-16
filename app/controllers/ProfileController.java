@@ -288,6 +288,7 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request){
+
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
             if (profileRec.isPresent()) {
@@ -316,13 +317,39 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadProfilePicture(Http.Request request) {
-        return supplyAsync(() -> {
-            //TODO Get photo from form
+            Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
+            Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
+
+            if (picture == null) {
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "No image selected."));
+            }
+
+            String fileName = picture.getFilename();
+            String contentType = picture.getContentType();
+            Long fileSize = picture.getFileSize();
+
+            if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Invalid file type!"));
+            }
+
+            if (fileSize >= 8000000) {
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "File size must not exceed 8 MB!"));
+            }
+
+
+            TemporaryFile tempFile = picture.getRef();
+            String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
+            tempFile.copyTo(Paths.get(filepath), true);
+
+
+            Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 1, fileName);
+
+            return photoRepository.insert(photo).thenApplyAsync(photoId -> {
+               return personalPhotoRepository.insert(new PersonalPhoto(SessionController.getCurrentUserId(request), photoId, 1));
+            }).thenApply(id -> {
+                return redirect("/profile");
+            });
             //TODO Auto crop to set size
-            //TODO Save to the database
-            //TODO Set as the profile picture
-            return redirect("/profile");
-        });
     }
 
 }
