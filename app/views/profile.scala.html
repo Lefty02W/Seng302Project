@@ -285,6 +285,10 @@
                                             <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
                                                 <button class="btn btn-primary">Make Public</button></a>
                                         }
+                                            <a href="@routes.ProfileController.deletePhoto(photo.getPhotoId)">
+                                                <button class="btn btn-outline-danger">Delete</button>
+                                            </a>
+
                                         </div>
                                             <!-- The Expanded Photo Modal -->
                                         <div id="expandImageModal" class="modal">

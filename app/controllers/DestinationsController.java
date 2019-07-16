@@ -93,7 +93,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -133,7 +133,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -174,7 +174,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -338,7 +338,7 @@ public class DestinationsController extends Controller {
         destination.setProfileId(userId);
         destination.setVisible(visibility);
         if (destinationRepository.checkValidEdit(destination, userId, null)) {
-            return supplyAsync(() -> redirect("/destinations/create").flashing("success", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect("/destinations/show/false").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(destination)) {
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
@@ -349,7 +349,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/create").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect("/destinations/show/false").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 

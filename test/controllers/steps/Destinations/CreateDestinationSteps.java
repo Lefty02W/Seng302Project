@@ -4,7 +4,6 @@ import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -47,12 +46,7 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @When("user clicks on the add new destination button")
     public void userClicksOnTheAddNewDestinationButton() {
-        Http.RequestBuilder requestDest = Helpers.fakeRequest()
-                .method("GET")
-                .uri("/destinations/create")
-                .session("connected", "1");
-        Result destinationResult = Helpers.route(provideApplication(), requestDest);
-        Assert.assertEquals(200, destinationResult.status());
+        return;
     }
 
     @When("he fills in Name with {string}")
@@ -86,10 +80,10 @@ public class CreateDestinationSteps extends ProvideApplication {
         destForm.put("Longitude", string);
     }
 
-    @Then("the Create Destination page should be shown")
-    public void theCreateDestinationPageShouldBeShown() {
+    @Then("the Destination page should be shown")
+    public void theDestinationPageShouldBeShown() {
         if (redirectDestination.redirectLocation().isPresent()) {
-            assertEquals("/destinations/create", redirectDestination.redirectLocation().get());
+            assertEquals("/destinations/show/false", redirectDestination.redirectLocation().get());
         } else {
             fail();
         }

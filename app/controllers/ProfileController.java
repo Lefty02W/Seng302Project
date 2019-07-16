@@ -19,13 +19,15 @@ import repository.*;
 import views.html.profile;
 
 import javax.inject.Inject;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
-import java.nio.file.Paths;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -81,7 +83,7 @@ public class ProfileController extends Controller {
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form
-     * @apiNot POST /profile
+     * @apiNote POST /profile
      * @param request Http request
      * @return a redirect to the profile page
      */
@@ -303,6 +305,19 @@ public class ProfileController extends Controller {
                 return redirect("/profile");
             }
         });
+    }
+
+    /**
+     * Endpoint to handle a request from the user to delete a personal photo
+     *
+     * @apiNote GET /profile/photo/:photoId/delete
+     * @param request
+     * @param photoId
+     * @return
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> deletePhoto(Http.Request request, int photoId) {
+        return photoRepository.delete(photoId).thenApplyAsync(x -> redirect(profileEndpoint).flashing("success", "Photo deleted"));
     }
 
 }
