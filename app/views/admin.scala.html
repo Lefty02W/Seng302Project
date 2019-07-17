@@ -79,20 +79,34 @@
                                 <tr>
                                     <th>User email</th>
                                     <th>Destination name</th>
-                                    <th>Current traveller types</th>
                                     <th>Traveller type change</th>
                                     <th>To be added or deleted</th>
                                     <th>Approve</th>
                                     <th>Decline</th>
                                 </tr>
                             </thead>
-                            @for(profile <- adminProfiles) {
+                            @for(destinationChange <- destinationChangesList) {
                                 <tr>
-                                    <td>@profile.getProfileId</td>
-                                    <td>@profile.getEmail</td>
-                                    <td>@profile.getFirstName</td>
-                                    <td>@profile.getRoles</td>
-                                    <td>Yeet</td>
+                                    @for(destinationRequest <- destinationRequestList) {
+                                        @if(destinationRequest.getId.equals(destinationChange.getRequestId)) {
+                                            @for(profile <- profiles) {
+                                                @if(profile.getProfileId.equals(destinationRequest.getProfileId)) {
+                                                    <td>@profile.getEmail</td>
+                                                }
+                                            }
+                                            @for(destination <- destinations) {
+                                                @if(destination.getDestinationId.equals(destinationRequest.getDestinationId)) {
+                                                    <td>@destination.getName</td>
+                                                }
+                                            }
+                                            <td>@destinationChange.getTravellerTypeId</td>
+                                        }
+                                    }
+                                    @if(destinationChange.getAction == 1) {
+                                        <td>Add</td>
+                                    }else {
+                                        <td>Remove</td>
+                                    }
                                     <td><button class="btn btn-success" data-toggle="modal" data-target="#createDestModal">Approve</button></td>
                                     <td><button class="btn btn-danger" data-toggle="modal" data-target="#createDestModal">Decline</button></td>
                                 </tr>
