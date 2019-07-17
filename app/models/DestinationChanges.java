@@ -1,5 +1,6 @@
 package models;
 
+import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.validation.Constraints;
 
@@ -35,6 +36,9 @@ public class DestinationChanges extends Model {
         this.action = action;
         this.requestId = requestId;
     }
+
+    // Finder for destination
+    public static final Finder<String, DestinationChanges> find = new Finder<>(DestinationChanges.class);
 
     public Integer getId() {
         return id;

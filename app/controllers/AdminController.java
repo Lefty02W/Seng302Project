@@ -148,7 +148,7 @@ public class AdminController {
             List<Destination> destinations = Destination.find.all();
             List<DestinationChanges> destinationChangesList = DestinationChanges.find.all(); //note to self this is the main one, holds action and links to destrequest
             List<DestinationRequest> destinationRequestList = DestinationRequest.find.all(); //note to self this links the profileid and the destinationid - both should already be passes into page
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangesList, destinationRequestList, request, messagesApi.preferred(request)));
         });
     }
 

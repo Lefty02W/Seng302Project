@@ -2,7 +2,8 @@
 @import views.html.helper.{CSRF, form}
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
-        tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+        tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
+        destinationChangesList: List[DestinationChanges], destinationRequestList: List[DestinationRequest])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>

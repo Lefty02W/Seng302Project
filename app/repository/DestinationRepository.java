@@ -286,6 +286,9 @@ public class DestinationRepository {
         return Optional.of(destList);
     }
 
+
+
+
     /**
      * Method returns all followed destinations ids from a user
      *
@@ -364,6 +367,7 @@ public class DestinationRepository {
             return destinationRequest.getId();
         }, executionContext);
     }
+
 
     /**
      * Update method to add traveller types to a destination
