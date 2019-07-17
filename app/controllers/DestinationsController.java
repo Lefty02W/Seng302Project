@@ -443,4 +443,9 @@ public class DestinationsController extends Controller {
         });
 
     }
+
+    public void createChangeRequest(){
+        // TODO: 15/07/19 Create a request and call the insert function to insert the request into the DB
+        // TODO: 15/07/19 call methods to create and insert changes using the request id received from the previous insert
+    }
 }
