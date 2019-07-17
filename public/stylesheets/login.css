@@ -17,17 +17,9 @@ html {
     border-radius: 5%;
 }
 
-#logo {
+#logo-login {
     width: 15vw;
-    height: 10vw;
-}
-
-#logoRow {
-    padding-top: 5vh;
-}
-
-#greeting {
-    padding-top: 7vh;
+    height: 15vw;
 }
 
 
@@ -51,5 +43,10 @@ html {
     border-width: 0px;
 }
 
+
+.btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active  {
+    background-color: #009779;
+    border-color: #009779;
+}
 
 
