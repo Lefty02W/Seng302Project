@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * Class containing attributs for generating an entry in the Destination request linking table linking a request with a
+ * Class containing attributes for generating an entry in the Destination request linking table linking a request with a
  * profile, required for creating request changes
  */
 @Entity

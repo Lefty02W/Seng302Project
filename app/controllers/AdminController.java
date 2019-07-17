@@ -1,10 +1,7 @@
 package controllers;
 
 import io.ebean.DuplicateKeyException;
-import models.Destination;
-import models.Profile;
-import models.RoutedObject;
-import models.Trip;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -149,6 +146,8 @@ public class AdminController {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
+            List<DestinationChanges> destinationChangesList = DestinationChanges.find.all(); //note to self this is the main one, holds action and links to destrequest
+            List<DestinationRequest> destinationRequestList = DestinationRequest.find.all(); //note to self this links the profileid and the destinationid - both should already be passes into page
             return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, request, messagesApi.preferred(request)));
         });
     }
