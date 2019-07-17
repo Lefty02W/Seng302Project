@@ -1,9 +1,6 @@
 package repository;
 
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import io.ebean.SqlUpdate;
-import io.ebean.Transaction;
+import io.ebean.*;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
 
@@ -41,6 +38,35 @@ public class PhotoRepository {
         }, executionContext);
     }
 
+
+    /**
+     * Inserts a photo object into the ebean database server
+     *
+     * @param photo Photo object to insert into the database
+     */
+    public void insertThumbnail(Photo photo, Integer photoId){
+        insert(photo).thenApplyAsync(thumbId -> {
+            String qry = "INSERT INTO profile (photo_id, thumbnail_id) VALUES (?, ?)";
+            SqlUpdate query = Ebean.createSqlUpdate(qry);
+            query.setParameter(1, photoId);
+            query.setParameter(2, thumbId);
+            query.execute();
+            return true;
+        });
+    }
+
+    public Optional<Photo> getThumbnail(Integer id) {
+        String qry = "Select thumbnail_id from thumbnail_link where photo_id = ?";
+        SqlRow row = ebeanServer.createSqlQuery(qry)
+                .setParameter(1, id)
+                .findOne();
+        Integer thumb_id = row.getInteger("thumbnail_id");
+        Photo photo =
+                ebeanServer.find(Photo.class)
+                        .where().eq("photo_id", thumb_id)
+                        .findOne();
+        return Optional.ofNullable(photo);
+    }
 
     /**
      * Update image visibility in database using Photo model object,
