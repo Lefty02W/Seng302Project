@@ -3,7 +3,7 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangesList: List[DestinationChanges], destinationRequestList: List[DestinationRequest])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangesList: List[DestinationChanges])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -87,21 +87,10 @@
                             </thead>
                             @for(destinationChange <- destinationChangesList) {
                                 <tr>
-                                    @for(destinationRequest <- destinationRequestList) {
-                                        @if(destinationRequest.getId.equals(destinationChange.getRequestId)) {
-                                            @for(profile <- profiles) {
-                                                @if(profile.getProfileId.equals(destinationRequest.getProfileId)) {
-                                                    <td>@profile.getEmail</td>
-                                                }
-                                            }
-                                            @for(destination <- destinations) {
-                                                @if(destination.getDestinationId.equals(destinationRequest.getDestinationId)) {
-                                                    <td>@destination.getName</td>
-                                                }
-                                            }
-                                            <td>@destinationChange.getTravellerTypeId</td>
-                                        }
-                                    }
+
+                                    <td>@destinationChange.getEmail</td>
+                                    <td>@destinationChange.getDestination.getName</td>
+                                    <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
                                     @if(destinationChange.getAction == 1) {
                                         <td>Add</td>
                                     }else {

@@ -6,6 +6,7 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  * DestinationChanges class containing all attributes of a change for inserting the change object into the
@@ -30,6 +31,12 @@ public class DestinationChanges extends Model {
 
     @Constraints.Required
     private Integer requestId;
+    @Transient
+    private String email;
+    @Transient
+    private Destination destination;
+    @Transient
+    private TravellerType travellerType;
 
     public DestinationChanges(Integer travellerTypeId, Integer action, Integer requestId) {
         this.travellerTypeId = travellerTypeId;
@@ -70,5 +77,19 @@ public class DestinationChanges extends Model {
 
     public void setRequestId(Integer requestId) {
         this.requestId = requestId;
+    }
+
+    public String getEmail() { return email;}
+
+    public void setEmail(String email) { this.email = email;}
+
+    public Destination getDestination() { return destination;}
+
+    public void setDestination(Destination destination) { this.destination = destination;}
+
+    public TravellerType getTravellerType() {return travellerType;}
+
+    public void setTravellerType(TravellerType travellerType) {
+        this.travellerType = travellerType;
     }
 }

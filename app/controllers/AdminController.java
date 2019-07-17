@@ -88,7 +88,8 @@ public class AdminController {
     public CompletionStage<Result> viewProfile(Http.Request request, Integer id) {
         return profileRepository.findById(id).thenApplyAsync(profOpt -> {
             if (profOpt.isPresent()) {
-                return ok(admin.render(profileRepository.getAll(), getAdmins(), Trip.find.all(), new RoutedObject<Destination>(null, false, false), Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm,  null, DestinationChanges.find.all(), DestinationRequest.find.all(), request, messagesApi.preferred(request)));
+                List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
+                return ok(admin.render(profileRepository.getAll(), getAdmins(), Trip.find.all(), new RoutedObject<Destination>(null, false, false), Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm,  null, destinationChangesList, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin");
             }
@@ -110,7 +111,8 @@ public class AdminController {
             List<Destination> destinations = Destination.find.all();
             if (profileOpt.isPresent()) {
                 Form<Profile> profileForm = profileEditForm.fill(profileOpt.get());
-                return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, null, DestinationChanges.find.all(), DestinationRequest.find.all(), request, messagesApi.preferred(request)));
+                List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
+                return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, null, destinationChangesList, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin").flashing("info", "User profile not found"); //TODO look into sending an actual not found response
             }
@@ -146,9 +148,8 @@ public class AdminController {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
-            List<DestinationChanges> destinationChangesList = DestinationChanges.find.all(); //note to self this is the main one, holds action and links to destrequest
-            List<DestinationRequest> destinationRequestList = DestinationRequest.find.all(); //note to self this links the profileid and the destinationid - both should already be passes into page
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangesList, destinationRequestList, request, messagesApi.preferred(request)));
+            List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangesList, request, messagesApi.preferred(request)));
         });
     }
 
@@ -221,8 +222,8 @@ public class AdminController {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
-
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, trip, profileCreateForm, null, DestinationChanges.find.all(), DestinationRequest.find.all(), request, messagesApi.preferred(request)));
+            List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, trip, profileCreateForm, null, destinationChangesList, request, messagesApi.preferred(request)));
         });
     }
 
@@ -311,7 +312,8 @@ public class AdminController {
             Destination currentDestination = destinationRepository.lookup(destId);
             RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, isEdit, !isEdit);
             if (isEdit) destinationEditForm.fill(currentDestination);
-            return ok(admin.render(profiles, getAdmins(), trips, toSend, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, DestinationChanges.find.all(), DestinationRequest.find.all(), request, messagesApi.preferred(request)));
+            List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
+            return ok(admin.render(profiles, getAdmins(), trips, toSend, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangesList, request, messagesApi.preferred(request)));
         });
     }
 
