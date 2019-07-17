@@ -344,7 +344,7 @@ public class DestinationRepository {
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
      *  destination_changes table
      */
-    private CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
+    public CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
         return supplyAsync(() -> {
             ebeanServer.insert(destinationChanges);
             return destinationChanges.getId();
@@ -354,9 +354,9 @@ public class DestinationRepository {
     /**
      * Method to lodge a traveller type change request
      * Inserts request into the destination_request Table
-     * 
-     * @param destinationId id of the destination the user wants to update
-     * @param profileId id of the profile making the request
+     *
+     * @param  destinationRequest object holding destinationId and profileId required for inserting the change into the
+     *                            changes table
      */
     public CompletionStage<Integer> createDestinationTravellerTypeChangeRequest(DestinationRequest destinationRequest){
         return supplyAsync(() -> {

@@ -1,9 +1,6 @@
 package controllers;
 
-import models.Destination;
-import models.DestinationPhoto;
-import models.Photo;
-import models.TripDestination;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -17,10 +14,7 @@ import views.html.destinations;
 import views.html.editDestinations;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -441,11 +435,33 @@ public class DestinationsController extends Controller {
             }
             return redirect(destShowRoute).flashing("failure", "Photo was unsuccessfully unlinked from destination");
         });
-
     }
 
-    public void createChangeRequest(){
-        // TODO: 15/07/19 Create a request and call the insert function to insert the request into the DB
-        // TODO: 15/07/19 call methods to create and insert changes using the request id received from the previous insert
+    /**
+     * Method to create the requests for changing destination traveller types once user has selected the changes \
+     * they wish to make.
+     * @param profileId id of the profile who is requesting the change
+     * @param destinationId id of the destination which the user is trying to change
+     * @param toAdd list of traveller types the user wishes to add
+     * @param toRemove list of traveller type the user wishes to delete
+     */
+    public void createChangeRequest(Integer profileId, Integer destinationId, Collection toAdd, Collection toRemove){
+        DestinationRequest destinationRequest = new DestinationRequest(destinationId, profileId);
+        Integer requestId = destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest);
+        for (Integer travellerTypeId : toAdd){
+            DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, 1, requestId);
+            CompletionStage<Integer> changeId = destinationRepository.addDestinationChange(destinationChanges);
+            if(changeId == null){
+                return;
+                // TODO: 17/07/19 if no changeId need to fail as the change wasnt inserted correctly
+            }        }
+        for (Integer travellerTypeId : toRemove){
+            DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, 0, requestId);
+            CompletionStage<Integer> changeId = destinationRepository.addDestinationChange(destinationChanges);
+            if(changeId == null){
+                return;
+                // TODO: 17/07/19 if no changeId need to fail as the change wasnt inserted correctly
+            }
+        }
     }
 }
