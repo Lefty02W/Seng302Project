@@ -12,8 +12,9 @@ html {
     left: 10vw;
     height: 70vh;
     width: 25vw;
-    background-color: #ede1d1;
+    background-color: white;
     opacity: 0.9;
+    border-radius: 5%;
 }
 
 #logo {
