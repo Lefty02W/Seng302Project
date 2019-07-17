@@ -36,5 +36,18 @@ public class Thumbnail {
 
     }
 
+    /**
+     * Overloaded extract method for when the default thumbnail size needs to be over-rid.
+     * @param sourceImage The image to resize
+     * @param newWidth The new width of the image
+     * @param newHeight The new height of the image
+     * @return The resized image.
+     */
+    public Image extract(BufferedImage sourceImage, int newWidth, int newHeight) {
+
+        return sourceImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+
+    }
+
 
 }
