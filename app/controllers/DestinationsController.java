@@ -150,7 +150,6 @@ public class DestinationsController extends Controller {
      */
     public CompletionStage<Result> showDestinationEdit(Http.Request request, Integer destId,  boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
-        System.out.println("yeetyeet");
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 destinationsList = loadCurrentUserDestinationPhotos(profId, destinationsList);
