@@ -1,9 +1,6 @@
 package controllers;
 
-import models.Destination;
-import models.DestinationPhoto;
-import models.Photo;
-import models.TripDestination;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
