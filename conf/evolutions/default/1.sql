@@ -240,6 +240,50 @@ create table if not exists destination_photo
 ;
 
 
+create table if not exists destination_request
+(
+  id             int auto_increment,
+  destination_Id int null,
+  profile_Id     int null,
+  constraint destination_request_id_uindex
+  unique (id),
+  constraint destination_request_destination_destination_id_fk
+  foreign key (destination_Id) references destination (destination_id),
+  constraint destination_request_profile_profile_id_fk
+  foreign key (profile_Id) references profile (profile_id)
+)
+;
+
+
+create table if not exists destination_changes
+(
+  id                int auto_increment,
+  traveller_type_id int     not null,
+  action            tinyint not null,
+  request_id        int     not null,
+  constraint destination_changes_id_uindex
+  unique (id),
+  constraint destination_changes_destination_request_id_fk
+  foreign key (request_id) references destination_request (id),
+  constraint destination_changes_traveller_type_traveller_type_id_fk
+  foreign key (traveller_type_id) references traveller_type (traveller_type_id)
+)
+;
+
+
+create table if not exists destination_traveller_type
+(
+  id                int auto_increment
+    primary key,
+  destination_id    int not null,
+  traveller_type_id int not null,
+  constraint destination_traveller_type_destination_destination_id_fk
+  foreign key (destination_id) references destination (destination_id),
+  constraint destination_traveller_type_traveller_type_traveller_type_id_fk
+  foreign key (traveller_type_id) references traveller_type (traveller_type_id)
+)
+;
+
 
 
 # --- !Downs
@@ -280,3 +324,8 @@ drop table if exists profile_roles;
 
 drop table if exists destination_photo;
 
+drop table if exists destination_request;
+
+drop table if exists destination_changes;
+
+drop table if exists destination_traveller_type;

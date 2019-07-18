@@ -1,9 +1,7 @@
 package repository;
 
 import io.ebean.*;
-import models.Destination;
-import models.DestinationChanges;
-import models.DestinationRequest;
+import models.*;
 import play.db.ebean.EbeanConfig;
 import play.db.ebean.Transactional;
 
@@ -287,6 +285,9 @@ public class DestinationRepository {
         return Optional.of(destList);
     }
 
+
+
+
     /**
      * Method returns all followed destinations ids from a user
      *
@@ -384,6 +385,7 @@ public class DestinationRepository {
         }, executionContext);
     }
 
+
     /**
      * Update method to add traveller types to a destination
      *
@@ -392,5 +394,37 @@ public class DestinationRepository {
      */
     public void addDestinaionTravellerType(int travellerTypeId, int destinationId){
         // TODO: 15/07/19 implement method and change method signatur to return id of the added traveller type.
+    }
+
+
+    /**
+     * Method to get all destinationChanges with content such as email, destination and travellerTypes
+     * @return result, a list of destinationChanges
+     */
+    public List<DestinationChanges> getAllDestinationChanges() {
+
+                //Getting Destinationchanges out of the database
+                List<DestinationChanges > result = DestinationChanges.find.query().where()
+                        .findList();
+
+            for (DestinationChanges destinationchanges : result) {
+                DestinationRequest destinationRequest = DestinationRequest.find.query().where()
+                        .eq("id", destinationchanges.getRequestId())
+                        .findOne();
+
+                Profile profile = Profile.find.query().where()
+                        .eq("profile_id", destinationRequest.getProfileId())
+                        .findOne();
+                destinationchanges.setEmail(profile.getEmail());
+
+                Destination destination = lookup(destinationRequest.getDestinationId());
+                destinationchanges.setDestination(destination);
+
+                TravellerType travellerType = TravellerType.find.query().where()
+                        .eq("traveller_type_id", destinationchanges.getTravellerTypeId())
+                        .findOne();
+                destinationchanges.setTravellerType(travellerType);
+            }
+            return result;
     }
 }

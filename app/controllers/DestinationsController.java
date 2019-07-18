@@ -1,6 +1,9 @@
 package controllers;
 
-import models.*;
+import models.Destination;
+import models.DestinationPhoto;
+import models.Photo;
+import models.TripDestination;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -10,12 +13,16 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
 import scala.Int;
+import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -88,7 +95,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -128,7 +135,34 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
+            } else {
+                return redirect(destShowRoute);
+            }
+        });
+    }
+
+
+    /**
+     * Endpoint method to get a destination object to the view to edit or view
+     *
+     * @param request the get request sent by the client
+     * @param destId  the id of the destination to view
+     * @param isEdit  boolean holding if the request is for an edit operation
+     * @return CompletionStage holding result rendering the admin  page with the desired destination
+     * @apiNote GET /admin/destinations/:destId?isEdit
+     */
+    public CompletionStage<Result> showDestinationEdit(Http.Request request, Integer destId,  boolean isPublic) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                destinationsList = loadCurrentUserDestinationPhotos(profId, destinationsList);
+                destinationsList = loadWorldDestPhotos(profId, destinationsList);
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+                Destination currentDestination = destinationRepository.lookup(destId);
+                RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
+                form.fill(currentDestination);
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend,  request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -169,7 +203,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -333,7 +367,7 @@ public class DestinationsController extends Controller {
         destination.setProfileId(userId);
         destination.setVisible(visibility);
         if (destinationRepository.checkValidEdit(destination, userId, null)) {
-            return supplyAsync(() -> redirect("/destinations/create").flashing("success", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect("/destinations/show/false").flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(destination)) {
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
@@ -344,7 +378,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/create").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect("/destinations/show/false").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -436,6 +470,7 @@ public class DestinationsController extends Controller {
             }
             return redirect(destShowRoute).flashing("failure", "Photo was unsuccessfully unlinked from destination");
         });
+
     }
 
     /**

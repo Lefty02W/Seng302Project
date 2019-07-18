@@ -51,13 +51,13 @@ INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_o
   (1, 4, CURRENT_DATE, CURRENT_DATE, 1);
 
 INSERT INTO photo (visible, content_type, name,  path) values
-  (0, 'image/jpg', 'testPic.jpg', 'photos/personalPhotos/testPic1.jpg');
+  (0, 'image/jpg', 'testPic1.jpg', 'photos/personalPhotos/testPic1.jpg');
 
 INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
   (1, 1, 0);
 
 INSERT INTO photo (visible, content_type, name, path) values
-  (0, 'image/jpg', 'testPic1.jpg', 'photos/personalPhotos/testPic2.jpg');
+  (0, 'image/jpg', 'testPic2.jpg', 'photos/personalPhotos/testPic2.jpg');
 
 INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
   (2, 2, 0);
