@@ -9,6 +9,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import scala.Int;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -445,23 +446,12 @@ public class DestinationsController extends Controller {
      * @param toAdd list of traveller types the user wishes to add
      * @param toRemove list of traveller type the user wishes to delete
      */
-    public void createChangeRequest(Integer profileId, Integer destinationId, Collection toAdd, Collection toRemove){
+    public void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove){
         DestinationRequest destinationRequest = new DestinationRequest(destinationId, profileId);
-        Integer requestId = destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest);
-        for (Integer travellerTypeId : toAdd){
-            DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, 1, requestId);
-            CompletionStage<Integer> changeId = destinationRepository.addDestinationChange(destinationChanges);
-            if(changeId == null){
-                return;
-                // TODO: 17/07/19 if no changeId need to fail as the change wasnt inserted correctly
-            }        }
-        for (Integer travellerTypeId : toRemove){
-            DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, 0, requestId);
-            CompletionStage<Integer> changeId = destinationRepository.addDestinationChange(destinationChanges);
-            if(changeId == null){
-                return;
-                // TODO: 17/07/19 if no changeId need to fail as the change wasnt inserted correctly
-            }
+        destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest).thenApplyAsync(requestId -> {
+            destinationRepository.travellerTypeChangesTransaction(requestId, 0, toAdd);
+            destinationRepository.travellerTypeChangesTransaction(requestId, 1, toRemove);
+            return 0;
+            });
         }
-    }
 }

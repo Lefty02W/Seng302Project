@@ -5,6 +5,7 @@ import models.Destination;
 import models.DestinationChanges;
 import models.DestinationRequest;
 import play.db.ebean.EbeanConfig;
+import play.db.ebean.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -349,6 +350,24 @@ public class DestinationRepository {
             ebeanServer.insert(destinationChanges);
             return destinationChanges.getId();
         }, executionContext);
+    }
+
+    /**
+     * Helper function to wrap Destination changes in a transaction
+     * @param requestId
+     * @param toAdd Boolean true if the traveller type is to be added
+     *              False if traveller type is to be removed
+     * @param changes List of changes to be wrapped in a transaction
+     */
+    @Transactional
+    public void travellerTypeChangesTransaction(Integer requestId, Integer toAdd, List<Integer> changes){
+        try (Transaction transaction = ebeanServer.beginTransaction()) {
+            for (Integer travellerTypeId : changes) {
+                DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, toAdd, requestId);
+                addDestinationChange(destinationChanges);
+            }
+            transaction.commit();
+        }
     }
 
     /**
