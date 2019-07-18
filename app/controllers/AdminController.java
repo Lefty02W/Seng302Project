@@ -365,6 +365,7 @@ public class AdminController {
                     destinationChanges.ifPresent(destinationRepository::acceptDestinationChange);
                     return redirect("/admin").flashing("info", "Destination change successfully accepted");
                 });
+        // TODO: 18/07/19 need to get rid of email from DestinationChanges and replace with profile id, also change in ui
     }
 
 }
