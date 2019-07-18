@@ -313,100 +313,108 @@
                                 </div>
                             }
                         </div>
+                    </div>
+                </div>
+                @if(destination.isEdit && destination.getObject != null) {
+                    <script type="text/javascript">
+                            $(window).on('load', function () {
+                                $('#editDestModal').modal('show');
+                            });
+                    </script>
+                    <div class="modal" id="editModal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                    <!-- header -->
+                                <div class="modal-header">
+                                    <h4>Destination: @destination.getObject.getDestinationId</h4>
+                                    <button type="button" class="close" data-dismiss="modal"></button>
+                                </div>
+                                    <!-- body -->
+                                @helper.form(routes.DestinationsController.update(destination.getObject.getDestinationId)) {
+                                    @CSRF.formField
+                                    <div class="modal-body">
+                                        <div class="col">
+                                            <div class="col">
+                                                <div class="row">
+                                                    <label>Name</label>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="text" id="name" placeholder="Name" name="name" value="@destination.getObject.getName" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <label for="type">Type</label>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="text" id="type" placeholder="Type" name="type" value="@destination.getObject.getType" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <label>District</label>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="text" id="district" placeholder="District" name="district" value="@destination.getObject.getDistrict">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <label>Country</label>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="text" id="country" placeholder="Country" name="country" value="@destination.getObject.getCountry" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <label>Latitude</label>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <label>Longitude</label>
+                                                </div>
+                                                <div class="row">
+                                                    <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
+                                                </div>
+
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
+                                                    <label>Make Public</label>
+                                                </div>
+                                                <div class="row">
+                                                @if(destination.getObject.getVisible == 1) {
+                                                    <input type="checkbox" id="visible" name="visible" value="1" class="check-box" checked>
+                                                } else {
+                                                    <input type="checkbox" id="visible" name="visible" value="1" class="check-box">
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <!-- footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                         @if(destination.isEdit && destination.getObject != null) {
                             <script type="text/javascript">
                                     $(window).on('load', function () {
-                                        $('#editDestModal').modal('show');
+                                        $('#editModal').modal('show');
                                     });
                             </script>
-                            <div class="modal" id="editDestModal">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                            <!-- header -->
-                                        <div class="modal-header">
-                                            <h4>Destination: @destination.getObject.getDestinationId</h4>
-                                            <button type="button" class="close" data-dismiss="modal"></button>
-                                        </div>
-                                            <!-- body -->
-                                        @helper.form(routes.DestinationsController.update(destination.getObject.getDestinationId)) {
-                                            @CSRF.formField
-                                            <div class="modal-body">
-                                                <div class="col">
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <label>Name</label>
-                                                        </div>
-                                                        <div class="row">
-                                                            <input type="text" id="name" placeholder="Name" name="name" value="@destination.getObject.getName" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <label for="type">Type</label>
-                                                        </div>
-                                                        <div class="row">
-                                                            <input type="text" id="type" placeholder="Type" name="type" value="@destination.getObject.getType" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <label>District</label>
-                                                        </div>
-                                                        <div class="row">
-                                                            <input type="text" id="district" placeholder="District" name="district" value="@destination.getObject.getDistrict">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <label>Country</label>
-                                                        </div>
-                                                        <div class="row">
-                                                            <input type="text" id="country" placeholder="Country" name="country" value="@destination.getObject.getCountry" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <label>Latitude</label>
-                                                        </div>
-                                                        <div class="row">
-                                                            <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <label>Longitude</label>
-                                                        </div>
-                                                        <div class="row">
-                                                            <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
-                                                        </div>
 
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="row">
-                                                            <label>Make Public</label>
-                                                        </div>
-                                                        <div class="row">
-                                                        @if(destination.getObject.getVisible == 1) {
-                                                            <input type="checkbox" id="visible" name="visible" value="1" class="check-box" checked>
-                                                        } else {
-                                                            <input type="checkbox" id="visible" name="visible" value="1" class="check-box">
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                                <!-- footer -->
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save</button>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
                         }
                     </div>
-                </div>
+                }
             </div>
         </div>
     </body>
