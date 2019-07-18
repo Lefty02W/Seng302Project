@@ -93,4 +93,8 @@ public class TravellerTypeRepository {
         return Optional.of(ebeanServer.find(TravellerType.class).findMap());
     }
 
+    public TravellerType getById(int id) {
+        return ebeanServer.find(TravellerType.class).where().eq("traveller_type_id", id).findOne();
+    }
+
 }

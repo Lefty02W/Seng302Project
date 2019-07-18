@@ -1,7 +1,7 @@
 package repository;
 
 import io.ebean.*;
-import models.Destination;
+import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -284,6 +284,9 @@ public class DestinationRepository {
         return Optional.of(destList);
     }
 
+
+
+
     /**
      * Method returns all followed destinations ids from a user
      *
@@ -331,5 +334,78 @@ public class DestinationRepository {
         }
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();
+    }
+
+    /**
+     * Method called from addRequest method to add the changes made in a request to the actions table
+     * @param destinationChanges Object that holds the following attributes to be inserted into the database:
+     *   travellerTypeId: Id of the traveller type the user wants to add or remove.
+     *   action: tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
+     *   requestId: Integer id of the request the user is making, links the changes to a request.
+     * @return Integer CompletionStage of the id from the new change after the change is inserted into the
+     *  destination_changes table
+     */
+    private CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
+        return supplyAsync(() -> {
+            ebeanServer.insert(destinationChanges);
+            return destinationChanges.getId();
+        }, executionContext);
+    }
+
+    /**
+     * Method to lodge a traveller type change request
+     * Inserts request into the destination_request Table
+     * 
+     * @param destinationId id of the destination the user wants to update
+     * @param profileId id of the profile making the request
+     */
+    public CompletionStage<Integer> createDestinationTravellerTypeChangeRequest(DestinationRequest destinationRequest){
+        return supplyAsync(() -> {
+            ebeanServer.insert(destinationRequest);
+            return destinationRequest.getId();
+        }, executionContext);
+    }
+
+
+    /**
+     * Update method to add traveller types to a destination
+     *
+     * @param travellerTypeId id of the traveller type that will be added to the destination
+     * @param destinationId id of the destination that the traveller type will be added to
+     */
+    public void addDestinaionTravellerType(int travellerTypeId, int destinationId){
+        // TODO: 15/07/19 implement method and change method signatur to return id of the added traveller type.
+    }
+
+
+    /**
+     * Method to get all destinationChanges with content such as email, destination and travellerTypes
+     * @return result, a list of destinationChanges
+     */
+    public List<DestinationChanges> getAllDestinationChanges() {
+
+                //Getting Destinationchanges out of the database
+                List<DestinationChanges > result = DestinationChanges.find.query().where()
+                        .findList();
+
+            for (DestinationChanges destinationchanges : result) {
+                DestinationRequest destinationRequest = DestinationRequest.find.query().where()
+                        .eq("id", destinationchanges.getRequestId())
+                        .findOne();
+
+                Profile profile = Profile.find.query().where()
+                        .eq("profile_id", destinationRequest.getProfileId())
+                        .findOne();
+                destinationchanges.setEmail(profile.getEmail());
+
+                Destination destination = lookup(destinationRequest.getDestinationId());
+                destinationchanges.setDestination(destination);
+
+                TravellerType travellerType = TravellerType.find.query().where()
+                        .eq("traveller_type_id", destinationchanges.getTravellerTypeId())
+                        .findOne();
+                destinationchanges.setTravellerType(travellerType);
+            }
+            return result;
     }
 }
