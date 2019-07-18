@@ -1,6 +1,9 @@
 package controllers;
 
 
+import models.TreasureHunt;
+import play.data.Form;
+import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -11,6 +14,7 @@ import views.html.treasureHunts;
 import javax.inject.Inject;
 import java.util.concurrent.CompletionStage;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.redirect;
 
@@ -19,6 +23,7 @@ public class TreasureHuntController {
     private MessagesApi messagesApi;
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
+    private final Form<TreasureHunt> huntForm;
 
     /**
      * Constructor for the treasure hunt controller class
@@ -26,10 +31,11 @@ public class TreasureHuntController {
      * @param messagesApi
      */
     @Inject
-    public TreasureHuntController( MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
+    public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
         this.messagesApi = messagesApi;
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
+        this.huntForm = formFactory.form(TreasureHunt.class);
     }
 
 
@@ -37,8 +43,22 @@ public class TreasureHuntController {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, destinationRepository.getPublicDestinations(), request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, destinationRepository.getPublicDestinations(), huntForm, request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
+        });
+    }
+
+
+    /**
+     * Endpoint method to handle a users request to create a new treasure hunt
+     *
+     * @apiNote /hunts/create
+     * @param request the users request holding the treasure hunt form
+     * @return CompletionStage redirecting back to the treasure hunts page
+     */
+    public CompletionStage<Result> createHunt(Http.Request request) {
+        return supplyAsync(() -> {
+            return redirect("/treasure");
         });
     }
 }

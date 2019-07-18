@@ -1,7 +1,7 @@
 @import controllers.LoginController.Login
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, destinations: List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, destinations: List[Destination], form: Form[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
