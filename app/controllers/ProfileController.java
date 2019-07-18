@@ -317,7 +317,17 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deletePhoto(Http.Request request, int photoId) {
-        return photoRepository.delete(photoId).thenApplyAsync(x -> redirect(profileEndpoint).flashing("success", "Photo deleted"));
+        Optional<Photo> photoOptional = photoRepository.getImage(photoId);
+        if (photoOptional.isPresent()) {
+            String filePath = System.getProperty("user.dir") + "/" + photoOptional.get().getPath();
+            File file = new File(filePath);
+            if (file.delete()) {
+                return photoRepository.delete(photoId).thenApplyAsync(x -> {
+                    return redirect(profileEndpoint).flashing("success", "Photo deleted");
+                });
+            }
+        }
+        return supplyAsync(() -> redirect(profileEndpoint).flashing("failure", "Photo delete failed"));
     }
 
 }
