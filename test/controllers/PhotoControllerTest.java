@@ -7,12 +7,13 @@ import play.mvc.Result;
 import play.test.Helpers;
 import java.util.ArrayList;
 
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 
 
 public class PhotoControllerTest extends ProvideApplication {
 
-    //@Test
+    @Test
     public void checkAddPhoto() {
         injectRepositories();
         Photo testPhoto  = new Photo("photos/personalPhotos/test.png", "image/png", 0, "test.png");
@@ -21,10 +22,10 @@ public class PhotoControllerTest extends ProvideApplication {
             photoRepository.insertThumbnail(testThumbPhoto, photoId);
             if (photoRepository.getThumbnail(photoId).isPresent()) {
                 assertEquals(testThumbPhoto, photoRepository.getThumbnail(photoId).get());
-                return true;
             } else {
-                return false;
+                fail();
             }
+            return true;
         });
 
     }
