@@ -211,7 +211,7 @@
                                     </div>
 
                                     <div id="travellerTypes" class="row justify-content-center">
-                                        <div id="travellerTypesVal" class="col-md-2">
+                                        <div id="travellerTypesVal" class="col-md-4">
                                             <a></a>
                                         </div>
                                     </div>
@@ -928,7 +928,7 @@
                             document.getElementById("districtVal").innerHTML = "  <b>District: &nbsp;&nbsp;</b> @destination.getDistrict";
                             document.getElementById("latVal").innerHTML = "  <b>Latitude: &nbsp;&nbsp;</b> @destination.getLatitude";
                             document.getElementById("lngVal").innerHTML = "  <b>Longitude: &nbsp;&nbsp;</b> @destination.getLongitude";
-                            document.getElementById("travellerTypesVal").innerHTML = "  <b>Traveller Types: &nbsp;&nbsp;</b> @destination.getTravellerTypes.toString";
+                            document.getElementById("travellerTypesVal").innerHTML = "  <b>Traveller Types: &nbsp;&nbsp;</b> @destination.getTravellerTypesString";
                             @if(destination.getVisible == 1){
                                 document.getElementById("publicVal").innerHTML = "  <b>Visibility: &nbsp;&nbsp;</b> Public ";
                             }else{

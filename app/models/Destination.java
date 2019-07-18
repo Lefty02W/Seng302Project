@@ -180,7 +180,13 @@ public class Destination extends Model {
 
     public List<TravellerType> getTravellerTypes() { return travellerTypes;}
 
-
+    public String getTravellerTypesString() {
+        String travellerTypesString = "";
+        for (TravellerType travellerType : travellerTypes) {
+            travellerTypesString += travellerType.getTravellerTypeName() + ", ";
+        }
+        return travellerTypesString;
+    }
 
     public void setTravellerTypes(List<TravellerType> travellerTypes) { this.travellerTypes = travellerTypes; }
 

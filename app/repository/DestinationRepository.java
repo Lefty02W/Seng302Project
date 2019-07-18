@@ -23,6 +23,7 @@ public class DestinationRepository {
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
     private final RolesRepository rolesRepository;
+    private final TravellerTypeRepository travellerTypeRepository;
 
 
     /**
@@ -32,10 +33,11 @@ public class DestinationRepository {
      * @param executionContext
      */
     @Inject
-    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, RolesRepository roleRepository) {
+    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, RolesRepository roleRepository, TravellerTypeRepository travellerTypeRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.rolesRepository = roleRepository;
+        this.travellerTypeRepository = travellerTypeRepository;
     }
 
     /**
@@ -426,5 +428,23 @@ public class DestinationRepository {
                 destinationchanges.setTravellerType(travellerType);
             }
             return result;
+    }
+
+    public List<TravellerType> getDestinationsTravellerTypes(int destinationId) {
+        String sql = "select traveller_type_id from destination_traveller_type where destination_id = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, destinationId).findList();
+        if (rowList.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            ArrayList<TravellerType> travellerTypes = new ArrayList<>();
+            for (SqlRow row : rowList) {
+                int id = row.getInteger("traveller_type_id");
+                TravellerType travellerType = travellerTypeRepository.getById(id);
+                if (!travellerTypes.contains(travellerType)) {
+                    travellerTypes.add(travellerType);
+                }
+            }
+            return travellerTypes;
+        }
     }
 }
