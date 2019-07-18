@@ -8,6 +8,7 @@ import play.db.ebean.Transactional;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -346,11 +347,24 @@ public class DestinationRepository {
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
      *  destination_changes table
      */
-    public CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
+    private CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
         return supplyAsync(() -> {
             ebeanServer.insert(destinationChanges);
             return destinationChanges.getId();
         }, executionContext);
+    }
+
+
+    /**
+     * Method to remove the traveller type destination request from the destination changes database table
+     * @param changeId the database id of the change to delete
+     * @return completion stage
+     */
+    public CompletionStage<Integer> deleteDestinationChange(int changeId) {
+        return supplyAsync(() -> {
+           Objects.requireNonNull(DestinationChanges.find.byId(Integer.toString(changeId))).delete();
+           return 1;
+        });
     }
 
     /**
