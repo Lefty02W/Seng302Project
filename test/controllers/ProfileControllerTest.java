@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.internal.runners.statements.Fail;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -15,6 +16,8 @@ import play.test.Helpers;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,7 +112,7 @@ public class ProfileControllerTest extends ProvideApplication {
         Http.MultipartFormData.Part<Source<ByteString, ?>> part =
                 new Http.MultipartFormData.FilePart<>(
                         "image",
-                        "defaultPic.jpg",
+                        "testPic1.jpg",
                         "image/jpg",
                         FileIO.fromPath(file.toPath()),
                         Files.size(file.toPath()));
@@ -135,7 +138,7 @@ public class ProfileControllerTest extends ProvideApplication {
 
         new Http.MultipartFormData.FilePart<>(
                 "image",
-                "defaultPic.jpg",
+                "testPic1.jpg",
                 "image/bmp",
                 FileIO.fromPath(file.toPath()),
                 Files.size(file.toPath()));
@@ -181,7 +184,7 @@ public class ProfileControllerTest extends ProvideApplication {
     public void validPhotoDisplay() {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/profile/photo?id=1")
+                .uri("/profile/photo?id=2")
                 .session("connected", "john@gmail.com");
 
         Result result = Helpers.route(provideApplication(), request);
@@ -231,6 +234,26 @@ public class ProfileControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/profile/photo/remove")
+                .session("connected", "1");
+
+        Result result = Helpers.route(provideApplication(), request);
+        Assert.assertTrue(result.flash().getOptional("success").isPresent());
+    }
+
+    @Test
+    public void deletePersonalPhoto() {
+
+        try {
+            Path sourceDirectory = Paths.get(System.getProperty("user.dir") + "/public/images/" + "testPic1.jpg");
+            Path targetDirectory = Paths.get(System.getProperty("user.dir") + "/photos/personalPhotos/" + "testPic1.jpg");
+            Files.copy(sourceDirectory, targetDirectory);
+        } catch (IOException e) {
+            fail("Image upload to test delete has failed.");
+        }
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method(GET)
+                .uri("/profile/photo/1/delete")
                 .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(), request);
