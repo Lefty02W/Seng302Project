@@ -41,6 +41,9 @@ public class Destination extends Model {
     @Transient
     private List<Photo> worldPhotos = new ArrayList<>();
 
+    @Transient
+    private List<TravellerType> travellerTypes = new ArrayList<>();
+
     /**
      * This constructor is used by scala variables
      */
@@ -173,5 +176,23 @@ public class Destination extends Model {
 
     public void setWorldPhotos(List<Photo> worldPhotos) {
         this.worldPhotos = worldPhotos;
+    }
+
+    public List<TravellerType> getTravellerTypes() { return travellerTypes;}
+
+
+
+    public void setTravellerTypes(List<TravellerType> travellerTypes) { this.travellerTypes = travellerTypes; }
+
+    public void addTravellerType(TravellerType travellerType) {
+        if (!travellerTypes.contains(travellerType)) {
+            this.travellerTypes.add(travellerType);
+        }
+    }
+
+    public void removeTravellerType(TravellerType travellerType) {
+        if (travellerTypes.contains(travellerType)) {
+            travellerTypes.remove(travellerType);
+        }
     }
 }
