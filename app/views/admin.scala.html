@@ -2,7 +2,8 @@
 @import views.html.helper.{CSRF, form}
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
-        tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+        tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
+        destinationChangesList: List[DestinationChanges])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -67,8 +68,6 @@
                         </div>
                     }
 
-
-                    <!-- TODO needs to show all admins - wait for deadbolt -->
                     <div class="col">
                         <div class="row">
                             <div class="col">
@@ -236,6 +235,40 @@
                                         </td>
                                     </tr>
 
+                                }
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <h2 align="center">Destination requests</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="requestsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>User email</th>
+                                        <th>Destination name</th>
+                                        <th>Traveller type change</th>
+                                        <th>To be added or deleted</th>
+                                        <th>Approve</th>
+                                        <th>Decline</th>
+                                    </tr>
+                                </thead>
+                                @for(destinationChange <- destinationChangesList) {
+                                    <tr>
+
+                                        <td>@destinationChange.getEmail</td>
+                                        <td>@destinationChange.getDestination.getName</td>
+                                        <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
+                                        @if(destinationChange.getAction == 1) {
+                                            <td>Add</td>
+                                        }else {
+                                            <td>Remove</td>
+                                        }
+                                        <td><button class="btn btn-primary">Approve</button></td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
+                                    </tr>
                                 }
                             </table>
                         </div>
@@ -439,7 +472,7 @@
             var a = document.getElementById("confirmDeleteHrf");
             a.href = route;
             console.log(a.href);
-            $('#conformationDeleteModal').modal('show');
+            $('#confirmationDeleteModal').modal('show');
         }
 
         function fillCreateTripValues(select) {
@@ -460,12 +493,12 @@
     </script>
 
 
-    <div class="modal" id="conformationDeleteModal">
+    <div class="modal" id="confirmationDeleteModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <!-- header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Conformation</h4>
+                    <h4 class="modal-title">Confirmation</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                 <!-- body -->

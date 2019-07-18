@@ -210,6 +210,7 @@
                                             <a></a>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                             <div id="myPhotosTab" class="tab-pane fade">
@@ -298,6 +299,20 @@
                                             </div>
                                         </div>
                                         <div class="row">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
+                                            </div>
+                                            <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                                <option value="Backpacker">Backpacker</option>
+                                                <option value="Gap Year">Gap Year</option>
+                                                <option value="Groupie">Groupie</option>
+                                                <option value="Frequent Weekender">Frequent Weekender</option>
+                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                                <option value="Holidaymaker">Holidaymaker</option>
+                                            </select>
+                                        </div>
+                                        <div class="row">
                                             <div class="col">
                                                 <label id="label" for="visible">Make Public</label>
                                             </div>
@@ -310,7 +325,7 @@
 
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-outline-secondary"  data-dismiss="modal">Cancel</button>
-                                    <button type="submit"  id="createButton" class="btn btn-primary">Save</button>
+                                    <button type="submit"  id="createButton" class="btn btn-primary" onclick="fillVals()">Save</button>
                                 </div>
                             }
                         </div>
@@ -1044,6 +1059,11 @@
                 for (var i = 1; i < rows.length; i++) {
                     rows[i].style.backgroundColor = "";
                 }
+            }
+
+            function fillVals() {
+                console.log($('#typeDropdown').val());
+                $('#travellerTypesForm').val($('#typeDropdown').val());
             }
 
 

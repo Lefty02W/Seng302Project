@@ -9,6 +9,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import scala.Int;
 import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
@@ -150,7 +151,6 @@ public class DestinationsController extends Controller {
      */
     public CompletionStage<Result> showDestinationEdit(Http.Request request, Integer destId,  boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
-        System.out.println("yeetyeet");
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 destinationsList = loadCurrentUserDestinationPhotos(profId, destinationsList);
@@ -469,4 +469,21 @@ public class DestinationsController extends Controller {
         });
 
     }
+
+    /**
+     * Method to create the requests for changing destination traveller types once user has selected the changes \
+     * they wish to make.
+     * @param profileId id of the profile who is requesting the change
+     * @param destinationId id of the destination which the user is trying to change
+     * @param toAdd list of traveller types the user wishes to add
+     * @param toRemove list of traveller type the user wishes to delete
+     */
+    public void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove){
+        DestinationRequest destinationRequest = new DestinationRequest(destinationId, profileId);
+        destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest).thenApplyAsync(requestId -> {
+            destinationRepository.travellerTypeChangesTransaction(requestId, 0, toAdd);
+            destinationRepository.travellerTypeChangesTransaction(requestId, 1, toRemove);
+            return 0;
+            });
+        }
 }
