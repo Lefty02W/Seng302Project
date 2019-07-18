@@ -1,4 +1,4 @@
-@import play.mvc.Http
+@@import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
@@ -265,7 +265,7 @@
                                         }else {
                                             <td>Remove</td>
                                         }
-                                        <td><a href="/admin/destinations/@destinationChange.getRequestId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
+                                        <td><a href="/admin/destinations/@destinationChange.getId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
                                     </tr>
                                 }

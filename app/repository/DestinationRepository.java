@@ -8,7 +8,6 @@ import play.db.ebean.Transactional;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -361,9 +360,11 @@ public class DestinationRepository {
      * @return completion stage
      */
     public CompletionStage<Integer> deleteDestinationChange(int changeId) {
-        return supplyAsync(() -> {
-           Objects.requireNonNull(DestinationChanges.find.byId(Integer.toString(changeId))).delete();
-           return 1;
+    return supplyAsync(
+        () -> {
+          System.out.println("yeet: " + changeId);
+          ebeanServer.find(DestinationChanges.class).where().eq("id", changeId).delete();
+          return 1;
         });
     }
 
@@ -373,15 +374,25 @@ public class DestinationRepository {
      * to remove traveller type
      * @param destinationChanges the destination change to be performed
      */
-    public CompletionStage<Integer> acceptDestinationChange(DestinationChanges destinationChanges){
-        return supplyAsync(() -> {
-            if (destinationChanges.getAction() == 1){
-                addDestinaionTravellerType(destinationChanges.getTravellerTypeId(), destinationChanges.getDestination().getDestinationId());
-            } else {
-                removeDestinationTravellerType(destinationChanges.getTravellerTypeId(), destinationChanges.getDestination().getDestinationId());
-            }
-            return 1;
-        });
+    public CompletionStage<Integer> acceptDestinationChange(int changeId) {
+        return getDestinationChange(changeId)
+                .thenApplyAsync(changeOpt -> {
+                    if (changeOpt.isPresent()) {
+                        // TODO: 19/07/19 might need to have add/remove methods chain return
+                        System.out.println(changeOpt.get().getDestination());
+                        if (changeOpt.get().getAction() == 1){
+                           // addDestinaionTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
+                        } else {
+                           // removeDestinationTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
+                        }
+                    }
+                    return 1;
+                })
+                .thenApplyAsync(x -> {
+                    deleteDestinationChange(changeId);
+                    return 1;
+                });
+
     }
 
     /**
@@ -476,12 +487,13 @@ public class DestinationRepository {
      * @return CompletionStage containing the found DestinationChanges
      */
     public CompletionStage<Optional<DestinationChanges>> getDestinationChange(int changeId) {
-        return supplyAsync(() -> {
-            return Optional.ofNullable(ebeanServer
-                    .find(DestinationChanges.class)
-                    .where().eq("id", changeId)
-                    .findOne());
-        }, executionContext);
-    }
+    // TODO: 19/07/19 need to get the Destination object out too
+        return supplyAsync(
+            () -> {
+              return Optional.ofNullable(
+                  ebeanServer.find(DestinationChanges.class).where().eq("id", changeId).findOne());
+            },
+            executionContext);
+        }
 
 }

@@ -360,9 +360,8 @@ public class AdminController {
     }
 
     public CompletionStage<Result> acceptDestinationRequest(Http.Request request, Integer changeId){
-        return destinationRepository.getDestinationChange(changeId)
-                .thenApplyAsync(destinationChanges -> {
-                    destinationChanges.ifPresent(destinationRepository::acceptDestinationChange);
+        return destinationRepository.acceptDestinationChange(changeId)
+                .thenApplyAsync(x -> {
                     return redirect("/admin").flashing("info", "Destination change successfully accepted");
                 });
         // TODO: 18/07/19 need to get rid of email from DestinationChanges and replace with profile id, also change in ui
