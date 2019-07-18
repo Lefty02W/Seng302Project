@@ -29,22 +29,51 @@
                 </div>
             }
 
-                <!--  Login Scene  -->
-            @form(routes.LoginController.login()){
-                @CSRF.formField
+            <div class="row" id="logoRow">
+                <div class="col" align="center">
+                    <img id="logo-login" src="@routes.Assets.at("images/logo.png")">
+                </div>
+            </div>
 
-                <input type="text" id="email" class="loginEmail" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('Email required')" oninput="setCustomValidity('')">
-                <input type="password" id="password" class="loginPassword" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
 
+            <div class="row" id="greeting">
+                <div class="col" align="center">
+                    <h2>Welcome to Tralephant</h2>
+                </div>
+            </div>
 
-                <button type="submit" id="loginButton" class="loginButton">Login</button>
+            <div class="row">
+                    <!--  Login Scene  -->
+                @form(routes.LoginController.login()){
+                    @CSRF.formField
+                    <div class="col" id="loginForm">
+                        <div class="row">
+                            <div class="col" align="center">
+                                <input type="text" id="email" class="loginEmail" placeholder="Email" name="email" required oninvalid="this.setCustomValidity('Email required')" oninput="setCustomValidity('')">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col" align="center">
+                                <input type="password" id="password" class="loginPassword" placeholder="Password" name="password" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')">
+                            </div>
+                        </div>
+                        <div class="row" id="loginButtons">
+                            <div class="col" align="center">
+                                <button type="submit" id="loginButton" class="btn btn-primary">Login</button>
+                            </div>
+                            <div class="col" align="center">
+                                <button type="button" id="createUserButton" class="btn btn-secondary" data-toggle="modal" data-target="#createProfileModal">Create User</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
 
-            }
-
-            <button type="button" id="createUserButton" class="redButton" data-toggle="modal" data-target="#createProfileModal">Create User</button>
 
 
         </div>
+
+
         <div class="modal fade" id="createProfileModal">
 
             <div class="modal-dialog modal-dialog-centered">
