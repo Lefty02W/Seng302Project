@@ -10,6 +10,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.*;
 import roles.RestrictAnnotation;
+import scala.Int;
 import views.html.admin;
 
 import javax.inject.Inject;
@@ -344,6 +345,19 @@ public class AdminController {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
         Destination destination = destForm.get();
         return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin"));
+    }
+
+
+    /**
+     *
+     * @param request
+     * @param destId
+     * @return
+     */
+    public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer destId) {
+        return supplyAsync(() -> {
+          return redirect("/admin");
+        });
     }
 
 }
