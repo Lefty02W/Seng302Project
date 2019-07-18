@@ -55,7 +55,7 @@ public class DestinationRepository {
      * @return destinations, list of all user destinations
      */
     public ArrayList<Destination> getUserDestinations(int id) {
-        return new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("profile_id", id)
                 .findList());
@@ -67,7 +67,7 @@ public class DestinationRepository {
      * @return destinations, list of all public destinations
      */
     public ArrayList<Destination> getPublicDestinations() {
-        return new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("visible", 1)
                 .findList());
@@ -99,7 +99,7 @@ public class DestinationRepository {
                 final Optional<Destination> destinationOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
                         .setId(destID).findOne());
                 destinationOptional.ifPresent(Model::delete);
-                return Optional.of(String.format("Destination %s deleted", destinationOptional.map((Destination p) -> p.getName())));
+                return Optional.of(String.format("Destination %s deleted", destinationOptional.map(Destination::getName)));
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -326,12 +326,8 @@ public class DestinationRepository {
                 .eq("visible", 1)
                 .findList());
 
-        if(previousDestination != null){
-            if(!destinations.isEmpty()){
-                if(destinations.get(0).getName().equals(previousDestination.getName()) && destinations.get(0).getType().equals(previousDestination.getType()) && destinations.get(0).getCountry().equals(previousDestination.getCountry())) {
-                    return false;
-                }
-            }
+        if (previousDestination != null && !destinations.isEmpty() && destinations.get(0).getName().equals(previousDestination.getName()) && destinations.get(0).getType().equals(previousDestination.getType()) && destinations.get(0).getCountry().equals(previousDestination.getCountry())) {
+            return false;
         }
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();

@@ -1,7 +1,7 @@
 @import controllers.LoginController.Login
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, destinations: List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
-    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/admin.css")">
+    <link rel="stylesheet" href="@routes.Assets.at("stylesheets/treasureHunts.css")">
 
 
     <head>
@@ -91,9 +91,9 @@
                     </div>
 
                     <div class="row">
-                        <div class="col">
+                        <div class="col text-center">
                             <h2 align="center">My Hunts</h2>
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">Add Hunt</button>
+                            <button class="btn btn-primary" id="addBtn" data-toggle="modal" data-target="#createHuntModal">Add Hunt</button>
                         </div>
                     </div>
                     <div class="row">
@@ -129,5 +129,65 @@
         </div>
     </body>
 
+
+    <div class="modal" id="createHuntModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header text-center">
+                    <h4 id="addTitle">Add Treasure Hunt</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- TODO add call to form here to submit data -->
+
+                    <div class="modal-body">
+                        <div class="col" align="center">
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Riddle</small>
+                                    <!--TODO pick a max length for riddle, adjust input accordingly-->
+                                    <input type="text" name="riddle" id="riddle" required oninvalid="this.setCustomValidity('Riddle required')" oninput="setCustomValidity('')">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="destinationId"><small id="label">Destination</small></label>
+                                    <select name="destinationId" id="destinationId" class="selectpicker" data-live-search="true" required oninvalid="this.setCustomValidity('Destination required')" oninput="setCustomValidity('')">
+                                        <option selected disabled hidden>Select Destination</option>
+                                        @for(destination <- destinations) {
+                                            <option value="@destination.getDestinationId">@destination.getName</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Start Date</small>
+                                    <input type="date" id="startDate" name="startDate" required oninvalid="this.setCustomValidity('Start date required')" oninput="setCustomValidity('')">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">End Date</small>
+                                    <input type="date" id="endDate" name="endDate" required oninvalid="this.setCustomValidity('End date required')" oninput="setCustomValidity('')">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+    </script>
 
 </html>
