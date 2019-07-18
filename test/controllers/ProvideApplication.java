@@ -97,7 +97,7 @@ public class ProvideApplication extends WithApplication {
      * @throws IOException if the image file does not exist
      */
     public File getPersonalPhoto() throws IOException {
-        String filePath = System.getProperty("user.dir") + "/public/images/" + "defaultPic.jpg";
+        String filePath = System.getProperty("user.dir") + "/public/images/" + "testPic1.jpg";
         java.nio.file.Path tempFilePath = Files.createTempFile(null, null);
         byte[] expectedData = filePath.getBytes();
         Files.write(tempFilePath, expectedData);
