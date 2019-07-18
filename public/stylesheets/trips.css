@@ -1,5 +1,5 @@
 #viewCard {
-    height: 35vh;
+    height: 25vh;
     width: 100%;
 }
 
@@ -25,6 +25,7 @@ label {
     overflow: auto;
     width: 100%;
 }
+
 #tripsTable span {
     display: none;
 }
@@ -73,3 +74,10 @@ input[type=datetime-local] {
     width: 15vw;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    color: black;
+}
+
+#topBarTitle {
+    color: #ede1d1;
+}
