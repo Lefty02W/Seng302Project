@@ -10,7 +10,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.*;
 import roles.RestrictAnnotation;
-import scala.Int;
 import views.html.admin;
 
 import javax.inject.Inject;
@@ -360,10 +359,12 @@ public class AdminController {
         return destinationRepository.deleteDestinationChange(changeId).thenApplyAsync(x -> redirect("/admin").flashing("info", "Destination change request successfully rejected"));
     }
 
-    public CompletionStage<Result> acceptDestionationRequest(Http.Request request, Integer changeId){
-        // TODO: 18/07/19 repo method to get change object
-        // TODO: 18/07/19 change completion of change from above method
-        return supplyAsync(() -> redirect("/admin"));
+    public CompletionStage<Result> acceptDestinationRequest(Http.Request request, Integer changeId){
+        return destinationRepository.getDestinationChange(changeId)
+                .thenApplyAsync(destinationChanges -> {
+                    destinationChanges.ifPresent(destinationRepository::acceptDestinationChange);
+                    return redirect("/admin").flashing("info", "Destination change successfully accepted");
+                });
     }
 
 }

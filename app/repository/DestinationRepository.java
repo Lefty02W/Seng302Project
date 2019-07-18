@@ -371,21 +371,17 @@ public class DestinationRepository {
      * Accept destination change request
      * calls add traveller type method if the request is to add or calls remove traveller type method if the request is
      * to remove traveller type
-     * @param changeId Id of the
-     * @param toAdd Boolean True if the traveller type is to be added or False if the traveller type is to be removed
-     * @param travellerTypeId Id of the traveller type that will be changed
-     * @param destinationId Id of the destination the change will be made to
+     * @param destinationChanges the destination change to be performed
      */
-    public CompletionStage<Integer> acceptDestinationChange(int changeId, Boolean toAdd, int travellerTypeId, int destinationId){
-        // TODO: 18/07/19 Change method to take change object 
-        // TODO: 18/07/19 change method calls to use object parameter 
-        
-        if (toAdd){
-            addDestinaionTravellerType(travellerTypeId, destinationId);
-        } else {
-            removeDestinationTravellerType(travellerTypeId, destinationId);
-        }
-        return supplyAsync(() -> 1);
+    public CompletionStage<Integer> acceptDestinationChange(DestinationChanges destinationChanges){
+        return supplyAsync(() -> {
+            if (destinationChanges.getAction() == 1){
+                addDestinaionTravellerType(destinationChanges.getTravellerTypeId(), destinationChanges.getDestination().getDestinationId());
+            } else {
+                removeDestinationTravellerType(destinationChanges.getTravellerTypeId(), destinationChanges.getDestination().getDestinationId());
+            }
+            return 1;
+        });
     }
 
     /**
@@ -472,4 +468,20 @@ public class DestinationRepository {
             }
             return result;
     }
+
+    /**
+     * Method used to get a DestinationChanges object from the database using a passed id
+     *
+     * @param changeId the id of the change to retrieve
+     * @return CompletionStage containing the found DestinationChanges
+     */
+    public CompletionStage<Optional<DestinationChanges>> getDestinationChange(int changeId) {
+        return supplyAsync(() -> {
+            return Optional.ofNullable(ebeanServer
+                    .find(DestinationChanges.class)
+                    .where().eq("id", changeId)
+                    .findOne());
+        }, executionContext);
+    }
+
 }

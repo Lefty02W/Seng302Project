@@ -83,4 +83,4 @@ POST    /admin/destinations/:destId             controllers.AdminController.edit
 GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)
 POST    /admin/create/destinations              controllers.AdminController.addDestination(request: Request)
 GET     /admin/destinations/:id/request/reject  controllers.AdminController.rejectDestinationRequest(request : Request, id : Integer)
-GET     /admin/destinations/:id/request/accept  controllers.AdminController.acceptDestionationRequest(request : Request, id : Integer)
+GET     /admin/destinations/:id/request/accept  controllers.AdminController.acceptDestinationRequest(request : Request, id : Integer)
