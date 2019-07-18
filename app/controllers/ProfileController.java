@@ -16,9 +16,13 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import utility.Thumbnail;
 import views.html.profile;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -83,7 +87,7 @@ public class ProfileController extends Controller {
 
     /**
      * Updates a profile's attributes based on what is retrieved form the form
-     * @apiNot POST /profile
+     * @apiNote POST /profile
      * @param request Http request
      * @return a redirect to the profile page
      */
@@ -337,7 +341,23 @@ public class ProfileController extends Controller {
             }
 
 
-            TemporaryFile tempFile = picture.getRef();
+            File img = picture.getRef().path().toFile();
+
+            try {
+                BufferedImage image = ImageIO.read(img );
+                Image thumbnail = Thumbnail.getInstance().extract(image);
+
+                //TODO Save 'thumbnail' object in DB.
+                //TODO Save 'thumbnail' object in VM. Note this may need transformation as it is an Image object.
+
+            } catch (IOException e) {
+
+                return supplyAsync(() ->redirect(profileEndpoint).flashing("invalid", " Error! Thumbnail not saved"));
+            }
+
+
+
+        TemporaryFile tempFile = picture.getRef();
             String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
             tempFile.copyTo(Paths.get(filepath), true);
 
@@ -350,6 +370,19 @@ public class ProfileController extends Controller {
                 return redirect("/profile");
             });
             //TODO Auto crop to set size
+    }
+
+    /**
+     * Endpoint to handle a request from the user to delete a personal photo
+     *
+     * @apiNote GET /profile/photo/:photoId/delete
+     * @param request
+     * @param photoId
+     * @return
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> deletePhoto(Http.Request request, int photoId) {
+        return photoRepository.delete(photoId).thenApplyAsync(x -> redirect(profileEndpoint).flashing("success", "Photo deleted"));
     }
 
 }

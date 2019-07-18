@@ -20,4 +20,4 @@ Feature: Create a destination
     And he fills in Country with "New Zealand"
     And he fills in Longitude as "200"
     And he presses Save
-    Then the Create Destination page should be shown
+    Then the Destination page should be shown
