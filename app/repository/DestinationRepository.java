@@ -368,6 +368,27 @@ public class DestinationRepository {
     }
 
     /**
+     * Accept destination change request
+     * calls add traveller type method if the request is to add or calls remove traveller type method if the request is
+     * to remove traveller type
+     * @param changeId Id of the
+     * @param toAdd Boolean True if the traveller type is to be added or False if the traveller type is to be removed
+     * @param travellerTypeId Id of the traveller type that will be changed
+     * @param destinationId Id of the destination the change will be made to
+     */
+    public CompletionStage<Integer> acceptDestinationChange(int changeId, Boolean toAdd, int travellerTypeId, int destinationId){
+        // TODO: 18/07/19 Change method to take change object 
+        // TODO: 18/07/19 change method calls to use object parameter 
+        
+        if (toAdd){
+            addDestinaionTravellerType(travellerTypeId, destinationId);
+        } else {
+            removeDestinationTravellerType(travellerTypeId, destinationId);
+        }
+        return supplyAsync(() -> 1);
+    }
+
+    /**
      * Helper function to wrap Destination changes in a transaction
      * @param requestId
      * @param toAdd Boolean true if the traveller type is to be added
@@ -408,6 +429,16 @@ public class DestinationRepository {
      */
     public void addDestinaionTravellerType(int travellerTypeId, int destinationId){
         // TODO: 15/07/19 implement method and change method signatur to return id of the added traveller type.
+    }
+
+    /**
+     * Update method to remove traveller type on a destination
+     *
+     * @param travellerTypeId id of the traveller type that will be added to the destination
+     * @param destinationId id of the destination that the traveller type will be added to
+     */
+    public void removeDestinationTravellerType(int travellerTypeId, int destinationId){
+        // TODO: 18/07/19  implement method once model can hold traveller types
     }
 
 

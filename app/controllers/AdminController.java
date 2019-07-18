@@ -360,4 +360,10 @@ public class AdminController {
         return destinationRepository.deleteDestinationChange(changeId).thenApplyAsync(x -> redirect("/admin").flashing("info", "Destination change request successfully rejected"));
     }
 
+    public CompletionStage<Result> acceptDestionationRequest(Http.Request request, Integer changeId){
+        // TODO: 18/07/19 repo method to get change object
+        // TODO: 18/07/19 change completion of change from above method
+        return supplyAsync(() -> redirect("/admin"));
+    }
+
 }
