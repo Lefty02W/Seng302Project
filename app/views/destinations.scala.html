@@ -474,8 +474,24 @@
                                 <div class="col">
                                     <div class="row justify-content-center">
                                         <div class="col-md-6">
-                                            @*Get things to remove*@
-                                            ADD SOMETHING TO REMOVE
+                                            @*TODO: Get things to remove*@
+                                           <div class="row justify-content-center">
+                                               <div class="col-md-4">
+                                                   @for(destination <- destinationsList) {
+                                                       @*TODO: check destination clicked*@
+                                                       @if(true) {
+                                                            @for(travelerType <- destination.getTravellerTypes()) {
+                                                                <a>travelerType</a>
+                                                                <a>SUCCESS</a>
+                                                            }
+                                                       }
+                                                   }
+                                                   <a>fix this</a>
+                                               </div>
+                                               <div class="col-md-4">
+                                                   <input type="checkbox">
+                                               </div>
+                                           </div>
                                         </div>
                                         <div class="col-md-6">
                                             @*TODO: Get things to add*@
@@ -511,7 +527,8 @@
             var map;
             var markers = [];
             var markersMap = new Map();
-            var destinationId;
+            var destinationID;
+            var selectedDestID;
             var nightStyle = [
                 {
                     "elementType": "geometry",
@@ -954,7 +971,6 @@
                                 "<br> Country: @destination.getCountry";
                         var destinationId = @destination.getDestinationId;
                         var infoWindow = new google.maps.InfoWindow();
-
                         google.maps.event.addListener(marker, 'click', function () {
                             infoWindow.setContent(this.content);
                             infoWindow.open(this.getMap(), this);
@@ -1083,6 +1099,7 @@
             * and makes the related marker bounce
             */
             function setSelectedDestination(destinationId, row) {
+
                 var markerToSet = markersMap.get(destinationId);
                 new google.maps.event.trigger( markerToSet, 'click' );
                 map.setCenter(markerToSet.getPosition());
@@ -1097,6 +1114,7 @@
                 } else {
                     row.style.backgroundColor = "";
                 }
+                selectedDestID = destinationID;
             }
 
             /**
@@ -1118,6 +1136,7 @@
                 }
             }
 
+            function getSelectedDestID () {return selectedDestID;}
             function fillVals() {
                 console.log($('#typeDropdown').val());
                 $('#travellerTypesForm').val($('#typeDropdown').val());
