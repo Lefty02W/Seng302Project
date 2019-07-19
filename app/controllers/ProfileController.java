@@ -241,8 +241,7 @@ public class ProfileController extends Controller {
      * @return extension string with just the extension.
      */
     private String photoType(String url){
-        String extension = url.substring(url.lastIndexOf("/") + 1);
-        return extension;
+        return url.substring(url.lastIndexOf("/") + 1);
     }
 
     /**
@@ -256,11 +255,8 @@ public class ProfileController extends Controller {
         Optional<Photo> photoOpt = photoRepository.getImage(photoId);
         if(photoOpt.isPresent()) {
             File photoFile = new File(photoOpt.get().getPath());
-            System.out.println(photoFile);
             if (photoFile.exists()) {
-                System.out.println("Print in create new thumbnail 2");
-
-                try{
+                try {
                     BufferedImage image = ImageIO.read(photoFile);
                     Image thumbnail = Thumbnail.getInstance().extract(image);
                     BufferedImage bufferedImage = new BufferedImage(thumbnail.getWidth(null), thumbnail.getHeight(null), BufferedImage.TYPE_INT_RGB);
@@ -285,7 +281,6 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request, Integer photoId) {
-        // TODO need to create a thumbnail from this new profile picture
         int profileId = SessionController.getCurrentUserId(request);
         try {
             personalPhotoRepository.findByPhotoId(photoId).thenApplyAsync(photoOpt -> {
@@ -293,7 +288,6 @@ public class ProfileController extends Controller {
                     personalPhotoRepository.removeProfilePic(profileId);
                     photoRepository.deleteCurrentThumbnail(photoId);
                     personalPhotoRepository.setProfilePic(profileId, photoId);
-                    System.out.println("Print in setProfilePic method");
                     createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
                 }
                 return photoOpt;
@@ -318,17 +312,6 @@ public class ProfileController extends Controller {
             savePhoto(demoProfilePicture, profileId);
         }
         return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Profile picture removed"));
-    }
-
-
-    /**
-     * deletes the demoProfilePicture, effectively deleting any changes to the profile picture then refreshes the page
-     * @return a redirect to the profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> resetDemoProfilePicture() {
-        demoProfilePicture = null;
-        return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Changes cancelled"));
     }
 
 
@@ -396,15 +379,8 @@ public class ProfileController extends Controller {
 
             return photoRepository.insert(photo).thenApplyAsync(photoId -> {
                 personalPhotoRepository.removeProfilePic(SessionController.getCurrentUserId(request));
-                File img = picture.getRef().path().toFile();
-                try {
-                    BufferedImage image = ImageIO.read(img );
-                    Image thumbnail = Thumbnail.getInstance().extract(image);
-                    createThumbnail(photoId, thumbnail, SessionController.getCurrentUserId(request), contentType);
-                } catch (IOException e) {
-                    return supplyAsync(() ->redirect(profileEndpoint).flashing("invalid", " Error! Thumbnail not saved"));
-                }
-               return personalPhotoRepository.insert(new PersonalPhoto(SessionController.getCurrentUserId(request), photoId, 1));
+                createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
+                return personalPhotoRepository.insert(new PersonalPhoto(SessionController.getCurrentUserId(request), photoId, 1));
             }).thenApply(id -> {
                 return redirect("/profile");
             });
