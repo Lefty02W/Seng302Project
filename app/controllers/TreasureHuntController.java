@@ -61,7 +61,7 @@ public class TreasureHuntController {
      * Endpoint method to handle a users request to create a new treasure hunt
      *
      * @apiNote /hunts/create
-     * @param request the u    /**ate 	get end datesers request holding the treasure hunt form
+     * @param request the get end datesers request holding the treasure hunt form
      * @return CompletionStage redirecting back to the treasure hunts page
      */
     public CompletionStage<Result> createHunt(Http.Request request) {
