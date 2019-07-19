@@ -1,6 +1,4 @@
 @import play.mvc.Http
-@import views.html.helper.CSRF
-@import helper._
 @(photoList: List[Photo], currentProfile : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -23,6 +21,7 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/travellers.css")">
 
     <head>
+        <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
         <title>TravelEA | Travellers</title>
     </head>
 

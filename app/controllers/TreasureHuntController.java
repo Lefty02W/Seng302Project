@@ -69,6 +69,17 @@ public class TreasureHuntController {
         });
     }
 
+
+
+    /**
+     * Called treasure hunt delete method in the treasureHuntRepository to delete the treasureHunt from the database
+     * @param id int Id of the treasureHunt the user wishes to delete
+     */
+    public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
+        return treasureHuntRepository.deleteTreasureHunt(id, SessionController.getCurrentUserId(request))
+                .thenApplyAsync(x -> redirect("/treasure").flashing("succsess", "Hunt: " + id + "was deleted"));
+    }
+
     /**
      * Endpoint method to handle a users request to edit a previously made treasure hunt
      * @apiNote /hunts/:id/edit

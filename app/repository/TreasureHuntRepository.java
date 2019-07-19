@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -90,4 +92,19 @@ public class TreasureHuntRepository {
                 .eq("user_id", userId)
                 .findList());
     }
+
+    /**
+     * Deletes a TreasureHunt from the database
+     *
+     * @param treasureHuntId id of the treasureHunt the user wishes to delete
+     */
+    public CompletionStage<Integer> deleteTreasureHunt(int treasureHuntId, Integer userId){
+        return supplyAsync(() -> {
+            ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).eq("user_id", userId).delete();
+            return 1;
+        });
+    }
+
+
+
 }
