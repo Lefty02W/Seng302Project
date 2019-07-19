@@ -75,6 +75,7 @@ public class Destination extends Model {
 
     /**
      * Creating a destination
+     * @param profileId
      * @param name the destination name
      * @param type the destination type
      * @param country the destinations country
