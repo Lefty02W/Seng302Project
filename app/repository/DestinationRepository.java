@@ -3,6 +3,7 @@ package repository;
 import io.ebean.*;
 import models.*;
 import play.db.ebean.EbeanConfig;
+import play.db.ebean.Transactional;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -345,7 +346,7 @@ public class DestinationRepository {
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
      *  destination_changes table
      */
-    private CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
+    public CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
         return supplyAsync(() -> {
             ebeanServer.insert(destinationChanges);
             return destinationChanges.getId();
@@ -353,11 +354,29 @@ public class DestinationRepository {
     }
 
     /**
+     * Helper function to wrap Destination changes in a transaction
+     * @param requestId
+     * @param toAdd Boolean true if the traveller type is to be added
+     *              False if traveller type is to be removed
+     * @param changes List of changes to be wrapped in a transaction
+     */
+    @Transactional
+    public void travellerTypeChangesTransaction(Integer requestId, Integer toAdd, List<Integer> changes){
+        try (Transaction transaction = ebeanServer.beginTransaction()) {
+            for (Integer travellerTypeId : changes) {
+                DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, toAdd, requestId);
+                addDestinationChange(destinationChanges);
+            }
+            transaction.commit();
+        }
+    }
+
+    /**
      * Method to lodge a traveller type change request
      * Inserts request into the destination_request Table
-     * 
-     * @param destinationId id of the destination the user wants to update
-     * @param profileId id of the profile making the request
+     *
+     * @param  destinationRequest object holding destinationId and profileId required for inserting the change into the
+     *                            changes table
      */
     public CompletionStage<Integer> createDestinationTravellerTypeChangeRequest(DestinationRequest destinationRequest){
         return supplyAsync(() -> {
