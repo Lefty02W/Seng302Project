@@ -85,8 +85,8 @@
                             @for(hunt <- availableHunts) {
                                 <tr>
 
-                                    <td>hunt.getRiddle</td>
-                                    <td>hunt.getEndDate</td>
+                                    <td>@hunt.getRiddle</td>
+                                    <td>@hunt.getEndDate</td>
                                 </tr>
                             }
                         </table>
@@ -112,10 +112,10 @@
                             </thead>
                             @for(hunt <- myHunts) {
                                 <tr>
-                                    <td>hunt.getRiddle</td>
-                                    <td>hunt.getStartDate</td>
-                                    <td>hunt.getEndDate</td>
-                                    <td>hunt.getEndDate</td>
+                                    <td>@hunt.getRiddle</td>
+                                    <td>@hunt.getStartDate</td>
+                                    <td>@hunt.getEndDate</td>
+                                    <td>@hunt.getEndDate</td>
                                     <td>
                                         <a href="">
                                             <button class="btn btn-primary">Edit</button>
