@@ -44,7 +44,6 @@ public class Destination extends Model {
     private List<Photo> worldPhotos = new ArrayList<>();
 
     @Transient
-    @Constraints.Required
     private String travellerTypesForm;
 
     @Transient
@@ -108,11 +107,14 @@ public class Destination extends Model {
      */
     public void initTravellerType() {
         this.travellerTypes = new HashMap<>();
-        int i = 1;
-        for (String travellerTypesString : (travellerTypesForm.split(","))) {
-            i++;
-            TravellerType travellerType = new TravellerType(i, travellerTypesString);
-            this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+
+        if (travellerTypesForm != null) {
+            int i = 1;
+            for (String travellerTypesString : (travellerTypesForm.split(","))) {
+                i++;
+                TravellerType travellerType = new TravellerType(i, travellerTypesString);
+                this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+            }
         }
     }
 
