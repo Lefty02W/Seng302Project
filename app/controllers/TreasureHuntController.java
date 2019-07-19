@@ -27,6 +27,7 @@ public class TreasureHuntController {
     private final DestinationRepository destinationRepository;
     private final TreasureHuntRepository treasureHuntRepository;
     private final Form<TreasureHunt> huntForm;
+    private String huntShowRoute = "/hunt";
 
     /**
      * Constructor for the treasure hunt controller class
@@ -65,6 +66,22 @@ public class TreasureHuntController {
     public CompletionStage<Result> createHunt(Http.Request request) {
         return supplyAsync(() -> {
             return redirect("/treasure");
+        });
+    }
+
+    /**
+     * Endpoint method to handle a users request to edit a previously made treasure hunt
+     * @apiNote /hunts/:id/edit
+     * @param request the users request holding the treasure hunt form
+     * @param id Id of the treasure hunt to be edited
+     * @return CompletionStage redirecting back to the treasure hunts page
+     */
+    public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
+        Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
+        TreasureHunt treasureHunt = treasureHuntForm.get();
+        return supplyAsync(() -> {
+            treasureHuntRepository.update(treasureHunt, id);
+            return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
         });
     }
 }
