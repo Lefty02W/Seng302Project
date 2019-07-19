@@ -9,6 +9,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
+import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
@@ -18,12 +19,14 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.redirect;
 
+
 public class TreasureHuntController {
 
     private MessagesApi messagesApi;
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
     private final Form<TreasureHunt> huntForm;
+    private final TreasureHuntRepository treasureHuntRepository;
 
     /**
      * Constructor for the treasure hunt controller class
@@ -31,11 +34,12 @@ public class TreasureHuntController {
      * @param messagesApi
      */
     @Inject
-    public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
+    public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository) {
         this.messagesApi = messagesApi;
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
         this.huntForm = formFactory.form(TreasureHunt.class);
+        this.treasureHuntRepository = treasureHuntRepository;
     }
 
 
@@ -60,5 +64,17 @@ public class TreasureHuntController {
         return supplyAsync(() -> {
             return redirect("/treasure");
         });
+    }
+
+
+
+    /**
+     * Called treasure hunt delete method in the treasureHuntRepository to delete the treasureHunt from the database
+     *
+     * @param id int Id of the treasureHunt the user wishes to delete
+     */
+    public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
+        return treasureHuntRepository.deleteTreasureHunt(id, SessionController.getCurrentUserId(request))
+                .thenApplyAsync(x -> redirect("/treasure").flashing("succsess", "Hunt: " + id + "was deleted"));
     }
 }
