@@ -13,20 +13,21 @@ import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.redirect;
 
-
 public class TreasureHuntController {
 
     private MessagesApi messagesApi;
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
-    private final Form<TreasureHunt> huntForm;
     private final TreasureHuntRepository treasureHuntRepository;
+    private final Form<TreasureHunt> huntForm;
+    private String huntShowRoute = "/hunt";
 
     /**
      * Constructor for the treasure hunt controller class
@@ -45,9 +46,11 @@ public class TreasureHuntController {
 
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, destinationRepository.getPublicDestinations(), huntForm, request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }
@@ -76,5 +79,21 @@ public class TreasureHuntController {
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
         return treasureHuntRepository.deleteTreasureHunt(id, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/treasure").flashing("succsess", "Hunt: " + id + "was deleted"));
+    }
+
+    /**
+     * Endpoint method to handle a users request to edit a previously made treasure hunt
+     * @apiNote /hunts/:id/edit
+     * @param request the users request holding the treasure hunt form
+     * @param id Id of the treasure hunt to be edited
+     * @return CompletionStage redirecting back to the treasure hunts page
+     */
+    public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
+        Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
+        TreasureHunt treasureHunt = treasureHuntForm.get();
+        return supplyAsync(() -> {
+            treasureHuntRepository.update(treasureHunt, id);
+            return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
+        });
     }
 }

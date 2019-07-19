@@ -58,6 +58,7 @@ GET     /profile/photo/save/:photoId         controllers.ProfileController.setPr
 GET     /profile/photo/remove        controllers.ProfileController.removeProfilePicture(request: Request)
 GET     /profile/photo        controllers.ProfileController.photoAt(id: Integer)
 GET     /profile/photo/:photoId/delete      controllers.ProfileController.deletePhoto(request: Request, photoId: Integer)
+POST    /profile/photo/profile/upload   controllers.ProfileController.uploadProfilePicture(request: Request)
 
 # Admins
 POST    /admin/:id                controllers.ProfileController.updateAdmin(request: Request, id: Integer)
@@ -88,3 +89,4 @@ GET  /admin/destinations/:id/request/reject      controllers.AdminController.rej
 GET     /treasure                    controllers.TreasureHuntController.show(request: Request)
 POST    /hunts/create       controllers.TreasureHuntController.createHunt(request : Request)
 GET     /treasure/:id/delete        controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
+POST    /hunts/:id/edit       controllers.TreasureHuntController.editTreasureHunt(request : Request, id: Integer)

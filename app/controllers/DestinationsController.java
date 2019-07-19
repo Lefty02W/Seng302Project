@@ -116,7 +116,7 @@ public class DestinationsController extends Controller {
     }
 
 
-    /**
+    /**•••••••••
      * Method to follow a destination called from the destinations page and used from an endpoint
      *
      * @param profileId Id of the profile to follow destination

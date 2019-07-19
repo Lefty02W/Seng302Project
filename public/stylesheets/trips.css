@@ -1,5 +1,5 @@
 #viewCard {
-    height: 35vh;
+    height: 25vh;
     width: 100%;
 }
 
@@ -9,7 +9,7 @@
 
 
 #destForm {
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 label {
@@ -25,22 +25,12 @@ label {
     overflow: auto;
     width: 100%;
 }
+
 #tripsTable span {
     display: none;
+    height: 35vh;
 }
 
-.saveTripButton{
-    right: 0;
-    bottom: 0;
-    margin: 1vw;
-    position: fixed;
-}
-.button-back{
-    right: 170px;
-    bottom: 0;
-    margin:1vw;
-    position: fixed;
-}
 
 .tripNameInput{
     display: block;
@@ -73,3 +63,15 @@ input[type=datetime-local] {
     width: 15vw;
 }
 
+h1, h2, h3, h4, h5, h6 {
+    color: black;
+}
+
+#topBarTitle {
+    color: #ede1d1;
+}
+
+.table-card {
+    height: 42vh;
+    width: 100%;
+}
