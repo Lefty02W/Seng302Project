@@ -143,7 +143,8 @@
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                     <!-- TODO add call to form here to submit data -->
-
+                @helper.form(routes.TreasureHuntController.createHunt()) {
+                    @CSRF.formField
                     <div class="modal-body">
                         <div class="col" align="center">
                             <div class="row">
@@ -156,24 +157,26 @@
                             <div class="row">
                                 <div class="form-group">
                                     <label for="destinationId"><small id="label">Destination</small></label>
-                                    <select name="destinationId" id="destinationId" class="selectpicker" data-live-search="true" required oninvalid="this.setCustomValidity('Destination required')" oninput="setCustomValidity('')">
-                                        <option selected disabled hidden>Select Destination</option>
-                                        @for(destination <- destinations) {
-                                            <option value="@destination.getDestinationId">@destination.getName</option>
-                                        }
+
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required oninvalid="this.setCustomValidity('Destination required')" oninput="setCustomValidity('')">
+                                    @for(destination <- destinations) {
+                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                    }
                                     </select>
+
+
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">Start Date</small>
-                                    <input type="date" id="startDate" name="startDate" required oninvalid="this.setCustomValidity('Start date required')" oninput="setCustomValidity('')">
+                                    <input type="datetime-local" id="startDate" name="startDate" required oninvalid="this.setCustomValidity('Start date required')" oninput="setCustomValidity('')">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">End Date</small>
-                                    <input type="date" id="endDate" name="endDate" required oninvalid="this.setCustomValidity('End date required')" oninput="setCustomValidity('')">
+                                    <input type="datetime-local" id="endDate" name="endDate" required oninvalid="this.setCustomValidity('End date required')" oninput="setCustomValidity('')">
                                 </div>
                             </div>
                         </div>
@@ -184,6 +187,7 @@
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
             </div>
+            }
         </div>
     </div>
 
