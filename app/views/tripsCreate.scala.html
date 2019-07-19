@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/trips.css")">
     <head>
+        <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
         <title>TravelEA | Trips</title>
     </head>
     <body>
@@ -54,7 +55,7 @@
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
                     <div id="pageTitle">
-                    <h2>Create Trip</h2>
+                    <h2 id="topBarTitle">Create Trip</h2>
                     </div>
                 </nav>
                 @helper.form(routes.TripsController.save(userId)) {
@@ -63,13 +64,12 @@
                         <div class="tripNameInput">
                             <input type="text" id="name" name="name" required placeholder="Trip Name">
                         </div>
-                        <button type="submit" class="saveTripButton" id="save">Save Trip</button>
+                        <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
                     </div>
 
                 }
                 <div class="container-fluid">
                     <div class="col">
-                        <div class="row">
                             <div id = "viewCard" class="card-large upper-card">
                                 @if(request.flash.getOptional("info").isPresent) {
                                     <div class="alert alert-info">
@@ -79,37 +79,41 @@
                                 @helper.form(routes.TripsController.addDestination(userId)) {
                                     @CSRF.formField
                                     <div class="container">
-                                        <div class="col">
-                                            <h5>Destination</h5>
-                                            <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                            @for(destination <- destinationsList) {
-                                                <option value="@destination.getDestinationId">@destination.getName</option>
-                                            }
-                                            </select>
+                                        <div class="row">
+                                            <div class="col">
+                                                <h4>Select Destination</h4>
+                                            </div>
                                         </div>
 
-                                    <div class="row">
-                                        <div class="col">
-                                            <h5>Arrival Time</h5>
-                                            <input type="datetime-local" id="arrival" name="arrival">
-                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <h5>Destination</h5>
+                                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                                @for(destination <- destinationsList) {
+                                                    <option value="@destination.getDestinationId">@destination.getName</option>
+                                                }
+                                                </select>
+                                            </div>
 
-                                        <div class="col">
-                                            <h5>Departure Time</h5>
-                                            <input type="datetime-local" id="departure" name="departure">
+                                            <div class="col">
+                                                <h5>Arrival Time</h5>
+                                                <input type="datetime-local" id="arrival" name="arrival">
+                                            </div>
+
+                                            <div class="col">
+                                                <h5>Departure Time</h5>
+                                                <input type="datetime-local" id="departure" name="departure">
+                                            </div>
+                                            <div class="col">
+                                                <button type="submit" class="btn btn-primary" id="addDest">Add Destination</button>
+                                            </div>
                                         </div>
-                                        <div class="col">
-                                            <button type="submit" class="button-add" id="addDest">
-                                                Add Destination</button>
-                                        </div>
-                                    </div>
 
 
 
                                 </div>
 
                             }
-                        </div>
                     </div>
                     <div class="col">
                         <div id = "viewCard" class="card-large upper-card">
@@ -133,7 +137,7 @@
                                                 <button class="btn btn-primary" data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" type="submit">Edit </button>
                                             </a>
                                             <a href="@routes.TripsController.deleteDestination(tripDestination.getDestOrder, userId)">
-                                                <button class="btn btn-primary" type="submit">Delete </button>
+                                                <button class="btn btn-danger" type="submit">Delete </button>
                                             </a>
                                         </td>
 
@@ -145,7 +149,7 @@
                     </div>
                 </div>
                     <div class="row">
-                        <a href="@routes.TripsController.show()"> <button class="button-back" type="button">Back</button> </a>
+                        <a href="@routes.TripsController.show()"> <button class="button-back btn btn-secondary" type="button">Back</button> </a>
                     </div>
 
                 </div>
@@ -194,12 +198,11 @@
 
                                 <h5>Departure Time</h5>
                                 <input type="datetime-local" id="departure" name="departure" value="@toEdit.formatLocalDate(toEdit.getDeparture)"></div>
-
-                            <button type="submit" class="button-add">save</button>
                         </div>
 
                         <div class="modal-footer">
-                            <button type="button" class="button-delete" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     }
                             <!-- Modal footer -->

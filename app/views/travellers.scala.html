@@ -87,8 +87,8 @@
                                 <option value="business">functional/business Traveller</option>
                                 <option value="Holidaymaker">Holidaymaker</option>
                             </select>
-                            <button type="submit" id="searchBttn">Search</button>
-                            <a href="@routes.TravellersController.show()"> <button type="button" id="cancelBttn">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                            <a href="@routes.TravellersController.show()"> <button class="btn btn-secondary" type="button">
                                 Clear</button></a>
                         }
                         </div>
@@ -117,7 +117,7 @@
                                             }</ul>
                                             </td>
                                             <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">
-                                                <button type="submit" class="viewPicButton">View</button>
+                                                <button type="submit" class="btn btn-primary" class="viewPicButton">View</button>
                                             </a>
                                             </td>
                                         </tr>
