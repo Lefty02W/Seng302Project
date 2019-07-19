@@ -273,7 +273,7 @@ public class AdminController {
      * @apiNote /admin/destinations/:destId/delete
      */
     public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
-        return tripDestinationsRepository
+        return destinationRepository
                 .checkDestinationExists(destId)
                 .thenApplyAsync(
                         result -> {
@@ -283,7 +283,7 @@ public class AdminController {
                                                 "error",
                                                 "Destination: "
                                                         + destId
-                                                        + " is used within the following trips: "
+                                                        + " is used within the following "
                                                         + result.get());
                             }
                             destinationRepository.delete(destId);
