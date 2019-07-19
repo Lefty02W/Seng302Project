@@ -286,7 +286,6 @@ public class ProfileController extends Controller {
             personalPhotoRepository.findByPhotoId(photoId).thenApplyAsync(photoOpt -> {
                 if (photoOpt.isPresent()) {
                     personalPhotoRepository.removeProfilePic(profileId);
-                    photoRepository.deleteCurrentThumbnail(photoId);
                     personalPhotoRepository.setProfilePic(profileId, photoId);
                     createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
                 }
@@ -386,20 +385,6 @@ public class ProfileController extends Controller {
             });
     }
 
-
-    /**
-     * Method to save and insert a thumbnail when the users profile picture is updated
-     *
-     * @param photoId the id of the photo the thumbnail is for
-     * @param thumbnail the image object
-     * @param userId the users database id
-     * @param contentType the content type of the thumbnail object
-     */
-    private void createThumbnail(int photoId, Image thumbnail, int userId, String contentType) {
-        //TODO write thumbnail image to file system
-        Photo thumbnailObject = new Photo("photos/thumbnails/" + "user_" + userId + "_thumbnail", contentType, 1, "user_" + userId + "_thumbnail");
-        photoRepository.insertThumbnail(thumbnailObject, photoId);
-    }
 
     /**
      * Endpoint to handle a request from the user to delete a personal photo

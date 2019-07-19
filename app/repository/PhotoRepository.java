@@ -153,6 +153,25 @@ public class PhotoRepository {
         }, executionContext);
     }
 
+    /**
+     * Database access method to remove a thumbnail using the id of the original photo id
+     * @param photoId
+     * @return
+     */
+    public CompletionStage<Optional<Integer>> removeOldThumbnail(int photoId) {
+        return supplyAsync(() -> {
+            SqlQuery stmnt = Ebean.createSqlQuery("SELECT thumbnail_id FROM thumbnail_link WHERE photo_id = ?");
+            stmnt.setParameter(1, photoId);
+            SqlRow row = stmnt.findOne();
+            if (!(row != null && row.isEmpty())) {
+                int thumbId = row.getInteger("thumbnail_id");
+                deleteThumbnail(thumbId);
+                return Optional.of(thumbId);
+            }
+            return Optional.empty();
+        });
+    }
+
 
     /**
      * Update a given thumbnail photo's path and name in the database
