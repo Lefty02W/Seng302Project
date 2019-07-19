@@ -2,13 +2,22 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.Transaction;
 import models.TreasureHunt;
+import org.joda.time.DateTime;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import java.util.concurrent.CompletionStage;
+
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import java.util.List;
+import java.util.ArrayList;
+
 
 public class TreasureHuntRepository {
 
@@ -35,6 +44,50 @@ public class TreasureHuntRepository {
         }, executionContext);
     }
 
+    /**
+     * Method to retrieve all TreasureHunts from the database which are currently active
+     *
+     * @return TreasureHunts, an arrayList of all currently active treasureHunts
+     */
+    public List<TreasureHunt> getAllActiveTreasureHunts() {
+        return new ArrayList<> (ebeanServer.find(TreasureHunt.class)
+                .where()
+                .gt("end_date", DateTime.now())
+                .lt("start_date", DateTime.now())
+                .findList());
+    }
 
 
+
+    public CompletionStage<Optional<Integer>> update(TreasureHunt treasureHunt, Integer id) {
+        treasureHunt.setTreasureHuntId(id);
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Optional<Integer> value = Optional.empty();
+            try {
+                TreasureHunt targetHunt = ebeanServer.find(TreasureHunt.class).setId(id).findOne();
+                if (targetHunt != null) {
+                 targetHunt = treasureHunt;
+                 targetHunt.update();
+                 txn.commit();
+                 value = Optional.of(id);
+                }
+            } finally {
+                txn.end();
+            }
+            return value;
+        }, executionContext);
+    }
+
+    /**
+     * Method to return all of a users treasureHunts
+     * @param userId, the id of the active user
+     * @return TreasureHunts, an ArrayList of all currently active TreasureHunts
+     */
+    public List<TreasureHunt> getAllUserTreasureHunts(int userId) {
+        return new ArrayList<>(ebeanServer.find(TreasureHunt.class)
+                .where()
+                .eq("user_id", userId)
+                .findList());
+    }
 }
