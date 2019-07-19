@@ -343,7 +343,9 @@ public class AdminController {
      */
     public CompletionStage<Result> addDestination(Http.Request request) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
-        Destination destination = destForm.get();
+        Destination destination = destForm.value().get();
+        destination.initTravellerType();
+        System.out.println("Admin adding a destination..." + destination.getTravellerTypesList());
         return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin"));
     }
 
