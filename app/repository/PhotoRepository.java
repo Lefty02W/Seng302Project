@@ -125,4 +125,41 @@ public class PhotoRepository {
             return 1;
          }, executionContext);
     }
+
+
+    /**
+     * Delete a thumbnail from the database given the id
+     * @param thumbnailID - ID of the thumbnail image to delete
+     * @return
+     */
+    public CompletionStage<Void> deleteThumbnail(Integer thumbnailID) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String deleteQuery = "delete from thumbnail_link where thumbnail_id = ?";
+            SqlUpdate query = Ebean.createSqlUpdate(deleteQuery);
+            query.setParameter(1, thumbnailID);
+            query.execute();
+            txn.commit();
+            return null;
+        }, executionContext);
+    }
+
+
+    /**
+     * Update a given thumbnail photo's path and name in the database
+     * @param photo - The photo as a thumbnail to be updated
+     */
+    public CompletionStage<Void> updateThumbnail(Photo photo) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String updateQuery = "UPDATE photo SET path = ? and name = ? where photo_id = ?";
+            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+            query.setParameter(1, photo.getPath());
+            query.setParameter(2, photo.getName());
+            query.setParameter(3, photo.getPhotoId());
+            query.execute();
+            txn.commit();
+            return null;
+        }, executionContext);
+    }
 }
