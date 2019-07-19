@@ -61,6 +61,12 @@ public class TreasureHuntRepository {
 
 
 
+    /**
+     * Updates a TreasureHunt object in the database by taking in an id of an already existing treasurehunt and a new edited treasure hunt
+     * @param treasureHunt New treasure hunt with edited changes
+     * @param id Id of the treasureHunt to be updated
+     * @return Id of the treasure hunt updated
+     */
     public CompletionStage<Optional<Integer>> update(TreasureHunt treasureHunt, Integer id) {
         treasureHunt.setTreasureHuntId(id);
         return supplyAsync(() -> {
@@ -89,7 +95,7 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllUserTreasureHunts(int userId) {
         return new ArrayList<>(ebeanServer.find(TreasureHunt.class)
                 .where()
-                .eq("user_id", userId)
+                .eq("profile_id", userId)
                 .findList());
     }
 

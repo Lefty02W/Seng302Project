@@ -14,6 +14,7 @@ import views.html.treasureHunts;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -60,12 +61,20 @@ public class TreasureHuntController {
      * Endpoint method to handle a users request to create a new treasure hunt
      *
      * @apiNote /hunts/create
-     * @param request the users request holding the treasure hunt form
+     * @param request the u    /**ate 	get end datesers request holding the treasure hunt form
      * @return CompletionStage redirecting back to the treasure hunts page
      */
     public CompletionStage<Result> createHunt(Http.Request request) {
         return supplyAsync(() -> {
-            return redirect("/treasure");
+            System.out.println("yeet1");
+            System.out.println(huntForm);
+            Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
+            System.out.println("yeet1.5");
+            TreasureHunt treasureHunt = filledForm.get();
+            System.out.println("yeet2");
+            treasureHuntRepository.insert(treasureHunt);
+            System.out.println("yeet3");
+            return redirect(huntShowRoute);
         });
     }
 

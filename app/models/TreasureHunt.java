@@ -7,39 +7,37 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * Model class to store a Treasure Hunt
  */
 @Entity
 public class TreasureHunt extends Model {
+
     @Id
-    @Constraints.Required
     private int treasureHuntId;
 
-    @Constraints.Required
-    private String riddle;
-
-    @Constraints.Required
-    private int userId;
+    private int profileId;
 
     @Constraints.Required
     private int destinationId;
 
     @Constraints.Required
-    @Formats.DateTime(pattern = "yyyy-MM-dd")
-    private int startDate;
+    private String riddle;
 
     @Constraints.Required
     @Formats.DateTime(pattern = "yyyy-MM-dd")
-    private int endDate;
+    private Date startDate;
+
+    @Constraints.Required
+    @Formats.DateTime(pattern = "yyyy-MM-dd")
+    private Date endDate;
 
     public static final Finder<String, TreasureHunt> find = new Finder<>(TreasureHunt.class);
 
-    public TreasureHunt(int treasureHuntId, String riddle, int userId, int destinationId, int startDate, int endDate) {
-        this.treasureHuntId = treasureHuntId;
+    public TreasureHunt(String riddle, int destinationId, Date startDate, Date endDate) {
         this.riddle = riddle;
-        this.userId = userId;
         this.destinationId = destinationId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -47,6 +45,10 @@ public class TreasureHunt extends Model {
 
     public int getTreasureHuntId() {
         return treasureHuntId;
+    }
+
+    public int getTreasureHuntProfileId() {
+        return profileId;
     }
 
     public String getRiddle() {
@@ -58,14 +60,14 @@ public class TreasureHunt extends Model {
     }
 
     public int getTreasureHuntUserId() {
-        return userId;
+        return profileId;
     }
 
-    public int getStartDate() {
+    public Date getStartDate() {
         return startDate;
     }
 
-    public int getEndDate() {
+    public Date getEndDate() {
         return endDate;
     }
 
@@ -76,5 +78,10 @@ public class TreasureHunt extends Model {
     public void setTreasureHuntId(int treasureHuntId) {
         this.treasureHuntId = treasureHuntId;
     }
+
+    public void setTreasureHuntProfileId(int profileId) {
+        this.profileId = profileId;
+    }
+
 
 }

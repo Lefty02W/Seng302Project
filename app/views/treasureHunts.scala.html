@@ -1,6 +1,5 @@
-@import controllers.LoginController.Login
 @import play.mvc.Http
-@import views.html.helper.{CSRF, form}
+@import views.html.helper.CSRF
 @(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt], destinations: List[Destination], form: Form[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -114,7 +113,7 @@
                                 <tr>
                                     <td>@hunt.getRiddle</td>
                                     <td>@hunt.getStartDate</td>
-                                    <td>@hunt.getEndDate</td>
+                                    _i<td>@hunt.getEndDate</td>
                                     <td>@hunt.getEndDate</td>
                                     <td>
                                         <a href="">
@@ -142,7 +141,6 @@
                     <h4 id="addTitle">Add Treasure Hunt</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
-                    <!-- TODO add call to form here to submit data -->
                 @helper.form(routes.TreasureHuntController.createHunt()) {
                     @CSRF.formField
                     <div class="modal-body">
@@ -151,32 +149,29 @@
                                 <div class="form-group">
                                     <small id="label">Riddle</small>
                                     <!--TODO pick a max length for riddle, adjust input accordingly-->
-                                    <input type="text" name="riddle" id="riddle" required oninvalid="this.setCustomValidity('Riddle required')" oninput="setCustomValidity('')">
+                                    <input type="text" name="riddle" id="riddle" required >
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label for="destinationId"><small id="label">Destination</small></label>
-
-                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required oninvalid="this.setCustomValidity('Destination required')" oninput="setCustomValidity('')">
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                     @for(destination <- destinations) {
                                         <option value="@destination.getDestinationId">@destination.getName</option>
                                     }
                                     </select>
-
-
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">Start Date</small>
-                                    <input type="datetime-local" id="startDate" name="startDate" required oninvalid="this.setCustomValidity('Start date required')" oninput="setCustomValidity('')">
+                                    <input type="date" id="startDate" name="startDate" required >
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">End Date</small>
-                                    <input type="datetime-local" id="endDate" name="endDate" required oninvalid="this.setCustomValidity('End date required')" oninput="setCustomValidity('')">
+                                    <input type="date" id="endDate" name="endDate" required >
                                 </div>
                             </div>
                         </div>
