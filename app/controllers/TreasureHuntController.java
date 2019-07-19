@@ -45,11 +45,11 @@ public class TreasureHuntController {
 
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
-        List<TreasureHunt> activeTreasureHunts = treasureHuntRepository.getAllActiveTreasureHunts();
-        List<TreasureHunt> userTreasureHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, destinationRepository.getPublicDestinations(), huntForm, activeTreasureHunts, userTreasureHunts, request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }

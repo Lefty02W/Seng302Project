@@ -1,8 +1,7 @@
 @import controllers.LoginController.Login
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, destinations: List[Destination], form: Form[TreasureHunt], activeTreasureHunts:
-List[TreasureHunt], userTreasureHunts: List[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt], destinations: List[Destination], form: Form[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -83,11 +82,13 @@ List[TreasureHunt], userTreasureHunts: List[TreasureHunt])(implicit request: Htt
                                     <th>End Date</th>
                                 </tr>
                             </thead>
+                            @for(hunt <- availableHunts) {
                                 <tr>
 
-                                    <td>get riddle</td>
-                                    <td>get date</td>
+                                    <td>hunt.getRiddle</td>
+                                    <td>hunt.getEndDate</td>
                                 </tr>
+                            }
                         </table>
                     </div>
 
@@ -109,20 +110,22 @@ List[TreasureHunt], userTreasureHunts: List[TreasureHunt])(implicit request: Htt
                                     <th>Delete</th>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td>get riddle</td>
-                                <td>get start date</td>
-                                <td>get end date</td>
-                                <td>get Destination</td>
-                                <td>
-                                    <a href="">
-                                        <button class="btn btn-primary">Edit</button>
-                                    </a>
-                                </td>
-                                <td>
-                                    <button class="btn btn-danger" onclick="">Delete</button>
-                                </td>
-                            </tr>
+                            @for(hunt <- myHunts) {
+                                <tr>
+                                    <td>hunt.getRiddle</td>
+                                    <td>hunt.getStartDate</td>
+                                    <td>hunt.getEndDate</td>
+                                    <td>hunt.getEndDate</td>
+                                    <td>
+                                        <a href="">
+                                            <button class="btn btn-primary">Edit</button>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger" onclick="">Delete</button>
+                                    </td>
+                                </tr>
+                            }
                         </table>
                     </div>
                 </div>
