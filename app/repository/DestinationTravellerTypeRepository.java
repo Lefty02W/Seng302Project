@@ -60,7 +60,7 @@ public class DestinationTravellerTypeRepository {
      * @return
      */
     public Optional<Map<Integer, TravellerType>> getDestinationTravellerList(Integer destinationId) {
-        String qry = "Select * from destination_traveller_type where profile = ?";
+        String qry = "Select * from destination_traveller_type where destination_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, destinationId).findList();
         Map<Integer, TravellerType> travellerTypeList = new TreeMap<>();
         for (SqlRow aRowList : rowList) {

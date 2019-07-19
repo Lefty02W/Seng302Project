@@ -88,7 +88,7 @@ public class DestinationsController extends Controller {
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
-//                destinationsList = loadTravellerTypes(destinationsList);
+                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
@@ -129,7 +129,7 @@ public class DestinationsController extends Controller {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
-//                destinationsList = loadTravellerTypes(destinationsList);
+                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
@@ -154,7 +154,7 @@ public class DestinationsController extends Controller {
             if (profile.isPresent()) {
                 destinationsList = loadCurrentUserDestinationPhotos(profId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profId, destinationsList);
-//                destinationsList = loadTravellerTypes(destinationsList);
+                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 Destination currentDestination = destinationRepository.lookup(destId);
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
@@ -199,7 +199,7 @@ public class DestinationsController extends Controller {
 
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
-//                destinationsList = loadTravellerTypes(destinationsList);
+//                destinationsList = loadTravellerTypes(destId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
@@ -258,13 +258,23 @@ public class DestinationsController extends Controller {
     }
 
 
-//    private List<Destination> loadTravellerTypes(List<Destination> destinationsList) {
-//        for (Destination destination: destinationsList) {
-//            List<TravellerType> travellerTypes = destinationRepository.getDestinationsTravellerTypes(destination.getDestinationId());
-//            destination.setTravellerTypes(travellerTypes);
-//        }
-//        return destinationsList;
-//    }
+    /**
+     * Takes in a list of destinations and loads (sets) traveller types into each of them.
+     * Used for displaying the destination traveller types on the destination page
+     * @param destinationsList
+     * @return the same list of destinations
+     */
+    private List<Destination> loadTravellerTypes(List<Destination> destinationsList) {
+        for (Destination destination: destinationsList) {
+            List<TravellerType> travellerTypes = destinationRepository.getDestinationsTravellerTypes(destination.getDestinationId());
+            Map<Integer, TravellerType> travellerTypesMap = new HashMap<>();
+            for (TravellerType i : travellerTypes) {
+                travellerTypesMap.put(i.getTravellerTypeId(), i);
+            }
+            destination.setTravellerTypes(travellerTypesMap);
+        }
+        return destinationsList;
+    }
 
     /**
      * Gets all of the users photos

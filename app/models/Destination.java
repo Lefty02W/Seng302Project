@@ -123,7 +123,7 @@ public class Destination extends Model {
      * @return Array of Strings of traveller types
      */
     public ArrayList<String> getTravellerTypesList() {
-        if (!(travellerTypes == null)) {
+        if (travellerTypes != null) {
             ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
             ArrayList<String> toReturn = new ArrayList<>();
             for (TravellerType type : typeObjects) {
@@ -131,7 +131,7 @@ public class Destination extends Model {
             }
             return toReturn;
         } else {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
     }
 
@@ -223,9 +223,9 @@ public class Destination extends Model {
     public Map<Integer, TravellerType> getTravellerTypes() { return travellerTypes;}
 
     public String getTravellerTypesString() {
-        ArrayList<String> travellerTypes = getTravellerTypesList();
+        ArrayList<String> listOfTravellerTypes = getTravellerTypesList();
         String travellerTypesString = "";
-        for (String travellerType : travellerTypes) {
+        for (String travellerType : listOfTravellerTypes) {
             travellerTypesString += travellerType + ", ";
         }
         return travellerTypesString;
