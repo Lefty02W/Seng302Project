@@ -1133,6 +1133,7 @@
 
 
             function setTravellerTypesToRemove() {
+                var html = "";
                 @for(destination <- destinationsList) {
                 var id = @destination.getDestinationId;
                     if(id === getSelectedDestID()) {
@@ -1141,6 +1142,9 @@
                         }
                         document.getElementById("removeTravellerTypes").innerHTML = html;
                     }
+                }
+                if (html === "") {
+                    document.getElementById("removeTravellerTypes").innerHTML = "<a>No traveller types in this destination</a>";
                 }
             }
 
