@@ -9,9 +9,11 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
+import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -23,6 +25,7 @@ public class TreasureHuntController {
     private MessagesApi messagesApi;
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
+    private final TreasureHuntRepository treasureHuntRepository;
     private final Form<TreasureHunt> huntForm;
 
     /**
@@ -31,19 +34,22 @@ public class TreasureHuntController {
      * @param messagesApi
      */
     @Inject
-    public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
+    public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository) {
         this.messagesApi = messagesApi;
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
         this.huntForm = formFactory.form(TreasureHunt.class);
+        this.treasureHuntRepository = treasureHuntRepository;
     }
 
 
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
+        List<TreasureHunt> activeTreasureHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        List<TreasureHunt> userTreasureHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, destinationRepository.getPublicDestinations(), huntForm, request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, destinationRepository.getPublicDestinations(), huntForm, activeTreasureHunts, userTreasureHunts, request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }

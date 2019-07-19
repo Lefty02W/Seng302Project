@@ -21,7 +21,7 @@ public class TreasureHunt extends Model {
     private String riddle;
 
     @Constraints.Required
-    private int profileId;
+    private int userId;
 
     @Constraints.Required
     private int destinationId;
@@ -36,10 +36,10 @@ public class TreasureHunt extends Model {
 
     public static final Finder<String, TreasureHunt> find = new Finder<>(TreasureHunt.class);
 
-    public TreasureHunt(int treasureHuntId, String riddle, int profileId, int destinationId, int startDate, int endDate) {
+    public TreasureHunt(int treasureHuntId, String riddle, int userId, int destinationId, int startDate, int endDate) {
         this.treasureHuntId = treasureHuntId;
         this.riddle = riddle;
-        this.profileId = profileId;
+        this.userId = userId;
         this.destinationId = destinationId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -57,8 +57,8 @@ public class TreasureHunt extends Model {
         return destinationId;
     }
 
-    public int getTreasureHuntProfileId() {
-        return profileId;
+    public int getTreasureHuntUserId() {
+        return userId;
     }
 
     public int getStartDate() {
