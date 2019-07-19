@@ -171,4 +171,30 @@ public class PhotoRepository {
             return null;
         }, executionContext);
     }
+
+    public CompletionStage<String> getImageType(Integer photoId){
+        return supplyAsync(() -> {
+          SqlQuery query = Ebean.createSqlQuery("SELECT content_type FROM photo WHERE photo_id = ?");
+          query.setParameter(1, photoId);
+          SqlRow row = query.findOne();
+          if (!row.isEmpty()){
+              return row.getString("content_type");
+          }
+          return "failed";
+        });
+    }
+
+    /**
+     * Removes a thumbnail from the database using a photoId
+     *
+     * @param photoId the photoId
+     */
+    public void deleteCurrentThumbnail(Integer photoId) {
+        supplyAsync(() -> {
+            SqlUpdate query = Ebean.createSqlUpdate("delete from thumbnail_link where photo_id = ?");
+            query.setParameter(1, photoId);
+            query.execute();
+            return null;
+        }, executionContext);
+    }
 }

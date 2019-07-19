@@ -235,6 +235,38 @@ public class ProfileController extends Controller {
         }).thenApply(result -> redirect("/profile"));
     }
 
+    /**
+     * Creates a thumbnail
+     *
+     * @param photo photo object that the thumbnail will be generated from
+     */
+    private void createNewThumbnail(int photoId, int userId) {
+        String fileName = "user_" + userId + "_thumbnail";
+        Optional<Photo> photoOpt = photoRepository.getImage(photoId);
+        if(photoOpt.isPresent()) {
+            File photoFile = new File(photoOpt.get().getPath());
+            System.out.println(photoFile);
+            if (photoFile.exists()) {
+                System.out.println("Print in create new thumbnail 2");
+
+                try{
+                    BufferedImage image = ImageIO.read(photoFile);
+                    Image thumbnail = Thumbnail.getInstance().extract(image);
+                    BufferedImage bufferedImage = new BufferedImage(thumbnail.getWidth(null), thumbnail.getHeight(null), BufferedImage.TYPE_INT_RGB);
+                    Graphics graphics = bufferedImage.getGraphics();
+                    graphics.drawImage(thumbnail, 0, 0, null);
+                    graphics.dispose();
+                    //String imgType = photoType(photoOpt.get().getType());
+                    File thumbFile = new File(System.getProperty("user.dir") +"/photos/thumbnails/" + fileName + "." + "jpeg");
+                    ImageIO.write(bufferedImage, "jpeg", thumbFile);
+                    photoRepository.insertThumbnail(new Photo("photos/thumbnails/" + fileName, photoOpt.get().getType(), 1, fileName), photoId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     /**
      * Set a profile picture to the database
@@ -248,7 +280,10 @@ public class ProfileController extends Controller {
             personalPhotoRepository.findByPhotoId(photoId).thenApplyAsync(photoOpt -> {
                 if (photoOpt.isPresent()) {
                     personalPhotoRepository.removeProfilePic(profileId);
+                    photoRepository.deleteCurrentThumbnail(photoId);
                     personalPhotoRepository.setProfilePic(profileId, photoId);
+                    System.out.println("Print in setProfilePic method");
+                    createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
                 }
                 return photoOpt;
             });
