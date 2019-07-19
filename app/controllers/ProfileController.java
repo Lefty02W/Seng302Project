@@ -236,9 +236,20 @@ public class ProfileController extends Controller {
     }
 
     /**
+     * Helper function to split the image path to get the extension required for thumbnail creation
+     * @param url string with the image extension and image/extension
+     * @return extension string with just the extension.
+     */
+    private String photoType(String url){
+        String extension = url.substring(url.lastIndexOf("/") + 1);
+        return extension;
+    }
+
+    /**
      * Creates a thumbnail
      *
-     * @param photo photo object that the thumbnail will be generated from
+     * @param photoId id of the image that will get turned into a thumbnail
+     * @param userId id of the user who is creating their new thumbnail
      */
     private void createNewThumbnail(int photoId, int userId) {
         String fileName = "user_" + userId + "_thumbnail";
@@ -256,9 +267,9 @@ public class ProfileController extends Controller {
                     Graphics graphics = bufferedImage.getGraphics();
                     graphics.drawImage(thumbnail, 0, 0, null);
                     graphics.dispose();
-                    //String imgType = photoType(photoOpt.get().getType());
-                    File thumbFile = new File(System.getProperty("user.dir") +"/photos/thumbnails/" + fileName + "." + "jpeg");
-                    ImageIO.write(bufferedImage, "jpeg", thumbFile);
+                    String imgType = photoType(photoOpt.get().getType());
+                    File thumbFile = new File(System.getProperty("user.dir") +"/photos/thumbnails/" + fileName + "." + imgType);
+                    ImageIO.write(bufferedImage, imgType, thumbFile);
                     photoRepository.insertThumbnail(new Photo("photos/thumbnails/" + fileName, photoOpt.get().getType(), 1, fileName), photoId);
                 } catch (Exception e) {
                     e.printStackTrace();
