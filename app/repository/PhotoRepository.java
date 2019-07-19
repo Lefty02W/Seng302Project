@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.SqlUpdate;
 import io.ebean.Transaction;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
