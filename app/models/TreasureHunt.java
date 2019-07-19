@@ -20,18 +20,15 @@ public class TreasureHunt extends Model {
 
     private int profileId;
 
-    @Constraints.Required
     private int destinationId;
 
-    @Constraints.Required
     private String riddle;
 
-    @Constraints.Required
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    @Constraints.Required
     @Formats.DateTime(pattern = "yyyy-MM-dd")
+    @Constraints.Required
     private Date endDate;
 
     public static final Finder<String, TreasureHunt> find = new Finder<>(TreasureHunt.class);

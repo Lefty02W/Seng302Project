@@ -28,7 +28,7 @@ public class TreasureHuntController {
     private final DestinationRepository destinationRepository;
     private final TreasureHuntRepository treasureHuntRepository;
     private final Form<TreasureHunt> huntForm;
-    private String huntShowRoute = "/hunt";
+    private String huntShowRoute = "/treasure";
 
     /**
      * Constructor for the treasure hunt controller class
@@ -67,7 +67,7 @@ public class TreasureHuntController {
     public CompletionStage<Result> createHunt(Http.Request request) {
         return supplyAsync(() -> {
             System.out.println("yeet1");
-            System.out.println(huntForm);
+            System.out.println("llll + " + huntForm.bindFromRequest(request));
             Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
             System.out.println("yeet1.5");
             TreasureHunt treasureHunt = filledForm.get();
