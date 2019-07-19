@@ -73,7 +73,6 @@ public class TreasureHuntController {
 
     /**
      * Called treasure hunt delete method in the treasureHuntRepository to delete the treasureHunt from the database
-     *
      * @param id int Id of the treasureHunt the user wishes to delete
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
