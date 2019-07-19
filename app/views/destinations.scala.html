@@ -1136,7 +1136,7 @@
                 @for(destination <- destinationsList) {
                 var id = @destination.getDestinationId;
                     if(id === getSelectedDestID()) {
-                        @for(travellerType <- destination.getTravellerTypes) {
+                        @for(travellerType <- destination.getTravellerTypesList) {
                             html += "<a>" + travellerType.toString() + "</a>" +"<input type='checkbox'>";
                         }
                         document.getElementById("removeTravellerTypes").innerHTML = html;
