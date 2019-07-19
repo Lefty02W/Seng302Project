@@ -8,7 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class holds the data for a profile destination
@@ -42,7 +44,11 @@ public class Destination extends Model {
     private List<Photo> worldPhotos = new ArrayList<>();
 
     @Transient
-    private List<TravellerType> travellerTypes = new ArrayList<>();
+    @Constraints.Required
+    private String travellerTypesForm;
+
+    @Transient
+    private Map<Integer, TravellerType> travellerTypes;
 
     /**
      * This constructor is used by scala variables
@@ -61,7 +67,8 @@ public class Destination extends Model {
      * @param latitude the destinations latitude
      * @param longitude the destinations longitude
      */
-    public Destination(int destinationId, int profileId, String name, String type, String country, String district, double latitude, double longitude, int visible) {
+    public Destination(int destinationId, int profileId, String name, String type, String country, String district,
+                       double latitude, double longitude, int visible,  Map<Integer, TravellerType> travellerTypes) {
         this.destinationId = destinationId;
         this.profileId = profileId;
         this.name = name;
@@ -71,6 +78,7 @@ public class Destination extends Model {
         this.latitude = latitude;
         this.longitude = longitude;
         this.visible = visible;
+        this.travellerTypes = travellerTypes;
     }
 
     /**
@@ -82,7 +90,8 @@ public class Destination extends Model {
      * @param latitude the destinations latitude
      * @param longitude the destinations longitude
      */
-    public Destination(int profileId, String name, String type, String country, String district, double latitude, double longitude, int visible) {
+    public Destination(int profileId, String name, String type, String country, String district, double latitude, double
+            longitude, int visible) {
         this.profileId = profileId;
         this.name = name;
         this.type = type;
@@ -91,6 +100,37 @@ public class Destination extends Model {
         this.latitude = latitude;
         this.longitude = longitude;
         this.visible = visible;
+    }
+
+    /**
+     * A function to turn the destination class created by the create destination form. It is required to turn the
+     * , separated strings into maps.
+     */
+    public void initTravellerType() {
+        this.travellerTypes = new HashMap<>();
+        int i = 1;
+        for (String travellerTypesString : (travellerTypesForm.split(","))) {
+            i++;
+            TravellerType travellerType = new TravellerType(i, travellerTypesString);
+            this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+        }
+    }
+
+    /**
+     * Return the travellers types as a readable list
+     * @return Array of Strings of traveller types
+     */
+    public ArrayList<String> getTravellerTypesList() {
+        if (!(travellerTypes == null)) {
+            ArrayList<TravellerType> typeObjects = new ArrayList<TravellerType>(travellerTypes.values());
+            ArrayList<String> toReturn = new ArrayList<>();
+            for (TravellerType type : typeObjects) {
+                toReturn.add(type.getTravellerTypeName());
+            }
+            return toReturn;
+        } else {
+            return new ArrayList<String>();
+        }
     }
 
     // Finder for destination
@@ -178,27 +218,36 @@ public class Destination extends Model {
         this.worldPhotos = worldPhotos;
     }
 
-    public List<TravellerType> getTravellerTypes() { return travellerTypes;}
+    public Map<Integer, TravellerType> getTravellerTypes() { return travellerTypes;}
 
     public String getTravellerTypesString() {
+        ArrayList<String> travellerTypes = getTravellerTypesList();
         String travellerTypesString = "";
-        for (TravellerType travellerType : travellerTypes) {
-            travellerTypesString += travellerType.getTravellerTypeName() + ", ";
+        for (String travellerType : travellerTypes) {
+            travellerTypesString += travellerType + ", ";
         }
         return travellerTypesString;
     }
 
-    public void setTravellerTypes(List<TravellerType> travellerTypes) { this.travellerTypes = travellerTypes; }
+    public void setTravellerTypes(Map<Integer, TravellerType> travellerTypes) { this.travellerTypes = travellerTypes; }
 
-    public void addTravellerType(TravellerType travellerType) {
-        if (!travellerTypes.contains(travellerType)) {
-            this.travellerTypes.add(travellerType);
-        }
+    public void setTravellerTypesForm(String travellerTypesForm) {
+        this.travellerTypesForm = travellerTypesForm;
     }
 
-    public void removeTravellerType(TravellerType travellerType) {
-        if (travellerTypes.contains(travellerType)) {
-            travellerTypes.remove(travellerType);
-        }
+    public String getTravellerTypesForm() {
+        return travellerTypesForm;
     }
+
+//    public void addTravellerType(TravellerType travellerType) {
+//        if (!travellerTypes.contains(travellerType)) {
+//            this.travellerTypes.add(travellerType);
+//        }
+//    }
+//
+//    public void removeTravellerType(TravellerType travellerType) {
+//        if (travellerTypes.contains(travellerType)) {
+//            travellerTypes.remove(travellerType);
+//        }
+//    }
 }

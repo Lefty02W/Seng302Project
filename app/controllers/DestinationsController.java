@@ -16,10 +16,7 @@ import views.html.destinations;
 import views.html.editDestinations;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -91,7 +88,7 @@ public class DestinationsController extends Controller {
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
-                destinationsList = loadTravellerTypes(destinationsList);
+//                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
@@ -132,7 +129,7 @@ public class DestinationsController extends Controller {
                 destinationRepository.followDestination(destId, profileId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
-                destinationsList = loadTravellerTypes(destinationsList);
+//                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
@@ -157,7 +154,7 @@ public class DestinationsController extends Controller {
             if (profile.isPresent()) {
                 destinationsList = loadCurrentUserDestinationPhotos(profId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profId, destinationsList);
-                destinationsList = loadTravellerTypes(destinationsList);
+//                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 Destination currentDestination = destinationRepository.lookup(destId);
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
@@ -202,7 +199,7 @@ public class DestinationsController extends Controller {
 
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
-                destinationsList = loadTravellerTypes(destinationsList);
+//                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
             } else {
@@ -261,13 +258,13 @@ public class DestinationsController extends Controller {
     }
 
 
-    private List<Destination> loadTravellerTypes(List<Destination> destinationsList) {
-        for (Destination destination: destinationsList) {
-            List<TravellerType> travellerTypes = destinationRepository.getDestinationsTravellerTypes(destination.getDestinationId());
-            destination.setTravellerTypes(travellerTypes);
-        }
-        return destinationsList;
-    }
+//    private List<Destination> loadTravellerTypes(List<Destination> destinationsList) {
+//        for (Destination destination: destinationsList) {
+//            List<TravellerType> travellerTypes = destinationRepository.getDestinationsTravellerTypes(destination.getDestinationId());
+//            destination.setTravellerTypes(travellerTypes);
+//        }
+//        return destinationsList;
+//    }
 
     /**
      * Gets all of the users photos
@@ -374,8 +371,10 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
+        destination.initTravellerType();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
+
         if (destinationRepository.checkValidEdit(destination, userId, null)) {
             return supplyAsync(() -> redirect("/destinations/show/false").flashing("success", "This destination is already registered and unavailable to create"));
         }

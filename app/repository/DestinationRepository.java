@@ -24,7 +24,7 @@ public class DestinationRepository {
     private final DatabaseExecutionContext executionContext;
     private final RolesRepository rolesRepository;
     private final TravellerTypeRepository travellerTypeRepository;
-
+    private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
 
     /**
      * A Constructor which links to the ebeans database
@@ -33,11 +33,14 @@ public class DestinationRepository {
      * @param executionContext
      */
     @Inject
-    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, RolesRepository roleRepository, TravellerTypeRepository travellerTypeRepository) {
+    public DestinationRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
+                                 RolesRepository roleRepository, TravellerTypeRepository travellerTypeRepository,
+                                 DestinationTravellerTypeRepository destinationTravellerTypeRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.rolesRepository = roleRepository;
         this.travellerTypeRepository = travellerTypeRepository;
+        this.destinationTravellerTypeRepository = destinationTravellerTypeRepository;
     }
 
     /**
@@ -85,6 +88,13 @@ public class DestinationRepository {
     public CompletionStage<Optional<Integer>> insert(Destination dest) {
         return supplyAsync(() -> {
             ebeanServer.insert(dest);
+
+            // Adding traveller types of destinations to the database
+            for (String travellerTypeName : dest.getTravellerTypesList()) {
+                System.out.println(travellerTypeName);
+                destinationTravellerTypeRepository.insertDestinationTravellerType(new TravellerType(travellerTypeName), dest.getDestinationId());
+            }
+
             return Optional.of(dest.getDestinationId());
         }, executionContext);
     }
