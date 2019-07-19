@@ -33,7 +33,12 @@ public class PhotoRepository {
      */
     public CompletionStage<Integer> insert(Photo photo){
         return supplyAsync(() -> {
-            ebeanServer.insert(photo);
+            try {
+                ebeanServer.insert(photo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return photo.getPhotoId();
         }, executionContext);
     }
@@ -46,11 +51,15 @@ public class PhotoRepository {
      */
     public void insertThumbnail(Photo photo, Integer photoId){
         insert(photo).thenApplyAsync(thumbId -> {
-            String qry = "INSERT INTO profile (photo_id, thumbnail_id) VALUES (?, ?)";
-            SqlUpdate query = Ebean.createSqlUpdate(qry);
-            query.setParameter(1, photoId);
-            query.setParameter(2, thumbId);
-            query.execute();
+            String qry = "INSERT INTO thumbnail_link (photo_id, thumbnail_id) VALUES (?, ?)";
+            try {
+                SqlUpdate query = Ebean.createSqlUpdate(qry);
+                query.setParameter(1, photoId);
+                query.setParameter(2, thumbId);
+                query.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return true;
         });
     }

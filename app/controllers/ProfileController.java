@@ -242,6 +242,7 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> setProfilePicture(Http.Request request, Integer photoId) {
+        // TODO need to create a thumbnail from this new profile picture
         int profileId = SessionController.getCurrentUserId(request);
         try {
             personalPhotoRepository.findByPhotoId(photoId).thenApplyAsync(photoOpt -> {
@@ -340,24 +341,7 @@ public class ProfileController extends Controller {
                 return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "File size must not exceed 8 MB!"));
             }
 
-
-            File img = picture.getRef().path().toFile();
-
-            try {
-                BufferedImage image = ImageIO.read(img );
-                Image thumbnail = Thumbnail.getInstance().extract(image);
-
-                //TODO Save 'thumbnail' object in DB.
-                //TODO Save 'thumbnail' object in VM. Note this may need transformation as it is an Image object.
-
-            } catch (IOException e) {
-
-                return supplyAsync(() ->redirect(profileEndpoint).flashing("invalid", " Error! Thumbnail not saved"));
-            }
-
-
-
-        TemporaryFile tempFile = picture.getRef();
+            TemporaryFile tempFile = picture.getRef();
             String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
             tempFile.copyTo(Paths.get(filepath), true);
 
@@ -365,11 +349,34 @@ public class ProfileController extends Controller {
             Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 1, fileName);
 
             return photoRepository.insert(photo).thenApplyAsync(photoId -> {
+                personalPhotoRepository.removeProfilePic(SessionController.getCurrentUserId(request));
+                File img = picture.getRef().path().toFile();
+                try {
+                    BufferedImage image = ImageIO.read(img );
+                    Image thumbnail = Thumbnail.getInstance().extract(image);
+                    createThumbnail(photoId, thumbnail, SessionController.getCurrentUserId(request), contentType);
+                } catch (IOException e) {
+                    return supplyAsync(() ->redirect(profileEndpoint).flashing("invalid", " Error! Thumbnail not saved"));
+                }
                return personalPhotoRepository.insert(new PersonalPhoto(SessionController.getCurrentUserId(request), photoId, 1));
             }).thenApply(id -> {
                 return redirect("/profile");
             });
-            //TODO Auto crop to set size
+    }
+
+
+    /**
+     * Method to save and insert a thumbnail when the users profile picture is updated
+     *
+     * @param photoId the id of the photo the thumbnail is for
+     * @param thumbnail the image object
+     * @param userId the users database id
+     * @param contentType the content type of the thumbnail object
+     */
+    private void createThumbnail(int photoId, Image thumbnail, int userId, String contentType) {
+        //TODO write thumbnail image to file system
+        Photo thumbnailObject = new Photo("photos/thumbnails/" + "user_" + userId + "_thumbnail", contentType, 1, "user_" + userId + "_thumbnail");
+        photoRepository.insertThumbnail(thumbnailObject, photoId);
     }
 
     /**
