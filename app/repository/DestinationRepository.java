@@ -88,6 +88,39 @@ public class DestinationRepository {
     }
 
     /**
+     * Method to check if a passed destination to be delete is within a treasure hunt or trip
+     *
+     * @param destinationId the id of the destination to check
+     * @return the result of the check with and optional id of the treasure hunt or trip which contains the destination within a completion stage
+     */
+    public CompletionStage<Optional<String>> checkDestinationExists(int destinationId) {
+        return supplyAsync(
+                () -> {
+                    List<Integer> foundIds =
+                            ebeanServer
+                                    .find(TripDestination.class)
+                                    .where()
+                                    .eq("destination_id", destinationId)
+                                    .select("tripId")
+                                    .findSingleAttributeList();
+                    if (foundIds.isEmpty()) {
+                        List<Integer> foundIds2 =
+                                    ebeanServer
+                                            .find(TreasureHunt.class)
+                                            .where()
+                                            .eq("destination_id", destinationId)
+                                            .select("treasureHuntId")
+                                            .findSingleAttributeList();
+                        if (foundIds2.isEmpty()) return Optional.empty();
+                        else return Optional.of("treasure hunts: " + foundIds2);
+                    } else {
+                        return Optional.of("trips: " + foundIds);
+                    }
+                },
+                executionContext);
+    }
+
+    /**
      * Deletes a destination from the database
      *
      * @param destID The ID of the destination to delete
