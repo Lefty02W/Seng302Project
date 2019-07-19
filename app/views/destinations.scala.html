@@ -211,7 +211,8 @@
                                     </div>
 
                                     <div id="travellerTypes" class="row justify-content-center">
-                                        <button class="btn-success" data-toggle="modal" data-target="#suggestEditModal">Edit</button>
+                                        <button class="btn-success" data-toggle="modal" data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">Edit</button>
+                                        @*<button class="btn-success" onclick="setTravellerTypesToRemove()">remove</button>*@
                                         <div id="travellerTypesVal" class="col-md-4">
                                             <a></a>
                                         </div>
@@ -474,23 +475,11 @@
                                 <div class="col">
                                     <div class="row justify-content-center">
                                         <div class="col-md-6">
-                                            @*TODO: Get things to remove*@
                                            <div class="row justify-content-center">
-                                               <div class="col-md-4">
-                                                   @for(destination <- destinationsList) {
-                                                       @*TODO: check destination clicked*@
-                                                       @if(true) {
-                                                            @for(travelerType <- destination.getTravellerTypes()) {
-                                                                <a>travelerType</a>
-                                                                <a>SUCCESS</a>
-                                                            }
-                                                       }
-                                                   }
-                                                   <a>fix this</a>
+                                               <div class="col-md-4" id="removeTravellerTypes">
+
                                                </div>
-                                               <div class="col-md-4">
-                                                   <input type="checkbox">
-                                               </div>
+
                                            </div>
                                         </div>
                                         <div class="col-md-6">
@@ -1099,7 +1088,7 @@
             * and makes the related marker bounce
             */
             function setSelectedDestination(destinationId, row) {
-
+                selectedDestID = destinationId;
                 var markerToSet = markersMap.get(destinationId);
                 new google.maps.event.trigger( markerToSet, 'click' );
                 map.setCenter(markerToSet.getPosition());
@@ -1114,7 +1103,7 @@
                 } else {
                     row.style.backgroundColor = "";
                 }
-                selectedDestID = destinationID;
+
             }
 
             /**
@@ -1142,6 +1131,18 @@
                 $('#travellerTypesForm').val($('#typeDropdown').val());
             }
 
+
+            function setTravellerTypesToRemove() {
+                @for(destination <- destinationsList) {
+                var id = @destination.getDestinationId;
+                    if(id === getSelectedDestID()) {
+                        @for(travellerType <- destination.getTravellerTypes) {
+                            html += "<a>" + travellerType.toString() + "</a>" +"<input type='checkbox'>";
+                        }
+                        document.getElementById("removeTravellerTypes").innerHTML = html;
+                    }
+                }
+            }
 
             $("#menu-toggle").click(function (e) {
             e.preventDefault();
