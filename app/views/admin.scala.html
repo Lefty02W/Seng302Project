@@ -323,7 +323,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="hidden-div-edit">
-                                            <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value="@profile.getObject.getTravellerTypesString">
+                                            <input type="text" id="travellerTypesString" name="travellerTypesString" class="hidden-field typesField" required value="@profile.getObject.getTravellerTypesString">
                                         </div>
                                         <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%">
                                             @if(profile.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
@@ -602,6 +602,7 @@
                                         <li>Latitude: @destination.getObject.getLatitude</li>
                                         <li>Longitude: @destination.getObject.getLongitude</li>
                                         <li>Visibility: @destination.getObject.getVisible</li>
+                                        <li>Traveller Types: @destination.getObject.getTravellerTypesString</li>
                                     </ul>
                                 </div>
                             </div>
@@ -741,7 +742,7 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
+                                    <input type="text" id="travellerTypesString" name="travellerTypesString" class="hidden-field typesField" required>
                                 </div>
                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
                                     <option value="ThrillSeeker">ThrillSeeker</option>
@@ -862,9 +863,9 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField">
+                                    <input type="text" id="travellerTypesString" name="travellerTypesString" class="hidden-field typesField">
                                 </div>
-                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%">
+                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownDest" data-width="100%">
                                     <option value="ThrillSeeker">ThrillSeeker</option>
                                     <option value="Backpacker">Backpacker</option>
                                     <option value="Gap Year">Gap Year</option>
@@ -936,7 +937,7 @@
 
     <script type="text/javascript">
         function fillVals() {
-            $('#travellerTypesForm').val($('#typeDropdown').val());
+            $('#travellerTypesString').val($('#typeDropdownDest').val());
         }
 
 

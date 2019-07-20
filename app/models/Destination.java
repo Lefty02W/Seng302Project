@@ -44,7 +44,7 @@ public class Destination extends Model {
     private List<Photo> worldPhotos = new ArrayList<>();
 
     @Transient
-    private String travellerTypesForm;
+    private String travellerTypesString;
 
     @Transient
     private Map<Integer, TravellerType> travellerTypes;
@@ -108,9 +108,9 @@ public class Destination extends Model {
     public void initTravellerType() {
         this.travellerTypes = new HashMap<>();
 
-        if (travellerTypesForm != null) {
+        if (travellerTypesString != null) {
             int i = 1;
-            for (String travellerTypesString : (travellerTypesForm.split(","))) {
+            for (String travellerTypesString : (travellerTypesString.split(","))) {
                 i++;
                 TravellerType travellerType = new TravellerType(i, travellerTypesString);
                 this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
@@ -224,21 +224,21 @@ public class Destination extends Model {
 
     public String getTravellerTypesString() {
         ArrayList<String> listOfTravellerTypes = getTravellerTypesList();
-        String travellerTypesString = "";
+        String travellerTypesStrings = "";
         for (String travellerType : listOfTravellerTypes) {
-            travellerTypesString += travellerType + ", ";
+            travellerTypesStrings += travellerType + ", ";
         }
-        return travellerTypesString;
+        return travellerTypesStrings;
     }
 
     public void setTravellerTypes(Map<Integer, TravellerType> travellerTypes) { this.travellerTypes = travellerTypes; }
 
-    public void setTravellerTypesForm(String travellerTypesForm) {
-        this.travellerTypesForm = travellerTypesForm;
+    public void setTravellerTypesString(String travellerTypesString) {
+        this.travellerTypesString = travellerTypesString;
     }
 
     public String getTravellerTypesForm() {
-        return travellerTypesForm;
+        return travellerTypesString;
     }
 
 //    public void addTravellerType(TravellerType travellerType) {

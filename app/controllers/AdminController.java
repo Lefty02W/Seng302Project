@@ -10,7 +10,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.*;
 import roles.RestrictAnnotation;
-import scala.Int;
 import views.html.admin;
 
 import javax.inject.Inject;
@@ -342,7 +341,9 @@ public class AdminController {
      * @apiNote POST /admin/destinations
      */
     public CompletionStage<Result> addDestination(Http.Request request) {
+        System.out.println("yeet");
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
+        System.out.println(destForm);
         Destination destination = destForm.value().get();
         destination.initTravellerType();
         System.out.println("Admin adding a destination..." + destination.getTravellerTypesList());
