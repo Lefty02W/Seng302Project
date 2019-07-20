@@ -978,8 +978,8 @@
                             document.getElementById("latVal").innerHTML = "  <b>Latitude: &nbsp;&nbsp;</b> @destination.getLatitude";
                             document.getElementById("lngVal").innerHTML = "  <b>Longitude: &nbsp;&nbsp;</b> @destination.getLongitude";
                             document.getElementById("travellerTypesVal").innerHTML = "  <b>Traveller Types: &nbsp;&nbsp;</b> @destination.getTravellerTypesString";
-                            document.getElementById("suggestEditButton").hidden = false;
                             @if(destination.getVisible == 1){
+                                document.getElementById("suggestEditButton").hidden = false;
                                 document.getElementById("publicVal").innerHTML = "  <b>Visibility: &nbsp;&nbsp;</b> Public ";
                             }else{
                                 document.getElementById("publicVal").innerHTML = "  <b>Visibily: &nbsp;&nbsp;</b> Private ";
