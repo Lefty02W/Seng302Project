@@ -39,6 +39,7 @@ public class AdminController {
     private final TreasureHuntRepository treasureHuntRepository;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
+    private final TreasureHuntController treasureHuntController;
     private final Form<TreasureHunt> huntForm;
 
     private String adminEndpoint = "/admin";
@@ -49,7 +50,7 @@ public class AdminController {
                            MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
                                    destinationRepository, TripRepository tripRepository, TripDestinationsRepository
                                    tripDestinationsRepository, RolesRepository rolesRepository,
-                           TreasureHuntRepository treasureHuntRepository) {
+                           TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController) {
         this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
@@ -62,6 +63,7 @@ public class AdminController {
         this.rolesRepository = rolesRepository;
         this.treasureHuntRepository = treasureHuntRepository;
         this.huntForm = formFactory.form(TreasureHunt.class);
+        this.treasureHuntController = treasureHuntController;
     }
 
     /**
@@ -94,7 +96,7 @@ public class AdminController {
         return profileRepository.findById(id).thenApplyAsync(profOpt -> {
             if (profOpt.isPresent()) {
                 List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-                return ok(admin.render(profileRepository.getAll(), getAdmins(), Trip.find.all(), new RoutedObject<Destination>(null, false, false), Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm,  null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), request, messagesApi.preferred(request)));
+                return ok(admin.render(profileRepository.getAll(), getAdmins(), Trip.find.all(), new RoutedObject<Destination>(null, false, false), Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm,  null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin");
             }
@@ -117,7 +119,7 @@ public class AdminController {
             if (profileOpt.isPresent()) {
                 Form<Profile> profileForm = profileEditForm.fill(profileOpt.get());
                 List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-                return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), request, messagesApi.preferred(request)));
+                return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin").flashing("info", "User profile not found");
             }
@@ -154,7 +156,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
             List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
         });
     }
 
@@ -228,7 +230,7 @@ public class AdminController {
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
             List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, trip, profileCreateForm, null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, trip, profileCreateForm, null, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
         });
     }
 
@@ -318,7 +320,7 @@ public class AdminController {
             RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, isEdit, !isEdit);
             if (isEdit) destinationEditForm.fill(currentDestination);
             List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-            return ok(admin.render(profiles, getAdmins(), trips, toSend, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), request, messagesApi.preferred(request)));
+            return ok(admin.render(profiles, getAdmins(), trips, toSend, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
         });
     }
 
@@ -411,6 +413,47 @@ public class AdminController {
 
 
     /**
+     * Endpoint method to handle a admin  request to edit a previously made treasure hunt
+     * @apiNote /admin/hunts/:id/edit
+     * @param request the admin request holding the treasure hunt form
+     * @param id Id of the treasure hunt to be edited
+     * @return CompletionStage redirecting back to the treasure hunts page
+     */
+    public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
+        Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
+        int profileId = SessionController.getCurrentUserId(request);
+        if (treasureHuntForm.field("profileId").value().isPresent()) {
+            profileId = Integer.parseInt(treasureHuntForm.field("profileId").value().get());
+        }
+        TreasureHunt treasureHunt = treasureHuntController.setValues(profileId, treasureHuntForm);
+        return supplyAsync(() -> {
+            treasureHuntRepository.update(treasureHunt, id);
+            return redirect(adminEndpoint).flashing("success", "Treasure Hunt has been updated.");
+        });
+    }
+
+
+    /**
+     * Endpoint method to get a hunt object to the view to edit
+     *
+     * @param request the get request sent by the client
+     * @param id  the id of the treasure hunt to view
+     * @return CompletionStage holding result rendering the admin  page with the desired hunt
+     * @apiNote GET /admin/hunts/:id/edit/show
+     */
+    public CompletionStage<Result> showEditHunt(Http.Request request, Integer id) {
+        return supplyAsync(() -> {
+            List<Profile> profiles = profileRepository.getAll();
+            List<Trip> trips = Trip.find.all();
+            List<Destination> destinations = Destination.find.all();
+            List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
+            TreasureHunt hunt = treasureHuntRepository.lookup(id);
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangesList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
+        });
+    }
+
+
+    /**
      * Endpoint method for an admin to delete a treasure hunt
      *
      * @param request the admin request
@@ -418,7 +461,6 @@ public class AdminController {
      * @return CompletionStage holding redirect to the admin page
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
-        System.out.println("yeeteateateate");
         return treasureHuntRepository.deleteTreasureHunt(id)
                 .thenApplyAsync(x -> redirect("/admin").flashing("succsess", "Hunt: " + id + "was deleted"));
     }

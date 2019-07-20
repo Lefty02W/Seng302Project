@@ -68,7 +68,7 @@ public class TreasureHuntController {
     public CompletionStage<Result> createHunt(Http.Request request) {
         return supplyAsync(() -> {
             Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
-            TreasureHunt treasureHunt = setValues(request, filledForm);
+            TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
             treasureHuntRepository.insert(treasureHunt);
             return redirect(huntShowRoute);
         });
@@ -91,7 +91,7 @@ public class TreasureHuntController {
      * @param values form of the incoming data to be put into a treasurehunt object
      * @return TreasureHunt object with all values inside
      */
-    private TreasureHunt setValues(Http.Request request, Form<TreasureHunt> values){
+    public TreasureHunt setValues(Integer userId, Form<TreasureHunt> values){
         TreasureHunt treasureHunt = values.get();
         String destinationId = null;
         String startDate = null;
@@ -109,7 +109,7 @@ public class TreasureHuntController {
         treasureHunt.setDestinationIdString(destinationId);
         treasureHunt.setStartDateString(startDate);
         treasureHunt.setEndDateString(endDate);
-        treasureHunt.setTreasureHuntProfileId(SessionController.getCurrentUserId(request));
+        treasureHunt.setTreasureHuntProfileId(userId);
         return treasureHunt;
     }
     /**
@@ -121,7 +121,7 @@ public class TreasureHuntController {
      */
     public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
         Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
-        TreasureHunt treasureHunt = setValues(request, treasureHuntForm);
+        TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), treasureHuntForm);
         return supplyAsync(() -> {
             treasureHuntRepository.update(treasureHunt, id);
             return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
