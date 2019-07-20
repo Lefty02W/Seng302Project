@@ -31,6 +31,8 @@ public class TreasureHunt extends Model {
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date endDate;
 
+    private Destination destination;
+
     private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
     public TreasureHunt(String riddle, int destinationId, Date startDate, Date endDate) {
@@ -83,6 +85,14 @@ public class TreasureHunt extends Model {
 
     public void setDestinationIdString(String destId){
         this.destinationId = Integer.parseInt(destId);
+    }
+
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
     }
 
     public void setStartDateString(String date){

@@ -3,6 +3,7 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
+import models.Destination;
 import models.TreasureHunt;
 import org.joda.time.DateTime;
 import play.db.ebean.EbeanConfig;
@@ -113,10 +114,17 @@ public class TreasureHuntRepository {
      * @return TreasureHunts, an ArrayList of all currently active TreasureHunts
      */
     public List<TreasureHunt> getAllUserTreasureHunts(int userId) {
-        return new ArrayList<>(ebeanServer.find(TreasureHunt.class)
+        List<TreasureHunt> hunts = new ArrayList<>(ebeanServer.find(TreasureHunt.class)
                 .where()
                 .eq("profile_id", userId)
                 .findList());
+        for(TreasureHunt hunt : hunts) {
+            hunt.setDestination(ebeanServer.find(Destination.class)
+                .where()
+                .eq("destination_id", hunt.getTreasureHuntDestinationId())
+                .findOne());
+        }
+        return hunts;
     }
 
     /**
