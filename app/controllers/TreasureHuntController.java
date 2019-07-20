@@ -13,6 +13,7 @@ import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -66,14 +67,33 @@ public class TreasureHuntController {
      */
     public CompletionStage<Result> createHunt(Http.Request request) {
         return supplyAsync(() -> {
-            System.out.println("yeet1");
-            System.out.println("llll + " + huntForm.bindFromRequest(request));
             Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
-            System.out.println("yeet1.5");
-            TreasureHunt treasureHunt = filledForm.get();
-            System.out.println("yeet2");
-            treasureHuntRepository.insert(treasureHunt);
-            System.out.println("yeet3");
+            Optional<TreasureHunt> huntOpt = filledForm.value();
+            if (huntOpt.isPresent()) {
+                TreasureHunt treasureHunt = huntOpt.get();
+                String destinationId = null;
+                String startDate = null;
+                String endDate = null;
+                if (filledForm.field("endDate").value().isPresent()) {
+                    endDate = filledForm.field("endDate").value().get();
+                }
+                if (filledForm.field("startDate").value().isPresent()) {
+                    startDate = filledForm.field("startDate").value().get();
+                }
+                if (filledForm.field("destinationId").value().isPresent()) {
+                    destinationId = filledForm.field("destinationId").value().get();
+                }
+                System.out.println(endDate);
+                System.out.println(startDate);
+                System.out.println(destinationId);
+
+                treasureHunt.setDestinationIdString(destinationId);
+                treasureHunt.setStartDateString(startDate);
+                treasureHunt.setEndDateString(endDate);
+                treasureHunt.setTreasureHuntProfileId(SessionController.getCurrentUserId(request));
+                treasureHuntRepository.insert(treasureHunt);
+            }
+
             return redirect(huntShowRoute);
         });
     }

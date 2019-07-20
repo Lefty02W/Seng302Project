@@ -7,6 +7,9 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -28,10 +31,9 @@ public class TreasureHunt extends Model {
     private Date startDate;
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
-    @Constraints.Required
     private Date endDate;
 
-    public static final Finder<String, TreasureHunt> find = new Finder<>(TreasureHunt.class);
+    private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
     public TreasureHunt(String riddle, int destinationId, Date startDate, Date endDate) {
         this.riddle = riddle;
@@ -81,4 +83,23 @@ public class TreasureHunt extends Model {
     }
 
 
+    public void setDestinationIdString(String destId){
+        this.destinationId = Integer.parseInt(destId);
+    }
+
+    public void setStartDateString(String date){
+        try {
+            this.startDate = dateFormatEntry.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setEndDateString(String date){
+        try {
+            this.endDate = dateFormatEntry.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 }
