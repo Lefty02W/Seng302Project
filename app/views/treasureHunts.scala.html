@@ -74,7 +74,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <table id="requestsTable" class="table table-striped">
+                        <table id="avalHunts" class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Riddle</th>
@@ -98,7 +98,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <table id="requestsTable" class="table table-striped">
+                        <table id="huntsTable" class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Riddle</th>
@@ -257,6 +257,22 @@
                 e.preventDefault();
                 $("#wrapper").toggleClass("toggled");
             });
+
+            $(document).ready(function() {
+                $('#huntsTable').DataTable({
+                    "searching": false,
+                    "pageLength": 8,
+                    "lengthChange": false
+                });
+            } );
+
+            $(document).ready(function() {
+                $('#avalHunts').DataTable({
+                    "searching": false,
+                    "pageLength": 8,
+                    "lengthChange": false
+                });
+            } );
     </script>
 
 </html>
