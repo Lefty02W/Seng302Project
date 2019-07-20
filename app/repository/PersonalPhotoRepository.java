@@ -98,22 +98,18 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
                 .createSqlQuery("select photo_id from personal_photo where is_profile_photo = 1 and profile_id = ?")
                 .setParameter(1, profileId)
                 .findOne();
-        if (!row.isEmpty()) {
+        if (row != null) {
             int photoId = row.getInteger("photo_id");
             SqlRow thumbRow = ebeanServer
                     .createSqlQuery("select thumbnail_id from thumbnail_link where photo_id = ?")
                     .setParameter(1, photoId)
                     .findOne();
-            if (!thumbRow.isEmpty()) {
+            if (thumbRow != null) {
                 int thumbId = thumbRow.getInteger("thumbnail_id");
-                try {
-                    ebeanServer
-                            .createSqlUpdate("DELETE FROM photo WHERE photo_id = ?")
-                            .setParameter(1, thumbId)
-                            .execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                ebeanServer
+                        .createSqlUpdate("DELETE FROM photo WHERE photo_id = ?")
+                        .setParameter(1, thumbId)
+                        .execute();
             }
         }
     }
