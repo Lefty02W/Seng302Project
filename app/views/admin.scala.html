@@ -3,7 +3,7 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangesList: List[DestinationChanges])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangesList: List[DestinationChanges], hunts : List[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -240,8 +240,8 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <h2 align="center">Destination requests</h2>
+                            <div class="col text-center">
+                                <h2 align="center">Destination Requests</h2>
                             </div>
                         </div>
                         <div class="row">
@@ -269,6 +269,44 @@
                                         }
                                         <td><button class="btn btn-primary">Approve</button></td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center">
+                                <h2 align="center">Treasure Hunts</h2>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#createHuntModal">Create Treasure Hunt</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="huntsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Riddle</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Destination</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                @for(hunt <- hunts) {
+                                    <tr>
+                                        <td>@hunt.getRiddle</td>
+                                        <td>@hunt.getStartDate</td>
+                                        <td>@hunt.getEndDate</td>
+                                        <td>@hunt.getTreasureHuntDestinationId</td>
+                                        <td>
+                                            <a href="">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/hunts/@hunt.getTreasureHuntId/delete">
+                                                <button class="btn btn-danger" onclick="">Delete</button>
+                                            </a>
+                                        </td>
                                     </tr>
                                 }
                             </table>

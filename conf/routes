@@ -85,7 +85,11 @@ GET     /admin/destinations/:destId/delete      controllers.AdminController.dele
 POST    /admin/create/destinations      controllers.AdminController.addDestination(request: Request)
 GET  /admin/destinations/:id/request/reject      controllers.AdminController.rejectDestinationRequest(request : Request, id : Integer)
 
-## Tresure Hunts
+## Admin Treasure Hunts
+POST    /admin/hunts/create       controllers.TreasureHuntController.createHunt(request : Request)
+GET     /admin/hunts/:id/delete        controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
+
+# Tresure Hunts
 GET     /treasure                    controllers.TreasureHuntController.show(request: Request)
 POST    /hunts/create       controllers.TreasureHuntController.createHunt(request : Request)
 GET     /hunts/:id/delete        controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)

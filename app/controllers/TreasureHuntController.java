@@ -13,7 +13,6 @@ import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -125,7 +124,7 @@ public class TreasureHuntController {
         });
     }
 
-    public Result showEditTreasureHunt(Http.Request request , Integer id) {
+/*    public Result showEditTreasureHunt(Http.Request request , Integer id) {
         TreasureHunt currentTreasureHunt = TreasureHuntRepository.lookup(id);
-    }
+    }*/
 }

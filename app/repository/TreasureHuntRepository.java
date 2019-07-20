@@ -68,6 +68,18 @@ public class TreasureHuntRepository {
     }
 
 
+    /**
+     * Method to find all treasure hunts in the database
+     *
+     * @return list holding all found treasure hunts
+     */
+    public List<TreasureHunt> getAllTreasureHunts() {
+        return ebeanServer.find(TreasureHunt.class)
+                .where()
+                .findList();
+    }
+
+
 
     /**
      * Updates a TreasureHunt object in the database by taking in an id of an already existing treasurehunt and a new edited treasure hunt
