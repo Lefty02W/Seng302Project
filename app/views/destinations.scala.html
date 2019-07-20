@@ -474,12 +474,9 @@
                                 <div class="col">
                                     <div class="row justify-content-center">
                                         <div class="col-md-6">
-                                           <div class="row justify-content-center">
-                                               <div class="col-md-4" id="removeTravellerTypes">
+                                            <div class="col " id="removeTravellerTypes">
 
-                                               </div>
-
-                                           </div>
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col" id="travellersToAdd">
@@ -1150,12 +1147,13 @@
             function setTravellerTypesToRemove() {
                 var html = "";
                 @for(destination <- destinationsList) {
-                var id = @destination.getDestinationId;
-                    if(id === getSelectedDestID()) {
-                        @for(travellerType <- destination.getTravellerTypesList) {
-                            html += "<a>" + travellerType.toString() + "</a>" +"<input type='checkbox'>";
-                        }
-                        document.getElementById("removeTravellerTypes").innerHTML = html;
+                    var id = @destination.getDestinationId;
+                        if(id === getSelectedDestID()) {
+                            var len = @destination.getTravellerTypesList.size();
+                            @for(travellerType <- destination.getTravellerTypesList) {
+                                html += "<a> @travellerType </a>" +"<input type='checkbox'>";
+                            }
+                            document.getElementById("removeTravellerTypes").innerHTML = html;
                     }
                 }
                 if (html === "") {
