@@ -1,9 +1,7 @@
 package models;
 
-import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
-import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -32,6 +30,8 @@ public class TreasureHunt extends Model {
 
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date endDate;
+
+    private Destination destination;
 
     private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
@@ -87,6 +87,14 @@ public class TreasureHunt extends Model {
         this.destinationId = Integer.parseInt(destId);
     }
 
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
+    }
+
     public void setStartDateString(String date){
         try {
             this.startDate = dateFormatEntry.parse(date);
@@ -101,5 +109,21 @@ public class TreasureHunt extends Model {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Method to get a formatted string of the end date
+     * @return formatted date string
+     */
+    public String getEndDateString() {
+        return dateFormatEntry.format(endDate);
+    }
+
+    /**
+     * Method to get a formatted string of the start date
+     * @return formatted date string
+     */
+    public String getStartDateString() {
+        return dateFormatEntry.format(startDate);
     }
 }

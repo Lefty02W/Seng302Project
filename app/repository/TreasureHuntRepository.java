@@ -3,6 +3,7 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
+import models.Destination;
 import models.TreasureHunt;
 import org.joda.time.DateTime;
 import play.db.ebean.EbeanConfig;
@@ -68,6 +69,18 @@ public class TreasureHuntRepository {
     }
 
 
+    /**
+     * Method to find all treasure hunts in the database
+     *
+     * @return list holding all found treasure hunts
+     */
+    public List<TreasureHunt> getAllTreasureHunts() {
+        return ebeanServer.find(TreasureHunt.class)
+                .where()
+                .findList();
+    }
+
+
 
     /**
      * Updates a TreasureHunt object in the database by taking in an id of an already existing treasurehunt and a new edited treasure hunt
@@ -101,10 +114,17 @@ public class TreasureHuntRepository {
      * @return TreasureHunts, an ArrayList of all currently active TreasureHunts
      */
     public List<TreasureHunt> getAllUserTreasureHunts(int userId) {
-        return new ArrayList<>(ebeanServer.find(TreasureHunt.class)
+        List<TreasureHunt> hunts = new ArrayList<>(ebeanServer.find(TreasureHunt.class)
                 .where()
                 .eq("profile_id", userId)
                 .findList());
+        for(TreasureHunt hunt : hunts) {
+            hunt.setDestination(ebeanServer.find(Destination.class)
+                .where()
+                .eq("destination_id", hunt.getTreasureHuntDestinationId())
+                .findOne());
+        }
+        return hunts;
     }
 
     /**
@@ -112,9 +132,9 @@ public class TreasureHuntRepository {
      *
      * @param treasureHuntId id of the treasureHunt the user wishes to delete
      */
-    public CompletionStage<Integer> deleteTreasureHunt(int treasureHuntId, Integer userId){
+    public CompletionStage<Integer> deleteTreasureHunt(int treasureHuntId){
         return supplyAsync(() -> {
-            ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).eq("profile_id", userId).delete();
+            ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).delete();
             return 1;
         });
     }

@@ -70,7 +70,7 @@
 
                     <div class="row">
                         <div class="col">
-                            <h2 align="center">Available Hunts</h2>
+                            <h2 align="center">Available Treasure Hunts</h2>
                         </div>
                     </div>
                     <div class="row">
@@ -85,7 +85,7 @@
                                 <tr>
 
                                     <td>@hunt.getRiddle</td>
-                                    <td>@hunt.getEndDate</td>
+                                    <td>@hunt.getEndDateString</td>
                                 </tr>
                             }
                         </table>
@@ -112,9 +112,9 @@
                             @for(hunt <- myHunts) {
                                 <tr>
                                     <td>@hunt.getRiddle</td>
-                                    <td>@hunt.getStartDate</td>
-                                    <td>@hunt.getEndDate</td>
-                                    <td>@hunt.getEndDate</td>
+                                    <td>@hunt.getStartDateString</td>
+                                    <td>@hunt.getEndDateString</td>
+                                    <td>@hunt.getDestination.getName</td>
                                     <td>
                                         <a href="">
                                             <button class="btn btn-primary">Edit</button>

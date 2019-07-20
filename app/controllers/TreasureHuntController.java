@@ -13,7 +13,6 @@ import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -105,7 +104,7 @@ public class TreasureHuntController {
      * @param id int Id of the treasureHunt the user wishes to delete
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
-        return treasureHuntRepository.deleteTreasureHunt(id, SessionController.getCurrentUserId(request))
+        return treasureHuntRepository.deleteTreasureHunt(id)
                 .thenApplyAsync(x -> redirect("/treasure").flashing("succsess", "Hunt: " + id + "was deleted"));
     }
 
