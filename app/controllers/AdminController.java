@@ -341,11 +341,15 @@ public class AdminController {
      * @apiNote POST /admin/destinations
      */
     public CompletionStage<Result> addDestination(Http.Request request) {
-        System.out.println("yeet");
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
+        String visible = destForm.field("visible").value().get();
+        int visibility = (visible.equals("Public")) ? 1 : 0;
         System.out.println(destForm);
         Destination destination = destForm.value().get();
         destination.initTravellerType();
+        destination.setVisible(visibility);
+        System.out.println("Destination object after get: " + destination);
+
         System.out.println("Admin adding a destination..." + destination.getTravellerTypesList());
         return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin"));
     }

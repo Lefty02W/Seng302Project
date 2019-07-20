@@ -57,7 +57,8 @@ public class Destination extends Model {
     }
 
     /**
-     * Creating a destination
+     * Creating a destination for USERS
+     *
      * @param destinationId the destinations db id
      * @param name the destination name
      * @param type the destination type
@@ -81,7 +82,8 @@ public class Destination extends Model {
     }
 
     /**
-     * Creating a destination
+     * Creating a destination for ADMINS
+     *
      * @param profileId
      * @param name the destination name
      * @param type the destination type
@@ -91,7 +93,7 @@ public class Destination extends Model {
      * @param longitude the destinations longitude
      */
     public Destination(int profileId, String name, String type, String country, String district, double latitude, double
-            longitude, int visible) {
+            longitude, int visible, Map<Integer, TravellerType> travellerTypes) {
         this.profileId = profileId;
         this.name = name;
         this.type = type;
@@ -100,6 +102,8 @@ public class Destination extends Model {
         this.latitude = latitude;
         this.longitude = longitude;
         this.visible = visible;
+        this.travellerTypes = travellerTypes;
+
     }
 
     /**
