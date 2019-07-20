@@ -26,7 +26,7 @@ Feature: Edit Treasure Hunt
   Scenario: Edit the riddle of a treasure hunt
     Given I am on the treasure hunts page
     When I press edit on one of my treasure hunts
-    And I set the end date to "A new riddle"
+    And I set the riddle to "A new riddle"
     When I press the save button to save the treasure hunt
     Then I am redirected to the treasure hunts page
     And The riddle is updated in the database

@@ -6,20 +6,23 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.TreasureHunt;
+import org.junit.Ignore;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class EditHuntSteps extends ProvideApplication {
 
     private Map<String, String> huntForm = new HashMap<>();
     private Result redirectDestination;
+    private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
 
     @Given("^I am on the treasure hunts page$")
@@ -76,5 +79,50 @@ public class EditHuntSteps extends ProvideApplication {
         injectRepositories();
         TreasureHunt hunt = treasureHuntRepository.lookup(1);
         assertEquals(2, hunt.getTreasureHuntDestinationId());
+    }
+
+    @And("^I set the end date to \"([^\"]*)\"$")
+    public void iSetTheEndDateTo(String arg0) throws Throwable {
+        huntForm.put("endDate", arg0);
+    }
+
+    @And("^The end date is updated in the database$")
+    public void theEndDateIsUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        assertEquals("2020-12-29", hunt.getEndDateString());
+    }
+
+    @And("^I set the riddle to \"([^\"]*)\"$")
+    public void iSetTheRiddleTo(String arg0) throws Throwable {
+        huntForm.put("riddle", arg0);
+    }
+
+    @And("^The riddle is updated in the database$")
+    public void theRiddleIsUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        assertEquals("A new riddle", hunt.getRiddle());
+    }
+
+    @And("^I set the start date to \"([^\"]*)\"$")
+    public void iSetTheStartDateTo(String arg0) throws Throwable {
+        huntForm.put("startDate", arg0);
+    }
+
+    @And("^The start date is updated in the database$")
+    public void theStartDateIsUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        assertEquals("2000-12-26", hunt.getStartDateString());
+    }
+
+    @Ignore
+    @And("^The edit is not saved to the database$")
+    public void theEditIsNotSavedToTheDatabase() throws Throwable {
+        injectRepositories();
+        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        assertNotEquals("2020-12-30", hunt.getStartDateString());
+        assertNotEquals("2000-12-30", hunt.getEndDateString());
     }
 }
