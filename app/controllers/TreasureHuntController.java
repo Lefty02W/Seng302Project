@@ -104,7 +104,7 @@ public class TreasureHuntController {
      * @param id int Id of the treasureHunt the user wishes to delete
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
-        return treasureHuntRepository.deleteTreasureHunt(id, SessionController.getCurrentUserId(request))
+        return treasureHuntRepository.deleteTreasureHunt(id)
                 .thenApplyAsync(x -> redirect("/treasure").flashing("succsess", "Hunt: " + id + "was deleted"));
     }
 

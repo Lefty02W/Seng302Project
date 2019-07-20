@@ -409,4 +409,18 @@ public class AdminController {
             });
     }
 
+
+    /**
+     * Endpoint method for an admin to delete a treasure hunt
+     *
+     * @param request the admin request
+     * @param id the id of the treasure hunt to delete
+     * @return CompletionStage holding redirect to the admin page
+     */
+    public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
+        System.out.println("yeeteateateate");
+        return treasureHuntRepository.deleteTreasureHunt(id)
+                .thenApplyAsync(x -> redirect("/admin").flashing("succsess", "Hunt: " + id + "was deleted"));
+    }
+
 }

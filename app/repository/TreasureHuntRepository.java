@@ -124,9 +124,9 @@ public class TreasureHuntRepository {
      *
      * @param treasureHuntId id of the treasureHunt the user wishes to delete
      */
-    public CompletionStage<Integer> deleteTreasureHunt(int treasureHuntId, Integer userId){
+    public CompletionStage<Integer> deleteTreasureHunt(int treasureHuntId){
         return supplyAsync(() -> {
-            ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).eq("profile_id", userId).delete();
+            ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).delete();
             return 1;
         });
     }
