@@ -211,7 +211,8 @@
                                     </div>
 
                                     <div id="travellerTypes" class="row justify-content-center">
-                                        <button class="btn-success" data-toggle="modal" data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">Edit</button>
+                                        <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
+                                        data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">Edit</button>
                                         <div id="travellerTypesVal" class="col-md-4">
                                             <a></a>
                                         </div>
@@ -977,6 +978,7 @@
                             document.getElementById("latVal").innerHTML = "  <b>Latitude: &nbsp;&nbsp;</b> @destination.getLatitude";
                             document.getElementById("lngVal").innerHTML = "  <b>Longitude: &nbsp;&nbsp;</b> @destination.getLongitude";
                             document.getElementById("travellerTypesVal").innerHTML = "  <b>Traveller Types: &nbsp;&nbsp;</b> @destination.getTravellerTypesString";
+                            document.getElementById("suggestEditButton").hidden = false;
                             @if(destination.getVisible == 1){
                                 document.getElementById("publicVal").innerHTML = "  <b>Visibility: &nbsp;&nbsp;</b> Public ";
                             }else{
