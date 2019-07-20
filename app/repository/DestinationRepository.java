@@ -365,7 +365,6 @@ public class DestinationRepository {
     public CompletionStage<Integer> deleteDestinationChange(int changeId) {
     return supplyAsync(
         () -> {
-          System.out.println("yeet: " + changeId);
           ebeanServer.find(DestinationChanges.class).where().eq("id", changeId).delete();
           return 1;
         });
@@ -384,9 +383,9 @@ public class DestinationRepository {
                         // TODO: 19/07/19 might need to have add/remove methods chain return
                         System.out.println(changeOpt.get().getDestination());
                         if (changeOpt.get().getAction() == 1){
-                           // addDestinaionTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
+                           addDestinationTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
                         } else {
-                           // removeDestinationTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
+                           removeDestinationTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
                         }
                     }
                     return 1;
@@ -437,8 +436,12 @@ public class DestinationRepository {
      * @param travellerTypeId id of the traveller type that will be added to the destination
      * @param destinationId id of the destination that the traveller type will be added to
      */
-    public void addDestinaionTravellerType(int travellerTypeId, int destinationId){
-        // TODO: 15/07/19 implement method and change method signatur to return id of the added traveller type.
+    private CompletionStage<Void> addDestinationTravellerType(int travellerTypeId, int destinationId){
+        DestinationTravellerType destinationTravellerType = new DestinationTravellerType(destinationId, travellerTypeId);
+        return supplyAsync(() -> {
+            ebeanServer.insert(destinationTravellerType);
+            return null;
+        }, executionContext);
     }
 
     /**
@@ -447,8 +450,16 @@ public class DestinationRepository {
      * @param travellerTypeId id of the traveller type that will be added to the destination
      * @param destinationId id of the destination that the traveller type will be added to
      */
-    public void removeDestinationTravellerType(int travellerTypeId, int destinationId){
-        // TODO: 18/07/19  implement method once model can hold traveller types
+    private CompletionStage<Void> removeDestinationTravellerType(int travellerTypeId, int destinationId){
+        return supplyAsync(() -> {
+            ebeanServer
+                    .find(DestinationTravellerType.class)
+                    .where()
+                    .eq("destinationId", destinationId)
+                    .eq("travellerTypeId", travellerTypeId)
+                    .delete();
+            return null;
+        });
     }
 
 
