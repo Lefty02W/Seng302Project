@@ -250,35 +250,40 @@
                         <div class="col">
                             <h2 align="center">Destination requests</h2>
                         </div>
-                    </div>
-                    <div class="row">
-                        <table id="requestsTable" class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>User email</th>
-                                    <th>Destination name</th>
-                                    <th>Traveller type change</th>
-                                    <th>To be added or deleted</th>
-                                    <th>Approve</th>
-                                    <th>Decline</th>
-                                </tr>
-                            </thead>
-                            @for(destinationChange <- destinationChangesList) {
-                                <tr>
+                        <div class="row">
+                            <div class="col">
+                                <h2 align="center">Destination Requests</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="requestsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ProfileID</th>
+                                        <th>Destination</th>
+                                        <th>Traveller Type</th>
+                                        <th>Action</th>
+                                        <th>Approve</th>
+                                        <th>Decline</th>
+                                    </tr>
+                                </thead>
+                                @for(destinationChange <- destinationChangesList) {
+                                    <tr>
 
-                                    <td>@destinationChange.getEmail</td>
-                                    <td>@destinationChange.getDestination.getName</td>
-                                    <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
-                                    @if(destinationChange.getAction == 1) {
-                                        <td>Add</td>
-                                    } else {
-                                        <td>Remove</td>
-                                    }
-                                    <td><button class="btn btn-primary">Approve</button></td>
-                                    <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
-                                </tr>
-                            }
-                        </table>
+                                        <td>@destinationChange.getEmail</td>
+                                        <td>@destinationChange.getDestination.getName</td>
+                                        <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
+                                        @if(destinationChange.getAction == 1) {
+                                            <td>Add</td>
+                                        }else {
+                                            <td>Remove</td>
+                                        }
+                                        <td><a href="/admin/destinations/@destinationChange.getId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
                     </div>
                 </div>
                 </div>

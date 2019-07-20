@@ -352,15 +352,23 @@ public class AdminController {
 
 
     /**
-     *
-     * @param request
-     * @param destId
-     * @return
+     * Calls the destination repository method deleteDestinationChange to remove the selected change request once the
+     * admin confirms the delete.
+     * Method redirects to admin page with the a success message displayed
+     * @param request http request
+     * @param changeId Id of the change request the admin is removing
+     * @return redirect with flashing success message
      */
-    public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer destId) {
-        return supplyAsync(() -> {
-          return redirect("/admin");
-        });
+    public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer changeId) {
+        return destinationRepository.deleteDestinationChange(changeId).thenApplyAsync(x -> redirect("/admin").flashing("info", "Destination change request successfully rejected"));
+    }
+
+    public CompletionStage<Result> acceptDestinationRequest(Http.Request request, Integer changeId){
+        return destinationRepository.acceptDestinationChange(changeId)
+                .thenApplyAsync(x -> {
+                    return redirect("/admin").flashing("info", "Destination change successfully accepted");
+                });
+        // TODO: 18/07/19 need to get rid of email from DestinationChanges and replace with profile id, also change in ui
     }
 
 }
