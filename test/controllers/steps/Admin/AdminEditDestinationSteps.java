@@ -1,4 +1,4 @@
-package controllers.steps;
+package controllers.steps.Admin;
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;

@@ -1,19 +1,17 @@
-package controllers.steps;
+package controllers.steps.Admin;
 
 import controllers.ProvideApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import org.junit.Ignore;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.HashMap;
 import java.util.Map;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 
 public class AdminCreatesDestinationSteps extends ProvideApplication {
 
