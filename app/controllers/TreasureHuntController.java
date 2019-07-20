@@ -125,7 +125,7 @@ public class TreasureHuntController {
         });
     }
 
-    public Result showEditTreasureHunt(Http.Request request , Integer id) {
+/*    public Result showEditTreasureHunt(Http.Request request , Integer id) {
         TreasureHunt currentTreasureHunt = TreasureHuntRepository.lookup(id);
-    }
+    }*/
 }
