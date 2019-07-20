@@ -124,4 +124,8 @@ public class TreasureHuntController {
             return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
         });
     }
+
+    public Result showEditTreasureHunt(Http.Request request , Integer id) {
+        TreasureHunt currentTreasureHunt = TreasureHuntRepository.lookup(id);
+    }
 }

@@ -46,6 +46,15 @@ public class TreasureHuntRepository {
     }
 
     /**
+     * Method to retrieve a specific treasure hunt using the id/
+     * @param id Id of the treasure hunt to be found
+     * @return TreasureHunt that has been found
+     */
+    public TreasureHunt lookup(Integer id)  {
+        return ebeanServer.find(TreasureHunt.class).setId(id).findOne();
+    }
+
+    /**
      * Method to retrieve all TreasureHunts from the database which are currently active
      *
      * @return TreasureHunts, an arrayList of all currently active treasureHunts
