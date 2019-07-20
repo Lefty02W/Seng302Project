@@ -8,17 +8,12 @@ import org.joda.time.DateTime;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
-
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
+
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
 public class TreasureHuntRepository {
@@ -110,7 +105,7 @@ public class TreasureHuntRepository {
      */
     public CompletionStage<Integer> deleteTreasureHunt(int treasureHuntId, Integer userId){
         return supplyAsync(() -> {
-            ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).eq("user_id", userId).delete();
+            ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).eq("profile_id", userId).delete();
             return 1;
         });
     }
