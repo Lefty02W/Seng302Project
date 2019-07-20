@@ -44,7 +44,7 @@ public class Destination extends Model {
     private List<Photo> worldPhotos = new ArrayList<>();
 
     @Transient
-    private String travellerTypesString;
+    private String travellerTypesStringDest;
 
     @Transient
     private Map<Integer, TravellerType> travellerTypes;
@@ -66,6 +66,7 @@ public class Destination extends Model {
      * @param district the destinations district
      * @param latitude the destinations latitude
      * @param longitude the destinations longitude
+     * @param travellerTypes a map of a travellertype and its id
      */
     public Destination(int destinationId, int profileId, String name, String type, String country, String district,
                        double latitude, double longitude, int visible,  Map<Integer, TravellerType> travellerTypes) {
@@ -93,7 +94,7 @@ public class Destination extends Model {
      * @param longitude the destinations longitude
      */
     public Destination(int profileId, String name, String type, String country, String district, double latitude, double
-            longitude, int visible, Map<Integer, TravellerType> travellerTypes) {
+            longitude, int visible) {
         this.profileId = profileId;
         this.name = name;
         this.type = type;
@@ -102,7 +103,6 @@ public class Destination extends Model {
         this.latitude = latitude;
         this.longitude = longitude;
         this.visible = visible;
-        this.travellerTypes = travellerTypes;
 
     }
 
@@ -113,9 +113,10 @@ public class Destination extends Model {
     public void initTravellerType() {
         this.travellerTypes = new HashMap<>();
 
-        if (travellerTypesString != null) {
+        System.out.println("Initialising Travller Types " + travellerTypesStringDest);
+        if (travellerTypesStringDest != null) {
             int i = 1;
-            for (String travellerTypesString : (travellerTypesString.split(","))) {
+            for (String travellerTypesString : (travellerTypesStringDest.split(","))) {
                 i++;
                 TravellerType travellerType = new TravellerType(i, travellerTypesString);
                 this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
@@ -238,12 +239,12 @@ public class Destination extends Model {
 
     public void setTravellerTypes(Map<Integer, TravellerType> travellerTypes) { this.travellerTypes = travellerTypes; }
 
-    public void setTravellerTypesString(String travellerTypesString) {
-        this.travellerTypesString = travellerTypesString;
+    public void setTravellerTypesStringDest(String travellerTypesString) {
+        this.travellerTypesStringDest = travellerTypesString;
     }
 
     public String getTravellerTypesForm() {
-        return travellerTypesString;
+        return travellerTypesStringDest;
     }
 
 //    public void addTravellerType(TravellerType travellerType) {

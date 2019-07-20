@@ -306,7 +306,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="hidden-div-edit">
-                                                <input type="text" id="travellerTypesString" name="travellerTypesString" class="hidden-field typesField" required>
+                                                <input type="text" id="travellerTypesStringDest" name="travellerTypesStringDest" class="hidden-field typesField" required>
                                             </div>
                                             <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
                                                 <option value="ThrillSeeker">ThrillSeeker</option>
@@ -1138,8 +1138,7 @@
             function getSelectedDestID () {return selectedDestID;}
 
             function fillVals() {
-                console.log($('#typeDropdown').val());
-                $('#travellerTypesString').val($('#typeDropdown').val());
+                $('#travellerTypesStringDest').val($('#typeDropdown').val());
             }
 
             function setTravellerTypesToRemove() {

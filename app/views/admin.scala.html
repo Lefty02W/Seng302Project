@@ -275,7 +275,7 @@
                                         <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
                                         @if(destinationChange.getAction == 1) {
                                             <td>Add</td>
-                                        }else {
+                                        } else {
                                             <td>Remove</td>
                                         }
                                         <td><a href="/admin/destinations/@destinationChange.getId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
@@ -868,7 +868,7 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="travellerTypesString" name="travellerTypesString" class="hidden-field typesField">
+                                    <input type="text" id="travellerTypesStringDest" name="travellerTypesStringDest" class="hidden-field typesField">
                                 </div>
                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownDest" data-width="100%">
                                     <option value="ThrillSeeker">ThrillSeeker</option>
@@ -905,8 +905,8 @@
                     </div>
                         <!-- footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" id="createButton" class="btn btn-primary" onclick="fillValsDest()">Save</button>
                     </div>
                 }
             </div>
@@ -943,9 +943,14 @@
 
     <script type="text/javascript">
         function fillVals() {
-            $('#travellerTypesString').val($('#typeDropdownDest').val());
+            console.log($('#typeDropdown').val());
+            $('#travellerTypesString').val($('#typeDropdown').val());
         }
 
+        function fillValsDest() {
+            console.log($('#typeDropdownDest').val());
+            $('#travellerTypesStringDest').val($('#typeDropdownDest').val());
+        }
 
         $("#menu-toggle").click(function (e) {
             e.preventDefault();
@@ -953,49 +958,48 @@
         });
 
 
-
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#profileTable').DataTable({
                 "searching": false,
                 "pageLength": 8,
                 "lengthChange": false
             });
-        } );
+        });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#tripsTable').DataTable({
                 "searching": false,
                 "pageLength": 8,
                 "lengthChange": false
             });
-        } );
+        });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#destinationsTable').DataTable({
                 "searching": false,
                 "pageLength": 8,
                 "lengthChange": false
             });
-        } );
+        });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#adminsTable').DataTable({
                 "searching": false,
                 "pageLength": 8,
                 "lengthChange": false
             });
-        } );
+        });
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#tripDestTable').DataTable({
                 "searching": false,
                 "pageLength": 8,
                 "lengthChange": false
             });
-        } );
+        });
 
 
-        function fillDeleteValues(route){
+        function fillDeleteValues(route) {
             var a = document.getElementById("confirmDeleteHrf");
             a.href = route;
             console.log(a.href);
@@ -1007,7 +1011,7 @@
             a.href = "/trips/" + select.value + "/create";
         }
 
-        function runDelete(){
+        function runDelete() {
             email = this.email;
         }
 

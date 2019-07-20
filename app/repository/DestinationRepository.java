@@ -91,7 +91,6 @@ public class DestinationRepository {
 
             // Adding traveller types of destinations to the database
             for (String travellerTypeName : dest.getTravellerTypesList()) {
-                System.out.println(travellerTypeName);
                 destinationTravellerTypeRepository.insertDestinationTravellerType(new TravellerType(travellerTypeName), dest.getDestinationId());
             }
 
