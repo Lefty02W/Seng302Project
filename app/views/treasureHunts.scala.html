@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt], destinations: List[Destination], form: Form[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt], destinations: List[Destination], form: Form[TreasureHunt], editHunt: RoutedObject[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -116,7 +116,7 @@
                                     <td>@hunt.getEndDateString</td>
                                     <td>@hunt.getDestination.getName</td>
                                     <td>
-                                        <a href="">
+                                        <a href="/hunts/@hunt.getTreasureHuntId/edit/show">
                                             <button class="btn btn-primary">Edit</button>
                                         </a>
                                     </td>
@@ -187,6 +187,70 @@
             }
         </div>
     </div>
+
+    @if(editHunt.isEdit && editHunt.getObject != null) {
+                    <script type="text/javascript">
+                            $(window).on('load', function () {
+                                $('#editHuntModal').modal('show');
+                            });
+                        </script>
+    <div class="modal" id="editHuntModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header text-center">
+                    <h4 id="addTitle">Edit Treasure Hunt</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @helper.form(routes.TreasureHuntController.editTreasureHunt(editHunt.getObject.getTreasureHuntId)) {
+                    @CSRF.formField
+                    <div class="modal-body">
+                        <div class="col" align="center">
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Riddle</small>
+                                        <!--TODO pick a max length for riddle, adjust input accordingly-->
+                                    <input type="text" name="riddle" id="riddle" value="@editHunt.getObject.getRiddle" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="destinationId"><small id="label">Destination</small></label>
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                    @for(destination <- destinations) {
+                                        @if(destination.getDestinationId == editHunt.getObject.getTreasureHuntDestinationId) {
+                                            <option value="@destination.getDestinationId" selected>@destination.getName</option>
+                                            } else {
+                                            <option value="@destination.getDestinationId">@destination.getName</option>
+                                            }
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Start Date</small>
+                                    <input type="date" id="startDate" name="startDate"  class="inputField" value="@editHunt.getObject.getEntryDate(editHunt.getObject.getStartDate)" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">End Date</small>
+                                    <input type="date" id="endDate" name="endDate"  class="inputField" value="@editHunt.getObject.getEntryDate(editHunt.getObject.getEndDate)" required >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+     }
 
     <script>
             $("#menu-toggle").click(function (e) {

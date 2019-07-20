@@ -1,6 +1,8 @@
 package controllers;
 
 
+import models.Destination;
+import models.RoutedObject;
 import models.TreasureHunt;
 import play.data.Form;
 import play.data.FormFactory;
@@ -51,11 +53,10 @@ public class TreasureHuntController {
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }
-
 
     /**
      * Endpoint method to handle a users request to create a new treasure hunt
@@ -67,32 +68,8 @@ public class TreasureHuntController {
     public CompletionStage<Result> createHunt(Http.Request request) {
         return supplyAsync(() -> {
             Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
-            Optional<TreasureHunt> huntOpt = filledForm.value();
-            if (huntOpt.isPresent()) {
-                TreasureHunt treasureHunt = huntOpt.get();
-                String destinationId = null;
-                String startDate = null;
-                String endDate = null;
-                if (filledForm.field("endDate").value().isPresent()) {
-                    endDate = filledForm.field("endDate").value().get();
-                }
-                if (filledForm.field("startDate").value().isPresent()) {
-                    startDate = filledForm.field("startDate").value().get();
-                }
-                if (filledForm.field("destinationId").value().isPresent()) {
-                    destinationId = filledForm.field("destinationId").value().get();
-                }
-                System.out.println(endDate);
-                System.out.println(startDate);
-                System.out.println(destinationId);
-
-                treasureHunt.setDestinationIdString(destinationId);
-                treasureHunt.setStartDateString(startDate);
-                treasureHunt.setEndDateString(endDate);
-                treasureHunt.setTreasureHuntProfileId(SessionController.getCurrentUserId(request));
-                treasureHuntRepository.insert(treasureHunt);
-            }
-
+            TreasureHunt treasureHunt = setValues(request, filledForm);
+            treasureHuntRepository.insert(treasureHunt);
             return redirect(huntShowRoute);
         });
     }
@@ -105,9 +82,36 @@ public class TreasureHuntController {
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
         return treasureHuntRepository.deleteTreasureHunt(id)
-                .thenApplyAsync(x -> redirect("/treasure").flashing("succsess", "Hunt: " + id + "was deleted"));
+                .thenApplyAsync(x -> redirect("/treasure").flashing("success", "Hunt: " + id + "was deleted"));
     }
 
+    /**
+     * Helper function to extract into treasurehunt object
+     * @param treasureHunt TreasureHunt object to be made up
+     * @param values form of the incoming data to be put into a treasurehunt object
+     * @return TreasureHunt object with all values inside
+     */
+    private TreasureHunt setValues(Http.Request request, Form<TreasureHunt> values){
+        TreasureHunt treasureHunt = values.get();
+        String destinationId = null;
+        String startDate = null;
+        String endDate = null;
+        if (values.field("endDate").value().isPresent()) {
+            endDate = values.field("endDate").value().get();
+        }
+        if (values.field("startDate").value().isPresent()) {
+            startDate = values.field("startDate").value().get();
+        }
+        if (values.field("destinationId").value().isPresent()) {
+            destinationId = values.field("destinationId").value().get();
+        }
+
+        treasureHunt.setDestinationIdString(destinationId);
+        treasureHunt.setStartDateString(startDate);
+        treasureHunt.setEndDateString(endDate);
+        treasureHunt.setTreasureHuntProfileId(SessionController.getCurrentUserId(request));
+        return treasureHunt;
+    }
     /**
      * Endpoint method to handle a users request to edit a previously made treasure hunt
      * @apiNote /hunts/:id/edit
@@ -117,14 +121,23 @@ public class TreasureHuntController {
      */
     public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
         Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
-        TreasureHunt treasureHunt = treasureHuntForm.get();
+        TreasureHunt treasureHunt = setValues(request, treasureHuntForm);
         return supplyAsync(() -> {
             treasureHuntRepository.update(treasureHunt, id);
             return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
         });
     }
 
-/*    public Result showEditTreasureHunt(Http.Request request , Integer id) {
-        TreasureHunt currentTreasureHunt = TreasureHuntRepository.lookup(id);
-    }*/
+    public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id) {
+        TreasureHunt hunt = treasureHuntRepository.lookup(id);
+        huntForm.fill(hunt);
+        Integer profId = SessionController.getCurrentUserId(request);
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            return profile.map(profile1 -> {
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
+            }).orElseGet(() -> redirect("/login"));
+        });
+    }
 }

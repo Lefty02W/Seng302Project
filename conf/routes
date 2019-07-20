@@ -93,4 +93,5 @@ GET     /admin/hunts/:id/delete        controllers.AdminController.deleteHunt(re
 GET     /treasure                    controllers.TreasureHuntController.show(request: Request)
 POST    /hunts/create       controllers.TreasureHuntController.createHunt(request : Request)
 GET     /hunts/:id/delete        controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
+GET     /hunts/:id/edit/show    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer)
 POST    /hunts/:id/edit       controllers.TreasureHuntController.editTreasureHunt(request : Request, id: Integer)

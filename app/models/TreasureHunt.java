@@ -105,6 +105,7 @@ public class TreasureHunt extends Model {
 
     public void setEndDateString(String date){
         try {
+            this.endDate = null;
             this.endDate = dateFormatEntry.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -126,4 +127,9 @@ public class TreasureHunt extends Model {
     public String getStartDateString() {
         return dateFormatEntry.format(startDate);
     }
+
+    public String getEntryDate(Date date) {
+        return dateFormatEntry.format(date);
+    }
+
 }
