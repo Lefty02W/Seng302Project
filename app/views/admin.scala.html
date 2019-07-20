@@ -814,6 +814,68 @@
     }
 
 
+    <div class="modal" id="createHuntModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header text-center">
+                    <h4 id="addTitle">Add Treasure Hunt</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @helper.form(routes.AdminController.createHunt()) {
+                    @CSRF.formField
+                    <div class="modal-body">
+                        <div class="col" align="center">
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Riddle</small>
+                                    <input type="text" name="riddle" id="riddle" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="destinationId"><small id="label">Destination</small></label>
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                    @for(destination <- destinations) {
+                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Start Date</small>
+                                    <input type="date" id="startDate" name="startDate"  class="inputField" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">End Date</small>
+                                    <input type="date" id="endDate" name="endDate"  class="inputField" required >
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <select class="selectpicker" title="Profile" id="profileId" name="profileId" required>
+                                    @for(profile <- profiles) {
+                                        <option value="@profile.getProfileId">Id: @profile.getProfileId, @profile.getFirstName @profile.getLastName</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
     <div class="modal fade" id="createProfileModal">
 
         <div class="modal-dialog modal-dialog-centered">

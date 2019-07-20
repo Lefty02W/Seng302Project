@@ -86,7 +86,7 @@ POST    /admin/create/destinations      controllers.AdminController.addDestinati
 GET  /admin/destinations/:id/request/reject      controllers.AdminController.rejectDestinationRequest(request : Request, id : Integer)
 
 ## Admin Treasure Hunts
-POST    /admin/hunts/create       controllers.TreasureHuntController.createHunt(request : Request)
+POST    /admin/hunts/create       controllers.AdminController.createHunt(request : Request)
 GET     /admin/hunts/:id/delete        controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
 
 # Tresure Hunts
