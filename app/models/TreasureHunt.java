@@ -1,9 +1,7 @@
 package models;
 
-import io.ebean.Finder;
 import io.ebean.Model;
 import play.data.format.Formats;
-import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -101,5 +99,21 @@ public class TreasureHunt extends Model {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Method to get a formatted string of the end date
+     * @return formatted date string
+     */
+    public String getEndDateString() {
+        return dateFormatEntry.format(endDate);
+    }
+
+    /**
+     * Method to get a formatted string of the start date
+     * @return formatted date string
+     */
+    public String getStartDateString() {
+        return dateFormatEntry.format(startDate);
     }
 }
