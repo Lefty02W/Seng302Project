@@ -37,6 +37,7 @@ public class DestinationsController extends Controller {
     private final PersonalPhotoRepository personalPhotoRepository;
     private final DestinationPhotoRepository destinationPhotoRepository;
     private final PhotoRepository photoRepository;
+    private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -51,7 +52,7 @@ public class DestinationsController extends Controller {
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
                                   PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
-                                  PhotoRepository photoRepository) {
+                                  PhotoRepository photoRepository, DestinationTravellerTypeRepository destinationTravellerTypeRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
@@ -60,6 +61,7 @@ public class DestinationsController extends Controller {
         this.personalPhotoRepository = personalPhotoRepository;
         this.destinationPhotoRepository = destinationPhotoRepository;
         this.photoRepository = photoRepository;
+        this.destinationTravellerTypeRepository = destinationTravellerTypeRepository;
     }
 
     /**
@@ -157,6 +159,8 @@ public class DestinationsController extends Controller {
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 Destination currentDestination = destinationRepository.lookup(destId);
+                destinationTravellerTypeRepository.getDestinationTravellerList(destId).ifPresent(currentDestination::setTravellerTypes);
+
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend,  request, messagesApi.preferred(request)));
@@ -351,6 +355,8 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination dest = destinationForm.value().get();
+        dest.initTravellerType();
+        System.out.println(dest.getTravellerTypesList());
         dest.setVisible(visibility);
             if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));

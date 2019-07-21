@@ -64,8 +64,8 @@ public class DestinationTravellerTypeRepository {
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, destinationId).findList();
         Map<Integer, TravellerType> travellerTypeList = new TreeMap<>();
         for (SqlRow aRowList : rowList) {
-            Optional<TravellerType> typeOp = travellerTypeRepository.findById(aRowList.getInteger("traveller_type"));
-            typeOp.ifPresent(travellerType -> travellerTypeList.put(aRowList.getInteger("traveller_type"), travellerType));
+            Optional<TravellerType> typeOp = travellerTypeRepository.findById(aRowList.getInteger("traveller_type_id"));
+            typeOp.ifPresent(travellerType -> travellerTypeList.put(aRowList.getInteger("traveller_type_id"), travellerType));
         }
         return Optional.of(travellerTypeList);
     }

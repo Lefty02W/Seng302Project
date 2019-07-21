@@ -50,10 +50,42 @@ public class Destination extends Model {
     private Map<Integer, TravellerType> travellerTypes;
 
     /**
-     * This constructor is used by scala variables
+     * custom empty destination constructor
      */
     public Destination() {
 
+    }
+
+    /**
+     * Overloaded constructor which takes in the user's scala form data to create a Profile.
+     * @param destinationId
+     * @param profileId
+     * @param name
+     * @param type
+     * @param country
+     * @param district
+     * @param latitude
+     * @param longitude
+     * @param visible
+     * @param travellerTypes
+     */
+    public Destination(int destinationId, int profileId, String name, String type, String country, String district,
+                       double latitude, double longitude, int visible,  String travellerTypes) {
+        System.out.println("THIS ONE PLEASE");
+        this.destinationId = destinationId;
+        this.profileId = profileId;
+        this.name = name;
+        this.type = type;
+        this.country = country;
+        this.district = district;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.visible = visible;
+        this.travellerTypes = new HashMap<>();
+        for (String travellerTypesString : (travellerTypes.split(","))) {
+            TravellerType travellerType = new TravellerType(0, travellerTypesString);
+            this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+        }
     }
 
     /**
@@ -112,8 +144,6 @@ public class Destination extends Model {
      */
     public void initTravellerType() {
         this.travellerTypes = new HashMap<>();
-
-        System.out.println("Initialising Travller Types " + travellerTypesStringDest);
         if (travellerTypesStringDest != null) {
             int i = 1;
             for (String travellerTypesString : (travellerTypesStringDest.split(","))) {
@@ -227,6 +257,7 @@ public class Destination extends Model {
     }
 
     public Map<Integer, TravellerType> getTravellerTypes() { return travellerTypes;}
+
 
     public String getTravellerTypesString() {
         ArrayList<String> listOfTravellerTypes = getTravellerTypesList();

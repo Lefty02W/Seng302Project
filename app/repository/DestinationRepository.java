@@ -8,6 +8,7 @@ import play.db.ebean.Transactional;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -138,10 +139,13 @@ public class DestinationRepository {
                     targetDestination.setLatitude(newDestination.getLatitude());
                     targetDestination.setLongitude(newDestination.getLongitude());
                     targetDestination.setVisible(newDestination.getVisible());
-                    targetDestination.setTravellerTypes(newDestination.getTravellerTypes());
                     targetDestination.update();
                     txn.commit();
                     value = Optional.of(targetDestination.getDestinationId());
+                    destinationTravellerTypeRepository.removeAll(Id);
+                    for (String travellerTypeName : newDestination.getTravellerTypesList()) {
+                        destinationTravellerTypeRepository.insertDestinationTravellerType(new TravellerType(travellerTypeName), Id);
+                    }
                 }
             } finally {
                 txn.end();
@@ -383,7 +387,7 @@ public class DestinationRepository {
      * Accept destination change request
      * calls add traveller type method if the request is to add or calls remove traveller type method if the request is
      * to remove traveller type
-     * @param destinationChanges the destination change to be performed
+     * @param changeId the destination change to be performed
      */
     public CompletionStage<Integer> acceptDestinationChange(int changeId) {
         return getDestinationChange(changeId)
