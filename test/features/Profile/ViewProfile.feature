@@ -1,3 +1,4 @@
+@ViewProfile
 Feature: View Profile
 
 #  Scenario: See a greeting on the profile page
