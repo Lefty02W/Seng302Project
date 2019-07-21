@@ -64,6 +64,12 @@ public class PhotoRepository {
         });
     }
 
+    /**
+     * Retrieves the thumbnail for the photo with the given ID
+     *
+     * @param id ID of the photo's thumbnail to retrieve
+     * @return
+     */
     public Optional<Photo> getThumbnail(Integer id) {
         String qry = "Select thumbnail_id from thumbnail_link where photo_id = ?";
         SqlRow row = ebeanServer.createSqlQuery(qry)
@@ -191,6 +197,13 @@ public class PhotoRepository {
         }, executionContext);
     }
 
+
+    /**
+     * Retrieves the image type for the photo of the given ID.
+     *
+     * @param photoId ID of the photo whose image type you want to get
+     * @return
+     */
     public CompletionStage<String> getImageType(Integer photoId){
         return supplyAsync(() -> {
           SqlQuery query = Ebean.createSqlQuery("SELECT content_type FROM photo WHERE photo_id = ?");

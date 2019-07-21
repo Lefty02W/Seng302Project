@@ -61,7 +61,7 @@ public class ProfileController extends Controller {
 
 
     /**
-     * A class used to recieve information from a form for uploading an image
+     * A class used to receive information from a form for uploading an image
      */
     public static class ImageData {
         public String visible = "Private";
