@@ -72,6 +72,6 @@ INSERT INTO destination_request (id, destination_id, profile_id) values (1,1,1);
 
 INSERT INTO destination_request (id, destination_id, profile_id) values (2,2,2);
 
-INSERT INTO destination_changes (id, traveller_type_id, action, request_id) values (1,1,1,1);
+INSERT INTO destination_change (id, traveller_type_id, action, request_id) values (1,1,1,1);
 
-INSERT INTO destination_changes (id, traveller_type_id, action, request_id) values (2,1,1,2);
+INSERT INTO destination_change (id, traveller_type_id, action, request_id) values (2,1,1,2);
