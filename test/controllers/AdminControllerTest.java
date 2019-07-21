@@ -1,9 +1,6 @@
 package controllers;
 
-import models.Destination;
-import models.Profile;
-import models.Trip;
-import models.TripDestination;
+import models.*;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,6 +8,7 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import repository.DestinationRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -110,4 +108,32 @@ public class AdminControllerTest extends ProvideApplication {
 
         Assert.assertEquals(303, result.status());
     }
+
+
+
+    public void adminPageAcceptDestinationRequest() {
+        List<DestinationChanges> destinationChanges = destinationRepository.getAllDestinationChanges();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/destinations/"+destinationChanges.get(1)+"/request/accept")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+        Destination destinationChanged = destinationRepository.lookup(destinationChanges.get(1).getDestination().getDestinationId());
+        System.out.println(destinationChanges.get(1).getTravellerType());
+        //check destination travelller type table --
+        Assert.assertEquals(destinationChanged.getTravellerTypes().get(0), destinationChanges.get(1).getTravellerType());
+    }
+
+
+    public void adminPageDeclineDestinationRequest() {
+        List<DestinationChanges> destinationChanges = destinationRepository.getAllDestinationChanges();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/destinations/"+destinationChanges.get(1)+"/request/reject")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+        Destination destinationChanged = destinationRepository.lookup(destinationChanges.get(1).getDestination().getDestinationId());
+        Assert.assertNotEquals(destinationChanged.getTravellerTypes().get(0), destinationChanges.get(0).getTravellerType());
+    }
+
 }

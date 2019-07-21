@@ -1,3 +1,4 @@
+
 # --- !Ups
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
@@ -64,3 +65,13 @@ INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
 
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
 (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
+
+INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (1, 'Backpacker');
+
+INSERT INTO destination_request (id, destination_id, profile_id) values (1,1,1);
+
+INSERT INTO destination_request (id, destination_id, profile_id) values (2,2,2);
+
+INSERT INTO destination_changes (id, traveller_type_id, action, request_id) values (1,1,1,1);
+
+INSERT INTO destination_changes (id, traveller_type_id, action, request_id) values (2,1,1,2);

@@ -32,5 +32,4 @@ public class DestinationsControllerTest extends ProvideApplication {
 
         assertEquals(200, result.status());
     }
-
 }
