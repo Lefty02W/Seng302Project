@@ -219,6 +219,9 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Integer>> update(Profile newProfile, int userId) {
 
+        if (isEmailTaken(newProfile.getEmail(), userId)) {
+            throw new IllegalArgumentException("Email is already taken");
+        }
         return supplyAsync(
                 () -> {
                     Transaction txn = ebeanServer.beginTransaction();
@@ -365,6 +368,27 @@ public class ProfileRepository {
             destList.add(dest);
         }
         return Optional.of(destList);
+    }
+
+    /**
+     * Method for edit profile-email to check if there is a traveller account under the supplied email that already
+     * exists (not the same user)
+     *
+     * @param email String The new email the user has proposed to change to
+     * @param profileId int of the porfileid of the user
+     * @return boolean true if email is taken, false if it is a change that will be allowed
+     */
+    public boolean isEmailTaken(String email, int profileId) {
+        boolean isTaken = false;
+        String selectQuery = "Select * from profile WHERE email = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();
+        for (SqlRow aRow : rowList) {
+            if (aRow.getInteger("profile_id") != profileId) {
+                isTaken = true;
+            }
+            System.out.println("yeet");
+        }
+        return isTaken;
     }
 
 
