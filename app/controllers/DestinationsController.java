@@ -37,6 +37,7 @@ public class DestinationsController extends Controller {
     private final PhotoRepository photoRepository;
     private final Form<DestinationRequest> requestForm;
     private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
+    private final TravellerTypeRepository travellerTypeRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -51,7 +52,8 @@ public class DestinationsController extends Controller {
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
                                   PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
-                                  PhotoRepository photoRepository, DestinationTravellerTypeRepository destinationTravellerTypeRepository) {
+                                  PhotoRepository photoRepository, DestinationTravellerTypeRepository destinationTravellerTypeRepository,
+                                  TravellerTypeRepository travellerTypeRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
@@ -61,6 +63,7 @@ public class DestinationsController extends Controller {
         this.destinationPhotoRepository = destinationPhotoRepository;
         this.photoRepository = photoRepository;
         this.destinationTravellerTypeRepository = destinationTravellerTypeRepository;
+        this.travellerTypeRepository = travellerTypeRepository;
         this.requestForm = formFactory.form(DestinationRequest.class);
     }
 
@@ -525,9 +528,26 @@ public class DestinationsController extends Controller {
      */
     public CompletionStage<Result> createEditRequest(Http.Request request) {
         return supplyAsync(() -> {
+            int profileId = SessionController.getCurrentUserId(request);
             Form<DestinationRequest> changeForm = requestForm.bindFromRequest(request);
-            System.out.println(changeForm);
+            List<Integer> toAdd = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToAddList());
+            List<Integer> toRemove = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToRemoveList());
+            createChangeRequest(profileId,changeForm.get().getDestinationId(),toAdd,toRemove);
            return redirect("/destinations/show/false");
         });
+    }
+
+    /**
+     * Helper funciton to turn List<String> into List<Int> holding the travellerType id's of the given traveller type name
+     *
+     * @param names List of traveller type names
+     * @return List of traveller type id's corresponding to the given names
+     */
+    private List<Integer> listOfTravellerTypesToTravellerTypeId(List<String> names){
+        List<Integer> result = new ArrayList<>();
+        for (String name : names){
+            travellerTypeRepository.getTravellerTypeId(name).ifPresent(result::add);
+        }
+        return result;
     }
 }

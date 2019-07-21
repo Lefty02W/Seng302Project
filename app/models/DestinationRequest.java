@@ -2,10 +2,14 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
+import repository.TravellerTypeRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class containing attributes for generating an entry in the Destination request linking table linking a request with a
@@ -17,7 +21,6 @@ public class DestinationRequest extends Model{
     @Id
     private Integer id;
 
-
     private Integer destinationId;
 
     private Integer profileId;
@@ -27,6 +30,7 @@ public class DestinationRequest extends Model{
 
     @Transient
     private String toRemove;
+
 
     public DestinationRequest(Integer destinationId, Integer profileId){
         this.destinationId = destinationId;
@@ -58,5 +62,35 @@ public class DestinationRequest extends Model{
 
     public void setProfileId(Integer profileId) {
         this.profileId = profileId;
+    }
+
+    public String getToAdd() {
+        return toAdd;
+    }
+
+    public void setToAdd(String toAdd) {
+        this.toAdd = toAdd;
+    }
+
+    public String getToRemove() {
+        return toRemove;
+    }
+
+    public void setToRemove(String toRemove) {
+        this.toRemove = toRemove;
+    }
+
+    public List<String> getToAddList(){
+        String myString = getToAdd();
+        List<String> result = convertToList(myString);
+        return result;
+    }
+
+    public List<String> getToRemoveList(){
+        return convertToList(getToRemove());
+    }
+
+    private List<String> convertToList(String string){
+        return Arrays.asList(string.split(","));
     }
 }
