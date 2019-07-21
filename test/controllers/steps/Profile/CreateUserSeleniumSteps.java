@@ -8,7 +8,9 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 
@@ -20,13 +22,13 @@ import java.text.ParseException;
  */
 public class CreateUserSeleniumSteps extends BaseStep {
 
-    @Before
+    @Before("@CreateUser")
     public void setup() {
         setUp();
     }
 
 
-    @After
+    @After("@CreateUser")
     public void teardown() {
         tearDown();
     }
@@ -34,7 +36,6 @@ public class CreateUserSeleniumSteps extends BaseStep {
 
     @Given("John is at the sign up page")
     public void at_sign_up_page() throws InterruptedException {
-        setUp();
         driver.get(loginPage);
         element = driver.findElement(By.id("createUserButton"));
         element.click();

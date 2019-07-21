@@ -1,8 +1,6 @@
 package repository;
 
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import io.ebean.Transaction;
+import io.ebean.*;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
 
@@ -35,11 +33,55 @@ public class PhotoRepository {
      */
     public CompletionStage<Integer> insert(Photo photo){
         return supplyAsync(() -> {
-            ebeanServer.insert(photo);
+            try {
+                ebeanServer.insert(photo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return photo.getPhotoId();
         }, executionContext);
     }
 
+
+    /**
+     * Inserts a photo object into the ebean database server
+     *
+     * @param photo Photo object to insert into the database
+     */
+    public void insertThumbnail(Photo photo, Integer photoId){
+        insert(photo).thenApplyAsync(thumbId -> {
+            String qry = "INSERT INTO thumbnail_link (photo_id, thumbnail_id) VALUES (?, ?)";
+            try {
+                SqlUpdate query = Ebean.createSqlUpdate(qry);
+                query.setParameter(1, photoId);
+                query.setParameter(2, thumbId);
+                query.execute();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        });
+    }
+
+    /**
+     * Retrieves the thumbnail for the photo with the given ID
+     *
+     * @param id ID of the photo's thumbnail to retrieve
+     * @return
+     */
+    public Optional<Photo> getThumbnail(Integer id) {
+        String qry = "Select thumbnail_id from thumbnail_link where photo_id = ?";
+        SqlRow row = ebeanServer.createSqlQuery(qry)
+                .setParameter(1, id)
+                .findOne();
+        Integer thumb_id = row.getInteger("thumbnail_id");
+        Photo photo =
+                ebeanServer.find(Photo.class)
+                        .where().eq("photo_id", thumb_id)
+                        .findOne();
+        return Optional.ofNullable(photo);
+    }
 
     /**
      * Update image visibility in database using Photo model object,
@@ -97,5 +139,94 @@ public class PhotoRepository {
             Photo.find.deleteById(id);
             return 1;
          }, executionContext);
+    }
+
+
+    /**
+     * Delete a thumbnail from the database given the id
+     * @param thumbnailID - ID of the thumbnail image to delete
+     * @return
+     */
+    public CompletionStage<Void> deleteThumbnail(Integer thumbnailID) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String deleteQuery = "delete from thumbnail_link where thumbnail_id = ?";
+            SqlUpdate query = Ebean.createSqlUpdate(deleteQuery);
+            query.setParameter(1, thumbnailID);
+            query.execute();
+            txn.commit();
+            return null;
+        }, executionContext);
+    }
+
+    /**
+     * Database access method to remove a thumbnail using the id of the original photo id
+     * @param photoId
+     * @return
+     */
+    public CompletionStage<Optional<Integer>> removeOldThumbnail(int photoId) {
+        return supplyAsync(() -> {
+            SqlQuery stmnt = Ebean.createSqlQuery("SELECT thumbnail_id FROM thumbnail_link WHERE photo_id = ?");
+            stmnt.setParameter(1, photoId);
+            SqlRow row = stmnt.findOne();
+            if (!(row != null && row.isEmpty())) {
+                int thumbId = row.getInteger("thumbnail_id");
+                deleteThumbnail(thumbId);
+                return Optional.of(thumbId);
+            }
+            return Optional.empty();
+        });
+    }
+
+
+    /**
+     * Update a given thumbnail photo's path and name in the database
+     * @param photo - The photo as a thumbnail to be updated
+     */
+    public CompletionStage<Void> updateThumbnail(Photo photo) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String updateQuery = "UPDATE photo SET path = ? and name = ? where photo_id = ?";
+            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+            query.setParameter(1, photo.getPath());
+            query.setParameter(2, photo.getName());
+            query.setParameter(3, photo.getPhotoId());
+            query.execute();
+            txn.commit();
+            return null;
+        }, executionContext);
+    }
+
+
+    /**
+     * Retrieves the image type for the photo of the given ID.
+     *
+     * @param photoId ID of the photo whose image type you want to get
+     * @return
+     */
+    public CompletionStage<String> getImageType(Integer photoId){
+        return supplyAsync(() -> {
+          SqlQuery query = Ebean.createSqlQuery("SELECT content_type FROM photo WHERE photo_id = ?");
+          query.setParameter(1, photoId);
+          SqlRow row = query.findOne();
+          if (!row.isEmpty()){
+              return row.getString("content_type");
+          }
+          return "failed";
+        });
+    }
+
+    /**
+     * Removes a thumbnail from the database using a photoId
+     *
+     * @param photoId the photoId
+     */
+    public void deleteCurrentThumbnail(Integer photoId) {
+        supplyAsync(() -> {
+            SqlUpdate query = Ebean.createSqlUpdate("delete from thumbnail_link where photo_id = ?");
+            query.setParameter(1, photoId);
+            query.execute();
+            return null;
+        }, executionContext);
     }
 }
