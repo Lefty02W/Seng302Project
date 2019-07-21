@@ -2,8 +2,11 @@ Feature: Create Treasure Hunt
   As a user
   I want to create a Treasure Hunt
 
+  Background:
+    Given I am logged into the application as user "john@gmail.com" with password "password"
+
   Scenario: Create valid treasure hunt
-    Given I am on the treasure hunt page
+    Given I am on the treasure hunts page
     When I insert a riddle "The cake is a lie"
     And I select the destination "Tokyo"
     And I enter today's date for start date
@@ -13,7 +16,7 @@ Feature: Create Treasure Hunt
 
 
   Scenario: Create valid treasure hunt
-    Given I am on the treasure hunt page
+    Given I am on the treasure hunts page
     When I insert a riddle "The cake is a lie"
     And I select the destination "Tokyo"
     And I enter tomorrow's date for end date
