@@ -1,3 +1,4 @@
+@CreateUser
 Feature: Sign Up
   As a user
   I want to sign up

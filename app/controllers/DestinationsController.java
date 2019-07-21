@@ -9,6 +9,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import scala.Int;
 import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
@@ -332,7 +333,7 @@ public class DestinationsController extends Controller {
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
             if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(dest)) {
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
@@ -343,7 +344,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -469,8 +470,20 @@ public class DestinationsController extends Controller {
 
     }
 
-    public void createChangeRequest(){
-        // TODO: 15/07/19 Create a request and call the insert function to insert the request into the DB
-        // TODO: 15/07/19 call methods to create and insert changes using the request id received from the previous insert
-    }
+    /**
+     * Method to create the requests for changing destination traveller types once user has selected the changes \
+     * they wish to make.
+     * @param profileId id of the profile who is requesting the change
+     * @param destinationId id of the destination which the user is trying to change
+     * @param toAdd list of traveller types the user wishes to add
+     * @param toRemove list of traveller type the user wishes to delete
+     */
+    public void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove){
+        DestinationRequest destinationRequest = new DestinationRequest(destinationId, profileId);
+        destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest).thenApplyAsync(requestId -> {
+            destinationRepository.travellerTypeChangesTransaction(requestId, 0, toAdd);
+            destinationRepository.travellerTypeChangesTransaction(requestId, 1, toRemove);
+            return 0;
+            });
+        }
 }
