@@ -139,6 +139,7 @@ public class DestinationRepository {
                     targetDestination.setLatitude(newDestination.getLatitude());
                     targetDestination.setLongitude(newDestination.getLongitude());
                     targetDestination.setVisible(newDestination.getVisible());
+                    targetDestination.setTravellerTypes(newDestination.getTravellerTypes());
                     targetDestination.update();
                     txn.commit();
                     value = Optional.of(targetDestination.getDestinationId());
