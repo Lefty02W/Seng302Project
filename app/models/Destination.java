@@ -147,9 +147,9 @@ public class Destination extends Model {
         if (travellerTypesStringDest != null) {
             int i = 1;
             for (String travellerTypesString : (travellerTypesStringDest.split(","))) {
-                i++;
                 TravellerType travellerType = new TravellerType(i, travellerTypesString);
                 this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+                i++;
             }
         }
     }
