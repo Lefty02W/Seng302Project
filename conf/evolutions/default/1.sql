@@ -255,7 +255,7 @@ create table if not exists destination_request
 ;
 
 
-create table if not exists destination_changes
+create table if not exists destination_change
 (
   id                int auto_increment,
   traveller_type_id int     not null,
@@ -344,7 +344,7 @@ drop table if exists destination_photo;
 
 drop table if exists destination_request;
 
-drop table if exists destination_changes;
+drop table if exists destination_change;
 
 drop table if exists destination_traveller_type;
 
