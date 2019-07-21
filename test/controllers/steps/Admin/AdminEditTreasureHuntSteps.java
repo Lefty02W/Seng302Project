@@ -18,6 +18,7 @@ import java.util.Map;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class AdminEditTreasureHuntSteps  extends ProvideApplication {
 
@@ -54,6 +55,11 @@ public class AdminEditTreasureHuntSteps  extends ProvideApplication {
         huntForm.put("startDate", arg0);
     }
 
+    @And("^changes the end date to \"([^\"]*)\"$")
+    public void changesTheEndDateTo(String arg0) throws Throwable {
+        huntForm.put("endDate", arg0);
+    }
+
     @And("^selects the the save treasure hunt button$")
     public void selectsTheTheSaveTreasureHuntButton() throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -85,5 +91,21 @@ public class AdminEditTreasureHuntSteps  extends ProvideApplication {
         injectRepositories();
         TreasureHunt hunt = treasureHuntRepository.lookup(2);
         assertEquals("2019-01-04", hunt.getStartDateString());
+    }
+
+    @Then("^I am redirected to the admin page with an invalid notification$")
+    public void iAmRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
+        if (redirectDestination.redirectLocation().isPresent()) {
+            Assert.assertTrue(redirectDestination.flash().getOptional("error").isPresent());
+        } else {
+            Assert.fail();
+        }
+    }
+
+    @Then("^The admins end date is not updated in the database$")
+    public void theAdminsEndDateIsNotUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        assertNotEquals("2019-05-12", hunt.getEndDateString());
     }
 }
