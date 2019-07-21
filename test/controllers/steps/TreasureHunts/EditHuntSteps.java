@@ -11,8 +11,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +20,6 @@ public class EditHuntSteps extends ProvideApplication {
 
     private Map<String, String> huntForm = new HashMap<>();
     private Result redirectDestination;
-    private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
 
 
     @Given("^I am on the treasure hunts page$")

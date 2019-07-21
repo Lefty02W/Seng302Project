@@ -2,6 +2,7 @@ package repository;
 
 import controllers.ProvideApplication;
 import models.TreasureHunt;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 public class TreasureHuntRepositoryTest extends ProvideApplication {
 
 
+    @Ignore
     @Test
     public void getAllTreasureHunts() {
         injectRepositories();

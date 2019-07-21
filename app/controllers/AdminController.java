@@ -371,16 +371,14 @@ public class AdminController {
      * Endpoint method for the admin to create a new treasure hunt
      *
      * @param request the admins create request
-     * @return CompletionStage redirecting back to teh admin page
+     * @return CompletionStage redirecting back to the admin page
      */
     public CompletionStage<Result> createHunt(Http.Request request) {
         return supplyAsync(
             () -> {
               Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
               Optional<TreasureHunt> huntOpt = filledForm.value();
-              System.out.println(filledForm);
               if (huntOpt.isPresent()) {
-                  System.out.println(huntOpt.get().getTreasureHuntProfileId());
                 TreasureHunt treasureHunt = huntOpt.get();
                 String destinationId = null;
                 String startDate = null;
