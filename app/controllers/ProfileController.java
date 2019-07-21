@@ -16,9 +16,13 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import utility.Thumbnail;
 import views.html.profile;
 
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,7 +61,7 @@ public class ProfileController extends Controller {
 
 
     /**
-     * A class used to recieve information from a form for uploading an image
+     * A class used to receive information from a form for uploading an image
      */
     public static class ImageData {
         public String visible = "Private";
@@ -231,6 +235,45 @@ public class ProfileController extends Controller {
         }).thenApply(result -> redirect("/profile"));
     }
 
+    /**
+     * Helper function to split the image path to get the extension required for thumbnail creation
+     * @param url string with the image extension and image/extension
+     * @return extension string with just the extension.
+     */
+    private String photoType(String url){
+        return url.substring(url.lastIndexOf("/") + 1);
+    }
+
+    /**
+     * Creates a thumbnail
+     *
+     * @param photoId id of the image that will get turned into a thumbnail
+     * @param userId id of the user who is creating their new thumbnail
+     */
+    private void createNewThumbnail(int photoId, int userId) {
+        String fileName = "user_" + userId + "_thumbnail";
+        Optional<Photo> photoOpt = photoRepository.getImage(photoId);
+        if(photoOpt.isPresent()) {
+            File photoFile = new File(photoOpt.get().getPath());
+            if (photoFile.exists()) {
+                try {
+                    BufferedImage image = ImageIO.read(photoFile);
+                    Image thumbnail = Thumbnail.getInstance().extract(image);
+                    BufferedImage bufferedImage = new BufferedImage(thumbnail.getWidth(null), thumbnail.getHeight(null), BufferedImage.TYPE_INT_RGB);
+                    Graphics graphics = bufferedImage.getGraphics();
+                    graphics.drawImage(thumbnail, 0, 0, null);
+                    graphics.dispose();
+                    String imgType = photoType(photoOpt.get().getType());
+                    File thumbFile = new File(System.getProperty("user.dir") +"/photos/thumbnails/" + fileName + "." + imgType);
+                    ImageIO.write(bufferedImage, imgType, thumbFile);
+                    photoRepository.insertThumbnail(new Photo("photos/thumbnails/" + fileName, photoOpt.get().getType(), 1, fileName), photoId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     /**
      * Set a profile picture to the database
@@ -244,6 +287,7 @@ public class ProfileController extends Controller {
                 if (photoOpt.isPresent()) {
                     personalPhotoRepository.removeProfilePic(profileId);
                     personalPhotoRepository.setProfilePic(profileId, photoId);
+                    createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
                 }
                 return photoOpt;
             });
@@ -271,23 +315,13 @@ public class ProfileController extends Controller {
 
 
     /**
-     * deletes the demoProfilePicture, effectively deleting any changes to the profile picture then refreshes the page
-     * @return a redirect to the profile page
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> resetDemoProfilePicture() {
-        demoProfilePicture = null;
-        return supplyAsync(() -> redirect(profileEndpoint).flashing("success", "Changes cancelled"));
-    }
-
-
-    /**
      * Show the profile page
      * @param request The http request
      * @return a page render of the users profile page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request){
+
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
             if (profileRec.isPresent()) {
@@ -306,6 +340,51 @@ public class ProfileController extends Controller {
             }
         });
     }
+
+    /**
+     * Uploads a newly selected profile picture for the user, saving it in the database and
+     * setting it as the user profile picture
+     *
+     * @param request The users request to save the photo
+     * @return
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> uploadProfilePicture(Http.Request request) {
+            Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
+            Http.MultipartFormData.FilePart<TemporaryFile> picture = body.getFile("image");
+
+            if (picture == null) {
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "No image selected."));
+            }
+
+            String fileName = picture.getFilename();
+            String contentType = picture.getContentType();
+            Long fileSize = picture.getFileSize();
+
+            if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "Invalid file type!"));
+            }
+
+            if (fileSize >= 8000000) {
+                return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "File size must not exceed 8 MB!"));
+            }
+
+            TemporaryFile tempFile = picture.getRef();
+            String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
+            tempFile.copyTo(Paths.get(filepath), true);
+
+
+            Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 1, fileName);
+
+            return photoRepository.insert(photo).thenApplyAsync(photoId -> {
+                personalPhotoRepository.removeProfilePic(SessionController.getCurrentUserId(request));
+                createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
+                return personalPhotoRepository.insert(new PersonalPhoto(SessionController.getCurrentUserId(request), photoId, 1));
+            }).thenApply(id -> {
+                return redirect("/profile");
+            });
+    }
+
 
     /**
      * Endpoint to handle a request from the user to delete a personal photo
