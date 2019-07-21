@@ -477,7 +477,7 @@ public class DestinationRepository {
 
 
     /**
-     * Method to get all destinationChanges with content such as email, destination and travellerTypes
+     * Method to get all destinationChanges with content such as profileId, destination and travellerTypes
      * @return result, a list of destinationChanges
      */
     public List<DestinationChanges> getAllDestinationChanges() {
