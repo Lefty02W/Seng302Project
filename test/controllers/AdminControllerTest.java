@@ -1,18 +1,17 @@
 package controllers;
 
-import models.*;
-import org.junit.After;
+import models.Destination;
+import models.DestinationChange;
+import models.Profile;
+import models.Trip;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import repository.DestinationRepository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 public class AdminControllerTest extends ProvideApplication {
 
@@ -112,7 +111,7 @@ public class AdminControllerTest extends ProvideApplication {
 
 
     public void adminPageAcceptDestinationRequest() {
-        List<DestinationChanges> destinationChanges = destinationRepository.getAllDestinationChanges();
+        List<DestinationChange> destinationChanges = destinationRepository.getAllDestinationChanges();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin/destinations/"+destinationChanges.get(1)+"/request/accept")
@@ -126,7 +125,7 @@ public class AdminControllerTest extends ProvideApplication {
 
 
     public void adminPageDeclineDestinationRequest() {
-        List<DestinationChanges> destinationChanges = destinationRepository.getAllDestinationChanges();
+        List<DestinationChange> destinationChanges = destinationRepository.getAllDestinationChanges();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin/destinations/"+destinationChanges.get(1)+"/request/reject")
