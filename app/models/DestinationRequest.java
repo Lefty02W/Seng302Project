@@ -2,9 +2,10 @@ package models;
 
 import io.ebean.Finder;
 import io.ebean.Model;
-import play.data.validation.Constraints;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  * Class containing attributes for generating an entry in the Destination request linking table linking a request with a
@@ -16,11 +17,16 @@ public class DestinationRequest extends Model{
     @Id
     private Integer id;
 
-    @Constraints.Required
+
     private Integer destinationId;
 
-    @Constraints.Required
     private Integer profileId;
+
+    @Transient
+    private String toAdd;
+
+    @Transient
+    private String toRemove;
 
     public DestinationRequest(Integer destinationId, Integer profileId){
         this.destinationId = destinationId;

@@ -9,8 +9,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
-import scala.Int;
-import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -37,6 +35,7 @@ public class DestinationsController extends Controller {
     private final PersonalPhotoRepository personalPhotoRepository;
     private final DestinationPhotoRepository destinationPhotoRepository;
     private final PhotoRepository photoRepository;
+    private final Form<DestinationRequest> requestForm;
     private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
     private String destShowRoute = "/destinations/show/false";
 
@@ -62,6 +61,7 @@ public class DestinationsController extends Controller {
         this.destinationPhotoRepository = destinationPhotoRepository;
         this.photoRepository = photoRepository;
         this.destinationTravellerTypeRepository = destinationTravellerTypeRepository;
+        this.requestForm = formFactory.form(DestinationRequest.class);
     }
 
     /**
@@ -92,7 +92,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -133,7 +133,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -163,7 +163,7 @@ public class DestinationsController extends Controller {
 
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend,  request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend, requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -205,7 +205,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
 //                destinationsList = loadTravellerTypes(destId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -513,5 +513,21 @@ public class DestinationsController extends Controller {
             destinationRepository.travellerTypeChangesTransaction(requestId, 1, toRemove);
             return 0;
             });
-        }
+    }
+
+
+    /**
+     * Endpoint method for a user to create a destination edit request
+     *
+     * @apiNote POST /destinations/type/request
+     * @param request the user request to edit the destination
+     * @return CompletionStage redirecting to the destinations page
+     */
+    public CompletionStage<Result> createEditRequest(Http.Request request) {
+        return supplyAsync(() -> {
+            Form<DestinationRequest> changeForm = requestForm.bindFromRequest(request);
+            System.out.println(changeForm);
+           return redirect("/destinations/show/false");
+        });
+    }
 }

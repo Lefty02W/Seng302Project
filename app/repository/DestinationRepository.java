@@ -8,7 +8,6 @@ import play.db.ebean.Transactional;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -356,17 +355,17 @@ public class DestinationRepository {
 
     /**
      * Method called from addRequest method to add the changes made in a request to the actions table
-     * @param destinationChanges Object that holds the following attributes to be inserted into the database:
+     * @param destinationChange Object that holds the following attributes to be inserted into the database:
      *   travellerTypeId: Id of the traveller type the user wants to add or remove.
      *   action: tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
      *   requestId: Integer id of the request the user is making, links the changes to a request.
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
      *  destination_changes table
      */
-    private CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
+    private CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
         return supplyAsync(() -> {
-            ebeanServer.insert(destinationChanges);
-            return destinationChanges.getId();
+            ebeanServer.insert(destinationChange);
+            return destinationChange.getId();
         }, executionContext);
     }
 
@@ -379,7 +378,7 @@ public class DestinationRepository {
     public CompletionStage<Integer> deleteDestinationChange(int changeId) {
     return supplyAsync(
         () -> {
-          ebeanServer.find(DestinationChanges.class).where().eq("id", changeId).delete();
+          ebeanServer.find(DestinationChange.class).where().eq("id", changeId).delete();
           return 1;
         });
     }
@@ -422,8 +421,8 @@ public class DestinationRepository {
     public void travellerTypeChangesTransaction(Integer requestId, Integer toAdd, List<Integer> changes){
         try (Transaction transaction = ebeanServer.beginTransaction()) {
             for (Integer travellerTypeId : changes) {
-                DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, toAdd, requestId);
-                addDestinationChange(destinationChanges);
+                DestinationChange destinationChange = new DestinationChange(travellerTypeId, toAdd, requestId);
+                addDestinationChange(destinationChange);
             }
             transaction.commit();
         }
@@ -481,13 +480,13 @@ public class DestinationRepository {
      * Method to get all destinationChanges with content such as profileId, destination and travellerTypes
      * @return result, a list of destinationChanges
      */
-    public List<DestinationChanges> getAllDestinationChanges() {
+    public List<DestinationChange> getAllDestinationChanges() {
 
                 //Getting Destinationchanges out of the database
-                List<DestinationChanges > result = DestinationChanges.find.query().where()
+                List<DestinationChange> result = DestinationChange.find.query().where()
                         .findList();
 
-            for (DestinationChanges destinationchanges : result) {
+            for (DestinationChange destinationchanges : result) {
                 DestinationRequest destinationRequest = DestinationRequest.find.query().where()
                         .eq("id", destinationchanges.getRequestId())
                         .findOne();
@@ -527,17 +526,17 @@ public class DestinationRepository {
     }
 
     /**
-     * Method used to get a DestinationChanges object from the database using a passed id
+     * Method used to get a DestinationChange object from the database using a passed id
      *
      * @param changeId the id of the change to retrieve
-     * @return CompletionStage containing the found DestinationChanges
+     * @return CompletionStage containing the found DestinationChange
      */
-    public CompletionStage<Optional<DestinationChanges>> getDestinationChange(int changeId) {
+    public CompletionStage<Optional<DestinationChange>> getDestinationChange(int changeId) {
     // TODO: 19/07/19 need to get the Destination object out too
         return supplyAsync(
             () -> {
               return Optional.ofNullable(
-                  ebeanServer.find(DestinationChanges.class).where().eq("id", changeId).findOne());
+                  ebeanServer.find(DestinationChange.class).where().eq("id", changeId).findOne());
             },
             executionContext);
         }

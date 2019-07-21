@@ -1,6 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer], usersPhotos : List[Photo], destinationForm : Form[Destination], destination : RoutedObject[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer],
+        usersPhotos : List[Photo], destinationForm : Form[Destination], destination : RoutedObject[Destination],
+        requestForm : Form[DestinationRequest])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import models.Destination; var toViewDest = new Destination()
 
@@ -511,27 +513,37 @@
                                 <div class="col">
                                     <div class="row justify-content-center">
                                         <div class="col-md-6">
-                                            <div class="col " id="removeTravellerTypes">
+                                            <div class="col " >
+                                                <select multiple="multiple" title="Traveller Type" id="toRemoveDropdown" data-width="100%">
 
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <div class="col" id="travellersToAdd">
-                                                <a>ThrillSeeker </a><input value="ThrillSeeker" type="checkbox">
-                                                <br><a>Backpacker </a><input value="Backpacker" type="checkbox">
-                                                <br><a>Gap Year </a><input value="Gap Year" type="checkbox">
-                                                <br><a>Groupie </a><input value="Groupie" type="checkbox">
-                                                <br><a>Frequent Weekender </a><input value="Frequent Weekender" type="checkbox">
-                                                <br><a>Functional/business Traveller </a><input value="Functional/business Traveller" type="checkbox">
-                                                <br><a>Holidaymaker </a><input value="Holidaymaker" type="checkbox">
-                                            </div>
+                                            <select multiple title="Traveller Type" id="toAddDropdown" data-width="100%">
+                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                                <option value="Backpacker">Backpacker</option>
+                                                <option value="Gap Year">Gap Year</option>
+                                                <option value="Groupie">Groupie</option>
+                                                <option value="Frequent Weekender">Frequent Weekender</option>
+                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                                <option value="Holidaymaker">Holidaymaker</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
+                                @helper.form(routes.DestinationsController.createEditRequest()) {
+                                    @CSRF.formField
+                                    <div class="hidden-div">
+                                        <input type="text" id="toAdd" name="toAdd" class="hidden-field-2">
+                                        <input type="text" id="toRemove" name="toRemove">
+                                        <input type="number" id="destinationId" name="destinationId">
+                                    </div>
                                     <button class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                                    <button class="btn btn-primary">OK</button>
+                                    <button type="submit" class="btn btn-primary" onclick="fillDestReequestForm()">Submit Request</button>
+                                }
                             </div>
                         </div>
                     </div>
@@ -1101,7 +1113,6 @@
                                     "                            </div>";
                                 }
                             }
-                            console.log(photoList);
                         });
 
                         markers.push(marker);
@@ -1182,6 +1193,11 @@
                 $('#travellerTypesForm').val($('#typeDropdownEdit').val());
             }
 
+             function fillDestReequestForm() {
+                 document.getElementById("toAdd").value = $('#toAddDropdown').val();
+                 document.getElementById("toRemove").value = $('#toRemoveDropdown').val();
+             }
+
             function setTravellerTypesToRemove() {
                 var html = "";
                 @for(destination <- destinationsList) {
@@ -1189,13 +1205,16 @@
                         if(id === getSelectedDestID()) {
                             var len = @destination.getTravellerTypesList.size();
                             @for(travellerType <- destination.getTravellerTypesList) {
-                                html += "<a> @travellerType </a>" +"<input type='checkbox'>";
+                                var select = document.getElementById("toRemoveDropdown");
+                                var selectAdd = document.getElementById("toAddDropdown");
+                                var option = document.createElement("option");
+                                option.text = "@travellerType";
+                                option.value = "@travellerType";
+                                select.add(option);
+                                selectAdd.remove(option);
                             }
-                            document.getElementById("removeTravellerTypes").innerHTML = html;
+                            document.getElementById("destinationId").value = @destination.getDestinationId();
                     }
-                }
-                if (html === "") {
-                    document.getElementById("removeTravellerTypes").innerHTML = "<a>No traveller types in this destination</a>";
                 }
             }
 
