@@ -91,7 +91,7 @@ public class TreasureHuntController {
      * @param values form of the incoming data to be put into a treasurehunt object
      * @return TreasureHunt object with all values inside
      */
-    public TreasureHunt setValues(Integer userId, Form<TreasureHunt> values){
+    TreasureHunt setValues(Integer userId, Form<TreasureHunt> values){
         TreasureHunt treasureHunt = values.get();
         String destinationId = null;
         String startDate = null;

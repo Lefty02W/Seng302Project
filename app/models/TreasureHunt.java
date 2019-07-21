@@ -33,7 +33,7 @@ public class TreasureHunt extends Model {
 
     private Destination destination;
 
-    private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
+    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
 
     public TreasureHunt(String riddle, int destinationId, Date startDate, Date endDate) {
         this.riddle = riddle;
@@ -105,7 +105,6 @@ public class TreasureHunt extends Model {
 
     public void setEndDateString(String date){
         try {
-            this.endDate = null;
             this.endDate = dateFormatEntry.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();

@@ -37,11 +37,7 @@ public class TreasureHuntRepository {
      */
     public CompletionStage<Integer> insert(TreasureHunt treasureHunt){
         return supplyAsync(() -> {
-            try {
-                ebeanServer.insert(treasureHunt);
-            } catch(Exception e) {
-                System.out.println(e);
-            }
+            ebeanServer.insert(treasureHunt);
             return treasureHunt.getTreasureHuntId();
         }, executionContext);
     }
