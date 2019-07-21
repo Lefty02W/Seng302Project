@@ -355,8 +355,8 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = Integer.parseInt(visible);
         Destination dest = destinationForm.value().get();
+        dest.setTravellerTypesStringDest(destinationForm.field("travellerTypesStringDestEdit").value().get());
         dest.initTravellerType();
-        System.out.println(dest.getTravellerTypesList());
         dest.setVisible(visibility);
             if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
