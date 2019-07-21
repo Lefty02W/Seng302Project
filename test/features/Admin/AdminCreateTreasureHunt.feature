@@ -4,7 +4,7 @@ Feature: Admin Create Treasure Hunt
 
 
   Background:
-    Given I am logged into the application as user "john@gmail.com" with password "password"
+    Given I am logged into the application as user "bob@gmail.com" with password "password"
 
   Scenario: Admin creates valid treasure hunt
     Given admin is on the admin page

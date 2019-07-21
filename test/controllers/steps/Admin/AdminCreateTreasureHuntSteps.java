@@ -13,10 +13,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-public class AdminCreateTreasureHunt extends ProvideApplication {
+public class AdminCreateTreasureHuntSteps extends ProvideApplication {
 
     private Map<String, String> huntForm;
     private Result redirectDestination;
@@ -37,7 +39,7 @@ public class AdminCreateTreasureHunt extends ProvideApplication {
                 .method("POST")
                 .uri("/admin/hunts/create")
                 .bodyForm(huntForm)
-                .session("connected", "1");
+                .session("connected", "2");
     System.out.println(huntForm);
         redirectDestination = Helpers.route(provideApplication(), request);
     }
@@ -45,7 +47,7 @@ public class AdminCreateTreasureHunt extends ProvideApplication {
     @Then("^I should be redirected back to the admin page$")
     public void iShouldBeRedirectedBackToTheAdminPage() throws Throwable {
         if (redirectDestination.redirectLocation().isPresent()) {
-            //assertEquals("/admin", redirectDestination.redirectLocation().get());
+            assertEquals("/admin", redirectDestination.redirectLocation().get());
         } else {
             fail();
         }
@@ -62,6 +64,6 @@ public class AdminCreateTreasureHunt extends ProvideApplication {
                 found = true;
             }
         }
-        //assertTrue(found);
+        assertTrue(found);
     }
 }

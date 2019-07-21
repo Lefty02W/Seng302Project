@@ -73,3 +73,6 @@ INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle,
 
 INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
   (3, 2, 1, 'A riddle', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (4, 3, 1, 'A second riddle', CURRENT_DATE, CURRENT_DATE);
