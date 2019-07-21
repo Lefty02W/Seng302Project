@@ -12,6 +12,7 @@ Feature: Admin Create Treasure Hunt
     And I enter "Another riddle" as the "riddle"
     And I enter "2001-12-12" as the "startDate"
     And I enter "2002-12-12" as the "endDate"
+    And I enter "1" as the "destinationId"
     And I enter "3" as the "profileId"
     When I save the treasure hunt
     Then I should be redirected back to the admin page

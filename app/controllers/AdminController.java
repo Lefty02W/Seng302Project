@@ -374,39 +374,38 @@ public class AdminController {
      * @return CompletionStage redirecting back to the admin page
      */
     public CompletionStage<Result> createHunt(Http.Request request) {
-        return supplyAsync(
-            () -> {
-              Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
-              Optional<TreasureHunt> huntOpt = filledForm.value();
-              if (huntOpt.isPresent()) {
-                TreasureHunt treasureHunt = huntOpt.get();
-                String destinationId = null;
-                String startDate = null;
-                String endDate = null;
-                int profileId = -1;
-                if (filledForm.field("endDate").value().isPresent()) {
-                  endDate = filledForm.field("endDate").value().get();
-                }
-                if (filledForm.field("startDate").value().isPresent()) {
-                  startDate = filledForm.field("startDate").value().get();
-                }
-                if (filledForm.field("destinationId").value().isPresent()) {
-                  destinationId = filledForm.field("destinationId").value().get();
-                }
-                  if (filledForm.field("profileId").value().isPresent()) {
-                      profileId = Integer.parseInt(filledForm.field("profileId").value().get());
-                  }
-                if (profileId != -1) {
-                    treasureHunt.setTreasureHuntProfileId(profileId);
-                }
-                treasureHunt.setDestinationIdString(destinationId);
-                treasureHunt.setStartDateString(startDate);
-                treasureHunt.setEndDateString(endDate);
-                treasureHuntRepository.insert(treasureHunt);
-              }
-
-              return redirect(adminEndpoint);
-            });
+    return supplyAsync(
+        () -> {
+          Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
+          Optional<TreasureHunt> huntOpt = filledForm.value();
+          if (huntOpt.isPresent()) {
+            TreasureHunt treasureHunt = huntOpt.get();
+            String destinationId = null;
+            String startDate = null;
+            String endDate = null;
+            int profileId = -1;
+            if (filledForm.field("endDate").value().isPresent()) {
+              endDate = filledForm.field("endDate").value().get();
+            }
+            if (filledForm.field("startDate").value().isPresent()) {
+              startDate = filledForm.field("startDate").value().get();
+            }
+            if (filledForm.field("destinationId").value().isPresent()) {
+              destinationId = filledForm.field("destinationId").value().get();
+            }
+            if (filledForm.field("profileId").value().isPresent()) {
+              profileId = Integer.parseInt(filledForm.field("profileId").value().get());
+            }
+            if (profileId != -1) {
+              treasureHunt.setTreasureHuntProfileId(profileId);
+            }
+            treasureHunt.setDestinationIdString(destinationId);
+            treasureHunt.setStartDateString(startDate);
+            treasureHunt.setEndDateString(endDate);
+            treasureHuntRepository.insert(treasureHunt);
+          }
+          return redirect(adminEndpoint);
+        });
     }
 
 

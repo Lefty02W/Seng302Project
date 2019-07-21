@@ -3,8 +3,6 @@ package controllers;
 import models.Destination;
 import models.Profile;
 import models.Trip;
-import models.TripDestination;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +11,6 @@ import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 public class AdminControllerTest extends ProvideApplication {
 
@@ -42,7 +38,7 @@ public class AdminControllerTest extends ProvideApplication {
         List<Destination> destinationList = Destination.find.all();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/destinations/"+destinationList.get(0).getDestinationId()+"/delete")
+                .uri("/admin/destinations/1/delete")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
 
