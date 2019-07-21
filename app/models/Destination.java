@@ -50,7 +50,7 @@ public class Destination extends Model {
     private Map<Integer, TravellerType> travellerTypes;
 
     /**
-     * custom empty destination constructor
+     * This constructor is used by scala variables
      */
     public Destination() {
 
@@ -144,12 +144,13 @@ public class Destination extends Model {
      */
     public void initTravellerType() {
         this.travellerTypes = new HashMap<>();
+
         if (travellerTypesStringDest != null) {
             int i = 1;
             for (String travellerTypesString : (travellerTypesStringDest.split(","))) {
-                i++;
                 TravellerType travellerType = new TravellerType(i, travellerTypesString);
                 this.travellerTypes.put(travellerType.getTravellerTypeId(), travellerType);
+                i++;
             }
         }
     }
@@ -257,7 +258,6 @@ public class Destination extends Model {
     }
 
     public Map<Integer, TravellerType> getTravellerTypes() { return travellerTypes;}
-
 
     public String getTravellerTypesString() {
         ArrayList<String> listOfTravellerTypes = getTravellerTypesList();

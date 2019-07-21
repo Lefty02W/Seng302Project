@@ -9,8 +9,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
-import scala.Int;
-import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -37,7 +35,9 @@ public class DestinationsController extends Controller {
     private final PersonalPhotoRepository personalPhotoRepository;
     private final DestinationPhotoRepository destinationPhotoRepository;
     private final PhotoRepository photoRepository;
+    private final Form<DestinationRequest> requestForm;
     private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
+    private final TravellerTypeRepository travellerTypeRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -52,7 +52,8 @@ public class DestinationsController extends Controller {
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
                                   PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
-                                  PhotoRepository photoRepository, DestinationTravellerTypeRepository destinationTravellerTypeRepository) {
+                                  PhotoRepository photoRepository, DestinationTravellerTypeRepository destinationTravellerTypeRepository,
+                                  TravellerTypeRepository travellerTypeRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
@@ -62,6 +63,8 @@ public class DestinationsController extends Controller {
         this.destinationPhotoRepository = destinationPhotoRepository;
         this.photoRepository = photoRepository;
         this.destinationTravellerTypeRepository = destinationTravellerTypeRepository;
+        this.travellerTypeRepository = travellerTypeRepository;
+        this.requestForm = formFactory.form(DestinationRequest.class);
     }
 
     /**
@@ -92,7 +95,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -133,7 +136,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -163,7 +166,7 @@ public class DestinationsController extends Controller {
 
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend,  request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend, requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -205,7 +208,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
 //                destinationsList = loadTravellerTypes(destId, destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -355,8 +358,8 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = Integer.parseInt(visible);
         Destination dest = destinationForm.value().get();
+        dest.setTravellerTypesStringDest(destinationForm.field("travellerTypesForm").value().get());
         dest.initTravellerType();
-        System.out.println(dest.getTravellerTypesList());
         dest.setVisible(visibility);
             if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
@@ -513,5 +516,38 @@ public class DestinationsController extends Controller {
             destinationRepository.travellerTypeChangesTransaction(requestId, 1, toRemove);
             return 0;
             });
+    }
+
+
+    /**
+     * Endpoint method for a user to create a destination edit request
+     *
+     * @apiNote POST /destinations/type/request
+     * @param request the user request to edit the destination
+     * @return CompletionStage redirecting to the destinations page
+     */
+    public CompletionStage<Result> createEditRequest(Http.Request request) {
+        return supplyAsync(() -> {
+            int profileId = SessionController.getCurrentUserId(request);
+            Form<DestinationRequest> changeForm = requestForm.bindFromRequest(request);
+            List<Integer> toAdd = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToAddList());
+            List<Integer> toRemove = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToRemoveList());
+            createChangeRequest(profileId,changeForm.get().getDestinationId(),toAdd,toRemove);
+           return redirect("/destinations/show/false");
+        });
+    }
+
+    /**
+     * Helper funciton to turn List<String> into List<Int> holding the travellerType id's of the given traveller type name
+     *
+     * @param names List of traveller type names
+     * @return List of traveller type id's corresponding to the given names
+     */
+    private List<Integer> listOfTravellerTypesToTravellerTypeId(List<String> names){
+        List<Integer> result = new ArrayList<>();
+        for (String name : names){
+            travellerTypeRepository.getTravellerTypeId(name).ifPresent(result::add);
         }
+        return result;
+    }
 }
