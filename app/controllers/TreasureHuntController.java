@@ -134,6 +134,14 @@ public class TreasureHuntController {
         Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
         TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), treasureHuntForm);
         return supplyAsync(() -> {
+            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+                return redirect("/treasure").flashing("error", "Error: Start date cannot be after end date.");
+            }
+
+            else if (treasureHunt.getStartDate().before(DateTime.now().toDate())){
+                return redirect("/treasure").flashing("error", "Error: Start date cannot be in the past.");
+            }
+
             treasureHuntRepository.update(treasureHunt, id);
             return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
         });
