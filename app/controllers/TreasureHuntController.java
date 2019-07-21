@@ -79,7 +79,6 @@ public class TreasureHuntController {
                 return redirect("/treasure").flashing("error", "Error: Start date cannot be in the past.");
             }
 
-
             treasureHuntRepository.insert(treasureHunt);
             return redirect(huntShowRoute);
         });
