@@ -87,7 +87,7 @@ public class TreasureHuntController {
 
     /**
      * Helper function to extract into treasurehunt object
-     * @param treasureHunt TreasureHunt object to be made up
+     * @param userId User id of the creator of this TreasureHunt
      * @param values form of the incoming data to be put into a treasurehunt object
      * @return TreasureHunt object with all values inside
      */
