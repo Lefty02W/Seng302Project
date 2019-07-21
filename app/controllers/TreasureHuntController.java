@@ -4,6 +4,7 @@ package controllers;
 import models.Destination;
 import models.RoutedObject;
 import models.TreasureHunt;
+import org.joda.time.DateTime;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -69,6 +70,16 @@ public class TreasureHuntController {
         return supplyAsync(() -> {
             Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
             TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
+
+            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+                return redirect("/treasure").flashing("error", "Error: Start date cannot be after end date.");
+            }
+
+            else if (treasureHunt.getStartDate().before(DateTime.now().toDate())){
+                return redirect("/treasure").flashing("error", "Error: Start date cannot be in the past.");
+            }
+
+
             treasureHuntRepository.insert(treasureHunt);
             return redirect(huntShowRoute);
         });
