@@ -1,6 +1,5 @@
 package controllers;
 
-import models.Destination;
 import models.Profile;
 import models.Trip;
 import org.junit.Assert;
@@ -34,15 +33,14 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteValidDestination() {
-
-        List<Destination> destinationList = Destination.find.all();
+        injectRepositories();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin/destinations/1/delete")
-                .session("connected", profileId.toString());
+                .session("connected", "1");
         Result result = Helpers.route(provideApplication(), request);
 
-        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+        Assert.assertNotNull(destinationRepository.lookup(1));
     }
 
 
