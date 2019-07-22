@@ -3,7 +3,7 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangesList: List[DestinationChanges])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangeList: List[DestinationChange])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -255,7 +255,7 @@
                                         <th>Decline</th>
                                     </tr>
                                 </thead>
-                                @for(destinationChange <- destinationChangesList) {
+                                @for(destinationChange <- destinationChangeList) {
                                     <tr>
 
                                         <td>@destinationChange.getEmail</td>
