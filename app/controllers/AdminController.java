@@ -424,8 +424,11 @@ public class AdminController {
         }
         TreasureHunt treasureHunt = treasureHuntController.setValues(profileId, treasureHuntForm);
         return supplyAsync(() -> {
+            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+                return redirect(adminEndpoint).flashing("error", "Error: Start date cannot be after end date.");
+            }
             treasureHuntRepository.update(treasureHunt, id);
-            return redirect(adminEndpoint).flashing("success", "Treasure Hunt has been updated.");
+            return redirect(adminEndpoint).flashing("info", "Treasure Hunt has been updated.");
         });
     }
 

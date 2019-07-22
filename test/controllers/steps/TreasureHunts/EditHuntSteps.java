@@ -119,7 +119,7 @@ public class EditHuntSteps extends ProvideApplication {
     public void theEditIsNotSavedToTheDatabase() throws Throwable {
         injectRepositories();
         TreasureHunt hunt = treasureHuntRepository.lookup(1);
-        //assertNotEquals("2020-12-30", hunt.getStartDateString());
-        //assertNotEquals("2000-12-30", hunt.getEndDateString());
+        assertNotEquals("2020-12-30", hunt.getStartDateString());
+        assertNotEquals("2000-12-30", hunt.getEndDateString());
     }
 }

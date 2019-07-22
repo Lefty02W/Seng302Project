@@ -93,19 +93,30 @@ public class AdminEditTreasureHuntSteps  extends ProvideApplication {
         assertEquals("2019-01-04", hunt.getStartDateString());
     }
 
-    @Then("^I am redirected to the admin page with an invalid notification$")
-    public void iAmRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
-        if (redirectDestination.redirectLocation().isPresent()) {
-            Assert.assertTrue(redirectDestination.flash().getOptional("error").isPresent());
-        } else {
-            Assert.fail();
-        }
+    @Then("^The admins end date is updated in the database$")
+    public void theAdminsEndDateIsUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        TreasureHunt hunt = treasureHuntRepository.lookup(2);
+        assertEquals("2020-01-01", hunt.getEndDateString());
     }
 
     @Then("^The admins end date is not updated in the database$")
     public void theAdminsEndDateIsNotUpdatedInTheDatabase() throws Throwable {
         injectRepositories();
-        TreasureHunt hunt = treasureHuntRepository.lookup(1);
-        assertNotEquals("2019-05-12", hunt.getEndDateString());
+        TreasureHunt hunt = treasureHuntRepository.lookup(2);
+        assertNotEquals("2016-01-04", hunt.getEndDateString());
+    }
+
+    @Then("^The edit is not updated in the database$")
+    public void theEditIsNotUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        TreasureHunt hunt = treasureHuntRepository.lookup(2);
+        assertNotEquals("2020-01-01", hunt.getStartDateString());
+        assertNotEquals("2016-01-04", hunt.getEndDateString());
+    }
+
+    @Then("^I am redirected to the admin page with an invalid notification$")
+    public void iAmRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
+        Assert.assertTrue(redirectDestination.flash().getOptional("error").isPresent());
     }
 }
