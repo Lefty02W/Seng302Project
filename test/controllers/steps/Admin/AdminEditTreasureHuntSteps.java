@@ -119,4 +119,9 @@ public class AdminEditTreasureHuntSteps  extends ProvideApplication {
     public void iAmRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
         Assert.assertTrue(redirectDestination.flash().getOptional("error").isPresent());
     }
+
+    @Then("^I am redirected to the admin page with a valid notification$")
+    public void iAmRedirectedToTheAdminPageWithAValidNotification() throws Throwable {
+        Assert.assertTrue(redirectDestination.flash().getOptional("info").isPresent());
+    }
 }
