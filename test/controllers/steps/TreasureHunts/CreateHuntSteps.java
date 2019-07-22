@@ -16,6 +16,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -75,21 +76,12 @@ public class CreateHuntSteps extends ProvideApplication {
         @Then("^the treasure hunt is made$")
         public void theTreasureHuntShouldBeMade(){
             injectRepositories();
-            TreasureHunt expected = null;
 
-            try {
+            List<TreasureHunt> allJohnHunts = treasureHuntRepository.getAllUserTreasureHunts(1);
+            TreasureHunt newHunt = allJohnHunts.get(allJohnHunts.size() - 1);
 
-                expected = new TreasureHunt("Riddle me this", 1, dateFormatEntry.parse(TODAY_DATE_STRING), dateFormatEntry.parse(TOMORROW_DATE_STRING));
-                expected.setTreasureHuntProfileId(1);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            System.out.println(expected.getDestination());
-            System.out.println(treasureHuntRepository.getAllUserTreasureHunts(1).get(0).getRiddle());
-            System.out.println(treasureHuntRepository.getAllUserTreasureHunts(1).get(1).getRiddle());
-            System.out.println(treasureHuntRepository.getAllUserTreasureHunts(1).get(2).getRiddle());
-            assertTrue(treasureHuntRepository.getAllUserTreasureHunts(1).contains(expected));
+            assertTrue(newHunt.getRiddle().equals("Riddle me this..."));
+            assertTrue(newHunt.getTreasureHuntDestinationId() == 1);
 
         }
 
