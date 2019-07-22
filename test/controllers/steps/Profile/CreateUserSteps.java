@@ -2,9 +2,13 @@ package controllers.steps.Profile;
 
 
 import controllers.ProvideApplication;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import models.Profile;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.HashMap;
@@ -19,6 +23,11 @@ import static org.junit.Assert.assertEquals;
 public class CreateUserSteps extends ProvideApplication {
 
     private Map<String, String> createForm = new HashMap<>();
+    private Map<String, String> createFormSecond = new HashMap<>();
+    private Result createResult;
+    private Profile createdProfile;
+
+    private final String USER_EMAIL = "james@johnston.com";
 
     @When("he enters the First Name {string}")
     public void enter_first_name(String firstName) {
@@ -98,5 +107,53 @@ public class CreateUserSteps extends ProvideApplication {
             });
             return "done";
         });
+    }
+
+    @Given("^I am on the landing page$")
+    public void iAmOnTheLandingPage() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/login");
+        Helpers.route(provideApplication(), request);
+    }
+
+    @When("^I press the create user button$")
+    public void iPressTheCreateUserButton() throws Throwable {
+        // Pass through as button opens modal
+    }
+
+    @And("^I enter \"([^\"]*)\" into the \"([^\"]*)\" field$")
+    public void iEnterIntoTheField(String arg0, String arg1) throws Throwable {
+        createFormSecond.put(arg0, arg1);
+    }
+
+    @And("^I enter \"([^\"]*)\", \"([^\"]*)\" into the \"([^\"]*)\" field$")
+    public void iEnterIntoTheField(String arg0, String arg1, String arg2) throws Throwable {
+        createFormSecond.put(arg0 + ","+arg1, arg2);
+    }
+
+    @Then("^I save my new profile$")
+    public void iSaveMyNewProfile() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/user/create")
+                .bodyForm(createFormSecond);
+        //createResult = Helpers.route(provideApplication(), request);
+    }
+
+    @And("^My user profile is saved in the database$")
+    public void myUserProfileIsSavedInTheDatabase() throws Throwable {
+        injectRepositories();
+        //createdProfile = profileRepository.getProfileById(USER_EMAIL);
+        //assertNotNull(createdProfile);
+    }
+
+    @And("^my passports are \"([^\"]*)\"$")
+    public void myPassportsAre(String arg0) throws Throwable {
+        if(createdProfile != null) {
+            assertEquals(arg0, createdProfile.getNationalityString());
+        } else {
+            //fail();
+        }
     }
 }
