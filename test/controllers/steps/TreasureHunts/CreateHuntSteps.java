@@ -31,6 +31,7 @@ public class CreateHuntSteps extends ProvideApplication {
         private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
         private static String TODAY_DATE_STRING = dateFormatEntry.format(DateTime.now().toDate());
         private static String TOMORROW_DATE_STRING = dateFormatEntry.format(DateTime.now().plusDays(1).toDate());
+        private static int numberExistingHunts;
 
         @When("^I insert a riddle \"([^\"]*)\"$")
         public void iInsertARiddle(String riddle) {
@@ -65,6 +66,8 @@ public class CreateHuntSteps extends ProvideApplication {
 
         @When("^I click create treasure hunt$")
         public void iClickCreateTreasureHunt() {
+            injectRepositories();
+            numberExistingHunts = treasureHuntRepository.getAllUserTreasureHunts(1).size();
             Http.RequestBuilder request = Helpers.fakeRequest()
                     .method("POST")
                     .uri("/hunts/create")
@@ -74,15 +77,29 @@ public class CreateHuntSteps extends ProvideApplication {
         }
 
         @Then("^the treasure hunt is made$")
-        public void theTreasureHuntShouldBeMade(){
-            injectRepositories();
+        public void theTreasureHuntIsMade(){
 
             List<TreasureHunt> allJohnHunts = treasureHuntRepository.getAllUserTreasureHunts(1);
             TreasureHunt newHunt = allJohnHunts.get(allJohnHunts.size() - 1);
 
+            //Check a hunt was added
+            assertTrue(allJohnHunts.size() == numberExistingHunts + 1);
+
+            //Check some arbitrary details...
             assertTrue(newHunt.getRiddle().equals("Riddle me this..."));
             assertTrue(newHunt.getTreasureHuntDestinationId() == 1);
 
         }
 
+        @Then("The treasure hunt is not made")
+        public void theTreasureHuntIsNotMade() {
+            injectRepositories();
+
+            List<TreasureHunt> allJohnHunts = treasureHuntRepository.getAllUserTreasureHunts(1);
+            TreasureHunt newHunt = allJohnHunts.get(allJohnHunts.size() - 1);
+
+            //Check a hunt was not added
+            assertTrue(allJohnHunts.size() == numberExistingHunts);
+
+        }
 }
