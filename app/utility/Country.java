@@ -20,33 +20,34 @@ public class Country {
 
     /**
      * Get a list of all countries from the RESTCountries api
+     *
      * @return
      */
-    public List<String> getAllCountries() throws IOException {
+    public List<String> getAllCountries() {
         List<String> countries = new ArrayList<>();
+        try {
+            URL url = new URL(baseURL + "all?fields=name;");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
 
-        URL url = new URL(baseURL + "all?fields=name;");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line;
-        while ((line = rd.readLine()) != null) {
-            countries.add(line);
+            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = rd.readLine()) != null) {
+                countries.add(line);
+            }
+        } catch (IOException exception) {
+            return countries;
         }
 
-        for(String c: countries) {
-            System.out.println(c);
-        }
 
         return countries;
     }
 
 
     /**
-     *
-     * @param code
-     * @return
+     * Get a country's name from its ISO code
+     * @param code - the ISO code
+     * @return name - Name of the country
      */
     public String getCountryNameByCode(String code) {
         String name = "";
@@ -56,6 +57,11 @@ public class Country {
     }
 
 
+    /**
+     * Check if a country exists
+     * @param name - Name of country to check
+     * @return boolean - True if exists, false otherwise
+     */
     public boolean checkExists(String name) {
         boolean exists = true;
 
