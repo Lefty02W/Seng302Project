@@ -151,6 +151,15 @@ public class CreateUserSteps extends ProvideApplication {
     @And("^my passports are \"([^\"]*)\"$")
     public void myPassportsAre(String arg0) throws Throwable {
         if(createdProfile != null) {
+            assertEquals(arg0, createdProfile.getPassportsString());
+        } else {
+            //fail();
+        }
+    }
+
+    @And("^my nationalities are \"([^\"]*)\"$")
+    public void myNationalitiesAre(String arg0) throws Throwable {
+        if(createdProfile != null) {
             assertEquals(arg0, createdProfile.getNationalityString());
         } else {
             //fail();

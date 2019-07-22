@@ -50,3 +50,4 @@ Feature: Create a user profile
     Then I save my new profile
     And My user profile is saved in the database
     And my passports are "New Zealand,Europe"
+    And my nationalities are "New Zealand,Europe"
