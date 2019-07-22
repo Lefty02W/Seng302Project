@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -81,13 +82,22 @@ public class DestinationRequest extends Model{
     }
 
     public List<String> getToAddList(){
-        String myString = getToAdd();
-        List<String> result = convertToList(myString);
-        return result;
+        try{
+            String myString = getToAdd();
+            List<String> result = convertToList(myString);
+            return result;
+        } catch (Exception e){
+            return Collections.emptyList();
+        }
+
     }
 
     public List<String> getToRemoveList(){
-        return convertToList(getToRemove());
+        try{
+            return convertToList(getToRemove());
+        } catch (Exception e){
+            return Collections.emptyList();
+        }
     }
 
     private List<String> convertToList(String string){
