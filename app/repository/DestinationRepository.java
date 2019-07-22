@@ -6,9 +6,7 @@ import play.db.ebean.EbeanConfig;
 import play.db.ebean.Transactional;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -50,7 +48,13 @@ public class DestinationRepository {
      * @return
      */
     public Destination lookup(int destID) {
-        return ebeanServer.find(Destination.class).setId(destID).findOne();
+        Destination destination = ebeanServer.find(Destination.class).setId(destID).findOne();
+        Map<Integer, TravellerType> types = new HashMap<>();
+        for(TravellerType type : getDestinationsTravellerTypes(destination.getDestinationId())) {
+            types.put(type.getTravellerTypeId(), type);
+        }
+        destination.setTravellerTypes(types);
+        return destination;
     }
 
     /**
@@ -163,7 +167,7 @@ public class DestinationRepository {
      * @param destinationId
      * @return
      */
-    public Optional<Integer> updateProfileId(Destination newDestination, Integer destinationId) {
+    private Optional<Integer> updateProfileId(Destination newDestination, Integer destinationId) {
         Transaction txn = ebeanServer.beginTransaction();
         Optional<Integer> value = Optional.empty();
         try {
@@ -181,27 +185,6 @@ public class DestinationRepository {
     }
 
 
-    /**
-     * class to check if destination is already available to user
-     * return true if already in else false
-     */
-    public boolean checkValid(Destination destination, int id) {
-        Destination destinations = (Destination.find.query()
-                .where()
-                .eq("name", destination.getName())
-                .eq("type", destination.getType())
-                .eq("country", destination.getCountry())
-                .eq("profile_id", id)
-                .findOne());
-        Destination publicDestinations = (Destination.find.query()
-                .where()
-                .eq("name", destination.getName())
-                .eq("type", destination.getType())
-                .eq("country", destination.getCountry())
-                .eq("visible", "1")
-                .findOne());
-        return publicDestinations != null || destinations != null;
-    }
 
     /**
      * Checks to see if a user has any destinations that are the same as the destination1 passed in
@@ -417,6 +400,21 @@ public class DestinationRepository {
                     return 1;
                 });
 
+    }
+
+
+    /**
+     * Reads all destinations from the database
+     *
+     * @return
+     */
+    public List<Destination> getAllDestinations() {
+        List<Destination> dests = new ArrayList<>(Destination.find.query().findList());
+        for (Destination destination : dests) {
+            Map<Integer, TravellerType> travellerTypesMap = TravellerType.find.query().findMap();
+            destination.setTravellerTypes(travellerTypesMap);
+        }
+        return dests;
     }
 
     /**

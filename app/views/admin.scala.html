@@ -677,6 +677,59 @@
                                 </div>
                                 <div class="col">
                                     <div class="row">
+                                        <label>Traveller Types</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="travellerTypesForm" name="travellerTypesStringDest" class="hidden-field typesField" value="@destination.getObject.getTravellerTypesString">
+                                        </div>
+                                        <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownEdit" data-width="100%">
+                                            @if(destination.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
+                                                <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                            } else {
+                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Backpacker")) {
+                                                <option value="Backpacker" selected>Backpacker</option>
+                                            } else {
+                                                <option value="Backpacker">Backpacker</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Gap Year")) {
+                                                <option value="Gap Year" selected>Gap Year</option>
+                                            } else {
+                                                <option value="Gap Year">Gap Year</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Groupie")) {
+                                                <option value="Groupie" selected>Groupie</option>
+                                            } else {
+                                                <option value="Groupie">Groupie</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Frequent Weekender")) {
+                                                <option value="Frequent Weekender" selected>Frequent Weekender</option>
+                                            } else {
+                                                <option value="Frequent Weekender">Frequent Weekender</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Functional/business Traveller")) {
+                                                <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
+                                            } else {
+                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Holidaymaker")) {
+                                                <option value="Holidaymaker" selected>Holidaymaker</option>
+                                            } else {
+                                                <option value="Holidaymaker">Holidaymaker</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
                                         <label>Latitude</label>
                                     </div>
                                     <div class="row">
@@ -709,7 +762,7 @@
                             <!-- footer -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillVals2()">Save</button>
                         </div>
                     }
                 </div>
@@ -950,6 +1003,10 @@
         function fillValsDest() {
             console.log($('#typeDropdownDest').val());
             $('#travellerTypesStringDest').val($('#typeDropdownDest').val());
+        }
+
+        function fillVals2() {
+            $('#travellerTypesForm').val($('#typeDropdownEdit').val());
         }
 
         $("#menu-toggle").click(function (e) {

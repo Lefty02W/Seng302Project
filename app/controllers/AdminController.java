@@ -308,7 +308,7 @@ public class AdminController {
         return supplyAsync(() -> {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
+            List<Destination> destinations = destinationRepository.getAllDestinations();
             Destination currentDestination = destinationRepository.lookup(destId);
             RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, isEdit, !isEdit);
             if (isEdit) destinationEditForm.fill(currentDestination);
@@ -329,6 +329,8 @@ public class AdminController {
     public CompletionStage<Result> editDestination(Http.Request request, Integer destId) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
         Destination destination = destForm.get();
+        destination.setTravellerTypesStringDest(destForm.field("travellerTypesStringDest").value().get());
+        destination.initTravellerType();
         return destinationRepository.update(destination, destId).thenApplyAsync(string -> redirect("/admin"));
     }
 

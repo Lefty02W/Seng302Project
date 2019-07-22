@@ -287,8 +287,20 @@ public class DestinationsController extends Controller {
      * Gets all of the users photos
      *
      * @param profileId the id of the profile to get photos for
-     * @return a list of a users photos
+     * @return a list of a users photos /**
+     * Get the users destination list
+     *
+     * @param id the id of the user profile
+     * @return destinations, list of all user destinations
      */
+    public ArrayList<Destination> getUserDestinations(int id) {
+        return new ArrayList<>(Destination.find.query()
+                .where()
+                .eq("profile_id", id)
+                .findList());
+    }
+
+
     private List<Photo> getUsersPhotos(int profileId) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         return imageList.orElseGet(ArrayList::new);
