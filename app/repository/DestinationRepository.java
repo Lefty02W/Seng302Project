@@ -391,16 +391,24 @@ public class DestinationRepository {
      * @param changeId the destination change to be performed
      */
     public CompletionStage<Integer> acceptDestinationChange(int changeId) {
+        System.out.println(changeId);
         return getDestinationChange(changeId)
                 .thenApplyAsync(changeOpt -> {
                     if (changeOpt.isPresent()) {
                         // TODO: 19/07/19 might need to have add/remove methods chain return
-                        System.out.println(changeOpt.get().getDestination());
-                        if (changeOpt.get().getAction() == 1){
-                           addDestinationTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
-                        } else {
-                           removeDestinationTravellerType(changeOpt.get().getTravellerTypeId(), changeOpt.get().getDestination().getDestinationId());
-                        }
+                        System.out.println("in here");
+                        System.out.println(changeOpt.get().getRequestId());
+                        return getDestinationRequest(changeOpt.get().getRequestId())
+                                .thenApplyAsync(requestOpt -> {
+                                    // TODO: 22/07/19 this needs to be 1 but inserted the other way around on the insert change
+                                    if (changeOpt.get().getAction() == 0){
+                                        addDestinationTravellerType(changeOpt.get().getTravellerTypeId(), requestOpt.get().getDestinationId());
+                                    } else {
+                                        removeDestinationTravellerType(changeOpt.get().getTravellerTypeId(), requestOpt.get().getDestinationId());
+                                    }
+
+                                    return 1;
+                                });
                     }
                     return 1;
                 })
@@ -454,6 +462,7 @@ public class DestinationRepository {
         DestinationTravellerType destinationTravellerType = new DestinationTravellerType(destinationId, travellerTypeId);
         return supplyAsync(() -> {
             ebeanServer.insert(destinationTravellerType);
+            System.out.println("Added destination traveller type");
             return null;
         }, executionContext);
     }
@@ -541,5 +550,17 @@ public class DestinationRepository {
             },
             executionContext);
         }
+
+    /**
+     * Method to get a destination request object using a request id
+     */
+    public CompletionStage<Optional<DestinationRequest>> getDestinationRequest(int requestId){
+        return supplyAsync(
+            () -> {
+                return Optional.ofNullable(
+                        ebeanServer.find(DestinationRequest.class).where().eq("id", requestId).findOne());
+            },
+            executionContext);
+    }
 
 }
