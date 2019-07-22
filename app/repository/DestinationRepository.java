@@ -360,7 +360,7 @@ public class DestinationRepository {
      *   action: tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
      *   requestId: Integer id of the request the user is making, links the changes to a request.
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
-     *  destination_changes table
+     *  destination_change table
      */
     private CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
         return supplyAsync(() -> {
@@ -376,11 +376,12 @@ public class DestinationRepository {
      * @return completion stage
      */
     public CompletionStage<Integer> deleteDestinationChange(int changeId) {
-    return supplyAsync(
-        () -> {
-          ebeanServer.find(DestinationChange.class).where().eq("id", changeId).delete();
-          return 1;
-        });
+        System.out.println(changeId);
+        return supplyAsync(
+            () -> {
+                ebeanServer.find(DestinationChange.class).where().eq("id", changeId).delete();
+              return 1;
+            });
     }
 
     /**
@@ -482,27 +483,27 @@ public class DestinationRepository {
      */
     public List<DestinationChange> getAllDestinationChanges() {
 
-                //Getting Destinationchanges out of the database
+                //Getting Destination change out of the database
                 List<DestinationChange> result = DestinationChange.find.query().where()
                         .findList();
 
-            for (DestinationChange destinationchanges : result) {
+            for (DestinationChange destinationChange : result) {
                 DestinationRequest destinationRequest = DestinationRequest.find.query().where()
-                        .eq("id", destinationchanges.getRequestId())
+                        .eq("id", destinationChange.getRequestId())
                         .findOne();
 
                 Profile profile = Profile.find.query().where()
                         .eq("profile_id", destinationRequest.getProfileId())
                         .findOne();
-                destinationchanges.setEmail(profile.getEmail());
+                destinationChange.setEmail(profile.getEmail());
 
                 Destination destination = lookup(destinationRequest.getDestinationId());
-                destinationchanges.setDestination(destination);
+                destinationChange.setDestination(destination);
 
                 TravellerType travellerType = TravellerType.find.query().where()
-                        .eq("traveller_type_id", destinationchanges.getTravellerTypeId())
+                        .eq("traveller_type_id", destinationChange.getTravellerTypeId())
                         .findOne();
-                destinationchanges.setTravellerType(travellerType);
+                destinationChange.setTravellerType(travellerType);
             }
             return result;
     }

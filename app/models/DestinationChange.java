@@ -10,7 +10,7 @@ import javax.persistence.Transient;
 
 /**
  * DestinationChange class containing all attributes of a change for inserting the change object into the
- * destination_changes database table
+ * destination_change database table
  *
  * id - Primary Key
  * travellerType - int foreign key referencing travellerTypeId from travellerType table
