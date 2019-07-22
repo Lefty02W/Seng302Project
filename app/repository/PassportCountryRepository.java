@@ -106,7 +106,7 @@ public class PassportCountryRepository {
         try {
             countryId = rowList.get(0).getInteger("passport_country_id");
         } catch(Exception e) {
-            countryId = null;
+            countryId = -1;
         }
         return Optional.of(countryId);
     }
