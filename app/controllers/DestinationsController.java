@@ -524,8 +524,14 @@ public class DestinationsController extends Controller {
     public void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove){
         DestinationRequest destinationRequest = new DestinationRequest(destinationId, profileId);
         destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest).thenApplyAsync(requestId -> {
-            destinationRepository.travellerTypeChangesTransaction(requestId, 0, toAdd);
-            destinationRepository.travellerTypeChangesTransaction(requestId, 1, toRemove);
+            if (!toAdd.isEmpty()) {
+                destinationRepository.travellerTypeChangesTransaction(requestId, 1, toAdd);
+
+            }
+            if (!toRemove.isEmpty()){
+                destinationRepository.travellerTypeChangesTransaction(requestId, 0, toRemove);
+
+            }
             return 0;
             });
     }
@@ -556,10 +562,14 @@ public class DestinationsController extends Controller {
      * @return List of traveller type id's corresponding to the given names
      */
     private List<Integer> listOfTravellerTypesToTravellerTypeId(List<String> names){
-        List<Integer> result = new ArrayList<>();
-        for (String name : names){
-            travellerTypeRepository.getTravellerTypeId(name).ifPresent(result::add);
+        if (names.get(0).equals("")){
+            return Collections.emptyList();
+        } else {
+            List<Integer> result = new ArrayList<>();
+            for (String name : names){
+                travellerTypeRepository.getTravellerTypeId(name).ifPresent(result::add);
+            }
+            return result;
         }
-        return result;
     }
 }
