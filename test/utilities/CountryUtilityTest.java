@@ -27,9 +27,8 @@ public class CountryUtilityTest {
      * by using it's ISO code
      */
     @Test
-    @Ignore
     public void getCountryNameByCode() {
-        Assert.assertEquals(country.getCountryNameByCode("nz"), "New Zealand");
+        Assert.assertEquals("New Zealand", country.getCountryNameByCode("nz"));
     }
 
 
@@ -37,7 +36,6 @@ public class CountryUtilityTest {
      * Test if an existing country is asserted to exist
      */
     @Test
-    @Ignore
     public void checkCountryExists() {
         Assert.assertTrue(country.checkExists("New Zealand"));
     }
@@ -47,7 +45,6 @@ public class CountryUtilityTest {
      * Check a former existing country is not asserted as existing
      */
     @Test
-    @Ignore
     public void checkFormerCcountryExists() {
         Assert.assertFalse(country.checkExists("Yugoslavia"));
     }
