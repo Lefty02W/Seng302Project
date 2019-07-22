@@ -402,9 +402,14 @@ public class AdminController {
             treasureHunt.setDestinationIdString(destinationId);
             treasureHunt.setStartDateString(startDate);
             treasureHunt.setEndDateString(endDate);
+
+            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+                return redirect(adminEndpoint).flashing("error", "Error: Start date cannot be after end date.");
+            }
+
             treasureHuntRepository.insert(treasureHunt);
           }
-          return redirect(adminEndpoint);
+          return redirect(adminEndpoint).flashing("info", "Treasure Hunt has been updated.");
         });
     }
 

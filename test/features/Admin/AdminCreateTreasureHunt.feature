@@ -15,5 +15,17 @@ Feature: Admin Create Treasure Hunt
     And I enter "1" as the "destinationId"
     And I enter "3" as the "profileId"
     When I save the treasure hunt
-    Then I should be redirected back to the admin page
+    Then I should be redirected back to the admin page with a valid notification
     And The treasure hunt is saved to the database
+
+  Scenario: Admin creates an invalid treasure hunt
+    Given admin is on the admin page
+    When Press the create treasure hunt button
+    And I enter "Welcome to the Jungle" as the "riddle"
+    And I enter "2001-12-12" as the "startDate"
+    And I enter "2000-12-12" as the "endDate"
+    And I enter "2" as the "destinationId"
+    And I enter "3" as the "profileId"
+    When I save the treasure hunt
+    Then I should be redirected back to the admin page with an invalid notification
+    And The treasure hunt is not saved to the database

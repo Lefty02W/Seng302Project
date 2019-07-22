@@ -1,10 +1,12 @@
 package controllers.steps.Admin;
 
 import controllers.ProvideApplication;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.TreasureHunt;
+import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -44,10 +46,10 @@ public class AdminCreateTreasureHuntSteps extends ProvideApplication {
         redirectDestination = Helpers.route(provideApplication(), request);
     }
 
-    @Then("^I should be redirected back to the admin page$")
+    @Then("^I should be redirected back to the admin page with a valid notification$")
     public void iShouldBeRedirectedBackToTheAdminPage() throws Throwable {
         if (redirectDestination.redirectLocation().isPresent()) {
-            assertEquals("/admin", redirectDestination.redirectLocation().get());
+            Assert.assertTrue(redirectDestination.flash().getOptional("info").isPresent());
         } else {
             fail();
         }
@@ -61,6 +63,29 @@ public class AdminCreateTreasureHuntSteps extends ProvideApplication {
         boolean found = false;
         for (TreasureHunt hunt : hunts) {
             if (hunt.getRiddle().equals("Another riddle")) {
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
+    @Then("^I should be redirected back to the admin page with an invalid notification$")
+    public void iShouldBeRedirectedBackToTheAdminPageWithAnInvalidNotification() throws Throwable {
+        if (redirectDestination.redirectLocation().isPresent()) {
+            Assert.assertTrue(redirectDestination.flash().getOptional("error").isPresent());
+        } else {
+            fail();
+        }
+    }
+
+    @And("^The treasure hunt is not saved to the database$")
+    public void theTreasureHuntIsNotSavedToTheDatabase() throws Throwable {
+        injectRepositories();
+        List<TreasureHunt> hunts = treasureHuntRepository.getAllUserTreasureHunts(3);
+        assertNotNull(hunts);
+        boolean found = false;
+        for (TreasureHunt hunt : hunts) {
+            if (!hunt.getRiddle().equals("Welcome to the Jungle")) {
                 found = true;
             }
         }
