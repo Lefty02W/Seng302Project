@@ -1,15 +1,11 @@
 package utilities;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import utility.Country;
 
-import java.io.IOException;
-
 public class CountryUtilityTest {
 
-    Country country = new Country();
 
 
     /**
@@ -18,7 +14,7 @@ public class CountryUtilityTest {
      */
     @Test
     public void getAllCountries() {
-        Assert.assertNotNull(country.getAllCountries());
+        Assert.assertNotNull(Country.getInstance().getAllCountries());
     }
 
 
@@ -28,7 +24,7 @@ public class CountryUtilityTest {
      */
     @Test
     public void getCountryNameByCode() {
-        Assert.assertEquals("New Zealand", country.getCountryNameByCode("nz"));
+        Assert.assertEquals("New Zealand", Country.getInstance().getCountryNameByCode("nz"));
     }
 
 
@@ -37,7 +33,7 @@ public class CountryUtilityTest {
      */
     @Test
     public void checkCountryExists() {
-        Assert.assertTrue(country.checkExists("New Zealand"));
+        Assert.assertTrue(Country.getInstance().checkExists("New Zealand"));
     }
 
 
@@ -45,8 +41,8 @@ public class CountryUtilityTest {
      * Check a former existing country is not asserted as existing
      */
     @Test
-    public void checkFormerCcountryExists() {
-        Assert.assertFalse(country.checkExists("Yugoslavia"));
+    public void checkFormerCountryExists() {
+        Assert.assertFalse(Country.getInstance().checkExists("Yugoslavia"));
     }
 
 

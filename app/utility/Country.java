@@ -2,7 +2,6 @@ package utility;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import play.libs.Json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +14,22 @@ import java.util.stream.Collectors;
 
 public class Country {
 
+    private static Country INSTANCE;
+
     private String baseURL = "https://restcountries.eu/rest/v2/";
+
+    /**
+     * static method to create instance of Thumbnail class
+     */
+    public static Country getInstance()
+    {
+        if (INSTANCE == null)
+            INSTANCE = new Country();
+
+        return INSTANCE;
+    }
+
+    private Country(){}
 
 
     /**
