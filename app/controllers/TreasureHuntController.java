@@ -16,6 +16,10 @@ import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -32,6 +36,7 @@ public class TreasureHuntController {
     private final TreasureHuntRepository treasureHuntRepository;
     private final Form<TreasureHunt> huntForm;
     private String huntShowRoute = "/treasure";
+
 
     /**
      * Constructor for the treasure hunt controller class
@@ -73,10 +78,6 @@ public class TreasureHuntController {
 
             if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
                 return redirect("/treasure").flashing("error", "Error: Start date cannot be after end date.");
-            }
-
-            else if (treasureHunt.getStartDate().before(DateTime.now().toDate())){
-                return redirect("/treasure").flashing("error", "Error: Start date cannot be in the past.");
             }
 
             treasureHuntRepository.insert(treasureHunt);
