@@ -79,7 +79,6 @@ public class ProfileRepository {
             allProfiles.add(profileFromRow(row));
 
         }
-
         return allProfiles;
 
     }

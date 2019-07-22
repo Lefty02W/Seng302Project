@@ -109,7 +109,6 @@ public class Profile extends Model {
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
         this.roles = roles;
-
     }
 
     /**
