@@ -1,6 +1,8 @@
 package utility;
 
-import play.mvc.Http;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import play.libs.Json;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,31 +11,59 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Country {
 
     private String baseURL = "https://restcountries.eu/rest/v2/";
 
-    public Country() {
+
+    /**
+     * Get the response from a URL as a string
+     * @param requestURL - The request url
+     * @return response - String response from url
+     * @throws IOException
+     */
+    private String getResponseFromRequest(URL requestURL) throws IOException {
+        String response = "";
+        HttpURLConnection connection = (HttpURLConnection) requestURL.openConnection();
+        connection.setRequestMethod("GET");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        response = reader.lines().collect(Collectors.joining());
+
+
+        return response;
+    }
+
+
+    /**
+     * Get the response values of a given request for a given field
+     * @param request - The request url as a string
+     * @param targetField - The field to retrieve values for
+     * @return A list of JsonNode objects holding the values found
+     * @throws IOException
+     */
+    private List<JsonNode> getResponseValues(String request, String targetField) throws IOException {
+        URL url = new URL(request);
+        String response = getResponseFromRequest(url);
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        return mapper.readTree(response).findValues(targetField);
     }
 
 
     /**
      * Get a list of all countries from the RESTCountries api
      *
-     * @return
+     * @return countries - List of all country names
      */
     public List<String> getAllCountries() {
         List<String> countries = new ArrayList<>();
         try {
-            URL url = new URL(baseURL + "all?fields=name;");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-
-            BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = rd.readLine()) != null) {
-                countries.add(line);
+            List<JsonNode> valuesNode = getResponseValues(baseURL+"all?fields=name;", "name");
+            for (JsonNode node : valuesNode) {
+                countries.add(node.asText());   //Ensure countries are populated as text entry!
             }
         } catch (IOException exception) {
             return countries;
@@ -51,6 +81,12 @@ public class Country {
      */
     public String getCountryNameByCode(String code) {
         String name = "";
+        try {
+            JsonNode valuesNode = getResponseValues(baseURL + "alpha/" + code, "name").get(0);
+            name = valuesNode.asText();
+        } catch (IOException exception) {
+            return name;
+        }
 
 
         return name;
@@ -64,6 +100,13 @@ public class Country {
      */
     public boolean checkExists(String name) {
         boolean exists = true;
+        try {
+            List<JsonNode> node = getResponseValues(baseURL + "name/" + name, "name");
+            exists = !node.get(0).asText().equals("404");
+        } catch (IOException exception) {
+            return false;
+        }
+
 
         return exists;
     }
