@@ -336,7 +336,7 @@ public class ProfileController extends Controller {
                 profilePicture = image.orElse(null);
                 Profile toSend = tripRepository.setUserTrips(profileRec.get());
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
-                List<Integer> tripValues= new ArrayList<>(tripsMap.values());¯
+                List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
                 return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, request, messagesApi.preferred(request)));
             } else {
