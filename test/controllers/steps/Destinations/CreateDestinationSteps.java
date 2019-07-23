@@ -77,8 +77,8 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @Then("he is redirected to the destinations page")
     public void theCreatedDestinationIsStoredInTheDatabase() {
-        assertEquals(303, redirectDestination.status());
-        assertEquals("/destinations/show/false", redirectDestination.redirectLocation().get());
+        Assert.assertTrue(redirectDestination.flash().getOptional("success").isPresent());
+
     }
 
     @When("he fills in Longitude as {string}")
