@@ -386,7 +386,6 @@ public class ProfileRepository {
             if (aRow.getInteger("profile_id") != profileId) {
                 isTaken = true;
             }
-            System.out.println("yeet");
         }
         return isTaken;
     }
