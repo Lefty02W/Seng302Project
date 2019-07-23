@@ -106,6 +106,9 @@ public class ProfileRepository {
     }
 
 
+
+
+
     /**
      * Create a profile instance from data of an SQL Row result
      *
@@ -125,7 +128,6 @@ public class ProfileRepository {
                 row.getDate("time_created"), nationalities, travellerTypes, roles);
     }
 
-
     /**
      * This method finds a profile in the database using a given profile id
      *
@@ -134,14 +136,13 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Profile>> findById(int profileId) {
         return supplyAsync(() -> {
-            String qry = "Select * from profile where profile_id = ?";
-            List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
-            Profile profile = null;
-            if (!rowList.isEmpty()) {
-                profile = profileFromRow(rowList.get(0));
-            }
-            return Optional.ofNullable(profile);
-        }, executionContext);
+            Profile profile = ebeanServer.find(Profile.class).setId(profileId).findOne();
+            profile.setNationalities(profileNationalityRepository.getList(profile.getProfileId()).get());
+            profile.setPassports(profilePassportCountryRepository.getList(profile.getProfileId()).get());
+            profile.setTravellerTypes(profileTravellerTypeRepository.getList(profile.getProfileId()).get());
+            profile.setRoles(rolesRepository.getProfileRoles(profile.getProfileId()).get());
+            return Optional.of(profile);
+        });
     }
 
     /**
@@ -385,7 +386,6 @@ public class ProfileRepository {
             if (aRow.getInteger("profile_id") != profileId) {
                 isTaken = true;
             }
-            System.out.println("yeet");
         }
         return isTaken;
     }
