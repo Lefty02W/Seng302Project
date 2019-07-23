@@ -14,7 +14,7 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 /**
@@ -132,12 +132,12 @@ public class CreateUserSteps extends ProvideApplication {
 
     @And("^I enter \"([^\"]*)\" into the \"([^\"]*)\" field$")
     public void iEnterIntoTheField(String arg0, String arg1) throws Throwable {
-        createFormSecond.put(arg0, arg1);
+        createFormSecond.put(arg1, arg0);
     }
 
     @And("^I enter \"([^\"]*)\", \"([^\"]*)\" into the \"([^\"]*)\" field$")
     public void iEnterIntoTheField(String arg0, String arg1, String arg2) throws Throwable {
-        createFormSecond.put(arg0 + ","+arg1, arg2);
+        createFormSecond.put(arg2, arg0 + ","+ arg1);
     }
 
     @Then("^I save my new profile$")
@@ -146,14 +146,14 @@ public class CreateUserSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/user/create")
                 .bodyForm(createFormSecond);
-        //createResult = Helpers.route(provideApplication(), request);
+        createResult = Helpers.route(provideApplication(), request);
     }
 
     @And("^My user profile is saved in the database$")
     public void myUserProfileIsSavedInTheDatabase() throws Throwable {
         injectRepositories();
-        //createdProfile = profileRepository.getProfileById(USER_EMAIL);
-        //assertNotNull(createdProfile);
+        createdProfile = profileRepository.getProfileById(USER_EMAIL);
+        assertNotNull(createdProfile);
     }
 
     @And("^my passports are \"([^\"]*)\"$")
@@ -161,7 +161,7 @@ public class CreateUserSteps extends ProvideApplication {
         if(createdProfile != null) {
             assertEquals(arg0, createdProfile.getPassportsString());
         } else {
-            //fail();
+            fail();
         }
     }
 
@@ -170,7 +170,7 @@ public class CreateUserSteps extends ProvideApplication {
         if(createdProfile != null) {
             assertEquals(arg0, createdProfile.getNationalityString());
         } else {
-            //fail();
+            fail();
         }
     }
 }
