@@ -255,7 +255,7 @@ create table if not exists destination_request
 ;
 
 
-create table if not exists destination_changes
+create table if not exists destination_change
 (
   id                int auto_increment,
   traveller_type_id int     not null,
@@ -283,6 +283,24 @@ create table if not exists destination_traveller_type
   foreign key (traveller_type_id) references traveller_type (traveller_type_id)
 )
 ;
+
+create table treasure_hunt
+(
+	treasure_hunt_id int auto_increment,
+	profile_id int null,
+	destination_id int not null,
+	riddle varchar(256) not null,
+	start_date date not null,
+	end_date date not null,
+	constraint treasure_hunt_treasure_hunt_id_uindex
+		unique (treasure_hunt_id)
+)
+;
+
+alter table treasure_hunt
+	add primary key (treasure_hunt_id)
+;
+
 
 
 
@@ -326,6 +344,8 @@ drop table if exists destination_photo;
 
 drop table if exists destination_request;
 
-drop table if exists destination_changes;
+drop table if exists destination_change;
 
 drop table if exists destination_traveller_type;
+
+drop table if exists treasure_hunt
