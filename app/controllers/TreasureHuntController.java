@@ -52,7 +52,13 @@ public class TreasureHuntController {
         this.treasureHuntRepository = treasureHuntRepository;
     }
 
-
+    /**
+     * Function to render the treasure hunts page with available hunts in the database and the users
+     * own personally created treasure hunts
+     *
+     * @param request
+     * @return
+     */
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
@@ -84,8 +90,6 @@ public class TreasureHuntController {
             return redirect(huntShowRoute);
         });
     }
-
-
 
     /**
      * Called treasure hunt delete method in the treasureHuntRepository to delete the treasureHunt from the database
@@ -123,6 +127,7 @@ public class TreasureHuntController {
         treasureHunt.setTreasureHuntProfileId(userId);
         return treasureHunt;
     }
+
     /**
      * Endpoint method to handle a users request to edit a previously made treasure hunt
      * @apiNote /hunts/:id/edit
@@ -143,6 +148,12 @@ public class TreasureHuntController {
         });
     }
 
+    /**
+     *
+     * @param request
+     * @param id
+     * @return
+     */
     public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id) {
         TreasureHunt hunt = treasureHuntRepository.lookup(id);
         huntForm.fill(hunt);
