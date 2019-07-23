@@ -10,12 +10,12 @@ Feature: Create a Change Request
     Then the user presses the submit button
     And the requests pass to the admin
 
-#  Scenario: Create an add only traveller type request
-#    Given A logged in user is on the destinations page
-#    And there is a public destination with traveller type "Groupie"
-#    When the user fills in the request form with add "Gap year"
-#    Then the user is redirected to the destinations page
-#    And the requests pass to the admin
+  Scenario: Create an add only traveller type request
+    Given A logged in user is on the destinations page
+    And there is a public destination with id "5"
+    When the user fills in the request form with add "Gap year"
+    Then the user submits the second request
+    And the requests pass to the admin
 #
 #  Scenario: Create a remove only traveller type request
 #    Given A logged in user is on the destinations page

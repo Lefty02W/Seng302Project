@@ -18,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 public class DestinationTravellerTypeSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> requestForm = new HashMap<>();
+    private Map<String, String> secondRequestForm = new HashMap<>();
     private Result result;
 
     @Given("A logged in user is on the destinations page")
@@ -45,6 +46,7 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
     @Given("there is a public destination with id {string}")
     public void thereIsAPublicDestinationWithTravellerType(String id) {
         requestForm.put("destinationId", id);
+        secondRequestForm.put("destinationId", id);
 
     }
 
@@ -69,6 +71,16 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
 
     }
 
+    @Then("the user submits the second request")
+    public void theUserSubmitsTheSecondRequest() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/destinations/type/request")
+                .bodyForm(secondRequestForm)
+                .session("connected", "1");
+        result = Helpers.route(provideApplication(), request);
+    }
+
     @Then("the requests pass to the admin")
     public void theRequestsPassToTheAdmin() {
         Assert.assertTrue(result.flash().getOptional("success").isPresent());
@@ -76,54 +88,12 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
 
     @When("the user fills in the request form with add {string}")
     public void theUserFillsInTheRequestFormWithAdd(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        secondRequestForm.put("toAdd", string);
+        secondRequestForm.put("toRemove", "");
     }
 
     @When("the user fills in the request form with remove {string}")
     public void theUserFillsInTheRequestFormWithRemove(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user is logged in to the application")
-    public void userIsLoggedInToTheApplication() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user with id {string} has a private destination with name {string}, type {string}, and country {string}")
-    public void userWithIdHasAPrivateDestinationWithNameTypeAndCountry(String string, String string2, String string3, String string4) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @When("user creates a public destination with name {string}, type {string}, and country NewZealand")
-    public void userCreatesAPublicDestinationWithNameTypeAndCountryNewZealand(String string, String string2) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user is logged into the application")
-    public void userIsLoggedIntoTheApplication() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("John is on his profile page")
-    public void johnIsOnHisProfilePage() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @When("he presses the delete button on photo with id {int}")
-    public void hePressesTheDeleteButtonOnPhotoWithId(Integer int1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Then("photo {int} is removed from the database")
-    public void photoIsRemovedFromTheDatabase(Integer int1) {
         // Write code here that turns the phrase above into concrete actions
         throw new cucumber.api.PendingException();
     }

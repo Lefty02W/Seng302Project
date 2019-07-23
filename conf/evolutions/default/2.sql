@@ -74,6 +74,8 @@ INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (1, 'B
 
 INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (2, 'Groupie');
 
+INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (3, 'Gap year');
+
 INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (1,1,1);
 
 INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (2,5,2);
