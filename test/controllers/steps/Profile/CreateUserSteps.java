@@ -117,6 +117,14 @@ public class CreateUserSteps extends ProvideApplication {
         Helpers.route(provideApplication(), request);
     }
 
+    @Given("^I am on the admin page$")
+    public void iAmOnTheAdminPage() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin");
+        Helpers.route(provideApplication(), request);
+    }
+
     @When("^I press the create user button$")
     public void iPressTheCreateUserButton() throws Throwable {
         // Pass through as button opens modal
