@@ -13,7 +13,7 @@ POST    /user/create                 controllers.LoginController.save(request: R
 # Destination
 GET     /destinations/show/:isPublic     controllers.DestinationsController.show(request: Request, isPublic: Boolean)
 GET     /destinations/create        controllers.DestinationsController.showCreate(request: Request)
-GET     /destinations/:id/edit      controllers.DestinationsController.edit(request: Request, id: Integer)
+POST     /destinations/:id/edit      controllers.DestinationsController.edit(request: Request, id: Integer)
 GET     /destinations/:id/edit/show      controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
