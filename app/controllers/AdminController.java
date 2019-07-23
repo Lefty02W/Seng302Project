@@ -478,7 +478,7 @@ public class AdminController {
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
         return treasureHuntRepository.deleteTreasureHunt(id)
-                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Treasure Hunt: " + id + "was deleted"));
+                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Treasure Hunt: " + id + " was deleted"));
     }
 
 }
