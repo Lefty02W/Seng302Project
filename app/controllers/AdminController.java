@@ -66,12 +66,13 @@ public class AdminController {
         this.treasureHuntController = treasureHuntController;
     }
 
+
     /**
      * Function to delete a profile with the given email from the database using the profile controller method
      *
-     * @param request
-     * @param id      the id of the user who is to be deleted
-     * @return
+     * @param request the request sent from the client
+     * @param id the id of the user who is to be deleted
+     * @return a redirect to the admin page
      * @apiNote
      */
     public CompletionStage<Result> deleteProfile(Http.Request request, Integer id) {
@@ -83,6 +84,7 @@ public class AdminController {
         return profileRepository.delete(id).thenApplyAsync(userEmail -> redirect(adminEndpoint)
                 , httpExecutionContext.current());
     }
+
 
     /**
      * Endpoint method to retrieve profile data for the admin to view
@@ -102,6 +104,7 @@ public class AdminController {
             }
         });
     }
+
 
     /**
      * Create model for editing a users profile in the admin page
@@ -127,6 +130,7 @@ public class AdminController {
 
     }
 
+
     /**
      * Returns list of all the admins in the system
      *
@@ -142,6 +146,7 @@ public class AdminController {
         }
         return adminProfiles;
     }
+
 
     /**
      * Endpoint method to show the admin page on the site
@@ -199,6 +204,7 @@ public class AdminController {
                 );
     }
 
+
     /**
      * Endpoint method to delete a trip from the database
      *
@@ -214,6 +220,7 @@ public class AdminController {
                         "Trip: " + tripId + " deleted")
         );
     }
+
 
     /**
      * Endpoint method allowing an admin to view a selected trip
@@ -257,6 +264,7 @@ public class AdminController {
         return redirect(adminEndpoint);
     }
 
+
     /**
      * Endpoint method allowing an admin to remove another use an admin
      *
@@ -269,6 +277,7 @@ public class AdminController {
         rolesRepository.removeRole(userId);
         return redirect(adminEndpoint);
     }
+
 
     /**
      * Endpoint method to delete a destination from the database
@@ -301,6 +310,7 @@ public class AdminController {
                                                     + " deleted");
                         });
     }
+
 
     /**
      * Endpoint method to get a destination object to the view to edit or view
@@ -409,7 +419,7 @@ public class AdminController {
 
             treasureHuntRepository.insert(treasureHunt);
           }
-          return redirect(adminEndpoint).flashing("info", "Treasure Hunt has been updated.");
+          return redirect(adminEndpoint).flashing("info", "Treasure Hunt has been created.");
         });
     }
 
@@ -423,9 +433,10 @@ public class AdminController {
      */
     public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
         Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
-        int profileId = SessionController.getCurrentUserId(request);
-        if (treasureHuntForm.field("profileId").value().isPresent()) {
-            profileId = Integer.parseInt(treasureHuntForm.field("profileId").value().get());
+        Integer profileId = SessionController.getCurrentUserId(request);
+        Optional<String> treasureHuntFormString = treasureHuntForm.field("profileId").value();
+        if (treasureHuntFormString.isPresent()) {
+            profileId = Integer.parseInt(treasureHuntFormString.get());
         }
         TreasureHunt treasureHunt = treasureHuntController.setValues(profileId, treasureHuntForm);
         return supplyAsync(() -> {
@@ -467,7 +478,7 @@ public class AdminController {
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
         return treasureHuntRepository.deleteTreasureHunt(id)
-                .thenApplyAsync(x -> redirect("/admin").flashing("succsess", "Hunt: " + id + "was deleted"));
+                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Treasure Hunt: " + id + "was deleted"));
     }
 
 }

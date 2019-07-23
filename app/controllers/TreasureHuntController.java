@@ -56,8 +56,8 @@ public class TreasureHuntController {
      * Function to render the treasure hunts page with available hunts in the database and the users
      * own personally created treasure hunts
      *
-     * @param request
-     * @return
+     * @param request the users request
+     * @return a redirect to the treasure hunt page
      */
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
@@ -87,7 +87,7 @@ public class TreasureHuntController {
             }
 
             treasureHuntRepository.insert(treasureHunt);
-            return redirect(huntShowRoute);
+            return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been added.");
         });
     }
 
@@ -97,7 +97,7 @@ public class TreasureHuntController {
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
         return treasureHuntRepository.deleteTreasureHunt(id)
-                .thenApplyAsync(x -> redirect("/treasure").flashing("success", "Hunt: " + id + "was deleted"));
+                .thenApplyAsync(x -> redirect("/treasure").flashing("success", "Hunt: " + id + " was deleted"));
     }
 
     /**
@@ -111,14 +111,18 @@ public class TreasureHuntController {
         String destinationId = null;
         String startDate = null;
         String endDate = null;
-        if (values.field("endDate").value().isPresent()) {
-            endDate = values.field("endDate").value().get();
+
+        Optional<String> endDateString = values.field("endDate").value();
+        if (endDateString.isPresent()) {
+            endDate = endDateString.get();
         }
-        if (values.field("startDate").value().isPresent()) {
-            startDate = values.field("startDate").value().get();
+        Optional<String> startDateString = values.field("startDate").value();
+        if (startDateString.isPresent()) {
+            startDate = startDateString.get();
         }
-        if (values.field("destinationId").value().isPresent()) {
-            destinationId = values.field("destinationId").value().get();
+        Optional<String> destinationIdString = values.field("destinationId").value();
+        if (destinationIdString.isPresent()) {
+            destinationId = destinationIdString.get();
         }
 
         treasureHunt.setDestinationIdString(destinationId);
@@ -149,10 +153,11 @@ public class TreasureHuntController {
     }
 
     /**
+     * End point that opens up the edit treasure hunt modal
      *
-     * @param request
-     * @param id
-     * @return
+     * @param request the users request holding the treasure hunt form
+     * @param id unique treasure hunt id
+     * @return a redirect to the treasure hunt page
      */
     public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id) {
         TreasureHunt hunt = treasureHuntRepository.lookup(id);

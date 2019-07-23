@@ -56,9 +56,9 @@
                 </nav>
 
                 <div class="container">
-                    @if(request.flash.getOptional("info").isPresent) {
-                        <div class="alert alert-info">
-                        @request.flash.getOptional("info").get()
+                    @if(request.flash.getOptional("success").isPresent) {
+                        <div class="alert alert-success">
+                        @request.flash.getOptional("success").get()
                         </div>
                     }
                     @if(request.flash.getOptional("error").isPresent) {
@@ -150,7 +150,6 @@
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">Riddle</small>
-                                    <!--TODO pick a max length for riddle, adjust input accordingly-->
                                     <input type="text" name="riddle" id="riddle" required >
                                 </div>
                             </div>
@@ -209,7 +208,6 @@
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">Riddle</small>
-                                        <!--TODO pick a max length for riddle, adjust input accordingly-->
                                     <input type="text" name="riddle" id="riddle" value="@editHunt.getObject.getRiddle" required >
                                 </div>
                             </div>

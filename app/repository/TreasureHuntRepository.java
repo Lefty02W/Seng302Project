@@ -51,6 +51,7 @@ public class TreasureHuntRepository {
         return ebeanServer.find(TreasureHunt.class).setId(id).findOne();
     }
 
+
     /**
      * Method to retrieve all TreasureHunts from the database which are currently active
      *
@@ -75,7 +76,6 @@ public class TreasureHuntRepository {
                 .where()
                 .findList();
     }
-
 
 
     /**
@@ -104,6 +104,7 @@ public class TreasureHuntRepository {
         }, executionContext);
     }
 
+
     /**
      * Method to return all of a users treasureHunts
      * @param userId, the id of the active user
@@ -123,6 +124,7 @@ public class TreasureHuntRepository {
         return hunts;
     }
 
+
     /**
      * Deletes a TreasureHunt from the database
      *
@@ -134,7 +136,6 @@ public class TreasureHuntRepository {
             return 1;
         });
     }
-
-
+    
 
 }
