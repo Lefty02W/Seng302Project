@@ -403,11 +403,11 @@ public class DestinationsController extends Controller {
         return destinationRepository.checkDestinationExists(id).thenApplyAsync(result -> {
             if (result.isPresent()) {
 
-                return redirect(destShowRoute).flashing("success", "Destination: " + id +
+                return redirect(destShowRoute).flashing("failure", "Destination can not be deleted. Destination: " + id +
                         " is used within the following " + result.get());
             } else {
                 destinationRepository.delete(id);
-                return redirect(destShowRoute).flashing("failure", "Destination: " + id + " deleted");
+                return redirect(destShowRoute).flashing("success", "Destination: " + id + " deleted");
             }
         });
     }
