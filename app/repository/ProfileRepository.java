@@ -148,6 +148,7 @@ public class ProfileRepository {
             if (!rowList.isEmpty()) {
                 profile = profileFromRow(rowList.get(0));
             }
+
             return Optional.ofNullable(profile);
         }, executionContext);
     }

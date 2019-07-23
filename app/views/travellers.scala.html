@@ -105,15 +105,59 @@
                                             <td>@user.getMiddleName</td>
                                             <td>@user.getLastName</td>
                                             <td>@user.getGender</td>
-                                            <td><span>@user.getBirthDate.getTime</span>
-                                                @user.getBirthDate</td>
-                                            <td>@user.getNationalities</td>
-                                            <td>@user.getPassports</td>
+                                            <td>@user.getBirthString</td>
+                                            <td>@if(user.getNationalityList.isEmpty) {
+                                                <div class="alert alert-info" role="alert">
+                                                    You have no nationalities associated with your profile
+                                                </div>
+                                            } else {
+                                                <div class="row justify-content-center">
+                                                    <div class="col">
+                                                        <a> @for(index <- 0 until user.getNationalityList.size) {
+                                                                <li style="padding: 0px;
+                                                                    margin-left: 20px;">
+                                                                @user.getNationalityList.get(index)
+                                                                </li>
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }</td>
+                                            <td>@if(user.getPassportsList.isEmpty) {
+                                                <div class="alert alert-info" role="alert">
+                                                    You have no passports associated with your profile
+                                                </div>
+                                            } else {
+                                                <div class="row justify-content-center">
+                                                    <div class="col">
+                                                        <a>@for(index <- 0 until user.getPassportsList.size) {
+                                                                <li style="padding: 0px;
+                                                                    margin-left: 20px;">
+                                                                @user.getPassportsList.get(index)
+                                                                </li>
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }</td>
                                             <td>
-                                                <ul>
-                                            @for(travellerType <- user.getTravellerTypesList) {
-                                                <li>@travellerType</li>
-                                            }</ul>
+                                            @if(user.getTravellerTypesList.isEmpty) {
+                                                <div class="alert alert-info" role="alert">
+                                                    No traveller types associated
+                                                </div>
+                                            } else {
+                                                <div class="row justify-content-center">
+                                                    <div class="col">
+                                                        <a>@for(index <- 0 until user.getTravellerTypesList.size) {
+                                                                <li style="padding: 0px;
+                                                                    margin-left: 20px;">
+                                                                @user.getTravellerTypesList.get(index)
+                                                                </li>
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
                                             </td>
                                             <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">
                                                 <button type="submit" class="btn btn-primary" class="viewPicButton">View</button>
