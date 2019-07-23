@@ -333,7 +333,7 @@ public class DestinationsController extends Controller {
         Destination dest = destinationForm.value().get();
         dest.setVisible(visibility);
             if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("success", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(dest)) {
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
@@ -344,7 +344,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 

@@ -110,8 +110,8 @@ img.thumbnail {
     display: block;
     width: auto;
     height: auto;
-    max-height: 240px;
-    max-width: 240px;
+    max-height: 280px;
+    max-width: 280px;
     margin: auto;
 
     border-radius: 5px;
@@ -211,10 +211,11 @@ img.thumbnail {
 }
 
 #profileImage {
-    border: 1px solid;
+
     border-radius: 50%;
-    height: 25vh; /* Temporary cropping display for consistent circle until croppie is working */
-    width: 25vh;
+    height:100vh; /* Temporary cropping display for consistent circle until croppie is working */
+    width: 100vh;
+    object-fit: none;
 }
 
 #profileTabs {

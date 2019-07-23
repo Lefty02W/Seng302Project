@@ -106,16 +106,10 @@
                                             <td>@user.getMiddleName</td>
                                             <td>@user.getLastName</td>
                                             <td>@user.getGender</td>
-                                            <td><span>@user.getBirthDate.getTime</span>
-                                                @user.getBirthDate</td>
-                                            <td>@user.getNationalities</td>
-                                            <td>@user.getPassports</td>
-                                            <td>
-                                                <ul>
-                                            @for(travellerType <- user.getTravellerTypesList) {
-                                                <li>@travellerType</li>
-                                            }</ul>
-                                            </td>
+                                            <td>@user.getBirthString</td>
+                                            <td>@user.getNationalityString</td>
+                                            <td>@user.getPassportsString</td>
+                                            <td><div class="scrollable">@user.getTravellerTypesString</div></td>
                                             <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">
                                                 <button type="submit" class="btn btn-primary" class="viewPicButton">View</button>
                                             </a>

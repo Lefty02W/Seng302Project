@@ -50,14 +50,14 @@ GET     /travellers/search           controllers.TravellersController.search(req
 GET     /travellers/photos           controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
 
 # Profile
-GET     /profile                     controllers.ProfileController.show(request: Request)
-POST    /profile                     controllers.ProfileController.update(request: Request)
-POST    /profile/photo               controllers.ProfileController.uploadPhoto(request: Request)
-GET     /profile/edit/photo/:id     controllers.ProfileController.updatePrivacy(id: Integer)
-GET     /profile/photo/save/:photoId         controllers.ProfileController.setProfilePicture(request: Request, photoId: Integer)
-GET     /profile/photo/remove        controllers.ProfileController.removeProfilePicture(request: Request)
-GET     /profile/photo        controllers.ProfileController.photoAt(id: Integer)
-GET     /profile/photo/:photoId/delete      controllers.ProfileController.deletePhoto(request: Request, photoId: Integer)
+GET     /profile                        controllers.ProfileController.show(request: Request)
+POST    /profile                        controllers.ProfileController.update(request: Request)
+POST    /profile/photo                  controllers.ProfileController.uploadPhoto(request: Request)
+GET     /profile/edit/photo/:id         controllers.ProfileController.updatePrivacy(id: Integer)
+GET     /profile/photo/save/:photoId    controllers.ProfileController.setProfilePicture(request: Request, photoId: Integer)
+GET     /profile/photo/remove           controllers.ProfileController.removeProfilePicture(request: Request)
+GET     /profile/photo                  controllers.ProfileController.photoAt(id: Integer)
+GET     /profile/photo/:photoId/delete  controllers.ProfileController.deletePhoto(request: Request, photoId: Integer)
 POST    /profile/photo/profile/upload   controllers.ProfileController.uploadProfilePicture(request: Request)
 
 # Admins
