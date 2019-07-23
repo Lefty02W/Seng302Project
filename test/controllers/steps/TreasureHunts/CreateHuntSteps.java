@@ -83,11 +83,11 @@ public class CreateHuntSteps extends ProvideApplication {
             TreasureHunt newHunt = allJohnHunts.get(allJohnHunts.size() - 1);
 
             //Check a hunt was added
-            assertTrue(allJohnHunts.size() == numberExistingHunts + 1);
+            assertEquals(allJohnHunts.size(), numberExistingHunts + 1);
 
             //Check some arbitrary details...
-            assertTrue(newHunt.getRiddle().equals("Riddle me this..."));
-            assertTrue(newHunt.getTreasureHuntDestinationId() == 1);
+            assertEquals("Riddle me this...", newHunt.getRiddle());
+            assertEquals(1, newHunt.getTreasureHuntDestinationId());
 
         }
 
@@ -99,7 +99,7 @@ public class CreateHuntSteps extends ProvideApplication {
             TreasureHunt newHunt = allJohnHunts.get(allJohnHunts.size() - 1);
 
             //Check a hunt was not added
-            assertTrue(allJohnHunts.size() == numberExistingHunts);
+            assertEquals(allJohnHunts.size(), numberExistingHunts);
 
         }
 }
