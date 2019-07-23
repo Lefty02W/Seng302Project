@@ -68,9 +68,11 @@ INSERT INTO destination (profile_id, name, type, country, district, latitude, lo
 
 INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (1, 'Backpacker');
 
+INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (1,1,1);
+
 INSERT INTO destination_request (id, destination_id, profile_id) values (1,1,1);
 
-INSERT INTO destination_request (id, destination_id, profile_id) values (2,2,2);
+INSERT INTO destination_request (id, destination_id, profile_id) values (2,1,2);
 
 INSERT INTO destination_change (id, traveller_type_id, action, request_id) values (1,1,1,1);
 

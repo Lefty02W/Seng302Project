@@ -23,7 +23,7 @@ public class AdminControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin")
-                .session("connected", profileId.toString());;
+                .session("connected", profileId.toString());
 
         injectRepositories();
     }
@@ -109,30 +109,26 @@ public class AdminControllerTest extends ProvideApplication {
     }
 
 
-
+    @Test
     public void adminPageAcceptDestinationRequest() {
-        List<DestinationChange> destinationChanges = destinationRepository.getAllDestinationChanges();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/destinations/"+destinationChanges.get(1)+"/request/accept")
+                .uri("/admin/destinations/1/request/accept")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
-        Destination destinationChanged = destinationRepository.lookup(destinationChanges.get(1).getDestination().getDestinationId());
-        System.out.println(destinationChanges.get(1).getTravellerType());
-        //check destination travelller type table --
-        Assert.assertEquals(destinationChanged.getTravellerTypes().get(0), destinationChanges.get(1).getTravellerType());
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+
     }
 
-
+    @Test
     public void adminPageDeclineDestinationRequest() {
-        List<DestinationChange> destinationChanges = destinationRepository.getAllDestinationChanges();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/destinations/"+destinationChanges.get(1)+"/request/reject")
+                .uri("/admin/destinations/2/request/reject")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
-        Destination destinationChanged = destinationRepository.lookup(destinationChanges.get(1).getDestination().getDestinationId());
-        Assert.assertNotEquals(destinationChanged.getTravellerTypes().get(0), destinationChanges.get(0).getTravellerType());
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+
     }
 
 }
