@@ -374,7 +374,7 @@ public class DestinationsController extends Controller {
         dest.initTravellerType();
         dest.setVisible(visibility);
             if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(dest)) {
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
@@ -385,7 +385,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -407,7 +407,7 @@ public class DestinationsController extends Controller {
         destination.setVisible(visibility);
 
         if (destinationRepository.checkValidEdit(destination, userId, null)) {
-            return supplyAsync(() -> redirect("/destinations/show/false").flashing("success", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect("/destinations/show/false").flashing("failure", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(destination)) {
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
@@ -418,7 +418,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute);
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/show/false").flashing("success", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect("/destinations/show/false").flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -445,11 +445,11 @@ public class DestinationsController extends Controller {
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
         return tripDestinationsRepository.checkDestinationExists(id).thenApplyAsync(result -> {
             if (result.isPresent()) {
-                return redirect(destShowRoute).flashing("success", "Destination: " + id +
+                return redirect(destShowRoute).flashing("failure", "Destination: " + id +
                         " is used within the following trips: " + result.get());
             }
             destinationRepository.delete(id);
-            return redirect(destShowRoute).flashing("failure", "Destination: " + id + " deleted");
+            return redirect(destShowRoute).flashing("success", "Destination: " + id + " deleted");
         });
     }
 
