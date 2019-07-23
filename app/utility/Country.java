@@ -19,7 +19,7 @@ public class Country {
     private String baseURL = "https://restcountries.eu/rest/v2/";
 
     /**
-     * static method to create instance of Thumbnail class
+     * static method to create instance of Country class
      */
     public static Country getInstance()
     {
