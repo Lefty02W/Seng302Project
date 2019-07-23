@@ -58,6 +58,11 @@ public class CreateDestinationSteps extends ProvideApplication {
     @When("he fills in Country with {string}")
     public void heFillsInCountryWith(String string) { destForm.put("country", string); }
 
+    @When("he selects {string} as the traveller type")
+    public void he_selects_as_the_traveller_type(String string) {
+        destForm.put("travellerTypesStringDest", string);
+    }
+
     @When("he presses Save")
     public void hePressesSave() {
         Http.RequestBuilder request = Helpers.fakeRequest()
