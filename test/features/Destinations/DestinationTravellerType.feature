@@ -4,10 +4,10 @@ Feature: Create a Change Request
   So I can suggest edits to the admin's
   Scenario: Create a request with remove and add changes
     Given A logged in user is on the destinations page
-    And there is a public destination with traveller type "Groupie"
+    And there is a public destination with id "5"
     When the user fills the request form for the destination to remove traveller type "Groupie"
-    And adds traveller type "Gap year"
-    Then the user is redirected to the destinations page
+    And adds traveller type "Backpacker"
+    Then the user presses the submit button
     And the requests pass to the admin
 
 #  Scenario: Create an add only traveller type request

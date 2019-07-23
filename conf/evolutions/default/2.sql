@@ -43,6 +43,9 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (4, 3, 'Ardennes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (5, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
+
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
@@ -66,9 +69,14 @@ INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
 (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
 
+
 INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (1, 'Backpacker');
 
+INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (2, 'Groupie');
+
 INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (1,1,1);
+
+INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (2,5,2);
 
 INSERT INTO destination_request (id, destination_id, profile_id) values (1,1,1);
 
