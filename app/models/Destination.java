@@ -35,6 +35,8 @@ public class Destination extends Model {
     @Constraints.Required
     private int visible;
 
+    private int softDelete;
+
     @Transient
     private List<Photo> usersPhotos = new ArrayList<>();
 

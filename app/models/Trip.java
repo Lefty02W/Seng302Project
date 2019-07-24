@@ -27,6 +27,9 @@ public class Trip extends Model {
     @Id
     private int tripId;
     private int profileId;
+
+    private int softDelete;
+
     public static final Finder<String, Trip> find = new Finder<>(Trip.class);
 
     public Trip() {}

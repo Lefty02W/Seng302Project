@@ -40,6 +40,8 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
+    private int softDelete;
+
     @Transient
     private String passportsForm;
 
