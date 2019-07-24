@@ -1,11 +1,18 @@
 package utilities;
 
+import controllers.ProvideApplication;
+import models.PassportCountry;
+import models.Profile;
 import org.junit.Assert;
 import org.junit.Test;
 import utility.Country;
 
-public class CountryUtilityTest {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+public class CountryUtilityTest extends ProvideApplication {
 
 
     /**
@@ -45,5 +52,29 @@ public class CountryUtilityTest {
         Assert.assertFalse(Country.getInstance().checkExists("Yugoslavia"));
     }
 
+
+    /**
+     * Check if a user's outdated countries are correctly retrieved
+     */
+    @Test
+    public void checkUserOutdatedCountries() {
+        injectRepositories();
+
+        List<String> testCountries = new ArrayList<String>();
+        testCountries.add("Yugoslavia");
+        testCountries.add("Czechoslovakia");
+        testCountries.add("Ottoman Empire");
+        testCountries.add("East Germany");
+
+        Map<Integer, PassportCountry> testMap = new HashMap<>();
+        for (int i = 0; i < testCountries.size(); i++) {
+            testMap.put(i, new PassportCountry(i, testCountries.get(i)));
+        }
+
+        Profile profile = profileRepository.getProfileByProfileId(1);
+        profile.setPassports(testMap);
+
+        Assert.assertEquals(testCountries, Country.getInstance().getUserOutdatedCountries(profile));
+    }
 
 }
