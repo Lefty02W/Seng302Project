@@ -1,6 +1,7 @@
 package controllers;
 
 
+import models.PassportCountry;
 import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
@@ -14,6 +15,8 @@ import utility.Country;
 import views.html.login;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -61,6 +64,12 @@ public class LoginController extends Controller {
             return profileRepository.lookupEmail(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
+
+                    List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(currentUser);
+                    if (!outdatedCountries.isEmpty()) {
+                        //TODO: Alert user about outdated countries
+                    }
+
                     return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getProfileId().toString());
                 }
                 return notFound("Login failed");

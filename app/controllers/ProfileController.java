@@ -335,8 +335,21 @@ public class ProfileController extends Controller {
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
+
+                Profile user = profileRepository.getProfileByProfileId(profId);
+                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(user);
+                if (!outdatedCountries.isEmpty()) {
+                    //TODO: Alert user about outdated countries
+                }
+
                 return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
+                Profile user = profileRepository.getProfileByProfileId(profId);
+                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(user);
+                if (!outdatedCountries.isEmpty()) {
+                    //TODO: Alert user about outdated countries
+                }
+
                 return redirect("/profile");
             }
         });
