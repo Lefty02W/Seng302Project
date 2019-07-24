@@ -19,6 +19,7 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> requestForm = new HashMap<>();
     private Map<String, String> secondRequestForm = new HashMap<>();
+    private Map<String, String> thirdRequestForm = new HashMap<>();
     private Result result;
 
     @Given("A logged in user is on the destinations page")
@@ -47,7 +48,7 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
     public void thereIsAPublicDestinationWithTravellerType(String id) {
         requestForm.put("destinationId", id);
         secondRequestForm.put("destinationId", id);
-
+        thirdRequestForm.put("destinationId", id);
     }
 
     @When("the user fills the request form for the destination to remove traveller type {string}")
@@ -94,7 +95,17 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
 
     @When("the user fills in the request form with remove {string}")
     public void theUserFillsInTheRequestFormWithRemove(String string) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        thirdRequestForm.put("toAdd", "");
+        thirdRequestForm.put("toRemove", string);
+    }
+
+    @Then("the user submits the third request")
+    public void theUserSubmitsTheThirdRequest() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/destinations/type/request")
+                .bodyForm(thirdRequestForm)
+                .session("connected", "1");
+        result = Helpers.route(provideApplication(), request);
     }
 }
