@@ -15,6 +15,7 @@ import views.html.admin;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -58,6 +59,21 @@ public class AdminController {
         this.destinationEditForm = formFactory.form(Destination.class);
         this.rolesRepository = rolesRepository;
     }
+
+
+    /**
+     * Function to check if the long and lat are valid
+     *
+     * @param destination destination to check lat and long values
+     * @return Boolean true if longitude and latitude are valid
+     */
+    private boolean longLatCheck(Destination destination) {
+        if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
+            return false;
+        }
+        return !(destination.getLongitude() > 180 || destination.getLongitude() < -180);
+    }
+
 
     /**
      * Function to delete a profile with the given email from the database using the profile controller method
@@ -329,9 +345,17 @@ public class AdminController {
     public CompletionStage<Result> editDestination(Http.Request request, Integer destId) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
         Destination destination = destForm.get();
-        destination.setTravellerTypesStringDest(destForm.field("travellerTypesStringDest").value().get());
+        Optional<String> destFormString = destForm.field("travellerTypesStringDest").value();
+        if(destFormString.isPresent()){
+            destination.setTravellerTypesStringDest(destFormString.get());
+        }
         destination.initTravellerType();
-        return destinationRepository.update(destination, destId).thenApplyAsync(string -> redirect("/admin"));
+        if (longLatCheck(destination)) {
+            destinationRepository.update(destination, destId);
+            return supplyAsync(() -> redirect(adminEndpoint).flashing("info", "Destination " + destination.getName() + " was edited successfully."));
+        } else {
+            return supplyAsync(() -> redirect(adminEndpoint).flashing("error", "A destinations longitude (-180 to 180) and latitude (90 to -90) must be valid"));
+        }
     }
 
 
