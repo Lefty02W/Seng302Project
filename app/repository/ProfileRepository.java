@@ -69,7 +69,7 @@ public class ProfileRepository {
      * @return List of all profiles
      */
     public List<Profile> getAll() {
-        String selectQuery = "SELECT * FROM profile";
+        String selectQuery = "SELECT * FROM profile WHERE soft_delete = 0;";
 
         List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).findList();
         List<Profile> allProfiles = new ArrayList<>();
