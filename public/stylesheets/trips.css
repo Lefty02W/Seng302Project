@@ -60,7 +60,11 @@ input[type=datetime-local] {
 
 #addTripButton {
     right: 0;
-    width: 15vw;
+    width: 10%;
+    height: 10%;
+    min-width: 100px;
+    margin-left: 22%;
+    margin-top: 1vw;
 }
 
 h1, h2, h3, h4, h5, h6 {
