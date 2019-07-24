@@ -2,6 +2,7 @@ package utility;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import models.Profile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -123,6 +124,25 @@ public class Country {
 
 
         return exists;
+    }
+
+
+    /**
+     * Get a list of a user's outdated countries (if any!)
+     * @param profile - The profile to check countries for
+     * @return outdatedCountries - String list of user's outdated countries' names
+     */
+    public List<String> getUserOutdatedCountries(Profile profile) {
+        List<String> countryList = profile.getPassportsList();
+        List<String> outdatedCountries = new ArrayList<>();
+        for (String name : countryList) {
+            if (!Country.getInstance().checkExists(name)) {
+                outdatedCountries.add(name);
+            }
+        }
+
+        
+        return  outdatedCountries;
     }
 
 }
