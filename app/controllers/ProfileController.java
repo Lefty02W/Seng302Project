@@ -16,6 +16,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import utility.Country;
 import utility.Thumbnail;
 import views.html.profile;
 
@@ -334,7 +335,7 @@ public class ProfileController extends Controller {
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }

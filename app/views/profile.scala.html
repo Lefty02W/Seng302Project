@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -610,16 +610,26 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
-                                        Nationalities*</small>
-                                        <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value="@currentUser.getNationalityString">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required>
                                     </div>
+                                    <label>Nationalities</label>
+                                    <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
+                                        @for(nation <- countries) {
+                                            <option value="@nation">@nation</option>
+                                        }
+                                    </select>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
-                                        Passport/s</small>
-                                        <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value="@currentUser.getPassportsString">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" required>
                                     </div>
+                                    <label>Passports</label>
+                                    <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
+                                    @for(nation <- countries) {
+                                        <option value="@nation">@nation</option>
+                                    }
+                                    </select>
 
 
                                 </div>
@@ -718,6 +728,9 @@
     <script>
             function fillVals() {
                 $('#travellerTypesForm').val($('#typeDropdown').val());
+                $('#nationalitiesForm').val($('#nationDropdown').val());
+                $('#passportsForm').val($('#passportDropdown').val());
+
             }
 
             $(document).ready(function () {
