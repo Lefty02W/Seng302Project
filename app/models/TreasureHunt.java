@@ -25,8 +25,6 @@ public class TreasureHunt extends Model {
 
     private String riddle;
 
-    private int softDelete;
-
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date startDate;
 

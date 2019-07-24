@@ -227,6 +227,11 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
+    public void setSoftDelete(Integer softDelete) {
+        this.softDelete = softDelete;
+    }
+
+
     public void setRoles(List<String> newRoles){
         this.roles = newRoles;
     }
@@ -478,5 +483,8 @@ public class Profile extends Model {
 
     public void setNationalities(Map<Integer, Nationality> nationalities) {
         this.nationalities = nationalities;
+    }
+
+    public int getSoftDelete() { return softDelete;
     }
 }

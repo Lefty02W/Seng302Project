@@ -58,7 +58,8 @@ public class TravellersController extends Controller {
             if (profile.isPresent()) {
                 Form<PartnerFormData> searchForm = form.bindFromRequest(request);
                 PartnerFormData searchData = searchForm.get();
-                List<Profile> resultData = Profile.find.all();
+                List<Profile> resultData = profileRepository.getAll();
+
 
                 if (searchForm.get().searchGender != ""){
                     resultData = listGender(resultData, searchData);
@@ -80,6 +81,7 @@ public class TravellersController extends Controller {
             }
         });
     }
+
 
 
     /**
