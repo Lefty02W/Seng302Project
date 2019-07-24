@@ -40,18 +40,6 @@ public class TripRepository {
         this.profileRepository = profileRepository;
     }
 
-    /**
-     * insert trip destination into the database
-     * @param tripDestination
-     * @return trip id
-     */
-    public CompletionStage<Integer> insertTripDestination(TripDestination tripDestination) {
-        return supplyAsync(() -> {
-            ebeanServer.insert(tripDestination);
-            return tripDestination.getTripId();
-        }, executionContext);
-    }
-
 
     /**
      * insert trip into database
@@ -100,6 +88,7 @@ public class TripRepository {
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
                 .eq("profile_id", currentUser.getProfileId())
+                .eq("soft_delete",0)
                 .findList();
 
         for (Trip trip : result) {
@@ -114,6 +103,7 @@ public class TripRepository {
                 List<Destination> destinations = Destination.find.query()
                         .where()
                         .eq("destination_id", tripDest.getDestinationId())
+                        .eq("soft_delete",0)
                         .findList();
                 tripDest.setDestination(destinations.get(0));
                 tripDestinations.add(tripDest);
@@ -139,6 +129,7 @@ public class TripRepository {
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
                 .eq("trip_id", tripId)
+                .eq("soft_delete",0)
                 .findList();
 
         Trip trip = result.get(0);
@@ -148,6 +139,7 @@ public class TripRepository {
         List<TripDestination> tripDests = TripDestination.find.query()
                 .where()
                 .eq("trip_id", tripId)
+                .eq("soft_delete",0)
                 .findList();
 
         for (TripDestination tripDest : tripDests) {
@@ -155,6 +147,7 @@ public class TripRepository {
             List<Destination> destinations = Destination.find.query()
                     .where()
                     .eq("destination_id", tripDest.getDestinationId())
+                    .eq("soft_delete",0)
                     .findList();
             tripDest.setDestination(destinations.get(0));
             orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
