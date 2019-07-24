@@ -611,24 +611,35 @@
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required>
+                                        <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required value="@currentUser.getNationalityString">
                                     </div>
                                     <label>Nationalities</label>
-                                    <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
+                                    <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%" >
                                         @for(nation <- countries) {
-                                            <option value="@nation">@nation</option>
+                                            @if(currentUser.getNationalityList.contains(nation)){
+
+                                                <option value="@nation" selected>@nation</option>
+                                            }else {
+                                                <option value="@nation">@nation</option>
+                                            }
                                         }
                                     </select>
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" required>
+                                        <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" required value="@currentUser.getPassportsString">
                                     </div>
                                     <label>Passports</label>
                                     <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
                                     @for(nation <- countries) {
-                                        <option value="@nation">@nation</option>
+                                        @if(currentUser.getPassportsList.contains(nation)){
+
+                                            <option value="@nation" selected>@nation</option>
+                                        }else {
+                                            <option value="@nation">@nation</option>
+                                        }
                                     }
+
                                     </select>
 
 
