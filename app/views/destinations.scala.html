@@ -1204,6 +1204,7 @@
 
             function setTravellerTypesToRemove() {
                 var html = "";
+                resetTypesDropdowns();
                 @for(destination <- destinationsList) {
                     var id = @destination.getDestinationId;
                         if(id === getSelectedDestID()) {
@@ -1214,8 +1215,8 @@
                                 var option = document.createElement("option");
                                 option.text = "@travellerType";
                                 option.value = "@travellerType";
-                                select.add(option);
                                 selectAdd.remove(option);
+                                select.add(option);
                             }
                             document.getElementById("destinationId").value = @destination.getDestinationId();
                     }
@@ -1226,6 +1227,29 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
             });
+
+
+
+        function resetTypesDropdowns() {
+            var i;
+            for(i = document.getElementById("toAddDropdown").options.length - 1 ; i >= 0 ; i--)
+            {
+                document.getElementById("toAddDropdown").remove(i);
+            }
+            i = 0;
+            for(i = document.getElementById("toRemoveDropdown").options.length - 1 ; i >= 0 ; i--)
+            {
+                document.getElementById("toRemoveDropdown").remove(i);
+            }
+            var selectAdd = document.getElementById("toAddDropdown");
+            selectAdd.add(new Option("Backpacker", "Backpacker"));
+            selectAdd.add(new Option("ThrillSeeker", "ThrillSeeker"));
+            selectAdd.add(new Option("Holidaymaker", "Holidaymaker"));
+            selectAdd.add(new Option("Frequent Weekender", "Frequent Weekender"));
+            selectAdd.add(new Option("Groupie", "Groupie"));
+            selectAdd.add(new Option("Gap Year", "Gap Year"));
+            selectAdd.add(new Option("Functional/business Traveller", "Functional/business Traveller"));
+        }
 
     </script>
 
