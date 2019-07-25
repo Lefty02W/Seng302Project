@@ -78,27 +78,33 @@ public class TripRepository {
     }
 
     /**
-     * Soft deletes a trip (indicates the trip will be deleted)
-     *
+     * sets soft delete for a Trip which eather deletes it or
+     * undoes the delete
      * @param tripId The ID of the trip to soft delete
+     * @param delete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
-    public CompletionStage<Optional<Integer>> softDelete(int tripId) {
+    public CompletionStage<Integer> setSoftDelete(int tripId, boolean delete) {
         return supplyAsync(() -> {
             try {
                 Trip targetTrip = ebeanServer.find(Trip.class).setId(tripId).findOne();
                 if (targetTrip != null) {
-                    targetTrip.setSetSoftDelete(1);
+                    if (delete) {
+                        targetTrip.setSetSoftDelete(1);
+                    } else {
+                        targetTrip.setSetSoftDelete(0);
+                    }
                     targetTrip.update();
-                    return Optional.of(targetTrip.getId());
+                    return 1;
                 } else {
-                    return Optional.empty();
+                    return 0;
                 }
             } catch(Exception e) {
-                return Optional.empty();
+                return 0;
             }
         }, executionContext);
     }
+
 
     /**
      * Takes in a user and sets ups the users trips from the database

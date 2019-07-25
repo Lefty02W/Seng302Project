@@ -81,7 +81,7 @@ public class AdminController {
             return supplyAsync(() ->(redirect("/admin").flashing("error",
                     "Global admin cannot be deleted.")));
         }
-        return profileRepository.delete(id).thenApplyAsync(userEmail -> redirect(adminEndpoint)
+        return profileRepository.setSoftDelete(id, true).thenApplyAsync(userEmail -> redirect(adminEndpoint)
                 , httpExecutionContext.current());
     }
 

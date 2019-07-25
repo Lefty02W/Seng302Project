@@ -142,17 +142,22 @@ public class TreasureHuntRepository {
     }
 
     /**
-     * Soft deletes a treasure hunt (indicates the treasure hunt will be deleted)
-     *
+     * sets soft delete for a treasureHunt which eather deletes it or
+     * undoes the delete
      * @param huntId The ID of the treasure hunt to soft delete
+     * @param delete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
-    public CompletionStage<Integer> softDelete(int huntId) {
+    public CompletionStage<Integer> setSoftDelete(int huntId, boolean delete) {
         return supplyAsync(() -> {
             try {
                 TreasureHunt targetHunt = ebeanServer.find(TreasureHunt.class).setId(huntId).findOne();
                 if (targetHunt != null) {
-                    targetHunt.setSetSoftDelete(1);
+                    if (delete) {
+                        targetHunt.setSetSoftDelete(1);
+                    } else {
+                        targetHunt.setSetSoftDelete(0);
+                    }
                     targetHunt.update();
                     return 1;
                 } else {
@@ -163,6 +168,5 @@ public class TreasureHuntRepository {
             }
         }, executionContext);
     }
-    
 
 }

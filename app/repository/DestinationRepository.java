@@ -142,24 +142,29 @@ public class DestinationRepository {
     }
 
     /**
-     * Soft deletes a destination (indicates the destination will be deleted)
-     *
-     * @param destID The ID of the destination to soft delete
+     * sets soft delete for a destination which eather deletes it or
+     * undoes the delete
+     * @param destId The ID of the destination to soft delete
+     * @param delete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
-    public CompletionStage<Optional<String>> softDelete(int destID) {
+    public CompletionStage<Integer> setSoftDelete(int destId, boolean delete) {
         return supplyAsync(() -> {
             try {
-                Destination targetDestination = ebeanServer.find(Destination.class).setId(destID).findOne();
-                if (targetDestination != null) {
-                    targetDestination.setSetSoftDelete(1);
-                    targetDestination.update();
-                    return Optional.of(String.format("Destination %s deleted", targetDestination.getName()));
+                Destination targetDest = ebeanServer.find(Destination.class).setId(destId).findOne();
+                if (targetDest != null) {
+                    if (delete) {
+                        targetDest.setSetSoftDelete(1);
+                    } else {
+                        targetDest.setSetSoftDelete(0);
+                    }
+                    targetDest.update();
+                    return 1;
                 } else {
-                    return Optional.empty();
+                    return 0;
                 }
             } catch(Exception e) {
-                return Optional.empty();
+                return 0;
             }
         }, executionContext);
     }

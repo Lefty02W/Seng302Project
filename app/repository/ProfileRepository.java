@@ -289,33 +289,32 @@ public class ProfileRepository {
 
 
     /**
-     * Updates the value of softDelete in a profile to be soft
-     * Soft deletes a profile (indicates the profile will be deleted)
-     *
-     * @param profId The ID of the profile to soft delete
+     * sets soft delete for a profile which eather deletes it or
+     * undoes the delete
+     * @param profileId The ID of the profile to soft delete
+     * @param delete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
-    public CompletionStage<Optional<Integer>> setSoftDelete(int profId, boolean delete) {
+    public CompletionStage<Integer> setSoftDelete(int profileId, boolean delete) {
         return supplyAsync(() -> {
             try {
-                Profile targetProfile = ebeanServer.find(Profile.class).setId(profId).findOne();
+                Profile targetProfile = ebeanServer.find(Profile.class).setId(profileId).findOne();
                 if (targetProfile != null) {
-                    if (delete == true) {
+                    if (delete) {
                         targetProfile.setSetSoftDelete(1);
                     } else {
                         targetProfile.setSetSoftDelete(0);
                     }
                     targetProfile.update();
-                    return Optional.of(0);
+                    return 1;
                 } else {
-                    return Optional.empty();
+                    return 0;
                 }
             } catch(Exception e) {
-                return Optional.empty();
+                return 0;
             }
         }, executionContext);
     }
-
 
 
     /**

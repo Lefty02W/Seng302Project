@@ -78,7 +78,7 @@ public class AdminControllerTest extends ProvideApplication {
                 .uri("/admin/"+ toDelete.getProfileId() + "/delete")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
-        profiles = Profile.find.all();
+        profiles = profileRepository.getAll();
         Integer newSize = profiles.size();
         Integer expected = originalSize - 1;
         Assert.assertEquals(expected, newSize);
