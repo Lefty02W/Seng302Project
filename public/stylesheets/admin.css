@@ -22,3 +22,9 @@ h1, h2, h3, h4, h5, h6 {
     border-color: #007bff;
 }
 
+.changeLog {
+    position: fixed;
+    right:10px;
+    top:100px;
+}
+
