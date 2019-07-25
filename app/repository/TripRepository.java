@@ -191,7 +191,6 @@ public class TripRepository {
 
         }
         return allTrips;
-
     }
 
 }

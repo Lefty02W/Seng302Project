@@ -58,6 +58,7 @@ public class DestinationRepository {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("profile_id", id)
+                .eq("soft_delete", 0)
                 .findList());
     }
 
@@ -70,6 +71,7 @@ public class DestinationRepository {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("visible", 1)
+                .eq("soft_delete", 0)
                 .findList());
     }
 
@@ -478,5 +480,17 @@ public class DestinationRepository {
                 destinationchanges.setTravellerType(travellerType);
             }
             return result;
+    }
+
+    /**
+     * Get the all of the destinations
+     *
+     * @return destinations, list of all Destinations
+     */
+    public ArrayList<Destination> getAllDestinations() {
+        return new ArrayList<>(ebeanServer.find(Destination.class)
+                .where()
+                .eq("soft_delete", 0)
+                .findList());
     }
 }
