@@ -58,6 +58,7 @@ public class DestinationRepository {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("profile_id", id)
+                .eq("soft_delete",0)
                 .findList());
     }
 
@@ -70,6 +71,7 @@ public class DestinationRepository {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("visible", 1)
+                .eq("soft_delete",0)
                 .findList());
     }
 
@@ -197,29 +199,6 @@ public class DestinationRepository {
         return value;
     }
 
-
-    /**
-     * class to check if destination is already available to user
-     * return true if already in else false
-     */
-    public boolean checkValid(Destination destination, int id) {
-        Destination destinations = (Destination.find.query()
-                .where()
-                .eq("name", destination.getName())
-                .eq("type", destination.getType())
-                .eq("country", destination.getCountry())
-                .eq("profile_id", id)
-                .findOne());
-        Destination publicDestinations = (Destination.find.query()
-                .where()
-                .eq("name", destination.getName())
-                .eq("type", destination.getType())
-                .eq("country", destination.getCountry())
-                .eq("visible", "1")
-                .findOne());
-        return publicDestinations != null || destinations != null;
-    }
-
     /**
      * Checks to see if a user has any destinations that are the same as the destination1 passed in
      *
@@ -233,6 +212,7 @@ public class DestinationRepository {
                 .eq("name", destination1.getName())
                 .eq("type", destination1.getType())
                 .eq("country", destination1.getCountry())
+                .eq("soft_delete",0)
                 .findList());
         return Optional.of(destinations);
     }
@@ -298,7 +278,7 @@ public class DestinationRepository {
      */
     public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
-                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where follow_destination.profile_id = ?";
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where follow_destination.profile_id = ? and D.soft_delete = 0";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
