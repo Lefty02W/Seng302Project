@@ -129,6 +129,9 @@ public class Destination extends Model {
         this.country = country;
     }
 
+
+    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
+
     public String getDistrict() {
         return district;
     }

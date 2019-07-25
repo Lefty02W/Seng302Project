@@ -288,6 +288,29 @@ public class ProfileRepository {
 
 
     /**
+     * Soft deletes a profile (indicates the profile will be deleted)
+     *
+     * @param profId The ID of the profile to soft delete
+     * @return
+     */
+    public CompletionStage<Optional<Integer>> softDelete(int profId) {
+        return supplyAsync(() -> {
+            try {
+                Profile targetProfile = ebeanServer.find(Profile.class).setId(profId).findOne();
+                if (targetProfile != null) {
+                    targetProfile.setSetSoftDelete(1);
+                    targetProfile.update();
+                    return Optional.of(0);
+                } else {
+                    return Optional.empty();
+                }
+            } catch(Exception e) {
+                return Optional.empty();
+            }
+        }, executionContext);
+    }
+
+    /**
      * Used to update (add or remove) admin privilege to another user from the Travellers page.
      *
      * @param clickedId the id of the user that is going to have admin privilege updated.
@@ -364,7 +387,9 @@ public class ProfileRepository {
             dest.setLatitude(aRowList.getDouble("latitude"));
             dest.setLongitude(aRowList.getDouble("longitude"));
             dest.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
-            destList.add(dest);
+            if ((aRowList.getBoolean("soft_delete") ? 1: 0) == 0) {
+                destList.add(dest);
+            }
         }
         return Optional.of(destList);
     }

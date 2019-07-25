@@ -60,6 +60,7 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllActiveTreasureHunts() {
         return new ArrayList<> (ebeanServer.find(TreasureHunt.class)
                 .where()
+                .eq("soft_delete", 0)
                 .gt("end_date", DateTime.now())
                 .lt("start_date", DateTime.now())
                 .findList());
@@ -74,6 +75,7 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllTreasureHunts() {
         return ebeanServer.find(TreasureHunt.class)
                 .where()
+                .eq("soft_delete", 0)
                 .findList();
     }
 
@@ -113,12 +115,14 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllUserTreasureHunts(int userId) {
         List<TreasureHunt> hunts = new ArrayList<>(ebeanServer.find(TreasureHunt.class)
                 .where()
+                .eq("soft_delete", 0)
                 .eq("profile_id", userId)
                 .findList());
         for(TreasureHunt hunt : hunts) {
             hunt.setDestination(ebeanServer.find(Destination.class)
                 .where()
-                .eq("destination_id", hunt.getTreasureHuntDestinationId())
+                    .eq("soft_delete", 0)
+                    .eq("destination_id", hunt.getTreasureHuntDestinationId())
                 .findOne());
         }
         return hunts;
@@ -135,6 +139,29 @@ public class TreasureHuntRepository {
             ebeanServer.find(TreasureHunt.class).where().eq("treasureHuntId", treasureHuntId).delete();
             return 1;
         });
+    }
+
+    /**
+     * Soft deletes a treasure hunt (indicates the treasure hunt will be deleted)
+     *
+     * @param huntId The ID of the treasure hunt to soft delete
+     * @return
+     */
+    public CompletionStage<Integer> softDelete(int huntId) {
+        return supplyAsync(() -> {
+            try {
+                TreasureHunt targetHunt = ebeanServer.find(TreasureHunt.class).setId(huntId).findOne();
+                if (targetHunt != null) {
+                    targetHunt.setSetSoftDelete(1);
+                    targetHunt.update();
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } catch(Exception e) {
+                return 0;
+            }
+        }, executionContext);
     }
     
 
