@@ -57,6 +57,7 @@ public class ProfileController extends Controller {
     private final TripRepository tripRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
+    private Boolean countryFlag = true;
 
 
 
@@ -336,22 +337,17 @@ public class ProfileController extends Controller {
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
 
-                Profile user = profileRepository.getProfileByProfileId(profId);
-                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(user);
-                if (!outdatedCountries.isEmpty()) {
-                    //TODO: Alert user about outdated countries
+                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
+
+                if (!outdatedCountries.isEmpty() && countryFlag) {
+                    countryFlag = false;
+                    return redirect("/profile").flashing("changeCountry", profileRec.get().getFirstName() + " you have an outdated country");
                 }
 
+                countryFlag = true;
                 return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
-            } else {
-                Profile user = profileRepository.getProfileByProfileId(profId);
-                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(user);
-                if (!outdatedCountries.isEmpty()) {
-                    //TODO: Alert user about outdated countries
-                }
-
-                return redirect("/profile");
             }
+            return redirect("/");
         });
     }
 

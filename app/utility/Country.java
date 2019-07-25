@@ -114,16 +114,12 @@ public class Country {
      * @return boolean - True if exists, false otherwise
      */
     public boolean checkExists(String name) {
-        boolean exists = true;
         try {
             List<JsonNode> node = getResponseValues(baseURL + "name/" + name, "name");
-            exists = !node.get(0).asText().equals("404");
+            return !node.get(0).asText().equals("404");
         } catch (IOException exception) {
             return false;
         }
-
-
-        return exists;
     }
 
 
@@ -134,14 +130,22 @@ public class Country {
      */
     public List<String> getUserOutdatedCountries(Profile profile) {
         List<String> countryList = profile.getPassportsList();
+        List<String> nationalityList = profile.getNationalityList();
+
         List<String> outdatedCountries = new ArrayList<>();
-        for (String name : countryList) {
-            if (!Country.getInstance().checkExists(name)) {
-                outdatedCountries.add(name);
+
+        for (String country : countryList) {
+            if (!Country.getInstance().checkExists(country)) {
+                outdatedCountries.add(country);
+            }
+        }
+        for (String nationality : nationalityList) {
+            if (!Country.getInstance().checkExists(nationality)) {
+                outdatedCountries.add(nationality);
             }
         }
 
-        
+
         return  outdatedCountries;
     }
 
