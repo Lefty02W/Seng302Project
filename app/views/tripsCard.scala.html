@@ -102,8 +102,9 @@
 
                                        <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
                                            <a href="@routes.TripsController.showEdit(trip, currentUser.getProfileId)"><button type="submit" class="btn btn-primary">Edit</button></a>  <!-- Need to change to the correct style of button -->
-                                           @*<a href="@routes.TripsController.delete(trip)"><button type="submit" class="btn btn-outline-secondary">Delete</button></a>*@
-                                           <button type="submit" class="btn btn-outline-secondary" onclick="fillDeleteValues('@routes.TripsController.delete(trip)')">Delete</button></a>
+                                           <button type="submit" class="btn btn-outline-secondary"
+                                           onclick="fillDeleteValues('@routes.TripsController.delete(trip)')">Delete
+                                           </button>
                                        </div>
                                    </div>
                                </div>
