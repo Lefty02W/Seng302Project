@@ -3,7 +3,7 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangesList: List[DestinationChanges])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -40,6 +40,7 @@
                     <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
                     <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     <a style="color: #ca6636" href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
@@ -158,7 +159,7 @@
                         </div>
                         <div class="row">
                             <div class="col text-center">
-                                <h2 align="cen NEEDS CHANGE WHEN DB READYter">User Trips</h2>
+                                <h2 align="center">User Trips</h2>
                                 <button class="btn btn-primary" data-toggle="modal" data-target="#createTripModal">Add Trip</button>
                             </div>
                         </div>
@@ -218,7 +219,7 @@
                                 @for(destination <- destinations) {
                                     <tr>
                                         <td>@destination.getDestinationId</td>
-                                        <td>@destination.getProfileId</td> <!-- TODO Update to id once user id is there -->
+                                        <td>@destination.getProfileId</td>
                                         <td>@destination.getName</td>
                                         <td>
                                             <a href="@routes.AdminController.showDestination(destination.getDestinationId, true)">
@@ -239,8 +240,8 @@
                             </table>
                         </div>
                         <div class="row">
-                            <div class="col">
-                                <h2 align="center">Destination requests</h2>
+                            <div class="col text-center">
+                                <h2 align="center">Destination Requests</h2>
                             </div>
                         </div>
                         <div class="row">
@@ -255,7 +256,7 @@
                                         <th>Decline</th>
                                     </tr>
                                 </thead>
-                                @for(destinationChange <- destinationChangesList) {
+                                @for(destinationChange <- destinationChangeList) {
                                     <tr>
 
                                         <td>@destinationChange.getEmail</td>
@@ -268,6 +269,44 @@
                                         }
                                         <td><button class="btn btn-primary">Approve</button></td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center">
+                                <h2 align="center">Treasure Hunts</h2>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#createHuntModal">Create Treasure Hunt</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="huntsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Riddle</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Destination</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                @for(hunt <- hunts) {
+                                    <tr>
+                                        <td>@hunt.getRiddle</td>
+                                        <td>@hunt.getStartDateString</td>
+                                        <td>@hunt.getEndDateString</td>
+                                        <td>@hunt.getTreasureHuntDestinationId</td>
+                                        <td>
+                                            <a href="@routes.AdminController.showEditHunt(hunt.getTreasureHuntId)">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/hunts/@hunt.getTreasureHuntId/delete">
+                                                <button class="btn btn-danger" onclick="">Delete</button>
+                                            </a>
+                                        </td>
                                     </tr>
                                 }
                             </table>
@@ -461,6 +500,14 @@
 
         $(document).ready(function() {
             $('#tripDestTable').DataTable({
+                "searching": false,
+                "pageLength": 8,
+                "lengthChange": false
+            });
+        } );
+
+        $(document).ready(function() {
+            $('#huntsTable').DataTable({
                 "searching": false,
                 "pageLength": 8,
                 "lengthChange": false
@@ -773,6 +820,143 @@
             </div>
         </div>
     }
+
+    @if(editHunt.isEdit && editHunt.getObject != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#editHuntModal').modal('show');
+                });
+        </script>
+    <div class="modal" id="editHuntModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header text-center">
+                    <h4 id="addTitle">Add Treasure Hunt</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @helper.form(routes.AdminController.editTreasureHunt(editHunt.getObject.getTreasureHuntId)) {
+                    @CSRF.formField
+                    <div class="modal-body">
+                        <div class="col" align="center">
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Riddle</small>
+                                    <input type="text" name="riddle" id="riddle" value="@editHunt.getObject.getRiddle" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="destinationId"><small id="label">Destination</small></label>
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                    @for(destination <- destinations) {
+                                        @if(destination.getDestinationId == editHunt.getObject.getTreasureHuntDestinationId) {
+                                            <option value="@destination.getDestinationId" selected>@destination.getName</option>
+                                        } else {
+                                            <option value="@destination.getDestinationId">@destination.getName</option>
+                                        }
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Start Date</small>
+                                    <input type="date" id="startDate" name="startDate"  class="inputField" value="@editHunt.getObject.getEntryDate(editHunt.getObject.getStartDate)" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">End Date</small>
+                                    <input type="date" id="endDate" name="endDate"  class="inputField" value="@editHunt.getObject.getEntryDate(editHunt.getObject.getEndDate)" required >
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <select class="selectpicker" title="Profile" id="profileId" name="profileId" required>
+                                    @for(profile <- profiles) {
+                                        @if(profile.getProfileId == editHunt.getObject.getTreasureHuntProfileId) {
+                                            <option value="@profile.getProfileId" selected >Id: @profile.getProfileId, @profile.getFirstName @profile.getLastName</option>
+                                        }else{
+                                            <option value="@profile.getProfileId">Id: @profile.getProfileId, @profile.getFirstName @profile.getLastName</option>
+                                        }
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    }
+
+    <div class="modal" id="createHuntModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header text-center">
+                    <h4 id="addTitle">Add Treasure Hunt</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @helper.form(routes.AdminController.createHunt()) {
+                    @CSRF.formField
+                    <div class="modal-body">
+                        <div class="col" align="center">
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Riddle</small>
+                                    <input type="text" name="riddle" id="riddle" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="destinationId"><small id="label">Destination</small></label>
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                    @for(destination <- destinations) {
+                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Start Date</small>
+                                    <input type="date" id="startDate" name="startDate"  class="inputField" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">End Date</small>
+                                    <input type="date" id="endDate" name="endDate"  class="inputField" required >
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <select class="selectpicker" title="Profile" id="profileId" name="profileId" required>
+                                    @for(profile <- profiles) {
+                                        <option value="@profile.getProfileId">Id: @profile.getProfileId, @profile.getFirstName @profile.getLastName</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
 
     <div class="modal fade" id="createProfileModal">

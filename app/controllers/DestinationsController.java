@@ -116,7 +116,7 @@ public class DestinationsController extends Controller {
     }
 
 
-    /**
+    /**•••••••••
      * Method to follow a destination called from the destinations page and used from an endpoint
      *
      * @param profileId Id of the profile to follow destination
@@ -400,13 +400,15 @@ public class DestinationsController extends Controller {
      * @return a redirect to the destinations page
      */
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
-        return tripDestinationsRepository.checkDestinationExists(id).thenApplyAsync(result -> {
+        return destinationRepository.checkDestinationExists(id).thenApplyAsync(result -> {
             if (result.isPresent()) {
-                return redirect(destShowRoute).flashing("success", "Destination: " + id +
-                        " is used within the following trips: " + result.get());
+
+                return redirect(destShowRoute).flashing("failure", "Destination can not be deleted. Destination: " + id +
+                        " is used within the following " + result.get());
+            } else {
+                destinationRepository.delete(id);
+                return redirect(destShowRoute).flashing("success", "Destination: " + id + " deleted");
             }
-            destinationRepository.delete(id);
-            return redirect(destShowRoute).flashing("failure", "Destination: " + id + " deleted");
         });
     }
 

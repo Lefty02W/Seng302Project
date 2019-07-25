@@ -64,12 +64,6 @@ public class LoginController extends Controller {
             return profileRepository.lookupEmail(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
-
-                    List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(currentUser);
-                    if (!outdatedCountries.isEmpty()) {
-                        //TODO: Alert user about outdated countries
-                    }
-
                     return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getProfileId().toString());
                 }
                 return notFound("Login failed");

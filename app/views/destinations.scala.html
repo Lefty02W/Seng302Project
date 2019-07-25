@@ -31,7 +31,6 @@
     <body>
 
         <div class="d-flex toggled" id="wrapper">
-
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
@@ -44,6 +43,7 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
@@ -70,7 +70,7 @@
                 }
 
                 @if(request.flash.getOptional("failure").isPresent) {
-                    <div class="alert alert-failure">
+                    <div class="alert alert-warning">
                     @request.flash.getOptional("failure").get()
                     </div>
                 }
@@ -300,9 +300,9 @@
                                         </div>
                                         <div class="row">
                                             <div class="hidden-div-edit">
-                                                <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
+                                                <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField">
                                             </div>
-                                            <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                            <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%">
                                                 <option value="ThrillSeeker">ThrillSeeker</option>
                                                 <option value="Backpacker">Backpacker</option>
                                                 <option value="Gap Year">Gap Year</option>

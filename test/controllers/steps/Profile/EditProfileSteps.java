@@ -77,6 +77,8 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("middleName", string);
     }
 
+
+
     @When("I press the Save button")
     public void iPressTheSaveButton() {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -146,6 +148,20 @@ public class EditProfileSteps extends ProvideApplication {
         injectRepositories();
         profileRepository.findById(1).thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypesString()));
+            return "done";
+        });
+    }
+
+    @When("I change my email to {string}")
+    public void iChangeMyEmailTo(String string) {
+        editForm.put("email", string);
+    }
+
+    @Then("my email is not saved")
+    public void myEmailIsNotSaved() {
+        injectRepositories();
+        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
+            profileOpt.ifPresent(profile -> assertEquals("bob@gmail.com", profile.getEmail()));
             return "done";
         });
     }

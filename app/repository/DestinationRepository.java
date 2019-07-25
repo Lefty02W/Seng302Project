@@ -55,7 +55,7 @@ public class DestinationRepository {
      * @return destinations, list of all user destinations
      */
     public ArrayList<Destination> getUserDestinations(int id) {
-        return new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("profile_id", id)
                 .findList());
@@ -67,7 +67,7 @@ public class DestinationRepository {
      * @return destinations, list of all public destinations
      */
     public ArrayList<Destination> getPublicDestinations() {
-        return new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("visible", 1)
                 .findList());
@@ -88,6 +88,39 @@ public class DestinationRepository {
     }
 
     /**
+     * Method to check if a passed destination to be delete is within a treasure hunt or trip
+     *
+     * @param destinationId the id of the destination to check
+     * @return the result of the check with and optional id of the treasure hunt or trip which contains the destination within a completion stage
+     */
+    public CompletionStage<Optional<String>> checkDestinationExists(int destinationId) {
+        return supplyAsync(
+                () -> {
+                    List<Integer> foundIds =
+                            ebeanServer
+                                    .find(TripDestination.class)
+                                    .where()
+                                    .eq("destination_id", destinationId)
+                                    .select("tripId")
+                                    .findSingleAttributeList();
+                    if (foundIds.isEmpty()) {
+                        List<Integer> foundIds2 =
+                                    ebeanServer
+                                            .find(TreasureHunt.class)
+                                            .where()
+                                            .eq("destination_id", destinationId)
+                                            .select("treasureHuntId")
+                                            .findSingleAttributeList();
+                        if (foundIds2.isEmpty()) return Optional.empty();
+                        else return Optional.of("treasure hunts: " + foundIds2);
+                    } else {
+                        return Optional.of("trips: " + foundIds);
+                    }
+                },
+                executionContext);
+    }
+
+    /**
      * Deletes a destination from the database
      *
      * @param destID The ID of the destination to delete
@@ -99,7 +132,7 @@ public class DestinationRepository {
                 final Optional<Destination> destinationOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
                         .setId(destID).findOne());
                 destinationOptional.ifPresent(Model::delete);
-                return Optional.of(String.format("Destination %s deleted", destinationOptional.map((Destination p) -> p.getName())));
+                return Optional.of(String.format("Destination %s deleted", destinationOptional.map(Destination::getName)));
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -326,12 +359,8 @@ public class DestinationRepository {
                 .eq("visible", 1)
                 .findList());
 
-        if(previousDestination != null){
-            if(!destinations.isEmpty()){
-                if(destinations.get(0).getName().equals(previousDestination.getName()) && destinations.get(0).getType().equals(previousDestination.getType()) && destinations.get(0).getCountry().equals(previousDestination.getCountry())) {
-                    return false;
-                }
-            }
+        if (previousDestination != null && !destinations.isEmpty() && destinations.get(0).getName().equals(previousDestination.getName()) && destinations.get(0).getType().equals(previousDestination.getType()) && destinations.get(0).getCountry().equals(previousDestination.getCountry())) {
+            return false;
         }
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();
@@ -339,17 +368,17 @@ public class DestinationRepository {
 
     /**
      * Method called from addRequest method to add the changes made in a request to the actions table
-     * @param destinationChanges Object that holds the following attributes to be inserted into the database:
+     * @param destinationChange Object that holds the following attributes to be inserted into the database:
      *   travellerTypeId: Id of the traveller type the user wants to add or remove.
      *   action: tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
      *   requestId: Integer id of the request the user is making, links the changes to a request.
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
      *  destination_changes table
      */
-    public CompletionStage<Integer> addDestinationChange(DestinationChanges destinationChanges){
+    public CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
         return supplyAsync(() -> {
-            ebeanServer.insert(destinationChanges);
-            return destinationChanges.getId();
+            ebeanServer.insert(destinationChange);
+            return destinationChange.getId();
         }, executionContext);
     }
 
@@ -364,8 +393,8 @@ public class DestinationRepository {
     public void travellerTypeChangesTransaction(Integer requestId, Integer toAdd, List<Integer> changes){
         try (Transaction transaction = ebeanServer.beginTransaction()) {
             for (Integer travellerTypeId : changes) {
-                DestinationChanges destinationChanges = new DestinationChanges(travellerTypeId, toAdd, requestId);
-                addDestinationChange(destinationChanges);
+                DestinationChange destinationChange = new DestinationChange(travellerTypeId, toAdd, requestId);
+                addDestinationChange(destinationChange);
             }
             transaction.commit();
         }
@@ -401,13 +430,13 @@ public class DestinationRepository {
      * Method to get all destinationChanges with content such as email, destination and travellerTypes
      * @return result, a list of destinationChanges
      */
-    public List<DestinationChanges> getAllDestinationChanges() {
+    public List<DestinationChange> getAllDestinationChanges() {
 
                 //Getting Destinationchanges out of the database
-                List<DestinationChanges > result = DestinationChanges.find.query().where()
+                List<DestinationChange> result = DestinationChange.find.query().where()
                         .findList();
 
-            for (DestinationChanges destinationchanges : result) {
+            for (DestinationChange destinationchanges : result) {
                 DestinationRequest destinationRequest = DestinationRequest.find.query().where()
                         .eq("id", destinationchanges.getRequestId())
                         .findOne();

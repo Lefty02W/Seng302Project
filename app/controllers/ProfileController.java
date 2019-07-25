@@ -57,6 +57,7 @@ public class ProfileController extends Controller {
     private final TripRepository tripRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
+    private Boolean countryFlag = true;
 
 
 
@@ -93,16 +94,21 @@ public class ProfileController extends Controller {
      * @return a redirect to the profile page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> update (Http.Request request){
+    public CompletionStage<Result> update (Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         Form<Profile> currentProfileForm = profileForm.bindFromRequest(request);
         Profile profileNew = currentProfileForm.get();
         profileNew.initProfile();
-        return profileRepository.update(profileNew, profId).thenApplyAsync(x -> {
-            return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profId.toString());
-        }, httpExecutionContext.current());
-    }
 
+        return supplyAsync(() -> {
+            try {
+                profileRepository.update(profileNew, profId);
+                return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profId.toString());
+            } catch (IllegalArgumentException e) {
+                return redirect(profileEndpoint).flashing("invalid", "email is already taken");
+            }
+        });
+    }
 
     /**
      * Called by either the make or remove admin buttons to update admin privilege in database.
@@ -158,7 +164,7 @@ public class ProfileController extends Controller {
      * profile picture and the modal changeProfilePicture is shown
      *
      * @param request Https request
-     * @return a redirect to the profile page with a flashing response message
+     * @return a redireturn redirect(profileEndpoint).flashing("success", "updated");ect to the profile page with a flashing response message
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadPhoto(Http.Request request) {
@@ -322,7 +328,6 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request){
-
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
             if (profileRec.isPresent()) {
@@ -336,22 +341,17 @@ public class ProfileController extends Controller {
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
 
-                Profile user = profileRepository.getProfileByProfileId(profId);
-                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(user);
-                if (!outdatedCountries.isEmpty()) {
-                    //TODO: Alert user about outdated countries
+                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
+
+                if (!outdatedCountries.isEmpty() && countryFlag) {
+                    countryFlag = false;
+                    return redirect("/profile").flashing("changeCountry", profileRec.get().getFirstName() + " you have an outdated country");
                 }
 
+                countryFlag = true;
                 return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
-            } else {
-                Profile user = profileRepository.getProfileByProfileId(profId);
-                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(user);
-                if (!outdatedCountries.isEmpty()) {
-                    //TODO: Alert user about outdated countries
-                }
-
-                return redirect("/profile");
             }
+            return redirect("/");
         });
     }
 
