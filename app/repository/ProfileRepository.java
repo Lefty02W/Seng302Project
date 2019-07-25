@@ -5,6 +5,7 @@ import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -288,17 +289,22 @@ public class ProfileRepository {
 
 
     /**
+     * Updates the value of softDelete in a profile to be soft
      * Soft deletes a profile (indicates the profile will be deleted)
      *
      * @param profId The ID of the profile to soft delete
      * @return
      */
-    public CompletionStage<Optional<Integer>> softDelete(int profId) {
+    public CompletionStage<Optional<Integer>> setSoftDelete(int profId, boolean delete) {
         return supplyAsync(() -> {
             try {
                 Profile targetProfile = ebeanServer.find(Profile.class).setId(profId).findOne();
                 if (targetProfile != null) {
-                    targetProfile.setSetSoftDelete(1);
+                    if (delete == true) {
+                        targetProfile.setSetSoftDelete(1);
+                    } else {
+                        targetProfile.setSetSoftDelete(0);
+                    }
                     targetProfile.update();
                     return Optional.of(0);
                 } else {
@@ -309,6 +315,8 @@ public class ProfileRepository {
             }
         }, executionContext);
     }
+
+
 
     /**
      * Used to update (add or remove) admin privilege to another user from the Travellers page.
