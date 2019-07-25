@@ -31,6 +31,8 @@ public class TreasureHunt extends Model {
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date endDate;
 
+    private int softDelete;
+
     private Destination destination;
 
     private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
