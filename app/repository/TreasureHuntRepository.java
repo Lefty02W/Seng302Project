@@ -75,6 +75,7 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllTreasureHunts() {
         return ebeanServer.find(TreasureHunt.class)
                 .where()
+                .eq("soft_delete", 0)
                 .findList();
     }
 
