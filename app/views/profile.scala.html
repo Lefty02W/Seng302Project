@@ -72,6 +72,18 @@
             </nav>
 
 
+            @if(request.flash.getOptional("changeCountry").isPresent) {
+                <div class="alert alert-success" id="successAlert">
+                @request.flash.getOptional("changeCountry").get()
+                </div>
+                <script type="text/javascript">
+                        console.log("changeCountry");
+                        $(window).on('load', function () {
+                            $('#outDatedCountryAlertModal').modal('show')
+                        })
+                </script>
+            }
+
             @if(request.flash.getOptional("success").isPresent) {
                 <div class="alert alert-success" id="successAlert">
                 @request.flash.getOptional("success").get()
@@ -402,6 +414,27 @@
                             </div>
                         </div>
                     }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="outDatedCountryAlertModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">*WARNING* Country is no longer valid!</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    <div class="modal-body">
+                        <h5>Please update country at your earliest convenience.</h5>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Change Later</button>
+                        <button type="submit" id="changeNow" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">Change Now</button>
                     </div>
                 </div>
             </div>
