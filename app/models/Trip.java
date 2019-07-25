@@ -108,6 +108,8 @@ public class Trip extends Model {
         return profileId;
     }
 
+    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
+
     /**
      * calculate total travel time
      *

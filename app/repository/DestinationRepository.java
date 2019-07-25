@@ -140,6 +140,29 @@ public class DestinationRepository {
     }
 
     /**
+     * Soft deletes a destination (indicates the destination will be deleted)
+     *
+     * @param destID The ID of the destination to soft delete
+     * @return
+     */
+    public CompletionStage<Optional<String>> softDelete(int destID) {
+        return supplyAsync(() -> {
+            try {
+                Destination targetDestination = ebeanServer.find(Destination.class).setId(destID).findOne();
+                if (targetDestination != null) {
+                    targetDestination.setSetSoftDelete(1);
+                    targetDestination.update();
+                    return Optional.of(String.format("Destination %s deleted", targetDestination.getName()));
+                } else {
+                    return Optional.empty();
+                }
+            } catch(Exception e) {
+                return Optional.empty();
+            }
+        }, executionContext);
+    }
+
+    /**
      * Updates a destination in the database
      *
      * @param newDestination The new info to change the destination to

@@ -277,6 +277,8 @@ public class Profile extends Model {
         return gender;
     }
 
+    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
+
     public Map<Integer, TravellerType> getTravellerTypes() {
         return travellerTypes;
     }
