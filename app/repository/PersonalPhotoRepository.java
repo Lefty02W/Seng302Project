@@ -81,10 +81,37 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      * @param profileId Id of the user to remove profile picture
      */
     public void removeProfilePic(int profileId) {
+        removeThumbnailLink(profileId);
         String updateQuery = "UPDATE personal_photo SET is_profile_photo = 0 where profile_id = ?";
         SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
         query.setParameter(1, profileId);
         query.execute();
+    }
+
+    /**
+     * Method to find the given users thumbnail and remove its entries from the database
+     *
+     * @param profileId the id of the user to find a thumbnail for
+     */
+    private void removeThumbnailLink(int profileId) {
+        SqlRow row = ebeanServer
+                .createSqlQuery("select photo_id from personal_photo where is_profile_photo = 1 and profile_id = ?")
+                .setParameter(1, profileId)
+                .findOne();
+        if (row != null) {
+            int photoId = row.getInteger("photo_id");
+            SqlRow thumbRow = ebeanServer
+                    .createSqlQuery("select thumbnail_id from thumbnail_link where photo_id = ?")
+                    .setParameter(1, photoId)
+                    .findOne();
+            if (thumbRow != null) {
+                int thumbId = thumbRow.getInteger("thumbnail_id");
+                ebeanServer
+                        .createSqlUpdate("DELETE FROM photo WHERE photo_id = ?")
+                        .setParameter(1, thumbId)
+                        .execute();
+            }
+        }
     }
 
     /**

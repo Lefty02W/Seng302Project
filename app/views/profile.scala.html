@@ -8,6 +8,7 @@
 <html lang="en">
 
     <head>
+        <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
         <title>TravelEA | Profile</title>
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
@@ -48,6 +49,7 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
                             Admin</a>
@@ -640,25 +642,17 @@
                     <div class="modal-header">
                         <h2 class="modal-title center-col">Upload Picture</h2>
                     </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="upload-demo-wrap">
-                                <div id="upload-demo"></div>
-                            </div>
-                            <div class="actions">
-                                <a class="btn file-btn">
-                                    <span>Upload</span>
-                                    <input type="file" id="upload-image" accept="image/*" value="Choose an Image"/>
-                                </a>
-                            </div>
+                    @form(routes.ProfileController.uploadProfilePicture(), 'enctype -> "multipart/form-data") {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <input type="file" id="image" name="image" accept="image/*" value="Choose an Image"/>
                         </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" data-dismiss="modal" onclick="cropImage()">
-                            Go</button>
-                        <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancel</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">
+                                Save</button>
+                            <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancel</button>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -755,49 +749,6 @@
                 });
             });
 
-            //Lukes crop stuff do not delete
-            $uploadCrop = $('#upload-demo').croppie({
-                enableExif: true,
-                viewport: {
-                    width: 200,
-                    height: 200,
-                    type: 'circle'
-
-                },
-                boundary: {
-                    width: 300,
-                    height: 300
-                }
-            });
-
-            $('#upload-image').on('change', function () {
-                var reader = new FileReader();
-                reader.onload = function (event) {
-                    $uploadCrop.croppie('bind', {
-                        url: event.target.result
-                    }).then(function () {
-                        console.log('jQuery bind complete');
-                    });
-                };
-                reader.readAsDataURL(this.files[0]);
-                $('#submitImage').children('#image').attr("files", this.files[0]);
-                $('#submitImage').children('#image').attr("name", this.files[0].name);
-                $('#submitImage').children('#image').attr("name", this.files[0].lastModified);
-                $('#submitImage').children('#image').attr("name", this.files[0].size);
-                $('#submitImage').children('#image').attr("name", this.files[0].type);
-            });
-
-            function cropImage() {
-                $uploadCrop.croppie('result', {
-                    type: 'canvas',
-                    size: 'viewport'
-                }).then(function (response) {
-                    console.log(response);
-                    console.log($('#upload-image').files);
-                    $('#acceptChangeModal').modal();
-                    $('#submitImage').children('#imageDisplay').attr('src', response);
-                });
-            }
 
             var closeBtns = document.getElementsByClassName("close");
             var i;

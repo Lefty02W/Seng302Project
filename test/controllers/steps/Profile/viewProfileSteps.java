@@ -6,22 +6,22 @@ import cucumber.api.java.AfterStep;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.openqa.selenium.By;
 
 public class viewProfileSteps extends BaseStep {
 
-    @Before
+    @Before("@ViewProfile")
     public void setup() {
         setUp();
     }
 
-
-    @After
+    @After("@ViewProfile")
     public void teardown() {
         tearDown();
     }
-
 
     @AfterStep
     // Simply to allow visual following of selenium's execution

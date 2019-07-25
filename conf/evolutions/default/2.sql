@@ -69,6 +69,18 @@ INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
 (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
 
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (1, 1, 1, 'Yes but No', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (2, 1, 2, 'What has a head, a tail, is brown, and has no legs?', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (3, 2, 1, 'A riddle', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (4, 3, 1, 'A second riddle', CURRENT_DATE, CURRENT_DATE);
+
 
 INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (1, 'Backpacker');
 

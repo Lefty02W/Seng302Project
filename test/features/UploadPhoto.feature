@@ -4,7 +4,7 @@ Feature: Uploading photo
   So that I can keeps photos on my profile
 
   Background:
-        Given I am logged into the application as user "admin@admin.com" with password "admin"
+        Given I am logged into the application as user "john@gmail.com" with password "password"
 
   Scenario: I can upload a photo
         Given I press the Add Photo button

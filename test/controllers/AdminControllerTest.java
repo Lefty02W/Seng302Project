@@ -35,15 +35,14 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteValidDestination() {
-
-        List<Destination> destinationList = Destination.find.all();
+        injectRepositories();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/destinations/"+destinationList.get(0).getDestinationId()+"/delete")
-                .session("connected", profileId.toString());
+                .uri("/admin/destinations/1/delete")
+                .session("connected", "1");
         Result result = Helpers.route(provideApplication(), request);
 
-        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+        Assert.assertNotNull(destinationRepository.lookup(1));
     }
 
 

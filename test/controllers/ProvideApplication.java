@@ -14,7 +14,6 @@ import repository.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +23,8 @@ public class ProvideApplication extends WithApplication {
     protected ProfileRepository profileRepository;
     protected DestinationRepository destinationRepository;
     protected RolesRepository rolesRepository;
+    protected PhotoRepository photoRepository;
+    protected TreasureHuntRepository treasureHuntRepository;
 
     @Override
     public Application provideApplication() {
@@ -81,9 +82,11 @@ public class ProvideApplication extends WithApplication {
         app.injector().instanceOf(PassportCountryRepository.class);
         app.injector().instanceOf(RolesRepository.class);
 
+        treasureHuntRepository = app.injector().instanceOf(TreasureHuntRepository.class);
         rolesRepository = app.injector().instanceOf(RolesRepository.class);
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
+        photoRepository = app.injector().instanceOf(PhotoRepository.class);
     }
 
     protected ArrayList<Destination> getUserDest(int id) {

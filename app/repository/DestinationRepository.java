@@ -64,7 +64,7 @@ public class DestinationRepository {
      * @return destinations, list of all user destinations
      */
     public ArrayList<Destination> getUserDestinations(int id) {
-        return new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("profile_id", id)
                 .findList());
@@ -76,7 +76,7 @@ public class DestinationRepository {
      * @return destinations, list of all public destinations
      */
     public ArrayList<Destination> getPublicDestinations() {
-        return new ArrayList<>(Destination.find.query()
+        return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("visible", 1)
                 .findList());
@@ -103,6 +103,39 @@ public class DestinationRepository {
     }
 
     /**
+     * Method to check if a passed destination to be delete is within a treasure hunt or trip
+     *
+     * @param destinationId the id of the destination to check
+     * @return the result of the check with and optional id of the treasure hunt or trip which contains the destination within a completion stage
+     */
+    public CompletionStage<Optional<String>> checkDestinationExists(int destinationId) {
+        return supplyAsync(
+                () -> {
+                    List<Integer> foundIds =
+                            ebeanServer
+                                    .find(TripDestination.class)
+                                    .where()
+                                    .eq("destination_id", destinationId)
+                                    .select("tripId")
+                                    .findSingleAttributeList();
+                    if (foundIds.isEmpty()) {
+                        List<Integer> foundIds2 =
+                                    ebeanServer
+                                            .find(TreasureHunt.class)
+                                            .where()
+                                            .eq("destination_id", destinationId)
+                                            .select("treasureHuntId")
+                                            .findSingleAttributeList();
+                        if (foundIds2.isEmpty()) return Optional.empty();
+                        else return Optional.of("treasure hunts: " + foundIds2);
+                    } else {
+                        return Optional.of("trips: " + foundIds);
+                    }
+                },
+                executionContext);
+    }
+
+    /**
      * Deletes a destination from the database
      *
      * @param destID The ID of the destination to delete
@@ -114,7 +147,7 @@ public class DestinationRepository {
                 final Optional<Destination> destinationOptional = Optional.ofNullable(ebeanServer.find(Destination.class)
                         .setId(destID).findOne());
                 destinationOptional.ifPresent(Model::delete);
-                return Optional.of(String.format("Destination %s deleted", destinationOptional.map((Destination p) -> p.getName())));
+                return Optional.of(String.format("Destination %s deleted", destinationOptional.map(Destination::getName)));
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -344,7 +377,7 @@ public class DestinationRepository {
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
      *  destination_change table
      */
-    private CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
+    public CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
         return supplyAsync(() -> {
             ebeanServer.insert(destinationChange);
             return destinationChange.getId();
@@ -482,11 +515,11 @@ public class DestinationRepository {
      */
     public List<DestinationChange> getAllDestinationChanges() {
 
-                //Getting Destination change out of the database
+                //Getting Destinationchanges out of the database
                 List<DestinationChange> result = DestinationChange.find.query().where()
                         .findList();
 
-            for (DestinationChange destinationChange : result) {
+            for (DestinationChange destinationchanges : result) {
                 DestinationRequest destinationRequest = DestinationRequest.find.query().where()
                         .eq("id", destinationChange.getRequestId())
                         .findOne();

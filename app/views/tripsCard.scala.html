@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/trips.css")">
     <head>
+        <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
         <title>TravelEA | Trips</title>
     </head>
     <body>
@@ -41,6 +42,7 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
@@ -62,7 +64,7 @@
                 <div class="container-fluid">
 
                     <div class="row">
-                        <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" class="button-add">
+                        <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" class="btn btn-primary">
                             Add New Trip
                         </button> </a>
                     </div>
