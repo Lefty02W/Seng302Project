@@ -79,6 +79,7 @@ public class ProfileRepository {
             allProfiles.add(profileFromRow(row));
 
         }
+
         return allProfiles;
 
     }
@@ -121,10 +122,9 @@ public class ProfileRepository {
         Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
         Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
         List<String> roles = rolesRepository.getProfileRoles(profileId).get();
-
-        return new Profile(row.getInteger("profile_id"), row.getString("first_name"),
+        return new Profile(profileId, row.getString("first_name"),
                 row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
-                row.getDate("birthDate"), passportCountries, row.getString("gender"),
+                row.getDate("birth_date"), passportCountries, row.getString("gender"),
                 row.getDate("time_created"), nationalities, travellerTypes, roles);
     }
 
