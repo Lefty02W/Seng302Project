@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 
 /**
- * DestinationChanges class containing all attributes of a change for inserting the change object into the
+ * DestinationChange class containing all attributes of a change for inserting the change object into the
  * destination_changes database table
  *
  * id - Primary Key
@@ -18,7 +18,7 @@ import javax.persistence.Transient;
  * requestId - int Foreign Key referencing requestId from destinationRequest table
  */
 @Entity
-public class DestinationChanges extends Model {
+public class DestinationChange extends Model {
 
     @Id
     private Integer id;
@@ -38,14 +38,14 @@ public class DestinationChanges extends Model {
     @Transient
     private TravellerType travellerType;
 
-    public DestinationChanges(Integer travellerTypeId, Integer action, Integer requestId) {
+    public DestinationChange(Integer travellerTypeId, Integer action, Integer requestId) {
         this.travellerTypeId = travellerTypeId;
         this.action = action;
         this.requestId = requestId;
     }
 
     // Finder for destination
-    public static final Finder<String, DestinationChanges> find = new Finder<>(DestinationChanges.class);
+    public static final Finder<String, DestinationChange> find = new Finder<>(DestinationChange.class);
 
     public Integer getId() {
         return id;

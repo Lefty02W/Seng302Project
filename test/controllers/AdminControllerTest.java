@@ -1,10 +1,7 @@
 package controllers;
 
-import models.Destination;
 import models.Profile;
 import models.Trip;
-import models.TripDestination;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,8 +10,6 @@ import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 public class AdminControllerTest extends ProvideApplication {
 
@@ -38,15 +33,14 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteValidDestination() {
-
-        List<Destination> destinationList = Destination.find.all();
+        injectRepositories();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/destinations/"+destinationList.get(0).getDestinationId()+"/delete")
-                .session("connected", profileId.toString());
+                .uri("/admin/destinations/1/delete")
+                .session("connected", "1");
         Result result = Helpers.route(provideApplication(), request);
 
-        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+        Assert.assertNotNull(destinationRepository.lookup(1));
     }
 
 

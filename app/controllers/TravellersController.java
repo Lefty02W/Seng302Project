@@ -265,8 +265,7 @@ public class TravellersController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 List<Profile> profiles = profileRepository.getAll();
-
-                return ok(travellers.render(form, profileRepository.getAll(), photoList, profile.get(), request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, profiles, photoList, profile.get(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }

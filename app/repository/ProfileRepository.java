@@ -114,6 +114,9 @@ public class ProfileRepository {
     }
 
 
+
+
+
     /**
      * Create a profile instance from data of an SQL Row result
      *
@@ -126,13 +129,11 @@ public class ProfileRepository {
         Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
         Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
         List<String> roles = rolesRepository.getProfileRoles(profileId).get();
-
-        return new Profile(row.getInteger("profile_id"), row.getString("first_name"),
+        return new Profile(profileId, row.getString("first_name"),
                 row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
-                row.getDate("birthDate"), passportCountries, row.getString("gender"),
+                row.getDate("birth_date"), passportCountries, row.getString("gender"),
                 row.getDate("time_created"), nationalities, travellerTypes, roles);
     }
-
 
     /**
      * This method finds a profile in the database using a given profile id
@@ -142,15 +143,13 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Profile>> findById(int profileId) {
         return supplyAsync(() -> {
-            String qry = "Select * from profile where profile_id = ?";
-            List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
-            Profile profile = null;
-            if (!rowList.isEmpty()) {
-                profile = profileFromRow(rowList.get(0));
-            }
-
-            return Optional.ofNullable(profile);
-        }, executionContext);
+            Profile profile = ebeanServer.find(Profile.class).setId(profileId).findOne();
+            profile.setNationalities(profileNationalityRepository.getList(profile.getProfileId()).get());
+            profile.setPassports(profilePassportCountryRepository.getList(profile.getProfileId()).get());
+            profile.setTravellerTypes(profileTravellerTypeRepository.getList(profile.getProfileId()).get());
+            profile.setRoles(rolesRepository.getProfileRoles(profile.getProfileId()).get());
+            return Optional.of(profile);
+        });
     }
 
     /**
@@ -227,6 +226,9 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Integer>> update(Profile newProfile, int userId) {
 
+        if (isEmailTaken(newProfile.getEmail(), userId)) {
+            throw new IllegalArgumentException("Email is already taken");
+        }
         return supplyAsync(
                 () -> {
                     Transaction txn = ebeanServer.beginTransaction();
@@ -373,6 +375,26 @@ public class ProfileRepository {
             destList.add(dest);
         }
         return Optional.of(destList);
+    }
+
+    /**
+     * Method for edit profile-email to check if there is a traveller account under the supplied email that already
+     * exists (not the same user)
+     *
+     * @param email String The new email the user has proposed to change to
+     * @param profileId int of the porfileid of the user
+     * @return boolean true if email is taken, false if it is a change that will be allowed
+     */
+    public boolean isEmailTaken(String email, int profileId) {
+        boolean isTaken = false;
+        String selectQuery = "Select * from profile WHERE email = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();
+        for (SqlRow aRow : rowList) {
+            if (aRow.getInteger("profile_id") != profileId) {
+                isTaken = true;
+            }
+        }
+        return isTaken;
     }
 
 

@@ -53,6 +53,7 @@ create table if not exists profile
 	birth_date date not null,
 	gender varchar(20) not null,
 	time_created timestamp default CURRENT_TIMESTAMP not null,
+	soft_delete tinyint(1) default '0' not null,
 	constraint profile_email_uindex
 		unique (email)
 )
@@ -70,6 +71,7 @@ create table if not exists destination
 	latitude double null,
 	longitude double null,
 	visible tinyint(1) default '0' not null,
+	soft_delete tinyint(1) default '0' not null,
 	constraint destination_profile__fk
 		foreign key (profile_id) references profile (profile_id)
 			on update cascade on delete cascade
@@ -169,6 +171,7 @@ create table if not exists trip
 		primary key,
 	name varchar(255) not null,
 	profile_id int not null,
+	soft_delete tinyint(1) default '0' not null,
 	constraint trip_profile_profile_id_fk
 		foreign key (profile_id) references profile (profile_id)
 			on update cascade on delete cascade
@@ -255,7 +258,7 @@ create table if not exists destination_request
 ;
 
 
-create table if not exists destination_changes
+create table if not exists destination_change
 (
   id                int auto_increment,
   traveller_type_id int     not null,
@@ -283,6 +286,25 @@ create table if not exists destination_traveller_type
   foreign key (traveller_type_id) references traveller_type (traveller_type_id)
 )
 ;
+
+create table treasure_hunt
+(
+	treasure_hunt_id int auto_increment,
+	profile_id int null,
+	destination_id int not null,
+	riddle varchar(256) not null,
+	start_date date not null,
+	end_date date not null,
+	soft_delete tinyint(1) default '0' not null,
+	constraint treasure_hunt_treasure_hunt_id_uindex
+		unique (treasure_hunt_id)
+)
+;
+
+alter table treasure_hunt
+	add primary key (treasure_hunt_id)
+;
+
 
 
 
@@ -326,6 +348,8 @@ drop table if exists destination_photo;
 
 drop table if exists destination_request;
 
-drop table if exists destination_changes;
+drop table if exists destination_change;
 
 drop table if exists destination_traveller_type;
+
+drop table if exists treasure_hunt
