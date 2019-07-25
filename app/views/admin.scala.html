@@ -460,7 +460,13 @@
             $("#wrapper").toggleClass("toggled");
         });
 
-
+        document.onkeyup = function(e) {
+            if (e.ctrlKey && e.which === 90 && e.shiftKey) {
+                console.log("testing");
+                //TODO: CALL UNDO REPO FUNCTION HERE
+                location.reload();
+            }
+        };
 
         $(document).ready(function() {
             $('#profileTable').DataTable({
