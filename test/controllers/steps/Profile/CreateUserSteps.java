@@ -24,6 +24,7 @@ public class CreateUserSteps extends ProvideApplication {
 
     private Map<String, String> createForm = new HashMap<>();
     private Map<String, String> createFormSecond = new HashMap<>();
+    private Map<String, String> createFormThird = new HashMap<>();
     private Result createResult;
     private Profile createdProfile;
 
@@ -135,10 +136,22 @@ public class CreateUserSteps extends ProvideApplication {
         createFormSecond.put(arg1, arg0);
     }
 
+    @And("^I enter \"([^\"]*)\" into the \"([^\"]*)\" admin field$")
+    public void iEnterIntoTheAdminField(String arg0, String arg1) throws Throwable {
+        createFormThird.put(arg1, arg0);
+    }
+
+
     @And("^I enter \"([^\"]*)\", \"([^\"]*)\" into the \"([^\"]*)\" field$")
     public void iEnterIntoTheField(String arg0, String arg1, String arg2) throws Throwable {
         createFormSecond.put(arg2, arg0 + ","+ arg1);
     }
+
+    @And("^I enter \"([^\"]*)\", \"([^\"]*)\" into the \"([^\"]*)\" admin field$")
+    public void iEnterIntoTheAdminField(String arg0, String arg1, String arg2) throws Throwable {
+        createFormThird.put(arg2, arg0 + ","+ arg1);
+    }
+
 
     @Then("^I save my new profile$")
     public void iSaveMyNewProfile() throws Throwable {
@@ -148,6 +161,16 @@ public class CreateUserSteps extends ProvideApplication {
                 .bodyForm(createFormSecond);
         createResult = Helpers.route(provideApplication(), request);
     }
+
+    @Then("^admin saves the profile$")
+    public void adminSavesTheProfile() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/admin/profile/create")
+                .bodyForm(createFormThird);
+        createResult = Helpers.route(provideApplication(), request);
+    }
+
 
     @And("^My user profile is saved in the database$")
     public void myUserProfileIsSavedInTheDatabase() throws Throwable {

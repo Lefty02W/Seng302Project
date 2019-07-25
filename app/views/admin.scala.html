@@ -3,7 +3,7 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt], countries : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -427,16 +427,26 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                            <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value="@profile.getObject.getNationalityString">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required value="@profile.getObject.getNationalityString">
                                         </div>
+                                        <label>Nationalities</label>
+                                        <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
+                                        @for(nation <- countries) {
+                                            <option value="@nation">@nation</option>
+                                        }
+                                        </select>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group" id="holder"> <small id="label" for="passportsForm">Passport/s</small>
-                                            <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value="@profile.getObject.getPassportsString">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" value="@profile.getObject.getPassportsString" required>
                                         </div>
-
-
+                                        <label>Passports</label>
+                                        <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
+                                        @for(nation <- countries) {
+                                            <option value="@nation">@nation</option>
+                                        }
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
@@ -456,6 +466,8 @@
     <script>
         function fillVals() {
             $('#travellerTypesForm').val($('#typeDropdown').val());
+            $('#nationalitiesForm').val($('#nationDropdown').val());
+            $('#passportsForm').val($('#passportDropdown').val());
         }
 
 
@@ -1023,16 +1035,27 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                    <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required>
+                                <div class="hidden-div-edit">
+                                    <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required>
                                 </div>
+                                <label>Nationalities</label>
+                                <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
+                                @for(nation <- countries) {
+                                    <option value="@nation">@nation</option>
+                                }
+                                </select>
+
                             </div>
                             <div class="row">
-                                <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
-                                    <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField">
+                                <div class="hidden-div-edit">
+                                    <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" required>
                                 </div>
-
-
+                                <label>Passports</label>
+                                <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
+                                @for(nation <- countries) {
+                                    <option value="@nation">@nation</option>
+                                }
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
