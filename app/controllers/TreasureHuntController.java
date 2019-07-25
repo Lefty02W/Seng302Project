@@ -1,10 +1,8 @@
 package controllers;
 
 
-import models.Destination;
 import models.RoutedObject;
 import models.TreasureHunt;
-import org.joda.time.DateTime;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -16,10 +14,6 @@ import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -78,15 +72,14 @@ public class TreasureHuntController {
      * @return CompletionStage redirecting back to the treasure hunts page
      */
     public CompletionStage<Result> createHunt(Http.Request request) {
-        return supplyAsync(() -> {
-            Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
-            TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
+        Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
+        TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
 
-            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
-                return redirect("/treasure").flashing("error", "Error: Start date cannot be after end date.");
-            }
+        if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+            return supplyAsync(() -> redirect("/treasure").flashing("error", "Error: Start date cannot be after end date."));
+        }
 
-            treasureHuntRepository.insert(treasureHunt);
+        return treasureHuntRepository.insert(treasureHunt).thenApplyAsync(x -> {
             return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been added.");
         });
     }
