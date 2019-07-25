@@ -39,11 +39,9 @@
   <root level="WARN">
       <appender-ref ref="ASYNCFILE" />
       <appender-ref ref="ASYNCSTDOUT" />
+      <!--Quick fix for import ebeans issue. Will look into this later.-->
+      <!--<appender-ref ref="STDOUT" />-->
   </root>
 
-  <!--Quick fix for import ebeans issue. Will look into this later.-->
-  <!--<root level="WARN">-->
-    <!--<appender-ref ref="STDOUT" />-->
-  <!--</root>-->
 
 </configuration>
