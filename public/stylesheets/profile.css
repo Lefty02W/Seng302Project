@@ -225,7 +225,7 @@ img.thumbnail {
 }
 
 #profileTabs, li {
-    padding: 15px;
+    padding: 3px;
 }
 
 #profileTabs, #photosCard, #photosTabCard {
@@ -291,6 +291,9 @@ img.thumbnail {
     text-align: center;
 }
 
+.dropdown-menu{
+    width: 100%;
+}
 /*.btn-outline-primary:hover {*/
     /*background-color: #37623B;*/
     /*border-color: #37623B;*/
