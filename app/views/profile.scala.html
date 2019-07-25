@@ -288,10 +288,9 @@
                                                 <button class="btn btn-primary">Make Public</button></a>
                                         }
 
-                                            <a href="@routes.ProfileController.deletePhoto(photo.getPhotoId)">
-                                            <button class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this photo?')">
+                                            <button class="btn btn-outline-danger"
+                                            onclick="fillDeleteValues('@routes.ProfileController.deletePhoto(photo.getPhotoId)')">
                                                 Delete</button>
-                                            </a>
 
                                         </div>
                                             <!-- The Expanded Photo Modal -->
