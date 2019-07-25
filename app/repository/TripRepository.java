@@ -4,6 +4,7 @@ import com.google.common.collect.TreeMultimap;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
+import io.ebean.SqlRow;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -161,7 +162,6 @@ public class TripRepository {
         List<TripDestination> tripDests = TripDestination.find.query()
                 .where()
                 .eq("trip_id", tripId)
-                .eq("soft_delete",0)
                 .findList();
 
         for (TripDestination tripDest : tripDests) {
@@ -169,13 +169,28 @@ public class TripRepository {
             List<Destination> destinations = Destination.find.query()
                     .where()
                     .eq("destination_id", tripDest.getDestinationId())
-                    .eq("soft_delete",0)
                     .findList();
             tripDest.setDestination(destinations.get(0));
             orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
         }
         trip.setOrderedDestiantions(orderedDestiantions);
         return trip;
+    }
+
+    /**
+     * Method to get all trips
+     *
+     * @return List of all trips
+     */
+    public List<Trip> getAll() {
+        String selectQuery = "SELECT * FROM trip WHERE soft_delete = 0;";
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).findList();
+        List<Trip> allTrips = new ArrayList<>();
+        for (SqlRow row : rows) {
+            allTrips.add(getTrip(row.getInteger("trip_id")));
+
+        }
+        return allTrips;
     }
 
 }
