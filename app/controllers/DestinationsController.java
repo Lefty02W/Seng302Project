@@ -149,7 +149,6 @@ public class DestinationsController extends Controller {
      *
      * @param request the get request sent by the client
      * @param destId  the id of the destination to view
-     * @param isEdit  boolean holding if the request is for an edit operation
      * @return CompletionStage holding result rendering the admin  page with the desired destination
      * @apiNote GET /admin/destinations/:destId?isEdit
      */
@@ -185,8 +184,6 @@ public class DestinationsController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
-                //TODO make it so you can not unfollow destinations inside a trip
-
                 Optional<ArrayList<Integer>> followedTemp = destinationRepository.unfollowDestination(destId, profileId);
                 try {
                     followedDestinationIds = followedTemp.get();
@@ -206,7 +203,7 @@ public class DestinationsController extends Controller {
 
                 destinationsList = loadCurrentUserDestinationPhotos(profileId, destinationsList);
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
-//                destinationsList = loadTravellerTypes(destId, destinationsList);
+                destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
             } else {
@@ -286,10 +283,6 @@ public class DestinationsController extends Controller {
     /**
      * Gets all of the users photos
      *
-     * @param profileId the id of the profile to get photos for
-     * @return a list of a users photos /**
-     * Get the users destination list
-     *
      * @param id the id of the user profile
      * @return destinations, list of all user destinations
      */
@@ -301,6 +294,12 @@ public class DestinationsController extends Controller {
     }
 
 
+    /**
+     * Gets a list of all of a users photos
+     *
+     * @param profileId id of user to get photos for
+     * @return the list of photos found
+     */
     private List<Photo> getUsersPhotos(int profileId) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         return imageList.orElseGet(ArrayList::new);
@@ -521,18 +520,16 @@ public class DestinationsController extends Controller {
      * @param toAdd list of traveller types the user wishes to add
      * @param toRemove list of traveller type the user wishes to delete
      */
-    public void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove){
+    private void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove){
         DestinationRequest destinationRequest = new DestinationRequest(destinationId, profileId);
         destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest).thenApplyAsync(requestId -> {
             if (!toAdd.isEmpty()) {
                 destinationRepository.travellerTypeChangesTransaction(requestId, 1, toAdd);
-
             }
             if (!toRemove.isEmpty()){
                 destinationRepository.travellerTypeChangesTransaction(requestId, 0, toRemove);
-
             }
-            return 0;
+            return null;
             });
     }
 

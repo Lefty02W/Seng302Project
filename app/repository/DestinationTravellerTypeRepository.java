@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+/**
+ * Repository class which holds database interaction methods for destination traveller types
+ */
 public class DestinationTravellerTypeRepository {
 
     private final EbeanServer ebeanServer;
@@ -26,18 +29,18 @@ public class DestinationTravellerTypeRepository {
      * @param travellerType The nationality to add
      * @return
      */
-    public Optional<Integer> insertDestinationTravellerType(TravellerType travellerType, Integer destinationId) {
-        Integer idOpt;
-        try {
-            idOpt = travellerTypeRepository.getTravellerTypeId(travellerType.getTravellerTypeName()).get();
-        } catch(Exception e) {
-            idOpt = null;
+    Optional<Integer> insertDestinationTravellerType(TravellerType travellerType, Integer destinationId) {
+        Optional<Integer> integerOptional = travellerTypeRepository.getTravellerTypeId(travellerType.getTravellerTypeName());
+        Integer idOpt = null;
+        if (integerOptional.isPresent()) {
+            idOpt = integerOptional.get();
         }
-        Integer travellerId;
+        Integer travellerId = idOpt;
         if (idOpt == null) {
-            travellerId = travellerTypeRepository.insert(travellerType).get();
-        } else {
-            travellerId = idOpt;
+            Optional<Integer> travellerIdOpt = travellerTypeRepository.insert(travellerType);
+            if (travellerIdOpt.isPresent()) {
+                travellerId = travellerIdOpt.get();
+            }
         }
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "INSERT into destination_traveller_type (destination_id, traveller_type_id) " +
@@ -74,7 +77,7 @@ public class DestinationTravellerTypeRepository {
      * Removes all of the traveller type linking rows corresponding to the sent in destination
      * @param destinationId The given destination ID
      */
-    public void removeAll(Integer destinationId) {
+    void removeAll(Integer destinationId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from destination_traveller_type where destination_id " +
                 "= ?";

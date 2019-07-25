@@ -130,7 +130,7 @@ public class AdminController {
                 List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
                 return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, null, destinationChangeList, request, messagesApi.preferred(request)));
             } else {
-                return redirect("/admin").flashing("info", "User profile not found"); //TODO look into sending an actual not found response
+                return redirect("/admin").flashing("info", "User profile not found");
             }
         });
 
@@ -346,9 +346,7 @@ public class AdminController {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
         Destination destination = destForm.get();
         Optional<String> destFormString = destForm.field("travellerTypesStringDest").value();
-        if(destFormString.isPresent()){
-            destination.setTravellerTypesStringDest(destFormString.get());
-        }
+        destFormString.ifPresent(destination::setTravellerTypesStringDest);
         destination.initTravellerType();
         if (longLatCheck(destination)) {
             destinationRepository.update(destination, destId);
@@ -387,15 +385,25 @@ public class AdminController {
      * @return redirect with flashing success message
      */
     public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer changeId) {
-        return destinationRepository.deleteDestinationChange(changeId).thenApplyAsync(x -> redirect("/admin").flashing("info", "Destination change request successfully rejected"));
+        return destinationRepository.deleteDestinationChange(changeId)
+                .thenApplyAsync(x ->
+                        redirect("/admin").flashing("info", "Destination change request successfully rejected")
+                );
     }
 
+    /**
+     * Endpoint method for the admin to accept a change request on a destination
+     *
+     * @apiNote GET /admin/destinations/:id/request/accept
+     * @param request request sent by admin to accept change
+     * @param changeId database id of the change to accept
+     * @return CompletionStage holding redirect to the admin page
+     */
     public CompletionStage<Result> acceptDestinationRequest(Http.Request request, Integer changeId){
         return destinationRepository.acceptDestinationChange(changeId)
                 .thenApplyAsync(x -> {
                     return redirect("/admin").flashing("info", "Destination change successfully accepted");
                 });
-        // TODO: 18/07/19 need to get rid of email from DestinationChange and replace with profile id, also change in ui
     }
 
 }

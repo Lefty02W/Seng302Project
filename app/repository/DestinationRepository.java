@@ -92,10 +92,10 @@ public class DestinationRepository {
     public CompletionStage<Optional<Integer>> insert(Destination dest) {
         return supplyAsync(() -> {
             ebeanServer.insert(dest);
-
             // Adding traveller types of destinations to the database
             for (String travellerTypeName : dest.getTravellerTypesList()) {
-                destinationTravellerTypeRepository.insertDestinationTravellerType(new TravellerType(travellerTypeName), dest.getDestinationId());
+                destinationTravellerTypeRepository
+                        .insertDestinationTravellerType(new TravellerType(travellerTypeName), dest.getDestinationId());
             }
 
             return Optional.of(dest.getDestinationId());
@@ -325,12 +325,11 @@ public class DestinationRepository {
                 .eq("visible", 1)
                 .findList());
 
-        if(previousDestination != null){
-            if(!destinations.isEmpty()){
-                if(destinations.get(0).getName().equals(previousDestination.getName()) && destinations.get(0).getType().equals(previousDestination.getType()) && destinations.get(0).getCountry().equals(previousDestination.getCountry())) {
-                    return false;
-                }
-            }
+        if (previousDestination != null && !destinations.isEmpty() &&
+                destinations.get(0).getName().equals(previousDestination.getName()) &&
+                destinations.get(0).getType().equals(previousDestination.getType()) &&
+                destinations.get(0).getCountry().equals(previousDestination.getCountry())) {
+            return false;
         }
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();
@@ -400,7 +399,7 @@ public class DestinationRepository {
     /**
      * Reads all destinations from the database
      *
-     * @return
+     * @return List of all destinations found
      */
     public List<Destination> getAllDestinations() {
         List<Destination> dests = new ArrayList<>(Destination.find.query().findList());
@@ -532,8 +531,7 @@ public class DestinationRepository {
      * @param changeId the id of the change to retrieve
      * @return CompletionStage containing the found DestinationChange
      */
-    public CompletionStage<Optional<DestinationChange>> getDestinationChange(int changeId) {
-    // TODO: 19/07/19 need to get the Destination object out too
+    private CompletionStage<Optional<DestinationChange>> getDestinationChange(int changeId) {
         return supplyAsync(
             () -> {
               return Optional.ofNullable(
@@ -545,7 +543,7 @@ public class DestinationRepository {
     /**
      * Method to get a destination request object using a request id
      */
-    public CompletionStage<Optional<DestinationRequest>> getDestinationRequest(int requestId){
+    private CompletionStage<Optional<DestinationRequest>> getDestinationRequest(int requestId){
         return supplyAsync(
             () -> {
                 return Optional.ofNullable(
