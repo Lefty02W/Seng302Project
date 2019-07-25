@@ -364,7 +364,9 @@ public class ProfileRepository {
             dest.setLatitude(aRowList.getDouble("latitude"));
             dest.setLongitude(aRowList.getDouble("longitude"));
             dest.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
-            destList.add(dest);
+            if ((aRowList.getBoolean("soft_delete") ? 1: 0) == 0) {
+                destList.add(dest);
+            }
         }
         return Optional.of(destList);
     }
