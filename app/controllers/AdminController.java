@@ -81,8 +81,8 @@ public class AdminController {
             return supplyAsync(() ->(redirect("/admin").flashing("error",
                     "Global admin cannot be deleted.")));
         }
-        return profileRepository.setSoftDelete(id, true).thenApplyAsync(userEmail -> redirect(adminEndpoint)
-                , httpExecutionContext.current());
+        return profileRepository.setSoftDelete(id, true).thenApplyAsync(userEmail -> redirect(adminEndpoint).flashing("info",
+                "Profile deleted successfully"));
     }
 
 
@@ -214,7 +214,7 @@ public class AdminController {
      * @apiNote /admin/trip/:tripId/delete
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
-        return tripRepository.delete(tripId).thenApplyAsync(x -> redirect(adminEndpoint)
+        return tripRepository.setSoftDelete(tripId, true).thenApplyAsync(x -> redirect(adminEndpoint)
                 .flashing(
                         "info",
                         "Trip: " + tripId + " deleted")
@@ -301,7 +301,7 @@ public class AdminController {
                                                         + " is used within the following "
                                                         + result.get());
                             }
-                            destinationRepository.delete(destId);
+                            destinationRepository.setSoftDelete(destId, true);
                             return redirect(adminEndpoint)
                                     .flashing(
                                             "info",
@@ -477,7 +477,7 @@ public class AdminController {
      * @return CompletionStage holding redirect to the admin page
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
-        return treasureHuntRepository.deleteTreasureHunt(id)
+        return treasureHuntRepository.setSoftDelete(id, true)
                 .thenApplyAsync(x -> redirect("/admin").flashing("info", "Treasure Hunt: " + id + " was deleted"));
     }
 
