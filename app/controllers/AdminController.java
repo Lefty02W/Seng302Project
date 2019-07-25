@@ -67,6 +67,21 @@ public class AdminController {
     }
 
 
+
+    /**
+     * Function to check if the long and lat are valid
+     *
+     * @param destination destination to check lat and long values
+     * @return Boolean true if longitude and latitude are valid
+     */
+    private boolean longLatCheck(Destination destination) {
+        if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
+            return false;
+        }
+        return !(destination.getLongitude() > 180 || destination.getLongitude() < -180);
+    }
+
+
     /**
      * Function to delete a profile with the given email from the database using the profile controller method
      *
@@ -325,7 +340,7 @@ public class AdminController {
         return supplyAsync(() -> {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
+            List<Destination> destinations = destinationRepository.getAllDestinations();
             Destination currentDestination = destinationRepository.lookup(destId);
             RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, isEdit, !isEdit);
             if (isEdit) destinationEditForm.fill(currentDestination);
@@ -346,7 +361,15 @@ public class AdminController {
     public CompletionStage<Result> editDestination(Http.Request request, Integer destId) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
         Destination destination = destForm.get();
-        return destinationRepository.update(destination, destId).thenApplyAsync(string -> redirect("/admin"));
+        Optional<String> destFormString = destForm.field("travellerTypesStringDest").value();
+        destFormString.ifPresent(destination::setTravellerTypesStringDest);
+        destination.initTravellerType();
+        if (longLatCheck(destination)) {
+            destinationRepository.update(destination, destId);
+            return supplyAsync(() -> redirect(adminEndpoint).flashing("info", "Destination " + destination.getName() + " was edited successfully."));
+        } else {
+            return supplyAsync(() -> redirect(adminEndpoint).flashing("error", "A destinations longitude (-180 to 180) and latitude (90 to -90) must be valid"));
+        }
     }
 
 
@@ -359,21 +382,44 @@ public class AdminController {
      */
     public CompletionStage<Result> addDestination(Http.Request request) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
-        Destination destination = destForm.get();
+        String visible = destForm.field("visible").value().get();
+        int visibility = (visible.equals("Public")) ? 1 : 0;
+        Destination destination = destForm.value().get();
+        destination.initTravellerType();
+        destination.setVisible(visibility);
+
         return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin"));
     }
 
 
     /**
-     *
-     * @param request
-     * @param destId
-     * @return
+     * Calls the destination repository method deleteDestinationChange to remove the selected change request once the
+     * admin confirms the delete.
+     * Method redirects to admin page with the a success message displayed
+     * @param request http request
+     * @param changeId Id of the change request the admin is removing
+     * @return redirect with flashing success message
      */
-    public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer destId) {
-        return supplyAsync(() -> {
-          return redirect("/admin");
-        });
+    public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer changeId) {
+        return destinationRepository.deleteDestinationChange(changeId)
+                .thenApplyAsync(x ->
+                        redirect("/admin").flashing("info", "Destination change request successfully rejected")
+                );
+    }
+
+    /**
+     * Endpoint method for the admin to accept a change request on a destination
+     *
+     * @apiNote GET /admin/destinations/:id/request/accept
+     * @param request request sent by admin to accept change
+     * @param changeId database id of the change to accept
+     * @return CompletionStage holding redirect to the admin page
+     */
+    public CompletionStage<Result> acceptDestinationRequest(Http.Request request, Integer changeId){
+        return destinationRepository.acceptDestinationChange(changeId)
+                .thenApplyAsync(x -> {
+                    return redirect("/admin").flashing("info", "Destination change successfully accepted");
+                });
     }
 
 
