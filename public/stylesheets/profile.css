@@ -302,3 +302,7 @@ img.thumbnail {
         /*width: 100%;*/
     /*}*/
 /*}*/
+
+#addTitle, #\#deleteBody, #\#deleteTitle {
+    color: black;
+}
