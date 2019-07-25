@@ -158,7 +158,7 @@ public class AdminController {
     public CompletionStage<Result> show(Http.Request request) {
         return supplyAsync(() -> {
             List<Profile> profiles = profileRepository.getAll();
-            List<Trip> trips = Trip.find.all();
+            List<Trip> trips = tripRepository.getAll();
             List<Destination> destinations = Destination.find.all();
             List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
             return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
