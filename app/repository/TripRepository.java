@@ -103,7 +103,6 @@ public class TripRepository {
                 List<Destination> destinations = Destination.find.query()
                         .where()
                         .eq("destination_id", tripDest.getDestinationId())
-                        .eq("soft_delete",0)
                         .findList();
                 tripDest.setDestination(destinations.get(0));
                 tripDestinations.add(tripDest);
