@@ -269,7 +269,7 @@
                                         }else {
                                             <td>Remove</td>
                                         }
-                                        <td><button class="btn btn-primary">Approve</button></td>
+                                    <td><a href="/admin/destinations/@destinationChange.getId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
                                     </tr>
                                 }
@@ -474,6 +474,15 @@
             $("#wrapper").toggleClass("toggled");
         });
 
+        function fillValsDest() {
+            console.log($('#typeDropdownDest').val());
+            $('#travellerTypesStringDest').val($('#typeDropdownDest').val());
+        }
+
+        function fillVals2() {
+            $('#travellerTypesForm').val($('#typeDropdownEdit').val());
+        }
+
 
 
         $(document).ready(function() {
@@ -523,6 +532,14 @@
                 "lengthChange": false
             });
         } );
+
+        $(document).ready(function () {
+            $('#requestsTable').DataTable({
+                "searching": false,
+                "pageLength": 8,
+                "lengthChange": false
+            });
+        });
 
 
         function fillDeleteValues(route){
@@ -1246,101 +1263,6 @@
             </div>
         </div>
     </div>
-
-    <script type="text/javascript">
-        function fillVals() {
-            console.log($('#typeDropdown').val());
-            $('#travellerTypesString').val($('#typeDropdown').val());
-        }
-
-        function fillValsDest() {
-            console.log($('#typeDropdownDest').val());
-            $('#travellerTypesStringDest').val($('#typeDropdownDest').val());
-        }
-
-        function fillVals2() {
-            $('#travellerTypesForm').val($('#typeDropdownEdit').val());
-        }
-
-        $("#menu-toggle").click(function (e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
-        });
-
-
-        $(document).ready(function () {
-            $('#profileTable').DataTable({
-                "searching": false,
-                "pageLength": 8,
-                "lengthChange": false
-            });
-        });
-
-        $(document).ready(function () {
-            $('#tripsTable').DataTable({
-                "searching": false,
-                "pageLength": 8,
-                "lengthChange": false
-            });
-        });
-
-        $(document).ready(function () {
-            $('#destinationsTable').DataTable({
-                "searching": false,
-                "pageLength": 8,
-                "lengthChange": false
-            });
-        });
-
-        $(document).ready(function () {
-            $('#adminsTable').DataTable({
-                "searching": false,
-                "pageLength": 8,
-                "lengthChange": false
-            });
-        });
-
-        $(document).ready(function () {
-            $('#tripDestTable').DataTable({
-                "searching": false,
-                "pageLength": 8,
-                "lengthChange": false
-            });
-        });
-
-        $(document).ready(function () {
-            $('#requestsTable').DataTable({
-                "searching": false,
-                "pageLength": 8,
-                "lengthChange": false
-            });
-        });
-
-
-
-        function fillDeleteValues(route) {
-            var a = document.getElementById("confirmDeleteHrf");
-            a.href = route;
-            console.log(a.href);
-            $('#confirmationDeleteModal').modal('show');
-        }
-
-        function fillCreateTripValues(select) {
-            var a = document.getElementById("selectUserButton");
-            a.href = "/trips/" + select.value + "/create";
-        }
-
-        function runDelete() {
-            email = this.email;
-        }
-
-        function chooseAdmin() {
-            var e = document.getElementById("profileSelect");
-            alert(e.value);
-        }
-
-
-    </script>
 
 </html>
 

@@ -519,7 +519,7 @@ public class DestinationRepository {
                 List<DestinationChange> result = DestinationChange.find.query().where()
                         .findList();
 
-            for (DestinationChange destinationchanges : result) {
+            for (DestinationChange destinationChange : result) {
                 DestinationRequest destinationRequest = DestinationRequest.find.query().where()
                         .eq("id", destinationChange.getRequestId())
                         .findOne();
