@@ -75,6 +75,19 @@ public class DestinationRepository {
                 .findList());
     }
 
+    /**
+     * Get the all of the public destinations
+     *
+     * @return destinations, list of all public destinations
+     */
+    public List<Destination> getPublicDestinationsNotOwned(Integer userId) {
+        return new ArrayList<>(ebeanServer.find(Destination.class)
+                .where()
+                .eq("visible", 1)
+                .eq("soft_delete",0)
+                .ne("profile_id", userId)
+                .findList());
+    }
 
     /**
      * Inserts a new destination to the database.
@@ -284,7 +297,7 @@ public class DestinationRepository {
      *
      * @param destId the id of the destination
      */
-    private void setOwnerAsAdmin(int destId) {
+    public void setOwnerAsAdmin(int destId) {
         Destination destination = lookup(destId);
         int profileId = destination.getProfileId();
         Optional<Integer> optionalAdminId = rolesRepository.getIdFromRole("global_admin");

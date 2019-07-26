@@ -21,7 +21,7 @@ public class Trip extends Model {
 
 
     private ArrayList<TripDestination> destinations;
-    private TreeMap<Integer, TripDestination> orderedDestiantions;
+    private TreeMap<Integer, TripDestination> orderedDestinations;
     @Constraints.Required
     private String name;
     @Id
@@ -43,7 +43,7 @@ public class Trip extends Model {
         this.destinations = destinations;
         this.name = name;
         for (TripDestination tripDestination : destinations) {
-            this.orderedDestiantions.put(tripDestination.getDestOrder(), tripDestination);
+            this.orderedDestinations.put(tripDestination.getDestOrder(), tripDestination);
         }
     }
 
@@ -57,21 +57,13 @@ public class Trip extends Model {
         destinations.add(toAdd);
     }
 
-    /**
-     * Removes the destination at the passed position
-     *
-     * @param index the show of the TripDestination to remove
-     */
-    public void removeDestination(int index) {
-        destinations.remove(index);
+
+    public TreeMap<Integer, TripDestination> getOrderedDestinations() {
+        return orderedDestinations;
     }
 
-    public TreeMap<Integer, TripDestination> getOrderedDestiantions() {
-        return orderedDestiantions;
-    }
-
-    public void setOrderedDestiantions(TreeMap<Integer, TripDestination> orderedDestiantions) {
-        this.orderedDestiantions = orderedDestiantions;
+    public void setOrderedDestinations(TreeMap<Integer, TripDestination> orderedDestinations) {
+        this.orderedDestinations = orderedDestinations;
     }
 
     public int getTripId() {
@@ -130,34 +122,6 @@ public class Trip extends Model {
         }
     }
 
-    /**
-     * Get the date of arrival at the first destination in the trip, as a string.
-     *
-     * @return formatted start date
-     */
-    public String getStartDateString() {
-        this.destinations = sortDestinationsByOrder(destinations);
-        Date startDate = destinations.get(0).getArrival();
-        if (startDate == null) {
-            return "";
-        }
-        return new SimpleDateFormat("dd-MMM-yyyy").format(startDate);
-    }
-
-    /**
-     * get time value
-     *
-     * @return true time value
-     */
-    public long getTimeVal() {
-        this.destinations = sortDestinationsByOrder(destinations);
-        Date startDate = destinations.get(0).getArrival();
-        if (startDate != null) {
-            return startDate.getTime();
-        } else {
-            return 0;
-        }
-    }
 
     /**
      * This method gets the first date stored within a trip
@@ -189,27 +153,14 @@ public class Trip extends Model {
         }
     }
 
-    /**
-     * create list of printable destinations
-     *
-     * @return printable destination names
-     */
-    public String getDestinationNames() {
-        this.destinations = sortDestinationsByOrder(destinations);
-        String names = "" + destinations.get(0).getDestinationName();
-        for (int i = 1; i < destinations.size(); i++) {
-            names += ", " + destinations.get(i).getDestinationName();
-        }
-        return names;
-    }
 
     /**
      * sort destinations by order
      *
-     * @param array
+     * @param arrayList of trip destinations in order
      * @return sorted destination list
      */
-    public ArrayList<TripDestination> sortDestinationsByOrder(ArrayList<TripDestination> array) {
+    private ArrayList<TripDestination> sortDestinationsByOrder(ArrayList<TripDestination> array) {
         ArrayList<TripDestination> temp = new ArrayList<>();
         if (array == null) {
             return temp;

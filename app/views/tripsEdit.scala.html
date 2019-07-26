@@ -63,6 +63,7 @@
                             @helper.inputText(tripForm("name"), '_label -> "Trip Name:", '_help -> "")
                         </div>
                     </div>
+                    <button type="submit" class="btn btn-primary" id="save">Save trip</button>
                 } <!-- close tag for editDestinations form-->
                 <div class="container-fluid">
                         <div class="row">
@@ -137,7 +138,6 @@
                                     </table>
                                 </div>
                                 <div class="row" id="btnRow">
-                                    <button type="submit" class="btn btn-primary" id="save">Save trip</button>
                                     <a href="@routes.TripsController.show()"><button class="btn btn-secondary" type="button">Back</button></a>
                                 </div>
 

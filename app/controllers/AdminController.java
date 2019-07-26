@@ -35,12 +35,12 @@ public class AdminController {
     private final Form<Profile> profileEditForm;
     private final Form<Destination> destinationEditForm;
     private final Form<Profile> profileCreateForm;
-    private final TripDestinationsRepository tripDestinationsRepository;
     private final TreasureHuntRepository treasureHuntRepository;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final TreasureHuntController treasureHuntController;
     private final Form<TreasureHunt> huntForm;
+    private final UndoStackRepository undoStackRepository;
 
     private String adminEndpoint = "/admin";
     private RolesRepository rolesRepository;
@@ -48,22 +48,22 @@ public class AdminController {
     @Inject
     public AdminController(FormFactory formFactory, HttpExecutionContext httpExecutionContext,
                            MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
-                                   destinationRepository, TripRepository tripRepository, TripDestinationsRepository
-                                   tripDestinationsRepository, RolesRepository rolesRepository,
-                           TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController) {
+                                   destinationRepository, TripRepository tripRepository,
+                                   RolesRepository rolesRepository,
+                           TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController, UndoStackRepository undoStackRepository) {
         this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.tripRepository = tripRepository;
-        this.tripDestinationsRepository = tripDestinationsRepository;
         this.profileCreateForm = formFactory.form(Profile.class);
         this.destinationEditForm = formFactory.form(Destination.class);
         this.rolesRepository = rolesRepository;
         this.treasureHuntRepository = treasureHuntRepository;
         this.huntForm = formFactory.form(TreasureHunt.class);
         this.treasureHuntController = treasureHuntController;
+        this.undoStackRepository = undoStackRepository;
     }
 
 
@@ -81,6 +81,7 @@ public class AdminController {
             return supplyAsync(() ->(redirect("/admin").flashing("error",
                     "Global admin cannot be deleted.")));
         }
+        undoStackRepository.addToStack(new UndoStack("profile", id, SessionController.getCurrentUserId(request)));
         return profileRepository.setSoftDelete(id, true).thenApplyAsync(userEmail -> redirect(adminEndpoint).flashing("info",
                 "Profile deleted successfully"));
     }
@@ -117,8 +118,8 @@ public class AdminController {
     public CompletionStage<Result> showEditProfile(Http.Request request, Integer id) {
         return profileRepository.findById(id).thenApplyAsync(profileOpt -> {
             List<Profile> profiles = profileRepository.getAll();
-            List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
+            List<Trip> trips = tripRepository.getAll();
+            List<Destination> destinations = destinationRepository.getAllDestinations();
             if (profileOpt.isPresent()) {
                 Form<Profile> profileForm = profileEditForm.fill(profileOpt.get());
                 List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
@@ -214,6 +215,7 @@ public class AdminController {
      * @apiNote /admin/trip/:tripId/delete
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
+        undoStackRepository.addToStack(new UndoStack("trip", tripId, SessionController.getCurrentUserId(request)));
         return tripRepository.setSoftDelete(tripId, true).thenApplyAsync(x -> redirect(adminEndpoint)
                 .flashing(
                         "info",
@@ -250,7 +252,7 @@ public class AdminController {
      * @return the admin page rendered with the new admin
      * @apiNote /admin/:userId/admin
      */
-    public Result makeAdmin(Http.Request request, Integer userId) {
+    public Result makeAdmin(Integer userId) {
         String roleName = "admin";
         try{
 
@@ -273,7 +275,7 @@ public class AdminController {
      * @return the admin page rendered with the admin removed
      * @apiNote /admin/:userId/admin/remove
      */
-    public Result removeAdmin(Http.Request request, Integer userId) {
+    public Result removeAdmin(Integer userId) {
         rolesRepository.removeRole(userId);
         return redirect(adminEndpoint);
     }
@@ -288,6 +290,7 @@ public class AdminController {
      * @apiNote /admin/destinations/:destId/delete
      */
     public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
+        undoStackRepository.addToStack(new UndoStack("destination", destId, SessionController.getCurrentUserId(request)));
         return destinationRepository
                 .checkDestinationExists(destId)
                 .thenApplyAsync(
@@ -459,12 +462,10 @@ public class AdminController {
      */
     public CompletionStage<Result> showEditHunt(Http.Request request, Integer id) {
         return supplyAsync(() -> {
-            List<Profile> profiles = profileRepository.getAll();
-            List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
             List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
             TreasureHunt hunt = treasureHuntRepository.lookup(id);
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
+            return ok(admin.render(profileRepository.getAll(), getAdmins(), tripRepository.getAll(), new RoutedObject<Destination>(null, false, false),             destinationRepository.getAllDestinations()
+                    , new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
         });
     }
 
@@ -477,6 +478,7 @@ public class AdminController {
      * @return CompletionStage holding redirect to the admin page
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
+        undoStackRepository.addToStack(new UndoStack("treasure_hunt", id, SessionController.getCurrentUserId(request)));
         return treasureHuntRepository.setSoftDelete(id, true)
                 .thenApplyAsync(x -> redirect("/admin").flashing("info", "Treasure Hunt: " + id + " was deleted"));
     }

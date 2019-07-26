@@ -31,8 +31,7 @@ public class UndoStack extends Model {
     @Constraints.Required
     private int profileId;
 
-    public UndoStack(int entryId, String item_type, int objectId, int profileId){
-        this.entryId = entryId;
+    public UndoStack(String item_type, int objectId, int profileId){
         this.item_type = item_type;
         this.objectId = objectId;
         this.profileId = profileId;

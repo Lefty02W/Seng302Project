@@ -28,24 +28,20 @@ public class TripRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
-    private final TripDestinationsRepository tripDestinationsRepository;
     private final DestinationRepository destinationRepository;
-    private final ProfileRepository profileRepository;
 
     @Inject
-    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, TripDestinationsRepository tripDestinationsRepository, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
+    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, DestinationRepository destinationRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
-        this.tripDestinationsRepository = tripDestinationsRepository;
         this.destinationRepository = destinationRepository;
-        this.profileRepository = profileRepository;
     }
 
 
     /**
      * insert trip into database
-     * @param trip
-     * @param tripDestinations
+     * @param trip Trip object to be inserted in the database
+     * @param tripDestinations List of trip destinations to be inserted that are inside the trip
      */
     public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
         ebeanServer.insert(trip);
@@ -53,7 +49,7 @@ public class TripRepository {
                 tripDestination.setTripId(trip.getId());
                 Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
                 if (dest.getVisible() == 1) {
-                   //TODO Swap to ownership of global admin
+                    destinationRepository.setOwnerAsAdmin(dest.getDestinationId());
                 }
             ebeanServer.insert(tripDestination);
         }
@@ -150,8 +146,8 @@ public class TripRepository {
 
     /**
      * code to return trip from id
-     * @param tripId
-     * @return
+     * @param tripId Id of the trip to be selected
+     * @return Trip object taken from the database
      */
     public Trip getTrip(int tripId) {
         // Getting the trips out of the database
@@ -178,7 +174,7 @@ public class TripRepository {
             tripDest.setDestination(destinations.get(0));
             orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
         }
-        trip.setOrderedDestiantions(orderedDestiantions);
+        trip.setOrderedDestinations(orderedDestiantions);
         return trip;
     }
 
