@@ -1,3 +1,4 @@
+
 # --- !Ups
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
@@ -42,6 +43,9 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (4, 3, 'Ardennes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (5, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
+
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
@@ -76,3 +80,22 @@ INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle,
 
 INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
   (4, 3, 1, 'A second riddle', CURRENT_DATE, CURRENT_DATE);
+
+
+INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (1, 'Backpacker');
+
+INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (2, 'Groupie');
+
+INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (3, 'Gap year');
+
+INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (1,1,1);
+
+INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (2,5,2);
+
+INSERT INTO destination_request (id, destination_id, profile_id) values (1,1,1);
+
+INSERT INTO destination_request (id, destination_id, profile_id) values (2,1,2);
+
+INSERT INTO destination_change (id, traveller_type_id, action, request_id) values (1,1,1,1);
+
+INSERT INTO destination_change (id, traveller_type_id, action, request_id) values (2,1,1,2);

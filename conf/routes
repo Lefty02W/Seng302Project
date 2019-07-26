@@ -13,7 +13,7 @@ POST    /user/create                 controllers.LoginController.save(request: R
 # Destination
 GET     /destinations/show/:isPublic     controllers.DestinationsController.show(request: Request, isPublic: Boolean)
 GET     /destinations/create        controllers.DestinationsController.showCreate(request: Request)
-GET     /destinations/:id/edit      controllers.DestinationsController.edit(request: Request, id: Integer)
+POST     /destinations/:id/edit      controllers.DestinationsController.edit(request: Request, id: Integer)
 GET     /destinations/:id/edit/show      controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
@@ -23,6 +23,7 @@ POST    /destinations/unfollow/:destId/:isPublic     controllers.DestinationsCon
 GET    /destinations/:photoId/:destId/linkphoto      controllers.DestinationsController.linkPhotoToDestination(request: Request, photoId: Integer, destId: Integer)
 GET    /destinations/:photoId/:destId/unlinkPhoto       controllers.DestinationsController.unlinkPhotoFromDestination(request: Request, photoId: Integer, destId: Integer)
 GET     /destinations/photo/:id/update/privacy     controllers.DestinationsController.updatePhotoPrivacy(id: Integer)
+POST    /destinations/type/request       controllers.DestinationsController.createEditRequest(request : Request)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
@@ -79,17 +80,19 @@ GET    /admin/:userId/admin             controllers.AdminController.makeAdmin(re
 GET   /admin/:userId/admin/remove       controllers.AdminController.removeAdmin(request: Request, userId: Integer)
 
 ## Admin Destinations
-GET     /admin/destinations/:destId                 controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)
-POST    /admin/destinations/:destId                 controllers.AdminController.editDestination(request: Request, destId : Integer)
-GET     /admin/destinations/:destId/delete          controllers.AdminController.deleteDestination(request: Request, destId: Integer)
-POST    /admin/create/destinations                  controllers.AdminController.addDestination(request: Request)
-GET     /admin/destinations/:id/request/reject      controllers.AdminController.rejectDestinationRequest(request : Request, id : Integer)
+GET     /admin/destinations/:destId             controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)
+POST    /admin/destinations/:destId             controllers.AdminController.editDestination(request: Request, destId : Integer)
+GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)
+POST    /admin/create/destinations              controllers.AdminController.addDestination(request: Request)
+GET     /admin/destinations/:id/request/reject  controllers.AdminController.rejectDestinationRequest(request : Request, id : Integer)
+GET     /admin/destinations/:id/request/accept  controllers.AdminController.acceptDestinationRequest(request : Request, id : Integer)
 
 ## Admin Treasure Hunts
 POST    /admin/hunts/create                         controllers.AdminController.createHunt(request : Request)
 GET     /admin/hunts/:id/delete                     controllers.AdminController.deleteHunt(request : Request, id : Integer)
 GET     /admin/hunts/:id/edit/show                  controllers.AdminController.showEditHunt(request : Request, id : Integer)
 POST    /admin/hunts/:id/edit                       controllers.AdminController.editTreasureHunt(request : Request, id : Integer)
+
 
 # Tresure Hunts
 GET     /treasure                    controllers.TreasureHuntController.show(request: Request)

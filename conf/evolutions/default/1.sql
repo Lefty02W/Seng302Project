@@ -264,11 +264,11 @@ create table if not exists destination_change
   traveller_type_id int     not null,
   action            tinyint not null,
   request_id        int     not null,
-  constraint destination_changes_id_uindex
+  constraint destination_change_id_uindex
   unique (id),
-  constraint destination_changes_destination_request_id_fk
+  constraint destination_change_destination_request_id_fk
   foreign key (request_id) references destination_request (id),
-  constraint destination_changes_traveller_type_traveller_type_id_fk
+  constraint destination_change_traveller_type_traveller_type_id_fk
   foreign key (traveller_type_id) references traveller_type (traveller_type_id)
 )
 ;
