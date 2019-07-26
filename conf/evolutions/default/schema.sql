@@ -197,3 +197,14 @@ create table if not exists thumbnail_link
     foreign key (thumbnail_id) references photo (photo_id)
       on update cascade on delete cascade
 );
+
+create table if not exists undo_stack
+(
+  entry_id   int auto_increment
+    primary key,
+  item_type  varchar(30) null,
+  object_id  int         null,
+  profile_id int         null,
+  constraint undo_stack_profile_profile_id_fk
+  foreign key (profile_id) references profile (profile_id)
+);

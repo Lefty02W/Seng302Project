@@ -287,6 +287,17 @@ create table if not exists destination_traveller_type
 )
 ;
 
+create table if not exists undo_stack
+(
+  entry_id   int auto_increment
+    primary key,
+  item_type  varchar(30) null,
+  object_id  int         null,
+  profile_id int         null,
+  constraint undo_stack_profile_profile_id_fk
+  foreign key (profile_id) references profile (profile_id)
+);
+
 create table treasure_hunt
 (
 	treasure_hunt_id int auto_increment,
@@ -351,5 +362,7 @@ drop table if exists destination_request;
 drop table if exists destination_change;
 
 drop table if exists destination_traveller_type;
+
+drop table if exists undo_stack;
 
 drop table if exists treasure_hunt
