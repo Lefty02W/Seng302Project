@@ -556,4 +556,13 @@ public class TripsController extends Controller {
         return redirect("/trips/" + userId + "/create");
     }
 
+
+    /**
+     * Implement the undo delete method from interface
+     * @param tripID - ID of the trip to undo deletion of
+     */
+    public void undo(int tripID) {
+        tripRepository.setSoftDelete(tripID, false);
+    }
+
 }

@@ -171,4 +171,13 @@ public class TreasureHuntController {
             }).orElseGet(() -> redirect("/login"));
         });
     }
+
+
+    /**
+     * Implement the undo delete method from interface
+     * @param treasureHuntID - ID of the treausre hunt to undo deletion of
+     */
+    public void undo(int treasureHuntID) {
+        treasureHuntRepository.setSoftDelete(treasureHuntID, false);
+    }
 }

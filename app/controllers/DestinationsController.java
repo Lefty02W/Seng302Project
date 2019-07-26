@@ -487,5 +487,14 @@ public class DestinationsController extends Controller {
             destinationRepository.travellerTypeChangesTransaction(requestId, 1, toRemove);
             return 0;
             });
-        }
+    }
+
+    /**
+     * Implement the undo delete method from interface
+     * @param destinationID - ID of the destination to undo deletion of
+     */
+    public void undo(int destinationID) {
+        destinationRepository.setSoftDelete(destinationID, false);
+    }
+
 }
