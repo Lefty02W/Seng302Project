@@ -3,10 +3,7 @@ package controllers;
 
 import com.google.common.collect.TreeMultimap;
 import interfaces.TypesInterface;
-import models.Destination;
-import models.PersonalPhoto;
-import models.Photo;
-import models.Profile;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -57,7 +54,7 @@ public class ProfileController extends Controller implements TypesInterface {
     private final TripRepository tripRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
-
+    private final UndoStackRepository undoStackRepository;
 
 
 
@@ -71,8 +68,11 @@ public class ProfileController extends Controller implements TypesInterface {
 
 
     @Inject
-    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, PersonalPhotoRepository personalPhotoRepository,
-            HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, PhotoRepository photoRepository, TripRepository tripRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository)
+    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
+                             PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
+                             ProfileRepository profileRepository, PhotoRepository photoRepository,
+                             TripRepository tripRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository,
+                             UndoStackRepository undoStackRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -83,6 +83,7 @@ public class ProfileController extends Controller implements TypesInterface {
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
             this.profileTravellerTypeRepository = profileTravellerTypeRepository;
+            this.undoStackRepository = undoStackRepository;
         }
 
 
@@ -329,6 +330,12 @@ public class ProfileController extends Controller implements TypesInterface {
     public CompletionStage<Result> show(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
+
+            //TODO check empty stack
+            if (profileRec.get().getRoles().contains("admin")) {
+                undoStackRepository.clearStack(profId);
+            }
+
             if (profileRec.isPresent()) {
                 List<Photo> displayImageList = getUserPhotos(request);
                 Boolean show = showPhotoModal = false;
