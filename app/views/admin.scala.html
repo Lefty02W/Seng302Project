@@ -433,7 +433,12 @@
                                         <label>Nationalities</label>
                                         <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
                                         @for(nation <- countries) {
-                                            <option value="@nation">@nation</option>
+                                            @if(profile.getObject.getNationalityList.contains(nation)){
+
+                                                <option value="@nation" selected>@nation</option>
+                                            }else {
+                                                <option value="@nation">@nation</option>
+                                            }
                                         }
                                         </select>
                                     </div>
@@ -444,7 +449,12 @@
                                         <label>Passports</label>
                                         <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
                                         @for(nation <- countries) {
-                                            <option value="@nation">@nation</option>
+                                            @if(profile.getObject.getPassportsList.contains(nation)){
+
+                                                <option value="@nation" selected>@nation</option>
+                                            }else {
+                                                <option value="@nation">@nation</option>
+                                            }
                                         }
                                         </select>
                                     </div>
@@ -468,6 +478,9 @@
             $('#travellerTypesForm').val($('#typeDropdown').val());
             $('#nationalitiesForm').val($('#nationDropdown').val());
             $('#passportsForm').val($('#passportDropdown').val());
+            $('#travellerTypesFormCreate').val($('#typeDropdownCreate').val());
+            $('#nationalitiesFormCreate').val($('#nationDropdownCreate').val());
+            $('#passportsFormCreate').val($('#passportDropdownCreate').val());
         }
 
 
@@ -1000,9 +1013,9 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
+                                    <input type="text" id="travellerTypesFormCreate" name="travellerTypesForm" class="hidden-field typesField" required>
                                 </div>
-                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownCreate" data-width="100%" required>
                                     <option value="ThrillSeeker">ThrillSeeker</option>
                                     <option value="Backpacker">Backpacker</option>
                                     <option value="Gap Year">Gap Year</option>
@@ -1036,10 +1049,10 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required>
+                                    <input type="text" id="nationalitiesFormCreate" name="nationalitiesForm" class="hidden-field" required>
                                 </div>
                                 <label>Nationalities</label>
-                                <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
+                                <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdownCreate" data-width="100%">
                                 @for(nation <- countries) {
                                     <option value="@nation">@nation</option>
                                 }
@@ -1048,10 +1061,10 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" required>
+                                    <input type="text" id="passportsFormCreate" name="passportsForm" class="hidden-field" required>
                                 </div>
                                 <label>Passports</label>
-                                <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
+                                <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdownCreate" data-width="100%">
                                 @for(nation <- countries) {
                                     <option value="@nation">@nation</option>
                                 }
