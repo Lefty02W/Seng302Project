@@ -2,6 +2,7 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
+import interfaces.TypesInterface;
 import models.Destination;
 import models.PersonalPhoto;
 import models.Photo;
@@ -40,7 +41,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * This class is the controller for the profiles.scala.html file, it provides the route to the
  * profiles page
  */
-public class ProfileController extends Controller {
+public class ProfileController extends Controller implements TypesInterface {
 
     private final Form<Profile> profileForm;
     private final Form<ImageData> imageForm;
@@ -413,5 +414,13 @@ public class ProfileController extends Controller {
         return supplyAsync(() -> redirect(profileEndpoint).flashing("failure", "Photo delete failed"));
     }
 
+
+    /**
+     * Implement the undo delete method from interface
+     * @param profileID - ID of the profile to undo deletion of
+     */
+    public void undo(int profileID) {
+        profileRepository.setSoftDelete(profileID, false);
+    }
 }
 
