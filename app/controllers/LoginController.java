@@ -62,11 +62,11 @@ public class LoginController extends Controller {
                     Profile currentUser = profile.get();
                     return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getProfileId().toString());
                 }
-                return redirect("/").flashing("info", "Profile has been deleted.");
+                return redirect("/").flashing("warning", "Profile has been deleted.");
             }, httpExecutionContext.current());
 
         } else {
-            return supplyAsync(() -> redirect("/").flashing("info", "Login details incorrect, please try again"));
+            return supplyAsync(() -> redirect("/").flashing("info", "Login details incorrect, please try again."));
         }
     }
 
