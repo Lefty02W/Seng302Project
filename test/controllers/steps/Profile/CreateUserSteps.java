@@ -29,6 +29,7 @@ public class CreateUserSteps extends ProvideApplication {
     private Profile createdProfile;
 
     private final String USER_EMAIL = "james@johnston.com";
+    private final String USER_EMAIL_ADMIN = "Sam@samson.com";
 
     @When("he enters the First Name {string}")
     public void enter_first_name(String firstName) {
@@ -167,7 +168,8 @@ public class CreateUserSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/admin/profile/create")
-                .bodyForm(createFormThird);
+                .bodyForm(createFormThird)
+                .session("connected", "2");
         createResult = Helpers.route(provideApplication(), request);
     }
 
@@ -176,6 +178,13 @@ public class CreateUserSteps extends ProvideApplication {
     public void myUserProfileIsSavedInTheDatabase() throws Throwable {
         injectRepositories();
         createdProfile = profileRepository.getProfileById(USER_EMAIL);
+        assertNotNull(createdProfile);
+    }
+
+    @And("^The created profile is saved in the database$")
+    public void theCreatedProfileIsSavedInTheDatabase() throws Throwable {
+        injectRepositories();
+        createdProfile = profileRepository.getProfileById(USER_EMAIL_ADMIN);
         assertNotNull(createdProfile);
     }
 

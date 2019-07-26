@@ -52,10 +52,9 @@ public class AccessAdminSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/login")
-                .bodyForm(loginForm);
-
+                .bodyForm(loginForm)
+                .session("connected", "2");
         loginResult = Helpers.route(provideApplication(), request);
-
     }
 
 

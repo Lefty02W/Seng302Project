@@ -16,6 +16,6 @@ Feature: Admin create a user profile
     And I enter "Backpacker" into the "travellerTypesForm" admin field
     And I enter "Belarus", "Argentina" into the "passportsForm" admin field
     Then admin saves the profile
-    And My user profile is saved in the database
-    And my passports are "New Zealand,Europe"
-    And my nationalities are "New Zealand,Europe"
+    And The created profile is saved in the database
+    And my passports are "Belarus, Argentina"
+    And my nationalities are "New Zealand,China"
