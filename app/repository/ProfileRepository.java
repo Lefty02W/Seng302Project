@@ -153,10 +153,10 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Profile>> lookupEmail(String email) {
         return supplyAsync(() -> {
-            String qry = "Select * from profile where email = ?";
+            String qry = "Select * from profile where email = ? and soft_delete = 0";
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, email).findList();
             Profile profile = null;
-            if (!rowList.get(0).isEmpty()) {
+            if (!rowList.isEmpty() && !rowList.get(0).isEmpty()) {
                 profile = profileFromRow(rowList.get(0));
             }
             return Optional.ofNullable(profile);
