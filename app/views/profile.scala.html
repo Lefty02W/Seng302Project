@@ -565,7 +565,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="travellerTypesString" name="travellerTypesString" class="hidden-field typesField" required value="@currentUser.getTravellerTypesString">
+                                        <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value="@currentUser.getTravellerTypesString">
                                     </div>
                                     <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
                                         @if(currentUser.getTravellerTypesList.contains("ThrillSeeker")) {
@@ -661,7 +661,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" required value="@currentUser.getPassportsString">
+                                        <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" value="@currentUser.getPassportsString">
                                     </div>
                                     <label>Passports</label>
                                     <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
@@ -773,6 +773,9 @@
     <script>
             function fillVals() {
                 $('#travellerTypesForm').val($('#typeDropdown').val());
+                $('#nationalitiesForm').val($('#nationDropdown').val());
+                $('#passportsForm').val($('#passportDropdown').val());
+
             }
 
             $(document).ready(function () {
