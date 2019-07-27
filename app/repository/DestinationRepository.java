@@ -118,14 +118,28 @@ public class DestinationRepository {
                                     .eq("destination_id", destinationId)
                                     .select("tripId")
                                     .findSingleAttributeList();
-                    if (foundIds.isEmpty()) {
+
+                    Boolean usedInTrip = false;
+                    for (Integer Id: foundIds) {
+                        Trip trip = Trip.find.query().where()
+                                .eq("trip_id", Id)
+                                .findOne();
+                        if (trip.getSoftDelete() == 0) {
+                            usedInTrip = true;
+                            break;
+                        }
+                    }
+
+                    if (!usedInTrip) {
                         List<Integer> foundIds2 =
                                     ebeanServer
                                             .find(TreasureHunt.class)
                                             .where()
                                             .eq("destination_id", destinationId)
+                                            .eq("soft_delete", 0)
                                             .select("treasureHuntId")
                                             .findSingleAttributeList();
+
                         if (foundIds2.isEmpty()) return Optional.empty();
                         else return Optional.of("treasure hunts: " + foundIds2);
                     } else {

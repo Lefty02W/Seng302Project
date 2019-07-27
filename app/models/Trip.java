@@ -39,9 +39,10 @@ public class Trip extends Model {
      *
      * @param destinations The destinations in the trip
      */
-    public Trip(ArrayList<TripDestination> destinations, String name) {
+    public Trip(ArrayList<TripDestination> destinations, String name, int softDelete) {
         this.destinations = destinations;
         this.name = name;
+        this.softDelete = softDelete;
         for (TripDestination tripDestination : destinations) {
             this.orderedDestinations.put(tripDestination.getDestOrder(), tripDestination);
         }
@@ -100,7 +101,9 @@ public class Trip extends Model {
         return profileId;
     }
 
-    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
+    public void setSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
+
+    public int getSoftDelete() { return this.softDelete; }
 
     /**
      * calculate total travel time

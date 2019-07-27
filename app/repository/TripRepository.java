@@ -86,9 +86,9 @@ public class TripRepository {
                 Trip targetTrip = ebeanServer.find(Trip.class).setId(tripId).findOne();
                 if (targetTrip != null) {
                     if (delete) {
-                        targetTrip.setSetSoftDelete(1);
+                        targetTrip.setSoftDelete(1);
                     } else {
-                        targetTrip.setSetSoftDelete(0);
+                        targetTrip.setSoftDelete(0);
                     }
                     targetTrip.update();
                     return 1;

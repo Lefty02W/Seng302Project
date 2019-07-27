@@ -141,8 +141,7 @@ public class UndoStackRepository {
      * @return null
      */
     public CompletionStage<Void> clearStackOnAllowed(Profile profile) {
-        //if (canClearStack(profile)) {
-        if (true) {
+        if (canClearStack(profile)) {
             clearStack(profile.getProfileId());
         }
         return null;
