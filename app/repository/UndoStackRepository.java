@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import models.Profile;
 import models.UndoStack;
 import play.db.ebean.EbeanConfig;
 
@@ -79,5 +80,26 @@ public class UndoStackRepository {
     }
 
 
+    /**
+     * Method to check if the stack can be cleared
+     * The conditions are: profile is admin/global admin AND stack is empty
+     * @param profile - Profile wanting to clear stack
+     * @return boolean - True if the profile can execute the operation to clear stack, false otherwise
+     */
+    public boolean canClearStack(Profile profile) {
+        return getUsersStack(profile.getProfileId()).isEmpty() &&
+                (profile.getRoles().contains("admin") || profile.getRoles().contains("global_admin"));
+    }
+
+
+    /**
+     * Clear the stack if the user has permisison and stack is clearable
+     * @param profile - Profile wanting to clear stack
+     * @return null
+     */
+    public CompletionStage<Void> clearStackOnAllowed(Profile profile) {
+        if (canClearStack(profile)) clearStack(profile.getProfileId());
+        return null;
+    }
 
 }
