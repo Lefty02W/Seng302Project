@@ -331,8 +331,7 @@ public class ProfileController extends Controller implements TypesInterface {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
 
-            //TODO check empty stack
-            if (profileRec.get().getRoles().contains("admin")) {
+            if (profileRec.get().getRoles().contains("admin") && undoStackRepository.getUsersStack(profId).isEmpty()) {
                 undoStackRepository.clearStack(profId);
             }
 
