@@ -16,6 +16,7 @@ import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TripRepository;
+import repository.UndoStackRepository;
 import views.html.tripsCard;
 import views.html.tripsCreate;
 import views.html.tripsEdit;
@@ -41,6 +42,7 @@ public class TripsController extends Controller {
     private final TripRepository tripRepository;
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
+    private final UndoStackRepository undoStackRepository;
     private boolean showEmptyEdit = false;
 
     private static final String dateFlashingMessage = "The arrival date must be before the departure date";
@@ -49,7 +51,9 @@ public class TripsController extends Controller {
     private static final String dupDestFlashing = "The same destination cannot be after itself in a trip";
 
     @Inject
-    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
+    public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi,
+                           ProfileRepository profileRepository, DestinationRepository destinationRepository,
+                           UndoStackRepository undoStackRepository) {
         this.form = formFactory.form(Trip.class);
         this.tripRepository = tripRepository;
         this.messagesApi = messagesApi;
@@ -58,6 +62,8 @@ public class TripsController extends Controller {
         this.orderedCurrentDestinations = new TreeMap<>();
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
+        this.undoStackRepository = undoStackRepository;
+
     }
 
     /**
@@ -70,6 +76,8 @@ public class TripsController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
+                undoStackRepository.clearStackOnAllowed(profile.get());
+
                 Profile toSend = profile.get();
                 toSend = tripRepository.setUserTrips(toSend);
                 showEmptyEdit = false;

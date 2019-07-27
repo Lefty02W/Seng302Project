@@ -40,6 +40,7 @@ public class DestinationsController extends Controller {
     private final PersonalPhotoRepository personalPhotoRepository;
     private final DestinationPhotoRepository destinationPhotoRepository;
     private final PhotoRepository photoRepository;
+    private final UndoStackRepository undoStackRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -54,7 +55,7 @@ public class DestinationsController extends Controller {
     public DestinationsController(FormFactory formFactory, MessagesApi messagesApi, DestinationRepository destinationRepository,
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
                                   PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
-                                  PhotoRepository photoRepository) {
+                                  PhotoRepository photoRepository, UndoStackRepository undoStackRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
@@ -63,6 +64,7 @@ public class DestinationsController extends Controller {
         this.personalPhotoRepository = personalPhotoRepository;
         this.destinationPhotoRepository = destinationPhotoRepository;
         this.photoRepository = photoRepository;
+        this.undoStackRepository = undoStackRepository;
     }
 
     /**
@@ -77,6 +79,8 @@ public class DestinationsController extends Controller {
         Integer userId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(userId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
+                undoStackRepository.clearStackOnAllowed(profile.get());
+
                 if (isPublic) {
                     ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
                     try {
