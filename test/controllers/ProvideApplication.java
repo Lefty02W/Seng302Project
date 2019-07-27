@@ -25,6 +25,7 @@ public class ProvideApplication extends WithApplication {
     protected RolesRepository rolesRepository;
     protected PhotoRepository photoRepository;
     protected TreasureHuntRepository treasureHuntRepository;
+    protected UndoStackRepository undoStackRepository;
 
     @Override
     public Application provideApplication() {
@@ -81,12 +82,14 @@ public class ProvideApplication extends WithApplication {
         app.injector().instanceOf(NationalityRepository.class);
         app.injector().instanceOf(PassportCountryRepository.class);
         app.injector().instanceOf(RolesRepository.class);
+        app.injector().instanceOf(UndoStackRepository.class);
 
         treasureHuntRepository = app.injector().instanceOf(TreasureHuntRepository.class);
         rolesRepository = app.injector().instanceOf(RolesRepository.class);
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
         photoRepository = app.injector().instanceOf(PhotoRepository.class);
+        undoStackRepository = app.injector().instanceOf(UndoStackRepository.class);
     }
 
     protected ArrayList<Destination> getUserDest(int id) {
