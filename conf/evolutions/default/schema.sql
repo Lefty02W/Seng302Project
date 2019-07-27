@@ -56,6 +56,7 @@ create table if not exists profile
 	birth_date date not null,
 	gender varchar(20) not null,
 	time_created timestamp default CURRENT_TIMESTAMP not null,
+	soft_delete tinyint(1) default '0' not null,
 	constraint profile_email_uindex
 		unique (email)
 )
