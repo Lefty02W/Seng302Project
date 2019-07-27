@@ -130,8 +130,8 @@ public class UndoStackRepository {
      * @return boolean - True if the profile can execute the operation to clear stack, false otherwise
      */
     public boolean canClearStack(Profile profile) {
-        return getUsersStack(profile.getProfileId()).isEmpty() &&
-                (profile.getRoles().contains("admin") || profile.getRoles().contains("global_admin"));
+        return (!getUsersStack(profile.getProfileId()).isEmpty() &&
+                (profile.getRoles().contains("admin") || profile.getRoles().contains("global_admin")));
     }
 
 
