@@ -8,7 +8,7 @@ import java.util.concurrent.CompletionStage;
  * Examples of 'types' include Profile, Destinations etc.
  */
 public interface TypesInterface {
-    
+
     /**
      * Method to perform an undo action.
      * The method is expected to operate asynchronously
