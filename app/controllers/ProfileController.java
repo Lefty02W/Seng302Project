@@ -331,11 +331,10 @@ public class ProfileController extends Controller implements TypesInterface {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
 
-            if (profileRec.get().getRoles().contains("admin") && undoStackRepository.getUsersStack(profId).isEmpty()) {
-                undoStackRepository.clearStack(profId);
-            }
-
             if (profileRec.isPresent()) {
+
+                undoStackRepository.clearStackOnAllowed(profileRec.get());
+
                 List<Photo> displayImageList = getUserPhotos(request);
                 Boolean show = showPhotoModal = false;
                 Optional<Photo> image = personalPhotoRepository.getProfilePicture(profId);
