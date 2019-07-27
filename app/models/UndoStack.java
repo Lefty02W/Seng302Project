@@ -17,6 +17,7 @@ import javax.persistence.Transient;
  * objectId - id of the object to be removed from the system
  * profileId - profile id of the admin user that made the delete
  */
+@Entity
 public class UndoStack extends Model {
 
     @Id
