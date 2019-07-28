@@ -1,5 +1,7 @@
 package controllers;
 
+import models.Destination;
+import models.DestinationChange;
 import models.Profile;
 import models.Trip;
 import org.junit.Assert;
@@ -21,7 +23,7 @@ public class AdminControllerTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin")
-                .session("connected", profileId.toString());;
+                .session("connected", profileId.toString());
 
         injectRepositories();
     }
@@ -104,4 +106,28 @@ public class AdminControllerTest extends ProvideApplication {
 
         Assert.assertEquals(303, result.status());
     }
+
+
+    @Test
+    public void adminPageAcceptDestinationRequest() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/destinations/1/request/accept")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+
+    }
+
+    @Test
+    public void adminPageDeclineDestinationRequest() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/destinations/2/request/reject")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+
+    }
+
 }

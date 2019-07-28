@@ -1,10 +1,13 @@
 package controllers.steps.Admin;
 
 import controllers.ProvideApplication;
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.Destination;
+import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -14,12 +17,14 @@ import java.util.Map;
 
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class AdminEditDestinationSteps extends ProvideApplication {
 
     Map<String, String> loginForm = new HashMap<>();
     Map<String, String> destForm = new HashMap<>();
     Result loginResult;
+    private Result result;
 
 
     @Given("Admin is logged in to the application")
@@ -44,33 +49,9 @@ public class AdminEditDestinationSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin")
                 .session("connected", "2");
-        Result result = Helpers.route(provideApplication(), request);
+        result = Helpers.route(provideApplication(), request);
 
         assertEquals(200, result.status());
-    }
-
-    @When("admin selects edit on destination {int}")
-    public void adminSelectsEditOnDestination(Integer int1) {
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("GET")
-                .uri("/admin/destinations/2?isEdit=true")
-                .session("connected", "2");
-        Result result = Helpers.route(provideApplication(), request);
-
-        assertEquals(200, result.status());
-
-        destForm.put("country", "Yeet Nation");
-        destForm.put("type", "Country");
-    }
-
-    @When("changes the latitude to {double}")
-    public void changesTheLatitudeTo(Double double1) {
-        destForm.put("latitude", double1.toString());
-    }
-
-    @When("sets the name to {string}")
-    public void setsTheNameTo(String string) {
-        destForm.put("name", string);
     }
 
     @When("selects the the save button")
@@ -80,27 +61,84 @@ public class AdminEditDestinationSteps extends ProvideApplication {
                 .uri("/admin/destinations/2")
                 .bodyForm(destForm)
                 .session("connected", "2");
-        Result result = Helpers.route(provideApplication(), request);
-
-        if (result.redirectLocation().isPresent()) {
-            assertEquals("/admin", result.redirectLocation().get());
-        } else {
-            fail();
-        }
+        result = Helpers.route(provideApplication(), request);
+    }
+    
+    @When("^admin presses edit on destination (\\d+)$")
+    public void adminPressesEditOnDestination(int arg0) throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/hunts/" + Integer.toString(arg0) + "/edit/show")
+                .session("connected", "2");
+        result = Helpers.route(provideApplication(), request);
+        injectRepositories();
+        Destination destination = destinationRepository.lookup(2);
+        destForm.put("profileId", Integer.toString(destination.getProfileId()));
+        destForm.put("name", destination.getName());
+        destForm.put("type", destination.getType());
+        destForm.put("country", destination.getCountry());
+        destForm.put("district", destination.getDistrict());
+        destForm.put("longitude", Double.toString(destination.getLongitude()));
+        destForm.put("latitude", Double.toString(destination.getLatitude()));
+        destForm.put("visible", Integer.toString(destination.getVisible()));
     }
 
-    @Then("destination {int} latitude is updated to {double}")
-    public void destinationLatitudeIsUpdatedTo(Integer int1, Double double1) {
-        injectRepositories();
-        Destination dest = destinationRepository.lookup(int1);
-
-        assertEquals(double1, dest.getLatitude(), 0.0);
+    @And("^changes the latitude to \"([^\"]*)\"$")
+    public void changesTheLatitudeTo(String arg0) throws Throwable {
+        destForm.put("latitude", arg0);
     }
 
-    @Then("destination {int} name is updated to {string}")
-    public void destinationNameIsUpdatedTo(Integer int1, String string) {
+    @And("^sets the name to \"([^\"]*)\"$")
+    public void setsTheNameTo(String arg0) throws Throwable {
+        destForm.put("name", arg0);
+    }
+
+    @Then("^I am redirected to the admin page with a valid notification$")
+    public void iAmRedirectedToTheAdminPageWithAValidNotification() throws Throwable {
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+    }
+
+    @Then("^I am redirected to the admin page with an invalid notification$")
+    public void iAmRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
+        Assert.assertTrue(result.flash().getOptional("error").isPresent());
+    }
+
+
+    @Then("^destinations latitude is updated in the database$")
+    public void destinationsLatitudeIsUpdatedInTheDatabase() throws Throwable {
         injectRepositories();
-        Destination dest = destinationRepository.lookup(int1);
-        assertEquals(string, dest.getName());
+        Destination destination = destinationRepository.lookup(2);
+        assertEquals("12.2", Double.toString(destination.getLatitude()));
+    }
+
+    @And("^destination name is updated in the database$")
+    public void destinationNameIsUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        Destination destination = destinationRepository.lookup(2);
+        assertEquals("Haere Roa", destination.getName());
+    }
+
+    @And("^changes the longitude to \"([^\"]*)\"$")
+    public void changesTheLongitudeTo(String arg0) throws Throwable {
+        destForm.put("longitude", arg0);
+    }
+
+    @And("^destinations latitude is not updated in the database$")
+    public void destinationsLatitudeIsNotUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        Destination destination = destinationRepository.lookup(2);
+        assertNotEquals("200", Double.toString(destination.getLongitude()));
+    }
+
+    @And("^changes the visibility to (\\d+)$")
+    public void changesTheVisibilityTo(int arg0) throws Throwable {
+        destForm.put("visible", Integer.toString(arg0));
+    }
+
+    @And("^destinations visibility is updated in the database$")
+    public void destinationsVisibilityIsUpdatedInTheDatabase() throws Throwable {
+        injectRepositories();
+        Destination destination = destinationRepository.lookup(2);
+        assertEquals(1, destination.getVisible());
     }
 }
