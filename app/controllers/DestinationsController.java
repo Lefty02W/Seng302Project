@@ -218,13 +218,13 @@ public class DestinationsController extends Controller {
     /**
      * takes in a list of destinations, for each destination loads the photos which are linked to that destination and
      * owned by the current user into destination.usersPhotos
-     * @param destinationsList
-     * @return destinationsList
+     * @param destinationsListGot
+     * @return destinationsListGot
      */
-    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsList) {
+    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsListGot) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         if (imageList.isPresent()) {
-            for (Destination destination : destinationsList) {
+            for (Destination destination : destinationsListGot) {
                 List<Photo> destPhotoList = new ArrayList<>();
                 for (Photo photo : imageList.get()) {
                     if (destinationPhotoRepository.findByProfileIdPhotoIdDestId(profileId, photo.getPhotoId(), destination.getDestinationId()).isPresent()) {
@@ -233,9 +233,9 @@ public class DestinationsController extends Controller {
                 }
                 destination.setUsersPhotos(destPhotoList);
             }
-            return destinationsList;
+            return destinationsListGot;
         }
-        return destinationsList;
+        return destinationsListGot;
     }
 
 

@@ -75,28 +75,28 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     }
 
-    @And("^he fills in Name with \"([^\"]*)\"$")
+    @When("^he fills in Name with \"([^\"]*)\"$")
     public void heFillsInNameWith(String arg0) throws Throwable {
         destForm.put("name", arg0);
     }
 
-    @And("^he fills in Type with \"([^\"]*)\"$")
+    @When("^he fills in Type with \"([^\"]*)\"$")
     public void heFillsInTypeWith(String arg0) throws Throwable {
         destForm.put("type", arg0);
     }
 
-    @And("^he fills in Country with \"([^\"]*)\"$")
+    @When("^he fills in Country with \"([^\"]*)\"$")
     public void heFillsInCountryWith(String arg0) throws Throwable {
         destForm.put("country", arg0);
     }
 
-    @And("^he selects \"([^\"]*)\" as the traveller type$")
+    @When("^he selects \"([^\"]*)\" as the traveller type$")
     public void heSelectsAsTheTravellerType(String arg0) throws Throwable {
         System.out.println(arg0);
         destForm.put("travellerTypesStringDest", arg0 + ",");
     }
 
-    @And("^he fills in Longitude as \"([^\"]*)\"$")
+    @When("^he fills in Longitude as \"([^\"]*)\"$")
     public void heFillsInLongitudeAs(String arg0) throws Throwable {
         destForm.put("Longitude", arg0);
     }
