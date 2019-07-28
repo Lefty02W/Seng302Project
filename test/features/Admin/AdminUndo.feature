@@ -11,10 +11,9 @@ Feature: Undo Delete
     Given the admin is on the admin page
     And there is a profile with id "9"
     And the admin deletes the profile with id "9"
-    When the admin selects the change on the undo dropdown
-    And the admin presses the undo button
-    Then the profile "id" is restored
-    And the profile "id" is no longer in the delete stack
+    When the admin presses the undo button
+    Then the profile "9" is restored
+    And the profile "9" is no longer in the delete stack
 
   Scenario: Admin deletes a treasure hun and reverts it
     Given the admin is on the admin page

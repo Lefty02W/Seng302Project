@@ -8,6 +8,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.UndoStack;
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import play.mvc.Http;
 import play.test.Helpers;
 
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 public class AdminUndoSteps extends ProvideApplication {
@@ -27,42 +30,50 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin")
                 .session("connected", "2");
+        Helpers.route(provideApplication(), requestBuilder);
     }
 
     @And("there is a profile with id {string}")
     public void thereIsAProfileWithId(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        assertEquals(profileRepository.getProfileByProfileId(Integer.parseInt(string)).getProfileId().toString(), string);
     }
 
     @Given("the admin deletes the profile with id {string}")
     public void theAdminDeletesTheProfileWithId(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @When("the admin selects the change on the undo dropdown")
-    public void theAdminSelectsTheChangeOnTheUndoDropdown() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/" + string +"/delete")
+                .session("connected", "2");
+        Helpers.route(provideApplication(), requestBuilder);
     }
 
     @When("the admin presses the undo button")
     public void theAdminPressesTheUndoButton() {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/undo/")
+                .session("connected", "2");
+        Helpers.route(provideApplication(),requestBuilder);
     }
 
     @Then("the profile {string} is restored")
     public void theProfileIsRestored(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        System.out.println(profileRepository.getProfileByProfileId(Integer.parseInt(string)).getSoftDelete());
+        assertTrue(profileRepository.getProfileByProfileId(Integer.parseInt(string)).getSoftDelete() == 1);
     }
 
     @Then("the profile {string} is no longer in the delete stack")
     public void theProfileIsNoLongerInTheDeleteStack(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        assertFalse(undoStackRepository.canClearStack(profileRepository.getProfileByProfileId(2)));
+
     }
 
     @Given("there is a treasure hunt with id")
