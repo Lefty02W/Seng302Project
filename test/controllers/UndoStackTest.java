@@ -3,17 +3,13 @@ package controllers;
 import models.UndoStack;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.test.Helpers;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class UndoStackTest extends ProvideApplication {
 
-    //TODO: Fix tests with @Ignore tag
 
     @Before
     public void clearStack() {
@@ -53,7 +49,6 @@ public class UndoStackTest extends ProvideApplication {
      * clears the stack if permissible
      */
     @Test
-    @Ignore
     public void adminProfileShowClearStack() {
         injectRepositories();
         adminLogin();
@@ -87,7 +82,6 @@ public class UndoStackTest extends ProvideApplication {
 
 
     @Test
-    @Ignore
     public void adminDestinationShowClearStack() {
         injectRepositories();
         adminLogin();
@@ -102,7 +96,6 @@ public class UndoStackTest extends ProvideApplication {
 
 
     @Test
-    @Ignore
     public void adminTripsShowClearStack() {
         injectRepositories();
         adminLogin();
