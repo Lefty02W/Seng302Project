@@ -491,6 +491,12 @@ public class AdminController {
     public CompletionStage<Result> undoTopOfStack(Http.Request request) {
         Integer profileId = SessionController.getCurrentUserId(request);
         return undoStackRepository.undoItemOnTopOfStack(profileId)
-                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Deletion is undone"));
+                .thenApplyAsync(x -> {
+                    if (x == 1) {
+                        return redirect("/admin").flashing("info", "Deletion is undone");
+                    } else {
+                        return redirect("/admin").flashing("info", "No changes to undo");
+                    }
+                });
     }
 }
