@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer], usersPhotos : List[Photo], destinationForm : Form[Destination], destination : RoutedObject[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer], usersPhotos : List[Photo], destinationForm : Form[Destination], destination : RoutedObject[Destination], countries : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import models.Destination; var toViewDest = new Destination()
 
@@ -281,10 +281,14 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="form-group" id="holder">
-                                                <small id="label">Country*</small>
-                                                <input type="text" id="country" placeholder="Country" name="country" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
                                             </div>
+                                            <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%">
+                                            @for(nation <- countries) {
+                                                <option value="@nation">@nation</option>
+                                            }
+                                            </select>
                                         </div>
                                         <div class="row">
                                             <div class="form-group" id="holder">
@@ -379,7 +383,18 @@
                                                     <label>Country</label>
                                                 </div>
                                                 <div class="row">
-                                                    <input type="text" id="country" placeholder="Country" name="country" value="@destination.getObject.getCountry" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                    <div class="hidden-div-edit">
+                                                        <input type="text" id="countryEdit" name="country" placeholder="Country" value="@destination.getObject.getCountry" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                    </div>
+                                                    <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdownEdit" data-width="100%">
+                                                        @for(nation <- countries) {
+                                                            @if(destination.getObject.getCountry.equals(nation)){
+                                                                <option value="@nation" selected>@nation</option>
+                                                            }else {
+                                                                <option value="@nation">@nation</option>
+                                                            }
+                                                        }
+                                                    </select>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -416,7 +431,7 @@
                                         <!-- footer -->
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
                                     </div>
                                 }
                             </div>
@@ -1064,6 +1079,8 @@
             function fillVals() {
                 console.log($('#typeDropdown').val());
                 $('#travellerTypesForm').val($('#typeDropdown').val());
+                $('#country').val($('#countriesDropdown').val());
+                $('#countryEdit').val($('#countriesDropdownEdit').val());
             }
 
 
