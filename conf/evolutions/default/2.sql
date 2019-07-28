@@ -24,6 +24,9 @@ INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_d
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender, soft_delete) values
   (8, 'Johnny', 'Sins', 'sins@gmail.com', 'password', CURRENT_DATE, 'Male', 1);
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender,soft_delete) values
+  (9, 'Lisa', 'Curt', 'lisa@gmail.com', 'password', CURRENT_DATE, 'Female', 1);
+
 
 INSERT into roles (role_id, role_name) values
   (1, 'admin');

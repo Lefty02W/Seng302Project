@@ -9,8 +9,8 @@ Feature: Undo Delete
 
   Scenario: Admin deletes a profile and reverts the delete
     Given the admin is on the admin page
-    And the there is a profile with id "69"
-    And the admin deletes the profile with id "69"
+    And there is a profile with id "9"
+    And the admin deletes the profile with id "9"
     When the admin selects the change on the undo dropdown
     And the admin presses the undo button
     Then the profile "id" is restored
