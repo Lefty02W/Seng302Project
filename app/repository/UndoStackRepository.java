@@ -161,21 +161,20 @@ public class UndoStackRepository {
      * @return boolean - True if the profile can execute the operation to clear stack, false otherwise
      */
     public boolean canClearStack(Profile profile) {
-        return (!getUsersStack(profile.getProfileId()).isEmpty() &&
-                (profile.getRoles().contains("admin") || profile.getRoles().contains("global_admin")));
+        return (!getUsersStack(profile.getProfileId()).isEmpty());
     }
 
 
     /**
      * Clear the stack if the user has permission and stack is clear
      * @param profile - Profile wanting to clear stack
-     * @return null
      */
-    public CompletionStage<Void> clearStackOnAllowed(Profile profile) {
-        if (canClearStack(profile)) {
-            clearStack(profile.getProfileId());
+    public void clearStackOnAllowed(Profile profile) {
+        if ((profile.getRoles().contains("admin") || profile.getRoles().contains("global_admin"))) {
+            if (canClearStack(profile)) {
+                clearStack(profile.getProfileId());
+            }
         }
-        return null;
     }
 
     private void clearOutdatedRecords() {

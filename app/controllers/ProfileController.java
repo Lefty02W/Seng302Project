@@ -52,7 +52,6 @@ public class ProfileController extends Controller implements TypesInterface {
     private static boolean showPhotoModal = false;
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
-    private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
     private final UndoStackRepository undoStackRepository;
 
@@ -71,8 +70,7 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository,
-                             UndoStackRepository undoStackRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -82,7 +80,6 @@ public class ProfileController extends Controller implements TypesInterface {
             this.photoRepository = photoRepository;
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
-            this.profileTravellerTypeRepository = profileTravellerTypeRepository;
             this.undoStackRepository = undoStackRepository;
         }
 
@@ -356,7 +353,7 @@ public class ProfileController extends Controller implements TypesInterface {
      * setting it as the user profile picture
      *
      * @param request The users request to save the photo
-     * @return
+     * @return Id of the photo that has been inserted
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadProfilePicture(Http.Request request) {
@@ -400,9 +397,9 @@ public class ProfileController extends Controller implements TypesInterface {
      * Endpoint to handle a request from the user to delete a personal photo
      *
      * @apiNote GET /profile/photo/:photoId/delete
-     * @param request
-     * @param photoId
-     * @return
+     * @param request request of the photo
+     * @param photoId Id of the photo to be deleted
+     * @return Id of the deleted photo
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deletePhoto(Http.Request request, int photoId) {

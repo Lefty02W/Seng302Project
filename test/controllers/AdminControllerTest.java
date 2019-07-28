@@ -68,12 +68,10 @@ public class AdminControllerTest extends ProvideApplication {
     @Test
     public void deleteProfile() {
 
-        List<Profile> profiles = Profile.find.all();
+        List<Profile> profiles = profileRepository.getAll();
         Integer originalSize = profiles.size();
 
         Profile toDelete = profiles.get(4);
-        profiles = profileRepository.getAll();
-        Integer newSize = profiles.size();
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
@@ -81,6 +79,7 @@ public class AdminControllerTest extends ProvideApplication {
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
         Integer expected = originalSize - 1;
+        Integer newSize = profileRepository.getAll().size();
         Assert.assertEquals(expected, newSize);
 
         //Add the profile back to the DB so that other tests can use it.

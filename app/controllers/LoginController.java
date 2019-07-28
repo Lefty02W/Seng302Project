@@ -47,7 +47,7 @@ public class LoginController extends Controller {
 
     /**
      * Function to authenticate a login
-     * @param request
+     * @param request the users login request
      * @return either login failed  with incorrect info or successful login and go to user  page
      */
     public CompletionStage<Result> login(Http.Request request){
@@ -73,8 +73,8 @@ public class LoginController extends Controller {
 
     /**
      * Check if user exists
-     * @param email
-     * @param password
+     * @param email Email of the user to validate login
+     * @param password Password of the user to validate login
      * @return true for existing user or false if not existing
      */
     private boolean checkUser(String email, String password){
@@ -88,7 +88,7 @@ public class LoginController extends Controller {
 
     /**
      * Save user into the database
-     * @param request
+     * @param request users request to create a profile
      * @return redirect to login
      */
     public Result save(Http.Request request){
@@ -105,8 +105,8 @@ public class LoginController extends Controller {
 
     /**
      * create the login page
-     * @param request
-     * @return rendered login pagelogin
+     * @param request users request to show login page/logout
+     * @return rendered login page login
      */
     public Result show(Http.Request request) {
         return ok(login.render(loginForm, profileForm, request, messagesApi.preferred(request)));

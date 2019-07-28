@@ -92,7 +92,7 @@ public class TravellersController extends Controller {
     /**
      * Method to search for travel partners (profiles) with a search term. The search term can be any of the following attributes:
      * nationality, gender, age range, type of traveller.
-     * @param searchForm
+     * @param searchForm Form data to be added to after being filtered
      * @return return list of profiles
      */
     private List<Profile> listGender(List<Profile> resultData, PartnerFormData searchForm) {
@@ -264,7 +264,7 @@ public class TravellersController extends Controller {
 
     /**
      * This method shows the travellers page on the screen
-     * @return
+     * @return result of the rendering of the travellers page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request) {

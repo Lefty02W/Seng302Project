@@ -1,10 +1,9 @@
 package controllers;
 
 
-import models.Destination;
 import models.RoutedObject;
 import models.TreasureHunt;
-import org.joda.time.DateTime;
+
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -16,10 +15,6 @@ import repository.TreasureHuntRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -40,8 +35,6 @@ public class TreasureHuntController {
 
     /**
      * Constructor for the treasure hunt controller class
-     *
-     * @param messagesApi
      */
     @Inject
     public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository) {
