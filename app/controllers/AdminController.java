@@ -290,7 +290,6 @@ public class AdminController {
      * @apiNote /admin/destinations/:destId/delete
      */
     public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
-        undoStackRepository.addToStack(new UndoStack("destination", destId, SessionController.getCurrentUserId(request)));
         return destinationRepository
                 .checkDestinationExists(destId)
                 .thenApplyAsync(
@@ -304,6 +303,7 @@ public class AdminController {
                                                         + " is used within the following "
                                                         + result.get());
                             }
+                            undoStackRepository.addToStack(new UndoStack("destination", destId, SessionController.getCurrentUserId(request)));
                             destinationRepository.setSoftDelete(destId, 1);
                             return redirect(adminEndpoint)
                                     .flashing(

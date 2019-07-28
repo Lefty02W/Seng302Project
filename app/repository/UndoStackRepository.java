@@ -6,10 +6,13 @@ import io.ebean.EbeanServer;
 import models.Profile;
 import models.TreasureHunt;
 import models.UndoStack;
+import org.joda.time.DateTime;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
@@ -68,6 +71,7 @@ public class UndoStackRepository {
      */
     public CompletionStage<Void> clearStack(int userId) {
         return supplyAsync(() -> {
+            clearOutdatedRecords();
             ArrayList<UndoStack> undoStackList = getUsersStack(userId);
 
             for (UndoStack undoStack: undoStackList) {
@@ -171,7 +175,7 @@ public class UndoStackRepository {
 
 
     /**
-     * Clear the stack if the user has permisison and stack is clearable
+     * Clear the stack if the user has permission and stack is clear
      * @param profile - Profile wanting to clear stack
      * @return null
      */
@@ -180,6 +184,17 @@ public class UndoStackRepository {
             clearStack(profile.getProfileId());
         }
         return null;
+    }
+
+    private void clearOutdatedRecords() {
+        String dateString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new DateTime().minusDays(1).toDate());
+        List<UndoStack> outdatedCommands = ebeanServer.find(UndoStack.class)
+                .where()
+                .lt("time_created", dateString)
+                .findList();
+        for (UndoStack i : outdatedCommands) {
+            ebeanServer.delete(i);
+        }
     }
 
 }
