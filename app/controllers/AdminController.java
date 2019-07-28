@@ -82,7 +82,7 @@ public class AdminController {
                     "Global admin cannot be deleted.")));
         }
         undoStackRepository.addToStack(new UndoStack("profile", id, SessionController.getCurrentUserId(request)));
-        return profileRepository.setSoftDelete(id, true).thenApplyAsync(userEmail -> redirect(adminEndpoint).flashing("info",
+        return profileRepository.setSoftDelete(id, 1).thenApplyAsync(userEmail -> redirect(adminEndpoint).flashing("info",
                 "Profile deleted successfully"));
     }
 
@@ -216,7 +216,7 @@ public class AdminController {
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
         undoStackRepository.addToStack(new UndoStack("trip", tripId, SessionController.getCurrentUserId(request)));
-        return tripRepository.setSoftDelete(tripId, true).thenApplyAsync(x -> redirect(adminEndpoint)
+        return tripRepository.setSoftDelete(tripId, 1).thenApplyAsync(x -> redirect(adminEndpoint)
                 .flashing(
                         "info",
                         "Trip: " + tripId + " deleted")
@@ -304,7 +304,7 @@ public class AdminController {
                                                         + " is used within the following "
                                                         + result.get());
                             }
-                            destinationRepository.setSoftDelete(destId, true);
+                            destinationRepository.setSoftDelete(destId, 1);
                             return redirect(adminEndpoint)
                                     .flashing(
                                             "info",
@@ -479,8 +479,18 @@ public class AdminController {
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
         undoStackRepository.addToStack(new UndoStack("treasure_hunt", id, SessionController.getCurrentUserId(request)));
-        return treasureHuntRepository.setSoftDelete(id, true)
+        return treasureHuntRepository.setSoftDelete(id, 1)
                 .thenApplyAsync(x -> redirect("/admin").flashing("info", "Treasure Hunt: " + id + " was deleted"));
     }
 
+    /**
+     * Endpoint method of an admin to undo a delete
+     * @param request the admin request
+     * @return CompletionStage holding redirect to the admin page
+     */
+    public CompletionStage<Result> undoTopOfStack(Http.Request request) {
+        Integer profileId = SessionController.getCurrentUserId(request);
+        return undoStackRepository.undoItemOnTopOfStack(profileId)
+                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Deletion is undone"));
+    }
 }

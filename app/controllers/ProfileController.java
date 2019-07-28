@@ -426,7 +426,7 @@ public class ProfileController extends Controller implements TypesInterface {
      */
     public CompletionStage<Void> undo(int profileID) {
         return supplyAsync(() -> {
-            profileRepository.setSoftDelete(profileID, false);
+            profileRepository.setSoftDelete(profileID, 0);
             return null;
         });
     }

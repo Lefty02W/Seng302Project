@@ -573,7 +573,7 @@ public class TripsController extends Controller {
      * @param tripID - ID of the trip to undo deletion of
      */
     public void undo(int tripID) {
-        tripRepository.setSoftDelete(tripID, false);
+        tripRepository.setSoftDelete(tripID, 0);
     }
 
 }

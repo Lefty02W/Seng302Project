@@ -178,6 +178,6 @@ public class TreasureHuntController {
      * @param treasureHuntID - ID of the treausre hunt to undo deletion of
      */
     public void undo(int treasureHuntID) {
-        treasureHuntRepository.setSoftDelete(treasureHuntID, false);
+        treasureHuntRepository.setSoftDelete(treasureHuntID, 0);
     }
 }

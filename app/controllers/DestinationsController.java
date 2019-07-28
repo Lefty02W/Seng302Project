@@ -498,7 +498,7 @@ public class DestinationsController extends Controller {
      * @param destinationID - ID of the destination to undo deletion of
      */
     public void undo(int destinationID) {
-        destinationRepository.setSoftDelete(destinationID, false);
+        destinationRepository.setSoftDelete(destinationID, 0);
     }
 
 }

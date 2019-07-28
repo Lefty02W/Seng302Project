@@ -175,16 +175,12 @@ public class DestinationRepository {
      * @param delete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
-    public CompletionStage<Integer> setSoftDelete(int destId, boolean delete) {
+    public CompletionStage<Integer> setSoftDelete(int destId, int softDelete) {
         return supplyAsync(() -> {
             try {
                 Destination targetDest = ebeanServer.find(Destination.class).setId(destId).findOne();
                 if (targetDest != null) {
-                    if (delete) {
-                        targetDest.setSetSoftDelete(1);
-                    } else {
-                        targetDest.setSetSoftDelete(0);
-                    }
+                    targetDest.setSetSoftDelete(softDelete);
                     targetDest.update();
                     return 1;
                 } else {

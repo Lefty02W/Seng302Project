@@ -71,7 +71,20 @@ public class UndoStackRepository {
             ArrayList<UndoStack> undoStackList = getUsersStack(userId);
 
             for (UndoStack undoStack: undoStackList) {
-                hardDeleteObject(undoStack);
+                switch (undoStack.getItem_type()) {
+                    case "profile":
+                        profileRepository.delete(undoStack.getObjectId());
+                        break;
+                    case "trip":
+                        tripRepository.delete(undoStack.getObjectId());
+                        break;
+                    case "destination":
+                        destinationRepository.delete(undoStack.getObjectId());
+                        break;
+                    case "treasure_hunt":
+                        treasureHuntRepository.deleteTreasureHunt(undoStack.getObjectId());
+                        break;
+                }
             }
             ebeanServer.find(UndoStack.class)
                     .where()
@@ -81,20 +94,19 @@ public class UndoStackRepository {
         });
     }
 
+
     /**
-     * Deletes an item from the database
+     * Deletes an item from the undoStack
      * @param item the item object to be removed from the database
      * @return null
      */
     public CompletionStage<Void> removeItem(UndoStack item){
         return supplyAsync(() -> {
-            UndoStack undoStack = ebeanServer.find(UndoStack.class)
+            ebeanServer.find(UndoStack.class)
                     .where()
                     .eq("profile_id", item.getProfileId())
                     .eq("object_id", item.getObjectId())
-                    .findOne();
-
-            hardDeleteObject(undoStack);
+                    .delete();
 
             return null;
         });
@@ -102,24 +114,47 @@ public class UndoStackRepository {
 
 
     /**
-     * takes a undoStack object and then calls the apppropriate repo to delete the object that undoStack represents
-     * @param undoStack which represents the appropriate object to be deleted
+     * Undoes a soft delete for the item on top of the stack,
+     * this deletes the item from the stack and,
+     * sets the softDelete value to 0 for the appropriate object in the database (profile, trip...)
+     * @return boolean, true if worked successfully, else false
      */
-    private void hardDeleteObject(UndoStack undoStack) {
-        switch (undoStack.getItem_type()) {
-            case "profile":
-                profileRepository.delete(undoStack.getObjectId());
-                break;
-            case "trip":
-                tripRepository.delete(undoStack.getObjectId());
-                break;
-            case "destination":
-                destinationRepository.delete(undoStack.getObjectId());
-                break;
-            case "treasure_hunt":
-                treasureHuntRepository.deleteTreasureHunt(undoStack.getObjectId());
-                break;
-        }
+    public CompletionStage<Integer> undoItemOnTopOfStack(Integer userId) {
+        return supplyAsync(() -> {
+            ArrayList<UndoStack> undoStackList = getUsersStack(userId);
+            if (undoStackList.size() == 0) {
+                return 0;
+            }
+            UndoStack topOfStack = undoStackList.get(0);
+            for (UndoStack item : undoStackList) {
+                if (item.getEntryId() < topOfStack.getEntryId()) {
+                    topOfStack = item;
+                }
+            }
+
+            switch (topOfStack.getItem_type()) {
+                case "profile":
+                    profileRepository.setSoftDelete(topOfStack.getObjectId(), 0);
+                    break;
+                case "trip":
+                    tripRepository.setSoftDelete(topOfStack.getObjectId(), 0);
+                    break;
+                case "destination":
+                    destinationRepository.setSoftDelete(topOfStack.getObjectId(), 0);
+                    break;
+                case "treasure_hunt":
+                    treasureHuntRepository.setSoftDelete(topOfStack.getObjectId(), 0);
+                    break;
+            }
+
+            ebeanServer.find(UndoStack.class)
+                    .where()
+                    .eq("profile_id", topOfStack.getProfileId())
+                    .eq("object_id", topOfStack.getObjectId())
+                    .delete();
+
+            return 1;
+        }, executionContext);
     }
 
 

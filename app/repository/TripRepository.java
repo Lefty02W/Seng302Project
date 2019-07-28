@@ -80,16 +80,12 @@ public class TripRepository {
      * @param delete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
-    public CompletionStage<Integer> setSoftDelete(int tripId, boolean delete) {
+    public CompletionStage<Integer> setSoftDelete(int tripId, int softDelete) {
         return supplyAsync(() -> {
             try {
                 Trip targetTrip = ebeanServer.find(Trip.class).setId(tripId).findOne();
                 if (targetTrip != null) {
-                    if (delete) {
-                        targetTrip.setSoftDelete(1);
-                    } else {
-                        targetTrip.setSoftDelete(0);
-                    }
+                    targetTrip.setSoftDelete(softDelete);
                     targetTrip.update();
                     return 1;
                 } else {

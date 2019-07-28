@@ -292,19 +292,15 @@ public class ProfileRepository {
      * sets soft delete for a profile which eather deletes it or
      * undoes the delete
      * @param profileId The ID of the profile to soft delete
-     * @param delete Boolean, true if is to be deleted, false if cancel a delete
+     * @param value, the value softDelete is to be set to
      * @return
      */
-    public CompletionStage<Integer> setSoftDelete(int profileId, boolean delete) {
+    public CompletionStage<Integer> setSoftDelete(int profileId, int value) {
         return supplyAsync(() -> {
             try {
                 Profile targetProfile = ebeanServer.find(Profile.class).setId(profileId).findOne();
                 if (targetProfile != null) {
-                    if (delete) {
-                        targetProfile.setSetSoftDelete(1);
-                    } else {
-                        targetProfile.setSetSoftDelete(0);
-                    }
+                    targetProfile.setSetSoftDelete(value);
                     targetProfile.update();
                     return 1;
                 } else {

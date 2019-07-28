@@ -63,6 +63,7 @@ POST    /profile/photo/profile/upload   controllers.ProfileController.uploadProf
 # Admins
 POST    /admin/:id                controllers.ProfileController.updateAdmin(request: Request, id: Integer)
 GET     /admin                    controllers.AdminController.show(request: Request)
+GET     /admin/undo/              controllers.AdminController.undoTopOfStack(request : Request)
 
 ## Admin Trips
 GET     /admin/trips/:tripId/delete     controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
