@@ -75,20 +75,7 @@ public class UndoStackRepository {
             ArrayList<UndoStack> undoStackList = getUsersStack(userId);
 
             for (UndoStack undoStack: undoStackList) {
-                switch (undoStack.getItem_type()) {
-                    case "profile":
-                        profileRepository.delete(undoStack.getObjectId());
-                        break;
-                    case "trip":
-                        tripRepository.delete(undoStack.getObjectId());
-                        break;
-                    case "destination":
-                        destinationRepository.delete(undoStack.getObjectId());
-                        break;
-                    case "treasure_hunt":
-                        treasureHuntRepository.deleteTreasureHunt(undoStack.getObjectId());
-                        break;
-                }
+                processStackItem(undoStack);
             }
             ebeanServer.find(UndoStack.class)
                     .where()
@@ -104,7 +91,7 @@ public class UndoStackRepository {
      * @param item the item object to be removed from the database
      * @return null
      */
-    public CompletionStage<Void> removeItem(UndoStack item){
+    CompletionStage<Void> removeItem(UndoStack item){
         return supplyAsync(() -> {
             ebeanServer.find(UndoStack.class)
                     .where()
@@ -194,6 +181,25 @@ public class UndoStackRepository {
                 .findList();
         for (UndoStack i : outdatedCommands) {
             ebeanServer.delete(i);
+            processStackItem(i);
+        }
+    }
+
+
+    private void processStackItem(UndoStack command) {
+        switch (command.getItem_type()) {
+            case "profile":
+                profileRepository.delete(command.getObjectId());
+                break;
+            case "trip":
+                tripRepository.delete(command.getObjectId());
+                break;
+            case "destination":
+                destinationRepository.delete(command.getObjectId());
+                break;
+            case "treasure_hunt":
+                treasureHuntRepository.deleteTreasureHunt(command.getObjectId());
+                break;
         }
     }
 
