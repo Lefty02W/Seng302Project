@@ -77,6 +77,16 @@
                         </div>
 
                         <button class="btn btn-primary">Undo Action</button>
+
+                        <div class="helpPopup" onclick="helpPopup()">What's this?
+                            <span class="popuptext" id="helpPopup">
+                                Shows the last action you executed on this page. <br><br>
+                                Click the drop down to see the full list of actions performed while on the admin page.
+                                    Note that only the most recent change can be undone.<br><br>
+                                Click the button to undo the specified action. <br>
+                                Undo Action can also be accessed using the shortcut key "CTRL" + "SHIFT" + "Z
+                            </span>
+                        </div>
                     </div>
 
                     <div class="col">
@@ -544,6 +554,11 @@
         function chooseAdmin() {
             var e = document.getElementById("profileSelect");
             alert(e.value);
+        }
+
+        function helpPopup() {
+            var popup = document.getElementById("helpPopup");
+            popup.classList.toggle("show");
         }
 
 
