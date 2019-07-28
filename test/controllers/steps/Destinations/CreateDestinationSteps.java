@@ -92,7 +92,7 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @And("^he selects \"([^\"]*)\" as the traveller type$")
     public void heSelectsAsTheTravellerType(String arg0) throws Throwable {
-        destForm.put("travellerTypesStringDest", arg0);
+        destForm.put("travellerTypesStringDest", arg0 + ", ");
     }
 
     @And("^he fills in Longitude as \"([^\"]*)\"$")

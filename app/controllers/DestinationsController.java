@@ -404,6 +404,9 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
+        System.out.println(destination.getTravellerTypesList());
+        System.out.println(destination.getTravellerTypesForm());
+        System.out.println(destination.getTravellerTypesString());
         destination.initTravellerType();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
