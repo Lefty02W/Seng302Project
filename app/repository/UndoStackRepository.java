@@ -51,6 +51,11 @@ public class UndoStackRepository {
         }, executionContext);
     }
 
+
+    public UndoStack getStackItem(int id) {
+        return ebeanServer.find(UndoStack.class).where().eq("entry_id", id).findOne();
+    }
+
     /**
      * Method to check if the current user has any changes on the stack
      * @param userId id of the current user

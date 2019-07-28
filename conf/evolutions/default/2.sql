@@ -45,6 +45,9 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (4, 3, 'Ardennes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
+  (5, 3, 'yes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0, 1);
+
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
@@ -65,9 +68,6 @@ INSERT INTO photo (visible, content_type, name, path) values
 INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
   (2, 2, 0);
 
-INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
-(1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
-
 INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
   (1, 1, 1, 'Yes but No', CURRENT_DATE, CURRENT_DATE);
 
@@ -78,4 +78,7 @@ INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle,
   (3, 2, 1, 'A riddle', CURRENT_DATE, CURRENT_DATE);
 
 INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
-  (4, 3, 1, 'A second riddle', CURRENT_DATE, CURRENT_DATE);
+  (4, 2, 1, 'A second riddle', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (1, 'destination', 5, 2, CURRENT_DATE - 5)

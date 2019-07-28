@@ -6,6 +6,7 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.util.Date;
 
 /**
  * UndoStack class containing all the attributes for inserting an undo object into the undo_stack database table
@@ -31,6 +32,8 @@ public class UndoStack extends Model {
 
     @Constraints.Required
     private int profileId;
+
+    private Date timeCreated;
 
     public UndoStack(String item_type, int objectId, int profileId){
         this.item_type = item_type;
@@ -70,5 +73,7 @@ public class UndoStack extends Model {
         this.profileId = profileId;
     }
 
-
+    public Date getTimeCreated() {
+        return timeCreated;
+    }
 }

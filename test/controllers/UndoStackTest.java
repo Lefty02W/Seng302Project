@@ -30,6 +30,7 @@ public class UndoStackTest extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri(endPoint);
+        Helpers.route(provideApplication(), request);
     }
 
 

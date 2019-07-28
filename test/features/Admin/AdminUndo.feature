@@ -1,6 +1,12 @@
 Feature: Undo Delete
   As an admin
   I want to be able to undo deletes I have made on the current screen
+
+
+  Background:
+    Given I am logged into the application as an admin
+
+
   Scenario: Admin deletes a profile and reverts the delete
     Given the admin is on the admin page
     And the there is a profile with id "69"
@@ -30,5 +36,12 @@ Feature: Undo Delete
     Then the destination is restored
     And the treasure hunt is removed from the delete stack
     And the trip is still on the delete stack
+
+  Scenario: Outdated command is removed and executed from undo stack
+    Given the admin is on the admin page
+    And command stack item 1 is more than one day old
+    When the admin leaves the admin page
+    Then command 1 should no longer be in the database
+    And related destination 5 should be removed from the database
 
 
