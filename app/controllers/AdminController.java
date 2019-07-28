@@ -389,7 +389,7 @@ public class AdminController {
         destination.initTravellerType();
         destination.setVisible(visibility);
 
-        return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin"));
+        return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin").flashing("info", "Destination " + destination.getName() + " added successfully"));
     }
 
 

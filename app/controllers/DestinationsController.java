@@ -384,7 +384,7 @@ public class DestinationsController extends Controller {
                     dest.setDestinationId(destId.get());
                     newPublicDestination(dest);
                 }
-                return redirect(destShowRoute).flashing("success", "Destination: " + id + " updated");
+                return redirect(destShowRoute).flashing("success", "Destination: " + dest.getName() + " updated");
             });
         } else {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
