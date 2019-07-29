@@ -31,7 +31,7 @@ public class ProfilePassportCountryRepository {
      * @param passport The passport to add
      * @return
      */
-    public Optional<Integer> insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
+    Optional<Integer> insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
         Integer idOpt;
         try {
             idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName()).get();
@@ -64,7 +64,7 @@ public class ProfilePassportCountryRepository {
      * @param profileId The given user ID
      * @return
      */
-    public Optional<Map<Integer, PassportCountry>> getList(Integer profileId){
+    Optional<Map<Integer, PassportCountry>> getList(Integer profileId){
         String qry = "Select * from profile_passport_country where profile = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
         Map<Integer, PassportCountry> passportList = new TreeMap<>();
@@ -78,7 +78,7 @@ public class ProfilePassportCountryRepository {
      * Removes all of the passport country linking rows corresponding to the sent in user
      * @param profileId The given user ID
      */
-    public void removeAll(Integer profileId) {
+    void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_passport_country where profile " +
                 "= ?";

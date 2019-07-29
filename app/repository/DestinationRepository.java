@@ -54,7 +54,7 @@ public class DestinationRepository {
      * @param id the id of the user profile
      * @return destinations, list of all user destinations
      */
-    public ArrayList<Destination> getUserDestinations(int id) {
+    public List<Destination> getUserDestinations(int id) {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("profile_id", id)
@@ -67,7 +67,7 @@ public class DestinationRepository {
      *
      * @return destinations, list of all public destinations
      */
-    public ArrayList<Destination> getPublicDestinations() {
+    public List<Destination> getPublicDestinations() {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("visible", 1)
@@ -406,7 +406,7 @@ public class DestinationRepository {
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
      *  destination_changes table
      */
-    public CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
+    private CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
         return supplyAsync(() -> {
             ebeanServer.insert(destinationChange);
             return destinationChange.getId();
@@ -493,7 +493,7 @@ public class DestinationRepository {
      *
      * @return destinations, list of all Destinations
      */
-    public ArrayList<Destination> getAllDestinations() {
+    public List<Destination> getAllDestinations() {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("soft_delete", 0)

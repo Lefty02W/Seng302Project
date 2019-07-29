@@ -68,9 +68,8 @@ public class RolesRepository {
         for (SqlRow row : rowList) {
             //Retrieve role as name by id
             Optional<String> role = getRoleById(row.getInteger("role_id"));
-            if (role.isPresent()) { //Ensure role exists before adding to list
-                roles.add(role.get());
-            }
+            //Ensure role exists before adding to list
+            role.ifPresent(roles::add);
         }
 
         return Optional.of(roles);
@@ -190,7 +189,7 @@ public class RolesRepository {
      * @param role String of role name to find
      * @return optional of user id that is in use of the role
      */
-    public Optional<Integer> getIdFromRole(String role) {
+    Optional<Integer> getIdFromRole(String role) {
         Optional<Integer> roleId = getRoleFromName(role);
         List<Integer> profileIds = new ArrayList<>();
         if (roleId.isPresent()) {

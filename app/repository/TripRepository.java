@@ -43,7 +43,7 @@ public class TripRepository {
      * @param trip Trip object to be inserted in the database
      * @param tripDestinations List of trip destinations to be inserted that are inside the trip
      */
-    public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
+    public void insert(Trip trip, List<TripDestination> tripDestinations) {
         ebeanServer.insert(trip);
         for (TripDestination tripDestination : tripDestinations) {
                 tripDestination.setTripId(trip.getId());
@@ -66,7 +66,7 @@ public class TripRepository {
             try {
                 final Optional<Trip> tripOptional = Optional.ofNullable(ebeanServer.find(Trip.class).setId(tripID).findOne());
                 tripOptional.ifPresent(Model::delete);
-                return tripOptional.map(p -> p.getId());
+                return tripOptional.map(Trip::getId);
             } catch (Exception e) {
                 return Optional.empty();
             }
@@ -77,7 +77,6 @@ public class TripRepository {
      * sets soft delete for a Trip which eather deletes it or
      * undoes the delete
      * @param tripId The ID of the trip to soft delete
-     * @param delete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
     public CompletionStage<Integer> setSoftDelete(int tripId, int softDelete) {
@@ -154,7 +153,6 @@ public class TripRepository {
 
         Trip trip = result.get(0);
 
-        ArrayList<TripDestination> tripDestinations = new ArrayList<>();
         TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
         List<TripDestination> tripDests = TripDestination.find.query()
                 .where()

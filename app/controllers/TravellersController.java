@@ -205,6 +205,8 @@ public class TravellersController extends Controller {
                         resultProfiles.add(profile);
                     }
                     break;
+                default:
+                    break;
             }
         }
 

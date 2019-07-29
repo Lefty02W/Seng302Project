@@ -10,8 +10,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
@@ -60,7 +60,7 @@ public class addTripSteps extends ProvideApplication {
 
     @When("user selects a destination called {string}")
     public void userSelectsADestinationCalled(String string) {
-     ArrayList<Destination> userDestinations = getUserDest(1);
+     List<Destination> userDestinations = getUserDest(1);
         throw new cucumber.api.PendingException();
 
     }

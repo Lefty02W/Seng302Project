@@ -1,8 +1,10 @@
 package repository;
 
-import io.ebean.*;
+import io.ebean.Ebean;
+import io.ebean.EbeanServer;
+import io.ebean.SqlUpdate;
+import io.ebean.Transaction;
 import models.DestinationPhoto;
-import models.PersonalPhoto;
 import models.Photo;
 import play.db.ebean.EbeanConfig;
 
@@ -85,12 +87,7 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
      */
     public CompletionStage<Optional<Integer>> insert(DestinationPhoto photo) {
         return supplyAsync(() -> {
-            System.out.println("hello fam");
-            try {
-                ebeanServer.insert(photo);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ebeanServer.insert(photo);
            return Optional.of(photo.getDestinationPhotoId());
         }, executionContext);
     }
@@ -102,9 +99,7 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
      * @return Optional DestiantionPhoto wrapped in a completion stage
      */
     public CompletionStage<Optional<DestinationPhoto>> findById(int id) {
-        return supplyAsync(() -> {
-            return Optional.ofNullable(ebeanServer.find(DestinationPhoto.class).where().eq("destination_photo_id", id).findOne());
-        });
+        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(DestinationPhoto.class).where().eq("destination_photo_id", id).findOne()));
     }
 
     public Optional<DestinationPhoto> findByProfileIdPhotoIdDestId(int profileId, int photoId, int destinationId) {
@@ -118,7 +113,6 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
     /**
      * Method to find all destination photos
      *
-     * @param profileId the id of the user to find photos for
      * @return Optional Map holding all destinationPhotos found
      */
     public Optional<List<Photo>> getAllDestinationPhotos() {
@@ -147,10 +141,7 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
             if (destPhotoList.size() > 1) {
                 return true;
             }
-            if (destPhotoList.get(0).getProfileId() == profileId) {
-                return false;
-            }
-            return true;
+            return destPhotoList.get(0).getProfileId() != profileId;
         }
         return false;
     }

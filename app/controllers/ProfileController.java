@@ -3,7 +3,10 @@ package controllers;
 
 import com.google.common.collect.TreeMultimap;
 import interfaces.TypesInterface;
-import models.*;
+import models.Destination;
+import models.PersonalPhoto;
+import models.Photo;
+import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -49,10 +52,10 @@ public class ProfileController extends Controller implements TypesInterface {
     private final PhotoRepository photoRepository;
     private List<Photo> photoList = new ArrayList<>();
     private Photo demoProfilePicture = null;
-    private static boolean showPhotoModal = false;
+    private Boolean showPhotoModal = false;
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
-    private final String profileEndpoint = "/profile";
+    private static final String profileEndpoint = "/profile";
     private final UndoStackRepository undoStackRepository;
 
 
@@ -231,12 +234,8 @@ public class ProfileController extends Controller implements TypesInterface {
      */
     @Security.Authenticated(SecureSession.class)
     private CompletionStage<Result> savePhoto(Photo photo, int profileId){
-        return photoRepository.insert(photo).thenApplyAsync(photoId -> {
-            return personalPhotoRepository.insert(new PersonalPhoto(profileId, photoId))
-            .thenApplyAsync(id -> {
-                return id;
-            });
-        }).thenApply(result -> redirect("/profile"));
+        return photoRepository.insert(photo).thenApplyAsync(photoId -> personalPhotoRepository.insert(new PersonalPhoto(profileId, photoId))
+        .thenApplyAsync(id -> id)).thenApply(result -> redirect("/profile"));
     }
 
     /**
@@ -245,7 +244,7 @@ public class ProfileController extends Controller implements TypesInterface {
      * @return extension string with just the extension.
      */
     private String photoType(String url){
-        return url.substring(url.lastIndexOf("/") + 1);
+        return url.substring(url.lastIndexOf('/') + 1);
     }
 
     /**
@@ -271,7 +270,7 @@ public class ProfileController extends Controller implements TypesInterface {
                     File thumbFile = new File(System.getProperty("user.dir") +"/photos/thumbnails/" + fileName + "." + imgType);
                     ImageIO.write(bufferedImage, imgType, thumbFile);
                     photoRepository.insertThumbnail(new Photo("photos/thumbnails/" + fileName, photoOpt.get().getType(), 1, fileName), photoId);
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -408,9 +407,7 @@ public class ProfileController extends Controller implements TypesInterface {
             String filePath = System.getProperty("user.dir") + "/" + photoOptional.get().getPath();
             File file = new File(filePath);
             if (file.delete()) {
-                return photoRepository.delete(photoId).thenApplyAsync(x -> {
-                    return redirect(profileEndpoint).flashing("success", "Photo deleted");
-                });
+                return photoRepository.delete(photoId).thenApplyAsync(x -> redirect(profileEndpoint).flashing("success", "Photo deleted"));
             }
         }
         return supplyAsync(() -> redirect(profileEndpoint).flashing("failure", "Photo delete failed"));

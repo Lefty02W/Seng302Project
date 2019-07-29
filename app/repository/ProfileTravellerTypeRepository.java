@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+/**
+ * Database access class for the profile_traveller_type database table
+ */
 public class ProfileTravellerTypeRepository {
 
     private final EbeanServer ebeanServer;
@@ -28,7 +31,7 @@ public class ProfileTravellerTypeRepository {
      * @param travellerType The nationality to add
      * @return
      */
-    public Optional<Integer> insertProfileTravellerType(TravellerType travellerType, Integer profileId) {
+    Optional<Integer> insertProfileTravellerType(TravellerType travellerType, Integer profileId) {
         Integer idOpt;
         try {
             idOpt = travellerTypeRepository.getTravellerTypeId(travellerType.getTravellerTypeName()).get();
@@ -61,7 +64,7 @@ public class ProfileTravellerTypeRepository {
      * @param profileId The given user ID
      * @return
      */
-    public Optional<Map<Integer, TravellerType>> getList(Integer profileId) {
+    Optional<Map<Integer, TravellerType>> getList(Integer profileId) {
         String qry = "Select * from profile_traveller_type where profile = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
         Map<Integer, TravellerType> travellerTypeList = new TreeMap<>();
@@ -76,7 +79,7 @@ public class ProfileTravellerTypeRepository {
      * Removes all of the traveller type linking rows corresponding to the sent in user
      * @param profileId The given user ID
      */
-    public void removeAll(Integer profileId) {
+    void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_traveller_type where profile " +
                 "= ?";

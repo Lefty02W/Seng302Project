@@ -6,10 +6,11 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+
 /**
  * Model class to hold a possible passport country for a profile
  */
+@Entity
 public class PassportCountry {
 
     @Id

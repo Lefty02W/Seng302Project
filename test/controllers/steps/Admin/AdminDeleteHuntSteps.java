@@ -36,6 +36,6 @@ public class AdminDeleteHuntSteps extends ProvideApplication {
     @And("^The treasure hunt is deleted from the database$")
     public void theTreasureHuntIsDeletedFromTheDatabase() throws Throwable {
         injectRepositories();
-    System.out.println(treasureHuntRepository.lookup(4));
+        //System.out.println(treasureHuntRepository.lookup(4));
     }
 }

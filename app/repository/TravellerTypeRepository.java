@@ -71,7 +71,7 @@ public class TravellerTypeRepository {
      * @param traveller The country to find
      * @return
      */
-    public Optional<Integer> getTravellerTypeId(String traveller) {
+    Optional<Integer> getTravellerTypeId(String traveller) {
         String sql = ("select traveller_type_id from traveller_type where traveller_type_name = ?");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, traveller).findList();
         Integer travellerId;
@@ -80,7 +80,7 @@ public class TravellerTypeRepository {
         } catch(Exception e) {
             travellerId = null;
         }
-        return Optional.of(travellerId);
+        return Optional.ofNullable(travellerId);
     }
 
 

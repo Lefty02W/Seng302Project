@@ -14,8 +14,8 @@ import repository.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProvideApplication extends WithApplication {
@@ -94,7 +94,7 @@ public class ProvideApplication extends WithApplication {
         undoStackRepository = app.injector().instanceOf(UndoStackRepository.class);
     }
 
-    protected ArrayList<Destination> getUserDest(int id) {
+    protected List<Destination> getUserDest(int id) {
         return destinationRepository.getUserDestinations(id);
     }
 

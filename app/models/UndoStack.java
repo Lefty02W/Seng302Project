@@ -5,13 +5,11 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 import java.util.Date;
 
 /**
  * UndoStack class containing all the attributes for inserting an undo object into the undo_stack database table
- * table required to keep the state of each admins stack so we can process hard deletes even if there is a system
- * failure
+ * required to keep the state of each admins stack so we can process hard deletes even if there is a system failure
  *
  * entryId - Primary Key
  * item_type - string referencing the object type name from an enum of object types
@@ -52,24 +50,12 @@ public class UndoStack extends Model {
         return entryId;
     }
 
-    public void setEntryId(int entryId) {
-        this.entryId = entryId;
-    }
-
     public String getItem_type() {
         return item_type;
     }
 
-    public void setItem_type(String item_type) {
-        this.item_type = item_type;
-    }
-
     public int getObjectId() {
         return objectId;
-    }
-
-    public void setObjectId(int objectId) {
-        this.objectId = objectId;
     }
 
     public int getProfileId() {

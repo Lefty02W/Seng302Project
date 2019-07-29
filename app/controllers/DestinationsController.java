@@ -9,8 +9,6 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
-import scala.Int;
-import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -82,7 +80,7 @@ public class DestinationsController extends Controller {
                 undoStackRepository.clearStackOnAllowed(profile.get());
 
                 if (isPublic) {
-                    ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
+                    List<Destination> destListTemp = destinationRepository.getPublicDestinations();
                     try {
                         destinationsList = destListTemp;
                     } catch (NoSuchElementException e) {

@@ -1,7 +1,6 @@
 package controllers.steps.Admin;
 
 import controllers.ProvideApplication;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -42,7 +40,6 @@ public class AdminCreateTreasureHuntSteps extends ProvideApplication {
                 .uri("/admin/hunts/create")
                 .bodyForm(huntForm)
                 .session("connected", "2");
-    System.out.println(huntForm);
         redirectDestination = Helpers.route(provideApplication(), request);
     }
 

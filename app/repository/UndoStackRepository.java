@@ -15,6 +15,9 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+/**
+ * Database access class for the undo_stack database table
+ */
 public class UndoStackRepository {
 
     private final EbeanServer ebeanServer;
@@ -58,7 +61,7 @@ public class UndoStackRepository {
      * @param userId id of the current user
      * @return list of current users stack
      */
-    public ArrayList<UndoStack> getUsersStack(int userId){
+    public List<UndoStack> getUsersStack(int userId){
         return new ArrayList<>(ebeanServer.find(UndoStack.class)
                 .where()
                 .eq("profile_id", userId)
@@ -74,7 +77,7 @@ public class UndoStackRepository {
     public CompletionStage<Void> clearStack(int userId) {
         return supplyAsync(() -> {
             clearOutdatedRecords();
-            ArrayList<UndoStack> undoStackList = getUsersStack(userId);
+            List<UndoStack> undoStackList = getUsersStack(userId);
 
             for (UndoStack undoStack: undoStackList) {
                 processStackItem(undoStack);
@@ -114,8 +117,8 @@ public class UndoStackRepository {
      */
     public CompletionStage<Integer> undoItemOnTopOfStack(Integer userId) {
         return supplyAsync(() -> {
-            ArrayList<UndoStack> undoStackList = getUsersStack(userId);
-            if (undoStackList.size() == 0) {
+            List<UndoStack> undoStackList = getUsersStack(userId);
+            if (undoStackList.isEmpty()) {
                 return 0;
             }
             UndoStack topOfStack = undoStackList.get(0);
@@ -137,6 +140,8 @@ public class UndoStackRepository {
                     break;
                 case "treasure_hunt":
                     treasureHuntRepository.setSoftDelete(topOfStack.getObjectId(), 0);
+                    break;
+                default:
                     break;
             }
 
@@ -210,6 +215,8 @@ public class UndoStackRepository {
                 break;
             case "treasure_hunt":
                 treasureHuntRepository.deleteTreasureHunt(command.getObjectId());
+                break;
+            default:
                 break;
         }
     }

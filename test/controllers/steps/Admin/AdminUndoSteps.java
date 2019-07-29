@@ -114,7 +114,7 @@ public class AdminUndoSteps extends ProvideApplication {
         // Write code here that turns the phrase above into concrete actions
         Boolean flag = false;
         injectRepositories();
-        ArrayList<Destination> myDestinations = destinationRepository.getUserDestinations(Integer.parseInt(userId));
+        List<Destination> myDestinations = destinationRepository.getUserDestinations(Integer.parseInt(userId));
         System.out.println(myDestinations);
         for (Destination dest : myDestinations){
             System.out.println("****************************************************");
@@ -164,7 +164,7 @@ public class AdminUndoSteps extends ProvideApplication {
     @And("user {string} destination {string} is still soft deleted")
     public void theDestinationIsStillSoftDeleted(String userId, String destId) {
         // Write code here that turns the phrase above into concrete actions
-        ArrayList<Destination> myDestinaitons = destinationRepository.getUserDestinations(Integer.parseInt(userId));
+        List<Destination> myDestinaitons = destinationRepository.getUserDestinations(Integer.parseInt(userId));
         for (Destination dest : myDestinaitons){
             if (dest.getDestinationId() == Integer.parseInt(destId)){
                 if (dest.getSoftDelete() == 0){

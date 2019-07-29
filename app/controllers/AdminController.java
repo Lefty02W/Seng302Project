@@ -250,7 +250,6 @@ public class AdminController {
     /**
      * Endpoint method allowing an admin to make another use an admin
      *
-     * @param request the request sent to view the trip
      * @param userId  the id of the user to promote
      * @return the admin page rendered with the new admin
      * @apiNote /admin/:userId/admin
@@ -273,7 +272,6 @@ public class AdminController {
     /**
      * Endpoint method allowing an admin to remove another use an admin
      *
-     * @param request the request sent to view the trip
      * @param userId  the id of the user to promote
      * @return the admin page rendered with the admin removed
      * @apiNote /admin/:userId/admin/remove
@@ -371,6 +369,7 @@ public class AdminController {
 
 
     /**
+     *
      *
      * @param request
      * @param destId
@@ -489,6 +488,8 @@ public class AdminController {
 
     /**
      * Endpoint method of an admin to undo a delete
+     *
+     * @apiNote GET /admin/undo/
      * @param request the admin request
      * @return CompletionStage holding redirect to the admin page
      */

@@ -5,7 +5,6 @@ import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import javax.swing.text.html.Option;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -127,10 +126,26 @@ public class ProfileRepository {
      */
     private Profile profileFromRow(SqlRow row) {
         Integer profileId = row.getInteger("profile_id");
-        Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(profileId).get();
-        Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
-        Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
-        List<String> roles = rolesRepository.getProfileRoles(profileId).get();
+        Map<Integer, PassportCountry> passportCountries = new HashMap<>();
+        Map<Integer, Nationality> nationalities = new HashMap<>();
+        Map<Integer, TravellerType> travellerTypes = new HashMap<>();
+        List<String> roles = new ArrayList<>();
+        Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profileId);
+        if (optionalIntegerPassportCountryMap.isPresent()) {
+            passportCountries = optionalIntegerPassportCountryMap.get();
+        }
+        Optional<Map<Integer, Nationality>> optionalNationalityMap = profileNationalityRepository.getList(profileId);
+        if (optionalNationalityMap.isPresent()) {
+            nationalities = optionalNationalityMap.get();
+        }
+        Optional<Map<Integer, TravellerType>> optionalTravellerTypeMap = profileTravellerTypeRepository.getList(profileId);
+        if (optionalTravellerTypeMap.isPresent()) {
+            travellerTypes = optionalTravellerTypeMap.get();
+        }
+        Optional<List<String>> optionalRoles = rolesRepository.getProfileRoles(profileId);
+        if (optionalRoles.isPresent()) {
+            roles = optionalRoles.get();
+        }
         return new Profile(profileId, row.getString("first_name"),
                 row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
                 row.getDate("birth_date"), passportCountries, row.getString("gender"),
@@ -268,7 +283,6 @@ public class ProfileRepository {
                                 profileTravellerTypeRepository.insertProfileTravellerType(
                                         new TravellerType(0, travellerTypeName), userId);
                             }
-                            //TODO call function in role repo and edit the users role
                             value = Optional.of(userId);
                         }
                     } finally {
@@ -416,7 +430,7 @@ public class ProfileRepository {
      * @param profileId int of the porfileid of the user
      * @return boolean true if email is taken, false if it is a change that will be allowed
      */
-    public boolean isEmailTaken(String email, int profileId) {
+    private boolean isEmailTaken(String email, int profileId) {
         boolean isTaken = false;
         String selectQuery = "Select * from profile WHERE email = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();

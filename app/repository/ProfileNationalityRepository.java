@@ -31,7 +31,7 @@ public class ProfileNationalityRepository {
      * @param nationality The nationality to add
      * @return
      */
-    public Optional<Integer> insertProfileNationality(Nationality nationality, Integer profileId) {
+    Optional<Integer> insertProfileNationality(Nationality nationality, Integer profileId) {
         Integer idOpt;
         try {
             idOpt = nationalityRepository.getNationalityId(nationality.getNationalityName()).get();
@@ -64,7 +64,7 @@ public class ProfileNationalityRepository {
      * @param profileId The given user ID
      * @return
      */
-    public Optional<Map<Integer, Nationality>> getList(Integer profileId){
+    Optional<Map<Integer, Nationality>> getList(Integer profileId){
         String qry = "Select * from profile_nationality where profile = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
         Map<Integer, Nationality> nationalities = new TreeMap<>();
@@ -78,7 +78,7 @@ public class ProfileNationalityRepository {
      * Removes all of the nationality linking rows corresponding to the sent in user
      * @param profileId The given user ID
      */
-    public void removeAll(Integer profileId) {
+    void removeAll(Integer profileId) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "DELETE from profile_nationality where profile " +
                 "= ?";

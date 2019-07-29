@@ -16,7 +16,9 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-
+/**
+ * Database access class for the traveller_type database table
+ */
 public class TreasureHuntRepository {
 
 
