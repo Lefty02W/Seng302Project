@@ -484,9 +484,7 @@
 
         document.onkeyup = function(e) {
             if (e.ctrlKey && e.which === 90 && e.shiftKey) {
-                console.log("testing");
-                //TODO: CALL UNDO REPO FUNCTION HERE
-                location.reload();
+                window.location.href = "@routes.AdminController.undoTopOfStack()";
             }
         };
 
