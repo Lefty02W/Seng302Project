@@ -130,8 +130,7 @@ public class EditDestinationSteps extends ProvideApplication{
 
     @And("^I select \"([^\"]*)\" and \"([^\"]*)\" from the traveller type dropdown$")
     public void iSelectAndFromTheTravellerTypeDropdown(String arg0, String arg1) throws Throwable {
-        travellerTypeDestForm.put("travellerTypesStringDestEdit", arg0 + ", " + arg1);
-        System.out.println("TEST FORM" + travellerTypeDestForm);
+        travellerTypeDestForm.put("travellerTypesStringDestEdit", arg0 + "," + arg1);
     }
 
     @And("^I press the Save button to save the destination$")

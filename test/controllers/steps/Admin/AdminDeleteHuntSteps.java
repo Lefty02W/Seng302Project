@@ -9,6 +9,7 @@ import play.mvc.Result;
 import play.test.Helpers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 public class AdminDeleteHuntSteps extends ProvideApplication {
@@ -36,6 +37,6 @@ public class AdminDeleteHuntSteps extends ProvideApplication {
     @And("^The treasure hunt is deleted from the database$")
     public void theTreasureHuntIsDeletedFromTheDatabase() throws Throwable {
         injectRepositories();
-    System.out.println(treasureHuntRepository.lookup(4));
+        assertNull(treasureHuntRepository.lookup(4));
     }
 }

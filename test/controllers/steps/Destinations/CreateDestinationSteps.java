@@ -92,7 +92,6 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @When("^he selects \"([^\"]*)\" as the traveller type$")
     public void heSelectsAsTheTravellerType(String arg0) throws Throwable {
-        System.out.println(arg0.equals("ThrillSeeker"));
         destForm.put("travellerTypesStringDest", arg0);
     }
 
@@ -103,7 +102,6 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @And("^he presses Destination Save$")
     public void hePressesDestinationSave() throws Throwable {
-        System.out.println(destForm);
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/destinations")

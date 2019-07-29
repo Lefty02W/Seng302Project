@@ -404,8 +404,6 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
-        System.out.println("DESTINATION CONTROLLER " + destination);
-        System.out.println("DESTINATION CONTROLLER " + destination.getTravellerTypesForm());
         destination.initTravellerType();
         destination.setProfileId(userId);
         destination.setVisible(visibility);
@@ -414,7 +412,6 @@ public class DestinationsController extends Controller {
             return supplyAsync(() -> redirect("/destinations/show/false").flashing("failure", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(destination)) {
-            System.out.println("Got this far...");
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
                 if (visibility == 1 && destId.isPresent()) {
                     destination.setDestinationId(destId.get());

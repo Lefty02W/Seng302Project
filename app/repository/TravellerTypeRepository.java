@@ -72,11 +72,9 @@ public class TravellerTypeRepository {
      * @return
      */
     public Optional<Integer> getTravellerTypeId(String traveller) {
-        System.out.println("Final... " + traveller);
         String sql = ("select traveller_type_id from traveller_type where traveller_type_name = ?");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, traveller).findList();
         Integer travellerId;
-        System.out.println("Row list----" + rowList);
         try {
             travellerId = rowList.get(0).getInteger("traveller_type_id");
         } catch(Exception e) {

@@ -90,13 +90,10 @@ public class DestinationRepository {
      * @return
      */
     public CompletionStage<Optional<Integer>> insert(Destination dest) {
-        System.out.println("in Insert..." + dest);
-        System.out.println("in Insert..." + dest.getTravellerTypesList());
         return supplyAsync(() -> {
             ebeanServer.insert(dest);
             // Adding traveller types of destinations to the database
             for (String travellerTypeName : dest.getTravellerTypesList()) {
-                System.out.println("travelType name " + travellerTypeName);
                 destinationTravellerTypeRepository
                         .insertDestinationTravellerType(new TravellerType(travellerTypeName), dest.getDestinationId());
             }

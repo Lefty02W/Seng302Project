@@ -42,7 +42,6 @@ public class AdminCreateTreasureHuntSteps extends ProvideApplication {
                 .uri("/admin/hunts/create")
                 .bodyForm(huntForm)
                 .session("connected", "2");
-    System.out.println(huntForm);
         redirectDestination = Helpers.route(provideApplication(), request);
     }
 
