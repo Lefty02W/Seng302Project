@@ -74,7 +74,7 @@
                         <div class="dropdown bootstrap-select">
                             <select class="selectpicker" id="changeStack" data-width="100%">
                                 @for(undoObject <- adminUndoStack) {
-                                    <option selected>Deleted @undoObject.getItem_type @undoObject.getObjectId</option>
+                                    <option selected disabled>Deleted @undoObject.getItem_type @undoObject.getObjectId</option>
                                 }
                             </select>
                         </div>
