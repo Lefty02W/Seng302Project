@@ -98,4 +98,10 @@ INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle,
   (5, 2, 1, 'A third riddle', CURRENT_DATE, CURRENT_DATE);
 
 INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
-  (1, 'destination', 5, 2, CURRENT_DATE - 5)
+  (1, 'destination', 5, 2, CURRENT_DATE - 5);
+
+INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (2, 'destination', 2, 3, CURRENT_DATE);
+
+INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (3, 'destination', 3, 5, CURRENT_DATE);

@@ -6,6 +6,7 @@ import models.UndoStack;
 import org.junit.*;
 
 import java.util.Date;
+import java.util.List;
 
 
 public class UndoStackRepositoryTest extends ProvideApplication {
@@ -35,12 +36,11 @@ public class UndoStackRepositoryTest extends ProvideApplication {
      * does not execute
      */
     @Test
-    @Ignore
     public void nonAdminClearStack() {
-        UndoStack undoDest = new UndoStack("destination", 1, 1, new Date());
+        UndoStack undoDest = undoStackRepository.getStackItem(3);
         undoStackRepository.addToStack(undoDest);
-        undoStackRepository.clearStackOnAllowed(getProfile(1));
-        Assert.assertFalse(undoStackRepository.getUsersStack(1).isEmpty());
+        undoStackRepository.clearStackOnAllowed(getProfile(undoDest.getProfileId()));
+        Assert.assertFalse(undoStackRepository.getUsersStack(undoDest.getProfileId()).isEmpty());
     }
 
 
@@ -61,12 +61,11 @@ public class UndoStackRepositoryTest extends ProvideApplication {
      * Check item can be added to stack
      */
     @Test
-    @Ignore
     public void addToStack() {
 
-        UndoStack undoDest = new UndoStack("destination", 1, 1, new Date());
+        UndoStack undoDest = undoStackRepository.getStackItem(2);
         undoStackRepository.addToStack(undoDest);
-        Assert.assertFalse(undoStackRepository.getUsersStack(1).isEmpty());
+        Assert.assertFalse(undoStackRepository.getUsersStack(undoDest.getProfileId()).isEmpty());
     }
 
 
