@@ -14,10 +14,13 @@ import repository.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import javax.annotation.processing.Completion;
 import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
 public class ProvideApplication extends WithApplication {
 
@@ -25,6 +28,7 @@ public class ProvideApplication extends WithApplication {
     protected DestinationRepository destinationRepository;
     protected RolesRepository rolesRepository;
     protected PhotoRepository photoRepository;
+    private boolean hashed = false;
 
     @Override
     public Application provideApplication() {
@@ -33,6 +37,7 @@ public class ProvideApplication extends WithApplication {
 
 
     protected Integer loginUser() {
+        hashUserPasswords();
         Map<String, String> formData = new HashMap<>();
         formData.put("email", "john@gmail.com");
         formData.put("password", "password");
@@ -54,6 +59,7 @@ public class ProvideApplication extends WithApplication {
 
 
     protected Integer adminLogin() {
+        hashUserPasswords();
         Map<String, String> formData = new HashMap<>();
         formData.put("email", "admin.jane.doe@travelea.com");
         formData.put("password", "yolo");
@@ -73,6 +79,20 @@ public class ProvideApplication extends WithApplication {
         return 0;
     }
 
+
+    private void hashUserPasswords() {
+        if (hashed) return;
+        if (profileRepository == null) injectRepositories();
+        List<Profile> profiles = profileRepository.getAll();
+        for (Profile profile: profiles) {
+            String oldPassword = profile.getPassword();
+            profile.setPassword(profile.getPassword());
+            profileRepository.updatePassword(profile.getProfileId(), oldPassword, profile.getPassword());
+        }
+        hashed = true;
+    }
+
+
     protected void injectRepositories() {
         app = provideApplication();
         app.injector().instanceOf(PhotoRepository.class);
@@ -86,6 +106,8 @@ public class ProvideApplication extends WithApplication {
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
         photoRepository = app.injector().instanceOf(PhotoRepository.class);
+
+        hashUserPasswords();
     }
 
     protected ArrayList<Destination> getUserDest(int id) {
