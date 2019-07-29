@@ -56,8 +56,8 @@ public class ProvideApplication extends WithApplication {
 
     protected Integer adminLogin() {
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin.jane.doe@travelea.com");
-        formData.put("password", "yolo");
+        formData.put("email", "bob@gmail.com");
+        formData.put("password", "password");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
@@ -67,7 +67,7 @@ public class ProvideApplication extends WithApplication {
         Result result = Helpers.route(provideApplication(), request);
 
         for (Profile profile : Profile.find.all()) {
-            if (profile.getEmail().equals("admin.jane.doe@travelea.com")) {
+            if (profile.getEmail().equals("bob@gmail.com")) {
                 return profile.getProfileId();
             }
         }
