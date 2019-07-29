@@ -16,6 +16,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import utility.Country;
 import utility.Thumbnail;
 import views.html.profile;
 
@@ -56,6 +57,7 @@ public class ProfileController extends Controller {
     private final TripRepository tripRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
+    private Boolean countryFlag = true;
 
 
 
@@ -98,14 +100,16 @@ public class ProfileController extends Controller {
         Profile profileNew = currentProfileForm.get();
         profileNew.initProfile();
 
-        return supplyAsync(() -> {
-            try {
-                profileRepository.update(profileNew, profId);
-                return redirect(routes.ProfileController.show()).addingToSession(request, "connected", profId.toString());
-            } catch (IllegalArgumentException e) {
-                return redirect(profileEndpoint).flashing("invalid", "email is already taken");
-            }
-        });
+        try {
+            return profileRepository.update(profileNew, profId).thenApplyAsync(x -> {
+                return redirect(routes.ProfileController.show())
+                        .flashing("success", profileNew.getFirstName() + "'s profile edited successfully.")
+                        .addingToSession(request, "connected", profId.toString());
+            });
+
+        } catch (IllegalArgumentException e) {
+            return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "email is already taken"));
+        }
     }
 
     /**
@@ -338,10 +342,18 @@ public class ProfileController extends Controller {
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
                 profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, request, messagesApi.preferred(request)));
-            } else {
-                return redirect("/profile");
+
+                List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
+
+                if (!outdatedCountries.isEmpty() && countryFlag) {
+                    countryFlag = false;
+                    return redirect("/profile").flashing("changeCountry", profileRec.get().getFirstName() + " you have an outdated country");
+                }
+
+                countryFlag = true;
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             }
+            return redirect("/");
         });
     }
 

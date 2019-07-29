@@ -10,7 +10,7 @@ Feature: Edit a destination from admin page
     And changes the latitude to "12.2"
     And sets the name to "Haere Roa"
     And selects the the save button
-    Then I am redirected to the admin page with a valid notification
+    Then admin is redirected to the admin page with a valid notification
     Then destinations latitude is updated in the database
     And destination name is updated in the database
 
@@ -20,7 +20,7 @@ Feature: Edit a destination from admin page
     When admin presses edit on destination 2
     And changes the longitude to "200"
     And selects the the save button
-    Then I am redirected to the admin page with an invalid notification
+    Then admin is redirected to the admin page with an invalid notification
     And destinations latitude is not updated in the database
 
   Scenario: Admin edits a destination by changing visibility
@@ -29,5 +29,5 @@ Feature: Edit a destination from admin page
     When admin presses edit on destination 2
     And changes the visibility to 1
     And selects the the save button
-    Then I am redirected to the admin page with a valid notification
+    Then admin is redirected to the admin page with a valid notification
     And destinations visibility is updated in the database

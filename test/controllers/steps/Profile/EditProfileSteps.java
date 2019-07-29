@@ -51,9 +51,9 @@ public class EditProfileSteps extends ProvideApplication {
         editForm.put("email", "john@gmail.com");
         editForm.put("password", "password");
         editForm.put("birthDate", "1970-01-13");
-        editForm.put("passportsForm", "NZ");
+        editForm.put("passportsForm", "New Zealand");
         editForm.put("gender", "Male");
-        editForm.put("nationalitiesForm", "password");
+        editForm.put("nationalitiesForm", "New Zealand");
         editForm.put("travellerTypesForm", "Backpacker,Gap Year");
         if (loginResult.redirectLocation().isPresent()) {
             assertEquals("/profile", loginResult.redirectLocation().get());

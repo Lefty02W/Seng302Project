@@ -92,7 +92,14 @@ public class ProfileRepository {
      * @return Profile class of the user
      */
     public Profile getProfileById(String email) {
-        return ebeanServer.find(Profile.class).where().like("email", email).findOne();
+        Profile profile = ebeanServer.find(Profile.class).where().like("email", email).findOne();
+
+        profile.setNationalities(profileNationalityRepository.getList(profile.getProfileId()).get());
+        profile.setPassports(profilePassportCountryRepository.getList(profile.getProfileId()).get());
+        profile.setTravellerTypes(profileTravellerTypeRepository.getList(profile.getProfileId()).get());
+        profile.setRoles(rolesRepository.getProfileRoles(profile.getProfileId()).get());
+
+        return profile;
     }
 
 

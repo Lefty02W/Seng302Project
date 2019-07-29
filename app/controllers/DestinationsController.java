@@ -9,6 +9,9 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import scala.Int;
+import utility.Country;
+import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -95,7 +98,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -136,7 +139,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -165,7 +168,7 @@ public class DestinationsController extends Controller {
 
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend, requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend, requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -205,7 +208,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -215,13 +218,13 @@ public class DestinationsController extends Controller {
     /**
      * takes in a list of destinations, for each destination loads the photos which are linked to that destination and
      * owned by the current user into destination.usersPhotos
-     * @param destinationsList
-     * @return destinationsList
+     * @param destinationsListGot
+     * @return destinationsListGot
      */
-    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsList) {
+    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsListGot) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         if (imageList.isPresent()) {
-            for (Destination destination : destinationsList) {
+            for (Destination destination : destinationsListGot) {
                 List<Photo> destPhotoList = new ArrayList<>();
                 for (Photo photo : imageList.get()) {
                     if (destinationPhotoRepository.findByProfileIdPhotoIdDestId(profileId, photo.getPhotoId(), destination.getDestinationId()).isPresent()) {
@@ -230,9 +233,9 @@ public class DestinationsController extends Controller {
                 }
                 destination.setUsersPhotos(destPhotoList);
             }
-            return destinationsList;
+            return destinationsListGot;
         }
-        return destinationsList;
+        return destinationsListGot;
     }
 
 
@@ -369,7 +372,7 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = Integer.parseInt(visible);
         Destination dest = destinationForm.value().get();
-        dest.setTravellerTypesStringDest(destinationForm.field("travellerTypesForm").value().get());
+        dest.setTravellerTypesStringDest(destinationForm.field("travellerTypesStringDestEdit").value().get());
         dest.initTravellerType();
         dest.setVisible(visibility);
             if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
@@ -381,7 +384,7 @@ public class DestinationsController extends Controller {
                     dest.setDestinationId(destId.get());
                     newPublicDestination(dest);
                 }
-                return redirect(destShowRoute).flashing("success", "Destination: " + id + " updated");
+                return redirect(destShowRoute).flashing("success", "Destination: " + dest.getName() + " updated");
             });
         } else {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
@@ -558,12 +561,12 @@ public class DestinationsController extends Controller {
      * @param names List of traveller type names
      * @return List of traveller type id's corresponding to the given names
      */
-    private List<Integer> listOfTravellerTypesToTravellerTypeId(List<String> names){
-        if (names.get(0).equals("")){
+    private List<Integer> listOfTravellerTypesToTravellerTypeId(List<String> names) {
+        if (names.get(0).equals("")) {
             return Collections.emptyList();
         } else {
             List<Integer> result = new ArrayList<>();
-            for (String name : names){
+            for (String name : names) {
                 travellerTypeRepository.getTravellerTypeId(name).ifPresent(result::add);
             }
             return result;

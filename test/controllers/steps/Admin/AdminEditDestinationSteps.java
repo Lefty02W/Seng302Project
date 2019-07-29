@@ -93,13 +93,13 @@ public class AdminEditDestinationSteps extends ProvideApplication {
         destForm.put("name", arg0);
     }
 
-    @Then("^I am redirected to the admin page with a valid notification$")
-    public void iAmRedirectedToTheAdminPageWithAValidNotification() throws Throwable {
+    @Then("^admin is redirected to the admin page with a valid notification$")
+    public void adminIsRedirectedToTheAdminPageWithAValidNotification() throws Throwable {
         Assert.assertTrue(result.flash().getOptional("info").isPresent());
     }
 
-    @Then("^I am redirected to the admin page with an invalid notification$")
-    public void iAmRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
+    @Then("^admin is redirected to the admin page with an invalid notification$")
+    public void adminIsRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
         Assert.assertTrue(result.flash().getOptional("error").isPresent());
     }
 
