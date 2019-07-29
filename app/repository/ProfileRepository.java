@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.*;
 import models.*;
+import org.mindrot.jbcrypt.BCrypt;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -54,12 +55,17 @@ public class ProfileRepository {
      * @return
      */
     public boolean validate(String email, String password) {
-        String selectQuery = "SELECT * FROM profile WHERE email = ? and password = ?";
-        SqlRow row = ebeanServer.createSqlQuery(selectQuery)
+        String selectQuery = "SELECT * FROM profile WHERE email = ?";// and password = ?";
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery)
                 .setParameter(1, email)
-                .setParameter(2, password)
-                .findOne();
-        return row != null;
+                .findList();
+        for (SqlRow row: rows) {
+            if (BCrypt.checkpw(password, row.getString("password"))) {
+                return true;
+            }
+        }
+        return false;
+//        return row != null;
     }
 
 
@@ -265,6 +271,22 @@ public class ProfileRepository {
                 executionContext);
     }
 
+
+    public CompletionStage<Boolean> updatePassword(Integer profileId, String oldPassword, String newPassword) {
+        return supplyAsync(() -> {
+            Profile profile = getProfileByProfileId(profileId);
+            if (!validate(profile.getEmail(), oldPassword)) {
+                return false;
+            }
+
+            Transaction txn = ebeanServer.beginTransaction();
+            String updateQuery = "UPDATE profile SET password = ? WHERE profile_id = ?";
+            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+            query.setParameter(1, newPassword);
+            query.execute();
+            return true;
+        });
+    }
 
     /**
      * Deletes a profile from the database that matches the given email
