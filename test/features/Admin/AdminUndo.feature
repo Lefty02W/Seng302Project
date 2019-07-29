@@ -43,4 +43,10 @@ Feature: Undo Delete
     Then command 1 should no longer be in the database
     And related destination 5 should be removed from the database
 
+  Scenario: Deleting a treasure hunt adds it to the undo stack
+    Given the admin is on the admin page
+    And the admin deletes treasure hunt 5
+    Then a flashing is shown confirming the delete
+    And the treasure hunt is added to the undo stack
+
 

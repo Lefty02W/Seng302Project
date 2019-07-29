@@ -1,10 +1,8 @@
 package repository;
 
-import interfaces.TypesInterface;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import models.Profile;
-import models.TreasureHunt;
 import models.UndoStack;
 import org.joda.time.DateTime;
 import play.db.ebean.EbeanConfig;
@@ -12,7 +10,6 @@ import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
@@ -177,6 +174,11 @@ public class UndoStackRepository {
         }
     }
 
+    /**
+     * Checks for any commands in the stack that are over a day old
+     * Any commands that are found are executed and removed from the stack
+     *
+     */
     private void clearOutdatedRecords() {
         String dateString = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new DateTime().minusDays(1).toDate());
         List<UndoStack> outdatedCommands = ebeanServer.find(UndoStack.class)
@@ -190,6 +192,11 @@ public class UndoStackRepository {
     }
 
 
+    /**
+     * Helper function to process and item off the undo stack
+     *
+     * @param command the command to be processed
+     */
     private void processStackItem(UndoStack command) {
         switch (command.getItem_type()) {
             case "profile":

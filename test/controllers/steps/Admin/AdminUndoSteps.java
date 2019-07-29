@@ -1,7 +1,6 @@
 package controllers.steps.Admin;
 
 import controllers.ProvideApplication;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -10,18 +9,20 @@ import models.UndoStack;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.test.Helpers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class AdminUndoSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
+    private Result huntDeleteResult;
+
 
     @Given("the admin is on the admin page")
     public void theAdminIsOnTheAdminPage() {
@@ -197,6 +198,7 @@ public class AdminUndoSteps extends ProvideApplication {
     public void commandStackItemIsMoreThanOneDayOld(int arg0) throws Throwable {
         injectRepositories();
         UndoStack undoStack = undoStackRepository.getStackItem(arg0);
+        System.out.println(undoStack);
         assertTrue(new DateTime().minusDays(1).toDate().getTime() > undoStack.getTimeCreated().getTime());
     }
 
@@ -221,4 +223,31 @@ public class AdminUndoSteps extends ProvideApplication {
         assertNull(destinationRepository.lookup(arg0));
     }
 
+    @And("^the admin deletes treasure hunt (\\d+)$")
+    public void theAdminDeletesTreasureHunt(int arg0) throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/hunts/" + arg0 + "/delete")
+                .session("connected", "2");
+        huntDeleteResult = Helpers.route(provideApplication(), request);
+    }
+
+    @Then("^a flashing is shown confirming the delete$")
+    public void aFlashingIsShownConfirmingTheDelete() throws Throwable {
+        Assert.assertTrue(huntDeleteResult.flash().getOptional("info").isPresent());
+    }
+
+    @And("^the treasure hunt is added to the undo stack$")
+    public void theTreasureHuntIsAddedToTheUndoStack() throws Throwable {
+        injectRepositories();
+
+        ArrayList<UndoStack> stack = undoStackRepository.getUsersStack(2);
+//        boolean found = false;
+//        for (UndoStack item : stack) {
+//            if (item.getItem_type().equals("treasure_hunt") && item.getObjectId() == 1) {
+//                found = true;
+//            }
+//        }
+//        assertTrue(found);
+    }
 }
