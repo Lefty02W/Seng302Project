@@ -5,6 +5,7 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import models.Destination;
 import models.UndoStack;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -108,89 +109,71 @@ public class AdminUndoSteps extends ProvideApplication {
         assertFalse(undoStackRepository.canClearStack(profileRepository.getProfileByProfileId(2)));
     }
 
-    @Given("there is a destination with id")
-    public void thereIsADestinationWithId() {
+    @And("user {string} has a destination with id {string}")
+    public void userHasADestinationWithId(String userId, String destId) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Boolean flag = false;
+        injectRepositories();
+        ArrayList<Destination> myDestinations = destinationRepository.getUserDestinations(Integer.parseInt(userId));
+        System.out.println(myDestinations);
+        for (Destination dest : myDestinations){
+            System.out.println("****************************************************");
+            System.out.println(dest.getDestinationId());
+            if (dest.getDestinationId() == Integer.parseInt(destId)){
+                System.out.println("in if");
+                flag = true;
+            }
+        } assertTrue(flag);
     }
 
-    @Given("there is a trip with id")
-    public void thereIsATripWithId() {
+    @Given("there is a trip with id {string}")
+    public void thereIsATripWithId(String tripId) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        assertEquals(tripRepository.getTrip(Integer.parseInt(tripId)).getTripId(), Integer.parseInt(tripId));
     }
 
-    @Then("the admin deletes the destination")
-    public void theAdminDeletesTheDestination() {
+    @Then("the admin deletes the trip {string}")
+    public void theAdminDeletesTheTrip(String tripId) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/trips/" + tripId + "/delete")
+                .session("connected", "2");
+        Helpers.route(provideApplication(),requestBuilder);
     }
 
-    @Then("the admin deletes the trip")
-    public void theAdminDeletesTheTrip() {
+    @And("the admin deletes the destination {string}")
+    public void theAdminDeletesTheDestination(String destId) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/destinations/" + destId + "/delete")
+                .session("connected", "2");
+        Helpers.route(provideApplication(),requestBuilder);
     }
 
-    @When("the admin selects the destination on the undo dropdown")
-    public void theAdminSelectsTheDestinationOnTheUndoDropdown() {
+    @Then("the trip {string} is restored")
+    public void theTripIsRestored(String tripId) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        //this should be 1 test is failing as code is bugged
+        assertEquals(tripRepository.getTrip(Integer.parseInt(tripId)).getSoftDelete(), 1);
     }
 
-    @Then("the destination is restored")
-    public void theDestinationIsRestored() {
+    @And("user {string} destination {string} is still soft deleted")
+    public void theDestinationIsStillSoftDeleted(String userId, String destId) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        ArrayList<Destination> myDestinaitons = destinationRepository.getUserDestinations(Integer.parseInt(userId));
+        for (Destination dest : myDestinaitons){
+            if (dest.getDestinationId() == Integer.parseInt(destId)){
+                if (dest.getSoftDelete() == 0){
+                    assertTrue(true);
+                }
+            }
+        } fail();
     }
 
-    @Then("the trip is still on the delete stack")
-    public void theTripIsStillOnTheDeleteStack() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user is logged in to the application")
-    public void userIsLoggedInToTheApplication() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user with id {string} has a private destination with name {string}, type {string}, and country {string}")
-    public void userWithIdHasAPrivateDestinationWithNameTypeAndCountry(String string, String string2, String string3, String string4) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @When("user creates a public destination with name {string}, type {string}, and country NewZealand")
-    public void userCreatesAPublicDestinationWithNameTypeAndCountryNewZealand(String string, String string2) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("user is logged into the application")
-    public void userIsLoggedIntoTheApplication() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Given("John is on his profile page")
-    public void johnIsOnHisProfilePage() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @When("he presses the delete button on photo with id {int}")
-    public void hePressesTheDeleteButtonOnPhotoWithId(Integer int1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Then("photo {int} is removed from the database")
-    public void photoIsRemovedFromTheDatabase(Integer int1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
 
 //    start of 2nd feature
 

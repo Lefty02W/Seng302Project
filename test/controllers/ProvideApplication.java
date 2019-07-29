@@ -22,6 +22,7 @@ public class ProvideApplication extends WithApplication {
 
     protected ProfileRepository profileRepository;
     protected DestinationRepository destinationRepository;
+    protected TripRepository tripRepository;
     protected RolesRepository rolesRepository;
     protected PhotoRepository photoRepository;
     protected TreasureHuntRepository treasureHuntRepository;
@@ -86,6 +87,7 @@ public class ProvideApplication extends WithApplication {
 
         treasureHuntRepository = app.injector().instanceOf(TreasureHuntRepository.class);
         rolesRepository = app.injector().instanceOf(RolesRepository.class);
+        tripRepository = app.injector().instanceOf(TripRepository.class);
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
         photoRepository = app.injector().instanceOf(PhotoRepository.class);

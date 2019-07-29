@@ -129,6 +129,9 @@ public class Destination extends Model {
         this.country = country;
     }
 
+    public int getSoftDelete() {
+        return softDelete;
+    }
 
     public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
 

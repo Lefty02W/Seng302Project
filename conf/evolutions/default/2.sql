@@ -13,7 +13,7 @@ INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_da
   (4, 'Admin', 'Doe', 'admin.jane.doe@travelea.com', 'yolo', CURRENT_DATE, 'Female');
 
 INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_date, gender) values
-(5, 'To', 'Be', 'DELETED@travelea.com', 'swag', CURRENT_DATE, 'Male');
+  (5, 'To', 'Be', 'DELETED@travelea.com', 'swag', CURRENT_DATE, 'Male');
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
   (6, 'Dave', 'Brown', 'dave@email', 'password', CURRENT_DATE, 'Male');
@@ -26,7 +26,6 @@ INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_d
 
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender,soft_delete) values
   (9, 'Lisa', 'Curt', 'lisa@gmail.com', 'password', CURRENT_DATE, 'Female', 1);
-
 
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
@@ -51,6 +50,10 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
   (5, 3, 'yes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0, 1);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
+  (6, 3, 'luke', 'City', 'Australia', 'Australia', 0.0, 0.0, 0, 1);
+
+
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
@@ -58,6 +61,14 @@ INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_o
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (1, 4, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip(trip_id, name, profile_id) VALUES (2, 'to delete Trip', 3);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (2, 5, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (2, 4, CURRENT_DATE, CURRENT_DATE, 1);
 
 INSERT INTO photo (visible, content_type, name,  path) values
   (0, 'image/jpg', 'testPic1.jpg', 'photos/personalPhotos/testPic1.jpg');

@@ -25,15 +25,13 @@ Feature: Undo Delete
 
   Scenario: Admin deletes a destination and then deletes a trip and the reverts the destination delete
     Given the admin is on the admin page
-    And there is a destination with id
-    And there is a trip with id
-    Then the admin deletes the destination
-    And the admin deletes the trip
-    When the admin selects the destination on the undo dropdown
-    And the admin presses the undo button
-    Then the destination is restored
-    And the treasure hunt is removed from the delete stack
-    And the trip is still on the delete stack
+    And user "3" has a destination with id "5"
+    And there is a trip with id "2"
+    Then the admin deletes the trip "2"
+    And the admin deletes the destination "5"
+    When the admin presses the undo button
+    Then the trip "2" is restored
+    And user "3" destination "5" is still soft deleted
 
   Scenario: Outdated command is removed and executed from undo stack
     Given the admin is on the admin page
