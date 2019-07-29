@@ -7,6 +7,8 @@ import org.junit.Test;
 import play.mvc.Http;
 import play.test.Helpers;
 
+import java.util.Date;
+
 
 public class UndoStackTest extends ProvideApplication {
 
@@ -22,10 +24,11 @@ public class UndoStackTest extends ProvideApplication {
     /**
      * Navigate to a specified endpoint
      */
-    private void navigateToPage(String endPoint) {
+    private void navigateToPage(String endPoint, Integer profileId) {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri(endPoint);
+                .uri(endPoint)
+                .session("connected", profileId.toString());
         Helpers.route(provideApplication(), request);
     }
 
@@ -50,12 +53,12 @@ public class UndoStackTest extends ProvideApplication {
      */
     @Test
     public void adminProfileShowClearStack() {
-        injectRepositories();
         adminLogin();
+        undoStackRepository.clearStack(2);
 
-        UndoStack undoDest = new UndoStack("destination", 1, 2);
+        UndoStack undoDest = new UndoStack("destination", 1, 2, new Date());
         addItemToUndoStack(undoDest);
-        navigateToPage("/profile");
+        navigateToPage("/profile", 2);
 
         Assert.assertTrue(undoStackRepository.getUsersStack(2).isEmpty());
     }
@@ -69,43 +72,52 @@ public class UndoStackTest extends ProvideApplication {
      */
     @Test
     public void nonAdminProfileShowClearStack() {
-        injectRepositories();
         loginUser();
+        injectRepositories();
 
-        UndoStack undoDest = new UndoStack("destination", 1, 1);
+
+        UndoStack undoDest = new UndoStack("destination", 3, 1, new Date());
         addItemToUndoStack(undoDest);
-        navigateToPage("/profile");
+        navigateToPage("/profile", 1);
 
-        Assert.assertTrue(undoStackRepository.getUsersStack(1).isEmpty());
-
+        Assert.assertFalse(undoStackRepository.getUsersStack(1).isEmpty());
     }
 
 
+    /**
+     * Check stack is cleared when admin navigates to destinations page
+     * This is essentially testing the profile's show() method
+     * clears the stack if permissible
+     */
     @Test
     public void adminDestinationShowClearStack() {
-        injectRepositories();
         adminLogin();
+        injectRepositories();
 
-        UndoStack undoDest = new UndoStack("destination", 1, 2);
+
+        UndoStack undoDest = new UndoStack("destination", 1, 2, new Date());
         addItemToUndoStack(undoDest);
-        navigateToPage("/destinations/show/false");
+        navigateToPage("/destinations/show/false", 2);
 
         Assert.assertTrue(undoStackRepository.getUsersStack(2).isEmpty());
-
     }
 
 
+    /**
+     * Check stack is cleared when admin navigates to trips page
+     * This is essentially testing the profile's show() method
+     * clears the stack if permissible
+     */
     @Test
     public void adminTripsShowClearStack() {
-        injectRepositories();
         adminLogin();
+        injectRepositories();
 
-        UndoStack undoDest = new UndoStack("destination", 1, 2);
+        UndoStack undoDest = new UndoStack("destination", 2, 2, new Date());
         addItemToUndoStack(undoDest);
-        navigateToPage("/trips");
+        navigateToPage("/trips", 2);
 
         Assert.assertTrue(undoStackRepository.getUsersStack(2).isEmpty());
-
     }
 
 }
