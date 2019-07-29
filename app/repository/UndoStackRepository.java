@@ -2,6 +2,8 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.SqlQuery;
+import io.ebean.SqlUpdate;
 import models.Profile;
 import models.UndoStack;
 import org.joda.time.DateTime;
