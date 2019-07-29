@@ -3,7 +3,8 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
+        adminUndoStack : List[UndoStack])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -72,7 +73,9 @@
                     <div class="changeLog">
                         <div class="dropdown bootstrap-select">
                             <select class="selectpicker" id="changeStack" data-width="100%">
-                                <option selected>RemMOvE lA$T</option>
+                                @for(undoObject <- adminUndoStack) {
+                                    <option selected>Deleted @undoObject.getItem_type @undoObject.getObjectId</option>
+                                }
                             </select>
                         </div>
                         <a href="@routes.AdminController.undoTopOfStack()">
