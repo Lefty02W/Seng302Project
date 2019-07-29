@@ -30,6 +30,8 @@ public class DestinationTravellerTypeRepository {
      * @return
      */
     Optional<Integer> insertDestinationTravellerType(TravellerType travellerType, Integer destinationId) {
+        System.out.println("Trying to insert into Traveller Type...type " + travellerType.getTravellerTypeName());
+        System.out.println("Trying to insert into Traveller Type...destId " + destinationId);
         Optional<Integer> integerOptional = travellerTypeRepository.getTravellerTypeId(travellerType.getTravellerTypeName());
         Integer idOpt = null;
         if (integerOptional.isPresent()) {
