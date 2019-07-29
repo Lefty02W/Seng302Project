@@ -141,9 +141,11 @@ public class AdminController {
         List<Integer> adminIdList = rolesRepository.getProfileIdFromRoleName("admin");
         List<Profile> adminProfiles = new ArrayList<>();
         for (Integer id : adminIdList) {
-            Profile profile = profileRepository.getProfileByProfileId(id);
-            rolesRepository.getProfileRoles(id).ifPresent(profile::setRoles);
-            adminProfiles.add(profile);
+            Profile profile = profileRepository.getExistingProfileByProfileId(id);
+            if (profile != null) {
+                rolesRepository.getProfileRoles(profile.getProfileId()).ifPresent(profile::setRoles);
+                adminProfiles.add(profile);
+            }
         }
         return adminProfiles;
     }
