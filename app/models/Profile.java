@@ -3,6 +3,7 @@ package models;
 import com.google.common.collect.TreeMultimap;
 import io.ebean.Finder;
 import io.ebean.Model;
+import org.mindrot.jbcrypt.*;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 
@@ -78,6 +79,8 @@ public class Profile extends Model {
     @Transient
     private List<String> roles;
 
+    @Transient
+    private final int WORKLOAD = 12;
 
 
     /**
@@ -218,8 +221,9 @@ public class Profile extends Model {
 
     public void setPassword(String password) {
         //Hash the password for added security
-        // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
-        this.password = password;
+         String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
+         this.password = passwordHash;
+//        this.password = password;
     }
 
     public void setGender(String gender) {
