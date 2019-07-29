@@ -17,11 +17,10 @@ Feature: Undo Delete
 
   Scenario: Admin deletes a treasure hun and reverts it
     Given the admin is on the admin page
-    And there is a treasure hunt with id
-    And the admin deletes the treasure hunt
-    When the admin selects the treasure hunt on the undo dropdown
-    And the admin presses the undo button
-    Then the treasure hut is restored
+    And there is a treasure hunt with id "5"
+    And the admin deletes the treasure hunt "5"
+    When the admin presses the undo button
+    Then the treasure hut "5" is restored
     And the treasure hunt is removed from the delete stack
 
   Scenario: Admin deletes a destination and then deletes a trip and the reverts the destination delete

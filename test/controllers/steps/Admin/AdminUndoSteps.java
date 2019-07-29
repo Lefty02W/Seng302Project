@@ -77,34 +77,35 @@ public class AdminUndoSteps extends ProvideApplication {
 
     }
 
-    @Given("there is a treasure hunt with id")
-    public void thereIsATreasureHuntWithId() {
+    @Given("there is a treasure hunt with id {string}")
+    public void thereIsATreasureHuntWithId(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        assertTrue(treasureHuntRepository.lookup(Integer.parseInt(string)).getTreasureHuntId() == Integer.parseInt(string));
     }
 
-    @Given("the admin deletes the treasure hunt")
-    public void theAdminDeletesTheTreasureHunt() {
+    @Given("the admin deletes the treasure hunt {string}")
+    public void theAdminDeletesTheTreasureHunt(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/hunts/" + string + "/delete")
+                .session("connected", "2");
+        Helpers.route(provideApplication(),requestBuilder);
     }
 
-    @When("the admin selects the treasure hunt on the undo dropdown")
-    public void theAdminSelectsTheTreasureHuntOnTheUndoDropdown() {
+    @Then("the treasure hut {string} is restored")
+    public void theTreasureHutIsRestored(String string) {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        assertEquals(treasureHuntRepository.lookup(Integer.parseInt(string)).getSoftDelete(), 1);
     }
 
-    @Then("the treasure hut is restored")
-    public void theTreasureHutIsRestored() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Then("the treasure hunt is removed from the delete stack")
+    @And("the treasure hunt is removed from the delete stack")
     public void theTreasureHuntIsRemovedFromTheDeleteStack() {
         // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
+        injectRepositories();
+        assertFalse(undoStackRepository.canClearStack(profileRepository.getProfileByProfileId(2)));
     }
 
     @Given("there is a destination with id")

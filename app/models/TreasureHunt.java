@@ -133,6 +133,10 @@ public class TreasureHunt extends Model {
         return dateFormatEntry.format(date);
     }
 
+    public int getSoftDelete() {
+        return softDelete;
+    }
+
     public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
 
 }
