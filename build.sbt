@@ -33,6 +33,9 @@ libraryDependencies += "io.cucumber" % "cucumber-java" % "4.2.0" % Test
 libraryDependencies += "org.seleniumhq.selenium" % "selenium-java" % "3.141.59" % Test
 libraryDependencies += "io.github.bonigarcia" % "webdrivermanager" % "3.4.0" % Test
 
+libraryDependencies += "org.mindrot" % "jbcrypt" % "0.4"
+
+
 libraryDependencies += javaJdbc
 libraryDependencies += "mysql" % "mysql-connector-java" % "5.1.24"
 testOptions in Test += Tests.Argument(TestFrameworks.JUnit, "-a", "-v")
