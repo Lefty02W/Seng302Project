@@ -96,6 +96,17 @@ public class ProfileRepository {
         return ebeanServer.find(Profile.class).where().like("email", email).findOne();
     }
 
+    /**
+     * Method for getting a profile that is not soft deleted
+     *
+     * @param userId String of the email to get
+     * @return Profile class of the user
+     */
+    public Profile getExistingProfileByProfileId(Integer userId) {
+        return ebeanServer.find(Profile.class)
+                .where().eq("soft_delete", "0").and()
+                .like("profile_id", userId.toString()).findOne();
+    }
 
     /**
      * Method for getting a profile

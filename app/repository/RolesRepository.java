@@ -122,6 +122,34 @@ public class RolesRepository {
 
 
     /**
+     * Retrieves a list of profile ids for a given role name.
+     *
+     * @param roleName The name of the role get ID of
+     * @return The role ID if a matching role name exists on database
+     */
+    public List<Integer> getExitingProfileIdsFromRoleName(String roleName) {
+        Optional<Integer> roleId = getRoleFromName(roleName);
+        Optional<Integer> roleIdGlobal = getRoleFromName("global_admin");
+
+        List<Integer> profileIds = new ArrayList<>();
+
+        if(roleId.isPresent() && roleIdGlobal.isPresent()){
+
+            String query = "SELECT DISTINCT profile_id FROM profile_roles WHERE role_id = ? AND soft_delete = 0 OR role_id = ? AND soft_delete = 0";
+            List<SqlRow> rows = ebeanServer.createSqlQuery(query).setParameter(1, roleId.get()).setParameter(2, roleIdGlobal.get()).findList();
+
+            for(SqlRow row: rows ) {
+
+                profileIds.add(row.getInteger("profile_id"));
+
+            }
+        }
+        return profileIds;
+    }
+
+
+
+    /**
      * Add a role for a user based on the role name
      *
      * @param profileId The ID of the profile to add role for
