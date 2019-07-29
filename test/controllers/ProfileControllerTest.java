@@ -37,21 +37,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class ProfileControllerTest extends ProvideApplication {
 
-    @Before
-    public void setUp() {
-        app = super.provideApplication();
-        Map<String, String> formData = new HashMap<>();
-        formData.put("email", "john@gmail.com");
-        formData.put("password", "password");
-
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("POST")
-                .uri("/login")
-                .bodyForm(formData);
-
-        Helpers.route(provideApplication(), request);
-    }
-
 
     /**
      * Testing profile POST endpoint /profile
