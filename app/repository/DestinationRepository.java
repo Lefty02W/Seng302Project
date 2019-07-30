@@ -484,20 +484,6 @@ public class DestinationRepository {
 
 
     /**
-     * Reads all destinations from the database
-     *
-     * @return List of all destinations found
-     */
-    public List<Destination> getAllDestinations() {
-        List<Destination> dests = new ArrayList<>(Destination.find.query().findList());
-        for (Destination destination : dests) {
-            Map<Integer, TravellerType> travellerTypesMap = TravellerType.find.query().findMap();
-            destination.setTravellerTypes(travellerTypesMap);
-        }
-        return dests;
-    }
-
-    /**
      * Helper function to wrap Destination changes in a transaction
      * @param requestId
      * @param toAdd Boolean true if the traveller type is to be added

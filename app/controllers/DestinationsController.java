@@ -573,14 +573,4 @@ public class DestinationsController extends Controller {
             return result;
         }
     }
-
-}
-
-    /**
-     * Implement the undo delete method from interface
-     * @param destinationID - ID of the destination to undo deletion of
-     */
-    public void undo(int destinationID) {
-        destinationRepository.setSoftDelete(destinationID, 0);
-    }
 }

@@ -56,10 +56,6 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (4, 3, 'Ardennes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0);
 
-//todo merge fix this
-INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
-  (5, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
-
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
   (5, 3, 'yes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0, 1);
 
@@ -68,6 +64,9 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 
   INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
   (7, 3, 'Crystal', 'City', 'Australia', 'Australia', 0.0, 0.0, 0, 1);
+
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (8, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
 
 
 
@@ -143,6 +142,8 @@ INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (3, 'G
 INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (1,1,1);
 
 INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (2,5,2);
+
+INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (3,7,2);
 
 INSERT INTO destination_request (id, destination_id, profile_id) values (1,1,1);
 

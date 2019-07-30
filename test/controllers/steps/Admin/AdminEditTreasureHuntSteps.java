@@ -115,13 +115,13 @@ public class AdminEditTreasureHuntSteps  extends ProvideApplication {
         assertNotEquals("2016-01-04", hunt.getEndDateString());
     }
 
-    @Then("^I am redirected to the admin page with an invalid notification$")
-    public void iAmRedirectedToTheAdminPageWithAnInvalidNotification() throws Throwable {
-        Assert.assertTrue(redirectDestination.flash().getOptional("error").isPresent());
+    @Then("^I am redirected to the admin page with a valid treasure hunt notification$")
+    public void iAmRedirectedToTheAdminPageWithAValidTreasureHuntNotification() throws Throwable {
+        Assert.assertTrue(redirectDestination.flash().getOptional("info").isPresent());
     }
 
-    @Then("^I am redirected to the admin page with a valid notification$")
-    public void iAmRedirectedToTheAdminPageWithAValidNotification() throws Throwable {
-        Assert.assertTrue(redirectDestination.flash().getOptional("info").isPresent());
+    @Then("^I am redirected to the admin page with an invalid treasure hunt notification$")
+    public void iAmRedirectedToTheAdminPageWithAnInvalidTreasureHuntNotification() throws Throwable {
+        Assert.assertTrue(redirectDestination.flash().getOptional("error").isPresent());
     }
 }

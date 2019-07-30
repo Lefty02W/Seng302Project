@@ -192,6 +192,7 @@ public class UndoStackRepository {
                 .where()
                 .lt("time_created", dateString)
                 .findList();
+
         for (UndoStack i : outdatedCommands) {
             ebeanServer.delete(i);
             processStackItem(i);
