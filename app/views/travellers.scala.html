@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile, countries : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -61,7 +61,15 @@
                         @form(routes.TravellersController.search()) {
                             @CSRF.formField
 
-                            <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
+
+                            <div class="hidden-div">
+                                <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
+                            </div>
+                            <select class="selectpicker" data-live-search="true" title="Nationality" id="passportDropdown">
+                            @for(nation <- countries) {
+                                <option value="@nation">@nation</option>
+                            }
+                            </select>
                             <select id= "searchGender" class="selectpicker" title="Gender" name="searchGender">
                                 <option hidden disabled>Gender</option>
                                 <option value="Male">Male</option>
@@ -87,7 +95,7 @@
                                 <option value="business">functional/business Traveller</option>
                                 <option value="Holidaymaker">Holidaymaker</option>
                             </select>
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillVals()">Search</button>
                             <a href="@routes.TravellersController.show()"> <button class="btn btn-secondary" type="button">
                                 Clear</button></a>
                         }
@@ -148,9 +156,9 @@
                 $("#wrapper").toggleClass("toggled");
             });
 
-
-
-
+            function fillVals() {
+                $('#searchNationality').val($('#passportDropdown').val());
+            }
 
     </script>
 

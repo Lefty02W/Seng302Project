@@ -8,4 +8,8 @@ public class PartnerFormData {
     public String searchGender = "";
     public Integer searchAgeRange ;
     public String searchTravellerTypes = "";
+
+    public void setSearchAgeRange(int age) {
+        searchAgeRange = age;
+    }
 }

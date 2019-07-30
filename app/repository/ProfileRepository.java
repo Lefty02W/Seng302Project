@@ -5,6 +5,7 @@ import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -114,7 +115,74 @@ public class ProfileRepository {
     }
 
 
+    /**
+     * Database access method to query the database for profiles that match the given search parameters
+     *
+     * @param travellerType Traveller type to search for
+     * @param lowerAge Lower limit for age of profile
+     * @param upperAge Upper limit for age of profile
+     * @param gender Gender of profile
+     * @param nationality nationality of profile
+     * @return List of profiles that match query parameters
+     */
+    public List<Profile> searchProfiles(String travellerType, Date lowerAge, Date upperAge, String gender, String nationality) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String queryString = "SELECT profile_traveller_type.profile FROM profile_traveller_type " +
+                "JOIN profile_nationality ON profile_nationality.profile = profile_traveller_type.profile " +
+                "JOIN nationality ON profile_nationality.nationality = nationality_id " +
+                "JOIN traveller_type ON profile_traveller_type.traveller_type = traveller_type_id";
+        boolean whereAdded = false;
+        if (!travellerType.equals("")) {
+            queryString += " WHERE traveller_type_name = ?";
+            whereAdded = true;
+        }
+        if (!nationality.equals("")) {
+            if (!whereAdded) {
+                queryString += " WHERE nationality_name = ?";
+            } else {
+                queryString += " AND nationality_name = ?";
+            }
 
+        }
+        SqlQuery query = ebeanServer.createSqlQuery(queryString);
+
+        if (!travellerType.equals("")) {
+            query.setParameter(1, travellerType);
+        }
+        if (!nationality.equals("")) {
+            if (whereAdded) {
+                query.setParameter(1, nationality);
+            } else {
+                query.setParameter(2, nationality);
+            }
+        }
+
+        List<SqlRow> foundRows = query.findList();
+        List<Integer> foundIds = new ArrayList<>();
+        List<Profile> foundProfiles = new ArrayList<>();
+        if (!foundRows.isEmpty()) {
+            for (SqlRow row : foundRows) {
+                foundIds.add(row.getInteger("profile"));
+            }
+            foundProfiles = ebeanServer.find(Profile.class).where()
+                    .idIn(foundIds)
+                    .contains("gender", gender)
+                    .lt("birth_date", dateFormat.format(upperAge))
+                    .gt("birth_date", dateFormat.format(lowerAge))
+                    .findList();
+            for (Profile profile : foundProfiles) {
+                Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profile.getProfileId());
+                optionalIntegerPassportCountryMap.ifPresent(profile::setPassports);
+                Optional<Map<Integer, Nationality>> optionalNationalityMap = profileNationalityRepository.getList(profile.getProfileId());
+                optionalNationalityMap.ifPresent(profile::setNationalities);
+                Optional<Map<Integer, TravellerType>> optionalTravellerTypeMap = profileTravellerTypeRepository.getList(profile.getProfileId());
+                optionalTravellerTypeMap.ifPresent(profile::setTravellerTypes);
+
+            }
+        }
+
+        return foundProfiles;
+    }
 
 
     /**
@@ -264,7 +332,6 @@ public class ProfileRepository {
                                 profileTravellerTypeRepository.insertProfileTravellerType(
                                         new TravellerType(0, travellerTypeName), userId);
                             }
-                            //TODO call function in role repo and edit the users role
                             value = Optional.of(userId);
                         }
                     } finally {
@@ -385,7 +452,7 @@ public class ProfileRepository {
      * @param profileId int of the porfileid of the user
      * @return boolean true if email is taken, false if it is a change that will be allowed
      */
-    public boolean isEmailTaken(String email, int profileId) {
+    private boolean isEmailTaken(String email, int profileId) {
         boolean isTaken = false;
         String selectQuery = "Select * from profile WHERE email = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();
