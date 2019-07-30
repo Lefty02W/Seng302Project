@@ -17,21 +17,21 @@ Feature: Undo Delete
 
   Scenario: Admin deletes a treasure hunt and reverts it
     Given the admin is on the admin page
-    And there is a treasure hunt with id "5"
-    And the admin deletes the treasure hunt "5"
+    And there is a treasure hunt with id 5
+    And the admin deletes the treasure hunt 5
     When the admin presses the undo button
-    Then the treasure hut "5" is restored
+    Then the treasure hut 5 is restored
     And the treasure hunt is removed from the delete stack
 
-  Scenario: Admin deletes a destination and then deletes a trip and the reverts the destination delete
+  Scenario: Admin deletes a destination and then deletes a trip and then reverts the destination delete
     Given the admin is on the admin page
-    And user "3" has a destination with id "5"
-    And there is a trip with id "2"
-    Then the admin deletes the trip "2"
-    And the admin deletes the destination "5"
-    When the admin presses the undo buttonF
-    Then the trip "2" is restored
-    And user "3" destination "5" is still soft deleted
+    And user 3 has a destination with id 5
+    And there is a trip with id 2
+    Then the admin deletes the trip 2
+    And the admin deletes the destination 5
+    When the admin presses the undo button
+    Then the destination 5 is restored
+    And trip 2 is still soft deleted
 
   Scenario: Outdated command is removed and executed from undo stack
     Given the admin is on the admin page
@@ -48,7 +48,7 @@ Feature: Undo Delete
 
   Scenario: Deleting a profile adds it to the undo stack
     Given the admin is on the admin page
-    And the admin deletes the profile with id "10"
+    And the admin deletes the profile with id 10
     Then a flashing is shown confirming the delete
     And the profile is added to the undo stack
 

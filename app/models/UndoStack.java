@@ -33,17 +33,11 @@ public class UndoStack extends Model {
 
     private Date timeCreated;
 
+
     public UndoStack(String item_type, int objectId, int profileId){
         this.item_type = item_type;
         this.objectId = objectId;
         this.profileId = profileId;
-    }
-
-    public UndoStack(String item_type, int objectId, int profileId, Date timeCreated){
-        this.item_type = item_type;
-        this.objectId = objectId;
-        this.profileId = profileId;
-        this.timeCreated = timeCreated;
     }
 
     public int getEntryId() {
