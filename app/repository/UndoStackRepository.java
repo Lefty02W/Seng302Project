@@ -125,7 +125,7 @@ public class UndoStackRepository {
             }
             UndoStack topOfStack = undoStackList.get(0);
             for (UndoStack item : undoStackList) {
-                if (item.getEntryId() < topOfStack.getEntryId()) {
+                if (item.getEntryId() > topOfStack.getEntryId()) {
                     topOfStack = item;
                 }
             }
