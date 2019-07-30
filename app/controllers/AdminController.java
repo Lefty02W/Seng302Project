@@ -82,7 +82,7 @@ public class AdminController {
                     "Global admin cannot be deleted.")));
         }
         undoStackRepository.addToStack(new UndoStack("profile", id, SessionController.getCurrentUserId(request)));
-        return profileRepository.setSoftDelete(id, 1).thenApplyAsync(userEmail -> redirect(adminEndpoint).flashing("info",
+        return profileRepository.setSoftDelete(id, 1).thenApplyAsync(userEmail -> redirect("/admin").flashing("info",
                 "Profile deleted successfully"));
     }
 

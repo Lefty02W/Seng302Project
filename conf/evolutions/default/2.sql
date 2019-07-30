@@ -27,15 +27,20 @@ INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_d
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender,soft_delete) values
   (9, 'Lisa', 'Curt', 'lisa@gmail.com', 'password', CURRENT_DATE, 'Female', 1);
 
-INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender,soft_delete) values
-  (10, 'Burt', 'Curt', 'BurtCurt@gmail.com', 'password', CURRENT_DATE, 'Female', 0);
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (10, 'Burt', 'Curt', 'BurtCurt@gmail.com', 'password', CURRENT_DATE, 'Female');
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (11, 'Bort', 'Cort', 'BortCort@gmail.com', 'password', CURRENT_DATE, 'Male');
 
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
 INSERT INTO profile_roles (profile_role_id, profile_id, role_id) values
   (1, 2, 1);
+
+INSERT INTO profile_roles (profile_role_id, profile_id, role_id) values
+  (3, 11, 1);
 
 INSERT INTO profile_roles (profile_id, role_id) values (4, 1);
 
@@ -56,6 +61,10 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
   (6, 3, 'luke', 'City', 'Australia', 'Australia', 0.0, 0.0, 0, 1);
+
+  INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
+  (7, 3, 'Crystal', 'City', 'Australia', 'Australia', 0.0, 0.0, 0, 1);
+
 
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
@@ -109,3 +118,6 @@ INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created
 
 INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
   (3, 'destination', 3, 5, CURRENT_DATE);
+
+  INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (4, 'destination', 7, 11, CURRENT_DATE - 5);

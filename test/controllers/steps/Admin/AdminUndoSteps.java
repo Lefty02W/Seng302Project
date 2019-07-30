@@ -39,6 +39,7 @@ public class AdminUndoSteps extends ProvideApplication {
         Helpers.route(provideApplication(), requestBuilder);
     }
 
+
     @And("^there is a profile with id (\\d+)$")
     public void thereIsAProfileWithId(int id) throws Throwable{
         // Write code here that turns the phrase above into concrete actions
@@ -162,7 +163,7 @@ public class AdminUndoSteps extends ProvideApplication {
     public void theTripIsRestored(int destId) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         injectRepositories();
-        assertEquals(destinationRepository.lookup(destId).getSoftDelete(), 1);
+        assertEquals(destinationRepository.lookup(destId).getSoftDelete(), 0);
     }
 
     @And("^trip (\\d+) is still soft deleted$")
@@ -194,7 +195,7 @@ public class AdminUndoSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/profile")
-                .session("connected", "2");
+                .session("connected", "11");
         Helpers.route(provideApplication(), request);
     }
 
@@ -236,26 +237,5 @@ public class AdminUndoSteps extends ProvideApplication {
 //            }
 //        }
 //        assertTrue(found);
-    }
-
-    @And("^And the admin deletes the profile with id (\\d+)$")
-    public void admindeletesprofile(int profileId) throws Throwable {
-        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
-                .method("GET")
-                .uri("/admin/profile/" +profileId+ "/delete")
-                .session("connected", "2");
-        Helpers.route(provideApplication(),requestBuilder);
-        profileDeleteResult = Helpers.route(provideApplication(), requestBuilder);
-    }
-
-    @Then("^the profile is added to the undo stack$")
-    public void theProfileIsAddedToTheUndoStack() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new cucumber.api.PendingException();
-    }
-
-    @Then("^a profile flashing is shown confirming the delete$")
-    public void aProfileFlashingIsShownConfirmingTheDelete() throws Throwable {
-        Assert.assertTrue(profileDeleteResult.flash().getOptional("info").isPresent());
     }
 }

@@ -7,6 +7,13 @@ Feature: Undo Delete
     Given I am logged into the application as an admin
 
 
+  Scenario: Outdated command is removed and executed from undo stack
+    Given the admin is on the admin page as another admin
+    And command stack item 4 is more than one day old
+    When the admin leaves the admin page
+    Then command 4 should no longer be in the database
+    And related destination 7 should be removed from the database
+
   Scenario: Admin deletes a profile and reverts the delete
     Given the admin is on the admin page
     And there is a profile with id 9
@@ -25,20 +32,13 @@ Feature: Undo Delete
 
   Scenario: Admin deletes a destination and then deletes a trip and then reverts the destination delete
     Given the admin is on the admin page
-    And user 3 has a destination with id 5
+    And user 3 has a destination with id 4
     And there is a trip with id 2
     Then the admin deletes the trip 2
-    And the admin deletes the destination 5
+    And the admin deletes the destination 4
     When the admin presses the undo button
-    Then the destination 5 is restored
+    Then the destination 4 is restored
     And trip 2 is still soft deleted
-
-  Scenario: Outdated command is removed and executed from undo stack
-    Given the admin is on the admin page
-    And command stack item 1 is more than one day old
-    When the admin leaves the admin page
-    Then command 1 should no longer be in the database
-    And related destination 5 should be removed from the database
 
   Scenario: Deleting a treasure hunt adds it to the undo stack
     Given the admin is on the admin page
@@ -46,9 +46,5 @@ Feature: Undo Delete
     Then a flashing is shown confirming the delete
     And the treasure hunt is added to the undo stack
 
-  Scenario: Deleting a profile adds it to the undo stack
-    Given the admin is on the admin page
-    And the admin deletes the profile with id 10
-    Then a flashing is shown confirming the delete
-    And the profile is added to the undo stack
+
 

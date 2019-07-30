@@ -27,7 +27,7 @@ public class TreasureHuntRepositoryTest extends ProvideApplication {
         injectRepositories();
         List<TreasureHunt> hunts = treasureHuntRepository.getAllUserTreasureHunts(1);
 
-        assertEquals(1, hunts.size());
-        assertEquals("A riddle", hunts.get(0).getRiddle());
+        assertEquals(2, hunts.size());
+        assertEquals("A new riddle", hunts.get(0).getRiddle());
     }
 }
