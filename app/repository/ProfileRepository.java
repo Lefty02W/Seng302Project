@@ -156,9 +156,6 @@ public class ProfileRepository {
                 query.setParameter(2, nationality);
             }
         }
-        System.out.println(query);
-        System.out.println("Greater than " + dateFormat.format(upperAge));
-        System.out.println("Less than " + dateFormat.format(lowerAge));
         List<SqlRow> foundRows = query.findList();
         List<Integer> foundIds = new ArrayList<>();
         List<Profile> foundProfiles = new ArrayList<>();
