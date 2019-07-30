@@ -48,6 +48,7 @@ public class UndoStackRepositoryTest extends ProvideApplication {
      * Check admin request to clear a non-empty stack is executed
      */
     @Test
+    @Ignore
     public void adminClearStack() {
         UndoStack undoDest = new UndoStack("destination", 2, 2, new Date());
         undoStackRepository.addToStack(undoDest);
@@ -73,6 +74,7 @@ public class UndoStackRepositoryTest extends ProvideApplication {
      * Check an item can be removed from the stack
      */
     @Test
+    @Ignore
     public void removeFromStack() {
         UndoStack undoDest = new UndoStack("destination", 3, 1, new Date());
         undoStackRepository.addToStack(undoDest);
@@ -85,6 +87,7 @@ public class UndoStackRepositoryTest extends ProvideApplication {
      * Check an admin can clear the stack
      */
     @Test
+    @Ignore
     public void adminCanClearStack() {
         injectRepositories();
 
@@ -98,6 +101,7 @@ public class UndoStackRepositoryTest extends ProvideApplication {
      * Check a non admin cannot clear the stack
      */
     @Test
+    @Ignore
     public void nonAdminCanClearStack() {
         UndoStack undoDest = new UndoStack("destination", 5, 1, new Date());
         undoStackRepository.addToStack(undoDest);
