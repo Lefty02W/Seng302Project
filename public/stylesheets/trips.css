@@ -1,6 +1,7 @@
 #viewCard {
     height: 25vh;
     width: 100%;
+    overflow: visible;
 }
 
 #name {
