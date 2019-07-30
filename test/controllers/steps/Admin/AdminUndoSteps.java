@@ -15,6 +15,7 @@ import play.test.Helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
@@ -23,6 +24,7 @@ import static org.junit.Assert.*;
 public class AdminUndoSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
     private Result huntDeleteResult;
+    private Result profileDeleteResult;
 
 
     @Given("the admin is on the admin page")
@@ -225,7 +227,7 @@ public class AdminUndoSteps extends ProvideApplication {
     public void theTreasureHuntIsAddedToTheUndoStack() throws Throwable {
         injectRepositories();
 
-        ArrayList<UndoStack> stack = undoStackRepository.getUsersStack(2);
+      //  ArrayList<UndoStack> stack = undoStackRepository.getUsersStack(2);
 //        boolean found = false;
 //        for (UndoStack item : stack) {
 //            if (item.getItem_type().equals("treasure_hunt") && item.getObjectId() == 1) {
@@ -233,5 +235,26 @@ public class AdminUndoSteps extends ProvideApplication {
 //            }
 //        }
 //        assertTrue(found);
+    }
+
+    @And("And the admin deletes the profile with id {string}")
+    public void admindeletesprofile(String profileId) throws Throwable {
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/profile/" +profileId+ "/delete")
+                .session("connected", "2");
+        Helpers.route(provideApplication(),requestBuilder);
+        profileDeleteResult = Helpers.route(provideApplication(), requestBuilder);
+    }
+
+    @Then("the profile is added to the undo stack")
+    public void theProfileIsAddedToTheUndoStack() {
+        // Write code here that turns the phrase above into concrete actions
+        throw new cucumber.api.PendingException();
+    }
+
+    @Then("a profile flashing is shown confirming the delete")
+    public void aFlashingIsShownConfirmingTheDelete() throws Throwable {
+        Assert.assertTrue(profileDeleteResult.flash().getOptional("info").isPresent());
     }
 }

@@ -29,7 +29,7 @@ Feature: Undo Delete
     And there is a trip with id "2"
     Then the admin deletes the trip "2"
     And the admin deletes the destination "5"
-    When the admin presses the undo button
+    When the admin presses the undo buttonF
     Then the trip "2" is restored
     And user "3" destination "5" is still soft deleted
 
@@ -46,4 +46,9 @@ Feature: Undo Delete
     Then a flashing is shown confirming the delete
     And the treasure hunt is added to the undo stack
 
+  Scenario: Deleting a profile adds it to the undo stack
+    Given the admin is on the admin page
+    And the admin deletes the profile with id "10"
+    Then a flashing is shown confirming the delete
+    And the profile is added to the undo stack
 
