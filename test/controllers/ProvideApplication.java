@@ -14,13 +14,10 @@ import repository.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import javax.annotation.processing.Completion;
-import javax.management.relation.Role;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletionStage;
 
 public class ProvideApplication extends WithApplication {
 
@@ -80,7 +77,7 @@ public class ProvideApplication extends WithApplication {
     }
 
 
-    private void hashUserPasswords() {
+    protected void hashUserPasswords() {
         if (hashed) return;
         if (profileRepository == null) injectRepositories();
         List<Profile> profiles = profileRepository.getAll();

@@ -3,6 +3,11 @@ Feature: Sign Up
   As a user
   I want to sign up
   So that I can manage my travels (Test UI)
+
+  Background:
+    Given Password hash setup has been done
+
+
   Scenario: Sign up a new user
     Given John is at the sign up page
     When he fills in First Name with "John"

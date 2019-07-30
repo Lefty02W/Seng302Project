@@ -29,8 +29,7 @@ public class AdminEditDestinationSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
                 .uri("/login")
-                .bodyForm(loginForm)
-                .session("connected", "2");
+                .bodyForm(loginForm);
 
         loginResult = Helpers.route(provideApplication(), request);
         assertEquals("/profile", loginResult.redirectLocation().get());

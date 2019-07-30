@@ -2,6 +2,12 @@
 #  As a user
 #  I want to edit a destination
 #  So that I can then update my created destination
+#
+#
+#  Background:
+#    Given Password hash setup has been done
+#
+#
 #  Scenario: Edit a destination
 #    Given User is at the edit destinations page for destination "513"
 #    Given user is at the destinations page

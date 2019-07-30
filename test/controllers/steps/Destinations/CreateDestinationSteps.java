@@ -89,4 +89,8 @@ public class CreateDestinationSteps extends ProvideApplication {
         }
     }
 
+    @Given("^Password hash setup has been done$")
+    public void passwordHashSetupHasBeenDone() throws Throwable {
+        hashUserPasswords();
+    }
 }
