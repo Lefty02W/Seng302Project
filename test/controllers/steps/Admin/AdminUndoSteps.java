@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class AdminUndoSteps extends ProvideApplication {
     private Map<String, String> loginForm = new HashMap<>();
     private Result huntDeleteResult;
-    private Result profileDeleteResult;
+    private Result tripDeleteResult;
 
 
     @Given("^the admin is on the admin page$")
@@ -39,6 +39,15 @@ public class AdminUndoSteps extends ProvideApplication {
         Helpers.route(provideApplication(), requestBuilder);
     }
 
+    @Given("the admin is on the admin page as another admin")
+    public void theAdminIsOnTheAdminPageAsAnotherAdmin() {
+        // Write code here that turns the phrase above into concrete actions
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin")
+                .session("connected", "11");
+        Helpers.route(provideApplication(), requestBuilder);
+    }
 
     @And("^there is a profile with id (\\d+)$")
     public void thereIsAProfileWithId(int id) throws Throwable{
@@ -70,9 +79,7 @@ public class AdminUndoSteps extends ProvideApplication {
     @Then("^the profile (\\d+) is restored$")
     public void theProfileIsRestored(int id) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        System.out.println("---------------" + id);
         injectRepositories();
-        System.out.println(profileRepository.getProfileByProfileId(id).getSoftDelete());
         assertTrue(profileRepository.getProfileByProfileId(id).getSoftDelete() == 1);
     }
 
@@ -121,12 +128,8 @@ public class AdminUndoSteps extends ProvideApplication {
         Boolean flag = false;
         injectRepositories();
         List<Destination> myDestinations = destinationRepository.getUserDestinations(userId);
-        System.out.println(myDestinations);
         for (Destination dest : myDestinations){
-            System.out.println("****************************************************");
-            System.out.println(dest.getDestinationId());
             if (dest.getDestinationId() == destId){
-                System.out.println("in if");
                 flag = true;
             }
         } assertTrue(flag);
@@ -186,7 +189,6 @@ public class AdminUndoSteps extends ProvideApplication {
     public void commandStackItemIsMoreThanOneDayOld(int arg0) throws Throwable {
         injectRepositories();
         UndoStack undoStack = undoStackRepository.getStackItem(arg0);
-        System.out.println(undoStack);
         assertTrue(new DateTime().minusDays(1).toDate().getTime() > undoStack.getTimeCreated().getTime());
     }
 
@@ -237,5 +239,19 @@ public class AdminUndoSteps extends ProvideApplication {
 //            }
 //        }
 //        assertTrue(found);
+    }
+
+    @Given("the admin deletes trip {int}")
+    public void theAdminDeletesTrip(Integer int1) {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/trips/" + int1 + "/delete")
+                .session("connected", "2");
+        tripDeleteResult = Helpers.route(provideApplication(), request);
+    }
+
+    @Then("a trips deleted flashing is shown confirming the delete")
+    public void aTripsDeletedFlashingIsShownConfirmingTheDelete() {
+        Assert.assertTrue(tripDeleteResult.flash().getOptional("info").isPresent());
     }
 }

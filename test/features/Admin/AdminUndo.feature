@@ -46,5 +46,8 @@ Feature: Undo Delete
     Then a flashing is shown confirming the delete
     And the treasure hunt is added to the undo stack
 
-
+  Scenario: Deleting a trip adds it to the undo stack
+    Given  the admin is on the admin page
+    And the admin deletes trip 3
+    Then a trips deleted flashing is shown confirming the delete
 

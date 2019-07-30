@@ -69,11 +69,13 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
+
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (1, 3, CURRENT_DATE, CURRENT_DATE, 1);
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (1, 4, CURRENT_DATE, CURRENT_DATE, 1);
+
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (2, 'to delete Trip', 3);
 
@@ -82,6 +84,14 @@ INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_o
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (2, 4, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip(trip_id, name, profile_id) VALUES (3, 'Johnny Trip', 3);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (3, 3, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (3, 4, CURRENT_DATE, CURRENT_DATE, 1);
 
 INSERT INTO photo (visible, content_type, name,  path) values
   (0, 'image/jpg', 'testPic1.jpg', 'photos/personalPhotos/testPic1.jpg');
