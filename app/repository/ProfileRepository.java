@@ -272,18 +272,17 @@ public class ProfileRepository {
     }
 
 
-    public CompletionStage<Boolean> updatePassword(Integer profileId, String oldPassword, String newPassword) {
+    public CompletionStage<Boolean> updatePassword(Integer profileId, String newPassword) {
         return supplyAsync(() -> {
             Profile profile = getProfileByProfileId(profileId);
-            if (!validate(profile.getEmail(), oldPassword)) {
-                return false;
-            }
 
             Transaction txn = ebeanServer.beginTransaction();
             String updateQuery = "UPDATE profile SET password = ? WHERE profile_id = ?";
             SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
             query.setParameter(1, newPassword);
+            query.setParameter(2, profileId);
             query.execute();
+            txn.commit();
             return true;
         });
     }

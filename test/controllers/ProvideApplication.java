@@ -85,9 +85,8 @@ public class ProvideApplication extends WithApplication {
         if (profileRepository == null) injectRepositories();
         List<Profile> profiles = profileRepository.getAll();
         for (Profile profile: profiles) {
-            String oldPassword = profile.getPassword();
             profile.setPassword(profile.getPassword());
-            profileRepository.updatePassword(profile.getProfileId(), oldPassword, profile.getPassword());
+            profileRepository.updatePassword(profile.getProfileId(), profile.getPassword());
         }
         hashed = true;
     }
