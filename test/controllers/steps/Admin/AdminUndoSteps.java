@@ -254,7 +254,7 @@ public class AdminUndoSteps extends ProvideApplication {
     }
 
     @Then("a profile flashing is shown confirming the delete")
-    public void aFlashingIsShownConfirmingTheDelete() throws Throwable {
+    public void aProfileFlashingIsShownConfirmingTheDelete() throws Throwable {
         Assert.assertTrue(profileDeleteResult.flash().getOptional("info").isPresent());
     }
 }
