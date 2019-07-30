@@ -9,6 +9,7 @@ Feature: Create a destination
     And he fills in Name with "Port Moresby"
     And he fills in Type with "Village"
     And he fills in Country with "Papua New Guinea"
+    And he does not select a traveller type
     And he presses Destination Save
     Then he is redirected to the destinations page
 
@@ -19,6 +20,7 @@ Feature: Create a destination
     And he fills in Type with "City"
     And he fills in Country with "New Zealand"
     And he fills in Longitude as "200"
+    And he does not select a traveller type
     And he presses Destination Save
     Then the Destination page should be shown
 

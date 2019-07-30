@@ -1,6 +1,8 @@
 package controllers.steps.Destinations;
 
 import controllers.ProvideApplication;
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -121,5 +123,10 @@ public class PublicDestinationSteps extends ProvideApplication {
         destination.setVisible(1);
         injectRepositories();
         destinationRepository.update(destination, destination.getDestinationId());
+    }
+
+    @And("^he does not fill out a traveller type$")
+    public void heDoesNotFillOutATravellerType() throws Throwable {
+        destForm.put("travellerTypesStringDest", "");
     }
 }
