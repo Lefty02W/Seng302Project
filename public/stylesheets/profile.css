@@ -295,3 +295,9 @@ img.thumbnail {
 .dropdown-menu{
     width: 100%;
 }
+
+.dropDownAndButton {
+    width: 48%;
+    margin-left: 2%;
+    margin-bottom: 30px;
+}
