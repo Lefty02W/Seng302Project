@@ -102,11 +102,36 @@
 
                                        <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
                                            <a href="@routes.TripsController.showEdit(trip, currentUser.getProfileId)"><button type="submit" class="btn btn-primary">Edit</button></a>  <!-- Need to change to the correct style of button -->
-                                           <a href="@routes.TripsController.delete(trip)"><button type="submit" class="btn btn-outline-secondary">Delete</button></a>
+                                           <button type="submit" class="btn btn-outline-secondary"
+                                           onclick="fillDeleteValues('@routes.TripsController.delete(trip)')">Delete
+                                           </button>
                                        </div>
                                    </div>
                                </div>
                                }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="confirmationDeleteModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="#deleteTitle">Confirmation</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    <div class="modal-body">
+                        <h5 id="#deleteBody">Are you sure you want to delete?</h5>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                        <a href="#" id="confirmDeleteHrf">
+                            <button type="submit" id="confirmDeleteBtn" class="btn btn-danger" onclick="runDelete()">Delete</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -119,6 +144,14 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
+
+
+        function fillDeleteValues(route){
+            var a = document.getElementById("confirmDeleteHrf");
+            a.href = route;
+            console.log(a.href);
+            $('#confirmationDeleteModal').modal('show');
+        }
 
     </script>
 

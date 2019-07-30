@@ -17,7 +17,7 @@ POST     /destinations/:id/edit      controllers.DestinationsController.edit(req
 GET     /destinations/:id/edit/show      controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
-POST    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
+GET    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
 POST    /destinations/follow/:destId/:isPublic      controllers.DestinationsController.follow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
 POST    /destinations/unfollow/:destId/:isPublic     controllers.DestinationsController.unfollow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
 GET    /destinations/:photoId/:destId/linkphoto      controllers.DestinationsController.linkPhotoToDestination(request: Request, photoId: Integer, destId: Integer)

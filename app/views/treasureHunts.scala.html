@@ -121,9 +121,9 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="/hunts/@hunt.getTreasureHuntId/delete">
-                                            <button class="btn btn-danger" onclick="">Delete</button>
-                                        </a>
+                                        <button class="btn btn-danger"
+                                            onclick="fillDeleteValues('/hunts/@hunt.getTreasureHuntId/delete')">Delete
+                                        </button>
                                     </td>
                                 </tr>
                             }
@@ -249,6 +249,28 @@
         </div>
     </div>
      }
+    <div class="modal" id="confirmationDeleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="#deleteTitle">Confirmation</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- body -->
+                <div class="modal-body">
+                    <h5 id="#deleteBody">Are you sure you want to delete?</h5>
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmDeleteHrf">
+                        <button type="submit" id="confirmDeleteBtn" class="btn btn-danger" onclick="runDelete()">Delete</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
             $("#menu-toggle").click(function (e) {
@@ -271,6 +293,18 @@
                     "lengthChange": false
                 });
             } );
+
+            function fillDeleteValues(route){
+                var a = document.getElementById("confirmDeleteHrf");
+                a.href = route;
+                console.log(a.href);
+                $('#confirmationDeleteModal').modal('show');
+            }
+
+            function runDelete(){
+                email = this.email;
+            }
+
     </script>
 
 </html>
