@@ -59,8 +59,8 @@ public class TravellersController extends Controller {
             if (profile.isPresent()) {
                 Form<PartnerFormData> searchForm = form.bindFromRequest(request);
                 PartnerFormData formData = searchForm.get();
-                Date lowerDate = new Date();
-                Date upperDate = new Date();
+                Date lowerDate;
+                Date upperDate;
                 if (formData.searchAgeRange == null) {
                     formData.setSearchAgeRange(0);
                 }
@@ -90,10 +90,11 @@ public class TravellersController extends Controller {
                         upperDate = getDateFromAge(500);
                         break;
                     default:
-                        lowerDate = getDateFromAge(500);
-                        upperDate = getDateFromAge(0);
+                        lowerDate = getDateFromAge(0);
+                        upperDate = getDateFromAge(500);
                         break;
                 }
+                form.fill(new PartnerFormData());
                 return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");

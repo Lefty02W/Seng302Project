@@ -150,13 +150,15 @@ public class ProfileRepository {
             query.setParameter(1, travellerType);
         }
         if (!nationality.equals("")) {
-            if (whereAdded) {
+            if (!whereAdded) {
                 query.setParameter(1, nationality);
             } else {
                 query.setParameter(2, nationality);
             }
         }
-
+        System.out.println(query);
+        System.out.println("Greater than " + dateFormat.format(upperAge));
+        System.out.println("Less than " + dateFormat.format(lowerAge));
         List<SqlRow> foundRows = query.findList();
         List<Integer> foundIds = new ArrayList<>();
         List<Profile> foundProfiles = new ArrayList<>();
@@ -167,8 +169,8 @@ public class ProfileRepository {
             foundProfiles = ebeanServer.find(Profile.class).where()
                     .idIn(foundIds)
                     .contains("gender", gender)
-                    .lt("birth_date", dateFormat.format(upperAge))
-                    .gt("birth_date", dateFormat.format(lowerAge))
+                    .gt("birth_date", dateFormat.format(upperAge))
+                    .lt("birth_date", dateFormat.format(lowerAge))
                     .findList();
             for (Profile profile : foundProfiles) {
                 Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profile.getProfileId());
