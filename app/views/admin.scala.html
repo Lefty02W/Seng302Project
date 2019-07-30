@@ -58,6 +58,29 @@
                     </div>
                 </nav>
 
+                <div class="changeLog">
+                    <div class="dropdown bootstrap-select">
+                        <select class="selectpicker" id="changeStack" data-width="100%">
+                        @for(undoObject <- adminUndoStack) {
+                            <option selected disabled>Deleted @undoObject.getItem_type @undoObject.getObjectId</option>
+                        }
+                        </select>
+                    </div>
+                    <a href="@routes.AdminController.undoTopOfStack()">
+                        <button class="btn btn-primary">Undo Action</button>
+                    </a>
+
+                    <div class="helpPopup" onclick="helpPopup()">(What's this?)
+                        <span class="popuptext" id="helpPopup">
+                                Shows the last action you executed on this page. <br><br>
+                                Click the 'Undo Action' button to undo the latest action. <br>
+                                Shortcut key: "CTRL" + "SHIFT" + "Z <br><br>
+                                Click the drop down to see the full list of actions performed while on the admin page.
+                                Note that only the most recent change can be undone.
+                            </span>
+                    </div>
+                </div>
+
                 <div class="container">
                     @if(request.flash.getOptional("info").isPresent) {
                         <div class="alert alert-info">
@@ -69,29 +92,6 @@
                         @request.flash.getOptional("error").get()
                         </div>
                     }
-
-                    <div class="changeLog">
-                        <div class="dropdown bootstrap-select">
-                            <select class="selectpicker" id="changeStack" data-width="100%">
-                                @for(undoObject <- adminUndoStack) {
-                                    <option selected disabled>Deleted @undoObject.getItem_type @undoObject.getObjectId</option>
-                                }
-                            </select>
-                        </div>
-                        <a href="@routes.AdminController.undoTopOfStack()">
-                            <button class="btn btn-primary">Undo Action</button>
-                        </a>
-
-                        <div class="helpPopup" onclick="helpPopup()">What's this?
-                            <span class="popuptext" id="helpPopup">
-                                Shows the last action you executed on this page. <br><br>
-                                Click the drop down to see the full list of actions performed while on the admin page.
-                                    Note that only the most recent change can be undone.<br><br>
-                                Click the button to undo the specified action. <br>
-                                Undo Action can also be accessed using the shortcut key "CTRL" + "SHIFT" + "Z
-                            </span>
-                        </div>
-                    </div>
 
                     <div class="col">
                         <div class="row">
