@@ -1,6 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer], usersPhotos : List[Photo], destinationForm : Form[Destination], destination : RoutedObject[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(destinationsList : List[Destination], currentUser : Profile, isPublic: Boolean, followedDestinationIds : List[Integer],
+        usersPhotos : List[Photo], destinationForm : Form[Destination], destination : RoutedObject[Destination],
+        requestForm : Form[DestinationRequest])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import models.Destination; var toViewDest = new Destination()
 
@@ -211,6 +213,13 @@
                                         </div>
                                     </div>
 
+                                    <div id="travellerTypes" class="row justify-content-center">
+                                        <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
+                                        data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">Suggest Edit</button>
+                                        <div id="travellerTypesVal" class="col-md-4">
+                                            <a></a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div id="myPhotosTab" class="tab-pane fade">
@@ -300,7 +309,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="hidden-div-edit">
-                                                <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField">
+                                                <input type="text" id="travellerTypesStringDest" name="travellerTypesStringDest" class="hidden-field typesField">
                                             </div>
                                             <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%">
                                                 <option value="ThrillSeeker">ThrillSeeker</option>
@@ -342,8 +351,7 @@
                             <div class="modal-content">
                                     <!-- header -->
                                 <div class="modal-header">
-                                    <h4>Destination: @destination.getObject.getDestinationId</h4>
-                                    <button type="button" class="close" data-dismiss="modal"></button>
+                                    <h2 class="modal-title">Edit Destination</h2>
                                 </div>
                                     <!-- body -->
                                 @helper.form(routes.DestinationsController.update(destination.getObject.getDestinationId)) {
@@ -401,6 +409,59 @@
                                             </div>
                                             <div class="col">
                                                 <div class="row">
+                                                    <label>Traveller Types</label>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="hidden-div-edit">
+                                                        <input type="text" id="travellerTypesForm" name="travellerTypesStringDest" class="hidden-field typesField" value="@destination.getObject.getTravellerTypesString">
+                                                    </div>
+                                                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownEdit" data-width="100%">
+                                                        @if(destination.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
+                                                            <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                                        } else {
+                                                            <option value="ThrillSeeker">ThrillSeeker</option>
+                                                        }
+
+                                                        @if(destination.getObject.getTravellerTypesList.contains("Backpacker")) {
+                                                            <option value="Backpacker" selected>Backpacker</option>
+                                                        } else {
+                                                            <option value="Backpacker">Backpacker</option>
+                                                        }
+
+                                                        @if(destination.getObject.getTravellerTypesList.contains("Gap Year")) {
+                                                            <option value="Gap Year" selected>Gap Year</option>
+                                                        } else {
+                                                            <option value="Gap Year">Gap Year</option>
+                                                        }
+
+                                                        @if(destination.getObject.getTravellerTypesList.contains("Groupie")) {
+                                                            <option value="Groupie" selected>Groupie</option>
+                                                        } else {
+                                                            <option value="Groupie">Groupie</option>
+                                                        }
+
+                                                        @if(destination.getObject.getTravellerTypesList.contains("Frequent Weekender")) {
+                                                            <option value="Frequent Weekender" selected>Frequent Weekender</option>
+                                                        } else {
+                                                            <option value="Frequent Weekender">Frequent Weekender</option>
+                                                        }
+
+                                                        @if(destination.getObject.getTravellerTypesList.contains("Functional/business Traveller")) {
+                                                            <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
+                                                        } else {
+                                                            <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                                        }
+
+                                                        @if(destination.getObject.getTravellerTypesList.contains("Holidaymaker")) {
+                                                            <option value="Holidaymaker" selected>Holidaymaker</option>
+                                                        } else {
+                                                            <option value="Holidaymaker">Holidaymaker</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="row">
                                                     <label>Make Public</label>
                                                 </div>
                                                 <div class="row">
@@ -416,7 +477,7 @@
                                         <!-- footer -->
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save</button>
+                                        <button type="submit" class="btn btn-primary" onclick="fillVals2()">Save</button>
                                     </div>
                                 }
                             </div>
@@ -431,10 +492,68 @@
                         }
                     </div>
                 }
+
+                <div class="modal fade" id="suggestEditModal">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h2 class="modal-title ">Suggest An Edit</h2>
+                            </div>
+                            @*TODO: Set up for form*@
+                            <div class="modal-body">
+                                <div class="col">
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-4">
+                                            <b>To Remove</b>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <b>To Add</b>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row justify-content-center">
+                                        <div class="col-md-6">
+                                            <div class="col " >
+                                                <select multiple="multiple" title="Traveller Type" id="toRemoveDropdown" data-width="100%">
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <select multiple title="Traveller Type" id="toAddDropdown" data-width="100%">
+                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                                <option value="Backpacker">Backpacker</option>
+                                                <option value="Gap Year">Gap Year</option>
+                                                <option value="Groupie">Groupie</option>
+                                                <option value="Frequent Weekender">Frequent Weekender</option>
+                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                                <option value="Holidaymaker">Holidaymaker</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                @helper.form(routes.DestinationsController.createEditRequest()) {
+                                    @CSRF.formField
+                                    <div class="hidden-div">
+                                        <input type="text" id="toAdd" name="toAdd" class="hidden-field-2">
+                                        <input type="text" id="toRemove" name="toRemove">
+                                        <input type="number" id="destinationId" name="destinationId">
+                                    </div>
+                                    <button class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" class="btn btn-primary" onclick="fillDestReequestForm()">Submit Request</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
     <script type="text/javascript">
+
             $(document).ready(function () {
                 $('#destTable').DataTable({
                     "lengthChange": false,
@@ -455,7 +574,8 @@
             var map;
             var markers = [];
             var markersMap = new Map();
-            var destinationId;
+            var destinationID;
+            var selectedDestID;
             var nightStyle = [
                 {
                     "elementType": "geometry",
@@ -898,7 +1018,6 @@
                                 "<br> Country: @destination.getCountry";
                         var destinationId = @destination.getDestinationId;
                         var infoWindow = new google.maps.InfoWindow();
-
                         google.maps.event.addListener(marker, 'click', function () {
                             infoWindow.setContent(this.content);
                             infoWindow.open(this.getMap(), this);
@@ -908,9 +1027,16 @@
                             document.getElementById("districtVal").innerHTML = "  <b>District: &nbsp;&nbsp;</b> @destination.getDistrict";
                             document.getElementById("latVal").innerHTML = "  <b>Latitude: &nbsp;&nbsp;</b> @destination.getLatitude";
                             document.getElementById("lngVal").innerHTML = "  <b>Longitude: &nbsp;&nbsp;</b> @destination.getLongitude";
+                            document.getElementById("travellerTypesVal").innerHTML = "  <b>Traveller Types: &nbsp;&nbsp;</b> @destination.getTravellerTypesString";
                             @if(destination.getVisible == 1){
+                                document.getElementById("suggestEditButton").hidden = false;
                                 document.getElementById("publicVal").innerHTML = "  <b>Visibility: &nbsp;&nbsp;</b> Public ";
                             }else{
+                                document.getElementById("suggestEditButton").hidden = true;
+                                document.getElementById("publicVal").innerHTML = "  <b>Visibily: &nbsp;&nbsp;</b> Private ";
+                            }
+                            @if(destination.getProfileId == currentUser.getProfileId) {
+                                document.getElementById("suggestEditButton").hidden = true;
                                 document.getElementById("publicVal").innerHTML = "  <b>Visibily: &nbsp;&nbsp;</b> Private ";
                             }
 
@@ -992,7 +1118,6 @@
                                     "                            </div>";
                                 }
                             }
-                            console.log(photoList);
                         });
 
                         markers.push(marker);
@@ -1026,6 +1151,7 @@
             * and makes the related marker bounce
             */
             function setSelectedDestination(destinationId, row) {
+                selectedDestID = destinationId;
                 var markerToSet = markersMap.get(destinationId);
                 new google.maps.event.trigger( markerToSet, 'click' );
                 map.setCenter(markerToSet.getPosition());
@@ -1040,6 +1166,7 @@
                 } else {
                     row.style.backgroundColor = "";
                 }
+
             }
 
             /**
@@ -1061,16 +1188,69 @@
                 }
             }
 
+            function getSelectedDestID () {return selectedDestID;}
+
             function fillVals() {
-                console.log($('#typeDropdown').val());
-                $('#travellerTypesForm').val($('#typeDropdown').val());
+                $('#travellerTypesStringDest').val($('#typeDropdown').val());
             }
 
+            function fillVals2() {
+                $('#travellerTypesForm').val($('#typeDropdownEdit').val());
+            }
+
+             function fillDestReequestForm() {
+                 document.getElementById("toAdd").value = $('#toAddDropdown').val();
+                 document.getElementById("toRemove").value = $('#toRemoveDropdown').val();
+             }
+
+            function setTravellerTypesToRemove() {
+                var html = "";
+                resetTypesDropdowns();
+                @for(destination <- destinationsList) {
+                    var id = @destination.getDestinationId;
+                        if(id === getSelectedDestID()) {
+                            var len = @destination.getTravellerTypesList.size();
+                            @for(travellerType <- destination.getTravellerTypesList) {
+                                var select = document.getElementById("toRemoveDropdown");
+                                var selectAdd = document.getElementById("toAddDropdown");
+                                var option = document.createElement("option");
+                                option.text = "@travellerType";
+                                option.value = "@travellerType";
+                                selectAdd.remove(option);
+                                select.add(option);
+                            }
+                            document.getElementById("destinationId").value = @destination.getDestinationId();
+                    }
+                }
+            }
 
             $("#menu-toggle").click(function (e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
             });
+
+
+
+        function resetTypesDropdowns() {
+            var i;
+            for(i = document.getElementById("toAddDropdown").options.length - 1 ; i >= 0 ; i--)
+            {
+                document.getElementById("toAddDropdown").remove(i);
+            }
+            i = 0;
+            for(i = document.getElementById("toRemoveDropdown").options.length - 1 ; i >= 0 ; i--)
+            {
+                document.getElementById("toRemoveDropdown").remove(i);
+            }
+            var selectAdd = document.getElementById("toAddDropdown");
+            selectAdd.add(new Option("Backpacker", "Backpacker"));
+            selectAdd.add(new Option("ThrillSeeker", "ThrillSeeker"));
+            selectAdd.add(new Option("Holidaymaker", "Holidaymaker"));
+            selectAdd.add(new Option("Frequent Weekender", "Frequent Weekender"));
+            selectAdd.add(new Option("Groupie", "Groupie"));
+            selectAdd.add(new Option("Gap Year", "Gap Year"));
+            selectAdd.add(new Option("Functional/business Traveller", "Functional/business Traveller"));
+        }
 
     </script>
 

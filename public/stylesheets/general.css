@@ -296,7 +296,7 @@ div.dataTables_filter {
 
 
 .hidden-div {
-    z-index: 1;
+    z-index: -1;
     position: absolute;
     top: 0;
     left: 8vw;
@@ -310,6 +310,8 @@ div.dataTables_filter {
     height: 4vh;
     opacity: 0;
 }
+
+
 
 .alert-card {
     opacity: 0.95;

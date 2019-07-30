@@ -87,7 +87,11 @@ public class DestinationPhotoRepository implements ModelUpdatableRepository<Dest
      */
     public CompletionStage<Optional<Integer>> insert(DestinationPhoto photo) {
         return supplyAsync(() -> {
-            ebeanServer.insert(photo);
+            try {
+                ebeanServer.insert(photo);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
            return Optional.of(photo.getDestinationPhotoId());
         }, executionContext);
     }

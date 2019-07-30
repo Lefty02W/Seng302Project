@@ -3,7 +3,6 @@ package controllers;
 
 import models.RoutedObject;
 import models.TreasureHunt;
-
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -77,15 +76,14 @@ public class TreasureHuntController {
      * @return CompletionStage redirecting back to the treasure hunts page
      */
     public CompletionStage<Result> createHunt(Http.Request request) {
-        return supplyAsync(() -> {
-            Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
-            TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
+        Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
+        TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
 
-            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
-                return redirect("/treasure").flashing("error", "Error: Start date cannot be after end date.");
-            }
+        if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+            return supplyAsync(() -> redirect("/treasure").flashing("error", "Error: Start date cannot be after end date."));
+        }
 
-            treasureHuntRepository.insert(treasureHunt);
+        return treasureHuntRepository.insert(treasureHunt).thenApplyAsync(x -> {
             return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been added.");
         });
     }
@@ -141,14 +139,14 @@ public class TreasureHuntController {
     public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
         Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
         TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), treasureHuntForm);
-        return supplyAsync(() -> {
-            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
-                return redirect("/treasure").flashing("error", "Error: Start date cannot be after end date.");
-            }
+        if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+            return supplyAsync(() -> redirect("/treasure").flashing("error", "Error: Start date cannot be after end date."));
+        }
 
-            treasureHuntRepository.update(treasureHunt, id);
+        return treasureHuntRepository.update(treasureHunt, id).thenApplyAsync(x -> {
             return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
         });
+
     }
 
     /**

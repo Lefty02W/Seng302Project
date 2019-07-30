@@ -4,6 +4,7 @@ import controllers.ProvideApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -58,6 +59,11 @@ public class CreateDestinationSteps extends ProvideApplication {
     @When("he fills in Country with {string}")
     public void heFillsInCountryWith(String string) { destForm.put("country", string); }
 
+    @When("he selects {string} as the traveller type")
+    public void he_selects_as_the_traveller_type(String string) {
+        destForm.put("travellerTypesStringDest", string);
+    }
+
     @When("he presses Save")
     public void hePressesSave() {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -71,8 +77,8 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @Then("he is redirected to the destinations page")
     public void theCreatedDestinationIsStoredInTheDatabase() {
-        assertEquals(303, redirectDestination.status());
-        assertEquals("/destinations/show/false", redirectDestination.redirectLocation().get());
+        Assert.assertTrue(redirectDestination.flash().getOptional("success").isPresent());
+
     }
 
     @When("he fills in Longitude as {string}")
@@ -82,11 +88,8 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     @Then("the Destination page should be shown")
     public void theDestinationPageShouldBeShown() {
-        if (redirectDestination.redirectLocation().isPresent()) {
-            assertEquals("/destinations/show/false", redirectDestination.redirectLocation().get());
-        } else {
-            fail();
-        }
+        Assert.assertTrue(redirectDestination.flash().getOptional("failure").isPresent());
+
     }
 
 }
