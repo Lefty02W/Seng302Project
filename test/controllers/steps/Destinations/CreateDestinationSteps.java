@@ -110,4 +110,9 @@ public class CreateDestinationSteps extends ProvideApplication {
         redirectDestination = Helpers.route(provideApplication(), request);
         assertEquals(303, redirectDestination.status());
     }
+
+    @And("^he does not select a traveller type$")
+    public void heDoesNotSelectATravellerType() throws Throwable {
+        destForm.put("travellerTypesStringDest", "");
+    }
 }
