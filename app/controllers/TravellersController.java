@@ -94,8 +94,7 @@ public class TravellersController extends Controller {
                         upperDate = getDateFromAge(500);
                         break;
                 }
-                form.fill(new PartnerFormData());
-                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), formData, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");
             }
@@ -156,7 +155,7 @@ public class TravellersController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 List<Profile> profiles = profileRepository.getAll();
-                return ok(travellers.render(form, profiles, photoList, profile.get(), Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, profiles, photoList, profile.get(), Country.getInstance().getAllCountries(), new PartnerFormData(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }
