@@ -32,6 +32,16 @@ label {
     height: 35vh;
 }
 
+#backButtonCreate{
+    margin: 5vh;
+}
+
+.saveTripButton{
+    height: 5vh;
+    margin-left: 5vh;
+    margin-top: 1vh;
+}
+
 
 .tripNameInput{
     display: block;
