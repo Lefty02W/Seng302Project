@@ -28,7 +28,6 @@ public class RestrictAnnotationActionTest extends ProvideApplication{
                 .session("connected", "1");
 
         Result result = Helpers.route(provideApplication(),request);
-        System.out.println(result.body());
         assertEquals(303, result.status());
     }
 

@@ -40,6 +40,8 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
+    private int softDelete;
+
     @Transient
     private String passportsForm;
 
@@ -225,6 +227,11 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
+    public void setSoftDelete(Integer softDelete) {
+        this.softDelete = softDelete;
+    }
+
+
     public void setRoles(List<String> newRoles){
         this.roles = newRoles;
     }
@@ -269,6 +276,8 @@ public class Profile extends Model {
     public String getGender() {
         return gender;
     }
+
+    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
 
     public Map<Integer, TravellerType> getTravellerTypes() {
         return travellerTypes;
@@ -476,5 +485,8 @@ public class Profile extends Model {
 
     public void setNationalities(Map<Integer, Nationality> nationalities) {
         this.nationalities = nationalities;
+    }
+
+    public int getSoftDelete() { return softDelete;
     }
 }

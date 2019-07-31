@@ -28,6 +28,21 @@ With the repository cloned, it can be imported using the following steps.
 2. All tests, including both Cucumber and JUnit tests, will be run and the output shown.
 
 
+### Admin & User Credentials
+
+Admin:
+
+* Username: test.admin@gmail.com
+
+* Password: testAdmin
+ 
+User:
+
+* Username: test.user@gmail.com
+
+* Password: testUser
+
+
 ### Connect to a Dedicated server instance
 
 We have two instances of the project running on services in our virtual machine.

@@ -3,7 +3,8 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt], countries : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
+        countries : List[String], adminUndoStack : List[UndoStack])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -57,6 +58,29 @@
                         <!-- TODO align this in the center -->
                     </div>
                 </nav>
+
+                <div class="changeLog">
+                    <div class="dropdown bootstrap-select">
+                        <select class="selectpicker" id="changeStack" data-width="100%">
+                        @for(undoObject <- adminUndoStack) {
+                            <option selected disabled>Deleted @undoObject.getItem_type @undoObject.getObjectId</option>
+                        }
+                        </select>
+                    </div>
+                    <a href="@routes.AdminController.undoTopOfStack()">
+                        <button class="btn btn-primary">Undo Action</button>
+                    </a>
+
+                    <div class="helpPopup" onclick="helpPopup()">(What's this?)
+                        <span class="popuptext" id="helpPopup">
+                                Shows the last action you executed on this page. <br><br>
+                                Click the 'Undo Action' button to undo the latest action. <br>
+                                Shortcut key: "CTRL" + "SHIFT" + "Z" <br><br>
+                                Click the drop down to see the full list of actions performed while on the admin page.
+                                Note that only the most recent change can be undone.
+                            </span>
+                    </div>
+                </div>
 
                 <div class="container">
                     @if(request.flash.getOptional("info").isPresent) {
@@ -304,11 +328,7 @@
                                                 <button class="btn btn-primary">Edit</button>
                                             </a>
                                         </td>
-                                        <td>
-                                            <a href="/admin/hunts/@hunt.getTreasureHuntId/delete">
-                                                <button class="btn btn-danger" onclick="">Delete</button>
-                                            </a>
-                                        </td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/hunts/@hunt.getTreasureHuntId/delete')">Delete</button></td>
                                     </tr>
                                 }
                             </table>
@@ -473,7 +493,7 @@
                                 </div>
 
                                 }
-                    </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -508,6 +528,15 @@
             $('#travellerTypesStringDest').val($('#typeDropdownDest').val());
         }
 
+        function fillVals2() {
+            $('#travellerTypesForm').val($('#typeDropdownEdit').val());
+        }
+
+        document.onkeyup = function(e) {
+            if (e.ctrlKey && e.which === 90 && e.shiftKey) {
+                window.location.href = "@routes.AdminController.undoTopOfStack()";
+            }
+        };
 
 
         $(document).ready(function() {
@@ -588,6 +617,14 @@
             alert(e.value);
         }
 
+        function helpPopup() {
+            var popup = document.getElementById("helpPopup");
+            popup.classList.toggle("show");
+        }
+
+        // May removed based on what is required for stack
+        //$("#changeStack").val($("#changeStack option:last").val());
+
 
     </script>
 
@@ -641,7 +678,7 @@
                                     <th>Destination Name</th>
                                     <th>Dates</th>
                             </thead>
-                            @for(tripDestination <- tripToView.getOrderedDestiantions().values()) {
+                            @for(tripDestination <- tripToView.getOrderedDestinations().values()) {
                                 <tr>
                                     <td>Destination @tripDestination.getDestOrder</td>
                                     <td>@tripDestination.getDestinationName</td>

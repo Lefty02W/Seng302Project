@@ -115,10 +115,9 @@ img.thumbnail {
 }
 
 #travellersPhotos .row{
-    margin-right: 0px;
-    margin-left: 0px
+    margin-right: auto;
+    margin-left: auto
 }
-
 
 .scrollable {
     max-width: 300px;

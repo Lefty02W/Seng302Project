@@ -2,6 +2,7 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
+import interfaces.TypesInterface;
 import models.Destination;
 import models.PersonalPhoto;
 import models.Photo;
@@ -41,7 +42,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * This class is the controller for the profiles.scala.html file, it provides the route to the
  * profiles page
  */
-public class ProfileController extends Controller {
+public class ProfileController extends Controller implements TypesInterface {
 
     private final Form<Profile> profileForm;
     private final Form<ImageData> imageForm;
@@ -52,12 +53,13 @@ public class ProfileController extends Controller {
     private final PhotoRepository photoRepository;
     private List<Photo> photoList = new ArrayList<>();
     private Photo demoProfilePicture = null;
-    private static boolean showPhotoModal = false;
+    private Boolean showPhotoModal = false;
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
     private Boolean countryFlag = true;
+    private final UndoStackRepository undoStackRepository;
 
 
 
@@ -72,8 +74,10 @@ public class ProfileController extends Controller {
 
 
     @Inject
-    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi, PersonalPhotoRepository personalPhotoRepository,
-            HttpExecutionContext httpExecutionContext, ProfileRepository profileRepository, PhotoRepository photoRepository, TripRepository tripRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository)
+    public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
+                             PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
+                             ProfileRepository profileRepository, PhotoRepository photoRepository,
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -83,7 +87,8 @@ public class ProfileController extends Controller {
             this.photoRepository = photoRepository;
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
-            this.profileTravellerTypeRepository = profileTravellerTypeRepository;
+            this.undoStackRepository = undoStackRepository;
+            this.profileTravellerTypeRepository =profileTravellerTypeRepository;
         }
 
 
@@ -236,12 +241,8 @@ public class ProfileController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     private CompletionStage<Result> savePhoto(Photo photo, int profileId){
-        return photoRepository.insert(photo).thenApplyAsync(photoId -> {
-            return personalPhotoRepository.insert(new PersonalPhoto(profileId, photoId))
-            .thenApplyAsync(id -> {
-                return id;
-            });
-        }).thenApply(result -> redirect("/profile"));
+        return photoRepository.insert(photo).thenApplyAsync(photoId -> personalPhotoRepository.insert(new PersonalPhoto(profileId, photoId))
+        .thenApplyAsync(id -> id)).thenApply(result -> redirect("/profile"));
     }
 
     /**
@@ -250,7 +251,7 @@ public class ProfileController extends Controller {
      * @return extension string with just the extension.
      */
     private String photoType(String url){
-        return url.substring(url.lastIndexOf("/") + 1);
+        return url.substring(url.lastIndexOf('/') + 1);
     }
 
     /**
@@ -276,7 +277,7 @@ public class ProfileController extends Controller {
                     File thumbFile = new File(System.getProperty("user.dir") +"/photos/thumbnails/" + fileName + "." + imgType);
                     ImageIO.write(bufferedImage, imgType, thumbFile);
                     photoRepository.insertThumbnail(new Photo("photos/thumbnails/" + fileName, photoOpt.get().getType(), 1, fileName), photoId);
-                } catch (Exception e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -332,7 +333,11 @@ public class ProfileController extends Controller {
     public CompletionStage<Result> show(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
+
             if (profileRec.isPresent()) {
+
+                undoStackRepository.clearStackOnAllowed(profileRec.get());
+
                 List<Photo> displayImageList = getUserPhotos(request);
                 Boolean show = showPhotoModal = false;
                 Optional<Photo> image = personalPhotoRepository.getProfilePicture(profId);
@@ -362,7 +367,7 @@ public class ProfileController extends Controller {
      * setting it as the user profile picture
      *
      * @param request The users request to save the photo
-     * @return
+     * @return Id of the photo that has been inserted
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadProfilePicture(Http.Request request) {
@@ -406,9 +411,9 @@ public class ProfileController extends Controller {
      * Endpoint to handle a request from the user to delete a personal photo
      *
      * @apiNote GET /profile/photo/:photoId/delete
-     * @param request
-     * @param photoId
-     * @return
+     * @param request request of the photo
+     * @param photoId Id of the photo to be deleted
+     * @return Id of the deleted photo
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deletePhoto(Http.Request request, int photoId) {
@@ -417,13 +422,22 @@ public class ProfileController extends Controller {
             String filePath = System.getProperty("user.dir") + "/" + photoOptional.get().getPath();
             File file = new File(filePath);
             if (file.delete()) {
-                return photoRepository.delete(photoId).thenApplyAsync(x -> {
-                    return redirect(profileEndpoint).flashing("success", "Photo deleted");
-                });
+                return photoRepository.delete(photoId).thenApplyAsync(x -> redirect(profileEndpoint).flashing("success", "Photo deleted"));
             }
         }
         return supplyAsync(() -> redirect(profileEndpoint).flashing("failure", "Photo delete failed"));
     }
 
+
+    /**
+     * Implement the undo delete method from interface
+     * @param profileID - ID of the profile to undo deletion of
+     */
+    public CompletionStage<Void> undo(int profileID) {
+        return supplyAsync(() -> {
+            profileRepository.setSoftDelete(profileID, 0);
+            return null;
+        });
+    }
 }
 

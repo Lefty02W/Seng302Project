@@ -17,7 +17,7 @@ POST     /destinations/:id/edit      controllers.DestinationsController.edit(req
 GET     /destinations/:id/edit/show      controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
 POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
-POST    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
+GET    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
 POST    /destinations/follow/:destId/:isPublic      controllers.DestinationsController.follow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
 POST    /destinations/unfollow/:destId/:isPublic     controllers.DestinationsController.unfollow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
 GET    /destinations/:photoId/:destId/linkphoto      controllers.DestinationsController.linkPhotoToDestination(request: Request, photoId: Integer, destId: Integer)
@@ -41,9 +41,9 @@ POST    /trips/create/update         controllers.TripsController.updateDestinati
 GET     /trips/create/update         controllers.TripsController.createTripDestinationCreate(request: Request, destOrder: Integer, userId: Integer)
 POST    /trips                       controllers.TripsController.save(request: Request,  userId: Integer)
 POST    /trips/create                controllers.TripsController.addDestination(request: Request, userId: Integer)
-GET    /trips/:userId/:id/edit/:order/delete       controllers.TripsController.deleteDestinationEditTrip(request: Request, order: Integer, id: Integer, userId: Integer)
+GET    /trips/:userId/:id/edit/:order/delete       controllers.TripsController.deleteDestinationEditTrip(order: Integer, id: Integer, userId: Integer)
 GET     /trips/:id/delete             controllers.TripsController.delete(id: Integer)
-GET     /trips/:id/create/delete            controllers.TripsController.deleteDestination(request: Request, id: Integer, userId: Integer)
+GET     /trips/:id/create/delete            controllers.TripsController.deleteDestination(id: Integer, userId: Integer)
 
 # Travellers
 GET     /travellers                  controllers.TravellersController.show(request: Request)
@@ -64,6 +64,7 @@ POST    /profile/photo/profile/upload   controllers.ProfileController.uploadProf
 # Admins
 POST    /admin/:id                controllers.ProfileController.updateAdmin(request: Request, id: Integer)
 GET     /admin                    controllers.AdminController.show(request: Request)
+GET     /admin/undo/              controllers.AdminController.undoTopOfStack(request : Request)
 
 ## Admin Trips
 GET     /admin/trips/:tripId/delete     controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
@@ -76,8 +77,8 @@ GET   /admin/:profileId/delete         controllers.AdminController.deleteProfile
 GET     /admin/profile/:id/view        controllers.AdminController.viewProfile(request: Request, id: Integer)
 
 POST    /admin/profile/create           controllers.AdminController.createProfile(request: Request)
-GET    /admin/:userId/admin             controllers.AdminController.makeAdmin(request: Request, userId: Integer)
-GET   /admin/:userId/admin/remove       controllers.AdminController.removeAdmin(request: Request, userId: Integer)
+GET    /admin/:userId/admin             controllers.AdminController.makeAdmin(userId: Integer)
+GET   /admin/:userId/admin/remove       controllers.AdminController.removeAdmin(userId: Integer)
 
 ## Admin Destinations
 GET     /admin/destinations/:destId             controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)

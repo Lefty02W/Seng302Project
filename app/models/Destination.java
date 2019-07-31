@@ -37,6 +37,8 @@ public class Destination extends Model {
     @Constraints.Required
     private int visible;
 
+    private int softDelete;
+
     @Transient
     private List<Photo> usersPhotos = new ArrayList<>();
 
@@ -207,6 +209,12 @@ public class Destination extends Model {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public int getSoftDelete() {
+        return softDelete;
+    }
+
+    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
 
     public String getDistrict() {
         return district;

@@ -152,11 +152,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      */
     public CompletionStage<Optional<Integer>> insert(PersonalPhoto photo) {
         return supplyAsync(() -> {
-            try {
-                ebeanServer.insert(photo);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ebeanServer.insert(photo);
 
            return Optional.of(photo.getPersonalPhotoId());
         }, executionContext);
@@ -169,9 +165,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      * @return Optional PersonalPhoto wrapped in a completion stage
      */
     public CompletionStage<Optional<PersonalPhoto>> findById(int id) {
-        return supplyAsync(() -> {
-            return Optional.ofNullable(ebeanServer.find(PersonalPhoto.class).where().eq("personal_photo_id", id).findOne());
-        });
+        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(PersonalPhoto.class).where().eq("personal_photo_id", id).findOne()));
     }
 
     /**
@@ -181,9 +175,7 @@ public class PersonalPhotoRepository implements ModelUpdatableRepository<Persona
      * @return Optional PersonalPhoto wrapped in a completion stage
      */
     public CompletionStage<Optional<PersonalPhoto>> findByPhotoId(int id) {
-        return supplyAsync(() -> {
-            return Optional.ofNullable(ebeanServer.find(PersonalPhoto.class).where().eq("photo_id", id).findOne());
-        });
+        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(PersonalPhoto.class).where().eq("photo_id", id).findOne()));
     }
 
     /**

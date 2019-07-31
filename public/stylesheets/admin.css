@@ -22,3 +22,69 @@ h1, h2, h3, h4, h5, h6 {
     border-color: #007bff;
 }
 
+.changeLog {
+    position: fixed;
+    z-index: 2;
+    right:10px;
+    padding: 1%;
+    background: rgba(42,46,49,0.5);
+}
+
+/* Popup container */
+.helpPopup {
+    text-align: right;
+    color: whitesmoke;
+}
+
+/* The actual popup (appears on top) */
+.helpPopup .popuptext {
+    visibility: hidden;
+    width: 350px;
+    top: 90px;
+    background-color: #555;
+    color: whitesmoke;
+    text-align: center;
+    border-radius: 6px;
+    padding: 2%;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+    margin-left: -175px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}
+
+/* Popup arrow */
+.helpPopup .popuptext::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+/* Toggle this class when clicking on the popup container (hide and show the popup) */
+.helpPopup .show {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+}
+
+
+.tooltip .tooltiptext {
+    width: 120px;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+}

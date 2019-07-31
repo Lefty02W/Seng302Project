@@ -41,6 +41,7 @@ public class DestinationsController extends Controller {
     private final Form<DestinationRequest> requestForm;
     private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
     private final TravellerTypeRepository travellerTypeRepository;
+    private final UndoStackRepository undoStackRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -56,7 +57,7 @@ public class DestinationsController extends Controller {
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
                                   PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
                                   PhotoRepository photoRepository, DestinationTravellerTypeRepository destinationTravellerTypeRepository,
-                                  TravellerTypeRepository travellerTypeRepository) {
+                                  TravellerTypeRepository travellerTypeRepository, UndoStackRepository undoStackRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
@@ -68,6 +69,7 @@ public class DestinationsController extends Controller {
         this.destinationTravellerTypeRepository = destinationTravellerTypeRepository;
         this.travellerTypeRepository = travellerTypeRepository;
         this.requestForm = formFactory.form(DestinationRequest.class);
+        this.undoStackRepository = undoStackRepository;
     }
 
     /**
@@ -82,8 +84,10 @@ public class DestinationsController extends Controller {
         Integer userId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(userId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
+                undoStackRepository.clearStackOnAllowed(profile.get());
+
                 if (isPublic) {
-                    ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
+                    List<Destination> destListTemp = destinationRepository.getPublicDestinations();
                     try {
                         destinationsList = destListTemp;
                     } catch (NoSuchElementException e) {
@@ -382,7 +386,7 @@ public class DestinationsController extends Controller {
         }
         dest.setVisible(visibility);
         if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("failure", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(dest)) {
             return destinationRepository.update(dest, id).thenApplyAsync(destId -> {
@@ -393,7 +397,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute).flashing("success", "Destination: " + dest.getName() + " updated");
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -417,7 +421,7 @@ public class DestinationsController extends Controller {
         destination.setVisible(visibility);
 
         if (destinationRepository.checkValidEdit(destination, userId, null)) {
-            return supplyAsync(() -> redirect("/destinations/show/false").flashing("failure", "This destination is already registered and unavailable to create"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("failure", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(destination)) {
             return destinationRepository.insert(destination).thenApplyAsync(destId -> {
@@ -428,7 +432,7 @@ public class DestinationsController extends Controller {
                 return redirect(destShowRoute).flashing("success", "Destination added successfully");
             });
         } else {
-            return supplyAsync(() -> redirect("/destinations/show/false").flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
+            return supplyAsync(() -> redirect(destShowRoute).flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
         }
     }
 
@@ -562,7 +566,7 @@ public class DestinationsController extends Controller {
             List<Integer> toAdd = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToAddList());
             List<Integer> toRemove = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToRemoveList());
             createChangeRequest(profileId, changeForm.get().getDestinationId(), toAdd, toRemove);
-            return redirect("/destinations/show/false").flashing("success", "Request sent.");
+            return redirect(destShowRoute).flashing("success", "Request sent.");
         });
     }
 

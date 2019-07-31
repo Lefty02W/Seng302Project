@@ -121,11 +121,12 @@
                                                     </a>
                                                 </td>
 
-                                                @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
-                                                    @CSRF.formField
-                                                    <td> <button type="submit" class="btn btn-outline-secondary" style="height: 4vh">
-                                                        Delete</button></td>
-                                                }
+                                                    <td>
+                                                        <button type="submit" class="btn btn-outline-secondary" style="height: 4vh"
+                                                        onclick="fillDeleteValues('@routes.DestinationsController.delete(destination.getDestinationId())')">
+                                                            Delete
+                                                        </button>
+                                                    </td>
                                             } else {
                                                 @if(followedDestinationIds contains destination.getDestinationId()) {
                                                     @helper.form(routes.DestinationsController.unfollow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
@@ -566,6 +567,30 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal" id="confirmationDeleteModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="#deleteTitle">Confirmation</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    <div class="modal-body">
+                        <h5 id="#deleteBody">Are you sure you want to delete?</h5>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                        <a href="#" id="confirmDeleteHrf">
+                            <button type="submit" id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
     <script type="text/javascript">
 
@@ -1050,10 +1075,6 @@
                                 document.getElementById("suggestEditButton").hidden = true;
                                 document.getElementById("publicVal").innerHTML = "  <b>Visibily: &nbsp;&nbsp;</b> Private ";
                             }
-                            @if(destination.getProfileId == currentUser.getProfileId) {
-                                document.getElementById("suggestEditButton").hidden = true;
-                                document.getElementById("publicVal").innerHTML = "  <b>Visibily: &nbsp;&nbsp;</b> Private ";
-                            }
 
                             document.getElementById("userPhotos").innerHTML = " ";
                             document.getElementById("photoUpdate").innerHTML = " ";
@@ -1238,6 +1259,14 @@
                 }
             }
 
+            function fillDeleteValues(route){
+                var a = document.getElementById("confirmDeleteHrf");
+                a.href = route;
+                a.method ="POST";
+                $('#confirmationDeleteModal').modal('show');
+            }
+
+
             $("#menu-toggle").click(function (e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
@@ -1268,7 +1297,7 @@
 
     </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDCyC_ON0GgSmJIfPlL7oke5PZgbR8TLbg&callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"
     async defer></script>
 
 
