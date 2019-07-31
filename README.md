@@ -30,18 +30,21 @@ With the repository cloned, it can be imported using the following steps.
 ### Admin & User Credentials
 
 ##
+
 #####Admin
 
-Username: test@test.admin@gmail.com
+Username: test.admin@gmail.com
 
 Password: testAdmin
+
 ## 
  
 #####User
 
-Username: test@test.user@gmail.com
+Username: test.user@gmail.com
 
 Password: testUser
+
 ##
 
 ### Connect to a Dedicated server instance
