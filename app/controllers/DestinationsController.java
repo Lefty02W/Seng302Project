@@ -376,7 +376,6 @@ public class DestinationsController extends Controller {
         Integer userId = SessionController.getCurrentUserId(request);
         Form<Destination> destinationForm = form.bindFromRequest(request);
         String visible = destinationForm.field("visible").value().get();
-        System.out.println(visible);
         int visibility = Integer.parseInt(visible);
         Destination dest = destinationForm.value().get();
         dest.setTravellerTypesStringDest(destinationForm.field("travellerTypesStringDestEdit").value().get());
