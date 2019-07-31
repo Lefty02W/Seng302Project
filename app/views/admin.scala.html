@@ -4,7 +4,7 @@
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
-        adminUndoStack : List[UndoStack])(implicit request: Http.Request, messages: play.i18n.Messages)
+        countries : List[String], adminUndoStack : List[UndoStack])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>

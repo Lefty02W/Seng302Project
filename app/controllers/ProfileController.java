@@ -77,7 +77,7 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, UndoStackRepository undoStackRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -88,6 +88,7 @@ public class ProfileController extends Controller implements TypesInterface {
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
             this.undoStackRepository = undoStackRepository;
+            this.profileTravellerTypeRepository =profileTravellerTypeRepository;
         }
 
 

@@ -31,7 +31,7 @@ public class ProfilePassportCountryRepository {
      * @param passport The passport to add
      * @return
      */
-    Optional<Integer> insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
+    public Optional<Integer> insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
         Integer idOpt;
         try {
             idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName()).get();
