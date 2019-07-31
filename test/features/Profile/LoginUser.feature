@@ -23,3 +23,10 @@ Feature: Login
     And he fills in his password with "password"
     And he presses Login
     Then he is not redirected to the profile page
+
+  Scenario: Log in to deleted account
+    Given Johnny Sins is at the login page
+    When he fills in his email with "sins@gmail.com"
+    And he fills in his password with "password"
+    And he presses Login
+    Then he is not redirected to the profile page

@@ -14,19 +14,21 @@ import repository.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProvideApplication extends WithApplication {
 
     protected ProfileRepository profileRepository;
     protected DestinationRepository destinationRepository;
+    protected TripRepository tripRepository;
     protected RolesRepository rolesRepository;
     protected PhotoRepository photoRepository;
     protected TreasureHuntRepository treasureHuntRepository;
     protected ProfilePassportCountryRepository profilePassportCountryRepository;
     protected PassportCountryRepository passportCountryRepository;
+    protected UndoStackRepository undoStackRepository;
 
     @Override
     public Application provideApplication() {
@@ -57,8 +59,8 @@ public class ProvideApplication extends WithApplication {
 
     protected Integer adminLogin() {
         Map<String, String> formData = new HashMap<>();
-        formData.put("email", "admin.jane.doe@travelea.com");
-        formData.put("password", "yolo");
+        formData.put("email", "bob@gmail.com");
+        formData.put("password", "password");
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
@@ -68,7 +70,7 @@ public class ProvideApplication extends WithApplication {
         Result result = Helpers.route(provideApplication(), request);
 
         for (Profile profile : Profile.find.all()) {
-            if (profile.getEmail().equals("admin.jane.doe@travelea.com")) {
+            if (profile.getEmail().equals("bob@gmail.com")) {
                 return profile.getProfileId();
             }
         }
@@ -83,17 +85,20 @@ public class ProvideApplication extends WithApplication {
         app.injector().instanceOf(NationalityRepository.class);
         app.injector().instanceOf(PassportCountryRepository.class);
         app.injector().instanceOf(RolesRepository.class);
+        app.injector().instanceOf(UndoStackRepository.class);
 
         treasureHuntRepository = app.injector().instanceOf(TreasureHuntRepository.class);
         rolesRepository = app.injector().instanceOf(RolesRepository.class);
+        tripRepository = app.injector().instanceOf(TripRepository.class);
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
         photoRepository = app.injector().instanceOf(PhotoRepository.class);
         profilePassportCountryRepository = app.injector().instanceOf(ProfilePassportCountryRepository.class);
         passportCountryRepository = app.injector().instanceOf(PassportCountryRepository.class);
+        undoStackRepository = app.injector().instanceOf(UndoStackRepository.class);
     }
 
-    protected ArrayList<Destination> getUserDest(int id) {
+    protected List<Destination> getUserDest(int id) {
         return destinationRepository.getUserDestinations(id);
     }
 

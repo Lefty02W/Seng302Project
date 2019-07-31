@@ -28,6 +28,11 @@
                 @request.flash.getOptional("info").get()
                 </div>
             }
+            @if(request.flash.getOptional("warning").isPresent) {
+                <div class="alert alert-warning">
+                @request.flash.getOptional("warning").get()
+                </div>
+            }
 
             <div class="row" id="logoRow">
                 <div class="col" align="center">

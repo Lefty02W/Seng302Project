@@ -295,3 +295,7 @@ img.thumbnail {
 .dropdown-menu{
     width: 100%;
 }
+
+#addTitle, #\#deleteBody, #\#deleteTitle {
+    color: black;
+}

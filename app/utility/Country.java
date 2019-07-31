@@ -134,7 +134,7 @@ public class Country {
 
         List<String> outdatedCountries = new ArrayList<>();
 
-        if (countryList.get(0).length() > 0){
+        if (!countryList.isEmpty() && countryList.get(0).length() > 0){
             for (String passport : countryList) {
                 if (!Country.getInstance().checkExists(passport)) {
                     outdatedCountries.add(passport);

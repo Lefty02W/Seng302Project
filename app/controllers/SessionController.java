@@ -13,7 +13,7 @@ public class SessionController {
 
     /**
      * Get the Id of the currently logged in user
-     * @param request
+     * @param request users request to access/manage cookies
      * @return Web page showing connected user's email
      */
     public static Integer getCurrentUserId(Http.Request request) {

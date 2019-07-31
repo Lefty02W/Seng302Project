@@ -12,6 +12,7 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.PersonalPhotoRepository;
 import repository.ProfileRepository;
+import repository.UndoStackRepository;
 import utility.Country;
 import views.html.travellers;
 import views.html.travellersPhotos;
@@ -35,14 +36,18 @@ public class TravellersController extends Controller {
     private MessagesApi messagesApi;
     private final PersonalPhotoRepository personalPhotoRepository;
     private final ProfileRepository profileRepository;
+    private final UndoStackRepository undoStackRepository;
     private List<Photo> photoList = new ArrayList<>();
 
     @Inject
-     public TravellersController(FormFactory formFactory, MessagesApi messagesApi, PersonalPhotoRepository personalPhotoRepository, ProfileRepository profileRepository) {
+     public TravellersController(FormFactory formFactory, MessagesApi messagesApi,
+                                 PersonalPhotoRepository personalPhotoRepository, ProfileRepository profileRepository,
+                                 UndoStackRepository undoStackRepository) {
         this.form = formFactory.form(PartnerFormData.class);
         this.messagesApi = messagesApi;
         this.personalPhotoRepository = personalPhotoRepository;
         this.profileRepository = profileRepository;
+        this.undoStackRepository = undoStackRepository;
     }
 
 
@@ -147,13 +152,15 @@ public class TravellersController extends Controller {
 
     /**
      * This method shows the travellers page on the screen
-     * @return
+     * @return result of the rendering of the travellers page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
+                undoStackRepository.clearStackOnAllowed(profile.get());
+
                 List<Profile> profiles = profileRepository.getAll();
                 return ok(travellers.render(form, profiles, photoList, profile.get(), Country.getInstance().getAllCountries(), new PartnerFormData(), request, messagesApi.preferred(request)));
             } else {

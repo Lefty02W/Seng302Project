@@ -70,7 +70,7 @@ public class ProfileRepository {
      * @return List of all profiles
      */
     public List<Profile> getAll() {
-        String selectQuery = "SELECT * FROM profile";
+        String selectQuery = "SELECT * FROM profile WHERE soft_delete = 0;";
 
         List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).findList();
         List<Profile> allProfiles = new ArrayList<>();
@@ -103,6 +103,17 @@ public class ProfileRepository {
         return profile;
     }
 
+    /**
+     * Method for getting a profile that is not soft deleted
+     *
+     * @param userId String of the email to get
+     * @return Profile class of the user
+     */
+    public Profile getExistingProfileByProfileId(Integer userId) {
+        return ebeanServer.find(Profile.class)
+                .where().eq("soft_delete", "0").and()
+                .like("profile_id", userId.toString()).findOne();
+    }
 
     /**
      * Method for getting a profile
@@ -192,10 +203,26 @@ public class ProfileRepository {
      */
     private Profile profileFromRow(SqlRow row) {
         Integer profileId = row.getInteger("profile_id");
-        Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(profileId).get();
-        Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
-        Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
-        List<String> roles = rolesRepository.getProfileRoles(profileId).get();
+        Map<Integer, PassportCountry> passportCountries = new HashMap<>();
+        Map<Integer, Nationality> nationalities = new HashMap<>();
+        Map<Integer, TravellerType> travellerTypes = new HashMap<>();
+        List<String> roles = new ArrayList<>();
+        Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profileId);
+        if (optionalIntegerPassportCountryMap.isPresent()) {
+            passportCountries = optionalIntegerPassportCountryMap.get();
+        }
+        Optional<Map<Integer, Nationality>> optionalNationalityMap = profileNationalityRepository.getList(profileId);
+        if (optionalNationalityMap.isPresent()) {
+            nationalities = optionalNationalityMap.get();
+        }
+        Optional<Map<Integer, TravellerType>> optionalTravellerTypeMap = profileTravellerTypeRepository.getList(profileId);
+        if (optionalTravellerTypeMap.isPresent()) {
+            travellerTypes = optionalTravellerTypeMap.get();
+        }
+        Optional<List<String>> optionalRoles = rolesRepository.getProfileRoles(profileId);
+        if (optionalRoles.isPresent()) {
+            roles = optionalRoles.get();
+        }
         return new Profile(profileId, row.getString("first_name"),
                 row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
                 row.getDate("birth_date"), passportCountries, row.getString("gender"),
@@ -227,10 +254,10 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Profile>> lookupEmail(String email) {
         return supplyAsync(() -> {
-            String qry = "Select * from profile where email = ?";
+            String qry = "Select * from profile where email = ? and soft_delete = 0";
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, email).findList();
             Profile profile = null;
-            if (!rowList.get(0).isEmpty()) {
+            if (!rowList.isEmpty() && !rowList.get(0).isEmpty()) {
                 profile = profileFromRow(rowList.get(0));
             }
             return Optional.ofNullable(profile);
@@ -362,6 +389,31 @@ public class ProfileRepository {
 
 
     /**
+     * sets soft delete for a profile which eather deletes it or
+     * undoes the delete
+     * @param profileId The ID of the profile to soft delete
+     * @param value, the value softDelete is to be set to
+     * @return
+     */
+    public CompletionStage<Integer> setSoftDelete(int profileId, int value) {
+        return supplyAsync(() -> {
+            try {
+                Profile targetProfile = ebeanServer.find(Profile.class).setId(profileId).findOne();
+                if (targetProfile != null) {
+                    targetProfile.setSetSoftDelete(value);
+                    targetProfile.update();
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } catch(Exception e) {
+                return 0;
+            }
+        }, executionContext);
+    }
+
+
+    /**
      * Used to update (add or remove) admin privilege to another user from the Travellers page.
      *
      * @param clickedId the id of the user that is going to have admin privilege updated.
@@ -423,7 +475,7 @@ public class ProfileRepository {
      * @return destList arrayList of destinations registered by the user
      */
     public Optional<ArrayList<Destination>> getDestinations(int profileId) {
-        String sql = ("SELECT * FROM destination WHERE profile_id = ?");
+        String sql = ("SELECT * FROM destination WHERE profile_id = ? AND soft_delete = 0");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination dest;
@@ -438,7 +490,9 @@ public class ProfileRepository {
             dest.setLatitude(aRowList.getDouble("latitude"));
             dest.setLongitude(aRowList.getDouble("longitude"));
             dest.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
-            destList.add(dest);
+            if ((aRowList.getBoolean("soft_delete") ? 1: 0) == 0) {
+                destList.add(dest);
+            }
         }
         return Optional.of(destList);
     }

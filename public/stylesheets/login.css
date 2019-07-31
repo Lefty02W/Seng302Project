@@ -49,4 +49,8 @@ html {
     border-color: #009779;
 }
 
+.alert{
+    position: fixed;
+    width: inherit;
+}
 

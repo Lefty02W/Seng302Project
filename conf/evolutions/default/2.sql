@@ -1,4 +1,3 @@
-
 # --- !Ups
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
@@ -14,7 +13,7 @@ INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_da
   (4, 'Admin', 'Doe', 'admin.jane.doe@travelea.com', 'yolo', CURRENT_DATE, 'Female');
 
 INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_date, gender) values
-(5, 'To', 'Be', 'DELETED@travelea.com', 'swag', CURRENT_DATE, 'Male');
+  (5, 'To', 'Be', 'DELETED@travelea.com', 'swag', CURRENT_DATE, 'Male');
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
   (6, 'Dave', 'Brown', 'dave@email', 'password', CURRENT_DATE, 'Male');
@@ -22,12 +21,26 @@ INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_d
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
   (7, 'steve', 'miller', 'steve@email', 'password', CURRENT_DATE, 'Male');
 
+INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender, soft_delete) values
+  (8, 'Johnny', 'Sins', 'sins@gmail.com', 'password', CURRENT_DATE, 'Male', 1);
+
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender,soft_delete) values
+  (9, 'Lisa', 'Curt', 'lisa@gmail.com', 'password', CURRENT_DATE, 'Female', 1);
+
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (10, 'Burt', 'Curt', 'BurtCurt@gmail.com', 'password', CURRENT_DATE, 'Female');
+
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (11, 'Bort', 'Cort', 'BortCort@gmail.com', 'password', CURRENT_DATE, 'Male');
 
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
 INSERT INTO profile_roles (profile_role_id, profile_id, role_id) values
   (1, 2, 1);
+
+INSERT INTO profile_roles (profile_role_id, profile_id, role_id) values
+  (3, 11, 1);
 
 INSERT INTO profile_roles (profile_id, role_id) values (4, 1);
 
@@ -43,16 +56,45 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (4, 3, 'Ardennes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
+  (5, 3, 'yes', 'Forest', 'Belgium', 'Wallonia', 50.25, 5.67, 0, 1);
+
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
+  (6, 3, 'luke', 'City', 'Australia', 'Australia', 0.0, 0.0, 0, 1);
+
+  INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible, soft_delete) values
+  (7, 3, 'Crystal', 'City', 'Australia', 'Australia', 0.0, 0.0, 0, 1);
+
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
-  (5, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
+  (8, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
+
+
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
+
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (1, 3, CURRENT_DATE, CURRENT_DATE, 1);
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (1, 4, CURRENT_DATE, CURRENT_DATE, 1);
+
+
+INSERT INTO trip(trip_id, name, profile_id) VALUES (2, 'to delete Trip', 3);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (2, 5, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (2, 4, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip(trip_id, name, profile_id) VALUES (3, 'Johnny Trip', 3);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (3, 3, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (3, 4, CURRENT_DATE, CURRENT_DATE, 1);
 
 INSERT INTO photo (visible, content_type, name,  path) values
   (0, 'image/jpg', 'testPic1.jpg', 'photos/personalPhotos/testPic1.jpg');
@@ -79,7 +121,16 @@ INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle,
   (3, 2, 1, 'A riddle', CURRENT_DATE, CURRENT_DATE);
 
 INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
-  (4, 3, 1, 'A second riddle', CURRENT_DATE, CURRENT_DATE);
+  (4, 2, 1, 'A second riddle', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (5, 2, 1, 'A third riddle', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (1, 'destination', 5, 2, CURRENT_DATE - 5);
+
+INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (2, 'destination', 2, 3, CURRENT_DATE);
 
 
 INSERT INTO traveller_type(traveller_type_id, traveller_type_name) values (1, 'Backpacker');
@@ -94,6 +145,8 @@ INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) va
 
 INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (2,5,2);
 
+INSERT INTO destination_traveller_type(id, destination_id, traveller_type_id) values (3,7,2);
+
 INSERT INTO destination_request (id, destination_id, profile_id) values (1,1,1);
 
 INSERT INTO destination_request (id, destination_id, profile_id) values (2,1,2);
@@ -101,3 +154,9 @@ INSERT INTO destination_request (id, destination_id, profile_id) values (2,1,2);
 INSERT INTO destination_change (id, traveller_type_id, action, request_id) values (1,1,1,1);
 
 INSERT INTO destination_change (id, traveller_type_id, action, request_id) values (2,1,1,2);
+
+INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (3, 'destination', 3, 5, CURRENT_DATE);
+
+  INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
+  (4, 'destination', 7, 11, CURRENT_DATE - 5);

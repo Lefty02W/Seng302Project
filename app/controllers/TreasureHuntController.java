@@ -11,6 +11,7 @@ import play.mvc.Result;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TreasureHuntRepository;
+import repository.UndoStackRepository;
 import views.html.treasureHunts;
 
 import javax.inject.Inject;
@@ -28,22 +29,24 @@ public class TreasureHuntController {
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
     private final TreasureHuntRepository treasureHuntRepository;
+    private final UndoStackRepository undoStackRepository;
     private final Form<TreasureHunt> huntForm;
     private String huntShowRoute = "/treasure";
 
 
     /**
      * Constructor for the treasure hunt controller class
-     *
-     * @param messagesApi
      */
     @Inject
-    public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository) {
+    public TreasureHuntController(FormFactory formFactory, MessagesApi messagesApi, ProfileRepository profileRepository,
+                                  DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository,
+                                  UndoStackRepository undoStackRepository) {
         this.messagesApi = messagesApi;
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
         this.huntForm = formFactory.form(TreasureHunt.class);
         this.treasureHuntRepository = treasureHuntRepository;
+        this.undoStackRepository = undoStackRepository;
     }
 
     /**
@@ -58,6 +61,7 @@ public class TreasureHuntController {
         List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            undoStackRepository.clearStackOnAllowed(profile.get());
             return profile.map(profile1 -> {
                 return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
@@ -163,5 +167,14 @@ public class TreasureHuntController {
                 return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
+    }
+
+
+    /**
+     * Implement the undo delete method from interface
+     * @param treasureHuntID - ID of the treausre hunt to undo deletion of
+     */
+    public void undo(int treasureHuntID) {
+        treasureHuntRepository.setSoftDelete(treasureHuntID, 0);
     }
 }

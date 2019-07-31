@@ -121,11 +121,12 @@
                                                     </a>
                                                 </td>
 
-                                                @helper.form(routes.DestinationsController.delete(destination.getDestinationId())) {
-                                                    @CSRF.formField
-                                                    <td> <button type="submit" class="btn btn-outline-secondary" style="height: 4vh">
-                                                        Delete</button></td>
-                                                }
+                                                    <td>
+                                                        <button type="submit" class="btn btn-outline-secondary" style="height: 4vh"
+                                                        onclick="fillDeleteValues('@routes.DestinationsController.delete(destination.getDestinationId())')">
+                                                            Delete
+                                                        </button>
+                                                    </td>
                                             } else {
                                                 @if(followedDestinationIds contains destination.getDestinationId()) {
                                                     @helper.form(routes.DestinationsController.unfollow(currentUser.getProfileId, destination.getDestinationId(), isPublic)) {
@@ -566,6 +567,30 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal" id="confirmationDeleteModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="#deleteTitle">Confirmation</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    <div class="modal-body">
+                        <h5 id="#deleteBody">Are you sure you want to delete?</h5>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                        <a href="#" id="confirmDeleteHrf">
+                            <button type="submit" id="confirmDeleteBtn" class="btn btn-danger">Delete</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </body>
     <script type="text/javascript">
 
@@ -1237,6 +1262,14 @@
                     }
                 }
             }
+
+            function fillDeleteValues(route){
+                var a = document.getElementById("confirmDeleteHrf");
+                a.href = route;
+                a.method ="POST";
+                $('#confirmationDeleteModal').modal('show');
+            }
+
 
             $("#menu-toggle").click(function (e) {
             e.preventDefault();

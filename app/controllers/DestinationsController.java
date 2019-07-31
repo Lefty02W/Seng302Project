@@ -41,6 +41,7 @@ public class DestinationsController extends Controller {
     private final Form<DestinationRequest> requestForm;
     private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
     private final TravellerTypeRepository travellerTypeRepository;
+    private final UndoStackRepository undoStackRepository;
     private String destShowRoute = "/destinations/show/false";
 
     /**
@@ -56,7 +57,7 @@ public class DestinationsController extends Controller {
                                   ProfileRepository profileRepository, TripDestinationsRepository tripDestinationsRepository,
                                   PersonalPhotoRepository personalPhotoRepository, DestinationPhotoRepository destinationPhotoRepository,
                                   PhotoRepository photoRepository, DestinationTravellerTypeRepository destinationTravellerTypeRepository,
-                                  TravellerTypeRepository travellerTypeRepository) {
+                                  TravellerTypeRepository travellerTypeRepository, UndoStackRepository undoStackRepository) {
         this.form = formFactory.form(Destination.class);
         this.messagesApi = messagesApi;
         this.destinationRepository = destinationRepository;
@@ -68,6 +69,7 @@ public class DestinationsController extends Controller {
         this.destinationTravellerTypeRepository = destinationTravellerTypeRepository;
         this.travellerTypeRepository = travellerTypeRepository;
         this.requestForm = formFactory.form(DestinationRequest.class);
+        this.undoStackRepository = undoStackRepository;
     }
 
     /**
@@ -82,8 +84,10 @@ public class DestinationsController extends Controller {
         Integer userId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(userId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
+                undoStackRepository.clearStackOnAllowed(profile.get());
+
                 if (isPublic) {
-                    ArrayList<Destination> destListTemp = destinationRepository.getPublicDestinations();
+                    List<Destination> destListTemp = destinationRepository.getPublicDestinations();
                     try {
                         destinationsList = destListTemp;
                     } catch (NoSuchElementException e) {

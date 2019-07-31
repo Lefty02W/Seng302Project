@@ -31,6 +31,8 @@ public class TreasureHunt extends Model {
     @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date endDate;
 
+    private int softDelete;
+
     private Destination destination;
 
     private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
@@ -130,5 +132,11 @@ public class TreasureHunt extends Model {
     public String getEntryDate(Date date) {
         return dateFormatEntry.format(date);
     }
+
+    public int getSoftDelete() {
+        return softDelete;
+    }
+
+    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
 
 }

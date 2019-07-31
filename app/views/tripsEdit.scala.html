@@ -60,8 +60,9 @@
                     @CSRF.formField
                     <div class="row">
                         <div class="tripNameInput">
-                            @helper.inputText(tripForm("name"), '_label -> "Trip Name:", '_help -> "")
+                            <input type="text" id="name" name="name" required placeholder="Trip Name">
                         </div>
+                        <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
                     </div>
                 } <!-- close tag for editDestinations form-->
                 <div class="container-fluid">
@@ -137,7 +138,6 @@
                                     </table>
                                 </div>
                                 <div class="row" id="btnRow">
-                                    <button type="submit" class="btn btn-primary" id="save">Save trip</button>
                                     <a href="@routes.TripsController.show()"><button class="btn btn-secondary" type="button">Back</button></a>
                                 </div>
 

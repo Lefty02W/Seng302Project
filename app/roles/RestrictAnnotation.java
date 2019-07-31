@@ -8,13 +8,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 
-
-@With(RestrictAnnotationAction.class)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
 /**
  * The interface containing the string value of the role we want to restrict on.
  */
+@With(RestrictAnnotationAction.class)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface RestrictAnnotation {
 
     String value() default "admin";

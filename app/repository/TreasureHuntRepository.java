@@ -16,7 +16,9 @@ import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-
+/**
+ * Database access class for the traveller_type database table
+ */
 public class TreasureHuntRepository {
 
 
@@ -60,6 +62,7 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllActiveTreasureHunts() {
         return new ArrayList<> (ebeanServer.find(TreasureHunt.class)
                 .where()
+                .eq("soft_delete", 0)
                 .gt("end_date", DateTime.now())
                 .lt("start_date", DateTime.now())
                 .findList());
@@ -74,6 +77,7 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllTreasureHunts() {
         return ebeanServer.find(TreasureHunt.class)
                 .where()
+                .eq("soft_delete", 0)
                 .findList();
     }
 
@@ -113,12 +117,14 @@ public class TreasureHuntRepository {
     public List<TreasureHunt> getAllUserTreasureHunts(int userId) {
         List<TreasureHunt> hunts = new ArrayList<>(ebeanServer.find(TreasureHunt.class)
                 .where()
+                .eq("soft_delete", 0)
                 .eq("profile_id", userId)
                 .findList());
         for(TreasureHunt hunt : hunts) {
             hunt.setDestination(ebeanServer.find(Destination.class)
                 .where()
-                .eq("destination_id", hunt.getTreasureHuntDestinationId())
+                    .eq("soft_delete", 0)
+                    .eq("destination_id", hunt.getTreasureHuntDestinationId())
                 .findOne());
         }
         return hunts;
@@ -136,6 +142,29 @@ public class TreasureHuntRepository {
             return 1;
         });
     }
-    
+
+    /**
+     * sets soft delete for a treasureHunt which eather deletes it or
+     * undoes the delete
+     * @param huntId The ID of the treasure hunt to soft delete
+     * @param softDelete Boolean, true if is to be deleted, false if cancel a delete
+     * @return
+     */
+    public CompletionStage<Integer> setSoftDelete(int huntId, int softDelete) {
+        return supplyAsync(() -> {
+            try {
+                TreasureHunt targetHunt = ebeanServer.find(TreasureHunt.class).setId(huntId).findOne();
+                if (targetHunt != null) {
+                    targetHunt.setSetSoftDelete(softDelete);
+                    targetHunt.update();
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } catch(Exception e) {
+                return 0;
+            }
+        }, executionContext);
+    }
 
 }

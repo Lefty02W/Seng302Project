@@ -19,7 +19,6 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * The business logic ("action") for each role is defined here.
  * This is essentially a middleware class
  **/
-
 public class RestrictAnnotationAction extends Action<RestrictAnnotation> {
 
     private RolesRepository rolesRepository;
