@@ -73,7 +73,6 @@ public class Destination extends Model {
      */
     public Destination(int destinationId, int profileId, String name, String type, String country, String district,
                        double latitude, double longitude, int visible,  String travellerTypes) {
-        System.out.println("THIS ONE PLEASE");
         this.destinationId = destinationId;
         this.profileId = profileId;
         this.name = name;

@@ -1,6 +1,8 @@
 package controllers.steps.Destinations;
 
 import controllers.ProvideApplication;
+import cucumber.api.PendingException;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -50,20 +52,6 @@ public class CreateDestinationSteps extends ProvideApplication {
         return;
     }
 
-    @When("he fills in Name with {string}")
-    public void heFillsInNameWith(String string) { destForm.put("name", string); }
-
-    @When("he fills in Type with {string}")
-    public void heFillsInTypeWith(String string) { destForm.put("type", string); }
-
-    @When("he fills in Country with {string}")
-    public void heFillsInCountryWith(String string) { destForm.put("country", string); }
-
-    @When("he selects {string} as the traveller type")
-    public void he_selects_as_the_traveller_type(String string) {
-        destForm.put("travellerTypesStringDest", string);
-    }
-
     @When("he presses Save")
     public void hePressesSave() {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -81,15 +69,50 @@ public class CreateDestinationSteps extends ProvideApplication {
 
     }
 
-    @When("he fills in Longitude as {string}")
-    public void heFillsInLongitudeAs(String string) {
-        destForm.put("Longitude", string);
-    }
-
     @Then("the Destination page should be shown")
     public void theDestinationPageShouldBeShown() {
         Assert.assertTrue(redirectDestination.flash().getOptional("failure").isPresent());
 
     }
 
+    @When("^he fills in Name with \"([^\"]*)\"$")
+    public void heFillsInNameWith(String arg0) throws Throwable {
+        destForm.put("name", arg0);
+    }
+
+    @When("^he fills in Type with \"([^\"]*)\"$")
+    public void heFillsInTypeWith(String arg0) throws Throwable {
+        destForm.put("type", arg0);
+    }
+
+    @When("^he fills in Country with \"([^\"]*)\"$")
+    public void heFillsInCountryWith(String arg0) throws Throwable {
+        destForm.put("country", arg0);
+    }
+
+    @When("^he selects \"([^\"]*)\" as the traveller type$")
+    public void heSelectsAsTheTravellerType(String arg0) throws Throwable {
+        destForm.put("travellerTypesStringDest", arg0);
+    }
+
+    @When("^he fills in Longitude as \"([^\"]*)\"$")
+    public void heFillsInLongitudeAs(String arg0) throws Throwable {
+        destForm.put("Longitude", arg0);
+    }
+
+    @And("^he presses Destination Save$")
+    public void hePressesDestinationSave() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/destinations")
+                .bodyForm(destForm)
+                .session("connected", "1");
+        redirectDestination = Helpers.route(provideApplication(), request);
+        assertEquals(303, redirectDestination.status());
+    }
+
+    @And("^he does not select a traveller type$")
+    public void heDoesNotSelectATravellerType() throws Throwable {
+        destForm.put("travellerTypesStringDest", "");
+    }
 }

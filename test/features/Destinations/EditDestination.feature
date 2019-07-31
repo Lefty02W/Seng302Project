@@ -55,8 +55,8 @@ Feature: Edit a destination
   Scenario: Editing traveller types of a destination
     Given I am on the "/destinations/show/false" page
     When I press the edit button on destination "1"
-    And I select "Backpacker" and "Thrillseeker" from the traveller type dropdown
+    And I select "Backpacker" and "ThrillSeeker" from the traveller type dropdown
     And I press the Save button to save the destination
     Then I am redirected to the destinations page
-    And destination 1 now has traveller types; "Backpacker" and "Thrillseeker"
+    And destination 1 now has traveller types; "Backpacker" and "ThrillSeeker"
 

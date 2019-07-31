@@ -1,6 +1,7 @@
 package controllers;
 
 
+import models.PassportCountry;
 import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
@@ -10,9 +11,12 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repository.ProfileRepository;
+import utility.Country;
 import views.html.login;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -109,7 +113,7 @@ public class LoginController extends Controller {
      * @return rendered login page login
      */
     public Result show(Http.Request request) {
-        return ok(login.render(loginForm, profileForm, request, messagesApi.preferred(request)));
+        return ok(login.render(loginForm, profileForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
     }
 
 }

@@ -39,7 +39,7 @@ public class ProfilePassportCountryRepository {
            idOpt = null;
         }
         Integer passportId;
-        if (idOpt == null) {
+        if (idOpt == -1) {
             passportId = passportCountryRepository.insert(passport).get();
         } else {
             passportId = idOpt;

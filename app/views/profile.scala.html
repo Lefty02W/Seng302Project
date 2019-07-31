@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -71,6 +71,18 @@
                 </div>
             </nav>
 
+
+            @if(request.flash.getOptional("changeCountry").isPresent) {
+                <div class="alert alert-success" id="successAlert">
+                @request.flash.getOptional("changeCountry").get()
+                </div>
+                <script type="text/javascript">
+                        console.log("changeCountry");
+                        $(window).on('load', function () {
+                            $('#outDatedCountryAlertModal').modal('show')
+                        })
+                </script>
+            }
 
             @if(request.flash.getOptional("success").isPresent) {
                 <div class="alert alert-success" id="successAlert">
@@ -404,6 +416,27 @@
             </div>
         </div>
 
+        <div class="modal" id="outDatedCountryAlertModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">*WARNING* Country is no longer valid!</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                        <!-- body -->
+                    <div class="modal-body">
+                        <h5>Please update country at your earliest convenience.</h5>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Change Later</button>
+                        <button type="submit" id="changeNow" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">Change Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="changeProfilePicture">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
@@ -529,7 +562,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="travellerTypesString" name="travellerTypesString" class="hidden-field typesField" required value="@currentUser.getTravellerTypesString">
+                                        <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value="@currentUser.getTravellerTypesString">
                                     </div>
                                     <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
                                         @if(currentUser.getTravellerTypesList.contains("ThrillSeeker")) {
@@ -608,16 +641,37 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
-                                        Nationalities*</small>
-                                        <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value="@currentUser.getNationalityString">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required value="@currentUser.getNationalityString">
                                     </div>
+                                    <label>Nationalities</label>
+                                    <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%" >
+                                        @for(nation <- countries) {
+                                            @if(currentUser.getNationalityList.contains(nation)){
+
+                                                <option value="@nation" selected>@nation</option>
+                                            }else {
+                                                <option value="@nation">@nation</option>
+                                            }
+                                        }
+                                    </select>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group" id="holder"> <small id="label" for="firstName">
-                                        Passport/s</small>
-                                        <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value="@currentUser.getPassportsString">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" value="@currentUser.getPassportsString">
                                     </div>
+                                    <label>Passports</label>
+                                    <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
+                                    @for(nation <- countries) {
+                                        @if(currentUser.getPassportsList.contains(nation)){
+
+                                            <option value="@nation" selected>@nation</option>
+                                        }else {
+                                            <option value="@nation">@nation</option>
+                                        }
+                                    }
+
+                                    </select>
 
 
                                 </div>
@@ -738,7 +792,10 @@
         <!-- Menu Toggle Script -->
     <script>
             function fillVals() {
-                $('#travellerTypesString').val($('#typeDropdown').val());
+                $('#travellerTypesForm').val($('#typeDropdown').val());
+                $('#nationalitiesForm').val($('#nationDropdown').val());
+                $('#passportsForm').val($('#passportDropdown').val());
+
             }
 
             $(document).ready(function () {

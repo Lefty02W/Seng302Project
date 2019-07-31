@@ -9,6 +9,9 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import scala.Int;
+import utility.Country;
+import views.html.admin;
 import views.html.createDestinations;
 import views.html.destinations;
 import views.html.editDestinations;
@@ -99,7 +102,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -110,12 +113,11 @@ public class DestinationsController extends Controller {
     /**
      * Endpoint method to update the privacy of a photo
      *
-     *
      * @param id the photo id
      * @return Redirect to teh destinations page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> updatePhotoPrivacy(Integer id){
+    public CompletionStage<Result> updatePhotoPrivacy(Integer id) {
         return supplyAsync(() -> {
             photoRepository.updateVisibility(id);
             return redirect("/destinations/show/false").flashing("success", "Visibility updated.");
@@ -123,7 +125,7 @@ public class DestinationsController extends Controller {
     }
 
 
-    /**•••••••••
+    /**
      * Method to follow a destination called from the destinations page and used from an endpoint
      *
      * @param profileId Id of the profile to follow destination
@@ -140,7 +142,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -156,7 +158,7 @@ public class DestinationsController extends Controller {
      * @return CompletionStage holding result rendering the admin  page with the desired destination
      * @apiNote GET /admin/destinations/:destId?isEdit
      */
-    public CompletionStage<Result> showDestinationEdit(Http.Request request, Integer destId,  boolean isPublic) {
+    public CompletionStage<Result> showDestinationEdit(Http.Request request, Integer destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
@@ -169,7 +171,7 @@ public class DestinationsController extends Controller {
 
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend, requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend, requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -209,7 +211,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -219,13 +221,14 @@ public class DestinationsController extends Controller {
     /**
      * takes in a list of destinations, for each destination loads the photos which are linked to that destination and
      * owned by the current user into destination.usersPhotos
-     * @param destinationsList
-     * @return destinationsList
+     *
+     * @param destinationsListGot
+     * @return destinationsListGot
      */
-    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsList) {
+    private List<Destination> loadCurrentUserDestinationPhotos(int profileId, List<Destination> destinationsListGot) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         if (imageList.isPresent()) {
-            for (Destination destination : destinationsList) {
+            for (Destination destination : destinationsListGot) {
                 List<Photo> destPhotoList = new ArrayList<>();
                 for (Photo photo : imageList.get()) {
                     if (destinationPhotoRepository.findByProfileIdPhotoIdDestId(profileId, photo.getPhotoId(), destination.getDestinationId()).isPresent()) {
@@ -234,16 +237,17 @@ public class DestinationsController extends Controller {
                 }
                 destination.setUsersPhotos(destPhotoList);
             }
-            return destinationsList;
+            return destinationsListGot;
         }
-        return destinationsList;
+        return destinationsListGot;
     }
 
 
     /**
      * takes in a list of destinations, for each destination loads the photos which are linked to that destination but
      * not from the current user. ie: the world destination photos
-     * @param profileId, the id of the current user, will not add their destination photos to the list
+     *
+     * @param profileId,        the id of the current user, will not add their destination photos to the list
      * @param destinationsList, a list of the destinations which it will be adding photos to
      * @return destinations list that was passed in
      */
@@ -269,11 +273,12 @@ public class DestinationsController extends Controller {
     /**
      * Takes in a list of destinations and loads (sets) traveller types into each of them.
      * Used for displaying the destination traveller types on the destination page
+     *
      * @param destinationsList
      * @return the same list of destinations
      */
     private List<Destination> loadTravellerTypes(List<Destination> destinationsList) {
-        for (Destination destination: destinationsList) {
+        for (Destination destination : destinationsList) {
             List<TravellerType> travellerTypes = destinationRepository.getDestinationsTravellerTypes(destination.getDestinationId());
             Map<Integer, TravellerType> travellerTypesMap = new HashMap<>();
             for (TravellerType i : travellerTypes) {
@@ -373,10 +378,14 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = Integer.parseInt(visible);
         Destination dest = destinationForm.value().get();
-        dest.setTravellerTypesStringDest(destinationForm.field("travellerTypesForm").value().get());
-        dest.initTravellerType();
+        dest.setTravellerTypesStringDest(destinationForm.field("travellerTypesStringDestEdit").value().get());
+        if (!dest.getTravellerTypesForm().isEmpty()) {
+            dest.initTravellerType();
+        } else {
+            dest.setTravellerTypes(null);
+        }
         dest.setVisible(visibility);
-            if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
+        if (destinationRepository.checkValidEdit(dest, userId, destinationRepository.lookup(id))) {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "This destination is already registered and unavailable to create"));
         }
         if (longLatCheck(dest)) {
@@ -385,7 +394,7 @@ public class DestinationsController extends Controller {
                     dest.setDestinationId(destId.get());
                     newPublicDestination(dest);
                 }
-                return redirect(destShowRoute).flashing("success", "Destination: " + id + " updated");
+                return redirect(destShowRoute).flashing("success", "Destination: " + dest.getName() + " updated");
             });
         } else {
             return supplyAsync(() -> redirect("/destinations/" + id + "/edit").flashing("failure", "A destinations longitude(-180 to 180) and latitude(90 to -90) must be valid"));
@@ -405,7 +414,9 @@ public class DestinationsController extends Controller {
         String visible = destinationForm.field("visible").value().get();
         int visibility = (visible.equals("Public")) ? 1 : 0;
         Destination destination = destinationForm.value().get();
-        destination.initTravellerType();
+        if (!destination.getTravellerTypesForm().isEmpty()) {
+            destination.initTravellerType();
+        }
         destination.setProfileId(userId);
         destination.setVisible(visibility);
 
@@ -483,7 +494,8 @@ public class DestinationsController extends Controller {
 
     /**
      * Method to link photo to a given destination
-     * @param photoId Id of the photo to be linked
+     *
+     * @param photoId       Id of the photo to be linked
      * @param destinationId Id of the destination that needs to be linked to a photo
      * @return completion stage result redirected to destination
      */
@@ -500,7 +512,8 @@ public class DestinationsController extends Controller {
 
     /**
      * Method to un-link photo to a given destination
-     * @param photoId Id of the photo to be un-linked
+     *
+     * @param photoId       Id of the photo to be un-linked
      * @param destinationId Id of the destination that needs to be un-linked to a photo
      * @return completion stage result redirected to destination
      */
@@ -519,31 +532,32 @@ public class DestinationsController extends Controller {
     /**
      * Method to create the requests for changing destination traveller types once user has selected the changes \
      * they wish to make.
-     * @param profileId id of the profile who is requesting the change
+     *
+     * @param profileId     id of the profile who is requesting the change
      * @param destinationId id of the destination which the user is trying to change
-     * @param toAdd list of traveller types the user wishes to add
-     * @param toRemove list of traveller type the user wishes to delete
+     * @param toAdd         list of traveller types the user wishes to add
+     * @param toRemove      list of traveller type the user wishes to delete
      */
-    private void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove){
+    private void createChangeRequest(Integer profileId, Integer destinationId, List<Integer> toAdd, List<Integer> toRemove) {
         DestinationRequest destinationRequest = new DestinationRequest(destinationId, profileId);
         destinationRepository.createDestinationTravellerTypeChangeRequest(destinationRequest).thenApplyAsync(requestId -> {
             if (!toAdd.isEmpty()) {
                 destinationRepository.travellerTypeChangesTransaction(requestId, 1, toAdd);
             }
-            if (!toRemove.isEmpty()){
+            if (!toRemove.isEmpty()) {
                 destinationRepository.travellerTypeChangesTransaction(requestId, 0, toRemove);
             }
             return null;
-            });
+        });
     }
 
 
     /**
      * Endpoint method for a user to create a destination edit request
      *
-     * @apiNote POST /destinations/type/request
      * @param request the user request to edit the destination
      * @return CompletionStage redirecting to the destinations page
+     * @apiNote POST /destinations/type/request
      */
     public CompletionStage<Result> createEditRequest(Http.Request request) {
         return supplyAsync(() -> {
@@ -551,8 +565,8 @@ public class DestinationsController extends Controller {
             Form<DestinationRequest> changeForm = requestForm.bindFromRequest(request);
             List<Integer> toAdd = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToAddList());
             List<Integer> toRemove = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToRemoveList());
-            createChangeRequest(profileId,changeForm.get().getDestinationId(),toAdd,toRemove);
-           return redirect("/destinations/show/false").flashing("success", "Request sent.");
+            createChangeRequest(profileId, changeForm.get().getDestinationId(), toAdd, toRemove);
+            return redirect("/destinations/show/false").flashing("success", "Request sent.");
         });
     }
 
@@ -562,12 +576,12 @@ public class DestinationsController extends Controller {
      * @param names List of traveller type names
      * @return List of traveller type id's corresponding to the given names
      */
-    private List<Integer> listOfTravellerTypesToTravellerTypeId(List<String> names){
-        if (names.get(0).equals("")){
+    private List<Integer> listOfTravellerTypesToTravellerTypeId(List<String> names) {
+        if (names.get(0).equals("")) {
             return Collections.emptyList();
         } else {
             List<Integer> result = new ArrayList<>();
-            for (String name : names){
+            for (String name : names) {
                 travellerTypeRepository.getTravellerTypeId(name).ifPresent(result::add);
             }
             return result;

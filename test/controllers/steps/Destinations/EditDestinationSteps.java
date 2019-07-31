@@ -121,7 +121,7 @@ public class EditDestinationSteps extends ProvideApplication{
         travellerTypeDestForm.put("type", destination.getType());
         travellerTypeDestForm.put("country", destination.getCountry());
         travellerTypeDestForm.put("district", destination.getDistrict());
-        travellerTypeDestForm.put("travellerTypesStringDest", destination.getTravellerTypesString());
+        travellerTypeDestForm.put("travellerTypesStringDestEdit", destination.getTravellerTypesString());
         travellerTypeDestForm.put("visible", Integer.toString(destination.getVisible()));
         travellerTypeDestForm.put("latitude", Double.toString(destination.getLatitude()));
         travellerTypeDestForm.put("longitude", Double.toString(destination.getLongitude()));
@@ -130,7 +130,7 @@ public class EditDestinationSteps extends ProvideApplication{
 
     @And("^I select \"([^\"]*)\" and \"([^\"]*)\" from the traveller type dropdown$")
     public void iSelectAndFromTheTravellerTypeDropdown(String arg0, String arg1) throws Throwable {
-        travellerTypeDestForm.put("travellerTypesStringDest", arg0 + "," + arg1);
+        travellerTypeDestForm.put("travellerTypesStringDestEdit", arg0 + "," + arg1);
     }
 
     @And("^I press the Save button to save the destination$")

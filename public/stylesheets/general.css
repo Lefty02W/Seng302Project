@@ -160,9 +160,7 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 }
 
 
-h3, h4, h5, h6 {
-    color: #ede1d1;
-}
+
 
 .primaryText {
     color: #205723;

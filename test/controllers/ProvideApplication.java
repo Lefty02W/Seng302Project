@@ -26,6 +26,8 @@ public class ProvideApplication extends WithApplication {
     protected RolesRepository rolesRepository;
     protected PhotoRepository photoRepository;
     protected TreasureHuntRepository treasureHuntRepository;
+    protected ProfilePassportCountryRepository profilePassportCountryRepository;
+    protected PassportCountryRepository passportCountryRepository;
     protected UndoStackRepository undoStackRepository;
 
     @Override
@@ -91,6 +93,8 @@ public class ProvideApplication extends WithApplication {
         profileRepository = app.injector().instanceOf(ProfileRepository.class);
         destinationRepository = app.injector().instanceOf(DestinationRepository.class);
         photoRepository = app.injector().instanceOf(PhotoRepository.class);
+        profilePassportCountryRepository = app.injector().instanceOf(ProfilePassportCountryRepository.class);
+        passportCountryRepository = app.injector().instanceOf(PassportCountryRepository.class);
         undoStackRepository = app.injector().instanceOf(UndoStackRepository.class);
     }
 
