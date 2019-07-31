@@ -296,6 +296,12 @@ img.thumbnail {
     width: 100%;
 }
 
+.dropDownAndButton {
+    width: 48%;
+    margin-left: 2%;
+    margin-bottom: 30px;
+}
+
 #addTitle, #\#deleteBody, #\#deleteTitle {
     color: black;
 }
