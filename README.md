@@ -27,25 +27,23 @@ With the repository cloned, it can be imported using the following steps.
 1. Once the project is imported, open sbt shell in IntelliJ and enter "test"
 2. All tests, including both Cucumber and JUnit tests, will be run and the output shown.
 
+#
+
 ### Admin & User Credentials
 
-##
+Admin:
 
-#####Admin
+* Username: test.admin@gmail.com
 
-Username: test.admin@gmail.com
-
-Password: testAdmin
-
-## 
+* Password: testAdmin
  
-#####User
+User:
 
-Username: test.user@gmail.com
+* Username: test.user@gmail.com
 
-Password: testUser
+* Password: testUser
 
-##
+#
 
 ### Connect to a Dedicated server instance
 
