@@ -1,0 +1,99 @@
+tag_checker:
+  stage: build
+  script:
+    - python tag_checker.py $CI_COMMIT_TAG
+  only:
+    - tags
+
+junit:
+  stage: test
+  script:
+    - sudo update-java-alternatives --set java-8-oracle
+    - sbt jacoco
+    - sudo mkdir -p /home/JACOCO
+    - sudo cp -r target/ /home/JACOCO/
+    - sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+
+  artifacts:
+    paths:
+      - target/scala-2.12/classes/
+      - target/scala-2.12/jacoco/data/jacoco.exec
+      - target/*
+
+
+recent-artifacts:
+  stage: deploy
+  script:
+    - sbt dist
+  artifacts:
+    paths:
+      - target/universal/*.zip
+    expire_in: 1 week
+  except:
+    - tags
+
+release-artifacts:
+ stage: deploy
+ script:
+    - sbt dist
+ artifacts:
+    paths:
+    - target/universal/*.zip
+    - target/*
+ only:
+    - tags
+
+
+deploy-dev:
+  stage: deploy
+  script:
+    - sudo cp -a /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/photos/ /opt/
+    - sudo rm -rf /opt/dev_server/*
+    - sbt dist
+    - sudo cp /var/lib/gitlab-runner/builds/cc082478/0/seng302-2019/team-700/target/universal/seng302-team-700-0.0.1-SNAPSHOT.zip /opt/dev_server
+    - cd /opt/dev_server
+    - sudo unzip seng302-team-700-0.0.1-SNAPSHOT.zip
+    - sudo rm -rf /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/photos/*
+    - sudo mv /opt/photos /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/
+    - sudo systemctl restart development_server
+  environment:
+    name: development
+    url: http://csse-s302g7.canterbury.ac.nz:8443
+  only:
+    - dev@seng302-2019/team-700
+
+
+deploy-prod:
+  stage: deploy
+  script:
+  - sudo cp -a /opt/prod_server/seng302-team-700-0.0.1-SNAPSHOT/photos/ /opt/
+  - sudo rm -rf /opt/prod_server/*
+  - sbt dist
+  - sudo cp /var/lib/gitlab-runner/builds/cc082478/0/seng302-2019/team-700/target/universal/seng302-team-700-0.0.1-SNAPSHOT.zip /opt/prod_server
+  - cd /opt/prod_server
+  - sudo unzip seng302-team-700-0.0.1-SNAPSHOT.zip
+  - sudo rm -rf /opt/prod_server/seng302-team-700-0.0.1-SNAPSHOT/photos/*
+  - sudo mv /opt/photos /opt/prod_server/seng302-team-700-0.0.1-SNAPSHOT/
+  - sudo systemctl restart production_server
+  environment:
+    name: production
+    url: http://csse-s302g7.canterbury.ac.nz:443
+  only:
+  - tags
+
+
+
+
+
+update-sonar:
+  stage: deploy
+  script:
+    - export PATH=$PATH:/opt/sonar-scanner/bin
+    - sonar-scanner
+  artifacts:
+    paths:
+    - target/*
+  only:
+    - master@seng302-2019/team-700
+    - dev@seng302-2019/team-700
+    - sonar-qube@seng302-2019/team-700
