@@ -1,14 +1,20 @@
 package models;
 
+import play.data.validation.Constraints;
+
+import javax.persistence.Id;
 import java.util.Collection;
 import java.util.Map;
 
 public class ArtistProfile {
 
+    @Id
     private Integer artistId;
 
+    @Constraints.Required
     private String artistName;
 
+    @Constraints.Required
     private String biography;
 
     private String facebookLink;
