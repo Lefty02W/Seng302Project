@@ -29,6 +29,7 @@ public class ProvideApplication extends WithApplication {
     protected ProfilePassportCountryRepository profilePassportCountryRepository;
     protected PassportCountryRepository passportCountryRepository;
     protected UndoStackRepository undoStackRepository;
+    protected GenreRepository genreRepository;
 
     @Override
     public Application provideApplication() {
@@ -96,6 +97,7 @@ public class ProvideApplication extends WithApplication {
         profilePassportCountryRepository = app.injector().instanceOf(ProfilePassportCountryRepository.class);
         passportCountryRepository = app.injector().instanceOf(PassportCountryRepository.class);
         undoStackRepository = app.injector().instanceOf(UndoStackRepository.class);
+        genreRepository = app.injector().instanceOf(GenreRepository.class);
     }
 
     protected List<Destination> getUserDest(int id) {

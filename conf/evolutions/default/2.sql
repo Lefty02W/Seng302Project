@@ -160,3 +160,33 @@ INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created
 
   INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
   (4, 'destination', 7, 11, CURRENT_DATE - 5);
+
+INSERT INTO music_genre (genre_Id, genre) VALUES
+  (1, 'Rock');
+
+INSERT INTO music_genre (genre_Id, genre) VALUES
+  (2, 'Alternative');
+
+INSERT INTO music_genre (genre_Id, genre) VALUES
+  (3, 'Reggae');
+
+INSERT INTO music_genre (genre_Id, genre) VALUES
+  (4, 'Indie'); /* If you add any genres pls update the getAll Repo test as it expects only 4 genres*/
+
+INSERT INTO artist (artist_id, artist_name, biography) VALUES
+  (1, 'Mr Walsh', 'Mr Walsh');
+
+INSERT INTO artist (artist_id, artist_name, biography) VALUES
+  (2, 'James', 'James');
+
+INSERT INTO artist (artist_id, artist_name, biography) VALUES
+  (3, 'Jerry', 'Jerry');
+
+INSERT INTO artist_genre (artist, genre) VALUES
+  (1, 4);
+
+INSERT INTO artist_genre (artist, genre) VALUES
+  (1, 3);
+
+INSERT INTO artist_genre (artist, genre) VALUES
+  (3, 1);

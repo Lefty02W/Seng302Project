@@ -318,6 +318,57 @@ create table if not exists undo_stack
 )
 ;
 
+create table artist
+(
+	artist_id int auto_increment
+		primary key,
+	artist_name varchar(30) not null,
+	biography varchar(255) not null,
+	facebook_link varchar(50) null,
+	instagram_link varchar(50) null,
+	spotify_link varchar(50) null,
+	twitter_link varchar(50) null,
+	website_link varchar(50) null,
+	soft_delete tinyint default '0' null,
+	verified int default '0' null,
+	constraint artist_profile_artist_id_uindex
+		unique (artist_id)
+)
+;
+
+create table music_genre
+(
+	genre_id int auto_increment
+		primary key,
+	genre varchar(20) not null,
+	constraint music_genre_genreId_uindex
+		unique (genre_id)
+)
+;
+
+create table artist_genre
+(
+	artist int not null,
+	genre int not null,
+	constraint artist_genre_artist_fk
+		foreign key (artist) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_genre_genre_fk
+		foreign key (genre) references music_genre (genre_Id)
+			on update cascade on delete cascade
+)
+;
+
+create index artist_genre_artist_fk
+	on artist_genre (artist)
+;
+
+create index artist_genre_genre_fk
+	on artist_genre (genre)
+;
+
+
+
 
 
 
@@ -371,3 +422,9 @@ drop table if exists destination_traveller_type;
 drop table if exists undo_stack;
 
 drop table if exists treasure_hunt
+
+drop table if exists artist;
+
+drop table if exists artist_genre;
+
+drop table if exists music_genre;
