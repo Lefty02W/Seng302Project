@@ -569,4 +569,18 @@ public class AdminController {
         return artistRepository.setArtistAsVerified(artistId)
                 .thenApplyAsync(x -> redirect("/admin").flashing("info", "Artist: " + artistId + " verified"));
     }
+
+
+    /**
+     * Endpoint method allowing the admin to decline an artist creation request
+     *
+     * @apiNote POST /admin/artist/decline
+     * @param request the request sent from admin client
+     * @param artistId the database id of the artist to verify
+     * @return CompletionStage redirecting to admin page with flashing holding result of action
+     */
+    public CompletionStage<Result> declineArtist(Http.Request request, Integer artistId) {
+        return artistRepository.deleteArtist(artistId)
+                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Artist: " + artistId + " declined"));
+    }
 }
