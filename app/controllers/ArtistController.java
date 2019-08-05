@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Artist;
+import models.ArtistProfile;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -12,6 +13,8 @@ import repository.ArtistRepository;
 
 import javax.inject.Inject;
 import java.util.Optional;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * This class is the controller for processing front end artist profile related functionality
@@ -45,6 +48,15 @@ public class ArtistController extends Controller {
         if (artistOpt.isPresent()){
             Artist artist = artistOpt.get();
             artistRepository.insert(artist);
+
+            Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
+
+            //Insert ArtistProfiles for new Artist.
+            for (String profileIdString: optionalProfiles.toString().split(",")){
+                Integer profileId = parseInt(profileIdString);
+                ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
+                artistRepository.insertProfileLink(artistProfile);
+            }
             return redirect("/profile").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
         }
         return  redirect("/profile").flashing("info", "Artist Profile save failed");
