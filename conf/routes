@@ -34,7 +34,6 @@ GET     /trips/:userId/create                   controllers.TripsController.show
 POST    /trips/:userId/:id/editTrip             controllers.TripsController.saveEdit(request: Request, id: Integer, userId: Integer)
 GET     /trips/:userId/:id/edit                 controllers.TripsController.showEdit(request: Request, id: Integer, userId: Integer)
 POST    /trips/:userId/:id/edit                 controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, userId: Integer)
-POST    /trips/:userId/:id/edit                 controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, userId: Integer)
 GET     /trips/:userId/:id/edit/update          controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer, id: Integer, userId: Integer)
 POST    /trips/update                           controllers.TripsController.updateDestination(request: Request, destOrder: Integer, userId: Integer)
 POST    /trips/create/update                    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer, userId: Integer)
@@ -101,3 +100,7 @@ POST    /hunts/create                           controllers.TreasureHuntControll
 GET     /hunts/:id/delete                       controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
 GET     /hunts/:id/edit/show                    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer)
 POST    /hunts/:id/edit                         controllers.TreasureHuntController.editTreasureHunt(request : Request, id: Integer)
+
+
+# Artists
+POST    /artists                                controllers.ArtistController.createArtist(request : Request)
