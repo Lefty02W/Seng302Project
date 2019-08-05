@@ -1,6 +1,6 @@
 package controllers;
 
-import models.ArtistProfile;
+import models.Artist;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -8,6 +8,7 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import repository.ArtistRepository;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -15,19 +16,20 @@ import java.util.Optional;
 /**
  * This class is the controller for processing front end artist profile related functionality
  */
-public class ArtistProfileController extends Controller {
+public class ArtistController extends Controller {
 
-    private final Form<ArtistProfile> artistForm;
+    private final Form<Artist> artistForm;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
-    private final ArtistProfileRepository artistProfileRepository;
+    private final ArtistRepository artistRepository;
 
 
     @Inject
-    public ArtistProfileController(FormFactory artistProfileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi){
-        this.artistForm = artistProfileFormFactory.form(ArtistProfile.class);
+    public ArtistController(FormFactory artistProfileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ArtistRepository artistRepository){
+        this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
+        this.artistRepository = artistRepository;
     }
 
 
@@ -38,12 +40,12 @@ public class ArtistProfileController extends Controller {
      * @return
      */
     public Result createArtistProfile(Http.Request request){
-        Form<ArtistProfile> artistProfileForm = artistForm.bindFromRequest(request);
-        Optional<ArtistProfile> artistOpt = artistProfileForm.value();
+        Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
+        Optional<Artist> artistOpt = artistProfileForm.value();
         if (artistOpt.isPresent()){
-            ArtistProfile artistProfile = artistOpt.get();
-            artistProfileRepository.insert(artistProfile);
-            return redirect("/profile").flashing("info", "Artist Profile : " + artistProfile.getArtistName() + " created");
+            Artist artist = artistOpt.get();
+            artistRepository.insert(artist);
+            return redirect("/profile").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
         }
         return  redirect("/profile").flashing("info", "Artist Profile save failed");
     }

@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import java.util.Collection;
 import java.util.Map;
 
-public class ArtistProfile {
+public class Artist {
 
     @Id
     private Integer artistId;
@@ -46,7 +46,7 @@ public class ArtistProfile {
      * @param membersList
      * @param country
      */
-    public ArtistProfile(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> membersList, Map<Integer, PassportCountry> country, int softDelete) {
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> membersList, Map<Integer, PassportCountry> country, int softDelete) {
         this.artistId = artistId;
         this.artistName = artistName;
         this.biography = biography;
