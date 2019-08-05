@@ -2,11 +2,13 @@ package models;
 
 import play.data.validation.Constraints;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.Collection;
 import java.util.Map;
 
+@Entity
 public class Artist {
 
     @Id

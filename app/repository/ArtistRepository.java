@@ -77,7 +77,7 @@ public class ArtistRepository {
 
         List<ArtistProfile> artistProfiles = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
                 .where()
-                .eq("soft_delete", 0)
+                //.eq("soft_delete", 0)
                 .eq("profile_id", userId)
                 .findList());
 
