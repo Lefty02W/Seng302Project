@@ -135,4 +135,12 @@ public class ArtistProfile {
     public void setCountry(Map<Integer, PassportCountry> country) {
         this.country = country;
     }
+
+    public int getSoftDelete() {
+        return softDelete;
+    }
+
+    public void setSoftDelete(int softDelete) {
+        this.softDelete = softDelete;
+    }
 }
