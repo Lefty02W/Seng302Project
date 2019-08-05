@@ -67,7 +67,7 @@ public class GenreRepository {
         return supplyAsync(() -> {
             ebeanServer.insert(new ArtistGenre(artistId, genreId));
             return null;
-        });
+        }, executionContext);
     }
 
 
@@ -86,7 +86,7 @@ public class GenreRepository {
                     .eq("genre", genreId)
                     .delete();
             return null;
-        });
+        }, executionContext);
     }
 
 }
