@@ -92,5 +92,18 @@ public class ArtistRepository {
         return artists;
     }
 
+    /**
+     * Sets the artists approved flag to 1, this allows the artist to fully access the application
+     *
+     * @param artistId Id of the artist to approve
+     * @return Void completion stage
+     */
+    public CompletionStage<Void> setArtistAsVerified(int artistId) {
+        return supplyAsync(() -> {
+            ebeanServer.update(Artist.class).set("verified", 1).where().eq("artist_id", Integer.toString(artistId));
+            return null;
+        });
+    }
+
 
 }
