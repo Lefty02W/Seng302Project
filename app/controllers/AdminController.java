@@ -42,6 +42,7 @@ public class AdminController {
     private final TreasureHuntController treasureHuntController;
     private final Form<TreasureHunt> huntForm;
     private final UndoStackRepository undoStackRepository;
+    private final ArtistRepository artistRepository;
 
     private String adminEndpoint = "/admin";
     private RolesRepository rolesRepository;
@@ -51,7 +52,8 @@ public class AdminController {
                            MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
                                    destinationRepository, TripRepository tripRepository,
                                    RolesRepository rolesRepository,
-                           TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController, UndoStackRepository undoStackRepository) {
+                           TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController,
+                           UndoStackRepository undoStackRepository, ArtistRepository artistRepository) {
         this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
@@ -65,6 +67,7 @@ public class AdminController {
         this.huntForm = formFactory.form(TreasureHunt.class);
         this.treasureHuntController = treasureHuntController;
         this.undoStackRepository = undoStackRepository;
+        this.artistRepository = artistRepository;
     }
 
 
@@ -551,5 +554,19 @@ public class AdminController {
                         return redirect("/admin").flashing("info", "No changes to undo");
                     }
                 });
+    }
+
+
+    /**
+     * Endpoint method allowing the admin to verify an artist creation request
+     *
+     * @apiNote POST /admin/artist/verify
+     * @param request the request sent from admin client
+     * @param artistId the database id of the artist to verify
+     * @return CompletionStage redirecting to admin page with flashing holding result of action
+     */
+    public CompletionStage<Result> verifyArtist(Http.Request request, Integer artistId) {
+        return artistRepository.setArtistAsVerified(artistId)
+                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Artist: " + artistId + " verified"));
     }
 }

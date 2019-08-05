@@ -93,6 +93,9 @@ GET     /admin/hunts/:id/delete                 controllers.AdminController.dele
 GET     /admin/hunts/:id/edit/show              controllers.AdminController.showEditHunt(request : Request, id : Integer)
 POST    /admin/hunts/:id/edit                   controllers.AdminController.editTreasureHunt(request : Request, id : Integer)
 
+## Admin Artists
+POST    /admin/artist/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
+
 
 # Tresure Hunts
 GET     /treasure                               controllers.TreasureHuntController.show(request: Request)
@@ -104,3 +107,4 @@ POST    /hunts/:id/edit                         controllers.TreasureHuntControll
 
 # Artists
 POST    /artists                                controllers.ArtistController.createArtist(request : Request)
+
