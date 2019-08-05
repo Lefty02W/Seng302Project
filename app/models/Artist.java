@@ -3,6 +3,7 @@ package models;
 import play.data.validation.Constraints;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Collection;
 import java.util.Map;
 
@@ -32,6 +33,20 @@ public class Artist {
     private Map<Integer, PassportCountry> country;
 
     private int softDelete;
+
+    @Transient
+    private String genreFrom;
+
+    @Transient
+    private String adminForm;
+
+    @Transient
+    private String coutnries;
+
+
+    public Artist() {
+
+    }
 
     /**
      * Traditional constructor used for retrieving object from DB
@@ -149,4 +164,5 @@ public class Artist {
     public void setSoftDelete(int softDelete) {
         this.softDelete = softDelete;
     }
+
 }

@@ -109,7 +109,7 @@ table {
 }
 
 /* Text input style */
-input[type=text], input[type=date], input[type=search], input[type=datetime-local], input[type=number], input[type=password] {
+input[type=text], input[type=date], input[type=search], input[type=datetime-local], input[type=number], input[type=password], input[type=url] {
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;

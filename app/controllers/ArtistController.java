@@ -39,7 +39,7 @@ public class ArtistController extends Controller {
      * @param request
      * @return
      */
-    public Result createArtistProfile(Http.Request request){
+    public Result createArtist(Http.Request request){
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
         Optional<Artist> artistOpt = artistProfileForm.value();
         if (artistOpt.isPresent()){
