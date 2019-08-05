@@ -4,8 +4,6 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import models.Artist;
 import models.ArtistProfile;
-import models.Destination;
-import models.TreasureHunt;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -43,18 +41,32 @@ public class ArtistRepository {
      * @param artist Artist object to insert into the database
      * @return the new Artist id
      */
-    public CompletionStage<Integer> insert(Artist artist, List<ArtistProfile> artistProfiles) {
+    public CompletionStage<Integer> insert(Artist artist) {
         return supplyAsync(() -> {
 
             ebeanServer.insert(artist);
 
-            //Manually applying linkage to profiles.
-            for(ArtistProfile artistProfile : artistProfiles) {
-                ebeanServer.insert(artistProfile);
-            }
             return artist.getArtistId();
         }, executionContext);
     }
+
+    /**
+     * Inserts ArtistProfile object into the ebean database server for link table.
+     *
+     * @param artistProfile ArtistProfile object to insert into the database
+     * @return the new Artist id
+     */
+    public CompletionStage<Integer> insertProfileLink(ArtistProfile artistProfile) {
+        return supplyAsync(() -> {
+
+            ebeanServer.insert(artistProfile);
+            return artistProfile.getAPArtistId();
+
+
+        }, executionContext);
+    }
+
+
 
     /**
      * Method to return all of a users artists

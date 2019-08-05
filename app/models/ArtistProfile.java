@@ -11,8 +11,12 @@ public class ArtistProfile {
 
     private Integer profileId;
 
-
-    ArtistProfile(Integer artistId, Integer profileId){
+    /**
+     * Traditional constructor used for retrieving object from DB
+     * @param artistId The artist id the profile is being added to
+     * @param profileId The profile id to add
+     * */
+    public ArtistProfile(Integer artistId, Integer profileId){
         this.artistId = artistId;
         this.profileId = profileId;
     }
