@@ -37,6 +37,19 @@ public class ArtistRepository {
 
     }
 
+
+    /**
+     * Get the all of the artists currently registered
+     *
+     * @return Artist, list of all Artist
+     */
+    public List<Artist> getAllArtists() {
+        return new ArrayList<>(ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .findList());
+    }
+
     /**
      * Inserts an Artist object into the ebean database server
      *
