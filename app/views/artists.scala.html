@@ -49,6 +49,8 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a style="color: #ca6636" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/vinyl-record.png")"/>
+                        Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
@@ -58,25 +60,23 @@
                         Logout</a>
                 </div>
             </div>
-        </div>
             <!-- /#sidebar-wrapper -->
 
-            <!-- Page Content -->
-        <div id="page-content-wrapper">
+                <!-- Page Content -->
+            <div id="page-content-wrapper">
 
-            <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
-                <div id="pageTitle">
-                    <h2>Artists</h2>
-                </div>
-            </nav>
-
-
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
+                        <h2> Artists</h2> <!-- TODO align this in the center -->
+                    </div>
+                </nav>
+            </div>
         </div>
-        <div>
+            <div>
             @for(artist <- artists) {
                 <td>@artist.getArtistName</td>
             }
-        </div>
+            </div>
     </body>
 </html>
