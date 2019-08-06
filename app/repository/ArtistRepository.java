@@ -79,7 +79,6 @@ public class ArtistRepository {
     }
 
 
-
     /**
      * Method to return all of a users artists
      * @param userId, the id of the user

@@ -166,5 +166,4 @@ public class Artist {
     public void setSoftDelete(int softDelete) {
         this.softDelete = softDelete;
     }
-
 }
