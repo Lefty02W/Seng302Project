@@ -13,6 +13,7 @@ import repository.ArtistRepository;
 
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 import static java.lang.Integer.parseInt;
 
@@ -60,5 +61,17 @@ public class ArtistController extends Controller {
             return redirect("/profile").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
         }
         return  redirect("/profile").flashing("info", "Artist Profile save failed");
+    }
+
+
+    /**
+     * Allows a memeber of an artist to leave an artist
+     *
+     * @param request client request to leave artist
+     * @return CompletionStage holding redirect to TODO set page when my artist page is there
+     */
+    public CompletionStage<Result> leaveArtist(Http.Request request, int artistId) {
+        return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
+                .thenApplyAsync(x -> redirect("/artist")); //TODO update redirect when my artist page is present
     }
 }
