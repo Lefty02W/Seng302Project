@@ -13,8 +13,10 @@ import repository.ArtistRepository;
 
 import javax.inject.Inject;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 import static java.lang.Integer.parseInt;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
  * This class is the controller for processing front end artist profile related functionality
@@ -42,23 +44,30 @@ public class ArtistController extends Controller {
      * @param request
      * @return
      */
-    public Result createArtist(Http.Request request){
+    public CompletionStage<Result> createArtist(Http.Request request){
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
         Optional<Artist> artistOpt = artistProfileForm.value();
         if (artistOpt.isPresent()){
             Artist artist = artistOpt.get();
-            artistRepository.insert(artist);
+            return artistRepository.checkDuplicate(artist.getArtistName()).thenApplyAsync(x -> {
+                if (!x) {
+                    artistRepository.insert(artist);
 
-            Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
+                    Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
 
-            //Insert ArtistProfiles for new Artist.
-            for (String profileIdString: optionalProfiles.toString().split(",")){
-                Integer profileId = parseInt(profileIdString);
-                ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
-                artistRepository.insertProfileLink(artistProfile);
-            }
-            return redirect("/profile").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
+                    //Insert ArtistProfiles for new Artist.
+                    for (String profileIdString: optionalProfiles.toString().split(",")){
+                        Integer profileId = parseInt(profileIdString);
+                        ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
+                        artistRepository.insertProfileLink(artistProfile);
+                    }
+                    System.out.println("Added artist");
+                    return redirect("/profile").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
+                } else {
+                    return redirect("/profile").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
+                }
+            });
         }
-        return  redirect("/profile").flashing("info", "Artist Profile save failed");
+        return supplyAsync(() -> redirect("/profile").flashing("info", "Artist Profile save failed"));
     }
 }

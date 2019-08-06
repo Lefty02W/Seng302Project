@@ -50,6 +50,18 @@ public class ArtistRepository {
         }, executionContext);
     }
 
+    /** Checks if the artist to add is a duplicate of an existing artist
+     *
+     */
+    public CompletionStage<Boolean> checkDuplicate(String artistName) {
+        return supplyAsync(() -> {
+            Artist artist = ebeanServer.find(Artist.class)
+                    .where().eq("artist_name", artistName)
+                    .findOne();
+            return artist != null;
+        }, executionContext);
+    }
+
     /**
      * Inserts ArtistProfile object into the ebean database server for link table.
      *
