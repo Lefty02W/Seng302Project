@@ -165,5 +165,17 @@ public class ArtistRepository {
         });
     }
 
+    /**
+     * Method to get all artist profiles that have not yet been verified so the admin can either verify or remove the
+     * profile
+     * @return
+     */
+    public List<Artist> getInvalidArtists(){
+        return new ArrayList<>(ebeanServer.find(Artist.class)
+                .where().eq("verified", 0).findList());
+    }
+
+
+
 
 }
