@@ -133,4 +133,38 @@ public class ArtistRepository {
     }
 
 
+    /**
+     * Inserts a new entry into the artist_profile table linking the profile to the artist
+     *
+     * @param artistId id of artist to link
+     * @param profileId id of profile to link
+     * @return Void CompletionStage
+     */
+    public CompletionStage<Void> addProfileToArtist(int artistId, int profileId) {
+        return supplyAsync(() -> {
+            ebeanServer.insert(new ArtistProfile(artistId, profileId));
+            return null;
+        });
+    }
+
+
+    /**
+     * Removes an entry from the artist_profile table unlinking a profile from an artist
+     *
+     * @param artistId id of artist to link
+     * @param profileId id of profile to link
+     * @return Void CompletionStage
+     */
+    public CompletionStage<Void> removeProfileFromArtist(int artistId, int profileId) {
+        return supplyAsync(() -> {
+            ebeanServer.find(ArtistProfile.class)
+                    .where()
+                    .eq("artist_id", artistId)
+                    .eq("profile_id", profileId)
+                    .delete();
+            return null;
+        });
+    }
+
+
 }

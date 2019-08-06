@@ -10,6 +10,10 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repository.ArtistRepository;
+import repository.GenreRepository;
+import repository.ProfileRepository;
+import utility.Country;
+import views.html.artists;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -27,14 +31,34 @@ public class ArtistController extends Controller {
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
     private final ArtistRepository artistRepository;
+    private final ProfileRepository profileRepository;
+    private final GenreRepository genreRepository;
 
 
     @Inject
-    public ArtistController(FormFactory artistProfileFormFactory, HttpExecutionContext httpExecutionContext, MessagesApi messagesApi, ArtistRepository artistRepository){
+    public ArtistController(FormFactory artistProfileFormFactory, HttpExecutionContext httpExecutionContext,
+                            MessagesApi messagesApi, ArtistRepository artistRepository, ProfileRepository profileRepository,
+                            GenreRepository genreRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
+        this.profileRepository = profileRepository;
+        this.genreRepository = genreRepository;
+    }
+
+
+    /**
+     * Endpoint for landing page for artists
+     *
+     * @param request client request
+     * @return CompletionStage rendering artist page
+     */
+    public CompletionStage<Result> show(Http.Request request) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+
     }
 
 
@@ -69,5 +93,17 @@ public class ArtistController extends Controller {
             });
         }
         return supplyAsync(() -> redirect("/profile").flashing("info", "Artist Profile save failed"));
+    }
+
+
+    /**
+     * Allows a memeber of an artist to leave an artist
+     *
+     * @param request client request to leave artist
+     * @return CompletionStage holding redirect to TODO set page when my artist page is there
+     */
+    public CompletionStage<Result> leaveArtist(Http.Request request, int artistId) {
+        return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
+                .thenApplyAsync(x -> redirect("/artist")); //TODO update redirect when my artist page is present
     }
 }
