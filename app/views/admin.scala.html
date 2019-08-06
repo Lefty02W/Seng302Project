@@ -269,7 +269,7 @@
             <div class="row">
                 <div class="card adminCard">
                     <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" id="bologna-list" role="tablist">
+                        <ul class="nav nav-tabs card-header-tabs" id="admin-list" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" href="#admins" role="tab" aria-controls="description" aria-selected="true">
                                     Admins</a>
@@ -604,7 +604,7 @@
             });
 
             // For swapping active tab
-            $('#bologna-list a').on('click', function (e) {
+            $('#admin-list a').on('click', function (e) {
                 e.preventDefault()
                 $(this).tab('show')
             })
@@ -675,6 +675,14 @@
 
             $(document).ready(function () {
                 $('#requestsTable').DataTable({
+                    "searching": false,
+                    "pageLength": 8,
+                    "lengthChange": false
+                });
+            });
+
+            $(document).ready(function () {
+                $('#artistRequestsTable').DataTable({
                     "searching": false,
                     "pageLength": 8,
                     "lengthChange": false
