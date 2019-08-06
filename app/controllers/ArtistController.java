@@ -73,6 +73,7 @@ public class ArtistController extends Controller {
         Optional<Artist> artistOpt = artistProfileForm.value();
         if (artistOpt.isPresent()){
             Artist artist = artistOpt.get();
+            artist.initCountry();
             return artistRepository.checkDuplicate(artist.getArtistName()).thenApplyAsync(x -> {
                 if (!x) {
                     artistRepository.insert(artist);

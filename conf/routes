@@ -94,8 +94,8 @@ GET     /admin/hunts/:id/edit/show              controllers.AdminController.show
 POST    /admin/hunts/:id/edit                   controllers.AdminController.editTreasureHunt(request : Request, id : Integer)
 
 ## Admin Artists
-POST    /admin/artist/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
-POST    /admin/artist/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
+GET    /admin/artist/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
+GET    /admin/artist/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
 
 
 # Tresure Hunts

@@ -3,7 +3,9 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import models.Artist;
+import models.ArtistCountry;
 import models.ArtistProfile;
+import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -45,6 +47,15 @@ public class ArtistRepository {
         return supplyAsync(() -> {
 
             ebeanServer.insert(artist);
+            // Adding artist countries to artist_country in the database
+            System.out.println("Checking for all the countrys in a list: " + artist.getCountryList());
+            for (Integer countryId : artist.getCountryList()) {
+                System.out.println("FROM THE INSERT: " + countryId);
+                supplyAsync(() -> {
+                    ebeanServer.insert(new ArtistCountry(artist.getArtistId(), countryId));
+                    return null;
+                });
+            }
 
             return artist.getArtistId();
         }, executionContext);
@@ -174,8 +185,4 @@ public class ArtistRepository {
         return new ArrayList<>(ebeanServer.find(Artist.class)
                 .where().eq("verified", 0).findList());
     }
-
-
-
-
 }

@@ -566,8 +566,10 @@
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
                                                 <td>@artist.getBiography</td>
-                                                <td>@artist.getCountry</td>
-                                                <td><a href="/admin/artist/verify/@artist.getArtistId "><button class="btn btn-primary">Verify</button></a></td>
+                                                <td>@for(index <- 0 until artist.getCountryList.size) {
+                                                    @artist.getCountryList.get(index)
+                                                }</td>
+                                                <td><a href="/admin/artist/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>
                                                 <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/artist/decline/@artist.getArtistId')">Decline</button></td>
                                             </tr>
                                         }

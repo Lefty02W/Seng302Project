@@ -1,11 +1,14 @@
 package models;
 
 import play.data.validation.Constraints;
+import repository.PassportCountryRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 @Entity
@@ -32,6 +35,7 @@ public class Artist {
 
     private Collection<Profile> membersList;
 
+    @Transient
     private Map<Integer, PassportCountry> country;
 
     private int softDelete;
@@ -43,7 +47,7 @@ public class Artist {
     private String adminForm;
 
     @Transient
-    private String coutnries;
+    private String countries;
 
 
     public Artist() {
@@ -73,9 +77,43 @@ public class Artist {
         this.twitterLink = twitterLink;
         this.websiteLink = websiteLink;
         this.membersList = membersList;
-        this.country = country;
+        this.country = new HashMap<>();
         this.softDelete = softDelete;
     }
+    /**
+     * A function to turn the destination class created by the create destination form. It is required to turn the
+     * , separated strings into maps.
+     */
+    public void initCountry() {
+        this.country = new HashMap<>();
+
+        if (countries != null) {
+            int i = 1;
+            for (String countryString : (countries.split(","))) {
+                PassportCountry countryName = new PassportCountry(i, countryString);
+                this.country.put(countryName.getPassportId(), countryName);
+                i++;
+            }
+        }
+    }
+
+    /**
+     * Return the travellers types as a readable list
+     * @return Array of Strings of traveller types
+     */
+    public ArrayList<Integer> getCountryList() {
+        if (country != null) {
+            ArrayList<PassportCountry> countryObjects = new ArrayList<>(country.values());
+            ArrayList<Integer> countryIdList = new ArrayList<>();
+            for (PassportCountry type : countryObjects) {
+                countryIdList.add(type.getPassportId());
+            }
+            return countryIdList;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
 
     //Getters and setters
 
@@ -165,5 +203,9 @@ public class Artist {
 
     public void setSoftDelete(int softDelete) {
         this.softDelete = softDelete;
+    }
+
+    public void setCountries(String countries) {
+        this.countries = countries;
     }
 }
