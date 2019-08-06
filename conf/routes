@@ -108,4 +108,5 @@ POST    /hunts/:id/edit                         controllers.TreasureHuntControll
 
 # Artists
 POST    /artists                                controllers.ArtistController.createArtist(request : Request)
+GET     /artists                                controllers.ArtistController.show(request : Request)
 
