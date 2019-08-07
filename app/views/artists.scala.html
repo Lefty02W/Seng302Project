@@ -132,11 +132,11 @@
                                         </select>
                                     </div>
                                     <div class="row justify-content-center">
-                                        <label>Artist Admins</label>
+                                        <label>Artist Admins*</label>
                                     </div>
                                     <div class="row justify-content-center">
                                         <div class="hidden-div-edit">
-                                            <input type="text" id="adminForm" name="adminForm" class="hidden-field">
+                                            <input type="text" id="adminForm" name="adminForm" class="hidden-field" required>
                                         </div>
                                         <select class="selectpicker" data-live-search="true" multiple title="Artist Admins" id="adminDropdown" data-width="50%">
                                             @for(profile <- profiles) {

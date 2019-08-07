@@ -76,24 +76,25 @@ public class ArtistController extends Controller {
             artist.initCountry();
             return artistRepository.checkDuplicate(artist.getArtistName()).thenApplyAsync(x -> {
                 if (!x) {
-                    artistRepository.insert(artist);
-
-                    Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
-
-                    //Insert ArtistProfiles for new Artist.
-                    for (String profileIdString: optionalProfiles.toString().split(",")){
-                        Integer profileId = parseInt(profileIdString);
-                        ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
-                        artistRepository.insertProfileLink(artistProfile);
-                    }
-                    System.out.println("Added artist");
-                    return redirect("/profile").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
+                    artistRepository.insert(artist).thenApplyAsync(artistId -> {
+                        Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
+                        //Insert ArtistProfiles for new Artist.
+                        if (optionalProfiles.isPresent()) {
+                            for (String profileIdString: optionalProfiles.get().split(",")){
+                                Integer profileId = parseInt(profileIdString);
+                                ArtistProfile artistProfile = new ArtistProfile(profileId, artistId);
+                                artistRepository.insertProfileLink(artistProfile);
+                            }
+                        }
+                        return null;
+                    });
+                    return redirect("/artists").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
                 } else {
-                    return redirect("/profile").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
+                    return redirect("/artists").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
                 }
             });
         }
-        return supplyAsync(() -> redirect("/profile").flashing("info", "Artist Profile save failed"));
+        return supplyAsync(() -> redirect("/artists").flashing("info", "Artist Profile save failed"));
     }
 
     /**
