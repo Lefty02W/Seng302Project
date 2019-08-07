@@ -99,9 +99,9 @@ public class ArtistController extends Controller {
 
     /**
      * Method for user to delete their artist profile
-     * @param request
+     * @param request client request to delete an artist
      * @param artistId id of the artist profile that will be deleted
-     * @return
+     * @return redirect to artist page with success flash
      */
     public CompletionStage<Result> deleteArtist(Http.Request request, Integer artistId){
         return artistRepository.deleteArtist(artistId)
