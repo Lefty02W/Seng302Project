@@ -78,7 +78,6 @@ public class PassportCountryRepository {
      * @return CompletionStage holding an Optional of the nationalities database id
      */
     public Optional<Integer> insert(PassportCountry passport) {
-
         ebeanServer.insert(passport);
 
 

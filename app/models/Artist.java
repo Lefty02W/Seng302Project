@@ -102,14 +102,14 @@ public class Artist {
      * Return the travellers types as a readable list
      * @return Array of Strings of traveller types
      */
-    public ArrayList<Integer> getCountryList() {
+    public ArrayList<String> getCountryList() {
         if (country != null) {
             ArrayList<PassportCountry> countryObjects = new ArrayList<>(country.values());
-            ArrayList<Integer> countryIdList = new ArrayList<>();
-            for (PassportCountry type : countryObjects) {
-                countryIdList.add(type.getPassportId());
+            ArrayList<String> countryList = new ArrayList<>();
+            for (PassportCountry passportCountry : countryObjects) {
+                countryList.add(passportCountry.getPassportName());
             }
-            return countryIdList;
+            return countryList;
         } else {
             return new ArrayList<>();
         }
