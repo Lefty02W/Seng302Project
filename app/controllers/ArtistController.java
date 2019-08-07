@@ -96,6 +96,19 @@ public class ArtistController extends Controller {
         return supplyAsync(() -> redirect("/profile").flashing("info", "Artist Profile save failed"));
     }
 
+    /**
+     * Method for user to delete their artist profile
+     * @param request
+     * @param artistId id of the artist profile that will be deleted
+     * @return
+     */
+    public CompletionStage<Result> deleteArtist(Http.Request request, Integer artistId){
+        return artistRepository.deleteArtist(artistId)
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist was successfully deleted"));
+    }
+
+
+
 
     /**
      * Allows a memeber of an artist to leave an artist

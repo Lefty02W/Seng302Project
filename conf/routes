@@ -109,4 +109,5 @@ POST    /hunts/:id/edit                         controllers.TreasureHuntControll
 # Artists
 POST    /artists                                controllers.ArtistController.createArtist(request : Request)
 GET     /artists                                controllers.ArtistController.show(request : Request)
+GET     /artists/:id/delete                     controllers.ArtistController.deleteArtist(request : Request, id : Integer)
 
