@@ -45,7 +45,11 @@ public class ArtistRepository {
     public CompletionStage<Integer> insert(Artist artist) {
         return supplyAsync(() -> {
 
-            ebeanServer.insert(artist);
+            try {
+                ebeanServer.insert(artist);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             // Adding artist countries to artist_country in the database
             System.out.println("Checking for all the countrys in a list: " + artist.getCountryList());
             for (Integer countryId : artist.getCountryList()) {

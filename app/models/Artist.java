@@ -1,7 +1,6 @@
 package models;
 
 import play.data.validation.Constraints;
-import repository.PassportCountryRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -33,7 +32,9 @@ public class Artist {
 
     private String websiteLink;
 
-    private Collection<Profile> membersList;
+    private Collection<Profile> adminsList;
+
+    private String members;
 
     @Transient
     private Map<Integer, PassportCountry> country;
@@ -64,10 +65,10 @@ public class Artist {
      * @param spotifyLink
      * @param twitterLink
      * @param websiteLink
-     * @param membersList
+     * @param adminsList
      * @param country
      */
-    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> membersList, Map<Integer, PassportCountry> country, int softDelete) {
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> adminsList, Map<Integer, PassportCountry> country, int softDelete) {
         this.artistId = artistId;
         this.artistName = artistName;
         this.biography = biography;
@@ -76,7 +77,7 @@ public class Artist {
         this.spotifyLink = spotifyLink;
         this.twitterLink = twitterLink;
         this.websiteLink = websiteLink;
-        this.membersList = membersList;
+        this.adminsList = adminsList;
         this.country = new HashMap<>();
         this.softDelete = softDelete;
     }
@@ -116,6 +117,11 @@ public class Artist {
 
 
     //Getters and setters
+
+
+    public String getMembers() {
+        return members;
+    }
 
     public Integer getArtistId() {
         return artistId;
@@ -181,12 +187,12 @@ public class Artist {
         this.websiteLink = websiteLink;
     }
 
-    public Collection<Profile> getMembersList() {
-        return membersList;
+    public Collection<Profile> getAdminsList() {
+        return adminsList;
     }
 
-    public void setMembersList(Collection<Profile> membersList) {
-        this.membersList = membersList;
+    public void setAdminsList(Collection<Profile> adminsList) {
+        this.adminsList = adminsList;
     }
 
     public Map<Integer, PassportCountry> getCountry() {
