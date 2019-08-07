@@ -6,10 +6,7 @@ import repository.PassportCountryRepository;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 public class Artist {
@@ -37,6 +34,8 @@ public class Artist {
 
     @Transient
     private Map<Integer, PassportCountry> country;
+
+    private List<MusicGenre> genreList;
 
     private int softDelete;
 
@@ -117,9 +116,15 @@ public class Artist {
 
     //Getters and setters
 
+    public void setGenre(List<MusicGenre> genre) { this.genreList = genre;}
+
     public Integer getArtistId() {
         return artistId;
     }
+
+    public String getCountrys() {return countries;}
+
+    public String getGenre() {return genreFrom;}
 
     public void setArtistId(Integer artistId) {
         this.artistId = artistId;

@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.SqlRow;
 import models.Artist;
 import models.ArtistCountry;
 import models.ArtistProfile;
@@ -10,8 +11,7 @@ import play.db.ebean.EbeanConfig;
 import utility.Country;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -21,7 +21,8 @@ public class ArtistRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
-
+    private final PassportCountryRepository passportCountryRepository;
+    private final GenreRepository genreRepository;
 
     /**
      * Ebeans injector constructor method for Artist repository.
@@ -34,8 +35,8 @@ public class ArtistRepository {
 
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
-
-
+        this.passportCountryRepository = new PassportCountryRepository(ebeanConfig, executionContext);
+        this.genreRepository = new GenreRepository(ebeanConfig, executionContext);
     }
 
 
@@ -45,10 +46,15 @@ public class ArtistRepository {
      * @return Artist, list of all Artist
      */
     public List<Artist> getAllArtists() {
-        return new ArrayList<>(ebeanServer.find(Artist.class)
+        List<Artist> artistList = new ArrayList<>(ebeanServer.find(Artist.class)
                 .where()
                 .eq("soft_delete", 0)
                 .findList());
+        List<Artist> outputList = new ArrayList<>();
+        for( Artist artist : artistList) {
+            outputList.add(populateArtist(artist));
+        }
+        return outputList;
     }
 
 
@@ -103,6 +109,36 @@ public class ArtistRepository {
 
 
         }, executionContext);
+    }
+
+    /**
+     * Method to populate a artist with all linking table data eg genre and country
+     * @param artist Artist to be have added linking table data
+     * @return Artist that has had genre and country added
+     */
+    private Artist populateArtist(Artist artist) {
+        Map<Integer, PassportCountry> countries = new HashMap<>();
+        Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
+        if (countryMap.isPresent()) {
+            countries = countryMap.get();
+        }
+        artist.setCountry(countries);
+        //TODO fix below function
+       // artist.setGenre(genreRepository.getArtistGenres(artist.getArtistId()));
+        return artist;
+    }
+    /**
+     * Helper function to get country of an artist
+     * @param artistId id of the artist to find country for
+     */
+    private Optional<Map<Integer, PassportCountry>> getCountryList(Integer artistId) {
+        String qry = "Select * from artist_country where artist_id = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, artistId).findList();
+        Map<Integer, PassportCountry> country = new TreeMap<>();
+        for (SqlRow aRowList : rowList) {
+            country.put(aRowList.getInteger("country_id"), passportCountryRepository.findById(aRowList.getInteger("artist_country_id")).get());
+        }
+        return Optional.of(country);
     }
 
 
