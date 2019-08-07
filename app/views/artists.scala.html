@@ -27,6 +27,10 @@
 
 @*        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/croppie.css")"/>*@
 
+        @* for the toggle New Artists/Followed Artists to visit page on styling http://www.bootstraptoggle.com/ *@
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
 
 
         <script src="@routes.Assets.at("javascripts/croppie.js")" type="text/javascript"></script>
@@ -79,6 +83,20 @@
         <div class="row justify-content-center" id="artist-container">
             <div class="col-lg-9 col-sm-11">
                 <div class="search">
+                    <input type="search" id="" placeholder="Search..">
+                    <div>
+                        <select class="selectpicker" title="Countries">
+                            @for(nation <- countries) {
+                                <option value="@nation">@nation</option>
+                            }
+                        </select>
+                        <select class="selectpicker" title="Genres">
+                            <option value="rock">Rock</option>
+                        </select>
+                        <button class="btn btn-primary">Search</button>
+                    </div>
+                    <input type="checkbox" id="toggle" checked data-toggle="toggle" data-on="New Artists" data-off="Followed Artists" data-offstyle="info">
+
                 </div>
                 <div class="viewArtists">
                     <div class="row">

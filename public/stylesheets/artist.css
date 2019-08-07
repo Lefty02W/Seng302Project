@@ -7,11 +7,11 @@
 }
 
 .search {
-    height: 250px;
+    height: 200px;
 }
 
 .viewArtists {
-    height: 600px;
+    height: 650px;
 }
 
 #artist-card {
@@ -20,4 +20,9 @@
 
 #artist-stats {
     width: 50%;
+}
+
+#toggle {
+    border-width: 1px;
+    border-style: solid;
 }
