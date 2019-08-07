@@ -75,8 +75,14 @@
         </div>
             <div>
             @for(artist <- artists) {
-                <td>@artist.getArtistName</td>
+                <td>@artist.getArtistName|</td>
             }
             </div>
     </body>
+    <script>
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+    </script>
 </html>
