@@ -1,0 +1,23 @@
+
+.viewArtists {
+    width: 100%;
+    height: 70%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.search {
+    height: 250px;
+}
+
+.viewArtists {
+    height: 600px;
+}
+
+#artist-card {
+    margin: 0px;
+}
+
+#artist-stats {
+    width: 50%;
+}

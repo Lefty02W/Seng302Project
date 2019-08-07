@@ -23,6 +23,7 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/artist.css")">
 
 @*        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/croppie.css")"/>*@
 
@@ -73,11 +74,39 @@
                 </nav>
             </div>
         </div>
-            <div>
-            @for(artist <- artists) {
-                <td>@artist.getArtistName|</td>
-            }
+
+
+        <div class="row justify-content-center" id="artist-container">
+            <div class="col-lg-9 col-sm-11">
+                <div class="search">
+                </div>
+                <div class="viewArtists">
+                    <div class="row">
+                @for(artist <- artists) {
+                    <div class="card-body col col-md-12 col-xl-6" id="artist-card">
+                        <div class="card-header"> @artist.getArtistName</div>
+                        <div class="row">
+                            <div class="col col-10">
+                            <p id="artist-stats">Followers 500 <br>rock chirstain rock</p>
+                            </div>
+                            <div class="col col-2">
+                                <div class="row">
+                                    <button class="btn btn-primary" style="margin-bottom: 5px;">View</button>
+                                </div>
+                                <div class="row">
+                                    <button class="btn btn-primary">Follow</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                    </div>
+                </div>
             </div>
+        </div>
+
+
+
     </body>
     <script>
             $("#menu-toggle").click(function (e) {

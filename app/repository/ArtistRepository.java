@@ -7,6 +7,7 @@ import models.ArtistCountry;
 import models.ArtistProfile;
 import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
+import utility.Country;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ public class ArtistRepository {
                 .eq("soft_delete", 0)
                 .findList());
     }
+
+
 
     /**
      * Inserts an Artist object into the ebean database server
