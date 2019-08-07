@@ -4,6 +4,9 @@
     height: 70%;
     overflow-y: scroll;
     overflow-x: hidden;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #b3b7bb;
 }
 
 .search {
@@ -25,4 +28,8 @@
 #toggle {
     border-width: 1px;
     border-style: solid;
+}
+
+#view {
+    width: 72px;
 }

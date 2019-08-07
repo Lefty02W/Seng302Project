@@ -82,8 +82,9 @@
 
         <div class="row justify-content-center" id="artist-container">
             <div class="col-lg-9 col-sm-11">
-                <div class="search">
+                <div class="search justify-content-center">
                     <input type="search" id="" placeholder="Search..">
+                    <button class="btn btn-primary">Search</button>
                     <div>
                         <select class="selectpicker" title="Countries">
                             @for(nation <- countries) {
@@ -93,7 +94,7 @@
                         <select class="selectpicker" title="Genres">
                             <option value="rock">Rock</option>
                         </select>
-                        <button class="btn btn-primary">Search</button>
+                        <button class="btn btn-primary">Filter</button>
                     </div>
                     <input type="checkbox" id="toggle" checked data-toggle="toggle" data-on="New Artists" data-off="Followed Artists" data-offstyle="info">
 
@@ -109,7 +110,7 @@
                             </div>
                             <div class="col col-2">
                                 <div class="row">
-                                    <button class="btn btn-primary" style="margin-bottom: 5px;">View</button>
+                                    <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
                                 </div>
                                 <div class="row">
                                     <button class="btn btn-primary">Follow</button>
