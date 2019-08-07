@@ -70,12 +70,12 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> createArtist(Http.Request request){
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
-        System.out.println(artistProfileForm);
         Optional<Artist> artistOpt = artistProfileForm.value();
         if (artistOpt.isPresent()){
             Artist artist = artistOpt.get();
-            System.out.println(artist.getMembers());
             artist.initCountry();
+            Optional<String> optionalMembers = artistProfileForm.field("members").value();
+            optionalMembers.ifPresent(artist::setMembers);
             return artistRepository.checkDuplicate(artist.getArtistName()).thenApplyAsync(x -> {
                 if (!x) {
                     artistRepository.insert(artist).thenApplyAsync(artistId -> {

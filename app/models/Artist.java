@@ -123,6 +123,10 @@ public class Artist {
         return members;
     }
 
+    public void setMembers(String members) {
+        this.members = members;
+    }
+
     public Integer getArtistId() {
         return artistId;
     }
