@@ -5,7 +5,6 @@ import io.ebean.EbeanServer;
 import models.Artist;
 import models.ArtistCountry;
 import models.ArtistProfile;
-import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -123,7 +122,7 @@ public class ArtistRepository {
      */
     public CompletionStage<Void> setArtistAsVerified(int artistId) {
         return supplyAsync(() -> {
-            ebeanServer.update(Artist.class).set("verified", 1).where().eq("artist_id", Integer.toString(artistId));
+            ebeanServer.update(Artist.class).set("verified", 1).where().eq("artist_id", Integer.toString(artistId)).update();
             return null;
         });
     }
