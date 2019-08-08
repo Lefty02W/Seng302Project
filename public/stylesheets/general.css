@@ -343,3 +343,8 @@ div.dataTables_filter {
 #holder {
     height: 50px;
 }
+
+#biography {
+    width: 60%;
+    margin-top: 10px;
+}

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
 import static play.mvc.Results.redirect;
@@ -43,6 +44,7 @@ public class AdminController {
     private final Form<TreasureHunt> huntForm;
     private final UndoStackRepository undoStackRepository;
     private final ArtistRepository artistRepository;
+    private final Form<Artist> artistForm;
 
     private String adminEndpoint = "/admin";
     private RolesRepository rolesRepository;
@@ -53,7 +55,8 @@ public class AdminController {
                                    destinationRepository, TripRepository tripRepository,
                                    RolesRepository rolesRepository,
                            TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController,
-                           UndoStackRepository undoStackRepository, ArtistRepository artistRepository) {
+                           UndoStackRepository undoStackRepository, ArtistRepository artistRepository,
+                           FormFactory artistProfileFormFactory) {
         this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
@@ -68,6 +71,7 @@ public class AdminController {
         this.treasureHuntController = treasureHuntController;
         this.undoStackRepository = undoStackRepository;
         this.artistRepository = artistRepository;
+        this.artistForm = artistProfileFormFactory.form(Artist.class);
     }
 
 
@@ -588,5 +592,39 @@ public class AdminController {
     public CompletionStage<Result> declineArtist(Http.Request request, Integer artistId) {
         return artistRepository.deleteArtist(artistId)
                 .thenApplyAsync(x -> redirect("/admin").flashing("info", "Artist: " + artistId + " declined"));
+    }
+
+
+    /**
+     * Method to call repository to save an artist profile to the database
+     * @param request
+     * @return redirect to the
+     */
+    public CompletionStage<Result> createArtist(Http.Request request) {
+        Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
+        Optional<Artist> artistOpt = artistProfileForm.value();
+        if (artistOpt.isPresent()){
+            Artist artist = artistOpt.get();
+            artist.initCountry();
+            return artistRepository.checkDuplicate(artist.getArtistName()).thenApplyAsync(duplicate -> {
+                if (!duplicate) {
+                    artistRepository.insert(artist);
+
+                    Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
+
+                    //Insert ArtistProfiles for new Artist.
+                    for (String profileIdString: optionalProfiles.toString().split(",")){
+                        Integer profileId = parseInt(profileIdString);
+                        ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
+                        artistRepository.insertProfileLink(artistProfile);
+                    }
+                    System.out.println("Added artist");
+                    return redirect("/admin").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
+                } else {
+                    return redirect("/admin").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
+                }
+            });
+        }
+        return supplyAsync(() -> redirect("/admin").flashing("info", "Artist Profile save failed"));
     }
 }
