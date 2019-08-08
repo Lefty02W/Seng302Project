@@ -1515,7 +1515,7 @@
                     <h4 class="modal-title">Create Artist</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
-                @form(routes.ArtistController.createArtist()) {
+                @form(routes.AdminController.createArtist()) {
                     @CSRF.formField
                         <!-- body -->
                     <div class="modal-body">
