@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Artist;
+import models.ArtistFormData;
 import models.ArtistProfile;
 import play.data.Form;
 import play.data.FormFactory;
@@ -33,6 +34,7 @@ public class ArtistController extends Controller {
     private final ArtistRepository artistRepository;
     private final ProfileRepository profileRepository;
     private final GenreRepository genreRepository;
+    private final Form<ArtistFormData> searchForm;
 
 
     @Inject
@@ -45,6 +47,7 @@ public class ArtistController extends Controller {
         this.artistRepository = artistRepository;
         this.profileRepository = profileRepository;
         this.genreRepository = genreRepository;
+        this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
     }
 
 
@@ -57,8 +60,12 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
+    }
+
+    public CompletionStage<Result> search(){
+        return null;
     }
 
 

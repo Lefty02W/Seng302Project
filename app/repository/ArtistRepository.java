@@ -116,12 +116,12 @@ public class ArtistRepository {
      * @return Artist that has had genre and country added
      */
     private Artist populateArtist(Artist artist) {
-        Map<Integer, PassportCountry> countries = new HashMap<>();
-        Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
-        if (countryMap.isPresent()) {
-            countries = countryMap.get();
-        }
-        artist.setCountry(countries);
+        //Map<Integer, PassportCountry> countries = new HashMap<>();
+        //Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
+        //if (countryMap.isPresent()) {
+         //   countries = countryMap.get();
+       // }
+       // artist.setCountry(countries);
         //TODO fix below function
        // artist.setGenre(genreRepository.getArtistGenres(artist.getArtistId()));
         return artist;
