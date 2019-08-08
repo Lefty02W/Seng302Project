@@ -582,7 +582,7 @@
                                                 <td>@artist.getCountrys</td>
                                                 <td>Fill after push</td>
                                                 <td><a href=""><button class="btn btn-primary">Edit</button></a></td>
-                                                <td><a href="@routes.AdminController.deleteArtist(artist.getArtistId)"><button class="btn btn-danger">Delete</button></a></td>
+                                                <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
                                                 <td><a href=""><button class="btn btn-primary">View</button></a></td>
                                             </tr>
                                         }
