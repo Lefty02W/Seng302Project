@@ -199,4 +199,9 @@ public class ArtistRepository {
         return new ArrayList<>(ebeanServer.find(Artist.class)
                 .where().eq("verified", 0).findList());
     }
+
+    public List<PassportCountry> getArtistCounties(int artistId) {
+        return new ArrayList<>(ebeanServer.find(PassportCountry.class)
+            .where().eq("artist_id", artistId).findList());
+    }
 }

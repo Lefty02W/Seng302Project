@@ -566,12 +566,10 @@
                                                 <td>@artist.getArtistName</td>
 
                                                 <td>
-                                                @if(artist.getCountryList.isEmpty) {
+                                                @if(artist.getCountryListString.isEmpty) {
                                                     -
                                                 } else {
-                                                    @for(index <- 0 until artist.getCountryList.size) {
-                                                        @artist.getCountryList.get(index)
-                                                    }
+                                                    artist.getCountryListString();
                                                 }
                                                 </td>
                                                 <td><a href="/admin/artist/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>

@@ -1,14 +1,12 @@
 package models;
 
 import play.data.validation.Constraints;
+import repository.ArtistRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 public class Artist {
@@ -118,6 +116,18 @@ public class Artist {
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    public String getCountryListString() {
+        ArrayList<String> listOfCountries = getCountryList();
+        String countryNameStrings = "";
+        for (String countryName : listOfCountries) {
+            countryNameStrings += countryName + ", ";
+        }
+        return countryNameStrings;
+    }
 
     //Getters and setters
 

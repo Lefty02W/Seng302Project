@@ -1,7 +1,6 @@
 package controllers;
 
-import models.Artist;
-import models.ArtistProfile;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -11,11 +10,15 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.ArtistRepository;
 import repository.GenreRepository;
+import repository.PassportCountryRepository;
 import repository.ProfileRepository;
 import utility.Country;
 import views.html.artists;
 
 import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -32,18 +35,21 @@ public class ArtistController extends Controller {
     private final HttpExecutionContext httpExecutionContext;
     private final ArtistRepository artistRepository;
     private final ProfileRepository profileRepository;
+    private final PassportCountryRepository passportCountryRepository;
     private final GenreRepository genreRepository;
 
 
     @Inject
     public ArtistController(FormFactory artistProfileFormFactory, HttpExecutionContext httpExecutionContext,
                             MessagesApi messagesApi, ArtistRepository artistRepository, ProfileRepository profileRepository,
+                            PassportCountryRepository passportCountryRepository,
                             GenreRepository genreRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
         this.profileRepository = profileRepository;
+        this.passportCountryRepository = passportCountryRepository;
         this.genreRepository = genreRepository;
     }
 
@@ -56,6 +62,8 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
+        List<Artist> artistList = artistRepository.getInvalidArtists();
+        loadCountries(artistList);
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
@@ -98,6 +106,26 @@ public class ArtistController extends Controller {
         }
         return supplyAsync(() -> redirect("/artists").flashing("info", "Artist Profile save failed"));
     }
+
+    /**
+     * Takes in a list of artists and loads (sets) countries into each of them.
+     * Used for displaying the artist countries
+     *
+     * @param artistList
+     * @return the same list of artists set with countries
+     */
+    private List<Artist> loadCountries(List<Artist> artistList) {
+        for (Artist artist : artistList) {
+            List<PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
+            Map<Integer, PassportCountry> countriesMap = new HashMap<>();
+            for (PassportCountry i : passportCountries) {
+                countriesMap.put(i.getPassportId(), i);
+            }
+            artist.setCountry(countriesMap);
+        }
+        return artistList;
+    }
+
 
     /**
      * Method for user to delete their artist profile
