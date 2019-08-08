@@ -7,9 +7,7 @@ import play.db.ebean.Transactional;
 import utility.Country;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -376,7 +374,14 @@ public class ArtistRepository {
     }
 
     public List<PassportCountry> getArtistCounties(int artistId) {
-        return new ArrayList<>(ebeanServer.find(PassportCountry.class)
-                .where().eq("artist_id", artistId).findList());
+         List<ArtistCountry> artistCountries = ebeanServer.find(ArtistCountry.class)
+                .where().eq("artist_id", artistId).findList();
+
+         List<PassportCountry> passportCountries = new ArrayList<>();
+         for (ArtistCountry artistCountry: artistCountries) {
+             passportCountries.add(ebeanServer.find(PassportCountry.class)
+             .where().eq("passport_country_id", artistCountry.getArtistCountryId()).findOne());
+         }
+         return passportCountries;
     }
 }

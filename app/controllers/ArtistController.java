@@ -151,7 +151,8 @@ public class ArtistController extends Controller {
             List<PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
             Map<Integer, PassportCountry> countriesMap = new HashMap<>();
             for (PassportCountry i : passportCountries) {
-                countriesMap.put(i.getPassportId(), i);
+                //Todo fix this
+                countriesMap.put(1, i);
             }
             artist.setCountry(countriesMap);
         }

@@ -66,6 +66,29 @@ public class Artist extends Model {
      * @param spotifyLink
      * @param twitterLink
      * @param websiteLink
+     */
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, int softDelete) {
+        this.artistId = artistId;
+        this.artistName = artistName;
+        this.biography = biography;
+        this.facebookLink = facebookLink;
+        this.instagramLink = instagramLink;
+        this.spotifyLink = spotifyLink;
+        this.twitterLink = twitterLink;
+        this.websiteLink = websiteLink;
+        this.softDelete = softDelete;
+    }
+
+    /**
+     * Traditional constructor used for retrieving object from DB
+     * @param artistId
+     * @param artistName
+     * @param biography
+     * @param facebookLink
+     * @param instagramLink
+     * @param spotifyLink
+     * @param twitterLink
+     * @param websiteLink
      * @param adminsList
      * @param country
      */
