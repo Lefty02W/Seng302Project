@@ -4,7 +4,8 @@
         destinations: List[Destination], profile: RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
-        countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+        countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
+        artists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -64,7 +65,6 @@
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
                     <div id="pageTitle">
                         <h2>Admin</h2>
-                            <!-- TODO align this in the center -->
                     </div>
                 </nav>
 
@@ -295,6 +295,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#treasureHunts" role="tab" aria-controls="deals" aria-selected="false">
                                     Treasure Hunts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#artists" role="tab" aria-controls="deals" aria-selected="false">
+                                    Artists</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#artistRequests" role="tab" aria-controls="deals" aria-selected="false">
@@ -550,6 +554,38 @@
                             </div>
 
 
+                            <div class="tab-pane" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                                <div class="row">
+                                    <table id="artistsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ArtistID</th>
+                                                <th>Name</th>
+                                                <th>Biography</th>
+                                                <th>Countries</th>
+                                                <th>Admins</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        @for(artist <- artists) {
+                                            <tr>
+                                                <td>@artist.getArtistId</td>
+                                                <td>@artist.getArtistName</td>
+                                                <td>@artist.getBiography</td>
+                                                <td>@artist.getCountrys</td>
+                                                <td>Fill after push</td>
+                                                <td><a href=""><button class="btn btn-primary">Edit</button></a></td>
+                                                <td><a href=""><button class="btn btn-danger">Delete</button></a></td>
+                                                <td><a href=""><button class="btn btn-primary">View</button></a></td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+
+
                             <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
                                 <div class="row">
                                     <table id="artistRequestsTable" class="table table-striped">
@@ -558,7 +594,7 @@
                                                 <th>ArtistID</th>
                                                 <th>Name</th>
                                                 <th>Biography</th>
-                                                <th>Country</th>
+                                                <th>Countries</th>
                                                 <th>Verify</th>
                                                 <th>Decline</th>
                                             </tr>
@@ -687,6 +723,14 @@
 
             $(document).ready(function () {
                 $('#artistRequestsTable').DataTable({
+                    "searching": false,
+                    "pageLength": 8,
+                    "lengthChange": false
+                });
+            });
+
+            $(document).ready(function () {
+                $('#artistsTable').DataTable({
                     "searching": false,
                     "pageLength": 8,
                     "lengthChange": false
