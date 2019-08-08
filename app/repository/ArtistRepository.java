@@ -1,14 +1,12 @@
 package repository;
 
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import io.ebean.SqlQuery;
-import io.ebean.SqlRow;
+import io.ebean.*;
 import models.Artist;
 import models.ArtistCountry;
 import models.ArtistProfile;
 import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
+import play.db.ebean.Transactional;
 import utility.Country;
 
 import javax.inject.Inject;
@@ -237,6 +235,40 @@ public class ArtistRepository {
     public List<Artist> getInvalidArtists(){
         return new ArrayList<>(ebeanServer.find(Artist.class)
                 .where().eq("verified", 0).findList());
+    }
+
+
+    /**
+     *
+     * @param artistId
+     * @param newArtist
+     * @return
+     */
+    public CompletionStage<Integer> editArtistProfile(Integer artistId, Artist newArtist) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Artist targetArtist = ebeanServer.find(Artist.class).setId(artistId).findOne();
+            if (targetArtist != null) {
+                targetArtist.setArtistName(newArtist.getArtistName());
+                targetArtist.setBiography(newArtist.getBiography());
+                targetArtist.setFacebookLink(newArtist.getFacebookLink());
+                targetArtist.setSpotifyLink(newArtist.getSpotifyLink());
+                targetArtist.setWebsiteLink(newArtist.getWebsiteLink());
+                targetArtist.setWebsiteLink(newArtist.getWebsiteLink());
+                targetArtist.setTwitterLink(newArtist.getTwitterLink());
+                targetArtist.update();
+                txn.commit();
+//                artistCountryRepository.removeAll(artistId);
+//                for (String artistCountry : newArtist.getCountryList()) {
+//                    artistCountryRepository.insertCountry(new Country(artistCountry), artistId);
+//                }
+//                genreRepository.removeAll(artistId);
+//                for (String genreId : newArtist.getGenreList()) {
+//                    genreRepository.insertArtistGenre(artistId, genreId);
+//                }
+            }
+            return artistId;
+        });
     }
 
     /**

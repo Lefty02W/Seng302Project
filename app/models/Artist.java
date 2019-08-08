@@ -1,5 +1,6 @@
 package models;
 
+import io.ebean.Model;
 import play.data.validation.Constraints;
 import repository.PassportCountryRepository;
 
@@ -9,7 +10,7 @@ import javax.persistence.Transient;
 import java.util.*;
 
 @Entity
-public class Artist {
+public class Artist extends Model {
 
     @Id
     private Integer artistId;
