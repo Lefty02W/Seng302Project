@@ -342,4 +342,30 @@ public class ArtistRepository {
 
         return foundArtists;
     }
+
+
+
+    /**
+     * sets soft delete for a profile which eather deletes it or
+     * undoes the delete
+     * @param artistId The ID of the profile to soft delete
+     * @param value, the value softDelete is to be set to
+     * @return
+     */
+    public CompletionStage<Integer> setSoftDelete(int artistId, int value) {
+        return supplyAsync(() -> {
+            try {
+                Artist targetArtist = ebeanServer.find(Artist.class).setId(artistId).findOne();
+                if (targetArtist != null) {
+                    targetArtist.setSoftDelete(value);
+                    targetArtist.update();
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } catch(Exception e) {
+                return 0;
+            }
+        }, executionContext);
+    }
 }

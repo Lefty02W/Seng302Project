@@ -627,4 +627,20 @@ public class AdminController {
         }
         return supplyAsync(() -> redirect("/admin").flashing("info", "Artist Profile save failed"));
     }
+
+
+    /**
+     * Method to soft delete artist, append to stack and redirect to the admin page.
+     * @param request
+     * @return redirect to admin page with flashing
+     */
+    public CompletionStage<Result> deleteArtist(Http.Request request, Integer artistId) {
+
+        //todo add artists to the stack and raplace trip with artist
+        undoStackRepository.addToStack(new UndoStack("artist", artistId, SessionController.getCurrentUserId(request)));
+        return artistRepository.setSoftDelete(artistId, 1).thenApplyAsync(x -> redirect(adminEndpoint)
+            .flashing("info", "Artist: " + artistId + " deleted")
+        );
+    }
+
 }
