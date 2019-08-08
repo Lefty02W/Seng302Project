@@ -1,0 +1,79 @@
+@import play.mvc.Http
+@(currentUser: Profile, genre: MusicGenre, members: List[Profile], country: String, artist: Artist)(implicit request: Http.Request, messages: play.i18n.Messages)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <head>
+            <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
+            <title>TravelEA | Artists</title>
+
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/dataTables.bootstrap4.css")">
+
+            <script src="@routes.Assets.at("javascripts/jquery-3.3.1.js")" type="text/javascript"></script>
+            <script src="@routes.Assets.at("javascripts/bootstrap.bundle.js")" type="text/javascript"></script>
+            <script src="@routes.Assets.at("javascripts/bootstrap-select.js")" type="text/javascript"></script>
+            <script src="@routes.Assets.at("javascripts/jquery.dataTables.js")" type="text/javascript"></script>
+            <script src="@routes.Assets.at("javascripts/dataTables.bootstrap4.js")" type="text/javascript"></script>
+            @* <script src="@routes.Assets.at("javascripts/bootstrap.js")" type="text/javascript"></script>*@
+
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
+            <link rel="stylesheet" href="@routes.Assets.at("stylesheets/artist.css")">
+        </head>
+<body>
+    <div class="d-flex toggled" id="wrapper">
+
+            <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <h2 class="sidebar-heading">TravelEA </h2>
+            <div class="list-group list-group-flush">
+                <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                    Profile</a>
+                <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    Destinations</a>
+                <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    Trips</a>
+                <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                    Travellers</a>
+                <a style="color: #ca6636" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/vinyl-record.png")"/>
+                    Artists</a>
+                <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
+                    Treasure Hunt</a>
+                @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                    <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                        Admin</a>
+                }
+                <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                    Logout</a>
+            </div>
+        </div>
+            <!-- /#sidebar-wrapper -->
+
+        <div id="page-content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                <div id="pageTitle">
+                    <h2>View Artist</h2>
+                </div>
+            </nav>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row">
+                <ul class="nav nav-tabs" id="viewArtistTabs">
+                    <li class="active"><a data-toggle="tab" href="#aboutTab" id="aboutTabLink">About</a></li>
+                    <li><a data-toggle="tab" href="#eventsTab" id="eventsTabLink">Destinations</a></li>
+                    <li><a data-toggle="tab" href="#membersTab" id="eventsTabLink">Destinations</a></li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
