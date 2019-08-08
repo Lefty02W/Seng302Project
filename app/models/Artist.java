@@ -66,7 +66,7 @@ public class Artist {
      * @param membersList
      * @param country
      */
-    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> membersList, Map<Integer, PassportCountry> country, int softDelete) {
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, int softDelete) {
         this.artistId = artistId;
         this.artistName = artistName;
         this.biography = biography;
@@ -75,7 +75,6 @@ public class Artist {
         this.spotifyLink = spotifyLink;
         this.twitterLink = twitterLink;
         this.websiteLink = websiteLink;
-        this.membersList = membersList;
         this.country = new HashMap<>();
         this.softDelete = softDelete;
     }

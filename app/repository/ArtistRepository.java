@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.SqlQuery;
 import io.ebean.SqlRow;
 import models.Artist;
 import models.ArtistCountry;
@@ -236,5 +237,77 @@ public class ArtistRepository {
     public List<Artist> getInvalidArtists(){
         return new ArrayList<>(ebeanServer.find(Artist.class)
                 .where().eq("verified", 0).findList());
+    }
+
+    /**
+     * Database method to query for an artist that match the search parameters
+     * @param name
+     * @param genre
+     * @param country
+     * @param followed
+     * @return
+     */
+    public List<Artist> searchArtist(String name, String genre, String country, int followed){
+        String queryString = "SELECT * FROM artist " +
+                "JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
+                "JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
+                "JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
+                "JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id";
+        boolean namePresent = false;
+        boolean genrePresent = false;
+        if (!name.equals("")){
+            queryString += "WHERE artist_name = ?";
+            namePresent = true;
+        }
+        if (!genre.equals("")){
+            if (namePresent){
+                queryString += "AND genre = ?";
+            } else {
+                queryString += "WHERE genre = ?";
+                genrePresent = true;
+            }
+        }
+        if (!country.equals("")){
+            if(namePresent || genrePresent){
+                queryString += "AND passport_name = ?";
+            } else {
+                queryString += "WHERE passport_name = ?";
+            }
+        }
+        SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
+        if (!name.equals("")){
+            sqlQuery.setParameter(1, name);
+        }
+        if (!genre.equals("")){
+            if (namePresent){
+                sqlQuery.setParameter(2,genre);
+            } else{
+                sqlQuery.setParameter(1, genre);
+            }
+        }
+        if (!country.equals("")){
+            if (namePresent && genrePresent){
+                sqlQuery.setParameter(3,country);
+            } else if (namePresent || genrePresent){
+                sqlQuery.setParameter(2,country);
+            } else {
+                sqlQuery.setParameter(1,country);
+            }
+        }
+
+        // TODO: 8/08/19 turn into another function
+        List<SqlRow> foundRows = sqlQuery.findList();
+        List<Artist> foundArtists = new ArrayList<>();
+        if (!foundRows.isEmpty()){
+            for (SqlRow sqlRow : foundRows){
+                foundArtists.add(populateArtist(new Artist(sqlRow.getInteger("artist_id"), sqlRow.getString("artist_name")
+                        , sqlRow.getString("biography"), sqlRow.getString("facebook_link")
+                        , sqlRow.getString("instagram_link"), sqlRow.getString("spotify_link")
+                        , sqlRow.getString("twitter_link"), sqlRow.getString("website_link")
+                        , sqlRow.getInteger("soft_delete"))));
+            }
+        }
+
+        return foundArtists;
     }
 }
