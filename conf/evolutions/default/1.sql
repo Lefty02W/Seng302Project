@@ -330,7 +330,7 @@ create table artist
 	website_link varchar(50) null,
 	soft_delete tinyint default '0' null,
 	verified int default '0' null,
-	memebrs varchar(100) not null,
+	members varchar(100) not null,
 	constraint artist_profile_artist_id_uindex
 		unique (artist_id)
 )

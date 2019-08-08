@@ -173,14 +173,14 @@ INSERT INTO music_genre (genre_Id, genre) VALUES
 INSERT INTO music_genre (genre_Id, genre) VALUES
   (4, 'Indie'); /* If you add any genres pls update the getAll Repo test as it expects only 4 genres*/
 
-INSERT INTO artist (artist_id, artist_name, biography) VALUES
-  (1, 'Mr Walsh', 'Mr Walsh');
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (1, 'Mr Walsh', 'Mr Walsh', 'walsh');
 
-INSERT INTO artist (artist_id, artist_name, biography) VALUES
-  (2, 'James', 'James');
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (2, 'James', 'James', 'james');
 
-INSERT INTO artist (artist_id, artist_name, biography) VALUES
-  (3, 'Jerry', 'Jerry');
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (3, 'Jerry', 'Jerry', 'jerry');
 
 INSERT INTO artist_genre (artist, genre) VALUES
   (1, 4);
