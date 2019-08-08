@@ -182,11 +182,11 @@ INSERT INTO artist (artist_id, artist_name, biography) VALUES
 INSERT INTO artist (artist_id, artist_name, biography) VALUES
   (3, 'Jerry', 'Jerry');
 
-INSERT INTO artist_genre (artist, genre) VALUES
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
 
-INSERT INTO artist_genre (artist, genre) VALUES
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 3);
 
-INSERT INTO artist_genre (artist, genre) VALUES
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (3, 1);
