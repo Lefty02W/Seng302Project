@@ -99,8 +99,11 @@ public class Artist {
     }
 
     /**
-     * Return the travellers types as a readable list
-     * @return Array of Strings of traveller types
+     * Return the countries as a readable list
+     * Used to generate a list of countries that are to be
+     * inserted into the artist_country database
+     *
+     * @return Array of Strings of country names
      */
     public ArrayList<String> getCountryList() {
         if (country != null) {
