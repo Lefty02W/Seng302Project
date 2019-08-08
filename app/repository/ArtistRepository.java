@@ -1,10 +1,7 @@
 package repository;
 
 import io.ebean.*;
-import models.Artist;
-import models.ArtistCountry;
-import models.ArtistProfile;
-import models.PassportCountry;
+import models.*;
 import play.db.ebean.EbeanConfig;
 import play.db.ebean.Transactional;
 import utility.Country;
@@ -189,6 +186,9 @@ public class ArtistRepository {
     public CompletionStage<Void> deleteArtist(int artistId) {
         return supplyAsync(() -> {
             ebeanServer.find(Artist.class).where().eq("artist_id", Integer.toString(artistId)).delete();
+            ebeanServer.find(ArtistCountry.class).where().eq("artist_id", Integer.toString(artistId)).delete();
+            ebeanServer.find(ArtistGenre.class).where().eq("artist_id", Integer.toString(artistId)).delete();
+            ebeanServer.find(ArtistProfile.class).where().eq("artist_id", Integer.toString(artistId)).delete();
             return null;
         });
     }
