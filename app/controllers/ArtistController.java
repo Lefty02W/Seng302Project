@@ -10,6 +10,7 @@ import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Security;
 import repository.ArtistRepository;
 import repository.GenreRepository;
 import repository.ProfileRepository;
@@ -64,10 +65,24 @@ public class ArtistController extends Controller {
 
     }
 
-    public CompletionStage<Result> search(){
-        return null;
+    /**
+     * Endpoint for searching an artist
+     * @param request client request
+     * @return CompletionStage rendering artist page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> search(Http.Request request){
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+                    if (profile.isPresent()) {
+                        Form<ArtistFormData> searchArtistForm = searchForm.bindFromRequest(request);
+                        ArtistFormData formData = searchArtistForm.get();
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, 0), request, messagesApi.preferred(request)));
+                    } else {
+                        return redirect("/artists");
+                    }
+        });
     }
-
 
     /**
      * Method to call repository method to save an Artist profile to the database

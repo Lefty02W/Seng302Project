@@ -273,42 +273,42 @@ public class ArtistRepository {
 
     /**
      * Database method to query for an artist that match the search parameters
-     * @param name
-     * @param genre
-     * @param country
-     * @param followed
-     * @return
+     * @param name name of artist
+     * @param genre Genre of artist to be searched
+     * @param country Country searched
+     * @param followed 1 or 0 if followed or not
+     * @return List of artists
      */
     public List<Artist> searchArtist(String name, String genre, String country, int followed){
         String queryString = "SELECT * FROM artist " +
                 "JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
                 "JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
                 "JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
-                "JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id";
+                "JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id ";
         boolean namePresent = false;
         boolean genrePresent = false;
         if (!name.equals("")){
-            queryString += "WHERE artist_name = ?";
+            queryString += "WHERE artist_name LIKE ? ";
             namePresent = true;
         }
         if (!genre.equals("")){
             if (namePresent){
-                queryString += "AND genre = ?";
+                queryString += "AND genre = ? ";
             } else {
-                queryString += "WHERE genre = ?";
+                queryString += "WHERE genre = ? ";
                 genrePresent = true;
             }
         }
         if (!country.equals("")){
             if(namePresent || genrePresent){
-                queryString += "AND passport_name = ?";
+                queryString += "AND passport_name = ? ";
             } else {
-                queryString += "WHERE passport_name = ?";
+                queryString += "WHERE passport_name = ? ";
             }
         }
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
-            sqlQuery.setParameter(1, name);
+            sqlQuery.setParameter(1, name+"%");
         }
         if (!genre.equals("")){
             if (namePresent){
@@ -339,7 +339,6 @@ public class ArtistRepository {
                         , sqlRow.getInteger("soft_delete"))));
             }
         }
-
         return foundArtists;
     }
 
