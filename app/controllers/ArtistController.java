@@ -77,6 +77,7 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> createArtist(Http.Request request){
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
+        Integer activeUserId = SessionController.getCurrentUserId(request);
         Optional<Artist> artistOpt = artistProfileForm.value();
         if (artistOpt.isPresent()){
             Artist artist = artistOpt.get();
@@ -93,6 +94,8 @@ public class ArtistController extends Controller {
                         ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
                         artistRepository.insertProfileLink(artistProfile);
                     }
+                    artistRepository.insertProfileLink(new ArtistProfile(activeUserId, artist.getArtistId()));
+
                     System.out.println("Added artist");
                     return redirect("/profile").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
                 } else {
