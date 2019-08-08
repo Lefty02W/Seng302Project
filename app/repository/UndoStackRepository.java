@@ -227,6 +227,7 @@ public class UndoStackRepository {
                 break;
             case "artist":
                 artistRepository.deleteArtist(command.getObjectId());
+                break;
             default:
                 break;
         }

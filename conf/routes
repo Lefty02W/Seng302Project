@@ -97,6 +97,7 @@ POST    /admin/hunts/:id/edit                   controllers.AdminController.edit
 GET    /admin/artist/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
 GET    /admin/artist/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
 POST   /admin/artist/create                    controllers.AdminController.createArtist(request : Request)
+GET    /admin/artist/:id/delete                controllers.AdminController.deleteArtist(request : Request, id : Integer)
 
 
 # Tresure Hunts

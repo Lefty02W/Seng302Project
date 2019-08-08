@@ -635,8 +635,6 @@ public class AdminController {
      * @return redirect to admin page with flashing
      */
     public CompletionStage<Result> deleteArtist(Http.Request request, Integer artistId) {
-
-        //todo add artists to the stack and raplace trip with artist
         undoStackRepository.addToStack(new UndoStack("artist", artistId, SessionController.getCurrentUserId(request)));
         return artistRepository.setSoftDelete(artistId, 1).thenApplyAsync(x -> redirect(adminEndpoint)
             .flashing("info", "Artist: " + artistId + " deleted")
