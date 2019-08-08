@@ -92,7 +92,9 @@
                             }
                         </select>
                         <select class="selectpicker" title="Genres">
-                            <option value="rock">Rock</option>
+                            @for(genre <- genres) {
+                                <option value="@genre">@genre.getGenre</option>
+                            }
                         </select>
                         <button class="btn btn-primary">Filter</button>
                     </div>
