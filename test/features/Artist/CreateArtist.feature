@@ -5,13 +5,12 @@ Feature: Create an artist page
 
   Scenario: Create an artist
     Given User is logged in to the application
-    And user is at the artist page
-    When user clicks on the add new artist button
-    And user enters "" for artist name
-    And user enters "" for artist genres
-    And user enters "" for artist members
-    And user enters "" for artist bio
-    And user enters "" for artist country
+    When user is at the artist page
+    And user enters "King Crimson" for artist name
+    And user enters "Progressive Rock" for artist genres
+    And user enters "Robert Frip" for artist members
+    And user enters "Some dudes, man" for artist bio
+    And user enters "United States of America" for artist country
     And user presses save artist
     Then the artist is saved in the database
 
