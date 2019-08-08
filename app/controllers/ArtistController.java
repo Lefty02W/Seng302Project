@@ -114,7 +114,7 @@ public class ArtistController extends Controller {
                 }
             });
         }
-        return supplyAsync(() -> redirect("/artists").flashing("info", "Artist Profile save failed"));
+        return supplyAsync(() -> redirect("/artists").flashing("error", "Artist Profile save failed"));
     }
 
     /**
