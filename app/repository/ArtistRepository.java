@@ -7,7 +7,9 @@ import play.db.ebean.Transactional;
 import utility.Country;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -27,7 +29,7 @@ public class ArtistRepository {
      * @param executionContext the database execution context object for this instance.
      */
     @Inject
-    public ArtistRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
+    public ArtistRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, PassportCountryRepository passportCountryRepository) {
 
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
@@ -57,6 +59,9 @@ public class ArtistRepository {
 
     /**
      * Inserts an Artist object into the ebean database server
+     * and checks if the selected countries are in the database,
+     * if they are not, the country is added to the database and added to
+     * the artist country linking table
      *
      * @param artist Artist object to insert into the database
      * @return the new Artist id
@@ -65,12 +70,17 @@ public class ArtistRepository {
         return supplyAsync(() -> {
 
             ebeanServer.insert(artist);
+
             // Adding artist countries to artist_country in the database
-            System.out.println("Checking for all the countrys in a list: " + artist.getCountryList());
-            for (Integer countryId : artist.getCountryList()) {
-                System.out.println("FROM THE INSERT: " + countryId);
+            for (String countryName : artist.getCountryList()) {
+                PassportCountry country = ebeanServer.find(PassportCountry.class)
+                        .where().eq("passport_name", countryName)
+                        .findOne();
+
+                if (country == null) { passportCountryRepository.insert(new PassportCountry(countryName)); }
+                Optional<Integer> passportCountryId = passportCountryRepository.getPassportCountryId(countryName);
                 supplyAsync(() -> {
-                    ebeanServer.insert(new ArtistCountry(artist.getArtistId(), countryId));
+                    ebeanServer.insert(new ArtistCountry(artist.getArtistId(), passportCountryId.get()));
                     return null;
                 });
             }
@@ -99,11 +109,8 @@ public class ArtistRepository {
      */
     public CompletionStage<Integer> insertProfileLink(ArtistProfile artistProfile) {
         return supplyAsync(() -> {
-
             ebeanServer.insert(artistProfile);
             return artistProfile.getAPArtistId();
-
-
         }, executionContext);
     }
 
@@ -171,7 +178,7 @@ public class ArtistRepository {
      */
     public CompletionStage<Void> setArtistAsVerified(int artistId) {
         return supplyAsync(() -> {
-            ebeanServer.update(Artist.class).set("verified", 1).where().eq("artist_id", Integer.toString(artistId));
+            ebeanServer.update(Artist.class).set("verified", 1).where().eq("artist_id", Integer.toString(artistId)).update();
             return null;
         });
     }
@@ -366,5 +373,10 @@ public class ArtistRepository {
                 return 0;
             }
         }, executionContext);
+    }
+
+    public List<PassportCountry> getArtistCounties(int artistId) {
+        return new ArrayList<>(ebeanServer.find(PassportCountry.class)
+                .where().eq("artist_id", artistId).findList());
     }
 }

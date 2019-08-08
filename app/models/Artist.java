@@ -2,7 +2,7 @@ package models;
 
 import io.ebean.Model;
 import play.data.validation.Constraints;
-import repository.PassportCountryRepository;
+import repository.ArtistRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -31,7 +31,9 @@ public class Artist extends Model {
 
     private String websiteLink;
 
-    private Collection<Profile> membersList;
+    private Collection<Profile> adminsList;
+
+    private String members;
 
     @Transient
     private Map<Integer, PassportCountry> country;
@@ -64,10 +66,10 @@ public class Artist extends Model {
      * @param spotifyLink
      * @param twitterLink
      * @param websiteLink
-     * @param membersList
+     * @param adminsList
      * @param country
      */
-    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, int softDelete) {
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> adminsList, Map<Integer, PassportCountry> country, int softDelete) {
         this.artistId = artistId;
         this.artistName = artistName;
         this.biography = biography;
@@ -76,6 +78,7 @@ public class Artist extends Model {
         this.spotifyLink = spotifyLink;
         this.twitterLink = twitterLink;
         this.websiteLink = websiteLink;
+        this.adminsList = adminsList;
         this.country = new HashMap<>();
         this.softDelete = softDelete;
     }
@@ -97,24 +100,48 @@ public class Artist extends Model {
     }
 
     /**
-     * Return the travellers types as a readable list
-     * @return Array of Strings of traveller types
+     * Return the countries as a readable list
+     * Used to generate a list of countries that are to be
+     * inserted into the artist_country database
+     *
+     * @return Array of Strings of country names
      */
-    public ArrayList<Integer> getCountryList() {
+    public ArrayList<String> getCountryList() {
         if (country != null) {
             ArrayList<PassportCountry> countryObjects = new ArrayList<>(country.values());
-            ArrayList<Integer> countryIdList = new ArrayList<>();
-            for (PassportCountry type : countryObjects) {
-                countryIdList.add(type.getPassportId());
+            ArrayList<String> countryList = new ArrayList<>();
+            for (PassportCountry passportCountry : countryObjects) {
+                countryList.add(passportCountry.getPassportName());
             }
-            return countryIdList;
+            return countryList;
         } else {
             return new ArrayList<>();
         }
     }
 
+    /**
+     * Method that gets the current artists countries from a list
+     * and concatenates them into a string for display
+     *
+     * @return a string of countries to be displayed
+     */
+    public String getCountryListString() {
+        ArrayList<String> listOfCountries = getCountryList();
+        String countryNameStrings = "";
+        for (String countryName : listOfCountries) {
+            countryNameStrings += countryName + ", ";
+        }
+        return countryNameStrings;
+    }
 
     //Getters and setters
+    public String getMembers() {
+        return members;
+    }
+
+    public void setMembers(String members) {
+        this.members = members;
+    }
 
     public void setGenre(List<MusicGenre> genre) { this.genreList = genre;}
 
@@ -186,12 +213,12 @@ public class Artist extends Model {
         this.websiteLink = websiteLink;
     }
 
-    public Collection<Profile> getMembersList() {
-        return membersList;
+    public Collection<Profile> getAdminsList() {
+        return adminsList;
     }
 
-    public void setMembersList(Collection<Profile> membersList) {
-        this.membersList = membersList;
+    public void setAdminsList(Collection<Profile> adminsList) {
+        this.adminsList = adminsList;
     }
 
     public Map<Integer, PassportCountry> getCountry() {

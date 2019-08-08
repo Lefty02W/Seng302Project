@@ -320,8 +320,7 @@ create table if not exists undo_stack
 
 create table artist
 (
-	artist_id int auto_increment
-		primary key,
+	artist_id int auto_increment,
 	artist_name varchar(30) not null,
 	biography varchar(255) not null,
 	facebook_link varchar(50) null,
@@ -331,10 +330,40 @@ create table artist
 	website_link varchar(50) null,
 	soft_delete tinyint default '0' null,
 	verified int default '0' null,
+	members varchar(100) not null,
 	constraint artist_profile_artist_id_uindex
 		unique (artist_id)
 )
 ;
+
+alter table artist
+	add primary key (artist_id)
+;
+
+
+create table artist_profile
+(
+	artist_id int not null,
+	profile_id int null,
+	constraint artist_profile__artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_profile_profile__fk
+		foreign key (profile_id) references profile (profile_id)
+			on update cascade on delete cascade
+)
+;
+
+create index artist_profile__artist_fk
+	on artist_profile (artist_id)
+;
+
+create index artist_profile_profile__fk
+	on artist_profile (profile_id)
+;
+
+
+
 
 create table music_genre
 (
@@ -428,3 +457,5 @@ drop table if exists artist;
 drop table if exists artist_genre;
 
 drop table if exists music_genre;
+
+drop table if exists artist_profile;
