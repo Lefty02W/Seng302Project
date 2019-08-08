@@ -52,11 +52,8 @@ public class ArtistRepository {
     public CompletionStage<Integer> insert(Artist artist) {
         return supplyAsync(() -> {
 
-            try {
-                ebeanServer.insert(artist);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ebeanServer.insert(artist);
+
             // Adding artist countries to artist_country in the database
             for (String countryName : artist.getCountryList()) {
                 PassportCountry country = ebeanServer.find(PassportCountry.class)
@@ -95,11 +92,8 @@ public class ArtistRepository {
      */
     public CompletionStage<Integer> insertProfileLink(ArtistProfile artistProfile) {
         return supplyAsync(() -> {
-
             ebeanServer.insert(artistProfile);
             return artistProfile.getAPArtistId();
-
-
         }, executionContext);
     }
 

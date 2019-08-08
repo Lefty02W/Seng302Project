@@ -1,4 +1,4 @@
-@import play.mvc.Http
+@@import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
@@ -133,11 +133,11 @@
                                         </select>
                                     </div>
                                     <div class="row justify-content-center">
-                                        <label>Artist Admins*</label>
+                                        <label>Artist Admins</label>
                                     </div>
                                     <div class="row justify-content-center">
                                         <div class="hidden-div-edit">
-                                            <input type="text" id="adminForm" name="adminForm" class="hidden-field" required>
+                                            <input type="text" id="adminForm" name="adminForm" class="hidden-field">
                                         </div>
                                         <select class="selectpicker" data-live-search="true" multiple title="Artist Admins" id="adminDropdown" data-width="50%">
                                             @for(profile <- profiles) {
@@ -175,7 +175,7 @@
                                 </div>
                             </div>
                             <div class="row justify-content-center">
-                                <textarea id="biography" rows="4" placeholder="Biography" name="biography" required oninvalid="this.setCustomValidity('Biography is required')" oninput="setCustomValidity('')"></textarea>
+                                <textarea id="biography" rows="4" placeholder="Biography*" name="biography" required oninvalid="this.setCustomValidity('Biography is required')" oninput="setCustomValidity('')"></textarea>
                             </div>
                             <div class="row justify-content-center">
                                 <small>Fields with a * are required</small>

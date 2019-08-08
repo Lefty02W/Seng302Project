@@ -1,6 +1,8 @@
 package controllers;
 
-import models.*;
+import models.Artist;
+import models.ArtistProfile;
+import models.PassportCountry;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -88,12 +90,20 @@ public class ArtistController extends Controller {
                 if (!x) {
                     artistRepository.insert(artist).thenApplyAsync(artistId -> {
                         Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
-                        //Insert ArtistProfiles for new Artist.
                         if (optionalProfiles.isPresent()) {
-                            for (String profileIdString: optionalProfiles.get().split(",")){
-                                Integer profileId = parseInt(profileIdString);
-                                ArtistProfile artistProfile = new ArtistProfile(profileId, artistId);
-                                artistRepository.insertProfileLink(artistProfile);
+                            if (!optionalProfiles.get().isEmpty()) {
+                                for (String profileIdString: optionalProfiles.get().split(",")){
+                                    Integer profileId = parseInt(profileIdString);
+                                    ArtistProfile artistProfile = new ArtistProfile(artistId, profileId);
+                                    artistRepository.insertProfileLink(artistProfile);
+                                }
+                            }
+                        }
+                        artistRepository.insertProfileLink(new ArtistProfile(SessionController.getCurrentUserId(request), artistId));
+                        Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
+                        if (optionalGenres.isPresent()) {
+                            for (String genre: optionalGenres.get().split(",")) {
+                                genreRepository.insertArtistGenre(artistId, parseInt(genre));
                             }
                         }
                         return null;

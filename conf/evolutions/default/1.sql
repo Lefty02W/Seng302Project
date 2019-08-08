@@ -341,6 +341,29 @@ alter table artist
 ;
 
 
+create table artist_profile
+(
+	artist_id int not null,
+	profile_id int null,
+	constraint artist_profile__artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_profile_profile__fk
+		foreign key (profile_id) references profile (profile_id)
+			on update cascade on delete cascade
+)
+;
+
+create index artist_profile__artist_fk
+	on artist_profile (artist_id)
+;
+
+create index artist_profile_profile__fk
+	on artist_profile (profile_id)
+;
+
+
+
 
 create table music_genre
 (
@@ -434,3 +457,5 @@ drop table if exists artist;
 drop table if exists artist_genre;
 
 drop table if exists music_genre;
+
+drop table if exists artist_profile;

@@ -11,11 +11,11 @@ import javax.persistence.Entity;
 public class ArtistGenre {
 
 
-    private int artist;
-    private int genre;
+    private int artistId;
+    private int genreId;
 
-    public ArtistGenre(int artist, int genre) {
-        this.artist = artist;
-        this.genre = genre;
+    public ArtistGenre(int artistId, int genreId) {
+        this.artistId = artistId;
+        this.genreId = genreId;
     }
 }
