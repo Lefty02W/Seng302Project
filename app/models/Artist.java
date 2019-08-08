@@ -117,8 +117,10 @@ public class Artist {
     }
 
     /**
+     * Method that gets the current artists countries from a list
+     * and concatenates them into a string for display
      *
-     * @return
+     * @return a string of countries to be displayed
      */
     public String getCountryListString() {
         ArrayList<String> listOfCountries = getCountryList();
@@ -130,8 +132,6 @@ public class Artist {
     }
 
     //Getters and setters
-
-
     public String getMembers() {
         return members;
     }

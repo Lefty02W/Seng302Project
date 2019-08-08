@@ -555,7 +555,7 @@
                                             <tr>
                                                 <th>ArtistID</th>
                                                 <th>Name</th>
-                                                <th>Country</th>
+                                                <th>Members</th>
                                                 <th>Verify</th>
                                                 <th>Decline</th>
                                             </tr>
@@ -564,14 +564,7 @@
                                             <tr>
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
-
-                                                <td>
-                                                @if(artist.getCountryListString.isEmpty) {
-                                                    -
-                                                } else {
-                                                    artist.getCountryListString();
-                                                }
-                                                </td>
+                                                <td>@artist.getMembers</td>
                                                 <td><a href="/admin/artist/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>
                                                 <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/artist/decline/@artist.getArtistId')">Decline</button></td>
                                             </tr>
