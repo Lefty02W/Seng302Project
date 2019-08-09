@@ -1,15 +1,19 @@
 package controllers.steps.Admin;
 
 
-import controllers.ProvideApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
+import play.Application;
+import play.Mode;
+import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import play.test.WithApplication;
+import repository.RolesRepository;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +26,17 @@ import static org.junit.Assert.*;
 /**
  * Implements steps for testing access admin page
  */
-public class AccessAdminSteps extends ProvideApplication {
+public class AccessAdminSteps extends WithApplication {
     private String urlString;
     private Result adminResult;
     private Map<String, String> loginForm = new HashMap<>();
     private Result loginResult;
     private Result adminAttemptResult;
+
+    @Override
+    public Application provideApplication() {
+        return new GuiceApplicationBuilder().in(Mode.TEST).build();
+    }
 
 
     @Given("I am logged into the application as a non admin")
@@ -116,8 +125,7 @@ public class AccessAdminSteps extends ProvideApplication {
 
     @Then("User {int} is not made an admin")
     public void userIsNotMadeAnAdmin(int arg0) throws Throwable {
-        injectRepositories();
-        Optional<List<String>> roles = rolesRepository.getProfileRoles(1);
+        Optional<List<String>> roles = provideApplication().injector().instanceOf(RolesRepository.class).getProfileRoles(1);
         if (roles.isPresent()) {
             if (roles.get().size() == 0) {
                 assertTrue(true);
@@ -127,5 +135,6 @@ public class AccessAdminSteps extends ProvideApplication {
         } else {
             assertTrue(true);
         }
+        stopPlay();
     }
 }

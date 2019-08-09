@@ -2,8 +2,6 @@ package controllers;
 
 import models.Destination;
 import models.Profile;
-import org.junit.After;
-import org.junit.Before;
 import play.Application;
 import play.Mode;
 import play.inject.guice.GuiceApplicationBuilder;
@@ -36,23 +34,6 @@ public class ProvideApplication extends WithApplication {
     @Override
     public Application provideApplication() {
         return new GuiceApplicationBuilder().in(Mode.TEST).build();
-    }
-
-    @Before
-    public void startApplication() {
-        System.out.println("start");
-        app = provideApplication();
-        Helpers.start(app);
-        mat = app.asScala().materializer();
-    }
-
-    @After
-    public void stopApplication() {
-        System.out.println("stop");
-        if (app != null) {
-            Helpers.stop(app);
-            app = null;
-        }
     }
 
 
@@ -98,6 +79,7 @@ public class ProvideApplication extends WithApplication {
     }
 
     protected void injectRepositories() {
+        app = provideApplication();
         treasureHuntRepository = app.injector().instanceOf(TreasureHuntRepository.class);
         rolesRepository = app.injector().instanceOf(RolesRepository.class);
         tripRepository = app.injector().instanceOf(TripRepository.class);
