@@ -277,10 +277,15 @@
     </div>
 
     <script>
-                    function fillValsArtist() {
-                        $('#genreForm').val($('#genreDropdown').val());
-                        $('#adminForm').val($('#adminDropdown').val());
-                        $('#countries').val($('#originDropdown').val());
-                    }
-            </script>
+            function fillValsArtist() {
+                $('#genreForm').val($('#genreDropdown').val());
+                $('#adminForm').val($('#adminDropdown').val());
+                $('#countries').val($('#originDropdown').val());
+            }
+
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+    </script>
 </html>
