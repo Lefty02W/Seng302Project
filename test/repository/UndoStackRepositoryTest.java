@@ -1,21 +1,20 @@
 package repository;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import models.Profile;
 import models.UndoStack;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import java.util.Date;
-import java.util.List;
 
-
-public class UndoStackRepositoryTest extends ProvideApplication {
+public class UndoStackRepositoryTest {
 
     @Before
     public void clearStack() {
-        injectRepositories();
-        undoStackRepository.clearStack(1);
-        undoStackRepository.clearStack(2);
+        TestApplication.getUndoStackRepository().clearStack(1);
+        TestApplication.getUndoStackRepository().clearStack(2);
     }
 
 
@@ -26,8 +25,8 @@ public class UndoStackRepositoryTest extends ProvideApplication {
      */
     @Ignore
     private Profile getProfile(Integer id) {
-        Profile profile = profileRepository.getProfileByProfileId(id);
-        profile.setRoles(rolesRepository.getProfileRoles(id).get());
+        Profile profile = TestApplication.getProfileRepository().getProfileByProfileId(id);
+        profile.setRoles(TestApplication.getRolesRepository().getProfileRoles(id).get());
         return profile;
     }
 
@@ -39,10 +38,10 @@ public class UndoStackRepositoryTest extends ProvideApplication {
     @Test
     @Ignore
     public void nonAdminClearStack() {
-        UndoStack undoDest = undoStackRepository.getStackItem(3);
-        undoStackRepository.addToStack(undoDest);
-        undoStackRepository.clearStackOnAllowed(getProfile(undoDest.getProfileId()));
-        Assert.assertFalse(undoStackRepository.getUsersStack(undoDest.getProfileId()).isEmpty());
+        UndoStack undoDest = TestApplication.getUndoStackRepository().getStackItem(3);
+        TestApplication.getUndoStackRepository().addToStack(undoDest);
+        TestApplication.getUndoStackRepository().clearStackOnAllowed(getProfile(undoDest.getProfileId()));
+        Assert.assertFalse(TestApplication.getUndoStackRepository().getUsersStack(undoDest.getProfileId()).isEmpty());
     }
 
 
@@ -53,10 +52,10 @@ public class UndoStackRepositoryTest extends ProvideApplication {
     @Ignore
     public void adminClearStack() {
         UndoStack undoDest = new UndoStack("destination", 2, 2);
-        undoStackRepository.addToStack(undoDest);
-        undoStackRepository.clearStackOnAllowed(getProfile(2));
+        TestApplication.getUndoStackRepository().addToStack(undoDest);
+        TestApplication.getUndoStackRepository().clearStackOnAllowed(getProfile(2));
 
-        Assert.assertTrue(undoStackRepository.getUsersStack(2).isEmpty());
+        Assert.assertTrue(TestApplication.getUndoStackRepository().getUsersStack(2).isEmpty());
     }
 
 
@@ -66,10 +65,9 @@ public class UndoStackRepositoryTest extends ProvideApplication {
     @Test
     @Ignore
     public void addToStack() {
-
-        UndoStack undoDest = undoStackRepository.getStackItem(2);
-        undoStackRepository.addToStack(undoDest);
-        Assert.assertFalse(undoStackRepository.getUsersStack(undoDest.getProfileId()).isEmpty());
+        UndoStack undoDest = TestApplication.getUndoStackRepository().getStackItem(2);
+        TestApplication.getUndoStackRepository().addToStack(undoDest);
+        Assert.assertFalse(TestApplication.getUndoStackRepository().getUsersStack(undoDest.getProfileId()).isEmpty());
     }
 
 
@@ -80,9 +78,9 @@ public class UndoStackRepositoryTest extends ProvideApplication {
     @Ignore
     public void removeFromStack() {
         UndoStack undoDest = new UndoStack("destination", 3, 1);
-        undoStackRepository.addToStack(undoDest);
-        undoStackRepository.removeItem(undoDest);
-        Assert.assertTrue(undoStackRepository.getUsersStack(undoDest.getProfileId()).isEmpty());
+        TestApplication.getUndoStackRepository().addToStack(undoDest);
+        TestApplication.getUndoStackRepository().removeItem(undoDest);
+        Assert.assertTrue(TestApplication.getUndoStackRepository().getUsersStack(undoDest.getProfileId()).isEmpty());
     }
 
 
@@ -92,11 +90,9 @@ public class UndoStackRepositoryTest extends ProvideApplication {
     @Test
     @Ignore
     public void adminCanClearStack() {
-        injectRepositories();
-
         UndoStack undoDest = new UndoStack("destination", 4, 2);
-        undoStackRepository.addToStack(undoDest);
-        Assert.assertTrue(undoStackRepository.canClearStack(getProfile(2)));
+        TestApplication.getUndoStackRepository().addToStack(undoDest);
+        Assert.assertTrue(TestApplication.getUndoStackRepository().canClearStack(getProfile(2)));
     }
 
 
@@ -107,7 +103,7 @@ public class UndoStackRepositoryTest extends ProvideApplication {
     @Ignore
     public void nonAdminCanClearStack() {
         UndoStack undoDest = new UndoStack("destination", 5, 1);
-        undoStackRepository.addToStack(undoDest);
-        Assert.assertFalse(undoStackRepository.canClearStack(getProfile(1)));
+        TestApplication.getUndoStackRepository().addToStack(undoDest);
+        Assert.assertFalse(TestApplication.getUndoStackRepository().canClearStack(getProfile(1)));
     }
 }

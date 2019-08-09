@@ -1,6 +1,6 @@
 package controllers.steps.Admin;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -9,10 +9,9 @@ import play.mvc.Result;
 import play.test.Helpers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-public class AdminDeleteHuntSteps extends ProvideApplication {
+public class AdminDeleteHuntSteps {
 
     private Result result;
 
@@ -22,7 +21,7 @@ public class AdminDeleteHuntSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/hunts/" + arg0 + "/delete")
                 .session("connected", "2");
-        result = Helpers.route(provideApplication(), request);
+        result = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^I am be redirected back to the admin page$")
@@ -36,7 +35,6 @@ public class AdminDeleteHuntSteps extends ProvideApplication {
 
     @And("^The treasure hunt is deleted from the database$")
     public void theTreasureHuntIsDeletedFromTheDatabase() throws Throwable {
-        injectRepositories();
-        //System.out.println(treasureHuntRepository.lookup(4));
+        //System.out.println(TestApplication.getTreasureHuntRepository.lookup(4));
     }
 }
