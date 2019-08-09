@@ -1,6 +1,6 @@
 package utilities;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import models.PassportCountry;
 import models.Profile;
 import org.junit.Assert;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CountryUtilityTest extends ProvideApplication {
+public class CountryUtilityTest {
 
 
     /**
@@ -58,7 +58,6 @@ public class CountryUtilityTest extends ProvideApplication {
      */
     @Test
     public void checkUserOutdatedCountries() {
-        injectRepositories();
 
         List<String> testCountries = new ArrayList<String>();
         testCountries.add("Yugoslavia");
@@ -71,7 +70,7 @@ public class CountryUtilityTest extends ProvideApplication {
             testMap.put(i, new PassportCountry(i, testCountries.get(i)));
         }
 
-        Profile profile = profileRepository.getProfileByProfileId(1);
+        Profile profile = TestApplication.getProfileRepository().getProfileByProfileId(1);
         profile.setPassports(testMap);
 
         Assert.assertEquals(testCountries, Country.getInstance().getUserOutdatedCountries(profile));

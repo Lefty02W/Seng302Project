@@ -1,7 +1,7 @@
 package controllers.steps.Profile;
 
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 /**
  * This class provides the steps need to test the EditProfile feature
  */
-public class EditProfileSteps extends ProvideApplication {
+public class EditProfileSteps {
 
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> editForm = new HashMap<>();
@@ -39,7 +39,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .uri("/login")
                 .bodyForm(loginForm);
 
-        loginResult = Helpers.route(provideApplication(), request);
+        loginResult = Helpers.route(TestApplication.getApplication(), request);
 
     }
 
@@ -87,7 +87,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .bodyForm(editForm)
                 .session("connected", "1");
 
-        redirectResultEdit = Helpers.route(provideApplication(), request);
+        redirectResultEdit = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("I am redirected to my profile page")
@@ -102,8 +102,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("My new profile data is saved")
     public void myNewProfileDataIsSaved() {
-        injectRepositories();
-        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
+        TestApplication.getProfileRepository().findById(1).thenApplyAsync(profileOpt -> {
             if (profileOpt.isPresent()) {
                 assertEquals("Jenny", profileOpt.get().getFirstName());
                 assertEquals("Backpacker, Thrillseeker", profileOpt.get().getTravellerTypesString());
@@ -130,7 +129,7 @@ public class EditProfileSteps extends ProvideApplication {
                 .session("connected", "1");
 
         try {
-            redirectResultEdit = Helpers.route(provideApplication(), request);
+            redirectResultEdit = Helpers.route(TestApplication.getApplication(), request);
             fail();
         } catch (IllegalStateException e) {
             assertEquals("Error(s) binding form: {\"travellerTypesForm\":[\"This field is required\"]}", e.getMessage());
@@ -145,8 +144,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("my edit is not saved")
     public void myEditIsNotSaved() {
-        injectRepositories();
-        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
+        TestApplication.getProfileRepository().findById(1).thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> assertEquals("Backpacker, Thrillseeker", profile.getTravellerTypesString()));
             return "done";
         });
@@ -159,8 +157,7 @@ public class EditProfileSteps extends ProvideApplication {
 
     @Then("my email is not saved")
     public void myEmailIsNotSaved() {
-        injectRepositories();
-        profileRepository.findById(1).thenApplyAsync(profileOpt -> {
+        TestApplication.getProfileRepository().findById(1).thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> assertEquals("bob@gmail.com", profile.getEmail()));
             return "done";
         });
