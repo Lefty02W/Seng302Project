@@ -1,9 +1,6 @@
 package controllers;
 
-import models.Destination;
-import models.DestinationChange;
-import models.Profile;
-import models.Trip;
+import models.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +59,36 @@ public class AdminControllerTest extends ProvideApplication {
         Assert.assertTrue(result.flash().getOptional("info").isPresent());
     }
 
+    /**
+     * Test deleting an artist
+     */
+    @Test
+    public void deleteValidArtist() {
+        List<Artist> artists = artistRepository.getAllArtists();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/artist/" + artists.get(0).getArtistId() + "/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+    }
+
+    /**
+     * Test deleting a non-existent profile, the application should not crash
+     */
+    @Test
+    public void deleteInvalidProfile() {
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/-1/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(provideApplication(), request);
+
+
+        Assert.assertEquals(303, result.status());
+    }
 
     /**
      * Test a profile deletion by retrieving all profiles
@@ -94,11 +121,11 @@ public class AdminControllerTest extends ProvideApplication {
      * Test deleting a non-existent profile, the application should not crash
      */
     @Test
-    public void deleteInvalidProfile() {
+    public void deleteInvalidArtist() {
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/-1/delete")
+                .uri("/admin/artist/-1/delete")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(provideApplication(), request);
 
