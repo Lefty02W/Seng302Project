@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Artist;
+import models.ArtistCountry;
 import models.ArtistProfile;
 import models.PassportCountry;
 import play.data.Form;
@@ -125,9 +126,10 @@ public class ArtistController extends Controller {
      * @return the same list of artists set with countries
      */
     private List<Artist> loadCountries(List<Artist> artistList) {
+        // TODO: 9/08/19 fix issue with Passport country and ArtistCountry being used out of turn 
         for (Artist artist : artistList) {
-            List<PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-            Map<Integer, PassportCountry> countriesMap = new HashMap<>();
+            List<ArtistCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
+            Map<Integer, ArtistCountry> countriesMap = new HashMap<>();
             for (PassportCountry i : passportCountries) {
                 countriesMap.put(i.getPassportId(), i);
             }
