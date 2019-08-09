@@ -1,6 +1,6 @@
 package controllers.steps.TreasureHunts;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class EditHuntSteps extends ProvideApplication {
+public class EditHuntSteps {
 
     private Map<String, String> huntForm = new HashMap<>();
     private Result redirectDestination;
@@ -28,7 +28,7 @@ public class EditHuntSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/treasure")
                 .session("connected", "1");
-        Result result = Helpers.route(provideApplication(), request);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(200, result.status());
     }
 
@@ -38,9 +38,8 @@ public class EditHuntSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/hunts/1/edit/show")
                 .session("connected", "1");
-        Result result = Helpers.route(provideApplication(), request);
-        injectRepositories();
-        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+        TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
         huntForm.put("riddle", hunt.getRiddle());
         huntForm.put("destinationId", Integer.toString(hunt.getTreasureHuntDestinationId()));
         huntForm.put("endDate", hunt.getEndDateString());
@@ -59,7 +58,7 @@ public class EditHuntSteps extends ProvideApplication {
                 .uri("/hunts/1/edit")
                 .bodyForm(huntForm)
                 .session("connected", "1");
-        redirectDestination = Helpers.route(provideApplication(), request);
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^I am redirected to the treasure hunts page$")
@@ -73,8 +72,7 @@ public class EditHuntSteps extends ProvideApplication {
 
     @And("^The edit is saved to the database$")
     public void theEditIsSavedToTheDatabase() throws Throwable {
-        injectRepositories();
-        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
         assertEquals(2, hunt.getTreasureHuntDestinationId());
     }
 
@@ -85,8 +83,7 @@ public class EditHuntSteps extends ProvideApplication {
 
     @And("^The end date is updated in the database$")
     public void theEndDateIsUpdatedInTheDatabase() throws Throwable {
-        injectRepositories();
-        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
         assertEquals("2020-12-30", hunt.getEndDateString());
     }
 
@@ -97,8 +94,7 @@ public class EditHuntSteps extends ProvideApplication {
 
     @And("^The riddle is updated in the database$")
     public void theRiddleIsUpdatedInTheDatabase() throws Throwable {
-        injectRepositories();
-        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
         assertEquals("A new riddle", hunt.getRiddle());
     }
 
@@ -109,16 +105,14 @@ public class EditHuntSteps extends ProvideApplication {
 
     @And("^The start date is updated in the database$")
     public void theStartDateIsUpdatedInTheDatabase() throws Throwable {
-        injectRepositories();
-        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
         assertEquals("2000-12-30", hunt.getStartDateString());
     }
 
     @Ignore
     @And("^The edit is not saved to the database$")
     public void theEditIsNotSavedToTheDatabase() throws Throwable {
-        injectRepositories();
-        TreasureHunt hunt = treasureHuntRepository.lookup(1);
+        TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
         assertNotEquals("2020-12-30", hunt.getStartDateString());
         assertNotEquals("2000-12-30", hunt.getEndDateString());
     }

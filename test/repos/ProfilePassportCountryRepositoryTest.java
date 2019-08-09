@@ -1,13 +1,11 @@
 package repos;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import models.PassportCountry;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Optional;
-
-public class ProfilePassportCountryRepositoryTest extends ProvideApplication {
+public class ProfilePassportCountryRepositoryTest {
 
     String countryName = "Milky Way Galaxy";
 
@@ -17,14 +15,13 @@ public class ProfilePassportCountryRepositoryTest extends ProvideApplication {
      */
     @Test
     public void checkNewCountryInserted() {
-        injectRepositories();
-        if (passportCountryRepository.getPassportCountryId(countryName).get() != -1) {
+        if (TestApplication.getPassportCountryRepository().getPassportCountryId(countryName).get() != -1) {
             Assert.fail("Error: " + countryName + " exists in database.");
         }
         PassportCountry passportCountry = new PassportCountry("Milky Way Galaxy");
-        profilePassportCountryRepository.insertProfilePassportCountry(passportCountry, 1);
-        passportCountryRepository.getPassportCountryId("Milky Way Galaxy");
+        TestApplication.getProfilePassportCountryRepository().insertProfilePassportCountry(passportCountry, 1);
+        TestApplication.getPassportCountryRepository().getPassportCountryId("Milky Way Galaxy");
 
-        Assert.assertTrue(passportCountryRepository.getPassportCountryId("Milky Way Galaxy").isPresent());
+        Assert.assertTrue(TestApplication.getPassportCountryRepository().getPassportCountryId("Milky Way Galaxy").isPresent());
     }
 }
