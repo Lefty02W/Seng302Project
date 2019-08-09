@@ -18,6 +18,7 @@ import repository.PassportCountryRepository;
 import repository.ProfileRepository;
 import utility.Country;
 import views.html.artists;
+import views.html.viewArtist;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -92,6 +93,21 @@ public class ArtistController extends Controller {
                         return redirect("/artists");
                     }
         });
+    }
+
+    /**
+     * Endpoint for landing page for viweing details of artists
+     *
+     * @param request client request
+     * @return CompletionStage rendering artist page
+     */
+    public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistID) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        Artist artist = artistRepository.getArtistById(artistID);
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileRec -> profileRec.map(profile ->
+                        ok(viewArtist.render(profile, artist, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+
     }
 
     /**
