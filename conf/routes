@@ -114,3 +114,6 @@ GET     /artists                                controllers.ArtistController.sho
 GET     /artists/:id/delete                     controllers.ArtistController.deleteArtist(request : Request, id : Integer)
 GET     /artists/search                         controllers.ArtistController.search(request : Request)
 
+# Detailed Artist's page
+GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
+
