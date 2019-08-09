@@ -1,6 +1,6 @@
 package controllers.steps.Admin;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class AdminCreatesDestinationSteps extends ProvideApplication {
+public class AdminCreatesDestinationSteps {
 
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestination;
@@ -40,15 +40,14 @@ public class AdminCreatesDestinationSteps extends ProvideApplication {
                 .uri("/admin/create/destinations")
                 .bodyForm(destForm)
                 .session("connected", "2");
-        redirectDestination = Helpers.route(provideApplication(), request);
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
         assertEquals("/admin", redirectDestination.redirectLocation().get());
         assertNotNull(request.session());
     }
 
     @And("the new destination is added to the admins {int} destinations")
     public void theNewDestinationIsAddedToTheAdminsDestinations(Integer adminId) {
-        injectRepositories();
-        assertTrue(profileRepository.getDestinations(adminId).isPresent());
+        assertTrue(TestApplication.getProfileRepository().getDestinations(adminId).isPresent());
 
     }
 
@@ -73,8 +72,7 @@ public class AdminCreatesDestinationSteps extends ProvideApplication {
     @And("the new destination is added to user {int} destinations")
     public void theNewDestinationIsAddedToUserDestinations(Integer int1) {
         //user has 2 destinations on startup
-        injectRepositories();
-        assertTrue(profileRepository.getDestinations(int1).isPresent());
+        assertTrue(TestApplication.getProfileRepository().getDestinations(int1).isPresent());
 
     }
 }

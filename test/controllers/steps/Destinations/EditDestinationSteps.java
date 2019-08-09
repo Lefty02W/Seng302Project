@@ -1,6 +1,6 @@
 package controllers.steps.Destinations;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -17,7 +17,8 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class EditDestinationSteps extends ProvideApplication{
+public class EditDestinationSteps {
+
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
     private Map<String, String> travellerTypeDestForm = new HashMap<>();
@@ -33,7 +34,7 @@ public class EditDestinationSteps extends ProvideApplication{
                 .bodyForm(loginForm)
                 .session("connected", "1");
 
-        Result editPageResult = Helpers.route(provideApplication(), request);
+        Result editPageResult = Helpers.route(TestApplication.getApplication(), request);
         if (editPageResult.redirectLocation().isPresent()) {
             assertEquals("/destinations/" + id + "/edit", editPageResult.redirectLocation().get());
         } else {
@@ -73,7 +74,7 @@ public class EditDestinationSteps extends ProvideApplication{
                 .bodyForm(destForm)
                 .session("connected", "1");
 
-        redirectDestinationEdit = Helpers.route(provideApplication(), request);
+        redirectDestinationEdit = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(303, redirectDestinationEdit.status());
     }
 
@@ -104,7 +105,7 @@ public class EditDestinationSteps extends ProvideApplication{
                 .method("GET")
                 .uri(arg0)
                 .session("connected", "1");
-        Helpers.route(provideApplication(), request);
+        Helpers.route(TestApplication.getApplication(), request);
     }
 
     @When("^I press the edit button on destination \"([^\"]*)\"$")
@@ -113,10 +114,9 @@ public class EditDestinationSteps extends ProvideApplication{
                 .method("GET")
                 .uri("/destinations/" + arg0 + "/edit/show")
                 .session("connected", "1");
-        Helpers.route(provideApplication(), request);
-        injectRepositories();
-        destinationRepository.lookup(2);
-        Destination destination = destinationRepository.lookup(1);
+        Helpers.route(TestApplication.getApplication(), request);
+        TestApplication.getDestinationRepository().lookup(2);
+        Destination destination = TestApplication.getDestinationRepository().lookup(1);
         travellerTypeDestForm.put("name", destination.getName());
         travellerTypeDestForm.put("type", destination.getType());
         travellerTypeDestForm.put("country", destination.getCountry());
@@ -140,7 +140,7 @@ public class EditDestinationSteps extends ProvideApplication{
                 .uri("/destinations/1")
                 .bodyForm(travellerTypeDestForm)
                 .session("connected", "1");
-        redirectDestinationEdit = Helpers.route(provideApplication(), request);
+        redirectDestinationEdit = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^I am redirected to the destinations page$")
@@ -154,8 +154,7 @@ public class EditDestinationSteps extends ProvideApplication{
 
     @And("^destination (\\d+) now has traveller types; \"([^\"]*)\" and \"([^\"]*)\"$")
     public void destinationNowHasTravellerTypesAnd(int arg0, String arg1, String arg2) throws Throwable {
-        injectRepositories();
-        Destination destination = destinationRepository.lookup(arg0);
+        Destination destination = TestApplication.getDestinationRepository().lookup(arg0);
         assertTrue(destination.getTravellerTypesList().contains(arg1));
         assertTrue(destination.getTravellerTypesList().contains(arg2));
     }

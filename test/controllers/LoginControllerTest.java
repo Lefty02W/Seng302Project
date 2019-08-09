@@ -1,12 +1,9 @@
 package controllers;
 
 import org.junit.Test;
-import play.Application;
-import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import play.test.WithApplication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,12 +15,7 @@ import static play.test.Helpers.GET;
 /**
  * Test set for Login Controller
  */
-public class LoginControllerTest extends WithApplication {
-
-    @Override
-    protected Application provideApplication() {
-    return new GuiceApplicationBuilder().build();
-  }
+public class LoginControllerTest {
 
     /**
      * Testing login POST endpoint /login
@@ -39,7 +31,7 @@ public class LoginControllerTest extends WithApplication {
                 .uri("/login")
                 .bodyForm(formData);
 
-        Result result = Helpers.route(provideApplication(), request);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
         assertEquals(303, result.status());
 
@@ -53,7 +45,7 @@ public class LoginControllerTest extends WithApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/");
-        Result result = Helpers.route(provideApplication(),request);
+        Result result = Helpers.route(TestApplication.getApplication(),request);
 
         assertEquals(OK, result.status());
     }
@@ -66,7 +58,7 @@ public class LoginControllerTest extends WithApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/login");
-        Result result = Helpers.route(provideApplication(),request);
+        Result result = Helpers.route(TestApplication.getApplication(),request);
 
         assertEquals(OK, result.status());
     }

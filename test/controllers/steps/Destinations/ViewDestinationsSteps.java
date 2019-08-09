@@ -1,6 +1,6 @@
 package controllers.steps.Destinations;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
@@ -11,7 +11,7 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ViewDestinationsSteps extends ProvideApplication {
+public class ViewDestinationsSteps {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestination;
@@ -23,7 +23,7 @@ public class ViewDestinationsSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/destinations/show/true")
                 .session("connected", "1");
-        Result destinationResult = Helpers.route(provideApplication(), requestDest);
+        Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         Assert.assertEquals(200, destinationResult.status());
     }
 
@@ -39,7 +39,7 @@ public class ViewDestinationsSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/destinations/show/false")
                 .session("connected", "1");
-        Result destinationResult = Helpers.route(provideApplication(), requestDest);
+        Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         Assert.assertEquals(200, destinationResult.status());
     }
 
