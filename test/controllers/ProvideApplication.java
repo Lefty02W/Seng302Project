@@ -2,6 +2,8 @@ package controllers;
 
 import models.Destination;
 import models.Profile;
+import org.junit.After;
+import org.junit.Before;
 import play.Application;
 import play.Mode;
 import play.inject.guice.GuiceApplicationBuilder;
@@ -29,10 +31,28 @@ public class ProvideApplication extends WithApplication {
     protected ProfilePassportCountryRepository profilePassportCountryRepository;
     protected PassportCountryRepository passportCountryRepository;
     protected UndoStackRepository undoStackRepository;
+    protected static Application application;
 
     @Override
     public Application provideApplication() {
         return new GuiceApplicationBuilder().in(Mode.TEST).build();
+    }
+
+    @Before
+    public void startApplication() {
+        System.out.println("start");
+        app = provideApplication();
+        Helpers.start(app);
+        mat = app.asScala().materializer();
+    }
+
+    @After
+    public void stopApplication() {
+        System.out.println("stop");
+        if (app != null) {
+            Helpers.stop(app);
+            app = null;
+        }
     }
 
 
@@ -78,15 +98,6 @@ public class ProvideApplication extends WithApplication {
     }
 
     protected void injectRepositories() {
-        app = provideApplication();
-        app.injector().instanceOf(PhotoRepository.class);
-        app.injector().instanceOf(TripDestinationsRepository.class);
-        app.injector().instanceOf(TripRepository.class);
-        app.injector().instanceOf(NationalityRepository.class);
-        app.injector().instanceOf(PassportCountryRepository.class);
-        app.injector().instanceOf(RolesRepository.class);
-        app.injector().instanceOf(UndoStackRepository.class);
-
         treasureHuntRepository = app.injector().instanceOf(TreasureHuntRepository.class);
         rolesRepository = app.injector().instanceOf(RolesRepository.class);
         tripRepository = app.injector().instanceOf(TripRepository.class);
