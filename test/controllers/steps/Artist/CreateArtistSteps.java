@@ -1,28 +1,29 @@
 package controllers.steps.Artist;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.Artist;
+import models.MusicGenre;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
 
-public class CreateArtistSteps extends ProvideApplication {
+public class CreateArtistSteps {
 
 
     private Map<String, String> artistForm = new HashMap<>();
     private Map<String, String> dupArtistFrom = new HashMap<>();
     private Result dupResult;
+    private Artist foundArtist;
+    private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Rock", "Indie"));
 
 
     @When("^user is at the artist page$")
@@ -31,7 +32,7 @@ public class CreateArtistSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/artists")
                 .session("connected", "1");
-        Helpers.route(provideApplication(), requestDest);
+        Helpers.route(TestApplication.getApplication(), requestDest);
     }
 
     @And("^user enters \"([^\"]*)\" for artist name$")
@@ -72,14 +73,13 @@ public class CreateArtistSteps extends ProvideApplication {
                 .bodyForm(artistForm)
                 .session("connected", "1");
 
-        Helpers.route(provideApplication(), request);
+        Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^the artist is saved in the database$")
     public void theArtistIsSavedInTheDatabase() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        List<Artist> userArtists = artistRepository.getAllUserArtists(1);
+        List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
         if (userArtists.size() > 0) {
 
             Artist newArtist = userArtists.get(userArtists.size() - 1);
@@ -98,7 +98,7 @@ public class CreateArtistSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/artists")
                 .session("connected", "2");
-        Helpers.route(provideApplication(), requestDest);
+        Helpers.route(TestApplication.getApplication(), requestDest);
     }
 
     @And("^I enter \"([^\"]*)\" into the \"([^\"]*)\" form field$")
@@ -118,12 +118,32 @@ public class CreateArtistSteps extends ProvideApplication {
                 .uri("/artists")
                 .bodyForm(dupArtistFrom)
                 .session("connected", "2");
-        dupResult = Helpers.route(provideApplication(), request);
+        dupResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @And("^There is a flashing sent with id \"([^\"]*)\"$")
     public void thereIsAFlashingSentWithId(String arg0) throws Throwable {
         assertTrue(dupResult.flash().getOptional("error").isPresent());
+    }
+
+
+    @Then("^The artist genre links are saved$")
+    public void theArtistGenreLinksAreSaved() throws Throwable {
+        List<Artist> artists = TestApplication.getArtistRepository().getAllUserArtists(2);
+        for (Artist artist : artists) {
+            if (artist.getArtistName().equals("Jim James")) {
+                foundArtist = artist;
+            }
+        }
+        if (foundArtist != null) {
+            for (MusicGenre genre : TestApplication.getGenreRepository().getArtistGenres(foundArtist.getArtistId())) {
+                if (!ARTIST_GENRES.contains(genre.getGenre())) {
+                    fail();
+                }
+            }
+        } else {
+            fail();
+        }
     }
 }
 
