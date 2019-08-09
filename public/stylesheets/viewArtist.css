@@ -1,0 +1,24 @@
+#viewArtistTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+#aboutTab, #eventsTab, #membersTab {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#artistNameJumbo {
+
+}
+
+#viewArtistTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.nav .nav-tabs, #informationTabLink, #aboutTabLink, #eventsTabLink, #membersTabLink {
+    font-size: 18pt;
+}
