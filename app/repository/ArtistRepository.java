@@ -244,6 +244,55 @@ public class ArtistRepository {
 
 
     /**
+     * Method returns all followed destinations ids from a user
+     *
+     * @param profileId User id for the user followed destinations
+     * @return Optional array list of integers of the followed destination ids
+     */
+    public Optional<ArrayList<Integer>> getFollowedArtistIds(int profileId) {
+        String updateQuery = "Select artist_id from follow_artist where profile_id = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
+        ArrayList<Integer> artIdList = new ArrayList<>();
+        for (SqlRow aRowList : rowList) {
+            int id = aRowList.getInteger("destination_id");
+            artIdList.add(id);
+        }
+        return Optional.of(artIdList);
+    }
+
+    /**
+     * Method to follow a artist for a user
+     *
+     * @param artId    Id of the entered artist
+     * @param profileId Id of the entered profile
+     * @return Optional array of integers of the followed artist id
+     */
+    public Optional<ArrayList<Integer>> followArtist(int artId, int profileId) {
+        String updateQuery = "INSERT into follow_artist(profile_id, destination_id) values (?, ?)";
+        SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+        query.setParameter(1, profileId);
+        query.setParameter(2, artId);
+        query.execute();
+        return getFollowedArtistIds(profileId);
+    }
+
+    /**
+     * Method to allow a user to un-follow a given artist
+     *
+     * @param artId    Id of the artist to be un-followed
+     * @param profileId Id of the user that wants to un-follow a artist
+     * @return Optional list of integers for the followed artist ids
+     */
+    public Optional<ArrayList<Integer>> unfollowArtist(int artId, int profileId) {
+        String updateQuery = "DELETE from follow_artist where profile_id = ? and destination_id =  ?";
+        SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+        query.setParameter(1, profileId);
+        query.setParameter(2, artId);
+        query.execute();
+        return getFollowedArtistIds(profileId);
+    }
+
+    /**
      *
      * @param artistId
      * @param newArtist
