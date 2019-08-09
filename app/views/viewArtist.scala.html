@@ -5,7 +5,7 @@
 <html lang="en">
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | Artists</title>
+        <title>TravelEA | View Artist</title>
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
@@ -20,15 +20,10 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/artist.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/viewArtist.css")">
     </head>
     <body>
         <div class="d-flex toggled" id="wrapper">
-
-            <div class="jumbotron">
-                <h1>@artist.getArtistName</h1>
-            </div>
-
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">TravelEA </h2>
@@ -62,51 +57,54 @@
                         <h2>View Artist</h2>
                     </div>
                 </nav>
-            </div>
 
-            <div class="container-fluid">
-                <div class="row">
-                    <ul class="nav nav-tabs" id="viewArtistTabs">
-                        <li class="active"><a data-toggle="tab" href="#aboutTab" id="aboutTabLink">About</a></li>
-                        <li><a data-toggle="tab" href="#eventsTab" id="eventsTabLink">Events</a></li>
-                        <li><a data-toggle="tab" href="#membersTab" id="eventsTabLink">Members</a></li>
-                    </ul>
+                <div class="jumbotron" id="artistNameJumbo">
+                    <h1>@artist.getArtistName</h1>
                 </div>
 
-                <div class="tab-content" id="profileTabsContent">
-                    <div id="aboutTab" class="tab-pane fade in active show">
-                        <div class="container">
-                            <div id="about" class="row justify-content-center">
-                                <a>@artist.getBiography</a>
-                            </div>
-                        </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <ul class="nav nav-tabs" id="viewArtistTabs">
+                            <li class="active"><a data-toggle="tab" href="#aboutTab" id="aboutTabLink">About</a></li>
+                            <li><a data-toggle="tab" href="#eventsTab" id="eventsTabLink">Events</a></li>
+                            <li><a data-toggle="tab" href="#membersTab" id="eventsTabLink">Members</a></li>
+                        </ul>
                     </div>
 
-
-                    <div id="eventsTab" class="tab-pane fade">
-                        <div class="col">
-                            @*TODO: Loop over events, display each one in a card*@
-                            <div id="events" class="card-large lower-card">
+                    <div class="tab-content" id="viewArtistTabsContent">
+                        <div id="aboutTab" class="tab-pane fade in active show">
+                            <div class="container">
+                                <div id="about" class="row justify-content-center">
+                                    <a>@artist.getBiography</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div id="membersTab" class="tab-pane fade">
-                    @for(member <- artist.getMembers()) {
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="card-text">member.getFirstName()</p>
-                                <p class="card-text">member.getMiddleName()</p>
-                                <p class="card-text">member.getLastName()</p>
+
+                        <div id="eventsTab" class="tab-pane fade">
+                            <div class="col">
+                                @*TODO: Loop over events, display each one in a card*@
+                                <div id="events" class="card-large lower-card">
+                                </div>
                             </div>
                         </div>
-                    }
+
+                        <div id="membersTab" class="tab-pane fade">
+                        @for(member <- artist.getMembers()) {
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text" value="@member"></p>
+                                    <p class="card-text" value="@member"></p>
+                                    <p class="card-text" value="@member"></p>
+                                </div>
+                            </div>
+                        }
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
-
 
             <!-- Footer -->
         <footer class="page-footer font-small green darken-3">
