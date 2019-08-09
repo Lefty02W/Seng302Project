@@ -613,7 +613,7 @@ public class AdminController {
                     Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
 
                     //Insert ArtistProfiles for new Artist.
-                    for (String profileIdString: optionalProfiles.toString().split(",")){
+                    for (String profileIdString: optionalProfiles.get().split(",")){
                         Integer profileId = parseInt(profileIdString);
                         ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
                         artistRepository.insertProfileLink(artistProfile);

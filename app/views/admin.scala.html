@@ -638,6 +638,11 @@
                 $('#travellerTypesForm').val($('#typeDropdownEdit').val());
             }
 
+            function fillValsArtist() {
+                $('#genreForm').val($('#genreDropdown').val());
+                $('#adminForm').val($('#adminDropdown').val());
+                $('#countries').val($('#originDropdown').val());
+            }
 
             $("#menu-toggle").click(function (e) {
                 e.preventDefault();
@@ -1430,7 +1435,7 @@
                             <div class="row">
                                 <div class="hidden-div-edit">
                                     <input type="text" id="travellerTypesStringDest" name="travellerTypesStringDestCreate" class="hidden-field typesField">
-                                </div>
+                                </div>fill
                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownDest" data-width="100%">
                                     <option value="ThrillSeeker">ThrillSeeker</option>
                                     <option value="Backpacker">Backpacker</option>
