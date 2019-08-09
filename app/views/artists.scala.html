@@ -277,10 +277,34 @@
     </div>
 
     <script>
-                    function fillValsArtist() {
-                        $('#genreForm').val($('#genreDropdown').val());
-                        $('#adminForm').val($('#adminDropdown').val());
-                        $('#countries').val($('#originDropdown').val());
-                    }
+        function fillValsArtist() {
+            $('#genreForm').val($('#genreDropdown').val());
+            $('#adminForm').val($('#adminDropdown').val());
+            $('#countries').val($('#originDropdown').val());
+        }
+
+
+
+//==============================================INFINITE SCROLLING======================================================
+
+
+        function nearBottomOfPage() {
+            return scrollDistanceFromBottom() < 450;
+        }
+
+        function scrollDistanceFromBottom(argument) {
+            return pageHeight() - (window.pageYOffset + self.innerHeight);
+        }
+
+        function pageHeight() {
+            return Math.max(document.body.scrollHeight, document.body.offsetHeight);
+        }
+
+
+
+
+
+
+
             </script>
 </html>
