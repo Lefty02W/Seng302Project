@@ -54,6 +54,20 @@ public class ArtistRepository {
     }
 
 
+    /**
+     * Get a single registered artist
+     * @param artistID - The ID of the artists to retrieve
+     * @return Artist, list of all Artist
+     */
+    public Artist getArtistById(Integer artistID) {
+        return (ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("artist_id", artistID)
+                .findOne());
+    }
+
+
 
     /**
      * Inserts an Artist object into the ebean database server
