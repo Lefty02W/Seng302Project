@@ -1,18 +1,15 @@
 package controllers.steps.Admin;
 
 
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
-import play.Application;
-import play.Mode;
-import play.inject.guice.GuiceApplicationBuilder;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import play.test.WithApplication;
 import repository.RolesRepository;
 
 import java.util.HashMap;
@@ -26,17 +23,12 @@ import static org.junit.Assert.*;
 /**
  * Implements steps for testing access admin page
  */
-public class AccessAdminSteps extends WithApplication {
+public class AccessAdminSteps {
     private String urlString;
     private Result adminResult;
     private Map<String, String> loginForm = new HashMap<>();
     private Result loginResult;
     private Result adminAttemptResult;
-
-    @Override
-    public Application provideApplication() {
-        return new GuiceApplicationBuilder().in(Mode.TEST).build();
-    }
 
 
     @Given("I am logged into the application as a non admin")
@@ -49,7 +41,7 @@ public class AccessAdminSteps extends WithApplication {
                 .uri("/login")
                 .bodyForm(loginForm);
 
-        loginResult = Helpers.route(provideApplication(), request);
+        loginResult = Helpers.route(TestApplication.getApplication(), request);
 
     }
 
@@ -63,7 +55,7 @@ public class AccessAdminSteps extends WithApplication {
                 .uri("/login")
                 .bodyForm(loginForm)
                 .session("connected", "2");
-        loginResult = Helpers.route(provideApplication(), request);
+        loginResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
 
@@ -78,7 +70,7 @@ public class AccessAdminSteps extends WithApplication {
                 .method("GET")
                 .uri(urlString)
                 .session("connected", "1");
-        adminResult = Helpers.route(provideApplication(), requestDest);
+        adminResult = Helpers.route(TestApplication.getApplication(), requestDest);
     }
 
 
@@ -88,7 +80,7 @@ public class AccessAdminSteps extends WithApplication {
                 .method("GET")
                 .uri(urlString)
                 .session("connected", "2");
-        adminResult = Helpers.route(provideApplication(), requestDest);
+        adminResult = Helpers.route(TestApplication.getApplication(), requestDest);
     }
 
     @Then("the admin page should not be shown and the profile page should be shown")
@@ -114,7 +106,7 @@ public class AccessAdminSteps extends WithApplication {
                 .method("POST")
                 .uri(arg0)
                 .session("connected", "1");
-        adminAttemptResult = Helpers.route(provideApplication(), requestDest);
+        adminAttemptResult = Helpers.route(TestApplication.getApplication(), requestDest);
     }
 
 
@@ -125,7 +117,7 @@ public class AccessAdminSteps extends WithApplication {
 
     @Then("User {int} is not made an admin")
     public void userIsNotMadeAnAdmin(int arg0) throws Throwable {
-        Optional<List<String>> roles = provideApplication().injector().instanceOf(RolesRepository.class).getProfileRoles(1);
+        Optional<List<String>> roles = TestApplication.getApplication().injector().instanceOf(RolesRepository.class).getProfileRoles(1);
         if (roles.isPresent()) {
             if (roles.get().size() == 0) {
                 assertTrue(true);
@@ -135,6 +127,5 @@ public class AccessAdminSteps extends WithApplication {
         } else {
             assertTrue(true);
         }
-        stopPlay();
     }
 }

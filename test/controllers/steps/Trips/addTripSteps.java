@@ -1,6 +1,6 @@
 package controllers.steps.Trips;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertTrue;
 
-public class addTripSteps extends ProvideApplication {
+public class addTripSteps {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
     private Result destResult;
@@ -32,7 +32,7 @@ public class addTripSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "1");
 
-        Result loginResult = Helpers.route(provideApplication(), request);
+        Result loginResult = Helpers.route(TestApplication.getApplication(), request);
 
 
         Http.RequestBuilder requestTrip = Helpers.fakeRequest()
@@ -40,7 +40,7 @@ public class addTripSteps extends ProvideApplication {
                 .uri("/trips")
                 .session("connected", "1");
 
-        Result tripResult = Helpers.route(provideApplication(), requestTrip);
+        Result tripResult = Helpers.route(TestApplication.getApplication(), requestTrip);
 
         // TODO check on trips page
 
@@ -53,14 +53,14 @@ public class addTripSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/trips/1/create")
                 .session("connected", "1");
-        Result tripResult = Helpers.route(provideApplication(), requestTrip);
+        Result tripResult = Helpers.route(TestApplication.getApplication(), requestTrip);
         Assert.assertEquals(200, tripResult.status());
 
     }
 
     @When("user selects a destination called {string}")
     public void userSelectsADestinationCalled(String string) {
-     List<Destination> userDestinations = getUserDest(1);
+        List<Destination> userDestinations = TestApplication.getDestinationRepository().getUserDestinations(1);
         throw new cucumber.api.PendingException();
 
     }
@@ -109,7 +109,7 @@ public class addTripSteps extends ProvideApplication {
                 .bodyForm(destForm)
                 .session("connected", "1");
 
-        destResult = Helpers.route(provideApplication(), request);
+        destResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("destination is not added")

@@ -1,7 +1,6 @@
 package controllers.steps.Admin;
 
-import controllers.ProvideApplication;
-import cucumber.api.PendingException;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -15,11 +14,10 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
-import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class AdminEditDestinationSteps extends ProvideApplication {
+public class AdminEditDestinationSteps {
 
     Map<String, String> loginForm = new HashMap<>();
     Map<String, String> destForm = new HashMap<>();
@@ -37,7 +35,7 @@ public class AdminEditDestinationSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "2");
 
-        loginResult = Helpers.route(provideApplication(), request);
+        loginResult = Helpers.route(TestApplication.getApplication(), request);
         assertEquals("/profile", loginResult.redirectLocation().get());
 
     }
@@ -49,7 +47,7 @@ public class AdminEditDestinationSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin")
                 .session("connected", "2");
-        result = Helpers.route(provideApplication(), request);
+        result = Helpers.route(TestApplication.getApplication(), request);
 
         assertEquals(200, result.status());
     }
@@ -61,7 +59,7 @@ public class AdminEditDestinationSteps extends ProvideApplication {
                 .uri("/admin/destinations/2")
                 .bodyForm(destForm)
                 .session("connected", "2");
-        result = Helpers.route(provideApplication(), request);
+        result = Helpers.route(TestApplication.getApplication(), request);
     }
     
     @When("^admin presses edit on destination (\\d+)$")
@@ -70,9 +68,8 @@ public class AdminEditDestinationSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/hunts/" + Integer.toString(arg0) + "/edit/show")
                 .session("connected", "2");
-        result = Helpers.route(provideApplication(), request);
-        injectRepositories();
-        Destination destination = destinationRepository.lookup(2);
+        result = Helpers.route(TestApplication.getApplication(), request);
+        Destination destination = TestApplication.getDestinationRepository().lookup(2);
         destForm.put("profileId", Integer.toString(destination.getProfileId()));
         destForm.put("name", destination.getName());
         destForm.put("type", destination.getType());
@@ -106,15 +103,13 @@ public class AdminEditDestinationSteps extends ProvideApplication {
 
     @Then("^destinations latitude is updated in the database$")
     public void destinationsLatitudeIsUpdatedInTheDatabase() throws Throwable {
-        injectRepositories();
-        Destination destination = destinationRepository.lookup(2);
+        Destination destination = TestApplication.getDestinationRepository().lookup(2);
         assertEquals("12.2", Double.toString(destination.getLatitude()));
     }
 
     @And("^destination name is updated in the database$")
     public void destinationNameIsUpdatedInTheDatabase() throws Throwable {
-        injectRepositories();
-        Destination destination = destinationRepository.lookup(2);
+        Destination destination = TestApplication.getDestinationRepository().lookup(2);
         assertEquals("Haere Roa", destination.getName());
     }
 
@@ -125,8 +120,7 @@ public class AdminEditDestinationSteps extends ProvideApplication {
 
     @And("^destinations latitude is not updated in the database$")
     public void destinationsLatitudeIsNotUpdatedInTheDatabase() throws Throwable {
-        injectRepositories();
-        Destination destination = destinationRepository.lookup(2);
+        Destination destination = TestApplication.getDestinationRepository().lookup(2);
         assertNotEquals("200", Double.toString(destination.getLongitude()));
     }
 
@@ -137,8 +131,7 @@ public class AdminEditDestinationSteps extends ProvideApplication {
 
     @And("^destinations visibility is updated in the database$")
     public void destinationsVisibilityIsUpdatedInTheDatabase() throws Throwable {
-        injectRepositories();
-        Destination destination = destinationRepository.lookup(2);
+        Destination destination = TestApplication.getDestinationRepository().lookup(2);
         assertEquals(1, destination.getVisible());
     }
 }
