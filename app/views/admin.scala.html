@@ -5,7 +5,7 @@
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
         countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
-        artists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+        artists : List[Artist], editArtist: RoutedObject[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -581,7 +581,7 @@
                                                 <td>@artist.getBiography</td>
                                                 <td>@artist.getCountrys</td>
                                                 <td>Fill after push</td>
-                                                <td><a href=""><button class="btn btn-primary">Edit</button></a></td>
+                                                <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
                                                 <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
                                                 <td><a href=""><button class="btn btn-primary">View</button></a></td>
                                             </tr>
