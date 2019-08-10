@@ -193,10 +193,4 @@ public class ArtistRepository {
         return new ArrayList<>(ebeanServer.find(Artist.class)
                 .where().eq("verified", 0).findList());
     }
-
-    public List<ArtistCountry> getArtistCounties(int artistId) {
-        // TODO: 9/08/19 JAVA DOC THIS METHOD!!!!!!!!!!!!!!! 
-        return new ArrayList<>(ebeanServer.find(ArtistCountry.class)
-            .where().eq("artist_id", artistId).findList());
-    }
 }
