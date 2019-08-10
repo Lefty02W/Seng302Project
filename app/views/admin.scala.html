@@ -1,4 +1,4 @@
-@@import play.mvc.Http
+@import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles: List[Profile], adminProfiles: List[Profile], trips: List[Trip], destination: RoutedObject[Destination],
         destinations: List[Destination], profile: RoutedObject[Profile], profileForm: Form[Profile],
@@ -566,7 +566,6 @@
                                             <tr>
                                                 <th>ArtistID</th>
                                                 <th>Name</th>
-                                                <th>Biography</th>
                                                 <th>Countries</th>
                                                 <th>Admins</th>
                                                 <th>Edit</th>
@@ -578,9 +577,9 @@
                                             <tr>
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
-                                                <td>@artist.getBiography</td>
                                                 <td>@artist.getCountrys</td>
                                                 <td>@artist.getAdminsList</td>
+                                                <td></td>
                                                 <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
                                                 <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
                                                 <td><a href=""><button class="btn btn-primary">View</button></a></td>

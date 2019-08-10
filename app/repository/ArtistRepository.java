@@ -3,8 +3,6 @@ package repository;
 import io.ebean.*;
 import models.*;
 import play.db.ebean.EbeanConfig;
-import play.db.ebean.Transactional;
-import utility.Country;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -132,14 +130,24 @@ public class ArtistRepository {
      * @return Artist that has had genre and country added
      */
     private Artist populateArtist(Artist artist) {
-        //Map<Integer, PassportCountry> countries = new HashMap<>();
-        //Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
-        //if (countryMap.isPresent()) {
-         //   countries = countryMap.get();
-       // }
-       // artist.setCountry(countries);
-        //TODO fix below function
-       // artist.setGenre(genreRepository.getArtistGenres(artist.getArtistId()));
+    // Map<Integer, PassportCountry> countries = new HashMap<>();
+    // Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
+    // if (countryMap.isPresent()) {
+    //   countries = countryMap.get();
+    // }
+    // artist.setCountry(countries);
+    // TODO fix below function
+    // artist.setGenre(genreRepository.getArtistGenres(artist.getArtistId()));
+        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
+        if (!linkIds.isEmpty()) {
+            artist.setAdminsList(ebeanServer.find(Profile.class)
+                    .where()
+                    .idIn(
+                            linkIds
+                    ).findIds());
+        }
+
+        //artist.setGenre();
         return artist;
     }
     /**
