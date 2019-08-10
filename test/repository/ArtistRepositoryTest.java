@@ -1,14 +1,12 @@
 package repository;
 
-import controllers.ProvideApplication;
-import org.junit.Test;
 import models.Artist;
+import org.junit.Test;
 
-public class ArtistRepositoryTest extends ProvideApplication {
+public class ArtistRepositoryTest  {
 
     @Test
     public void insertArtist(){
-        injectRepositories();
         Artist artist = new Artist();
         artist.setArtistName("LukeUnitTestArtist");
         artist.setBiography("Description for my artist");

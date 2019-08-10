@@ -2,9 +2,7 @@ package controllers;
 
 import models.Artist;
 import models.ArtistFormData;
-import models.ArtistCountry;
 import models.ArtistProfile;
-import models.PassportCountry;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -22,9 +20,7 @@ import views.html.artists;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -165,15 +161,15 @@ public class ArtistController extends Controller {
      */
     private List<Artist> loadCountries(List<Artist> artistList) {
         // TODO: 9/08/19 fix issue with Passport country and ArtistCountry being used out of turn
-        for (Artist artist : artistList) {
-            List<ArtistCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-            Map<Integer, ArtistCountry> countriesMap = new HashMap<>();
-            for (PassportCountry i : passportCountries) {
-                //Todo fix this
-                countriesMap.put(1, i);
-            }
-            artist.setCountry(countriesMap);
-        }
+//        for (Artist artist : artistList) {
+//            List<ArtistCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
+//            Map<Integer, ArtistCountry> countriesMap = new HashMap<>();
+//            for (PassportCountry i : passportCountries) {
+//                //Todo fix this
+//                countriesMap.put(1, i);
+//            }
+//            artist.setCountry(countriesMap);
+//        }
         return artistList;
     }
 

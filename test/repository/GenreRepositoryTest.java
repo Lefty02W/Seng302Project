@@ -1,6 +1,7 @@
 package repository;
 
-import controllers.ProvideApplication;
+
+import controllers.TestApplication;
 import models.MusicGenre;
 import org.junit.Test;
 
@@ -8,20 +9,18 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class GenreRepositoryTest extends ProvideApplication {
+public class GenreRepositoryTest {
 
     @Test
     public void getAllGenres() {
-        injectRepositories();
-        List<MusicGenre> genres = genreRepository.getAllGenres();
+        List<MusicGenre> genres = TestApplication.getGenreRepository().getAllGenres();
         assertEquals(4, genres.size());
         assertEquals("Rock", genres.get(0).getGenre());
     }
 
     @Test
     public void getArtistGenres() {
-        injectRepositories();
-        List<MusicGenre> genres = genreRepository.getArtistGenres(1);
+        List<MusicGenre> genres = TestApplication.getGenreRepository().getArtistGenres(1);
         assertEquals(2, genres.size());
         assertEquals("Reggae", genres.get(0).getGenre());
     }

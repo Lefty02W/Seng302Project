@@ -88,4 +88,14 @@ public class TestApplication {
         return application.injector().instanceOf(PassportCountryRepository.class);
     }
 
+    public static ArtistRepository getArtistRepository() {
+        checkApplication();
+        return application.injector().instanceOf(ArtistRepository.class);
+    }
+
+    public static GenreRepository getGenreRepository() {
+        checkApplication();
+        return application.injector().instanceOf(GenreRepository.class);
+    }
+
 }

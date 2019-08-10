@@ -1,6 +1,7 @@
 package controllers.steps.Artist;
 
-import controllers.ProvideApplication;
+
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -17,7 +18,7 @@ import java.util.Map;
 import static org.junit.Assert.*;
 
 
-public class CreateArtistSteps extends ProvideApplication {
+public class CreateArtistSteps {
 
 
     private Map<String, String> artistForm = new HashMap<>();
@@ -31,7 +32,7 @@ public class CreateArtistSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/artists")
                 .session("connected", "1");
-        Helpers.route(provideApplication(), requestDest);
+        Helpers.route(TestApplication.getApplication(), requestDest);
     }
 
     @And("^user enters \"([^\"]*)\" for artist name$")
@@ -72,14 +73,13 @@ public class CreateArtistSteps extends ProvideApplication {
                 .bodyForm(artistForm)
                 .session("connected", "1");
 
-        Helpers.route(provideApplication(), request);
+        Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^the artist is saved in the database$")
     public void theArtistIsSavedInTheDatabase() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        List<Artist> userArtists = artistRepository.getAllUserArtists(1);
+        List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
         if (userArtists.size() > 0) {
 
             Artist newArtist = userArtists.get(userArtists.size() - 1);
@@ -98,7 +98,7 @@ public class CreateArtistSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/artists")
                 .session("connected", "2");
-        Helpers.route(provideApplication(), requestDest);
+        Helpers.route(TestApplication.getApplication(), requestDest);
     }
 
     @And("^I enter \"([^\"]*)\" into the \"([^\"]*)\" form field$")
@@ -118,7 +118,7 @@ public class CreateArtistSteps extends ProvideApplication {
                 .uri("/artists")
                 .bodyForm(dupArtistFrom)
                 .session("connected", "2");
-        dupResult = Helpers.route(provideApplication(), request);
+        dupResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @And("^There is a flashing sent with id \"([^\"]*)\"$")
