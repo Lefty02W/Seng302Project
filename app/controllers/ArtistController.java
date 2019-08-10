@@ -186,8 +186,6 @@ public class ArtistController extends Controller {
     }
 
 
-
-
     /**
      * Allows a memeber of an artist to leave an artist
      *

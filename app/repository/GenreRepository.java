@@ -7,6 +7,7 @@ import models.MusicGenre;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
 
@@ -51,8 +52,14 @@ public class GenreRepository {
      * @return List of found MusicGenre objects
      */
     public List<MusicGenre> getArtistGenres(int artistId) {
-        List<Integer> genreIds = ebeanServer.find(ArtistGenre.class).select("genre").where().eq("artist", artistId).findSingleAttributeList();
-        return ebeanServer.find(MusicGenre.class).where().idIn(genreIds).findList();
+    System.out.println("yeet yeet");
+        List<ArtistGenre> artistGenres = ebeanServer.find(ArtistGenre.class).where().eq("artist_id", artistId).findList();
+        List<MusicGenre> genres = new ArrayList<>();
+        for (ArtistGenre genre : artistGenres) {
+            genres.add(ebeanServer.find(MusicGenre.class).where().eq("genre_id", genre.getGenreId()).findOne());
+        }
+    System.out.println("Genres " + genres);
+        return genres;
     }
 
 

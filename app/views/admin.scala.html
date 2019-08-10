@@ -564,10 +564,12 @@
                                     <table id="artistsTable" class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>ArtistID</th>
+                                                <th>ArtistId</th>
                                                 <th>Name</th>
                                                 <th>Countries</th>
-                                                <th>Admins</th>
+                                                <th>Members</th>
+                                                <th>Genres</th>
+                                                <th>Artist Admins</th>
                                                 <th>Edit</th>
                                                 <th>Delete</th>
                                                 <th>View</th>
@@ -577,12 +579,19 @@
                                             <tr>
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
-                                                <td>@artist.getCountrys</td>
-                                                <td>@artist.getAdminsList</td>
-                                                <td></td>
+                                                <td>FIX THIS WHEN COUNTRIES ARE FIXED</td>
+                                                <td>@artist.getMembers</td>
+                                                <td>REPLACE ONCE GENRES IS WORKING</td>
+                                                <td>
+                                                    <ul>
+                                                        @for(profile <- artist.getAdminsList) {
+                                                            <li>@profile.getProfileId: @profile.getFirstName @profile.getLastName</li>
+                                                        }
+                                                    </ul>
+                                                </td>
                                                 <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
                                                 <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
-                                                <td><a href=""><button class="btn btn-primary">View</button></a></td>
+                                                <td><a href="artist/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
                                             </tr>
                                         }
                                     </table>
@@ -595,7 +604,7 @@
                                     <table id="artistRequestsTable" class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>ArtistID</th>
+                                                <th>ArtistId</th>
                                                 <th>Name</th>
                                                 <th>Members</th>
                                                 <th>Verify</th>

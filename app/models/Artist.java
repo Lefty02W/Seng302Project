@@ -2,7 +2,6 @@ package models;
 
 import io.ebean.Model;
 import play.data.validation.Constraints;
-import repository.ArtistRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -158,6 +157,16 @@ public class Artist extends Model {
     }
 
     //Getters and setters
+
+
+    public List<MusicGenre> getGenreList() {
+        return genreList;
+    }
+
+    public void setGenreList(List<MusicGenre> genreList) {
+        this.genreList = genreList;
+    }
+
     public String getMembers() {
         return members;
     }

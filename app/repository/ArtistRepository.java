@@ -137,17 +137,13 @@ public class ArtistRepository {
     // }
     // artist.setCountry(countries);
     // TODO fix below function
-    // artist.setGenre(genreRepository.getArtistGenres(artist.getArtistId()));
+        //artist.setGenreList(genreRepository.getArtistGenres(artist.getArtistId()));
         List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
         if (!linkIds.isEmpty()) {
-            artist.setAdminsList(ebeanServer.find(Profile.class)
-                    .where()
-                    .idIn(
-                            linkIds
-                    ).findIds());
+            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
+        } else {
+            artist.setAdminsList(new ArrayList<>());
         }
-
-        //artist.setGenre();
         return artist;
     }
     /**
@@ -171,7 +167,6 @@ public class ArtistRepository {
      * @return Artists, an ArrayList of all artists that user is a part of.
      */
     public List<Artist> getAllUserArtists(int userId) {
-
         List<ArtistProfile> artistProfiles = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
                 .where()
                 //.eq("soft_delete", 0)
