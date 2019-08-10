@@ -156,6 +156,11 @@
                             </div>
                         }
                     </div>
+                    <div class="row">
+                        <div class="row">
+                            <button class="btn btn-outline-primary"  id="show-more" onclick="scroll_infinite">Load more...</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -287,38 +292,45 @@
 
 //==============================================INFINITE SCROLLING======================================================
 
-
-        function element_in_scroll(elem)
-        {
-            var docViewTop = $(window).scrollTop();
-            var docViewBottom = docViewTop + $(window).height();
-
-            var elemTop = $(elem).top;
-            var elemBottom = elemTop + $(elem).height();
-            console.log("Scrolling:" + docViewBottom);
-            return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
-        }
+        //
+        // function element_in_scroll(elem)
+        // {
+        //     var docViewTop = $(window).scrollTop();
+        //     var docViewBottom = docViewTop + $(window).height();
+        //
+        //     var elemTop = $(elem).top;
+        //     var elemBottom = elemTop + $(elem).height();
+        //     console.log("Scrolling:" + docViewBottom);
+        //     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+        // }
 
 
         function scroll_infinite(){
-            console.log("Scrolling!");
-            if (element_in_scroll("artist-card")) {
-                $(document.getElementById("artist-container")).unbind('scroll');
-                console.log("At bottom!");
-                // $.ajax({
-                //     type: "POST",
-                //     url: document.location.href,
-                //     data: { text_filter:  $('#text_filter').attr('value'), index_count:$('#index_count').attr('value'),json: "true" }
-                // }).done(function( msg ) {
-                //     $(".errors tbody ").append(msg.html);
-                //     $('#index_count').attr('value',msg.index_count);
-                //     if (msg.count != 0) {
-                //         $(document).scroll(function(e){
-                //             //callback to the method to check if the user scrolled to the last element of your list/feed
-                //         })
-                //     }
-                // });
-            };
+            // console.log("Scrolling!");
+            // if (element_in_scroll("artist-card")) {
+            //     $(document.getElementById("artist-container")).unbind('scroll');
+            //     console.log("At bottom!");
+            //
+            //     // var url = "./" + page + ".html";
+            //
+            //     $(buttonId).hide();
+            //     $(loadingId).show();
+            //
+            //     $.ajax({
+            //         url: url,
+            //         success: function(response) {
+            //             if (!response || response.trim() == "NONE") {
+            //                 $(buttonId).fadeOut();
+            //                 $(loadingId).text("No more entries to load!");
+            //                 return;
+            //             }
+            //             appendContests(response);
+            //         },
+            //         error: function(response) {
+            //             $(loadingId).text("Sorry, there was some error with the request. Please refresh the page.");
+            //         }
+            //     });
+            // };
         };
 
 
