@@ -91,13 +91,12 @@ public class ArtistController extends Controller {
                     artistRepository.insert(artist).thenApplyAsync(artistId -> {
                         Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
                         if (optionalProfiles.isPresent()) {
-                            if (!optionalProfiles.get().isEmpty()) {
-                                for (String profileIdString: optionalProfiles.get().split(",")){
+                            if (!optionalProfiles.get().isEmpty())
+                                for (String profileIdString : optionalProfiles.get().split(",")) {
                                     Integer profileId = parseInt(profileIdString);
                                     ArtistProfile artistProfile = new ArtistProfile(artistId, profileId);
                                     artistRepository.insertProfileLink(artistProfile);
                                 }
-                            }
                         }
                         artistRepository.insertProfileLink(new ArtistProfile(SessionController.getCurrentUserId(request), artistId));
                         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
@@ -106,6 +105,8 @@ public class ArtistController extends Controller {
                                 genreRepository.insertArtistGenre(artistId, parseInt(genre));
                             }
                         }
+                        saveArtistCountries(artist, artistProfileForm);
+
                         return null;
                     });
                     return redirect("/artists").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
@@ -117,26 +118,23 @@ public class ArtistController extends Controller {
         return supplyAsync(() -> redirect("/artists").flashing("error", "Artist Profile save failed"));
     }
 
-//    /**
-//     * Takes in a list of artists and loads (sets) countries into each of them.
-//     * Used for displaying the artist countries
-//     *
-//     * @param artistList
-//     * @return the same list of artists set with countries
-//     */
-//    private List<Artist> loadCountries(List<Artist> artistList) {
-//        // TODO: 9/08/19 fix issue with Passport country and ArtistCountry being used out of turn
-//        for (Artist artist : artistList) {
-//            List<ArtistCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-//            Map<Integer, ArtistCountry> countriesMap = new HashMap<>();
-//            for (PassportCountry i : passportCountries) {
-//                countriesMap.put(i.getPassportId(), i);
-//            }
-//            artist.setCountry(countriesMap);
-//        }
-//        return artistList;
-//    }
-
+    /**
+     * Method to get the country data for an artist to then save in the linking table
+     * @param artist the countries are getting added too
+     * @param artistProfileForm form holding he artistFormData needed to get out the country list
+     */
+    private void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
+        Optional<String> optionalCountries = artistProfileForm.field("countries").value();
+                        if(optionalCountries.isPresent()){
+                            for (String country: optionalCountries.get().split(",")){
+                                Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(country);
+                                if (countryObject.isPresent()){
+                                    ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), countryObject.get());
+                                    artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                                }
+                            }
+                        }
+    }
 
     /**
      * Method for user to delete their artist profile

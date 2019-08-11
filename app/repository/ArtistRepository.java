@@ -193,4 +193,16 @@ public class ArtistRepository {
         return new ArrayList<>(ebeanServer.find(Artist.class)
                 .where().eq("verified", 0).findList());
     }
+
+    /**
+     * Method to insert an artists country to the artist_country table
+     * @param artistCountry artistCountry object to be added to the database
+     * @return void CompletionStage
+     */
+    public CompletionStage<Void> addCountrytoArtistCountryTable(ArtistCountry artistCountry){
+        return supplyAsync(() -> {
+            ebeanServer.insert(artistCountry);
+            return null;
+        });
+    }
 }
