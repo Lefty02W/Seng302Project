@@ -100,6 +100,9 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistID) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(artistID);
+        if (artist == null) {
+            return profileRepository.findById (profId).thenApplyAsync(profile -> redirect("/artists"));
+        }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
                         ok(viewArtist.render(profile, artist, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
