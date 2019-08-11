@@ -655,6 +655,10 @@ public class AdminController {
         return supplyAsync(() -> {
             List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
             Artist artist = artistRepository.getArtistById(id);
+            artist = artistRepository.populateArtist(artist);
+            if (artist.getGenreList() == null) {
+                artist.setGenre(new ArrayList<>());
+            }
             return ok(admin.render(profileRepository.getAll(), getAdmins(), tripRepository.getAll(), new RoutedObject<Destination>(null, false, false), destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, true, false), Country.getInstance().getAllCountries(), undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getInvalidArtists(), artistRepository.getAllArtists(), new RoutedObject<Artist>(artist, true, true), genreRepository.getAllGenres(), request, messagesApi.preferred(request)));
         });
     }

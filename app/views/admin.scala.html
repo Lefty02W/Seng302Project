@@ -1687,7 +1687,6 @@
                                             <select class="selectpicker" data-live-search="true" multiple title="Countries of Origin" id="originEditDropdown" data-width="50%">
                                             @for(nation <- countries) {
                                                 @if(editArtist.getObject.getCountryList.contains(nation)) {
-
                                                     <option value="@nation" selected>@nation</option>
                                                 } else {
                                                     <option value="@nation">@nation</option>
@@ -1703,8 +1702,13 @@
                                                 <input type="text" id="genreEditForm" name="genreForm" class="hidden-field">
                                             </div>
                                             <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreEditDropdown" data-width="50%">
-                                                <option value="1">Import genres into this page</option>
-
+                                            @for(genre <- genres) {
+                                                @if(editArtist.getObject.getGenreList.contains(genre)) {
+                                                    <option value="@genre.getGenreId" selected>@genre.getGenre</option>
+                                                } else {
+                                                    <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                }
+                                            }
                                             </select>
                                         </div>
                                         <div class="row justify-content-center">

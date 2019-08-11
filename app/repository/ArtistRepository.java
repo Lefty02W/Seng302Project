@@ -132,7 +132,7 @@ public class ArtistRepository {
      * @param artist Artist to be have added linking table data
      * @return Artist that has had genre and country added
      */
-    private Artist populateArtist(Artist artist) {
+    public Artist populateArtist(Artist artist) {
      Map<Integer, PassportCountry> countries = new HashMap<>();
      Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
      if (countryMap.isPresent()) {
