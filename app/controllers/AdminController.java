@@ -610,17 +610,27 @@ public class AdminController {
             artist.initCountry();
             return artistRepository.checkDuplicate(artist.getArtistName()).thenApplyAsync(duplicate -> {
                 if (!duplicate) {
-                    artistRepository.insert(artist);
+                    artistRepository.insert(artist).thenApplyAsync(artistId -> {
 
                     Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
-
-                    //Insert ArtistProfiles for new Artist.
-                    for (String profileIdString: optionalProfiles.get().split(",")){
-                        Integer profileId = parseInt(profileIdString);
-                        ArtistProfile artistProfile = new ArtistProfile(profileId, artist.getArtistId());
-                        artistRepository.insertProfileLink(artistProfile);
+                    if (optionalProfiles.isPresent()) {
+                        //Insert ArtistProfiles for new Artist.
+                        for (String profileIdString : optionalProfiles.get().split(",")) {
+                            Integer profileId = parseInt(profileIdString);
+                            ArtistProfile artistProfile = new ArtistProfile(artistId, profileId);
+                            artistRepository.insertProfileLink(artistProfile);
+                        }
                     }
-                    System.out.println("Added artist");
+
+                    artistRepository.insertProfileLink(new ArtistProfile(SessionController.getCurrentUserId(request), artistId));
+                    Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
+                    if (optionalGenres.isPresent()) {
+                        for (String genre: optionalGenres.get().split(",")) {
+                            genreRepository.insertArtistGenre(artistId, parseInt(genre));
+                        }
+                    }
+                        return null;
+                    });
                     return redirect("/admin").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
                 } else {
                     return redirect("/admin").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
