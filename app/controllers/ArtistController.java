@@ -105,8 +105,8 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
-
+                        ok(viewArtist.render(profile, artist, request, messagesApi.preferred(request))))
+                        .orElseGet(() -> redirect("/profile")));
     }
 
     /**
