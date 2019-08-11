@@ -67,7 +67,6 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         List<Artist> artistList = artistRepository.getInvalidArtists();
-        loadCountries(artistList);
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
@@ -150,27 +149,6 @@ public class ArtistController extends Controller {
             });
         }
         return supplyAsync(() -> redirect("/artists").flashing("error", "Artist Profile save failed"));
-    }
-
-    /**
-     * Takes in a list of artists and loads (sets) countries into each of them.
-     * Used for displaying the artist countries
-     *
-     * @param artistList
-     * @return the same list of artists set with countries
-     */
-    private List<Artist> loadCountries(List<Artist> artistList) {
-        // TODO: 9/08/19 fix issue with Passport country and ArtistCountry being used out of turn
-//        for (Artist artist : artistList) {
-//            List<ArtistCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-//            Map<Integer, ArtistCountry> countriesMap = new HashMap<>();
-//            for (PassportCountry i : passportCountries) {
-//                //Todo fix this
-//                countriesMap.put(1, i);
-//            }
-//            artist.setCountry(countriesMap);
-//        }
-        return artistList;
     }
 
 

@@ -579,9 +579,21 @@
                                             <tr>
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
-                                                <td>FIX THIS WHEN COUNTRIES ARE FIXED</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(country <- artist.getCountry) {
+                                                        <li>@country</li>
+                                                    }
+                                                    </ul>
+                                                </td>
                                                 <td>@artist.getMembers</td>
-                                                <td>REPLACE ONCE GENRES IS WORKING</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(genre <- artist.getGenreList) {
+                                                        <li>@genre.getGenre</li>
+                                                    }
+                                                    </ul>
+                                                </td>
                                                 <td>
                                                     <ul>
                                                         @for(profile <- artist.getAdminsList) {
