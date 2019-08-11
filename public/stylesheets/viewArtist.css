@@ -4,8 +4,21 @@
     margin-right: auto;
 }
 
+#viewArtistTabs, li {
+    padding: 10px;
+}
 
-#aboutTab, #eventsTab, #membersTab {
+
+#aboutTab {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+#eventsTab{
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#membersTab {
     padding-left: 10%;
     padding-right: 10%;
 }
@@ -19,6 +32,6 @@
     margin-right: auto;
 }
 
-.nav .nav-tabs, #informationTabLink, #aboutTabLink, #eventsTabLink, #membersTabLink {
+.nav .nav-tabs, #aboutTabLink, #eventsTabLink, #membersTabLink {
     font-size: 18pt;
 }
