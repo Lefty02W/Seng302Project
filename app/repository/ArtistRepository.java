@@ -130,20 +130,20 @@ public class ArtistRepository {
      * @return Artist that has had genre and country added
      */
     private Artist populateArtist(Artist artist) {
-    // Map<Integer, PassportCountry> countries = new HashMap<>();
-    // Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
-    // if (countryMap.isPresent()) {
-    //   countries = countryMap.get();
-    // }
-    // artist.setCountry(countries);
-    // TODO fix below function
-        //artist.setGenreList(genreRepository.getArtistGenres(artist.getArtistId()));
-        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
-        if (!linkIds.isEmpty()) {
-            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
-        } else {
-            artist.setAdminsList(new ArrayList<>());
-        }
+     Map<Integer, PassportCountry> countries = new HashMap<>();
+     Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
+     if (countryMap.isPresent()) {
+       countries = countryMap.get();
+     }
+     artist.setCountry(countries);
+     //TODO fix below function
+      // artist.setGenreList(genreRepository.getArtistGenres(artist.getArtistId()));
+   //     List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
+    //    if (!linkIds.isEmpty()) {
+      //      artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
+       // } else {
+       //     artist.setAdminsList(new ArrayList<>());
+        //}
         return artist;
     }
     /**
@@ -154,8 +154,14 @@ public class ArtistRepository {
         String qry = "Select * from artist_country where artist_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, artistId).findList();
         Map<Integer, PassportCountry> country = new TreeMap<>();
+        Optional<PassportCountry> countryName;
         for (SqlRow aRowList : rowList) {
-            country.put(aRowList.getInteger("country_id"), passportCountryRepository.findById(aRowList.getInteger("artist_country_id")).get());
+            System.out.println(rowList);
+            countryName = passportCountryRepository.findById(aRowList.getInteger("country_id"));
+            System.out.println(countryName);
+            if(countryName.isPresent()) {
+                country.put(aRowList.getInteger("country_id"), countryName.get());
+            }
         }
         return Optional.of(country);
     }
