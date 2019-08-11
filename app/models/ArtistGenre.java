@@ -18,4 +18,8 @@ public class ArtistGenre {
         this.artistId = artistId;
         this.genreId = genreId;
     }
+
+    public int getGenreId() {
+        return genreId;
+    }
 }

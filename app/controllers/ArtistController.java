@@ -19,9 +19,7 @@ import utility.Country;
 import views.html.artists;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -98,7 +96,7 @@ public class ArtistController extends Controller {
                                     artistRepository.insertProfileLink(artistProfile);
                                 }
                         }
-                        artistRepository.insertProfileLink(new ArtistProfile(SessionController.getCurrentUserId(request), artistId));
+                        artistRepository.insertProfileLink(new ArtistProfile(artistId, SessionController.getCurrentUserId(request)));
                         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
                         if (optionalGenres.isPresent()) {
                             for (String genre: optionalGenres.get().split(",")) {
