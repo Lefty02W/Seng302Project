@@ -1720,7 +1720,11 @@
                                             </div>
                                             <select class="selectpicker" data-live-search="true" multiple title="Artist Admins" id="adminEditDropdown" data-width="50%">
                                             @for(profile <- profiles) {
-                                                <option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>
+                                                @if(editArtist.getObject.getAdminsList.contains(profile)) {
+                                                    <option value="@profile.getProfileId" selected>@profile.getFirstName @profile.getLastName</option>
+                                                } else {
+                                                    <option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>
+                                                }
                                             }
                                             </select>
                                         </div>
