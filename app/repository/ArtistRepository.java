@@ -267,13 +267,15 @@ public class ArtistRepository {
      * @param profileId Id of the entered profile
      * @return Optional array of integers of the followed artist id
      */
-    public Optional<ArrayList<Integer>> followArtist(int artId, int profileId) {
-        String updateQuery = "INSERT into follow_artist(profile_id, destination_id) values (?, ?)";
-        SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-        query.setParameter(1, profileId);
-        query.setParameter(2, artId);
-        query.execute();
-        return getFollowedArtistIds(profileId);
+    public CompletionStage<Optional<ArrayList<Integer>>> followArtist(int artId, int profileId) {
+        return supplyAsync(() -> {
+            String updateQuery = "INSERT into follow_artist(profile_id, destination_id) values (?, ?)";
+            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+            query.setParameter(1, profileId);
+            query.setParameter(2, artId);
+            query.execute();
+            return getFollowedArtistIds(profileId);
+        });
     }
 
     /**
@@ -283,13 +285,15 @@ public class ArtistRepository {
      * @param profileId Id of the user that wants to un-follow a artist
      * @return Optional list of integers for the followed artist ids
      */
-    public Optional<ArrayList<Integer>> unfollowArtist(int artId, int profileId) {
-        String updateQuery = "DELETE from follow_artist where profile_id = ? and destination_id =  ?";
-        SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-        query.setParameter(1, profileId);
-        query.setParameter(2, artId);
-        query.execute();
-        return getFollowedArtistIds(profileId);
+    public CompletionStage<Optional<ArrayList<Integer>>> unfollowArtist(int artId, int profileId) {
+        return supplyAsync(() -> {
+            String updateQuery = "DELETE from follow_artist where profile_id = ? and destination_id =  ?";
+            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+            query.setParameter(1, profileId);
+            query.setParameter(2, artId);
+            query.execute();
+            return getFollowedArtistIds(profileId);
+        });
     }
 
     /**
