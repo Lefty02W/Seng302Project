@@ -46,6 +46,7 @@ public class ArtistRepository {
                 .findList());
         List<Artist> outputList = new ArrayList<>();
         for( Artist artist : artistList) {
+            artist.setGenre(new ArrayList<>());
             outputList.add(populateArtist(artist));
         }
         return outputList;
@@ -124,6 +125,8 @@ public class ArtistRepository {
         }, executionContext);
     }
 
+
+
     /**
      * Method to populate a artist with all linking table data eg genre and country
      * @param artist Artist to be have added linking table data
@@ -137,13 +140,19 @@ public class ArtistRepository {
      }
      artist.setCountry(countries);
      //TODO fix below function
-      // artist.setGenreList(genreRepository.getArtistGenres(artist.getArtistId()));
-   //     List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
-    //    if (!linkIds.isEmpty()) {
-      //      artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
-       // } else {
-       //     artist.setAdminsList(new ArrayList<>());
-        //}
+        Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
+        if(genreList.isPresent()) {
+            if(!genreList.get().isEmpty()) {
+                System.out.println(genreList.get());
+                artist.setGenre(genreList.get());
+            }
+        }
+        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
+        if (!linkIds.isEmpty()) {
+            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
+        } else {
+            artist.setAdminsList(new ArrayList<>());
+        }
         return artist;
     }
     /**
@@ -156,9 +165,7 @@ public class ArtistRepository {
         Map<Integer, PassportCountry> country = new TreeMap<>();
         Optional<PassportCountry> countryName;
         for (SqlRow aRowList : rowList) {
-            System.out.println(rowList);
             countryName = passportCountryRepository.findById(aRowList.getInteger("country_id"));
-            System.out.println(countryName);
             if(countryName.isPresent()) {
                 country.put(aRowList.getInteger("country_id"), countryName.get());
             }
@@ -364,7 +371,8 @@ public class ArtistRepository {
                         , sqlRow.getString("biography"), sqlRow.getString("facebook_link")
                         , sqlRow.getString("instagram_link"), sqlRow.getString("spotify_link")
                         , sqlRow.getString("twitter_link"), sqlRow.getString("website_link")
-                        , sqlRow.getInteger("soft_delete"))));
+                        , sqlRow.getInteger("soft_delete")
+                        , new ArrayList<>())));
             }
         }
         return foundArtists;

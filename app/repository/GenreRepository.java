@@ -9,6 +9,7 @@ import play.db.ebean.EbeanConfig;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -51,15 +52,17 @@ public class GenreRepository {
      * @param artistId database id of artist to find genres for
      * @return List of found MusicGenre objects
      */
-    public List<MusicGenre> getArtistGenres(int artistId) {
-    System.out.println("yeet yeet");
+    public Optional<List<MusicGenre>> getArtistGenres(int artistId) {
         List<ArtistGenre> artistGenres = ebeanServer.find(ArtistGenre.class).where().eq("artist_id", artistId).findList();
         List<MusicGenre> genres = new ArrayList<>();
+        Optional<MusicGenre> musicGenre;
         for (ArtistGenre genre : artistGenres) {
-            genres.add(ebeanServer.find(MusicGenre.class).where().eq("genre_id", genre.getGenreId()).findOne());
+            musicGenre = Optional.ofNullable(ebeanServer.find(MusicGenre.class).where().eq("genre_id", genre.getGenreId()).findOne());
+            if (musicGenre.isPresent()) {
+                genres.add(musicGenre.get());
+            }
         }
-    System.out.println("Genres " + genres);
-        return genres;
+        return Optional.of(genres);
     }
 
 
