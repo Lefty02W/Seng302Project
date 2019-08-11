@@ -1,12 +1,14 @@
 package models;
 
 import play.data.validation.Constraints;
-import repository.ArtistRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 public class Artist {
@@ -33,6 +35,8 @@ public class Artist {
     private Collection<Profile> adminsList;
 
     private String members;
+
+    private int verified;
 
     @Transient
     private Map<Integer, PassportCountry> country;
@@ -132,6 +136,10 @@ public class Artist {
     }
 
     //Getters and setters
+    public int getVerified() {
+        return verified;
+    }
+
     public String getMembers() {
         return members;
     }

@@ -182,6 +182,9 @@ INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (3, 'Jerry', 'Jerry', 'jerry');
 
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (4, 'Yes', 'Jerry', 'jerry');
+
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
 

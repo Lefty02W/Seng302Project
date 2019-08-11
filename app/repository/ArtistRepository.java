@@ -205,4 +205,15 @@ public class ArtistRepository {
             return null;
         });
     }
+
+    /**
+     * Method to retrieve an artist from the database using a passed database id
+     *
+     * @param artistId the id of the artist to retrieve
+     * @return the found artist
+     */
+    public Artist getArtist(int artistId) {
+        //TODO pass to populate artist method once merged with artist-profile branch
+        return ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
+    }
 }

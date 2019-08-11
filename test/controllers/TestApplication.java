@@ -17,6 +17,8 @@ public class TestApplication {
     private static ProfilePassportCountryRepository profilePassportCountryRepository;
     private static PassportCountryRepository passportCountryRepository;
     private static UndoStackRepository undoStackRepository;
+    private static ArtistRepository artistRepository;
+    private static GenreRepository genreRepository;
 
     /**
      * Static method to get an instance of the test application
@@ -46,7 +48,10 @@ public class TestApplication {
      */
     public static TreasureHuntRepository getTreasureHuntRepository() {
         checkApplication();
-        return application.injector().instanceOf(TreasureHuntRepository.class);
+        if (treasureHuntRepository == null) {
+            treasureHuntRepository = application.injector().instanceOf(TreasureHuntRepository.class);
+        }
+        return treasureHuntRepository;
     }
 
     /**
@@ -55,7 +60,10 @@ public class TestApplication {
      */
     public static UndoStackRepository getUndoStackRepository() {
         checkApplication();
-        return application.injector().instanceOf(UndoStackRepository.class);
+        if (undoStackRepository == null) {
+            undoStackRepository = application.injector().instanceOf(UndoStackRepository.class);
+        }
+        return undoStackRepository;
     }
 
     /**
@@ -64,7 +72,10 @@ public class TestApplication {
      */
     public static ProfilePassportCountryRepository getProfilePassportCountryRepository() {
         checkApplication();
-        return application.injector().instanceOf(ProfilePassportCountryRepository.class);
+        if (profilePassportCountryRepository == null) {
+            profilePassportCountryRepository = application.injector().instanceOf(ProfilePassportCountryRepository.class);
+        }
+        return profilePassportCountryRepository;
     }
 
     /**
@@ -73,7 +84,10 @@ public class TestApplication {
      */
     public static PhotoRepository getPhotoRepository() {
         checkApplication();
-        return application.injector().instanceOf(PhotoRepository.class);
+        if (photoRepository == null) {
+            photoRepository = application.injector().instanceOf(PhotoRepository.class);
+        }
+        return photoRepository;
     }
 
     /**
@@ -82,7 +96,10 @@ public class TestApplication {
      */
     public static DestinationRepository getDestinationRepository() {
         checkApplication();
-        return application.injector().instanceOf(DestinationRepository.class);
+        if (destinationRepository == null) {
+            destinationRepository = application.injector().instanceOf(DestinationRepository.class);
+        }
+        return destinationRepository;
     }
 
     /**
@@ -91,7 +108,10 @@ public class TestApplication {
      */
     public static ProfileRepository getProfileRepository() {
         checkApplication();
-        return application.injector().instanceOf(ProfileRepository.class);
+        if (profileRepository == null) {
+            profileRepository = application.injector().instanceOf(ProfileRepository.class);
+        }
+        return profileRepository;
     }
 
     /**
@@ -100,7 +120,10 @@ public class TestApplication {
      */
     public static TripRepository getTripRepository() {
         checkApplication();
-        return application.injector().instanceOf(TripRepository.class);
+        if (tripRepository == null) {
+            tripRepository = application.injector().instanceOf(TripRepository.class);
+        }
+        return tripRepository;
     }
 
     /**
@@ -109,7 +132,10 @@ public class TestApplication {
      */
     public static RolesRepository getRolesRepository() {
         checkApplication();
-        return application.injector().instanceOf(RolesRepository.class);
+        if (rolesRepository == null) {
+            rolesRepository = application.injector().instanceOf(RolesRepository.class);
+        }
+        return rolesRepository;
     }
 
     /**
@@ -118,7 +144,10 @@ public class TestApplication {
      */
     public static PassportCountryRepository getPassportCountryRepository() {
         checkApplication();
-        return application.injector().instanceOf(PassportCountryRepository.class);
+        if (passportCountryRepository == null) {
+            passportCountryRepository = application.injector().instanceOf(PassportCountryRepository.class);
+        }
+        return passportCountryRepository;
     }
 
     /**
@@ -127,7 +156,10 @@ public class TestApplication {
      */
     public static ArtistRepository getArtistRepository() {
         checkApplication();
-        return application.injector().instanceOf(ArtistRepository.class);
+        if (artistRepository == null) {
+            artistRepository = application.injector().instanceOf(ArtistRepository.class);
+        }
+        return artistRepository;
     }
 
     /**
@@ -136,7 +168,10 @@ public class TestApplication {
      */
     public static GenreRepository getGenreRepository() {
         checkApplication();
-        return application.injector().instanceOf(GenreRepository.class);
+        if (genreRepository == null) {
+            genreRepository = application.injector().instanceOf(GenreRepository.class);
+        }
+        return genreRepository;
     }
 
 }
