@@ -315,11 +315,15 @@ public class ArtistRepository {
      * @return List of artists
      */
     public List<Artist> searchArtist(String name, String genre, String country, int followed){
-        String queryString = "SELECT * FROM artist " +
-                "JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
-                "JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
-                "JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
-                "JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id ";
+        if(name.equals("") && genre.equals("") && country.equals("")) {
+            return getAllArtists();
+        }
+        System.out.println(country);
+        String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
+                "LEFT OUTER JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
+                "LEFT OUTER JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
+                "LEFT OUTER JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
+                "LEFT OUTER JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id ";
         boolean namePresent = false;
         boolean genrePresent = false;
         if (!name.equals("")){
@@ -343,7 +347,7 @@ public class ArtistRepository {
         }
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
-            sqlQuery.setParameter(1, name+"%");
+            sqlQuery.setParameter(1, "%" + name + "%");
         }
         if (!genre.equals("")){
             if (namePresent){
@@ -361,10 +365,12 @@ public class ArtistRepository {
                 sqlQuery.setParameter(1,country);
             }
         }
+        System.out.println(sqlQuery);
 
         // TODO: 8/08/19 turn into another function
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
+        System.out.println(foundRows);
         if (!foundRows.isEmpty()){
             for (SqlRow sqlRow : foundRows){
                 foundArtists.add(populateArtist(new Artist(sqlRow.getInteger("artist_id"), sqlRow.getString("artist_name")
@@ -375,6 +381,7 @@ public class ArtistRepository {
                         , new ArrayList<>())));
             }
         }
+        System.out.println(foundArtists);
         return foundArtists;
     }
 
