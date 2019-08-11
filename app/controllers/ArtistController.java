@@ -109,7 +109,7 @@ public class ArtistController extends Controller {
                     });
                     return redirect("/artists").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
                 } else {
-                    return redirect("/artists").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
+                    return redirect("/artists").flashing("error", "Artist with the name " + artist.getArtistName() + " already exists!");
                 }
             });
         }
@@ -124,7 +124,7 @@ public class ArtistController extends Controller {
     private void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
         Optional<String> optionalCountries = artistProfileForm.field("countries").value();
                         if(optionalCountries.isPresent()){
-                            for (String country: optionalCountries.get().split(",")){
+                            for (String country: optionalCountries.get().split(",")) {
                                 Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(country);
                                 if (countryObject.isPresent()){
                                     ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), countryObject.get());

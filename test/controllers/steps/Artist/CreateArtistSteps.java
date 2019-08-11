@@ -130,10 +130,7 @@ public class CreateArtistSteps {
     @Then("^The artist genre links are saved$")
     public void theArtistGenreLinksAreSaved() throws Throwable {
         List<Artist> artists = TestApplication.getArtistRepository().getAllUserArtists(2);
-        System.out.println(artists);
-        System.out.println(artists.size());
         for (Artist artist : artists) {
-            System.out.println(artist.getArtistName());
             if (artist.getArtistName().equals("Jim James")) {
                 foundArtist = artist;
             }
