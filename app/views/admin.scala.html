@@ -5,7 +5,7 @@
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
         countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
-        artists : List[Artist], editArtist: RoutedObject[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+        artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -1580,8 +1580,9 @@
                                             <input type="text" id="genreForm" name="genreForm" class="hidden-field">
                                         </div>
                                         <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
-                                            <option value="1">Import genres into this page</option>
-
+                                            @for(genre <- genres) {
+                                                <option value="@genre.getGenreId">@genre.getGenre</option>
+                                            }
                                         </select>
                                     </div>
                                     <div class="row justify-content-center">
@@ -1707,11 +1708,11 @@
                                             </select>
                                         </div>
                                         <div class="row justify-content-center">
-                                            <label>Artist Admins*</label>
+                                            <label>Artist Admins</label>
                                         </div>
                                         <div class="row justify-content-center">
                                             <div class="hidden-div-edit">
-                                                <input type="text" id="adminEditForm" name="adminForm" class="hidden-field" required>
+                                                <input type="text" id="adminEditForm" name="adminForm" class="hidden-field">
                                             </div>
                                             <select class="selectpicker" data-live-search="true" multiple title="Artist Admins" id="adminEditDropdown" data-width="50%">
                                             @for(profile <- profiles) {
