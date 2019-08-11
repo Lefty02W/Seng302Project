@@ -32,6 +32,14 @@
     margin-right: auto;
 }
 
+#artistsFooter {
+    position: fixed;
+    bottom: 0;
+    max-height: 10%;
+    max-width: unset;
+    background: #205723 !important;
+}
+
 .nav .nav-tabs, #aboutTabLink, #eventsTabLink, #membersTabLink {
     font-size: 18pt;
 }
