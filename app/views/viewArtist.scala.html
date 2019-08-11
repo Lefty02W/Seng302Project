@@ -90,12 +90,10 @@
                         </div>
 
                         <div id="membersTab" class="tab-pane fade">
-                        @for(member <- artist.getMembers()) {
+                        @for(member <- artist.getMembers().split(",")) {
                             <div class="card">
                                 <div class="card-body">
-                                    <p class="card-text" value="@member"></p>
-                                    <p class="card-text" value="@member"></p>
-                                    <p class="card-text" value="@member"></p>
+                                    <p class="card-text">@member</p>
                                 </div>
                             </div>
                         }
