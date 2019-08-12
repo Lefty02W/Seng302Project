@@ -13,6 +13,11 @@
     height: 200px;
 }
 
+#show-more{
+    min-width: 91%;
+    margin: 61px;
+}
+
 .viewArtists {
     height: 650px;
 }
