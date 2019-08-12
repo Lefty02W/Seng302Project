@@ -399,6 +399,20 @@ create index artist_genre_genre_fk
 
 
 
+create table artist_country
+(
+	artist_id int not null,
+	country_id int not null,
+	constraint artist_country__artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_country_country__fk
+		foreign key (country_id) references passport_country (passport_country_id)
+			on update cascade on delete cascade
+)
+;
+
+
 
 
 
@@ -459,3 +473,5 @@ drop table if exists artist_genre;
 drop table if exists music_genre;
 
 drop table if exists artist_profile;
+
+drop table if exists artist_country;

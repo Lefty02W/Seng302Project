@@ -5,13 +5,11 @@ import io.ebean.EbeanServer;
 import models.Artist;
 import models.ArtistCountry;
 import models.ArtistProfile;
-import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -51,23 +49,7 @@ public class ArtistRepository {
      */
     public CompletionStage<Integer> insert(Artist artist) {
         return supplyAsync(() -> {
-
             ebeanServer.insert(artist);
-
-            // Adding artist countries to artist_country in the database
-            for (String countryName : artist.getCountryList()) {
-                PassportCountry country = ebeanServer.find(PassportCountry.class)
-                        .where().eq("passport_name", countryName)
-                        .findOne();
-
-                if (country == null) { passportCountryRepository.insert(new PassportCountry(countryName)); }
-                Optional<Integer> passportCountryId = passportCountryRepository.getPassportCountryId(countryName);
-                supplyAsync(() -> {
-                    ebeanServer.insert(new ArtistCountry(artist.getArtistId(), passportCountryId.get()));
-                    return null;
-                });
-            }
-
             return artist.getArtistId();
         }, executionContext);
     }
@@ -201,7 +183,11 @@ public class ArtistRepository {
      */
     public CompletionStage<Void> addCountrytoArtistCountryTable(ArtistCountry artistCountry){
         return supplyAsync(() -> {
-            ebeanServer.insert(artistCountry);
+            try {
+                ebeanServer.insert(artistCountry);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         });
     }

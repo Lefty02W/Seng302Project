@@ -99,8 +99,10 @@ public class ArtistController extends Controller {
                         artistRepository.insertProfileLink(new ArtistProfile(artistId, SessionController.getCurrentUserId(request)));
                         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
                         if (optionalGenres.isPresent()) {
-                            for (String genre: optionalGenres.get().split(",")) {
-                                genreRepository.insertArtistGenre(artistId, parseInt(genre));
+                            if (!optionalGenres.get().isEmpty()) {
+                                for (String genre : optionalGenres.get().split(",")) {
+                                    genreRepository.insertArtistGenre(artistId, parseInt(genre));
+                                }
                             }
                         }
                         saveArtistCountries(artist, artistProfileForm);
@@ -123,23 +125,23 @@ public class ArtistController extends Controller {
      */
     private void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
         Optional<String> optionalCountries = artistProfileForm.field("countries").value();
-                        if(optionalCountries.isPresent()){
-                            for (String country: optionalCountries.get().split(",")) {
-                                Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(country);
-                                if (countryObject.isPresent()){
-                                    ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), countryObject.get());
-                                    artistRepository.addCountrytoArtistCountryTable(artistCountry);
-                                } else {
-                                    PassportCountry passportCountry = new PassportCountry(country);
-                                    passportCountryRepository.insert(passportCountry);
-                                    Optional<Integer> newCountryObject = passportCountryRepository.getPassportCountryId(country);
-                                    if(newCountryObject.isPresent()){
-                                        ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), newCountryObject.get());
-                                        artistRepository.addCountrytoArtistCountryTable(artistCountry);
-                                    }
-                                }
-                            }
-                        }
+        if(optionalCountries.isPresent()){
+            for (String country: optionalCountries.get().split(",")) {
+                Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(country);
+                if (countryObject.isPresent()) {
+                    ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), countryObject.get());
+                    artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                } else {
+                    PassportCountry passportCountry = new PassportCountry(country);
+                    passportCountryRepository.insert(passportCountry);
+                    Optional<Integer> newCountryObject = passportCountryRepository.getPassportCountryId(country);
+                    if(newCountryObject.isPresent()){
+                        ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), newCountryObject.get());
+                        artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                    }
+                }
+            }
+        }
     }
 
     /**
