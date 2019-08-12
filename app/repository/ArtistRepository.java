@@ -3,8 +3,6 @@ package repository;
 import io.ebean.*;
 import models.*;
 import play.db.ebean.EbeanConfig;
-import play.db.ebean.Transactional;
-import utility.Country;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -48,9 +46,24 @@ public class ArtistRepository {
                 .findList());
         List<Artist> outputList = new ArrayList<>();
         for( Artist artist : artistList) {
+            artist.setGenre(new ArrayList<>());
             outputList.add(populateArtist(artist));
         }
         return outputList;
+    }
+
+
+    /**
+     * Get a single registered artist
+     * @param artistID - The ID of the artists to retrieve
+     * @return Artist, list of all Artist
+     */
+    public Artist getArtistById(Integer artistID) {
+        return (ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("artist_id", artistID)
+                .findOne());
     }
 
 
@@ -112,20 +125,34 @@ public class ArtistRepository {
         }, executionContext);
     }
 
+
+
     /**
      * Method to populate a artist with all linking table data eg genre and country
      * @param artist Artist to be have added linking table data
      * @return Artist that has had genre and country added
      */
-    private Artist populateArtist(Artist artist) {
-        //Map<Integer, PassportCountry> countries = new HashMap<>();
-        //Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
-        //if (countryMap.isPresent()) {
-         //   countries = countryMap.get();
-       // }
-       // artist.setCountry(countries);
-        //TODO fix below function
-       // artist.setGenre(genreRepository.getArtistGenres(artist.getArtistId()));
+    public Artist populateArtist(Artist artist) {
+     Map<Integer, PassportCountry> countries = new HashMap<>();
+     Optional<Map<Integer, PassportCountry>> countryMap = getCountryList(artist.getArtistId());
+     if (countryMap.isPresent()) {
+       countries = countryMap.get();
+     }
+     artist.setCountry(countries);
+     //TODO fix below function
+        Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
+        if(genreList.isPresent()) {
+            if(!genreList.get().isEmpty()) {
+                System.out.println(genreList.get());
+                artist.setGenre(genreList.get());
+            }
+        }
+        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
+        if (!linkIds.isEmpty()) {
+            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
+        } else {
+            artist.setAdminsList(new ArrayList<>());
+        }
         return artist;
     }
     /**
@@ -136,8 +163,12 @@ public class ArtistRepository {
         String qry = "Select * from artist_country where artist_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, artistId).findList();
         Map<Integer, PassportCountry> country = new TreeMap<>();
+        Optional<PassportCountry> countryName;
         for (SqlRow aRowList : rowList) {
-            country.put(aRowList.getInteger("country_id"), passportCountryRepository.findById(aRowList.getInteger("artist_country_id")).get());
+            countryName = passportCountryRepository.findById(aRowList.getInteger("country_id"));
+            if(countryName.isPresent()) {
+                country.put(aRowList.getInteger("country_id"), countryName.get());
+            }
         }
         return Optional.of(country);
     }
@@ -149,7 +180,6 @@ public class ArtistRepository {
      * @return Artists, an ArrayList of all artists that user is a part of.
      */
     public List<Artist> getAllUserArtists(int userId) {
-
         List<ArtistProfile> artistProfiles = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
                 .where()
                 //.eq("soft_delete", 0)
@@ -291,11 +321,15 @@ public class ArtistRepository {
      * @return List of artists
      */
     public List<Artist> searchArtist(String name, String genre, String country, int followed){
-        String queryString = "SELECT * FROM artist " +
-                "JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
-                "JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
-                "JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
-                "JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id ";
+        if(name.equals("") && genre.equals("") && country.equals("")) {
+            return getAllArtists();
+        }
+        System.out.println(country);
+        String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
+                "LEFT OUTER JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
+                "LEFT OUTER JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
+                "LEFT OUTER JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
+                "LEFT OUTER JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id ";
         boolean namePresent = false;
         boolean genrePresent = false;
         if (!name.equals("")){
@@ -319,7 +353,7 @@ public class ArtistRepository {
         }
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
-            sqlQuery.setParameter(1, name+"%");
+            sqlQuery.setParameter(1, "%" + name + "%");
         }
         if (!genre.equals("")){
             if (namePresent){
@@ -337,19 +371,23 @@ public class ArtistRepository {
                 sqlQuery.setParameter(1,country);
             }
         }
+        System.out.println(sqlQuery);
 
         // TODO: 8/08/19 turn into another function
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
+        System.out.println(foundRows);
         if (!foundRows.isEmpty()){
             for (SqlRow sqlRow : foundRows){
                 foundArtists.add(populateArtist(new Artist(sqlRow.getInteger("artist_id"), sqlRow.getString("artist_name")
                         , sqlRow.getString("biography"), sqlRow.getString("facebook_link")
                         , sqlRow.getString("instagram_link"), sqlRow.getString("spotify_link")
                         , sqlRow.getString("twitter_link"), sqlRow.getString("website_link")
-                        , sqlRow.getInteger("soft_delete"))));
+                        , sqlRow.getInteger("soft_delete")
+                        , new ArrayList<>())));
             }
         }
+        System.out.println(foundArtists);
         return foundArtists;
     }
 

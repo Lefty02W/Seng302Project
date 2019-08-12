@@ -1,31 +1,26 @@
 package controllers.steps.TreasureHunts;
 
-import controllers.ProvideApplication;
-import cucumber.api.PendingException;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.TreasureHunt;
 import org.joda.time.DateTime;
-import play.api.data.Form;
 import play.mvc.Http;
 import play.test.Helpers;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Steps for testing createHunt in TreasureHuntController.
  */
-public class CreateHuntSteps extends ProvideApplication {
+public class CreateHuntSteps {
 
         private Map<String, String> createForm = new HashMap<>();
         private static DateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
@@ -66,20 +61,19 @@ public class CreateHuntSteps extends ProvideApplication {
 
         @When("^I click create treasure hunt$")
         public void iClickCreateTreasureHunt() {
-            injectRepositories();
-            numberExistingHunts = treasureHuntRepository.getAllUserTreasureHunts(1).size();
+            numberExistingHunts = TestApplication.getTreasureHuntRepository().getAllUserTreasureHunts(1).size();
             Http.RequestBuilder request = Helpers.fakeRequest()
                     .method("POST")
                     .uri("/hunts/create")
                     .bodyForm(createForm)
                     .session("connected", "1");
-            Helpers.route(provideApplication(), request);
+            Helpers.route(TestApplication.getApplication(), request);
         }
 
         @Then("^the treasure hunt is made$")
         public void theTreasureHuntIsMade(){
 
-            List<TreasureHunt> allJohnHunts = treasureHuntRepository.getAllUserTreasureHunts(1);
+            List<TreasureHunt> allJohnHunts = TestApplication.getTreasureHuntRepository().getAllUserTreasureHunts(1);
             TreasureHunt newHunt = allJohnHunts.get(allJohnHunts.size() - 1);
 
             //Check a hunt was added
@@ -93,9 +87,7 @@ public class CreateHuntSteps extends ProvideApplication {
 
         @Then("The treasure hunt is not made")
         public void theTreasureHuntIsNotMade() {
-            injectRepositories();
-
-            List<TreasureHunt> allJohnHunts = treasureHuntRepository.getAllUserTreasureHunts(1);
+            List<TreasureHunt> allJohnHunts = TestApplication.getTreasureHuntRepository().getAllUserTreasureHunts(1);
             TreasureHunt newHunt = allJohnHunts.get(allJohnHunts.size() - 1);
 
             //Check a hunt was not added

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import models.Artist;
 import models.ArtistFormData;
 import models.ArtistProfile;
-import models.PassportCountry;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -20,11 +19,10 @@ import repository.PassportCountryRepository;
 import repository.ProfileRepository;
 import utility.Country;
 import views.html.artists;
+import views.html.viewArtist;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -110,6 +108,24 @@ public class ArtistController extends Controller {
     }
 
     /**
+     * Endpoint for landing page for viweing details of artists
+     *
+     * @param request client request
+     * @return CompletionStage rendering artist page
+     */
+    public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistID) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        Artist artist = artistRepository.getArtistById(artistID);
+        if (artist == null) {
+            return profileRepository.findById (profId).thenApplyAsync(profile -> redirect("/artists"));
+        }
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileRec -> profileRec.map(profile ->
+                        ok(viewArtist.render(profile, artist, request, messagesApi.preferred(request))))
+                        .orElseGet(() -> redirect("/profile")));
+    }
+
+    /**
      * Method to call repository method to save an Artist profile to the database
      * grabs the artistProfile object required for the insert
      * @param request
@@ -154,26 +170,6 @@ public class ArtistController extends Controller {
         return supplyAsync(() -> redirect("/artists").flashing("error", "Artist Profile save failed"));
     }
 
-    /**
-     * Takes in a list of artists and loads (sets) countries into each of them.
-     * Used for displaying the artist countries
-     *
-     * @param artistList
-     * @return the same list of artists set with countries
-     */
-    private List<Artist> loadCountries(List<Artist> artistList) {
-        for (Artist artist : artistList) {
-            List<PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-            Map<Integer, PassportCountry> countriesMap = new HashMap<>();
-            for (PassportCountry i : passportCountries) {
-                //Todo fix this
-                countriesMap.put(1, i);
-            }
-            artist.setCountry(countriesMap);
-        }
-        return artistList;
-    }
-
 
     /**
      * Method for user to delete their artist profile
@@ -185,8 +181,6 @@ public class ArtistController extends Controller {
         return artistRepository.deleteArtist(artistId)
                 .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist was successfully deleted"));
     }
-
-
 
 
     /**

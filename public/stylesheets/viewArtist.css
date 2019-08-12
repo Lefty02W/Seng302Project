@@ -1,0 +1,51 @@
+#viewArtistTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#viewArtistTabs, li {
+    padding: 10px;
+}
+
+
+#aboutTab {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+#eventsTab{
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#membersTab {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#artistNameJumbo {
+
+}
+
+#viewArtistTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#artistsFooter {
+    position: fixed;
+    bottom: 0;
+    max-height: 10%;
+    max-width: unset;
+    background: #205723 !important;
+}
+
+
+#fbIcon, #instaIcon, #spotifyIcon, #twIcon{
+    color: white;
+    /*margin-left: auto;*/
+}
+
+.nav .nav-tabs, #aboutTabLink, #eventsTabLink, #membersTabLink {
+    font-size: 18pt;
+}

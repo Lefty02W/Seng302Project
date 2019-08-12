@@ -124,6 +124,7 @@
                                             }
                                             </select>
                                             <input type="checkbox" id="toggle" checked data-toggle="toggle" data-on="New Artists" data-off="Followed Artists" data-offstyle="info">
+                                            }
                                             <button class="btn btn-primary">Clear</button>
                                         </div>
                                     </div>
@@ -132,34 +133,33 @@
                         </div>
                     </div>
 
-                }
+
 
 
                 <div class="viewArtists">
                     <div class="row">
-                        @for(artist <- artists) {
-                            <div class="card-body col col-md-12 col-xl-6" id="artist-card">
-                                <div class="card-header"> @artist.getArtistName</div>
+                @for(artist <- artists) {
+                    <div class="card-body col col-md-12 col-xl-6" id="artist-card">
+                        <div class="card-header"> @artist.getArtistName</div>
+                        <div class="row">
+                            <div class="col col-10">
+                            <p id="artist-stats"> @artist.getCountry <br> @artist.getBiography <br> @artist.getGenreList </p>
+                            </div>
+                            <div class="col col-2">
                                 <div class="row">
-                                    <div class="col col-10">
-                                    <p id="artist-stats"> @artist.getCountry <br> @artist.getBiography <br> @artist.getGenre </p>
-                                    </div>
-                                    <div class="col col-2">
-                                        <div class="row">
-                                            <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
-                                        </div>
-                                        <div class="row">
-                                            <button class="btn btn-primary">Follow</button>
-                                        </div>
-                                    </div>
+                                    <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
+                                </div>
+                                <div class="row">
+                                    <button class="btn btn-primary">Follow</button>
                                 </div>
                             </div>
-                        }
-                    </div>
-                    <div class="row">
-                        <div class="row">
-                            <button class="btn btn-outline-primary"  id="show-more" onclick="load_infinite()">Load more...</button>
                         </div>
+                    </div>
+                }
+                <div class="row">
+                    <div class="row">
+                        <button class="btn btn-outline-primary"  id="show-more" onclick="load_infinite()">Load more...</button>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -282,11 +282,16 @@
     </div>
 
     <script>
-        function fillValsArtist() {
-            $('#genreForm').val($('#genreDropdown').val());
-            $('#adminForm').val($('#adminDropdown').val());
-            $('#countries').val($('#originDropdown').val());
-        }
+            function fillValsArtist() {
+                $('#genreForm').val($('#genreDropdown').val());
+                $('#adminForm').val($('#adminDropdown').val());
+                $('#countries').val($('#originDropdown').val());
+            }
+
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
 
 //==============================================INFINITE SCROLLING======================================================
         var page_count;
@@ -326,9 +331,5 @@
 
         };
 
-
-
-
-
-            </script>
+    </script>
 </html>

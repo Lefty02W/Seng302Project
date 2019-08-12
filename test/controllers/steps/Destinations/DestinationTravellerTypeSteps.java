@@ -1,6 +1,6 @@
 package controllers.steps.Destinations;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -8,14 +8,13 @@ import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
-import repository.DestinationRepository;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class DestinationTravellerTypeSteps extends ProvideApplication {
+public class DestinationTravellerTypeSteps {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> requestForm = new HashMap<>();
     private Map<String, String> secondRequestForm = new HashMap<>();
@@ -33,14 +32,14 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
                 .uri("/login")
                 .bodyForm(loginForm)
                 .session("connected", "1");
-        Result loginResult = Helpers.route(provideApplication(), request);
+        Result loginResult = Helpers.route(TestApplication.getApplication(), request);
 
         //navigates to destinations scene
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/destinations/show/false")
                 .session("connected", "1");
-        Result destinationResult = Helpers.route(provideApplication(), requestDest);
+        Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         assertEquals(200, destinationResult.status());
     }
 
@@ -68,7 +67,7 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
                 .uri("/destinations/type/request")
                 .bodyForm(requestForm)
                 .session("connected", "1");
-        result = Helpers.route(provideApplication(), request);
+        result = Helpers.route(TestApplication.getApplication(), request);
 
     }
 
@@ -79,7 +78,7 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
                 .uri("/destinations/type/request")
                 .bodyForm(secondRequestForm)
                 .session("connected", "1");
-        result = Helpers.route(provideApplication(), request);
+        result = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("the requests pass to the admin")
@@ -106,6 +105,6 @@ public class DestinationTravellerTypeSteps extends ProvideApplication {
                 .uri("/destinations/type/request")
                 .bodyForm(thirdRequestForm)
                 .session("connected", "1");
-        result = Helpers.route(provideApplication(), request);
+        result = Helpers.route(TestApplication.getApplication(), request);
     }
 }

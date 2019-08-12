@@ -1,17 +1,19 @@
 package roles;
 
+import controllers.TestApplication;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import controllers.ProvideApplication;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static play.test.Helpers.GET;
 
 
-public class RestrictAnnotationActionTest extends ProvideApplication{
+public class RestrictAnnotationActionTest {
 
 
     /**
@@ -21,13 +23,23 @@ public class RestrictAnnotationActionTest extends ProvideApplication{
      */
     @Test
     public void attemptToShowAdminPage() {
-        loginUser();
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "john@gmail.com");
+        formData.put("password", "password");
+
         Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/admin")
                 .session("connected", "1");
 
-        Result result = Helpers.route(provideApplication(),request);
+        result = Helpers.route(TestApplication.getApplication(),request);
         assertEquals(303, result.status());
     }
 
@@ -38,14 +50,23 @@ public class RestrictAnnotationActionTest extends ProvideApplication{
      */
     @Test
     public void showAdminPage() {
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "bob@gmail.com");
+        formData.put("password", "password");
 
-        adminLogin();
         Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        request = Helpers.fakeRequest()
                 .method(GET)
                 .uri("/admin")
                 .session("connected", "4");
 
-        Result result = Helpers.route(provideApplication(),request);
+        result = Helpers.route(TestApplication.getApplication(),request);
 
         assertEquals(200, result.status());
     }
