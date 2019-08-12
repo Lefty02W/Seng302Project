@@ -38,25 +38,28 @@ public class ProfilePassportCountryRepository {
         } catch(Exception e) {
            idOpt = null;
         }
-        Integer passportId;
-        if (idOpt == -1) {
-            passportId = passportCountryRepository.insert(passport).get();
-        } else {
-            passportId = idOpt;
+        if (idOpt == null) {
+            passportCountryRepository.insert(passport).thenApplyAsync(id -> {
+                if (id.isPresent()) {
+                    Transaction txn = ebeanServer.beginTransaction();
+                    String qry = "INSERT into profile_passport_country (profile, passport_country) " +
+                            "VALUES (?, ?)";
+                    try {
+                        SqlUpdate query = Ebean.createSqlUpdate(qry);
+                        query.setParameter(1, profileId);
+                        query.setParameter(2, id.get());
+                        query.execute();
+                        txn.commit();
+                    } finally {
+                        txn.end();
+                    }
+                }
+                return null;
+            });
         }
-        Transaction txn = ebeanServer.beginTransaction();
-        String qry = "INSERT into profile_passport_country (profile, passport_country) " +
-                "VALUES (?, ?)";
-        try {
-            SqlUpdate query = Ebean.createSqlUpdate(qry);
-            query.setParameter(1, profileId);
-            query.setParameter(2, passportId);
-            query.execute();
-            txn.commit();
-        } finally {
-            txn.end();
-        }
-        return Optional.of(passportId);
+
+//TODO get new insert id and return it
+        return Optional.of(idOpt);
     }
 
     /**

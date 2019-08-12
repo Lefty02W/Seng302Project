@@ -133,12 +133,14 @@ public class ArtistController extends Controller {
                     artistRepository.addCountrytoArtistCountryTable(artistCountry);
                 } else {
                     PassportCountry passportCountry = new PassportCountry(country);
-                    passportCountryRepository.insert(passportCountry);
-                    Optional<Integer> newCountryObject = passportCountryRepository.getPassportCountryId(country);
-                    if(newCountryObject.isPresent()){
-                        ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), newCountryObject.get());
-                        artistRepository.addCountrytoArtistCountryTable(artistCountry);
-                    }
+                    passportCountryRepository.insert(passportCountry).thenApplyAsync(id -> {
+                        if (id.isPresent()) {
+                            ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), id.get());
+                            artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                        }
+                        return null;
+                    });
+
                 }
             }
         }
