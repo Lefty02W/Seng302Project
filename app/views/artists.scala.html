@@ -135,7 +135,7 @@
                 }
 
 
-                <div class="viewArtists" onscroll="scroll_infinite()">
+                <div class="viewArtists">
                     <div class="row">
                         @for(artist <- artists) {
                             <div class="card-body col col-md-12 col-xl-6" id="artist-card">
@@ -158,7 +158,7 @@
                     </div>
                     <div class="row">
                         <div class="row">
-                            <button class="btn btn-outline-primary"  id="show-more" onclick="scroll_infinite">Load more...</button>
+                            <button class="btn btn-outline-primary"  id="show-more" onclick="load_infinite()">Load more...</button>
                         </div>
                     </div>
                 </div>
@@ -288,49 +288,42 @@
             $('#countries').val($('#originDropdown').val());
         }
 
-
-
 //==============================================INFINITE SCROLLING======================================================
+        var page_count;
 
-        //
-        // function element_in_scroll(elem)
-        // {
-        //     var docViewTop = $(window).scrollTop();
-        //     var docViewBottom = docViewTop + $(window).height();
-        //
-        //     var elemTop = $(elem).top;
-        //     var elemBottom = elemTop + $(elem).height();
-        //     console.log("Scrolling:" + docViewBottom);
-        //     return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
-        // }
+        $(function() {
+            page_count = 0;
+        });
 
 
-        function scroll_infinite(){
-            // console.log("Scrolling!");
-            // if (element_in_scroll("artist-card")) {
-            //     $(document.getElementById("artist-container")).unbind('scroll');
-            //     console.log("At bottom!");
-            //
-            //     // var url = "./" + page + ".html";
-            //
-            //     $(buttonId).hide();
-            //     $(loadingId).show();
-            //
-            //     $.ajax({
-            //         url: url,
-            //         success: function(response) {
-            //             if (!response || response.trim() == "NONE") {
-            //                 $(buttonId).fadeOut();
-            //                 $(loadingId).text("No more entries to load!");
-            //                 return;
-            //             }
-            //             appendContests(response);
-            //         },
-            //         error: function(response) {
-            //             $(loadingId).text("Sorry, there was some error with the request. Please refresh the page.");
-            //         }
-            //     });
-            // };
+        function load_infinite(){
+            page_count ++;
+
+            $("#show-more").text("Loading...");
+            $("#show-more").prop('disabled', true);
+
+            fetch('/artists/page/'+page_count)
+                    .then(
+                            function(response) {
+                                if (response.status !== 200) {
+                                    console.log('Looks like there was a problem. Status Code: ' +
+                                            response.status);
+                                    return;
+                                }
+                                //
+                                $("#show-more").text("Load more");
+                                $("#show-more").prop('disabled', false);
+
+                                // Examine the text in the response
+                                response.json().then(function(data) {
+                                    console.log(data);
+                                });
+                            }
+                    )
+                    .catch(function(err) {
+                        console.log('Fetch Error :-S', err);
+                    });
+
         };
 
 
