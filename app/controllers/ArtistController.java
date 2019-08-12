@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import models.Artist;
 import models.ArtistFormData;
 import models.ArtistProfile;
@@ -7,6 +8,7 @@ import models.PassportCountry;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
+import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -68,11 +70,24 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
-        List<Artist> artistList = artistRepository.getInvalidArtists();
+
+        //Start with page = 0
+        List<Artist> artistList = artistRepository.getPagedArtists(0);
         loadCountries(artistList);
         return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistList, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
+    }
+
+    /**
+     * Method for internal artist paging using AJAX requests within jQuery of artists.scala.
+     * @param page
+     * @return
+     */
+    public Result pageArtist(Integer page) {
+        List<Artist> artists = artistRepository.getPagedArtists(page);
+        JsonNode node = Json.toJson(artists);
+        return ok(node);
     }
 
     /**
