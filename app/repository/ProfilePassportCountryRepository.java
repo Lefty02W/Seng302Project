@@ -31,35 +31,42 @@ public class ProfilePassportCountryRepository {
      * @param passport The passport to add
      * @return
      */
-    public Optional<Integer> insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
+    public void insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
         Integer idOpt;
         try {
             idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName()).get();
         } catch(Exception e) {
            idOpt = null;
         }
-        if (idOpt == null) {
+        if (idOpt == -1) {
             passportCountryRepository.insert(passport).thenApplyAsync(id -> {
-                if (id.isPresent()) {
-                    Transaction txn = ebeanServer.beginTransaction();
-                    String qry = "INSERT into profile_passport_country (profile, passport_country) " +
-                            "VALUES (?, ?)";
-                    try {
-                        SqlUpdate query = Ebean.createSqlUpdate(qry);
-                        query.setParameter(1, profileId);
-                        query.setParameter(2, id.get());
-                        query.execute();
-                        txn.commit();
-                    } finally {
-                        txn.end();
-                    }
-                }
+                id.ifPresent(integer -> insertPassportCountry(profileId, integer));
                 return null;
             });
+        } else {
+            insertPassportCountry(profileId, idOpt);
         }
+    }
 
-//TODO get new insert id and return it
-        return Optional.of(idOpt);
+
+    /**
+     * Helper method to perform insert of profile passport country
+     * @param profileId profile id
+     * @param id passport country id
+     */
+    private void insertPassportCountry(int profileId, int  id) {
+        Transaction txn = ebeanServer.beginTransaction();
+        String qry = "INSERT into profile_passport_country (profile, passport_country) " +
+                "VALUES (?, ?)";
+        try {
+            SqlUpdate query = Ebean.createSqlUpdate(qry);
+            query.setParameter(1, profileId);
+            query.setParameter(2, id);
+            query.execute();
+            txn.commit();
+        } finally {
+            txn.end();
+        }
     }
 
     /**
