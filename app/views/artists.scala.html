@@ -147,7 +147,9 @@
                             </div>
                             <div class="col col-2">
                                 <div class="row">
-                                    <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
+                                    <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)">
+                                        <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
+                                    </a>
                                 </div>
                                 <div class="row">
                                     <button class="btn btn-primary">Follow</button>
