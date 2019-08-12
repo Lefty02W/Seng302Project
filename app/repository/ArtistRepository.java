@@ -181,6 +181,20 @@ public class ArtistRepository {
         });
     }
 
+    /**
+     * Method to get 50 artists at a time.
+     * @param page starting at 0, the page is how many times we have requested artists.
+     * @return
+     */
+    public List<Artist> getPagedArtists(int page) {
+        int pageSize = 5;
+        return ebeanServer.find(Artist.class).where()
+                .setFirstRow(page * pageSize)
+                .setMaxRows(pageSize)
+                .findPagedList().getList();
+    }
+
+
 
     /**
      * Removes an artist entry from the database using a passed artist id
@@ -237,7 +251,7 @@ public class ArtistRepository {
      * profile
      * @return
      */
-    public List<Artist> getInvalidArtists(){
+    public List<Artist> getInvalidArtists() {
         return new ArrayList<>(ebeanServer.find(Artist.class)
                 .where().eq("verified", 0).findList());
     }
@@ -263,14 +277,6 @@ public class ArtistRepository {
                 targetArtist.setTwitterLink(newArtist.getTwitterLink());
                 targetArtist.update();
                 txn.commit();
-//                artistCountryRepository.removeAll(artistId);
-//                for (String artistCountry : newArtist.getCountryList()) {
-//                    artistCountryRepository.insertCountry(new Country(artistCountry), artistId);
-//                }
-//                genreRepository.removeAll(artistId);
-//                for (String genreId : newArtist.getGenreList()) {
-//                    genreRepository.insertArtistGenre(artistId, genreId);
-//                }
             }
             return artistId;
         });
@@ -380,7 +386,7 @@ public class ArtistRepository {
          List<PassportCountry> passportCountries = new ArrayList<>();
          for (ArtistCountry artistCountry: artistCountries) {
              passportCountries.add(ebeanServer.find(PassportCountry.class)
-             .where().eq("passport_country_id", artistCountry.getArtistCountryId()).findOne());
+             .where().eq("passport_country_id", artistCountry.getCountryId()).findOne());
          }
          return passportCountries;
     }
