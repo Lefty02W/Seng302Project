@@ -113,4 +113,6 @@ POST    /artists                                controllers.ArtistController.cre
 GET     /artists                                controllers.ArtistController.show(request : Request)
 GET     /artists/:id/delete                     controllers.ArtistController.deleteArtist(request : Request, id : Integer)
 GET     /artists/search                         controllers.ArtistController.search(request : Request)
+GET     /artist/:id/follow                      controllers.ArtistController.followArtist(request : Request, id : Integer)
+GET     /artist/:id/unfollow                      controllers.ArtistController.unfollowArtist(request : Request, id : Integer)
 

@@ -176,11 +176,10 @@ public class ArtistController extends Controller {
      * Method for user to unfollow an artist profile
      * @param request client request to unfollow an artist
      * @param artistId id of the artist profile that will be unfollowed
-     * @param profID id of the profile to unfollow the artist
      * @return redirect to artist page with success flash
      */
-    public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId, Integer profID){
-        return artistRepository.unfollowArtist(artistId, profID)
+    public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId){
+        return artistRepository.unfollowArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist unfollowed"));
     }
 
@@ -188,11 +187,10 @@ public class ArtistController extends Controller {
      * Method for user to follow an artist profile
      * @param request client request to follow an artist
      * @param artistId id of the artist profile that will be followed
-     * @param profID id of the profile to follow the artist
      * @return redirect to artist page with success flash
      */
-    public CompletionStage<Result> followArtist(Http.Request request, Integer artistId, Integer profID){
-        return artistRepository.followArtist(artistId, profID)
+    public CompletionStage<Result> followArtist(Http.Request request, Integer artistId){
+        return artistRepository.followArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist followed"));
     }
 
