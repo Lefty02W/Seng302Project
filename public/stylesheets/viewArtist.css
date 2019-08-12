@@ -40,6 +40,12 @@
     background: #205723 !important;
 }
 
+
+#fbIcon, #instaIcon, #spotifyIcon, #twIcon{
+    color: white;
+    /*margin-left: auto;*/
+}
+
 .nav .nav-tabs, #aboutTabLink, #eventsTabLink, #membersTabLink {
     font-size: 18pt;
 }

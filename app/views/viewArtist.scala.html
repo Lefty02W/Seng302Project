@@ -21,6 +21,9 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/viewArtist.css")">
+
+            <!--Font Awesome Icons-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
         <div class="d-flex toggled" id="wrapper">
@@ -105,26 +108,16 @@
         </div>
 
         <div class="container" id="artistsFooter">
-            <div class="row text-center text-xs-center text-sm-left text-md-left">
-                <div class="col-xs-12 col-sm-12 col-md-12 mt-2 mt-sm-5">
-                    <div class="mb-5 flex-center">
-                            <!-- Facebook -->
-                        <a class="fa fa-facebook" href="@artist.getFacebookLink">
-                            <i class="fa fa-facebook white-text mr-md-5 mr-3 fa-2x"></i>
-                        </a>
-                            <!-- Twitter -->
-                        <a class="tw-ic" href="@artist.getTwitterLink">
-                            <i class="fab fa-twitter fa-lg white-text mr-md-5 mr-3 fa-2x"></i>
-                        </a>
-                            <!--Instagram-->
-                        <a class="ins-ic" href="@artist.getInstagramLink">
-                            <i class="fab fa-instagram fa-lg white-text mr-md-5 mr-3 fa-2x"></i>
-                        </a>
-                            <!--Spotify-->
-                        <a class="spoftify-ic" href="@artist.getSpotifyLink">
-                            <i class="fab fa-spotify fa-lg white-text fa-2x"></i>
-                        </a>
-                    </div>
+            <div class="row justify-content-center">
+                <div class="mb-5 flex-center" id="socialMediaIcons">
+                        <!-- Facebook -->
+                    <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
+                        <!-- Twitter -->
+                    <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
+                        <!--Instagram-->
+                    <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
+                        <!--Spotify-->
+                    <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
                 </div>
             </div>
         </div>
