@@ -71,7 +71,6 @@ public class ArtistController extends Controller {
 
         //Start with page = 0
         List<Artist> artistList = artistRepository.getPagedArtists(0);
-        loadCountries(artistList);
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistList, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
