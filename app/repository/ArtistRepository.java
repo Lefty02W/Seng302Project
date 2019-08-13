@@ -212,12 +212,12 @@ public class ArtistRepository {
     }
 
     /**
-     * Method to get 50 artists at a time.
+     * Method to get up to 50 artists at a time for lazy loading.
      * @param page starting at 0, the page is how many times we have requested artists.
-     * @return
+     * @return A list of artists.
      */
     public List<Artist> getPagedArtists(int page) {
-        int pageSize = 5;
+        int pageSize = 50;
         return ebeanServer.find(Artist.class).where()
                 .setFirstRow(page * pageSize)
                 .setMaxRows(pageSize)
