@@ -371,7 +371,6 @@ public class ArtistRepository {
                 sqlQuery.setParameter(1,country);
             }
         }
-        System.out.println(sqlQuery);
 
         // TODO: 8/08/19 turn into another function
         List<SqlRow> foundRows = sqlQuery.findList();
@@ -387,7 +386,6 @@ public class ArtistRepository {
                         , new ArrayList<>())));
             }
         }
-        System.out.println(foundArtists);
         return foundArtists;
     }
 
