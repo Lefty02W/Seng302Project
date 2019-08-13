@@ -192,4 +192,26 @@ public class ArtistController extends Controller {
         return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artist")); //TODO update redirect when my artist page is present
     }
+
+    /**
+     * A helper function to set the changes in an artist edit request from the artist form
+     *
+     * @param artistId the id of the artist to be edited
+     * @param values the form of artist information that was filled in by the user
+     * @return an artist object with newly set values from the user artist form
+     */
+    public Artist setValues(Integer artistId, Form<Artist> values){
+        Artist artist = values.get();
+
+        artist.setArtistName(values.field("artistName").value().get());
+        artist.setBiography(values.field("biography").value().get());
+        artist.setFacebookLink(values.field("facebookLink").value().get());
+        artist.setInstagramLink(values.field("instagramLink").value().get());
+        artist.setTwitterLink(values.field("twitterLink").value().get());
+        artist.setSpotifyLink(values.field("spotifyLink").value().get());
+        artist.setWebsiteLink(values.field("websiteLink").value().get());
+        artist.setArtistId(artistId);
+
+        return artist;
+    }
 }

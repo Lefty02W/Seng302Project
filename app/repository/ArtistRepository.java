@@ -288,10 +288,12 @@ public class ArtistRepository {
 
 
     /**
+     * Updates an Artist object in the database by taking in an id of an already existing artist and changing its attributes
+     * Also updates the corresponding artist countries and artist genres database tables
      *
-     * @param artistId
-     * @param newArtist
-     * @return
+     * @param artistId the id of the artist being edited
+     * @param newArtist the artist object that will be edited
+     * @return the same artist id of the artist object that got edited
      */
     public CompletionStage<Integer> editArtistProfile(Integer artistId, Artist newArtist) {
         return supplyAsync(() -> {
@@ -303,7 +305,7 @@ public class ArtistRepository {
                 targetArtist.setFacebookLink(newArtist.getFacebookLink());
                 targetArtist.setSpotifyLink(newArtist.getSpotifyLink());
                 targetArtist.setWebsiteLink(newArtist.getWebsiteLink());
-                targetArtist.setWebsiteLink(newArtist.getWebsiteLink());
+                targetArtist.setInstagramLink(newArtist.getInstagramLink());
                 targetArtist.setTwitterLink(newArtist.getTwitterLink());
                 targetArtist.update();
                 txn.commit();

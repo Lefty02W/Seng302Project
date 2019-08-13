@@ -13,13 +13,6 @@ import static org.junit.Assert.assertEquals;
 public class GenreRepositoryTest {
 
     @Test
-    public void getAllGenres() {
-        List<MusicGenre> genres = TestApplication.getGenreRepository().getAllGenres();
-        assertEquals(4, genres.size());
-        assertEquals("Rock", genres.get(0).getGenre());
-    }
-
-    @Test
     public void getArtistGenres() {
         Optional<List<MusicGenre>> genres = TestApplication.getGenreRepository().getArtistGenres(1);
         if (genres.isPresent()) {

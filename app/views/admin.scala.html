@@ -1660,7 +1660,7 @@
                         <h4 class="modal-title">Edit Artist: @editArtist.getObject.getArtistName</h4>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
-                    @form(routes.AdminController.createArtist()) {
+                    @form(routes.AdminController.editArtist(editArtist.getObject.getArtistId)) {
                         @CSRF.formField
                             <!-- body -->
                         <div class="modal-body">
