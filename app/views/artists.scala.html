@@ -347,6 +347,7 @@
             for (i = 0; i < jsonData.length; i++) {
 
                 var artist = jsonData[i];
+                var id = parseInt(artist.artistId);
 
                 html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
                             "<div class='card-header'>"+artist.artistName+"</div> " +
@@ -356,6 +357,7 @@
                                     " </div>" +
                                     "<div class='col col-2'>" +
                                         "<div class='row'>" +
+                                            @*"<a href='@routes.ArtistController.showDetailedArtists(id)'>"+*@
                                             "<button class='btn btn-primary' id='view' style='margin-bottom: 5px;'>View</button>" +
                                         "</div>" +
                                         "<div class='row'>" +
@@ -367,10 +369,8 @@
                         "</div>"
                 
             };
-            console.log(html);
             return html
 
         }
-
     </script>
 </html>
