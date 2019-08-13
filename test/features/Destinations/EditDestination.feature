@@ -1,13 +1,12 @@
-#Feature: Edit a destination
-#  As a user
-#  I want to edit a destination
-#  So that I can then update my created destination
-#
-#
-#  Background:
-#    Given Password hash setup has been done
-#
-#
+Feature: Edit a destination
+  As a user
+  I want to edit a destination
+  So that I can then update my created destination
+
+  Background:
+    Given I am logged into the application as user "john@gmail.com" with password "password"
+
+
 #  Scenario: Edit a destination
 #    Given User is at the edit destinations page for destination "513"
 #    Given user is at the destinations page
@@ -52,3 +51,12 @@
 #    And he presses the Save button
 #    Then the Destination page should be shown
 #    And the destination is displayed with the updated fields
+
+  Scenario: Editing traveller types of a destination
+    Given I am on the "/destinations/show/false" page
+    When I press the edit button on destination "1"
+    And I select "Backpacker" and "ThrillSeeker" from the traveller type dropdown
+    And I press the Save button to save the destination
+    Then I am redirected to the destinations page
+    And destination 1 now has traveller types; "Backpacker" and "ThrillSeeker"
+

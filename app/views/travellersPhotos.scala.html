@@ -37,6 +37,7 @@
                     <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
                     <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
                     <a style="color: #ca6636" href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( currentProfile.hasRole("global_admin") || currentProfile.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
@@ -51,32 +52,35 @@
                     <h2>Travellers</h2> <!-- TODO align this in the center -->
                     </div>
                 </nav>
-                <div class="container-fluid">
-                    @if(photoList.isEmpty) {
-                        <h1>This traveller has not uploaded any photos.</h1>
-                        <a href="@routes.TravellersController.show()"><button style="float: right">
-                            Back to Travellers</button></a>
-                    } else {
-                        <h1>Traveller Photos</h1>
-                        <div id="travellersPhotos">
-                            <div class="row">
-                                @for(photo <- photoList) {
-                                    @if(photo.getVisible == 1) {
-                                        <div class="card">
-                                            <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName">
-                                        </div>
+
+                <div class="col">
+                    <div id="photosCard" class="card-large lower-card">
+                        <div id="photoHeading">
+                            <h3 class="primaryText">Traveller Photos</h3>
+                            <a href="@routes.TravellersController.show()"><button class="btn btn-primary">
+                                Back to Travellers</button></a>
+                        </div>
+
+                        <div class="row">
+                            @if(photoList.isEmpty) {
+                                <h1>This traveller has not uploaded any photos.</h1>
+                            } else {
+                                <div id="travellersPhotos">
+                                    <div class="row">
+                                    @for(photo <- photoList) {
+                                        @if(photo.getVisible == 1) {
+                                            <div class="card">
+                                                <img onclick="expand(src, alt)" id="displayImage" class="thumbnail" src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName">
+                                            </div>
+                                        }
                                     }
-                                }
-                            </div>
-                                <div class="row">
-                                    <a href="@routes.TravellersController.show()"><button>
-                                        Back to Travellers</button></a>
-                                </div>
-                            }
+                                    </div>
+                                    }
 
 
                         </div>
-
+                        </div>
+                    </div>
                 </div>
             </div>
 

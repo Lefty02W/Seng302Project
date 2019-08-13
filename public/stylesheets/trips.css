@@ -1,6 +1,7 @@
 #viewCard {
     height: 25vh;
     width: 100%;
+    overflow: visible;
 }
 
 #name {
@@ -31,6 +32,16 @@ label {
     height: 35vh;
 }
 
+#backButtonCreate{
+    margin: 5vh;
+}
+
+.saveTripButton{
+    height: 5vh;
+    margin-left: 5vh;
+    margin-top: 1vh;
+}
+
 
 .tripNameInput{
     display: block;
@@ -49,8 +60,8 @@ input[type=datetime-local] {
 }
 
 #trip-card {
-    height: 40vh;
-    min-width: 100px;
+    height: 50vh;
+    min-width: 40vh;
     background-color: #e8f5e9;
 }
 
@@ -58,9 +69,13 @@ input[type=datetime-local] {
     background-color: #2e7d32;
 }
 
+#tripsPane{
+    padding-left: 18%;
+}
+
 #addTripButton {
-    right: 0;
-    width: 15vw;
+    margin-top: 10px;
+    margin-left: 1%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -68,10 +83,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #topBarTitle {
+    margin: 0 auto;
     color: #ede1d1;
 }
 
 .table-card {
+
     height: 42vh;
     width: 100%;
 }

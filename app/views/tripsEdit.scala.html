@@ -38,6 +38,7 @@
                     <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
                     <a style="color: #ca6636" href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
@@ -59,8 +60,9 @@
                     @CSRF.formField
                     <div class="row">
                         <div class="tripNameInput">
-                            @helper.inputText(tripForm("name"), '_label -> "Trip Name:", '_help -> "")
+                            <input type="text" id="name" name="name" required placeholder="Trip Name">
                         </div>
+                        <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
                     </div>
                 } <!-- close tag for editDestinations form-->
                 <div class="container-fluid">
@@ -136,7 +138,6 @@
                                     </table>
                                 </div>
                                 <div class="row" id="btnRow">
-                                    <button type="submit" class="btn btn-primary" id="save">Save trip</button>
                                     <a href="@routes.TripsController.show()"><button class="btn btn-secondary" type="button">Back</button></a>
                                 </div>
 

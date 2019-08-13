@@ -1,6 +1,6 @@
 package controllers.steps.Profile;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class LoginUserSteps extends ProvideApplication {
+public class LoginUserSteps {
 
     Map<String, String> loginForm = new HashMap<>();
     Result redirectLoginResult;
@@ -25,7 +25,7 @@ public class LoginUserSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/");
-        redirectLoginResult = Helpers.route(provideApplication(), request);
+        redirectLoginResult = Helpers.route(TestApplication.getApplication(), request);
 
         assertEquals(200, redirectLoginResult.status());
     }
@@ -51,7 +51,7 @@ public class LoginUserSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "1");
 
-        loginResult = Helpers.route(provideApplication(), request);
+        loginResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
 
@@ -65,5 +65,15 @@ public class LoginUserSteps extends ProvideApplication {
     public void iAmNotRedirectedToTheProfilePage() {
         assertEquals(303, loginResult.status());
         assertEquals("/", loginResult.redirectLocation().get());
+    }
+
+    @Given("^Johnny Sins is at the login page$")
+    public void johnnySinsIsAtTheLoginPage() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/");
+        redirectLoginResult = Helpers.route(TestApplication.getApplication(), request);
+
+        assertEquals(200, redirectLoginResult.status());
     }
 }

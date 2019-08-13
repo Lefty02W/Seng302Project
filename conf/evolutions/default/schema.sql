@@ -36,10 +36,6 @@ create table if not exists photo
 	visible tinyint(1) not null,
 	content_type varchar(50) not null,
 	name varchar(255) not null,
-	crop_x int default '0' not null,
-	crop_y int default '0' not null,
-	crop_width int default '100' not null,
-	crop_height int default '100' not null,
 	path varchar(255) null
 )
 ;
@@ -56,6 +52,7 @@ create table if not exists profile
 	birth_date date not null,
 	gender varchar(20) not null,
 	time_created timestamp default CURRENT_TIMESTAMP not null,
+	soft_delete tinyint(1) default '0' not null,
 	constraint profile_email_uindex
 		unique (email)
 )
@@ -196,4 +193,15 @@ create table if not exists thumbnail_link
   constraint thumbnail_id
     foreign key (thumbnail_id) references photo (photo_id)
       on update cascade on delete cascade
+);
+
+create table if not exists undo_stack
+(
+  entry_id   int auto_increment
+    primary key,
+  item_type  varchar(30) null,
+  object_id  int         null,
+  profile_id int         null,
+  constraint undo_stack_profile_profile_id_fk
+  foreign key (profile_id) references profile (profile_id)
 );

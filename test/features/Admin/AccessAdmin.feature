@@ -2,10 +2,6 @@ Feature: Access admin page
   As a user
   I want to access the admin page
 
-  Background:
-    Given Password hash setup has been done
-
-
   Scenario: Access the admin page as a non admin
     Given I am logged into the application as a non admin
     When he fills "/admin" into the URL

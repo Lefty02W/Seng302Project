@@ -1,6 +1,7 @@
 package controllers;
 
 
+import models.PassportCountry;
 import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
@@ -10,9 +11,12 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import repository.ProfileRepository;
+import utility.Country;
 import views.html.login;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -47,7 +51,7 @@ public class LoginController extends Controller {
 
     /**
      * Function to authenticate a login
-     * @param request
+     * @param request the users login request
      * @return either login failed  with incorrect info or successful login and go to user  page
      */
     public CompletionStage<Result> login(Http.Request request){
@@ -62,19 +66,19 @@ public class LoginController extends Controller {
                     Profile currentUser = profile.get();
                     return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getProfileId().toString());
                 }
-                return notFound("Login failed");
+                return redirect("/").flashing("warning", "Profile has been deleted!");
             }, httpExecutionContext.current());
 
         } else {
-            return supplyAsync(() -> redirect("/").flashing("info", "Login details incorrect, please try again"));
+            return supplyAsync(() -> redirect("/").flashing("info", "Login details incorrect, please try again."));
         }
     }
 
 
     /**
      * Check if user exists
-     * @param email
-     * @param password
+     * @param email Email of the user to validate login
+     * @param password Password of the user to validate login
      * @return true for existing user or false if not existing
      */
     private boolean checkUser(String email, String password){
@@ -88,7 +92,7 @@ public class LoginController extends Controller {
 
     /**
      * Save user into the database
-     * @param request
+     * @param request users request to create a profile
      * @return redirect to login
      */
     public Result save(Http.Request request){
@@ -105,11 +109,11 @@ public class LoginController extends Controller {
 
     /**
      * create the login page
-     * @param request
-     * @return rendered login pagelogin
+     * @param request users request to show login page/logout
+     * @return rendered login page login
      */
     public Result show(Http.Request request) {
-        return ok(login.render(loginForm, profileForm, request, messagesApi.preferred(request)));
+        return ok(login.render(loginForm, profileForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
     }
 
 }

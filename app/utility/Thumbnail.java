@@ -3,6 +3,9 @@ package utility;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * Utility class that holds functionality for creating a thumbnail
+ */
 public class Thumbnail {
 
     private static Thumbnail INSTANCE;

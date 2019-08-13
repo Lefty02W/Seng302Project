@@ -1,24 +1,35 @@
 package controllers.steps.Profile;
 
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
+import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import models.Profile;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 /**
  * Implements steps for testing CreateUser
  */
-public class CreateUserSteps extends ProvideApplication {
+public class CreateUserSteps {
 
     private Map<String, String> createForm = new HashMap<>();
+    private Map<String, String> createFormSecond = new HashMap<>();
+    private Map<String, String> createFormThird = new HashMap<>();
+    private Result createResult;
+    private Profile createdProfile;
+
+    private final String USER_EMAIL = "james@johnston.com";
+    private final String USER_EMAIL_ADMIN = "Sam@samson.com";
 
     @When("he enters the First Name {string}")
     public void enter_first_name(String firstName) {
@@ -82,8 +93,7 @@ public class CreateUserSteps extends ProvideApplication {
 
     @Then("his account should be saved")
     public void saved_account() {
-        injectRepositories();
-        profileRepository.lookupEmail("john.gherkin.doe@travelea.com").thenApplyAsync(profileOpt -> {
+        TestApplication.getProfileRepository().lookupEmail("john.gherkin.doe@travelea.com").thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> {
                 assertEquals("John", profile.getFirstName());
                 assertEquals("Gherkin", profile.getMiddleName());
@@ -98,5 +108,98 @@ public class CreateUserSteps extends ProvideApplication {
             });
             return "done";
         });
+    }
+
+    @Given("^I am on the landing page$")
+    public void iAmOnTheLandingPage() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/login");
+        Helpers.route(TestApplication.getApplication(), request);
+    }
+
+    @Given("^I am on the admin page$")
+    public void iAmOnTheAdminPage() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin");
+        Helpers.route(TestApplication.getApplication(), request);
+    }
+
+    @When("^I press the create user button$")
+    public void iPressTheCreateUserButton() throws Throwable {
+        // Pass through as button opens modal
+    }
+
+    @And("^I enter \"([^\"]*)\" into the \"([^\"]*)\" field$")
+    public void iEnterIntoTheField(String arg0, String arg1) throws Throwable {
+        createFormSecond.put(arg1, arg0);
+    }
+
+    @And("^I enter \"([^\"]*)\" into the \"([^\"]*)\" admin field$")
+    public void iEnterIntoTheAdminField(String arg0, String arg1) throws Throwable {
+        createFormThird.put(arg1, arg0);
+    }
+
+
+    @And("^I enter \"([^\"]*)\", \"([^\"]*)\" into the \"([^\"]*)\" field$")
+    public void iEnterIntoTheField(String arg0, String arg1, String arg2) throws Throwable {
+        createFormSecond.put(arg2, arg0 + ","+ arg1);
+    }
+
+    @And("^I enter \"([^\"]*)\", \"([^\"]*)\" into the \"([^\"]*)\" admin field$")
+    public void iEnterIntoTheAdminField(String arg0, String arg1, String arg2) throws Throwable {
+        createFormThird.put(arg2, arg0 + ","+ arg1);
+    }
+
+
+    @Then("^I save my new profile$")
+    public void iSaveMyNewProfile() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/user/create")
+                .bodyForm(createFormSecond);
+        createResult = Helpers.route(TestApplication.getApplication(), request);
+    }
+
+    @Then("^admin saves the profile$")
+    public void adminSavesTheProfile() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/admin/profile/create")
+                .bodyForm(createFormThird)
+                .session("connected", "2");
+        createResult = Helpers.route(TestApplication.getApplication(), request);
+    }
+
+
+    @And("^My user profile is saved in the database$")
+    public void myUserProfileIsSavedInTheDatabase() throws Throwable {
+        createdProfile = TestApplication.getProfileRepository().getProfileById(USER_EMAIL);
+        assertNotNull(createdProfile);
+    }
+
+    @And("^The created profile is saved in the database$")
+    public void theCreatedProfileIsSavedInTheDatabase() throws Throwable {
+        createdProfile = TestApplication.getProfileRepository().getProfileById(USER_EMAIL_ADMIN);
+        assertNotNull(createdProfile);
+    }
+
+    @And("^my passports are \"([^\"]*)\"$")
+    public void myPassportsAre(String arg0) throws Throwable {
+        if(createdProfile != null) {
+            assertEquals(arg0, createdProfile.getPassportsString());
+        } else {
+            fail();
+        }
+    }
+
+    @And("^my nationalities are \"([^\"]*)\"$")
+    public void myNationalitiesAre(String arg0) throws Throwable {
+        if(createdProfile != null) {
+            assertEquals(arg0, createdProfile.getNationalityString());
+        } else {
+            fail();
+        }
     }
 }

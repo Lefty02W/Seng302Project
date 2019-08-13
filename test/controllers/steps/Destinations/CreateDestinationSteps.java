@@ -1,9 +1,11 @@
 package controllers.steps.Destinations;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -12,9 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-public class CreateDestinationSteps extends ProvideApplication {
+public class CreateDestinationSteps {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestination;
@@ -31,7 +32,7 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "1");
 
-        Result loginResult = Helpers.route(provideApplication(), request);
+        Result loginResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Given("user is at the destinations page")
@@ -40,7 +41,7 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/destinations/show/false")
                 .session("connected", "1");
-        Result destinationResult = Helpers.route(provideApplication(), requestDest);
+        Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         assertEquals(200, destinationResult.status());
     }
 
@@ -49,15 +50,6 @@ public class CreateDestinationSteps extends ProvideApplication {
         return;
     }
 
-    @When("he fills in Name with {string}")
-    public void heFillsInNameWith(String string) { destForm.put("name", string); }
-
-    @When("he fills in Type with {string}")
-    public void heFillsInTypeWith(String string) { destForm.put("type", string); }
-
-    @When("he fills in Country with {string}")
-    public void heFillsInCountryWith(String string) { destForm.put("country", string); }
-
     @When("he presses Save")
     public void hePressesSave() {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -65,32 +57,60 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .uri("/destinations")
                 .bodyForm(destForm)
                 .session("connected", "1");
-        redirectDestination = Helpers.route(provideApplication(), request);
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(303, redirectDestination.status());
     }
 
     @Then("he is redirected to the destinations page")
     public void theCreatedDestinationIsStoredInTheDatabase() {
-        assertEquals(303, redirectDestination.status());
-        assertEquals("/destinations/show/false", redirectDestination.redirectLocation().get());
-    }
+        Assert.assertTrue(redirectDestination.flash().getOptional("success").isPresent());
 
-    @When("he fills in Longitude as {string}")
-    public void heFillsInLongitudeAs(String string) {
-        destForm.put("Longitude", string);
     }
 
     @Then("the Destination page should be shown")
     public void theDestinationPageShouldBeShown() {
-        if (redirectDestination.redirectLocation().isPresent()) {
-            assertEquals("/destinations/show/false", redirectDestination.redirectLocation().get());
-        } else {
-            fail();
-        }
+        Assert.assertTrue(redirectDestination.flash().getOptional("failure").isPresent());
+
     }
 
-    @Given("^Password hash setup has been done$")
-    public void passwordHashSetupHasBeenDone() throws Throwable {
-        hashUserPasswords();
+    @When("^he fills in Name with \"([^\"]*)\"$")
+    public void heFillsInNameWith(String arg0) throws Throwable {
+        destForm.put("name", arg0);
+    }
+
+    @When("^he fills in Type with \"([^\"]*)\"$")
+    public void heFillsInTypeWith(String arg0) throws Throwable {
+        destForm.put("type", arg0);
+    }
+
+    @When("^he fills in Country with \"([^\"]*)\"$")
+    public void heFillsInCountryWith(String arg0) throws Throwable {
+        destForm.put("country", arg0);
+    }
+
+    @When("^he selects \"([^\"]*)\" as the traveller type$")
+    public void heSelectsAsTheTravellerType(String arg0) throws Throwable {
+        destForm.put("travellerTypesStringDest", arg0);
+    }
+
+    @When("^he fills in Longitude as \"([^\"]*)\"$")
+    public void heFillsInLongitudeAs(String arg0) throws Throwable {
+        destForm.put("Longitude", arg0);
+    }
+
+    @And("^he presses Destination Save$")
+    public void hePressesDestinationSave() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/destinations")
+                .bodyForm(destForm)
+                .session("connected", "1");
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
+        assertEquals(303, redirectDestination.status());
+    }
+
+    @And("^he does not select a traveller type$")
+    public void heDoesNotSelectATravellerType() throws Throwable {
+        destForm.put("travellerTypesStringDest", "");
     }
 }

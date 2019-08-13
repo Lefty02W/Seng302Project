@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile, countries : List[String], formData : PartnerFormData)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -37,6 +37,7 @@
                     <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
                     <a href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
                     <a style="color: #ca6636" href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( current.hasRole("global_admin") || current.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
@@ -60,33 +61,147 @@
                         @form(routes.TravellersController.search()) {
                             @CSRF.formField
 
-                            <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
+
+                            <div class="hidden-div">
+                                <input type="search" id="searchNationality" placeholder="Nationality" name="searchNationality">
+                            </div>
+                            <select class="selectpicker" data-live-search="true" title="Nationality" id="passportDropdown">
+                            @for(nation <- countries) {
+                                @if(formData != null) {
+                                    @if(formData.searchNationality == nation) {
+                                        <option selected value="@nation">@nation</option>
+                                    } else {
+                                        <option value="@nation">@nation</option>
+                                    }
+                                } else {
+                                    <option value="@nation">@nation</option>
+                                }
+
+                            }
+                            </select>
                             <select id= "searchGender" class="selectpicker" title="Gender" name="searchGender">
                                 <option hidden disabled>Gender</option>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                                <option value="Other">Other</option>
+                                @if(formData != null) {
+                                    @if(formData.searchGender == "Male") {
+                                        <option selected value="Male">Male</option>
+                                    } else {
+                                        <option value="Male">Male</option>
+                                    }
+                                    @if(formData.searchGender == "Female") {
+                                        <option selected value="Female">Female</option>
+                                    } else {
+                                        <option value="Female">Female</option>
+                                    }
+                                    @if(formData.searchGender == "Other") {
+                                        <option selected value="Other">Other</option>
+                                    } else {
+                                        <option value="Other">Other</option>
+                                    }
+                                } else {
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                }
                             </select>
                             @*<input type="date" id="dateSearch" name="dateSearch">*@
                             <select id="searchAgeRange" class="selectpicker" title="Age Range" name="searchAgeRange">
                                 <option hidden disabled>Age Range</option>
-                                <option value=1><18</option>
-                                <option value=2>18-25</option>
-                                <option value=3>25-35</option>
-                                <option value=4>35-50</option>
-                                <option value=5>50-65</option>
-                                <option value=6>65+</option>
+                                @if(formData != null) {
+                                    @if(formData.searchAgeRange == 1) {
+                                        <option selected value=1><18</option>
+                                    } else {
+                                        <option value=1><18</option>
+                                    }
+                                    @if(formData.searchAgeRange == 2) {
+                                        <option selected value=2>18-25</option>
+                                    } else {
+                                        <option value=2>18-25</option>
+                                    }
+                                    @if(formData.searchAgeRange == 3) {
+                                        <option selected value=3>25-35</option>
+                                    } else {
+                                        <option value=3>25-35</option>
+                                    }
+                                    @if(formData.searchAgeRange == 4) {
+                                        <option selected value=4>35-50</option>
+                                    } else {
+                                        <option value=4>35-50</option>
+                                    }
+                                    @if(formData.searchAgeRange == 5) {
+                                        <option selected value=5>50-65</option>
+                                    } else {
+                                        <option value=5>50-65</option>
+                                    }
+                                    @if(formData.searchAgeRange == 6) {
+                                        <option selected value=6>65+</option>
+                                    } else {
+                                        <option value=6>65+</option>
+                                    }
+                                } else {
+                                    <option value=1><18</option>
+                                    <option value=2>18-25</option>
+                                    <option value=3>25-35</option>
+                                    <option value=4>35-50</option>
+                                    <option value=5>50-65</option>
+                                    <option value=6>65+</option>
+                                }
                             </select>
                             <select id= "searchTravellerTypes" class="selectpicker" title="Traveller Type" name="searchTravellerTypes">
-                                <option value="ThrillSeeker">ThrillSeeker</option>
-                                <option value="Backpacker">Backpacker</option>
-                                <option value="GapYear">Gap Year</option>
-                                <option value="Groupie">Groupie</option>
-                                <option value="FrequentWeekender">Frequent Weekender</option>
-                                <option value="business">functional/business Traveller</option>
-                                <option value="Holidaymaker">Holidaymaker</option>
+                                @if(formData != null) {
+                                    @if(formData.searchTravellerTypes == "ThrillSeeker") {
+                                        <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                    } else {
+                                        <option value="ThrillSeeker">ThrillSeeker</option>
+                                    }
+
+                                    @if(formData.searchTravellerTypes == "Gap Year") {
+                                        <option value="Gap Year" selected>Gap Year</option>
+                                    } else {
+                                        <option value="Gap Year">Gap Year</option>
+                                    }
+
+                                    @if(formData.searchTravellerTypes == "Backpacker") {
+                                        <option value="Backpacker" selected>Backpacker</option>
+                                    } else {
+                                        <option value="Backpacker">Backpacker</option>
+                                    }
+
+                                    @if(formData.searchTravellerTypes == "Groupie") {
+                                        <option value="Groupie" selected>Groupie</option>
+                                    } else {
+                                        <option value="Groupie">Groupie</option>
+                                    }
+
+                                    @if(formData.searchTravellerTypes == "Frequent Weekender") {
+                                        <option value="Frequent Weekender" selected>Frequent Weekender</option>
+                                    } else {
+                                        <option value="Frequent Weekender">Frequent Weekender</option>>
+                                    }
+
+                                    @if(formData.searchTravellerTypes == "Functional/business Traveller") {
+                                        <option value="Functional/business Traveller" selected>
+                                            Functional/business Traveller</option>
+                                    } else {
+                                        <option value="Functional/business Traveller">
+                                            Functional/business Traveller</option>
+                                    }
+
+                                    @if(formData.searchTravellerTypes == "Holidaymaker") {
+                                        <option value="Holidaymaker" selected>Holidaymaker</option>
+                                    } else {
+                                        <option value="Holidaymaker">Holidaymaker</option>
+                                    }
+                                } else {
+                                    <option value="ThrillSeeker">ThrillSeeker</option>
+                                    <option value="Backpacker">Backpacker</option>
+                                    <option value="GapYear">Gap Year</option>
+                                    <option value="Groupie">Groupie</option>
+                                    <option value="FrequentWeekender">Frequent Weekender</option>
+                                    <option value="business">functional/business Traveller</option>
+                                    <option value="Holidaymaker">Holidaymaker</option>
+                                }
                             </select>
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillVals()">Search</button>
                             <a href="@routes.TravellersController.show()"> <button class="btn btn-secondary" type="button">
                                 Clear</button></a>
                         }
@@ -105,16 +220,10 @@
                                             <td>@user.getMiddleName</td>
                                             <td>@user.getLastName</td>
                                             <td>@user.getGender</td>
-                                            <td><span>@user.getBirthDate.getTime</span>
-                                                @user.getBirthDate</td>
-                                            <td>@user.getNationalities</td>
-                                            <td>@user.getPassports</td>
-                                            <td>
-                                                <ul>
-                                            @for(travellerType <- user.getTravellerTypesList) {
-                                                <li>@travellerType</li>
-                                            }</ul>
-                                            </td>
+                                            <td>@user.getBirthString</td>
+                                            <td>@user.getNationalityString</td>
+                                            <td>@user.getPassportsString</td>
+                                            <td><div class="scrollable">@user.getTravellerTypesString</div></td>
                                             <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">
                                                 <button type="submit" class="btn btn-primary" class="viewPicButton">View</button>
                                             </a>
@@ -153,9 +262,9 @@
                 $("#wrapper").toggleClass("toggled");
             });
 
-
-
-
+            function fillVals() {
+                $('#searchNationality').val($('#passportDropdown').val());
+            }
 
     </script>
 

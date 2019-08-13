@@ -1,6 +1,6 @@
 package controllers.steps.Destinations;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -13,20 +13,20 @@ import play.test.Helpers;
 import java.util.HashMap;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-public class EditDestinationSteps extends ProvideApplication{
+public class EditDestinationSteps {
+
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
+    private Map<String, String> travellerTypeDestForm = new HashMap<>();
     private Result redirectDestinationEdit;
 
     @Given("User is at the edit destinations page for destination {string}")
     public void userIsAtTheEditDestinationForDestination(String id) {
 
-        //TODO: Change the url for the edit page for a specific destination to not have tokens as the param.
-        //TODO: Need to test the edit destinations GET page as the tokens are all auto generated and not testable.
-        //TODO: Uncomment the relevant step once refactor is done
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
@@ -34,7 +34,7 @@ public class EditDestinationSteps extends ProvideApplication{
                 .bodyForm(loginForm)
                 .session("connected", "1");
 
-        Result editPageResult = Helpers.route(provideApplication(), request);
+        Result editPageResult = Helpers.route(TestApplication.getApplication(), request);
         if (editPageResult.redirectLocation().isPresent()) {
             assertEquals("/destinations/" + id + "/edit", editPageResult.redirectLocation().get());
         } else {
@@ -74,7 +74,7 @@ public class EditDestinationSteps extends ProvideApplication{
                 .bodyForm(destForm)
                 .session("connected", "1");
 
-        redirectDestinationEdit = Helpers.route(provideApplication(), request);
+        redirectDestinationEdit = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(303, redirectDestinationEdit.status());
     }
 
@@ -97,6 +97,66 @@ public class EditDestinationSteps extends ProvideApplication{
         assertEquals("Hello", destination.getName());
         assertEquals("World", destination.getType());
         assertEquals("New Zealand", destination.getCountry());
+    }
+
+    @Given("^I am on the \"([^\"]*)\" page$")
+    public void iAmOnThePage(String arg0) throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri(arg0)
+                .session("connected", "1");
+        Helpers.route(TestApplication.getApplication(), request);
+    }
+
+    @When("^I press the edit button on destination \"([^\"]*)\"$")
+    public void iPressTheEditButtonOnDestination(String arg0) throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/destinations/" + arg0 + "/edit/show")
+                .session("connected", "1");
+        Helpers.route(TestApplication.getApplication(), request);
+        TestApplication.getDestinationRepository().lookup(2);
+        Destination destination = TestApplication.getDestinationRepository().lookup(1);
+        travellerTypeDestForm.put("name", destination.getName());
+        travellerTypeDestForm.put("type", destination.getType());
+        travellerTypeDestForm.put("country", destination.getCountry());
+        travellerTypeDestForm.put("district", destination.getDistrict());
+        travellerTypeDestForm.put("travellerTypesStringDestEdit", destination.getTravellerTypesString());
+        travellerTypeDestForm.put("visible", Integer.toString(destination.getVisible()));
+        travellerTypeDestForm.put("latitude", Double.toString(destination.getLatitude()));
+        travellerTypeDestForm.put("longitude", Double.toString(destination.getLongitude()));
+
+    }
+
+    @And("^I select \"([^\"]*)\" and \"([^\"]*)\" from the traveller type dropdown$")
+    public void iSelectAndFromTheTravellerTypeDropdown(String arg0, String arg1) throws Throwable {
+        travellerTypeDestForm.put("travellerTypesStringDestEdit", arg0 + "," + arg1);
+    }
+
+    @And("^I press the Save button to save the destination$")
+    public void iPressTheSaveButtonToSaveTheDestination() throws Throwable {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/destinations/1")
+                .bodyForm(travellerTypeDestForm)
+                .session("connected", "1");
+        redirectDestinationEdit = Helpers.route(TestApplication.getApplication(), request);
+    }
+
+    @Then("^I am redirected to the destinations page$")
+    public void iAmRedirectedToTheDestinationsPage() throws Throwable {
+        if (redirectDestinationEdit.redirectLocation().isPresent()) {
+            assertEquals("/destinations/show/false", redirectDestinationEdit.redirectLocation().get());
+        } else {
+            fail();
+        }
+    }
+
+    @And("^destination (\\d+) now has traveller types; \"([^\"]*)\" and \"([^\"]*)\"$")
+    public void destinationNowHasTravellerTypesAnd(int arg0, String arg1, String arg2) throws Throwable {
+        Destination destination = TestApplication.getDestinationRepository().lookup(arg0);
+        assertTrue(destination.getTravellerTypesList().contains(arg1));
+        assertTrue(destination.getTravellerTypesList().contains(arg2));
     }
 }
 

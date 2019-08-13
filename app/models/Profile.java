@@ -41,6 +41,8 @@ public class Profile extends Model {
     @Constraints.Required
     private String gender;
 
+    private int softDelete;
+
     @Transient
     private String passportsForm;
 
@@ -74,8 +76,8 @@ public class Profile extends Model {
     @Transient
     private Map <Integer, Trip> tripsTripMap = new TreeMap<>();
     //these booleans are chosen by the checkboxes, functions then create destinations (list of enums) from the booleans
-    private SimpleDateFormat dateFormatEntry = new SimpleDateFormat("YYYY-MM-dd");
-    private SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/YYYY");
+    private static SimpleDateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/yyyy");
     @Transient
     private List<String> roles;
 
@@ -112,7 +114,6 @@ public class Profile extends Model {
         this.nationalities = nationalities;
         this.travellerTypes = travellerTypes;
         this.roles = roles;
-
     }
 
     /**
@@ -230,12 +231,17 @@ public class Profile extends Model {
         this.gender = gender;
     }
 
+    public void setSoftDelete(Integer softDelete) {
+        this.softDelete = softDelete;
+    }
+
+
     public void setRoles(List<String> newRoles){
         this.roles = newRoles;
     }
 
     public String getEntryDate() {
-        return dateFormatEntry.format(timeCreated);
+        return dateFormatEntry.format(birthDate);
     }
 
     //Getters
@@ -274,6 +280,8 @@ public class Profile extends Model {
     public String getGender() {
         return gender;
     }
+
+    public void setSetSoftDelete(int setSoftDelete) { this.softDelete = setSoftDelete; }
 
     public Map<Integer, TravellerType> getTravellerTypes() {
         return travellerTypes;
@@ -481,5 +489,8 @@ public class Profile extends Model {
 
     public void setNationalities(Map<Integer, Nationality> nationalities) {
         this.nationalities = nationalities;
+    }
+
+    public int getSoftDelete() { return softDelete;
     }
 }

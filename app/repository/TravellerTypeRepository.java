@@ -80,7 +80,7 @@ public class TravellerTypeRepository {
         } catch(Exception e) {
             travellerId = null;
         }
-        return Optional.of(travellerId);
+        return Optional.ofNullable(travellerId);
     }
 
 

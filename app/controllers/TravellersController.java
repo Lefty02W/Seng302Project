@@ -12,6 +12,8 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.PersonalPhotoRepository;
 import repository.ProfileRepository;
+import repository.UndoStackRepository;
+import utility.Country;
 import views.html.travellers;
 import views.html.travellersPhotos;
 
@@ -34,14 +36,18 @@ public class TravellersController extends Controller {
     private MessagesApi messagesApi;
     private final PersonalPhotoRepository personalPhotoRepository;
     private final ProfileRepository profileRepository;
+    private final UndoStackRepository undoStackRepository;
     private List<Photo> photoList = new ArrayList<>();
 
     @Inject
-     public TravellersController(FormFactory formFactory, MessagesApi messagesApi, PersonalPhotoRepository personalPhotoRepository, ProfileRepository profileRepository) {
+     public TravellersController(FormFactory formFactory, MessagesApi messagesApi,
+                                 PersonalPhotoRepository personalPhotoRepository, ProfileRepository profileRepository,
+                                 UndoStackRepository undoStackRepository) {
         this.form = formFactory.form(PartnerFormData.class);
         this.messagesApi = messagesApi;
         this.personalPhotoRepository = personalPhotoRepository;
         this.profileRepository = profileRepository;
+        this.undoStackRepository = undoStackRepository;
     }
 
 
@@ -57,171 +63,60 @@ public class TravellersController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 Form<PartnerFormData> searchForm = form.bindFromRequest(request);
-                PartnerFormData searchData = searchForm.get();
-                List<Profile> resultData = Profile.find.all();
-
-                if (searchForm.get().searchGender != ""){
-                    resultData = listGender(resultData, searchData);
+                PartnerFormData formData = searchForm.get();
+                Date lowerDate;
+                Date upperDate;
+                if (formData.searchAgeRange == null) {
+                    formData.setSearchAgeRange(0);
                 }
-                if (searchForm.get().searchNationality != ""){
-                    resultData = searchNat(resultData, searchData);
+                switch (formData.searchAgeRange) {
+                    case 1:
+                        lowerDate = getDateFromAge(0);
+                        upperDate = getDateFromAge(18);
+                        break;
+                    case 2:
+                        lowerDate = getDateFromAge(18);
+                        upperDate = getDateFromAge(25);
+                        break;
+                    case 3:
+                        lowerDate = getDateFromAge(25);
+                        upperDate = getDateFromAge(35);
+                        break;
+                    case 4:
+                        lowerDate = getDateFromAge(35);
+                        upperDate = getDateFromAge(50);
+                        break;
+                    case 5:
+                        lowerDate = getDateFromAge(50);
+                        upperDate = getDateFromAge(65);
+                        break;
+                    case 6:
+                        lowerDate = getDateFromAge(65);
+                        upperDate = getDateFromAge(500);
+                        break;
+                    default:
+                        lowerDate = getDateFromAge(0);
+                        upperDate = getDateFromAge(500);
+                        break;
                 }
-
-                if (searchForm.get().searchAgeRange != null){
-                    resultData = searchAge(resultData, searchData);
-                }
-
-                if (searchForm.get().searchTravellerTypes != ""){
-                    resultData = searchTravelTypes(resultData, searchData);
-                }
-                return ok(travellers.render(form, resultData, photoList, profile.get(), request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), formData, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");
             }
         });
     }
 
-
     /**
-     * Method to search for travel partners (profiles) with a search term. The search term can be any of the following attributes:
-     * nationality, gender, age range, type of traveller.
-     * @param searchForm
-     * @return return list of profiles
+     * Calculates a given date that corresponds to an age
+     * @param age the age to find a date for
+     * @return the calculated date
      */
-    private List<Profile> listGender(List<Profile> resultData, PartnerFormData searchForm) {
-        List<Profile> resultProfiles = new ArrayList<>();
-        String genderTerm = searchForm.searchGender;
-
-        if (!genderTerm.equals("")) {
-            for (Profile profile : resultData) {
-                if (profile.getGender().contains(genderTerm)) {
-                    resultProfiles.add(profile);
-                }
-            }
-        } else {
-            resultProfiles = resultData;
-        }
-
-        return resultProfiles;
-    }
-
-
-    /**
-     * Removes Nationalities from result list
-     * @param resultData current list to return
-     * @param searchData Form holding search terms
-     * @return queried list including nationality search
-     */
-    private List<Profile> searchNat(List<Profile> resultData, PartnerFormData searchData){
-        List<Profile> resultProfiles = new ArrayList<>();
-        for (Profile profile: resultData){
-            if (profile.getNationalityList().contains(searchData.searchNationality)){
-                resultProfiles.add(profile);
-            }
-        }
-
-        return resultProfiles;
-    }
-
-
-    /**
-     * Removes ages from result list
-     * @param resultData current list to return
-     * @param searchData Form holding search terms
-     * @return queried list including age search
-     */
-    private List<Profile> searchAge(List<Profile> resultData, PartnerFormData searchData) {
-        List<Profile> resultProfiles = new ArrayList<>();
-        int travellerTypeTerm = searchData.searchAgeRange;
-        Date range1;
-        Date range2;
-
-        for (Profile profile : resultData) {
-            switch (travellerTypeTerm) {
-                case 1: // < 18
-                    Calendar calendar11 = Calendar.getInstance();
-                    calendar11.add(Calendar.YEAR, -18);
-                    range1 = calendar11.getTime();
-                    if (profile.getBirthDate().getTime() > range1.getTime()) {
-                        resultProfiles.add(profile);
-                    }
-                    break;
-                case 2: // 18-25
-                    Calendar calendar21 = Calendar.getInstance();
-                    Calendar calendar22 = Calendar.getInstance();
-                    calendar21.add(Calendar.YEAR, -18);
-                    calendar22.add(Calendar.YEAR, -25);
-                    range1 = calendar21.getTime();
-                    range2 = calendar22.getTime();
-                    if ((profile.getBirthDate().getTime() > range2.getTime()) && (profile.getBirthDate().getTime() < range1.getTime())) {
-                        resultProfiles.add(profile);
-                    }
-                    break;
-                case 3: // 25-35
-                    Calendar calendar31 = Calendar.getInstance();
-                    Calendar calendar32 = Calendar.getInstance();
-                    calendar31.add(Calendar.YEAR, -25);
-                    calendar32.add(Calendar.YEAR, -35);
-                    range1 = calendar31.getTime();
-                    range2 = calendar32.getTime();
-                    if ((profile.getBirthDate().getTime() > range2.getTime()) && (profile.getBirthDate().getTime() < range1.getTime())) {
-                        resultProfiles.add(profile);
-                    }
-                    break;
-                case 4: // 35-50
-                    Calendar calendar41 = Calendar.getInstance();
-                    Calendar calendar42 = Calendar.getInstance();
-                    calendar41.add(Calendar.YEAR, -35);
-                    calendar42.add(Calendar.YEAR, -50);
-                    range1 = calendar41.getTime();
-                    range2 = calendar42.getTime();
-                    if ((profile.getBirthDate().getTime() > range2.getTime()) && (profile.getBirthDate().getTime() < range1.getTime())) {
-                        resultProfiles.add(profile);
-                    }
-                    break;
-                case 5: // 50-65
-                    Calendar calendar51 = Calendar.getInstance();
-                    Calendar calendar52 = Calendar.getInstance();
-                    calendar51.add(Calendar.YEAR, -50);
-                    calendar52.add(Calendar.YEAR, -65);
-                    range1 = calendar51.getTime();
-                    range2 = calendar52.getTime();
-                    if ((profile.getBirthDate().getTime() < range2.getTime()) && (profile.getBirthDate().getTime() > range1.getTime())) {
-                        resultProfiles.add(profile);
-                    }
-                    break;
-                case 6: // 65+
-                    Calendar calendar61 = Calendar.getInstance();
-                    calendar61.add(Calendar.YEAR, -65);
-                    range1 = calendar61.getTime();
-                    if (profile.getBirthDate().getTime() < range1.getTime()) {
-                        resultProfiles.add(profile);
-                    }
-                    break;
-            }
-        }
-
-        return resultProfiles;
-    }
-
-
-    /**
-     * Removes traveller types from result list
-     * @param resultData current list to return
-     * @param searchData Form holding search terms
-     * @return queried list including traveller types search
-     */
-    private List<Profile> searchTravelTypes(List<Profile> resultData, PartnerFormData searchData){
-        List<Profile> resultProfiles = new ArrayList<>();
-        String travellerTypeTerm = searchData.searchTravellerTypes;
-
-        for (Profile profile : resultData) {
-            if (profile.getTravellerTypesList().contains(travellerTypeTerm)) {
-                resultProfiles.add(profile);
-            }
-        }
-
-        return resultProfiles;
+    private Date getDateFromAge(int age) {
+        Date currentDate = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.YEAR, -age);
+        return calendar.getTime();
     }
 
 
@@ -257,16 +152,17 @@ public class TravellersController extends Controller {
 
     /**
      * This method shows the travellers page on the screen
-     * @return
+     * @return result of the rendering of the travellers page
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
-                List<Profile> profiles = Profile.find.all();
+                undoStackRepository.clearStackOnAllowed(profile.get());
 
-                return ok(travellers.render(form, profiles, photoList, profile.get(), request, messagesApi.preferred(request)));
+                List<Profile> profiles = profileRepository.getAll();
+                return ok(travellers.render(form, profiles, photoList, profile.get(), Country.getInstance().getAllCountries(), new PartnerFormData(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }

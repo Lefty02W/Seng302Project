@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -75,7 +76,7 @@ public class ProfileRepository {
      * @return List of all profiles
      */
     public List<Profile> getAll() {
-        String selectQuery = "SELECT * FROM profile";
+        String selectQuery = "SELECT * FROM profile WHERE soft_delete = 0;";
 
         List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).findList();
         List<Profile> allProfiles = new ArrayList<>();
@@ -98,9 +99,27 @@ public class ProfileRepository {
      * @return Profile class of the user
      */
     public Profile getProfileById(String email) {
-        return ebeanServer.find(Profile.class).where().like("email", email).findOne();
+        Profile profile = ebeanServer.find(Profile.class).where().like("email", email).findOne();
+
+        profile.setNationalities(profileNationalityRepository.getList(profile.getProfileId()).get());
+        profile.setPassports(profilePassportCountryRepository.getList(profile.getProfileId()).get());
+        profile.setTravellerTypes(profileTravellerTypeRepository.getList(profile.getProfileId()).get());
+        profile.setRoles(rolesRepository.getProfileRoles(profile.getProfileId()).get());
+
+        return profile;
     }
 
+    /**
+     * Method for getting a profile that is not soft deleted
+     *
+     * @param userId String of the email to get
+     * @return Profile class of the user
+     */
+    public Profile getExistingProfileByProfileId(Integer userId) {
+        return ebeanServer.find(Profile.class)
+                .where().eq("soft_delete", "0").and()
+                .like("profile_id", userId.toString()).findOne();
+    }
 
     /**
      * Method for getting a profile
@@ -114,6 +133,75 @@ public class ProfileRepository {
 
 
     /**
+     * Database access method to query the database for profiles that match the given search parameters
+     *
+     * @param travellerType Traveller type to search for
+     * @param lowerAge Lower limit for age of profile
+     * @param upperAge Upper limit for age of profile
+     * @param gender Gender of profile
+     * @param nationality nationality of profile
+     * @return List of profiles that match query parameters
+     */
+    public List<Profile> searchProfiles(String travellerType, Date lowerAge, Date upperAge, String gender, String nationality) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String queryString = "SELECT profile_traveller_type.profile FROM profile_traveller_type " +
+                "JOIN profile_nationality ON profile_nationality.profile = profile_traveller_type.profile " +
+                "JOIN nationality ON profile_nationality.nationality = nationality_id " +
+                "JOIN traveller_type ON profile_traveller_type.traveller_type = traveller_type_id";
+        boolean whereAdded = false;
+        if (!travellerType.equals("")) {
+            queryString += " WHERE traveller_type_name = ?";
+            whereAdded = true;
+        }
+        if (!nationality.equals("")) {
+            if (!whereAdded) {
+                queryString += " WHERE nationality_name = ?";
+            } else {
+                queryString += " AND nationality_name = ?";
+            }
+
+        }
+        SqlQuery query = ebeanServer.createSqlQuery(queryString);
+
+        if (!travellerType.equals("")) {
+            query.setParameter(1, travellerType);
+        }
+        if (!nationality.equals("")) {
+            if (!whereAdded) {
+                query.setParameter(1, nationality);
+            } else {
+                query.setParameter(2, nationality);
+            }
+        }
+        List<SqlRow> foundRows = query.findList();
+        List<Integer> foundIds = new ArrayList<>();
+        List<Profile> foundProfiles = new ArrayList<>();
+        if (!foundRows.isEmpty()) {
+            for (SqlRow row : foundRows) {
+                foundIds.add(row.getInteger("profile"));
+            }
+            foundProfiles = ebeanServer.find(Profile.class).where()
+                    .idIn(foundIds)
+                    .contains("gender", gender)
+                    .gt("birth_date", dateFormat.format(upperAge))
+                    .lt("birth_date", dateFormat.format(lowerAge))
+                    .findList();
+            for (Profile profile : foundProfiles) {
+                Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profile.getProfileId());
+                optionalIntegerPassportCountryMap.ifPresent(profile::setPassports);
+                Optional<Map<Integer, Nationality>> optionalNationalityMap = profileNationalityRepository.getList(profile.getProfileId());
+                optionalNationalityMap.ifPresent(profile::setNationalities);
+                Optional<Map<Integer, TravellerType>> optionalTravellerTypeMap = profileTravellerTypeRepository.getList(profile.getProfileId());
+                optionalTravellerTypeMap.ifPresent(profile::setTravellerTypes);
+
+            }
+        }
+
+        return foundProfiles;
+    }
+
+
+    /**
      * Create a profile instance from data of an SQL Row result
      *
      * @param row The SQL query result as a row
@@ -121,17 +209,31 @@ public class ProfileRepository {
      */
     private Profile profileFromRow(SqlRow row) {
         Integer profileId = row.getInteger("profile_id");
-        Map<Integer, PassportCountry> passportCountries = profilePassportCountryRepository.getList(profileId).get();
-        Map<Integer, Nationality> nationalities = profileNationalityRepository.getList(profileId).get();
-        Map<Integer, TravellerType> travellerTypes = profileTravellerTypeRepository.getList(profileId).get();
-        List<String> roles = rolesRepository.getProfileRoles(profileId).get();
-
-        return new Profile(row.getInteger("profile_id"), row.getString("first_name"),
+        Map<Integer, PassportCountry> passportCountries = new HashMap<>();
+        Map<Integer, Nationality> nationalities = new HashMap<>();
+        Map<Integer, TravellerType> travellerTypes = new HashMap<>();
+        List<String> roles = new ArrayList<>();
+        Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profileId);
+        if (optionalIntegerPassportCountryMap.isPresent()) {
+            passportCountries = optionalIntegerPassportCountryMap.get();
+        }
+        Optional<Map<Integer, Nationality>> optionalNationalityMap = profileNationalityRepository.getList(profileId);
+        if (optionalNationalityMap.isPresent()) {
+            nationalities = optionalNationalityMap.get();
+        }
+        Optional<Map<Integer, TravellerType>> optionalTravellerTypeMap = profileTravellerTypeRepository.getList(profileId);
+        if (optionalTravellerTypeMap.isPresent()) {
+            travellerTypes = optionalTravellerTypeMap.get();
+        }
+        Optional<List<String>> optionalRoles = rolesRepository.getProfileRoles(profileId);
+        if (optionalRoles.isPresent()) {
+            roles = optionalRoles.get();
+        }
+        return new Profile(profileId, row.getString("first_name"),
                 row.getString("middle_name"), row.getString("last_name"), row.getString("email"),
-                row.getDate("birthDate"), passportCountries, row.getString("gender"),
+                row.getDate("birth_date"), passportCountries, row.getString("gender"),
                 row.getDate("time_created"), nationalities, travellerTypes, roles);
     }
-
 
     /**
      * This method finds a profile in the database using a given profile id
@@ -141,14 +243,13 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Profile>> findById(int profileId) {
         return supplyAsync(() -> {
-            String qry = "Select * from profile where profile_id = ?";
-            List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, profileId).findList();
-            Profile profile = null;
-            if (!rowList.isEmpty()) {
-                profile = profileFromRow(rowList.get(0));
-            }
-            return Optional.ofNullable(profile);
-        }, executionContext);
+            Profile profile = ebeanServer.find(Profile.class).setId(profileId).findOne();
+            profile.setNationalities(profileNationalityRepository.getList(profile.getProfileId()).get());
+            profile.setPassports(profilePassportCountryRepository.getList(profile.getProfileId()).get());
+            profile.setTravellerTypes(profileTravellerTypeRepository.getList(profile.getProfileId()).get());
+            profile.setRoles(rolesRepository.getProfileRoles(profile.getProfileId()).get());
+            return Optional.of(profile);
+        });
     }
 
     /**
@@ -159,10 +260,10 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Profile>> lookupEmail(String email) {
         return supplyAsync(() -> {
-            String qry = "Select * from profile where email = ?";
+            String qry = "Select * from profile where email = ? and soft_delete = 0";
             List<SqlRow> rowList = ebeanServer.createSqlQuery(qry).setParameter(1, email).findList();
             Profile profile = null;
-            if (!rowList.get(0).isEmpty()) {
+            if (!rowList.isEmpty() && !rowList.get(0).isEmpty()) {
                 profile = profileFromRow(rowList.get(0));
             }
             return Optional.ofNullable(profile);
@@ -225,6 +326,9 @@ public class ProfileRepository {
      */
     public CompletionStage<Optional<Integer>> update(Profile newProfile, int userId) {
 
+        if (isEmailTaken(newProfile.getEmail(), userId)) {
+            throw new IllegalArgumentException("Email is already taken");
+        }
         return supplyAsync(
                 () -> {
                     Transaction txn = ebeanServer.beginTransaction();
@@ -260,7 +364,6 @@ public class ProfileRepository {
                                 profileTravellerTypeRepository.insertProfileTravellerType(
                                         new TravellerType(0, travellerTypeName), userId);
                             }
-                            //TODO call function in role repo and edit the users role
                             value = Optional.of(userId);
                         }
                     } finally {
@@ -302,6 +405,31 @@ public class ProfileRepository {
             query.execute();
             txn.commit();
             return Optional.of(0);
+        }, executionContext);
+    }
+
+
+    /**
+     * sets soft delete for a profile which eather deletes it or
+     * undoes the delete
+     * @param profileId The ID of the profile to soft delete
+     * @param value, the value softDelete is to be set to
+     * @return
+     */
+    public CompletionStage<Integer> setSoftDelete(int profileId, int value) {
+        return supplyAsync(() -> {
+            try {
+                Profile targetProfile = ebeanServer.find(Profile.class).setId(profileId).findOne();
+                if (targetProfile != null) {
+                    targetProfile.setSetSoftDelete(value);
+                    targetProfile.update();
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } catch(Exception e) {
+                return 0;
+            }
         }, executionContext);
     }
 
@@ -368,7 +496,7 @@ public class ProfileRepository {
      * @return destList arrayList of destinations registered by the user
      */
     public Optional<ArrayList<Destination>> getDestinations(int profileId) {
-        String sql = ("SELECT * FROM destination WHERE profile_id = ?");
+        String sql = ("SELECT * FROM destination WHERE profile_id = ? AND soft_delete = 0");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination dest;
@@ -383,9 +511,31 @@ public class ProfileRepository {
             dest.setLatitude(aRowList.getDouble("latitude"));
             dest.setLongitude(aRowList.getDouble("longitude"));
             dest.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
-            destList.add(dest);
+            if ((aRowList.getBoolean("soft_delete") ? 1: 0) == 0) {
+                destList.add(dest);
+            }
         }
         return Optional.of(destList);
+    }
+
+    /**
+     * Method for edit profile-email to check if there is a traveller account under the supplied email that already
+     * exists (not the same user)
+     *
+     * @param email String The new email the user has proposed to change to
+     * @param profileId int of the porfileid of the user
+     * @return boolean true if email is taken, false if it is a change that will be allowed
+     */
+    private boolean isEmailTaken(String email, int profileId) {
+        boolean isTaken = false;
+        String selectQuery = "Select * from profile WHERE email = ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();
+        for (SqlRow aRow : rowList) {
+            if (aRow.getInteger("profile_id") != profileId) {
+                isTaken = true;
+            }
+        }
+        return isTaken;
     }
 
 

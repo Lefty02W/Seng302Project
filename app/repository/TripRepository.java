@@ -4,6 +4,7 @@ import com.google.common.collect.TreeMultimap;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Model;
+import io.ebean.SqlRow;
 import models.Destination;
 import models.Profile;
 import models.Trip;
@@ -27,44 +28,28 @@ public class TripRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
-    private final TripDestinationsRepository tripDestinationsRepository;
     private final DestinationRepository destinationRepository;
-    private final ProfileRepository profileRepository;
 
     @Inject
-    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, TripDestinationsRepository tripDestinationsRepository, ProfileRepository profileRepository, DestinationRepository destinationRepository) {
+    public TripRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, DestinationRepository destinationRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
-        this.tripDestinationsRepository = tripDestinationsRepository;
         this.destinationRepository = destinationRepository;
-        this.profileRepository = profileRepository;
-    }
-
-    /**
-     * insert trip destination into the database
-     * @param tripDestination
-     * @return trip id
-     */
-    public CompletionStage<Integer> insertTripDestination(TripDestination tripDestination) {
-        return supplyAsync(() -> {
-            ebeanServer.insert(tripDestination);
-            return tripDestination.getTripId();
-        }, executionContext);
     }
 
 
     /**
      * insert trip into database
-     * @param trip
-     * @param tripDestinations
+     * @param trip Trip object to be inserted in the database
+     * @param tripDestinations List of trip destinations to be inserted that are inside the trip
      */
-    public void insert(Trip trip, ArrayList<TripDestination> tripDestinations) {
+    public void insert(Trip trip, List<TripDestination> tripDestinations) {
         ebeanServer.insert(trip);
         for (TripDestination tripDestination : tripDestinations) {
                 tripDestination.setTripId(trip.getId());
                 Destination dest = destinationRepository.lookup(tripDestination.getDestinationId());
                 if (dest.getVisible() == 1) {
-                   //TODO Swap to ownership of global admin
+                    destinationRepository.setOwnerAsAdmin(dest.getDestinationId());
                 }
             ebeanServer.insert(tripDestination);
         }
@@ -81,9 +66,32 @@ public class TripRepository {
             try {
                 final Optional<Trip> tripOptional = Optional.ofNullable(ebeanServer.find(Trip.class).setId(tripID).findOne());
                 tripOptional.ifPresent(Model::delete);
-                return tripOptional.map(p -> p.getId());
+                return tripOptional.map(Trip::getId);
             } catch (Exception e) {
                 return Optional.empty();
+            }
+        }, executionContext);
+    }
+
+    /**
+     * sets soft delete for a Trip which eather deletes it or
+     * undoes the delete
+     * @param tripId The ID of the trip to soft delete
+     * @return
+     */
+    public CompletionStage<Integer> setSoftDelete(int tripId, int softDelete) {
+        return supplyAsync(() -> {
+            try {
+                Trip targetTrip = ebeanServer.find(Trip.class).setId(tripId).findOne();
+                if (targetTrip != null) {
+                    targetTrip.setSoftDelete(softDelete);
+                    targetTrip.update();
+                    return 1;
+                } else {
+                    return 0;
+                }
+            } catch(Exception e) {
+                return 0;
             }
         }, executionContext);
     }
@@ -100,6 +108,7 @@ public class TripRepository {
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
                 .eq("profile_id", currentUser.getProfileId())
+                .eq("soft_delete",0)
                 .findList();
 
         for (Trip trip : result) {
@@ -132,18 +141,18 @@ public class TripRepository {
 
     /**
      * code to return trip from id
-     * @param tripId
-     * @return
+     * @param tripId Id of the trip to be selected
+     * @return Trip object taken from the database
      */
     public Trip getTrip(int tripId) {
         // Getting the trips out of the database
         List<Trip> result = Trip.find.query().where()
                 .eq("trip_id", tripId)
+                .eq("soft_delete",0)
                 .findList();
 
         Trip trip = result.get(0);
 
-        ArrayList<TripDestination> tripDestinations = new ArrayList<>();
         TreeMap<Integer, TripDestination> orderedDestiantions = new TreeMap<>();
         List<TripDestination> tripDests = TripDestination.find.query()
                 .where()
@@ -159,8 +168,24 @@ public class TripRepository {
             tripDest.setDestination(destinations.get(0));
             orderedDestiantions.put(tripDest.getDestOrder(), tripDest);
         }
-        trip.setOrderedDestiantions(orderedDestiantions);
+        trip.setOrderedDestinations(orderedDestiantions);
         return trip;
+    }
+
+    /**
+     * Method to get all trips
+     *
+     * @return List of all trips
+     */
+    public List<Trip> getAll() {
+        String selectQuery = "SELECT * FROM trip WHERE soft_delete = 0;";
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).findList();
+        List<Trip> allTrips = new ArrayList<>();
+        for (SqlRow row : rows) {
+            allTrips.add(getTrip(row.getInteger("trip_id")));
+
+        }
+        return allTrips;
     }
 
 }

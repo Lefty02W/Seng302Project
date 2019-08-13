@@ -10,12 +10,13 @@ import play.mvc.Http;
 import play.mvc.Result;
 import repository.*;
 import roles.RestrictAnnotation;
-import scala.Int;
+import utility.Country;
 import views.html.admin;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -35,10 +36,12 @@ public class AdminController {
     private final Form<Profile> profileEditForm;
     private final Form<Destination> destinationEditForm;
     private final Form<Profile> profileCreateForm;
-    private final TripDestinationsRepository tripDestinationsRepository;
-
+    private final TreasureHuntRepository treasureHuntRepository;
     private MessagesApi messagesApi;
     private final HttpExecutionContext httpExecutionContext;
+    private final TreasureHuntController treasureHuntController;
+    private final Form<TreasureHunt> huntForm;
+    private final UndoStackRepository undoStackRepository;
 
     private String adminEndpoint = "/admin";
     private RolesRepository rolesRepository;
@@ -46,26 +49,46 @@ public class AdminController {
     @Inject
     public AdminController(FormFactory formFactory, HttpExecutionContext httpExecutionContext,
                            MessagesApi messagesApi, ProfileRepository profileRepository, DestinationRepository
-                                   destinationRepository, TripRepository tripRepository, TripDestinationsRepository
-                                   tripDestinationsRepository, RolesRepository rolesRepository) {
+                                   destinationRepository, TripRepository tripRepository,
+                                   RolesRepository rolesRepository,
+                           TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController, UndoStackRepository undoStackRepository) {
         this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
         this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.tripRepository = tripRepository;
-        this.tripDestinationsRepository = tripDestinationsRepository;
         this.profileCreateForm = formFactory.form(Profile.class);
         this.destinationEditForm = formFactory.form(Destination.class);
         this.rolesRepository = rolesRepository;
+        this.treasureHuntRepository = treasureHuntRepository;
+        this.huntForm = formFactory.form(TreasureHunt.class);
+        this.treasureHuntController = treasureHuntController;
+        this.undoStackRepository = undoStackRepository;
     }
+
+
+
+    /**
+     * Function to check if the long and lat are valid
+     *
+     * @param destination destination to check lat and long values
+     * @return Boolean true if longitude and latitude are valid
+     */
+    private boolean longLatCheck(Destination destination) {
+        if (destination.getLatitude() > 90 || destination.getLatitude() < -90) {
+            return false;
+        }
+        return !(destination.getLongitude() > 180 || destination.getLongitude() < -180);
+    }
+
 
     /**
      * Function to delete a profile with the given email from the database using the profile controller method
      *
-     * @param request
-     * @param id      the id of the user who is to be deleted
-     * @return
+     * @param request the request sent from the client
+     * @param id the id of the user who is to be deleted
+     * @return a redirect to the admin page
      * @apiNote
      */
     public CompletionStage<Result> deleteProfile(Http.Request request, Integer id) {
@@ -74,9 +97,11 @@ public class AdminController {
             return supplyAsync(() ->(redirect("/admin").flashing("error",
                     "Global admin cannot be deleted.")));
         }
-        return profileRepository.delete(id).thenApplyAsync(userEmail -> redirect(adminEndpoint)
-                , httpExecutionContext.current());
+        undoStackRepository.addToStack(new UndoStack("profile", id, SessionController.getCurrentUserId(request)));
+        return profileRepository.setSoftDelete(id, 1).thenApplyAsync(userEmail -> redirect("/admin").flashing("info",
+                "Profile deleted successfully"));
     }
+
 
     /**
      * Endpoint method to retrieve profile data for the admin to view
@@ -89,13 +114,14 @@ public class AdminController {
     public CompletionStage<Result> viewProfile(Http.Request request, Integer id) {
         return profileRepository.findById(id).thenApplyAsync(profOpt -> {
             if (profOpt.isPresent()) {
-                List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-                return ok(admin.render(profileRepository.getAll(), getAdmins(), Trip.find.all(), new RoutedObject<Destination>(null, false, false), Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm,  null, destinationChangesList, request, messagesApi.preferred(request)));
+                List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
+                return ok(admin.render(profileRepository.getAll(), getAdmins(), Trip.find.all(), new RoutedObject<Destination>(null, false, false), Destination.find.all(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm, null, profileCreateForm,  null, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(), undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin");
             }
         });
     }
+
 
     /**
      * Create model for editing a users profile in the admin page
@@ -108,18 +134,19 @@ public class AdminController {
     public CompletionStage<Result> showEditProfile(Http.Request request, Integer id) {
         return profileRepository.findById(id).thenApplyAsync(profileOpt -> {
             List<Profile> profiles = profileRepository.getAll();
-            List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
+            List<Trip> trips = tripRepository.getAll();
+            List<Destination> destinations = destinationRepository.getAllDestinations();
             if (profileOpt.isPresent()) {
                 Form<Profile> profileForm = profileEditForm.fill(profileOpt.get());
-                List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-                return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, null, destinationChangesList, request, messagesApi.preferred(request)));
+                List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
+                return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm, null, profileCreateForm, null, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(), undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), request, messagesApi.preferred(request)));
             } else {
-                return redirect("/admin").flashing("info", "User profile not found"); //TODO look into sending an actual not found response
+                return redirect("/admin").flashing("info", "User profile not found");
             }
         });
 
     }
+
 
     /**
      * Returns list of all the admins in the system
@@ -130,12 +157,15 @@ public class AdminController {
         List<Integer> adminIdList = rolesRepository.getProfileIdFromRoleName("admin");
         List<Profile> adminProfiles = new ArrayList<>();
         for (Integer id : adminIdList) {
-            Profile profile = profileRepository.getProfileByProfileId(id);
-            rolesRepository.getProfileRoles(id).ifPresent(profile::setRoles);
-            adminProfiles.add(profile);
+            Profile profile = profileRepository.getExistingProfileByProfileId(id);
+            if (profile != null) {
+                rolesRepository.getProfileRoles(profile.getProfileId()).ifPresent(profile::setRoles);
+                adminProfiles.add(profile);
+            }
         }
         return adminProfiles;
     }
+
 
     /**
      * Endpoint method to show the admin page on the site
@@ -147,10 +177,11 @@ public class AdminController {
     public CompletionStage<Result> show(Http.Request request) {
         return supplyAsync(() -> {
             List<Profile> profiles = profileRepository.getAll();
-            List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
-            List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangesList, request, messagesApi.preferred(request)));
+            List<Trip> trips = tripRepository.getAll();
+            List<Destination> destinations = destinationRepository.getAllDestinations();
+            List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
+            List<UndoStack> adminUndoStackList = undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request));
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, null, profileCreateForm, null, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(), undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),request, messagesApi.preferred(request)));
         });
     }
 
@@ -193,6 +224,7 @@ public class AdminController {
                 );
     }
 
+
     /**
      * Endpoint method to delete a trip from the database
      *
@@ -202,12 +234,14 @@ public class AdminController {
      * @apiNote /admin/trip/:tripId/delete
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
-        return tripRepository.delete(tripId).thenApplyAsync(x -> redirect(adminEndpoint)
+        undoStackRepository.addToStack(new UndoStack("trip", tripId, SessionController.getCurrentUserId(request)));
+        return tripRepository.setSoftDelete(tripId, 1).thenApplyAsync(x -> redirect(adminEndpoint)
                 .flashing(
                         "info",
                         "Trip: " + tripId + " deleted")
         );
     }
+
 
     /**
      * Endpoint method allowing an admin to view a selected trip
@@ -223,8 +257,8 @@ public class AdminController {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
             List<Destination> destinations = Destination.find.all();
-            List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, trip, profileCreateForm, null, destinationChangesList, request, messagesApi.preferred(request)));
+            List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
+            return ok(admin.render(profiles, getAdmins(), trips, new RoutedObject<Destination>(null, false, false), destinations, new RoutedObject<Profile>(null, false, false), profileEditForm, trip, profileCreateForm, null, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(), undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), request, messagesApi.preferred(request)));
         });
     }
 
@@ -232,12 +266,11 @@ public class AdminController {
     /**
      * Endpoint method allowing an admin to make another use an admin
      *
-     * @param request the request sent to view the trip
      * @param userId  the id of the user to promote
      * @return the admin page rendered with the new admin
      * @apiNote /admin/:userId/admin
      */
-    public Result makeAdmin(Http.Request request, Integer userId) {
+    public Result makeAdmin(Integer userId) {
         String roleName = "admin";
         try{
 
@@ -251,18 +284,19 @@ public class AdminController {
         return redirect(adminEndpoint);
     }
 
+
     /**
      * Endpoint method allowing an admin to remove another use an admin
      *
-     * @param request the request sent to view the trip
      * @param userId  the id of the user to promote
      * @return the admin page rendered with the admin removed
      * @apiNote /admin/:userId/admin/remove
      */
-    public Result removeAdmin(Http.Request request, Integer userId) {
+    public Result removeAdmin(Integer userId) {
         rolesRepository.removeRole(userId);
         return redirect(adminEndpoint);
     }
+
 
     /**
      * Endpoint method to delete a destination from the database
@@ -273,7 +307,7 @@ public class AdminController {
      * @apiNote /admin/destinations/:destId/delete
      */
     public CompletionStage<Result> deleteDestination(Http.Request request, Integer destId) {
-        return tripDestinationsRepository
+        return destinationRepository
                 .checkDestinationExists(destId)
                 .thenApplyAsync(
                         result -> {
@@ -283,10 +317,11 @@ public class AdminController {
                                                 "error",
                                                 "Destination: "
                                                         + destId
-                                                        + " is used within the following trips: "
+                                                        + " is used within the following "
                                                         + result.get());
                             }
-                            destinationRepository.delete(destId);
+                            undoStackRepository.addToStack(new UndoStack("destination", destId, SessionController.getCurrentUserId(request)));
+                            destinationRepository.setSoftDelete(destId, 1);
                             return redirect(adminEndpoint)
                                     .flashing(
                                             "info",
@@ -295,6 +330,7 @@ public class AdminController {
                                                     + " deleted");
                         });
     }
+
 
     /**
      * Endpoint method to get a destination object to the view to edit or view
@@ -309,12 +345,12 @@ public class AdminController {
         return supplyAsync(() -> {
             List<Profile> profiles = profileRepository.getAll();
             List<Trip> trips = Trip.find.all();
-            List<Destination> destinations = Destination.find.all();
+            List<Destination> destinations = destinationRepository.getAllDestinations();
             Destination currentDestination = destinationRepository.lookup(destId);
             RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, isEdit, !isEdit);
             if (isEdit) destinationEditForm.fill(currentDestination);
-            List<DestinationChanges> destinationChangesList = destinationRepository.getAllDestinationChanges();
-            return ok(admin.render(profiles, getAdmins(), trips, toSend, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangesList, request, messagesApi.preferred(request)));
+            List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
+            return ok(admin.render(profiles, getAdmins(), trips, toSend, destinations, new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(), undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),  request, messagesApi.preferred(request)));
         });
     }
 
@@ -330,7 +366,15 @@ public class AdminController {
     public CompletionStage<Result> editDestination(Http.Request request, Integer destId) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
         Destination destination = destForm.get();
-        return destinationRepository.update(destination, destId).thenApplyAsync(string -> redirect("/admin"));
+        Optional<String> destFormString = destForm.field("travellerTypesStringDest").value();
+        destFormString.ifPresent(destination::setTravellerTypesStringDest);
+        destination.initTravellerType();
+        if (longLatCheck(destination)) {
+            destinationRepository.update(destination, destId);
+            return supplyAsync(() -> redirect(adminEndpoint).flashing("info", "Destination " + destination.getName() + " was edited successfully."));
+        } else {
+            return supplyAsync(() -> redirect(adminEndpoint).flashing("error", "A destinations longitude (-180 to 180) and latitude (90 to -90) must be valid"));
+        }
     }
 
 
@@ -343,21 +387,169 @@ public class AdminController {
      */
     public CompletionStage<Result> addDestination(Http.Request request) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
-        Destination destination = destForm.get();
-        return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin"));
+        String visible = destForm.field("visible").value().get();
+        int visibility = (visible.equals("Public")) ? 1 : 0;
+        Destination destination = destForm.value().get();
+        destination.initTravellerType();
+        destination.setVisible(visibility);
+
+        return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin").flashing("info", "Destination " + destination.getName() + " added successfully"));
     }
 
 
     /**
-     *
-     * @param request
-     * @param destId
-     * @return
+     * Calls the destination repository method deleteDestinationChange to remove the selected change request once the
+     * admin confirms the delete.
+     * Method redirects to admin page with the a success message displayed
+     * @param request http request
+     * @param changeId Id of the change request the admin is removing
+     * @return redirect with flashing success message
      */
-    public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer destId) {
-        return supplyAsync(() -> {
-          return redirect("/admin");
+    public CompletionStage<Result> rejectDestinationRequest(Http.Request request, Integer changeId) {
+        return destinationRepository.deleteDestinationChange(changeId)
+                .thenApplyAsync(x ->
+                        redirect("/admin").flashing("info", "Destination change request successfully rejected")
+                );
+    }
+
+    /**
+     * Endpoint method for the admin to accept a change request on a destination
+     *
+     * @apiNote GET /admin/destinations/:id/request/accept
+     * @param request request sent by admin to accept change
+     * @param changeId database id of the change to accept
+     * @return CompletionStage holding redirect to the admin page
+     */
+    public CompletionStage<Result> acceptDestinationRequest(Http.Request request, Integer changeId){
+        return destinationRepository.acceptDestinationChange(changeId)
+                .thenApplyAsync(x -> {
+                    return redirect("/admin").flashing("info", "Destination change successfully accepted");
+                });
+    }
+
+
+    /**
+     * Endpoint method for the admin to create a new treasure hunt
+     *
+     * @param request the admins create request
+     * @return CompletionStage redirecting back to the admin page
+     */
+    public CompletionStage<Result> createHunt(Http.Request request) {
+    return supplyAsync(
+        () -> {
+          Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
+          Optional<TreasureHunt> huntOpt = filledForm.value();
+          if (huntOpt.isPresent()) {
+            TreasureHunt treasureHunt = huntOpt.get();
+            String destinationId = null;
+            String startDate = null;
+            String endDate = null;
+            int profileId = -1;
+            if (filledForm.field("endDate").value().isPresent()) {
+              endDate = filledForm.field("endDate").value().get();
+            }
+            if (filledForm.field("startDate").value().isPresent()) {
+              startDate = filledForm.field("startDate").value().get();
+            }
+            if (filledForm.field("destinationId").value().isPresent()) {
+              destinationId = filledForm.field("destinationId").value().get();
+            }
+            if (filledForm.field("profileId").value().isPresent()) {
+              profileId = Integer.parseInt(filledForm.field("profileId").value().get());
+            }
+            if (profileId != -1) {
+              treasureHunt.setTreasureHuntProfileId(profileId);
+            }
+            treasureHunt.setDestinationIdString(destinationId);
+            treasureHunt.setStartDateString(startDate);
+            treasureHunt.setEndDateString(endDate);
+
+            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+                return redirect(adminEndpoint).flashing("error", "Error: Start date cannot be after end date.");
+            }
+
+            treasureHuntRepository.insert(treasureHunt);
+          }
+          return redirect(adminEndpoint).flashing("info", "Treasure Hunt has been created.");
         });
     }
 
+
+    /**
+     * Endpoint method to handle a admin  request to edit a previously made treasure hunt
+     * @apiNote /admin/hunts/:id/edit
+     * @param request the admin request holding the treasure hunt form
+     * @param id Id of the treasure hunt to be edited
+     * @return CompletionStage redirecting back to the treasure hunts page
+     */
+    public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
+        Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
+        Integer profileId = SessionController.getCurrentUserId(request);
+        Optional<String> treasureHuntFormString = treasureHuntForm.field("profileId").value();
+        if (treasureHuntFormString.isPresent()) {
+            profileId = Integer.parseInt(treasureHuntFormString.get());
+        }
+        TreasureHunt treasureHunt = treasureHuntController.setValues(profileId, treasureHuntForm);
+        return supplyAsync(() -> {
+            if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
+                return redirect(adminEndpoint).flashing("error", "Error: Start date cannot be after end date.");
+            }
+            treasureHuntRepository.update(treasureHunt, id);
+            return redirect(adminEndpoint).flashing("info", "Treasure Hunt has been updated.");
+        });
+    }
+
+
+    /**
+     * Endpoint method to get a hunt object to the view to edit
+     *
+     * @param request the get request sent by the client
+     * @param id  the id of the treasure hunt to view
+     * @return CompletionStage holding result rendering the admin  page with the desired hunt
+     * @apiNote GET /admin/hunts/:id/edit/show
+     */
+    public CompletionStage<Result> showEditHunt(Http.Request request, Integer id) {
+        return supplyAsync(() -> {
+            List<DestinationChange> destinationChangeList = destinationRepository.getAllDestinationChanges();
+            TreasureHunt hunt = treasureHuntRepository.lookup(id);
+//            return ok(admin.render(profileRepository.getAll(), getAdmins(), tripRepository.getAll(), new RoutedObject<Destination>(null, false, false),             destinationRepository.getAllDestinations(),
+//                    new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(hunt, true, true),
+//                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), request, messagesApi.preferred(request)));
+
+            return ok(admin.render(profileRepository.getAll(), getAdmins(), tripRepository.getAll(), new RoutedObject<Destination>(null, false, false), destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, true, false), profileEditForm, null, profileCreateForm, destinationEditForm, destinationChangeList, treasureHuntRepository.getAllTreasureHunts(), new RoutedObject<TreasureHunt>(hunt, true, true), Country.getInstance().getAllCountries(), undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), request, messagesApi.preferred(request)));
+        });
+    }
+
+
+    /**
+     * Endpoint method for an admin to delete a treasure hunt
+     *
+     * @param request the admin request
+     * @param id the id of the treasure hunt to delete
+     * @return CompletionStage holding redirect to the admin page
+     */
+    public CompletionStage<Result> deleteHunt(Http.Request request, Integer id) {
+        undoStackRepository.addToStack(new UndoStack("treasure_hunt", id, SessionController.getCurrentUserId(request)));
+        return treasureHuntRepository.setSoftDelete(id, 1)
+                .thenApplyAsync(x -> redirect("/admin").flashing("info", "Treasure Hunt: " + id + " was deleted"));
+    }
+
+    /**
+     * Endpoint method of an admin to undo a delete
+     *
+     * @apiNote GET /admin/undo/
+     * @param request the admin request
+     * @return CompletionStage holding redirect to the admin page
+     */
+    public CompletionStage<Result> undoTopOfStack(Http.Request request) {
+        Integer profileId = SessionController.getCurrentUserId(request);
+        return undoStackRepository.undoItemOnTopOfStack(profileId)
+                .thenApplyAsync(x -> {
+                    if (x == 1) {
+                        return redirect("/admin").flashing("info", "Deletion is undone");
+                    } else {
+                        return redirect("/admin").flashing("info", "No changes to undo");
+                    }
+                });
+    }
 }

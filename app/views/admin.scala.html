@@ -3,7 +3,8 @@
 @(profiles : List[Profile], adminProfiles: List[Profile], trips : List[Trip], destination : RoutedObject[Destination],
         destinations : List[Destination], profile : RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm : Form[Profile], editDestinationForm: Form[Destination],
-        destinationChangesList: List[DestinationChanges])(implicit request: Http.Request, messages: play.i18n.Messages)
+        destinationChangeList: List[DestinationChange], hunts : List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
+        countries : List[String], adminUndoStack : List[UndoStack])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -26,7 +27,7 @@
 
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | Destinations</title>
+        <title>TravelEA | Admin</title>
     </head>
 
     <body>
@@ -40,6 +41,7 @@
                     <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
                     <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     <a style="color: #ca6636" href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
@@ -52,9 +54,33 @@
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
                     <div id="pageTitle">
-                        <h2>Admin</h2> <!-- TODO align this in the center -->
+                        <h2>Admin</h2>
+                        <!-- TODO align this in the center -->
                     </div>
                 </nav>
+
+                <div class="changeLog">
+                    <div class="dropdown bootstrap-select">
+                        <select class="selectpicker" id="changeStack" data-width="100%">
+                        @for(undoObject <- adminUndoStack) {
+                            <option selected disabled>Deleted @undoObject.getItem_type @undoObject.getObjectId</option>
+                        }
+                        </select>
+                    </div>
+                    <a href="@routes.AdminController.undoTopOfStack()">
+                        <button class="btn btn-primary">Undo Action</button>
+                    </a>
+
+                    <div class="helpPopup" onclick="helpPopup()">(What's this?)
+                        <span class="popuptext" id="helpPopup">
+                                Shows the last action you executed on this page. <br><br>
+                                Click the 'Undo Action' button to undo the latest action. <br>
+                                Shortcut key: "CTRL" + "SHIFT" + "Z" <br><br>
+                                Click the drop down to see the full list of actions performed while on the admin page.
+                                Note that only the most recent change can be undone.
+                            </span>
+                    </div>
+                </div>
 
                 <div class="container">
                     @if(request.flash.getOptional("info").isPresent) {
@@ -68,195 +94,196 @@
                         </div>
                     }
 
-                    <div class="col">
-                        <div class="row">
-                            <div class="col">
-                                <h2 align="center">Admins</h2>
-                            </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col">
+                            <h2 align="center">Admins</h2>
                         </div>
-                        <div class="row">
-                            <table id="adminsTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>AdminID</th>
-                                        <th>Email</th>
-                                        <th>Name</th>
-                                        <th>Permissions</th>
-                                    </tr>
-                                </thead>
-                                    @for(profile <- adminProfiles) {
-                                        <tr>
-                                        <td>@profile.getProfileId</td>
-                                        <td>@profile.getEmail</td>
-                                        <td>@profile.getFirstName</td>
-                                        <td>@profile.getRoles</td>
-                                        </tr>
+                    </div>
+                    <div class="row">
+                        <table id="adminsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>AdminID</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Permissions</th>
+                                </tr>
+                            </thead>
+                            @for(profile <- adminProfiles) {
+                                <tr>
+                                    <td>@profile.getProfileId</td>
+                                    <td>@profile.getEmail</td>
+                                    <td>@profile.getFirstName</td>
+                                    <td>@profile.getRoles</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                        <!-- Profile table -->
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 align="center">User Profiles</h2>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#createProfileModal">Add Profile</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table id="profileTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ProfileID</th>
+                                    <th>Email</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    <th>View</th>
+                                    <th>Permissions</th>
+                                    <th>Alter Admin</th>
+                                </tr>
+                            </thead>
+                            @for(profile <- profiles) {
+                                <tr>
+                                    <td>@profile.getProfileId</td>
+                                    <td>@profile.getEmail</td>
+                                    <td>
+                                        <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
+                                            <button type="button" class="btn btn-primary" id="editProfileButton">Edit</button>
+                                        </a> </td>
+                                    @if(profile.hasRole("global_admin")) {
+
+                                        <td><button type="button" disabled class="btn btn-secondary">Delete</button></td>
+
+                                    } else {
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/@profile.getProfileId/delete')">
+                                            Delete</button></td>
                                     }
-                            </table>
-                        </div>
-                            <!-- Profile table -->
-                        <div class="row">
-                            <div class="col text-center">
-                                <h2 align="center">User Profiles</h2>
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#createProfileModal">Add Profile</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <table id="profileTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>ProfileID</th>
-                                        <th>Email</th>
-                                        <th>Edit</th>
-                                        <th>Delete</th>
-                                        <th>View</th>
-                                        <th>Permissions</th>
-                                        <th>Alter Admin</th>
-                                    </tr>
-                                </thead>
-                                @for(profile <- profiles) {
-                                    <tr>
-                                        <td>@profile.getProfileId</td>
-                                        <td>@profile.getEmail</td>
-                                        <td>
-                                            <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
-                                                <button type="button" class="btn btn-primary" id="editProfileButton">Edit</button>
-                                            </a> </td>
-                                        @if(profile.hasRole("global_admin")){
 
-                                            <td><button type="button" disabled class="btn btn-secondary">Delete</button></td>
-
-                                        } else {
-                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/@profile.getProfileId/delete')">Delete</button></td>
-                                        }
-
-                                        <td>
+                                    <td>
                                         <a href="@routes.AdminController.viewProfile(profile.getProfileId())">
                                             <button class="btn btn-dark">View</button>
                                         </a></td>
 
-                                        <td>@profile.getRoles</td>
+                                    <td>@profile.getRoles</td>
 
-                                        @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
-                                            <td>
-                                                <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
-                                                    <button class="btn btn-info">Remove Admin</button>
-                                                </a>
-                                            </td>
-                                        } else if(profile.hasRole("global_admin")){
-                                            <td> global admin </td>
-                                        } else {
-                                            <td>
-                                            <a href="@routes.AdminController.makeAdmin(profile.getProfileId())">
-                                                <button class="btn btn-info">Make Admin</button>
-                                            </a>
-                                            </td>
-                                                }
-                                    </tr>
-                                }
-                            </table>
-                        </div>
-                        <div class="row">
-                            <div class="col text-center">
-                                <h2 align="cen NEEDS CHANGE WHEN DB READYter">User Trips</h2>
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#createTripModal">Add Trip</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <table id="tripsTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>TripID</th>
-                                        <th>ProfileID</th>
-                                        <th>Name</th>
-                                        <th>Edit</th>
-                                        <th>Delete</th>
-                                        <th>View</th>
-                                    </tr>
-                                </thead>
-                                @for(trip <- trips) {
-                                    <tr>
-                                        <td>@trip.getTripId</td>
-                                        <td>@trip.getProfileId</td>
-                                        <td>@trip.getName</td>
+                                    @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
                                         <td>
+                                            <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
+                                                <button class="btn btn-info">Remove Admin</button>
+                                            </a>
+                                        </td>
+                                    } else if(profile.hasRole("global_admin")){
+                                    <td> global admin </td>
+                                    } else {
+                                    <td>
+                                        <a href="@routes.AdminController.makeAdmin(profile.getProfileId())">
+                                            <button class="btn btn-info">Make Admin</button>
+                                        </a>
+                                    </td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 align="center">User Trips</h2>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#createTripModal">Add Trip</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table id="tripsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>TripID</th>
+                                    <th>ProfileID</th>
+                                    <th>Name</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    <th>View</th>
+                                </tr>
+                            </thead>
+                            @for(trip <- trips) {
+                                <tr>
+                                    <td>@trip.getTripId</td>
+                                    <td>@trip.getProfileId</td>
+                                    <td>@trip.getName</td>
+                                    <td>
                                         <a href="@routes.TripsController.showEdit(trip.getTripId, trip.getProfileId)">
                                             <button class="btn btn-primary">Edit</button>
                                         </a>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger" onclick="fillDeleteValues('/admin/trips/@trip.getTripId/delete')">Delete</button>
-                                        </td>
-                                        <td>
-                                            <a href="/admin/trips/@trip.getTripId">
-                                                <button class="btn btn-info">View</button>
-                                            </a>
-                                        </td>
-                                    </tr>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger" onclick="fillDeleteValues('/admin/trips/@trip.getTripId/delete')">Delete</button>
+                                    </td>
+                                    <td>
+                                        <a href="/admin/trips/@trip.getTripId">
+                                            <button class="btn btn-info">View</button>
+                                        </a>
+                                    </td>
+                                </tr>
 
-                                }
-                            </table>
+                            }
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 align="center">User Destinations</h2>
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">Add Destination</button>
                         </div>
-                        <div class="row">
-                            <div class="col text-center">
-                                <h2 align="center">User Destinations</h2>
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">Add Destination</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <table id="destinationsTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>DestinationID</th>
-                                        <th>ProfileID</th>
-                                        <th>Name</th>
-                                        <th>Edit</th>
-                                        <th>Delete</th>
-                                        <th>View</th>
-                                    </tr>
-                                </thead>
-                                @for(destination <- destinations) {
-                                    <tr>
-                                        <td>@destination.getDestinationId</td>
-                                        <td>@destination.getProfileId</td> <!-- TODO Update to id once user id is there -->
-                                        <td>@destination.getName</td>
-                                        <td>
-                                            <a href="@routes.AdminController.showDestination(destination.getDestinationId, true)">
-                                                <button class="btn btn-primary">Edit</button>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
-                                        </td>
-                                        <td>
-                                            <a href="@routes.AdminController.showDestination(destination.getDestinationId, false)">
-                                                <button class="btn btn-info" >View</button>
-                                            </a>
-                                        </td>
-                                    </tr>
+                    </div>
+                    <div class="row">
+                        <table id="destinationsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>DestinationID</th>
+                                    <th>ProfileID</th>
+                                    <th>Name</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                    <th>View</th>
+                                </tr>
+                            </thead>
+                            @for(destination <- destinations) {
+                                <tr>
+                                    <td>@destination.getDestinationId</td>
+                                    <td>@destination.getProfileId</td>
+                                    <td>@destination.getName</td>
+                                    <td>
+                                        <a href="@routes.AdminController.showDestination(destination.getDestinationId, true)">
+                                            <button class="btn btn-primary">Edit</button>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
+                                    </td>
+                                    <td>
+                                        <a href="@routes.AdminController.showDestination(destination.getDestinationId, false)">
+                                            <button class="btn btn-info" >View</button>
+                                        </a>
+                                    </td>
+                                </tr>
 
-                                }
-                            </table>
+                            }
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col text-center">
+                            <h2 align="center">Destinations Edit Requests</h2>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <h2 align="center">Destination requests</h2>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <table id="requestsTable" class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>User email</th>
-                                        <th>Destination name</th>
-                                        <th>Traveller type change</th>
-                                        <th>To be added or deleted</th>
-                                        <th>Approve</th>
-                                        <th>Decline</th>
-                                    </tr>
-                                </thead>
-                                @for(destinationChange <- destinationChangesList) {
-                                    <tr>
+                    </div>
+                    <div class="row">
+                        <table id="requestsTable" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ProfileID</th>
+                                    <th>Destination</th>
+                                    <th>Traveller Type</th>
+                                    <th>Action</th>
+                                    <th>Approve</th>
+                                    <th>Decline</th>
+                                </tr>
+                            </thead>
+                            @for(destinationChange <- destinationChangeList) {
+                                <tr>
 
                                         <td>@destinationChange.getEmail</td>
                                         <td>@destinationChange.getDestination.getName</td>
@@ -266,8 +293,42 @@
                                         }else {
                                             <td>Remove</td>
                                         }
-                                        <td><button class="btn btn-primary">Approve</button></td>
+                                    <td><a href="/admin/destinations/@destinationChange.getId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
                                         <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col text-center">
+                                <h2 align="center">Treasure Hunts</h2>
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#createHuntModal">Create Treasure Hunt</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table id="huntsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Riddle</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Destination</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                @for(hunt <- hunts) {
+                                    <tr>
+                                        <td>@hunt.getRiddle</td>
+                                        <td>@hunt.getStartDateString</td>
+                                        <td>@hunt.getEndDateString</td>
+                                        <td>@hunt.getTreasureHuntDestinationId</td>
+                                        <td>
+                                            <a href="@routes.AdminController.showEditHunt(hunt.getTreasureHuntId)">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a>
+                                        </td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/hunts/@hunt.getTreasureHuntId/delete')">Delete</button></td>
                                     </tr>
                                 }
                             </table>
@@ -277,11 +338,11 @@
             </div>
         </div>
         @if(profile.isEdit && profile.getObject != null) {
-        <script type="text/javascript">
-                $(window).on('load', function () {
-                    $('#editProfileModal').modal('show');
-                });
-        </script>
+            <script type="text/javascript">
+                    $(window).on('load', function () {
+                        $('#editProfileModal').modal('show');
+                    });
+            </script>
 
             <div class="modal fade" id="editProfileModal">
 
@@ -296,23 +357,26 @@
                             <div class="modal-body">
                                 <div class="col">
                                     <div class="row">
-                                        <div class="form-group" id="holder"> <small id="label" for="firstName">First Name*</small>
+                                        <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                            First Name*</small>
                                             <input type="text" id="firstName" placeholder="First Name" name="firstName" class="inputField" required oninvalid="this.setCustomValidity('First name required')" oninput="setCustomValidity('')" value="@profile.getObject.getFirstName">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group" id="holder"> <small id="label" for="firstName">Middle Name</small>
+                                        <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                            Middle Name</small>
                                             <input type="text" id="middleName" placeholder="Middle Name" name="middleName" class="inputField" value="@profile.getObject.getMiddleName">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group" id="holder"> <small id="label" for="firstName">Last Name*</small>
+                                        <div class="form-group" id="holder"> <small id="label" for="firstName">
+                                            Last Name*</small>
                                             <input type="text" id="lastName" placeholder="Last Name" name="lastName" class="inputField" required oninvalid="this.setCustomValidity('Last name required')" oninput="setCustomValidity('')" value="@profile.getObject.getLastName">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="hidden-div-edit">
-                                            <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required value="@profile.getObject.getTravellerTypesString">
+                                            <input type="text" id="travellerTypesString" name="travellerTypesForm" class="hidden-field typesField" required value="@profile.getObject.getTravellerTypesString">
                                         </div>
                                         <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%">
                                             @if(profile.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
@@ -346,9 +410,11 @@
                                             }
 
                                             @if(profile.getObject.getTravellerTypesList.contains("Functional/business Traveller")) {
-                                                <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
+                                                <option value="Functional/business Traveller" selected>
+                                                    Functional/business Traveller</option>
                                             } else {
-                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                                <option value="Functional/business Traveller">
+                                                    Functional/business Traveller</option>
                                             }
 
                                             @if(profile.getObject.getTravellerTypesList.contains("Holidaymaker")) {
@@ -379,7 +445,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
-                                            <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')"value="@profile.getObject.getEntryDate">
+                                            <input type="date" id="birthDate" name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')" value="@profile.getObject.getEntryDate">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -388,35 +454,67 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                            <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required value="@profile.getObject.getNationalityString">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required value="@profile.getObject.getNationalityString">
                                         </div>
+                                        <label>Nationalities</label>
+                                        <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
+                                        @for(nation <- countries) {
+                                            @if(profile.getObject.getNationalityList.contains(nation)){
+
+                                                <option value="@nation" selected>@nation</option>
+                                            }else {
+                                                <option value="@nation">@nation</option>
+                                            }
+                                        }
+                                        </select>
                                     </div>
                                     <div class="row">
-                                        <div class="form-group" id="holder"> <small id="label" for="passportsForm">Passport/s</small>
-                                            <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField" value="@profile.getObject.getPassportsString">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="passportsForm" name="passportsForm" class="hidden-field" value="@profile.getObject.getPassportsString">
                                         </div>
+                                        <label>Passports</label>
+                                        <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdown" data-width="100%">
+                                        @for(nation <- countries) {
+                                            @if(profile.getObject.getPassportsList.contains(nation)){
 
-
+                                                <option value="@nation" selected>@nation</option>
+                                            }else {
+                                                <option value="@nation">@nation</option>
+                                            }
+                                        }
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-outline-secondary"  data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                        Cancel</button>
                                     <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
                                 </div>
-                                }
-    </div>
-    </div>
-    </div>
-    </div>
-        }
 
+                                }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
 
     </body>
 
     <script>
         function fillVals() {
             $('#travellerTypesForm').val($('#typeDropdown').val());
+            $('#nationalitiesForm').val($('#nationDropdown').val());
+            $('#passportsForm').val($('#passportDropdown').val());
+            $('#travellerTypesFormCreate').val($('#typeDropdownCreate').val());
+            $('#nationalitiesFormCreate').val($('#nationDropdownCreate').val());
+            $('#passportsFormCreate').val($('#passportDropdownCreate').val());
+
+            $('#travellerTypesStringDestCreate').val($('#typeDropdown').val());
+            $('#travellerTypesStringDest').val($('#typeDropdownEdit').val());
+            $('#country').val($('#countriesDropdown').val());
+            $('#countryEdit').val($('#countriesDropdownEdit').val());
+            $('#travellerTypesForm').val($('#typeDropdownEdit').val());
         }
 
 
@@ -425,6 +523,20 @@
             $("#wrapper").toggleClass("toggled");
         });
 
+        function fillValsDest() {
+            console.log($('#typeDropdownDest').val());
+            $('#travellerTypesStringDest').val($('#typeDropdownDest').val());
+        }
+
+        function fillVals2() {
+            $('#travellerTypesForm').val($('#typeDropdownEdit').val());
+        }
+
+        document.onkeyup = function(e) {
+            if (e.ctrlKey && e.which === 90 && e.shiftKey) {
+                window.location.href = "@routes.AdminController.undoTopOfStack()";
+            }
+        };
 
 
         $(document).ready(function() {
@@ -467,6 +579,22 @@
             });
         } );
 
+        $(document).ready(function() {
+            $('#huntsTable').DataTable({
+                "searching": false,
+                "pageLength": 8,
+                "lengthChange": false
+            });
+        } );
+
+        $(document).ready(function () {
+            $('#requestsTable').DataTable({
+                "searching": false,
+                "pageLength": 8,
+                "lengthChange": false
+            });
+        });
+
 
         function fillDeleteValues(route){
             var a = document.getElementById("confirmDeleteHrf");
@@ -489,6 +617,14 @@
             alert(e.value);
         }
 
+        function helpPopup() {
+            var popup = document.getElementById("helpPopup");
+            popup.classList.toggle("show");
+        }
+
+        // May removed based on what is required for stack
+        //$("#changeStack").val($("#changeStack option:last").val());
+
 
     </script>
 
@@ -496,16 +632,16 @@
     <div class="modal" id="confirmationDeleteModal">
         <div class="modal-dialog">
             <div class="modal-content">
-                <!-- header -->
+                    <!-- header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Confirmation</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
-                <!-- body -->
+                    <!-- body -->
                 <div class="modal-body">
                     <h5>Are you sure you want to delete</h5>
                 </div>
-                <!-- footer -->
+                    <!-- footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
                     <a href="#" id="confirmDeleteHrf">
@@ -542,7 +678,7 @@
                                     <th>Destination Name</th>
                                     <th>Dates</th>
                             </thead>
-                            @for(tripDestination <- tripToView.getOrderedDestiantions().values()) {
+                            @for(tripDestination <- tripToView.getOrderedDestinations().values()) {
                                 <tr>
                                     <td>Destination @tripDestination.getDestOrder</td>
                                     <td>@tripDestination.getDestinationName</td>
@@ -576,7 +712,8 @@
                 <div class="modal-content">
                         <!-- header -->
                     <div class="modal-header">
-                        <h4 class="modal-title">Profile: @profile.getObject.getProfileId - @profile.getObject.getLastName, @profile.getObject.getFirstName</h4>
+                        <h4 class="modal-title">
+                            Profile: @profile.getObject.getProfileId - @profile.getObject.getLastName, @profile.getObject.getFirstName</h4>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
                         <!-- body -->
@@ -643,7 +780,7 @@
                 $(window).on('load', function () {
                     $('#viewDestModal').modal('show');
                 });
-                </script>
+        </script>
         <div class="modal" id="viewDestModal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -665,6 +802,7 @@
                                         <li>Latitude: @destination.getObject.getLatitude</li>
                                         <li>Longitude: @destination.getObject.getLongitude</li>
                                         <li>Visibility: @destination.getObject.getVisible</li>
+                                        <li>Traveller Types: @destination.getObject.getTravellerTypesString</li>
                                     </ul>
                                 </div>
                             </div>
@@ -678,7 +816,7 @@
                 </div>
             </div>
         </div>
-}
+    }
 
 
     @if(destination.isEdit && destination.getObject != null) {
@@ -699,80 +837,280 @@
                     @form(routes.AdminController.editDestination(destination.getObject.getDestinationId)) {
                         @CSRF.formField
                         <div class="modal-body">
-                                    <div class="col">
-                                        <div class="col">
-                                            <div class="row">
-                                                <label>Name</label>
-                                            </div>
-                                            <div class="row">
-                                                <input type="text" id="name" placeholder="Name" name="name" value="@destination.getObject.getName" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="row">
-                                                <label for="type">Type</label>
-                                            </div>
-                                            <div class="row">
-                                                <input type="text" id="type" placeholder="Type" name="type" value="@destination.getObject.getType" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="row">
-                                                <label>District</label>
-                                            </div>
-                                            <div class="row">
-                                                <input type="text" id="district" placeholder="District" name="district" value="@destination.getObject.getDistrict">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="row">
-                                                <label>Country</label>
-                                            </div>
-                                            <div class="row">
-                                                <input type="text" id="country" placeholder="Country" name="country" value="@destination.getObject.getCountry" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
-                                            </div>
-                                            </div>
-                                        <div class="col">
-                                            <div class="row">
-                                                <label>Latitude</label>
-                                            </div>
-                                            <div class="row">
-                                                <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="row">
-                                                <label>Longitude</label>
-                                            </div>
-                                            <div class="row">
-                                                <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
-                                            </div>
-
-                                        </div>
-                                        <div class="col">
-                                            <div class="row">
-                                                <label>Make Public</label>
-                                            </div>
-                                            <div class="row">
-                                                @if(destination.getObject.getVisible == 1) {
-                                                    <input type="checkbox" id="visible" name="visible" value="1" class="check-box" checked>
-                                                } else {
-                                                    <input type="checkbox" id="visible" name="visible" value="1" class="check-box">
-                                                }
-                                            </div>
-                                        </div>
+                            <div class="col">
+                                <div class="col">
+                                    <div class="row">
+                                        <label>Name</label>
                                     </div>
+                                    <div class="row">
+                                        <input type="text" id="name" placeholder="Name" name="name" value="@destination.getObject.getName" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label for="type">Type</label>
+                                    </div>
+                                    <div class="row">
+                                        <input type="text" id="type" placeholder="Type" name="type" value="@destination.getObject.getType" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label>District</label>
+                                    </div>
+                                    <div class="row">
+                                        <input type="text" id="district" placeholder="District" name="district" value="@destination.getObject.getDistrict">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label>Country</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="countryEdit" name="country" placeholder="Country" value="@destination.getObject.getCountry" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                        </div>
+                                        <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdownEdit" data-width="100%">
+                                        @for(nation <- countries) {
+                                            @if(destination.getObject.getCountry.equals(nation)){
+                                                <option value="@nation" selected>@nation</option>
+                                            }else {
+                                                <option value="@nation">@nation</option>
+                                            }
+                                        }
+                                        </select>                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label>Traveller Types</label>
+                                    </div>
+                                    <div class="row">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="travellerTypesForm" name="travellerTypesStringDest" class="hidden-field typesField" value="@destination.getObject.getTravellerTypesString">
+                                        </div>
+                                        <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownEdit" data-width="100%">
+                                            @if(destination.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
+                                                <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                            } else {
+                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Backpacker")) {
+                                                <option value="Backpacker" selected>Backpacker</option>
+                                            } else {
+                                                <option value="Backpacker">Backpacker</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Gap Year")) {
+                                                <option value="Gap Year" selected>Gap Year</option>
+                                            } else {
+                                                <option value="Gap Year">Gap Year</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Groupie")) {
+                                                <option value="Groupie" selected>Groupie</option>
+                                            } else {
+                                                <option value="Groupie">Groupie</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Frequent Weekender")) {
+                                                <option value="Frequent Weekender" selected>Frequent Weekender</option>
+                                            } else {
+                                                <option value="Frequent Weekender">Frequent Weekender</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Functional/business Traveller")) {
+                                                <option value="Functional/business Traveller" selected>Functional/business Traveller</option>
+                                            } else {
+                                                <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                            }
+
+                                            @if(destination.getObject.getTravellerTypesList.contains("Holidaymaker")) {
+                                                <option value="Holidaymaker" selected>Holidaymaker</option>
+                                            } else {
+                                                <option value="Holidaymaker">Holidaymaker</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label>Latitude</label>
+                                    </div>
+                                    <div class="row">
+                                        <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label>Longitude</label>
+                                    </div>
+                                    <div class="row">
+                                        <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
+                                    </div>
+
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <label>Make Public</label>
+                                    </div>
+                                    <div class="row">
+                                    @if(destination.getObject.getVisible == 1) {
+                                        <input type="checkbox" id="visible" name="visible" value="1" class="check-box" checked>
+                                    } else {
+                                        <input type="checkbox" id="visible" name="visible" value="1" class="check-box">
+                                        }
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                             <!-- footer -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
                         </div>
                     }
                 </div>
             </div>
         </div>
     }
+
+    @if(editHunt.isEdit && editHunt.getObject != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#editHuntModal').modal('show');
+                });
+        </script>
+    <div class="modal" id="editHuntModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header text-center">
+                    <h4 id="addTitle">Add Treasure Hunt</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @helper.form(routes.AdminController.editTreasureHunt(editHunt.getObject.getTreasureHuntId)) {
+                    @CSRF.formField
+                    <div class="modal-body">
+                        <div class="col" align="center">
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Riddle</small>
+                                    <input type="text" name="riddle" id="riddle" value="@editHunt.getObject.getRiddle" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="destinationId"><small id="label">Destination</small></label>
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                    @for(destination <- destinations) {
+                                        @if(destination.getDestinationId == editHunt.getObject.getTreasureHuntDestinationId) {
+                                            <option value="@destination.getDestinationId" selected>@destination.getName</option>
+                                        } else {
+                                            <option value="@destination.getDestinationId">@destination.getName</option>
+                                        }
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Start Date</small>
+                                    <input type="date" id="startDate" name="startDate"  class="inputField" value="@editHunt.getObject.getEntryDate(editHunt.getObject.getStartDate)" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">End Date</small>
+                                    <input type="date" id="endDate" name="endDate"  class="inputField" value="@editHunt.getObject.getEntryDate(editHunt.getObject.getEndDate)" required >
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <select class="selectpicker" title="Profile" id="profileId" name="profileId" required>
+                                    @for(profile <- profiles) {
+                                        @if(profile.getProfileId == editHunt.getObject.getTreasureHuntProfileId) {
+                                            <option value="@profile.getProfileId" selected >Id: @profile.getProfileId, @profile.getFirstName @profile.getLastName</option>
+                                        }else{
+                                            <option value="@profile.getProfileId">Id: @profile.getProfileId, @profile.getFirstName @profile.getLastName</option>
+                                        }
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    }
+
+    <div class="modal" id="createHuntModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header text-center">
+                    <h4 id="addTitle">Add Treasure Hunt</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @helper.form(routes.AdminController.createHunt()) {
+                    @CSRF.formField
+                    <div class="modal-body">
+                        <div class="col" align="center">
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Riddle</small>
+                                    <input type="text" name="riddle" id="riddle" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="destinationId"><small id="label">Destination</small></label>
+                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                    @for(destination <- destinations) {
+                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">Start Date</small>
+                                    <input type="date" id="startDate" name="startDate"  class="inputField" required >
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <small id="label">End Date</small>
+                                    <input type="date" id="endDate" name="endDate"  class="inputField" required >
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="row">
+                                    <select class="selectpicker" title="Profile" id="profileId" name="profileId" required>
+                                    @for(profile <- profiles) {
+                                        <option value="@profile.getProfileId">Id: @profile.getProfileId, @profile.getFirstName @profile.getLastName</option>
+                                    }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
 
 
     <div class="modal fade" id="createProfileModal">
@@ -804,9 +1142,9 @@
                             </div>
                             <div class="row">
                                 <div class="hidden-div-edit">
-                                    <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
+                                    <input type="text" id="travellerTypesFormCreate" name="travellerTypesForm" class="hidden-field typesField" required>
                                 </div>
-                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownCreate" data-width="100%" required>
                                     <option value="ThrillSeeker">ThrillSeeker</option>
                                     <option value="Backpacker">Backpacker</option>
                                     <option value="Gap Year">Gap Year</option>
@@ -825,7 +1163,7 @@
                             </div>
                             <div class="row">
                                 <div class="form-group" id="holder"> <small id="label" for="firstName">DOB*</small>
-                                    <input type="date" id="birthDate"  name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
+                                    <input type="date" id="birthDate" name="birthDate" class="inputField" required oninvalid="this.setCustomValidity('Please select a date')" oninput="setCustomValidity('')">
                                 </div>
                             </div>
                             <div class="row">
@@ -839,21 +1177,32 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group" id="holder"> <small id="label" for="firstName">Nationalities*</small>
-                                    <input type="text" id="nationalitiesForm" placeholder="Nationality" name="nationalitiesForm" class="inputField" required>
+                                <div class="hidden-div-edit">
+                                    <input type="text" id="nationalitiesFormCreate" name="nationalitiesForm" class="hidden-field" required>
                                 </div>
+                                <label>Nationalities</label>
+                                <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdownCreate" data-width="100%">
+                                @for(nation <- countries) {
+                                    <option value="@nation">@nation</option>
+                                }
+                                </select>
+
                             </div>
                             <div class="row">
-                                <div class="form-group" id="holder"> <small id="label" for="firstName">Passport/s</small>
-                                    <input type="text" id="passportsForm" placeholder="Passport" name="passportsForm" class="inputField">
+                                <div class="hidden-div-edit">
+                                    <input type="text" id="passportsFormCreate" name="passportsForm" class="hidden-field">
                                 </div>
-
-
+                                <label>Passports</label>
+                                <select class="selectpicker" data-live-search="true" multiple title="Passports" id="passportDropdownCreate" data-width="100%">
+                                @for(nation <- countries) {
+                                    <option value="@nation">@nation</option>
+                                }
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary"  data-dismiss="modal">Cancel</button>
-                            <button type="submit"  id="createButton" class="btn btn-primary" onclick="fillVals()">Save</button>
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Cancel</button>
+                            <button type="submit" id="createButton" class="btn btn-primary" onclick="fillVals()">Save</button>
                         </div>
                         }
             </div>
@@ -903,7 +1252,14 @@
                                     <label>Country</label>
                                 </div>
                                 <div class="row">
-                                    <input type="text" id="country" placeholder="Country" name="country" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                    </div>
+                                    <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%">
+                                    @for(nation <- countries) {
+                                        <option value="@nation">@nation</option>
+                                    }
+                                    </select>
                                 </div>
                             </div>
                             <div class="col">
@@ -923,14 +1279,29 @@
                                 </div>
 
                             </div>
-                            <div class="col">
-                                <div class="row">
-                                    <label>Make Public</label>
+                            <div class="row">
+                                <div class="hidden-div-edit">
+                                    <input type="text" id="travellerTypesStringDest" name="travellerTypesStringDestCreate" class="hidden-field typesField">
                                 </div>
-                                <div class="row">
-                                    <input type="checkbox" id="visible" name="visible" class="check-box">
+                                <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownDest" data-width="100%">
+                                    <option value="ThrillSeeker">ThrillSeeker</option>
+                                    <option value="Backpacker">Backpacker</option>
+                                    <option value="Gap Year">Gap Year</option>
+                                    <option value="Groupie">Groupie</option>
+                                    <option value="Frequent Weekender">Frequent Weekender</option>
+                                    <option value="Functional/business Traveller">Functional/business Traveller</option>
+                                    <option value="Holidaymaker">Holidaymaker</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <label id="label" for="visible">Make Public</label>
+                                </div>
+                                <div class="col">
+                                    <input type="checkbox" id="visible" name="visible" value="Public" class="check-box">
                                 </div>
                             </div>
+
                             <div class="col">
                                 <div class="row">
                                     <label>Profile</label>
@@ -947,8 +1318,8 @@
                     </div>
                         <!-- footer -->
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" id="createButton" class="btn btn-primary" onclick="fillVals()">Save</button>
                     </div>
                 }
             </div>
@@ -984,3 +1355,4 @@
     </div>
 
 </html>
+
