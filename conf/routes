@@ -98,6 +98,8 @@ GET    /admin/artist/verify/:artistId          controllers.AdminController.verif
 GET    /admin/artist/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
 POST   /admin/artist/create                    controllers.AdminController.createArtist(request : Request)
 GET    /admin/artist/:id/delete                controllers.AdminController.deleteArtist(request : Request, id : Integer)
+GET    /admin/artist/:id/edit/show             controllers.AdminController.showEditArtist(request : Request, id : Integer)
+POST   /admin/artist/:id/edit                  controllers.AdminController.editArtist(request : Request, id : Integer)
 
 
 # Tresure Hunts
@@ -115,4 +117,8 @@ GET     /artists/:id/delete                     controllers.ArtistController.del
 GET     /artists/search                         controllers.ArtistController.search(request : Request)
 GET     /artist/:id/follow                      controllers.ArtistController.followArtist(request : Request, id : Integer)
 GET     /artist/:id/unfollow                      controllers.ArtistController.unfollowArtist(request : Request, id : Integer)
+GET     /artists/page/:page_number              controllers.ArtistController.pageArtist(page_number : Integer)
+
+# Detailed Artist's page
+GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
 

@@ -1,13 +1,11 @@
 package controllers.steps.Admin;
 
-import controllers.ProvideApplication;
-import cucumber.api.PendingException;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.Destination;
-import models.Trip;
 import models.UndoStack;
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -15,15 +13,15 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.*;
 
-public class AdminUndoSteps extends ProvideApplication {
+public class AdminUndoSteps {
     private Map<String, String> loginForm = new HashMap<>();
     private Result huntDeleteResult;
     private Result tripDeleteResult;
@@ -36,7 +34,7 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin")
                 .session("connected", "2");
-        Helpers.route(provideApplication(), requestBuilder);
+        Helpers.route(TestApplication.getApplication(), requestBuilder);
     }
 
     @Given("the admin is on the admin page as another admin")
@@ -46,14 +44,13 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin")
                 .session("connected", "11");
-        Helpers.route(provideApplication(), requestBuilder);
+        Helpers.route(TestApplication.getApplication(), requestBuilder);
     }
 
     @And("^there is a profile with id (\\d+)$")
     public void thereIsAProfileWithId(int id) throws Throwable{
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertTrue(profileRepository.getProfileByProfileId(id).getProfileId() == id);
+        assertEquals((int) TestApplication.getProfileRepository().getProfileByProfileId(id).getProfileId(), id);
     }
 
     @And("^the admin deletes the profile with id (\\d+)$")
@@ -63,7 +60,7 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/" + id +"/delete")
                 .session("connected", "2");
-        Helpers.route(provideApplication(), requestBuilder);
+        Helpers.route(TestApplication.getApplication(), requestBuilder);
     }
 
     @When("^the admin presses the undo button$")
@@ -73,29 +70,26 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/undo/")
                 .session("connected", "2");
-        Helpers.route(provideApplication(),requestBuilder);
+        Helpers.route(TestApplication.getApplication(),requestBuilder);
     }
 
     @Then("^the profile (\\d+) is restored$")
     public void theProfileIsRestored(int id) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertTrue(profileRepository.getProfileByProfileId(id).getSoftDelete() == 1);
+        assertEquals(1, TestApplication.getProfileRepository().getProfileByProfileId(id).getSoftDelete());
     }
 
     @Then("^the profile (\\d+) is no longer in the delete stack$")
     public void theProfileIsNoLongerInTheDeleteStack(int id) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertFalse(undoStackRepository.canClearStack(profileRepository.getProfileByProfileId(2)));
+        assertFalse(TestApplication.getUndoStackRepository().canClearStack(TestApplication.getProfileRepository().getProfileByProfileId(2)));
 
     }
 
     @Given("^there is a treasure hunt with id (\\d+)$")
     public void thereIsATreasureHuntWithId(int id) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertTrue(treasureHuntRepository.lookup(id).getTreasureHuntId() == id);
+        assertEquals(TestApplication.getTreasureHuntRepository().lookup(id).getTreasureHuntId(), id);
     }
 
     @Given("^the admin deletes the treasure hunt (\\d+)$")
@@ -105,29 +99,26 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/hunts/" + id + "/delete")
                 .session("connected", "2");
-        Helpers.route(provideApplication(),requestBuilder);
+        Helpers.route(TestApplication.getApplication(),requestBuilder);
     }
 
     @Then("^the treasure hut (\\d+) is restored$")
     public void theTreasureHutIsRestored(int id) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertEquals(treasureHuntRepository.lookup(id).getSoftDelete(), 1);
+        assertEquals(TestApplication.getTreasureHuntRepository().lookup(id).getSoftDelete(), 1);
     }
 
     @And("^the treasure hunt is removed from the delete stack$")
     public void theTreasureHuntIsRemovedFromTheDeleteStack() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertFalse(undoStackRepository.canClearStack(profileRepository.getProfileByProfileId(2)));
+        assertFalse(TestApplication.getUndoStackRepository().canClearStack(TestApplication.getProfileRepository().getProfileByProfileId(2)));
     }
 
     @And("^user (\\d+) has a destination with id (\\d+)$")
     public void userHasADestinationWithId(int userId, int destId) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         Boolean flag = false;
-        injectRepositories();
-        List<Destination> myDestinations = destinationRepository.getUserDestinations(userId);
+        List<Destination> myDestinations = TestApplication.getDestinationRepository().getUserDestinations(userId);
         for (Destination dest : myDestinations){
             if (dest.getDestinationId() == destId){
                 flag = true;
@@ -138,8 +129,7 @@ public class AdminUndoSteps extends ProvideApplication {
     @Given("^there is a trip with id (\\d+)$")
     public void thereIsATripWithId(int tripId) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertEquals(tripRepository.getTrip(tripId).getTripId(), tripId);
+        assertEquals(TestApplication.getTripRepository().getTrip(tripId).getTripId(), tripId);
     }
 
     @Then("^the admin deletes the trip (\\d+)$")
@@ -149,7 +139,7 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/trips/" + tripId + "/delete")
                 .session("connected", "2");
-        Helpers.route(provideApplication(),requestBuilder);
+        Helpers.route(TestApplication.getApplication(),requestBuilder);
     }
 
     @And("^the admin deletes the destination (\\d+)$")
@@ -159,21 +149,20 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/destinations/" + destId + "/delete")
                 .session("connected", "2");
-        Helpers.route(provideApplication(),requestBuilder);
+        Helpers.route(TestApplication.getApplication(),requestBuilder);
     }
 
     @Then("^the destination (\\d+) is restored$")
     public void theTripIsRestored(int destId) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        injectRepositories();
-        assertEquals(destinationRepository.lookup(destId).getSoftDelete(), 0);
+        assertEquals(TestApplication.getDestinationRepository().lookup(destId).getSoftDelete(), 0);
     }
 
     @And("^trip (\\d+) is still soft deleted$")
     public void theDestinationIsStillSoftDeleted(int tripId) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         try {
-            tripRepository.getTrip(tripId);
+            TestApplication.getTripRepository().getTrip(tripId);
             fail();
         } catch (IndexOutOfBoundsException e) {
             //trip has been soft deleted since cant get it, success
@@ -187,8 +176,7 @@ public class AdminUndoSteps extends ProvideApplication {
 
     @And("^command stack item (\\d+) is more than one day old$")
     public void commandStackItemIsMoreThanOneDayOld(int arg0) throws Throwable {
-        injectRepositories();
-        UndoStack undoStack = undoStackRepository.getStackItem(arg0);
+        UndoStack undoStack = TestApplication.getUndoStackRepository().getStackItem(arg0);
         assertTrue(new DateTime().minusDays(1).toDate().getTime() > undoStack.getTimeCreated().getTime());
     }
 
@@ -198,18 +186,16 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/profile")
                 .session("connected", "11");
-        Helpers.route(provideApplication(), request);
+        Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^command (\\d+) should no longer be in the database$")
     public void commandShouldNoLongerBeInTheDatabase(int arg0) throws Throwable {
-        injectRepositories();
-        assertNull(undoStackRepository.getStackItem(arg0));
+        assertNull(TestApplication.getUndoStackRepository().getStackItem(arg0));
     }
 
     @And("^related destination (\\d+) should be removed from the database$")
     public void relatedDestinationShouldBeRemovedFromTheDatabase(int arg0) throws Throwable {
-        injectRepositories();
         //assertNull(destinationRepository.lookup(arg0));
     }
 
@@ -219,7 +205,7 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/hunts/" + arg0 + "/delete")
                 .session("connected", "2");
-        huntDeleteResult = Helpers.route(provideApplication(), request);
+        huntDeleteResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^a flashing is shown confirming the delete$")
@@ -229,7 +215,6 @@ public class AdminUndoSteps extends ProvideApplication {
 
     @And("^the treasure hunt is added to the undo stack$")
     public void theTreasureHuntIsAddedToTheUndoStack() throws Throwable {
-        injectRepositories();
 
       //  ArrayList<UndoStack> stack = undoStackRepository.getUsersStack(2);
 //        boolean found = false;
@@ -247,7 +232,7 @@ public class AdminUndoSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/trips/" + int1 + "/delete")
                 .session("connected", "2");
-        tripDeleteResult = Helpers.route(provideApplication(), request);
+        tripDeleteResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("a trips deleted flashing is shown confirming the delete")

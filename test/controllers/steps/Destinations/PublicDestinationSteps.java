@@ -1,7 +1,6 @@
 package controllers.steps.Destinations;
 
-import controllers.ProvideApplication;
-import cucumber.api.PendingException;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -17,7 +16,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
-public class PublicDestinationSteps extends ProvideApplication {
+public class PublicDestinationSteps {
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestination;
 
@@ -38,7 +37,7 @@ public class PublicDestinationSteps extends ProvideApplication {
                 .uri("/destinations")
                 .bodyForm(destForm)
                 .session("connected", "1");
-        redirectDestination = Helpers.route(provideApplication(), request);
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(303, redirectDestination.status());
     }
 
@@ -56,8 +55,7 @@ public class PublicDestinationSteps extends ProvideApplication {
         destination.setName(name);
         destination.setType(type);
         destination.setCountry(country);
-        injectRepositories();
-        destinationRepository.insert(destination);
+        TestApplication.getDestinationRepository().insert(destination);
     }
 
     @Given("user creates a public destination with name {string}, type {string}, and country {string}")
@@ -68,16 +66,14 @@ public class PublicDestinationSteps extends ProvideApplication {
         destination.setType(type);
         destination.setCountry(country);
         destination.setVisible(1);
-        injectRepositories();
-        destinationRepository.insert(destination);
+        TestApplication.getDestinationRepository().insert(destination);
     }
 
 
     @Then("user with id {string} private destination with name {string}, type {string}, and country {string} doesnt exist")
     public void steveMillersProfileDoesntExist(String profileId, String name, String type, String country) {
-        injectRepositories();
         int id = Integer.parseInt(profileId);
-        List<Destination> destinationList = destinationRepository.getUserDestinations(id);
+        List<Destination> destinationList = TestApplication.getDestinationRepository().getUserDestinations(id);
         for (Destination destination : destinationList) {
             List<String> destDetails = new ArrayList<>();
             destDetails.add(destination.getName());
@@ -93,14 +89,13 @@ public class PublicDestinationSteps extends ProvideApplication {
 
     @Then("user with id {string} is following the new public destination with name {string}, type {string}, and country {string}")
     public void steveMillerFollowingNewPublicDest(String profileId, String name, String type, String country) {
-        injectRepositories();
         int id = Integer.parseInt(profileId);
-        Optional<ArrayList<Integer>> optionalListDests = destinationRepository.getFollowedDestinationIds(id);
+        Optional<ArrayList<Integer>> optionalListDests = TestApplication.getDestinationRepository().getFollowedDestinationIds(id);
         if (optionalListDests.isPresent()) {
             ArrayList<Integer> listDests = optionalListDests.get();
             boolean match = false;
             for (Integer destId: listDests) {
-                Destination destination = destinationRepository.lookup(destId);
+                Destination destination = TestApplication.getDestinationRepository().lookup(destId);
                 if (destination.getName().equals(name) && destination.getType().equals(type) && destination.getCountry().equals(country)
                         && destination.getVisible() == 1) {
                     match = true;
@@ -121,8 +116,7 @@ public class PublicDestinationSteps extends ProvideApplication {
         destination.setType(type);
         destination.setCountry(country);
         destination.setVisible(1);
-        injectRepositories();
-        destinationRepository.update(destination, destination.getDestinationId());
+        TestApplication.getDestinationRepository().update(destination, destination.getDestinationId());
     }
 
     @And("^he does not fill out a traveller type$")

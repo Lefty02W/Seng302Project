@@ -1,7 +1,6 @@
 package controllers;
 
-import models.Destination;
-import models.DestinationChange;
+import models.Artist;
 import models.Profile;
 import models.Trip;
 import org.junit.Assert;
@@ -11,21 +10,31 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class AdminControllerTest extends ProvideApplication {
+public class AdminControllerTest {
 
-    private Integer profileId;
+    private Integer profileId = 2;
 
     @Before
     public void setUp() throws Exception {
-        profileId = adminLogin();
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "bob@gmail.com");
+        formData.put("password", "password");
+
         Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin")
-                .session("connected", profileId.toString());
-
-        injectRepositories();
+                .session("connected", "2");
     }
 
 
@@ -35,14 +44,13 @@ public class AdminControllerTest extends ProvideApplication {
      */
     @Test
     public void deleteValidDestination() {
-        injectRepositories();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin/destinations/1/delete")
-                .session("connected", "1");
-        Result result = Helpers.route(provideApplication(), request);
+                .session("connected", "2");
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
-        Assert.assertNotNull(destinationRepository.lookup(1));
+        Assert.assertNotNull(TestApplication.getDestinationRepository().lookup(1));
     }
 
 
@@ -57,38 +65,25 @@ public class AdminControllerTest extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/trips/"+ trips.get(0).getId() + "/delete")
                 .session("connected", profileId.toString());
-        Result result = Helpers.route(provideApplication(), request);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
         Assert.assertTrue(result.flash().getOptional("info").isPresent());
     }
 
-
     /**
-     * Test a profile deletion by retrieving all profiles
-     * and deleting the first.
+     * Test deleting an artist
      */
     @Test
-    public void deleteProfile() {
-
-        List<Profile> profiles = profileRepository.getAll();
-        Integer originalSize = profiles.size();
-
-        Profile toDelete = profiles.get(4);
-
+    public void deleteValidArtist() {
+        List<Artist> artists = TestApplication.getArtistRepository().getAllArtists();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/"+ toDelete.getProfileId() + "/delete")
+                .uri("/admin/artist/" + artists.get(0).getArtistId() + "/delete")
                 .session("connected", profileId.toString());
-        Result result = Helpers.route(provideApplication(), request);
-        Integer expected = originalSize - 1;
-        Integer newSize = profileRepository.getAll().size();
-        Assert.assertEquals(expected, newSize);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
-        //Add the profile back to the DB so that other tests can use it.
-        profileRepository.insert(toDelete);
-
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
     }
-
 
     /**
      * Test deleting a non-existent profile, the application should not crash
@@ -100,7 +95,50 @@ public class AdminControllerTest extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/-1/delete")
                 .session("connected", profileId.toString());
-        Result result = Helpers.route(provideApplication(), request);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+
+        Assert.assertEquals(303, result.status());
+    }
+
+    /**
+     * Test a profile deletion by retrieving all profiles
+     * and deleting the first.
+     */
+    @Test
+    public void deleteProfile() {
+
+        List<Profile> profiles = TestApplication.getProfileRepository().getAll();
+        Integer originalSize = profiles.size();
+
+        Profile toDelete = profiles.get(4);
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/"+ toDelete.getProfileId() + "/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+        Integer expected = originalSize - 1;
+        Integer newSize = TestApplication.getProfileRepository().getAll().size();
+        Assert.assertEquals(expected, newSize);
+
+        //Add the profile back to the DB so that other tests can use it.
+        TestApplication.getProfileRepository().insert(toDelete);
+
+    }
+
+
+    /**
+     * Test deleting a non-existent profile, the application should not crash
+     */
+    @Test
+    public void deleteInvalidArtist() {
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/artist/-1/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
 
         Assert.assertEquals(303, result.status());
@@ -113,7 +151,7 @@ public class AdminControllerTest extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/destinations/1/request/accept")
                 .session("connected", profileId.toString());
-        Result result = Helpers.route(provideApplication(), request);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
         Assert.assertTrue(result.flash().getOptional("info").isPresent());
 
     }
@@ -124,7 +162,7 @@ public class AdminControllerTest extends ProvideApplication {
                 .method("GET")
                 .uri("/admin/destinations/2/request/reject")
                 .session("connected", profileId.toString());
-        Result result = Helpers.route(provideApplication(), request);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
         Assert.assertTrue(result.flash().getOptional("info").isPresent());
 
     }

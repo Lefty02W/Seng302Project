@@ -1,11 +1,11 @@
 @import play.mvc.Http
-@(currentUser: Profile, genre: MusicGenre, members: List[Profile], country: String, artist: Artist)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, artist: Artist)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | Artists</title>
+        <title>TravelEA | View Artist</title>
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
@@ -20,15 +20,13 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/artist.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/viewArtist.css")">
+
+            <!--Font Awesome Icons-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
     <body>
         <div class="d-flex toggled" id="wrapper">
-
-            <div class="jumbotron">
-                <h1>@artist.getArtistName</h1>
-            </div>
-
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">TravelEA </h2>
@@ -41,7 +39,7 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
-                    <a style="color: #ca6636" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/vinyl-record.png")"/>
+                    <a style="color: #ca6636" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
                         Treasure Hunt</a>
@@ -62,82 +60,74 @@
                         <h2>View Artist</h2>
                     </div>
                 </nav>
-            </div>
 
-            <div class="container-fluid">
-                <div class="row">
-                    <ul class="nav nav-tabs" id="viewArtistTabs">
-                        <li class="active"><a data-toggle="tab" href="#aboutTab" id="aboutTabLink">About</a></li>
-                        <li><a data-toggle="tab" href="#eventsTab" id="eventsTabLink">Events</a></li>
-                        <li><a data-toggle="tab" href="#membersTab" id="eventsTabLink">Members</a></li>
-                    </ul>
+                <div class="jumbotron" id="artistNameJumbo">
+                    <h1>@artist.getArtistName</h1>
                 </div>
 
-                <div class="tab-content" id="profileTabsContent">
-                    <div id="aboutTab" class="tab-pane fade in active show">
-                        <div class="container">
-                            <div id="about" class="row justify-content-center">
-                                <a>@artist.getBiography</a>
-                            </div>
-                        </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <ul class="nav nav-tabs" id="viewArtistTabs">
+                            <li class="active"><a data-toggle="tab" href="#aboutTab" id="aboutTabLink">About</a></li>
+                            <li><a data-toggle="tab" href="#eventsTab" id="eventsTabLink">Events</a></li>
+                            <li><a data-toggle="tab" href="#membersTab" id="membersTabLink">Members</a></li>
+                        </ul>
                     </div>
 
-
-                    <div id="eventsTab" class="tab-pane fade">
-                        <div class="col">
-                            @*TODO: Loop over events, display each one in a card*@
-                            <div id="events" class="card-large lower-card">
+                    <div class="tab-content" id="viewArtistTabsContent">
+                        <div id="aboutTab" class="tab-pane fade in active show">
+                            <div class="container">
+                                <div id="about" class="row justify-content-center">
+                                    <a>@artist.getBiography</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div id="membersTab" class="tab-pane fade">
-                    @for(member <- artist.getMembers()) {
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="card-text">member.getFirstName()</p>
-                                <p class="card-text">member.getMiddleName()</p>
-                                <p class="card-text">member.getLastName()</p>
+
+                        <div id="eventsTab" class="tab-pane fade">
+                            <div class="col">
+                                @*TODO: Loop over events, display each one in a card*@
+                                <div id="events" class="card-large lower-card">
+                                </div>
                             </div>
                         </div>
-                    }
+
+                        <div id="membersTab" class="tab-pane fade">
+                        @for(member <- artist.getMembers().split(",")) {
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text">@member</p>
+                                </div>
+                            </div>
+                        }
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
 
-
-            <!-- Footer -->
-        <footer class="page-footer font-small green darken-3">
-                <!-- Footer Elements -->
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 py-5">
-                        <div class="mb-5 flex-center">
-                                <!-- Facebook -->
-                            <a class="fb-ic" href="@artist.getFacebookLink">
-                                <i class="fab fa-facebook-f fa-lg white-text mr-md-5 mr-3 fa-2x"></i>
-                            </a>
-                                <!-- Twitter -->
-                            <a class="tw-ic" href="@artist.getTwitterLink">
-                                <i class="fab fa-twitter fa-lg white-text mr-md-5 mr-3 fa-2x"> </i>
-                            </a>
-                                <!--Instagram-->
-                            <a class="ins-ic" href="@artist.getInstagramLink">
-                                <i class="fab fa-instagram fa-lg white-text mr-md-5 mr-3 fa-2x"> </i>
-                            </a>
-                                <!--Spotify-->
-                            <a class="spoftify-ic" href="@artist.getSpotifyLink">
-                                <i class="fab fa-spotify fa-lg white-text fa-2x"> </i>
-                            </a>
-                        </div>
-                    </div>
+        <div class="container" id="artistsFooter">
+            <div class="row justify-content-center">
+                <div class="mb-5 flex-center" id="socialMediaIcons">
+                        <!-- Facebook -->
+                    <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
+                        <!-- Twitter -->
+                    <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
+                        <!--Instagram-->
+                    <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
+                        <!--Spotify-->
+                    <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
+                        <!--Website link-->
+                    <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
                 </div>
             </div>
-        </footer>
+        </div>
 
     </body>
+
+        <!-- Footer Elements -->
+
     <script>
             $("#menu-toggle").click(function (e) {
                 e.preventDefault();

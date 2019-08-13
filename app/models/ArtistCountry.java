@@ -1,13 +1,9 @@
 package models;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 @Entity
 public class ArtistCountry {
-
-    @Id
-    private Integer artistCountryId;
 
     private Integer artistId;
 
@@ -16,14 +12,6 @@ public class ArtistCountry {
     public ArtistCountry(Integer artistId, Integer countryId) {
         this.artistId = artistId;
         this.countryId = countryId;
-    }
-
-    public Integer getArtistCountryId() {
-        return artistCountryId;
-    }
-
-    public void setArtistCountryId(Integer artistCountryId) {
-        this.artistCountryId = artistCountryId;
     }
 
     public Integer getArtistId() {

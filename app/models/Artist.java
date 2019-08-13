@@ -2,7 +2,6 @@ package models;
 
 import io.ebean.Model;
 import play.data.validation.Constraints;
-import repository.ArtistRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -36,11 +35,14 @@ public class Artist extends Model {
     private String members;
 
     @Transient
-    private Map<Integer, PassportCountry> country;
-
     private List<MusicGenre> genreList;
 
     private int softDelete;
+
+    private int verified;
+
+    @Transient
+    private Map<Integer, PassportCountry> country;
 
     @Transient
     private String genreFrom;
@@ -67,7 +69,7 @@ public class Artist extends Model {
      * @param twitterLink
      * @param websiteLink
      */
-    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, int softDelete) {
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, int softDelete, List<MusicGenre> genreList) {
         this.artistId = artistId;
         this.artistName = artistName;
         this.biography = biography;
@@ -77,6 +79,7 @@ public class Artist extends Model {
         this.twitterLink = twitterLink;
         this.websiteLink = websiteLink;
         this.softDelete = softDelete;
+        this.genreList = genreList;
     }
 
     /**
@@ -158,6 +161,17 @@ public class Artist extends Model {
     }
 
     //Getters and setters
+
+    public void setGenre(List<MusicGenre> genre) { this.genreList = genre;}
+
+    public List<MusicGenre> getGenreList() {
+        return genreList;
+    }
+
+    public int getVerified() {
+        return verified;
+    }
+
     public String getMembers() {
         return members;
     }
@@ -165,8 +179,6 @@ public class Artist extends Model {
     public void setMembers(String members) {
         this.members = members;
     }
-
-    public void setGenre(List<MusicGenre> genre) { this.genreList = genre;}
 
     public Integer getArtistId() {
         return artistId;

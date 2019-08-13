@@ -1,12 +1,11 @@
 package controllers;
 
-import models.Artist;
-import models.ArtistFormData;
-import models.ArtistProfile;
-import models.PassportCountry;
+import com.fasterxml.jackson.databind.JsonNode;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
+import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -18,11 +17,10 @@ import repository.PassportCountryRepository;
 import repository.ProfileRepository;
 import utility.Country;
 import views.html.artists;
+import views.html.viewArtist;
 
 import javax.inject.Inject;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -68,11 +66,23 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
-        List<Artist> artistList = artistRepository.getInvalidArtists();
-        loadCountries(artistList);
-        return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
+        //Start with page = 0
+        List<Artist> artistList = artistRepository.getPagedArtists(0);
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistList, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+
+    }
+
+    /**
+     * Method for internal artist paging using AJAX requests within jQuery of artists.scala.
+     * @param page
+     * @return
+     */
+    public Result pageArtist(Integer page) {
+        List<Artist> artists = artistRepository.getPagedArtists(page);
+        JsonNode node = Json.toJson(artists);
+        return ok(node);
     }
 
     /**
@@ -95,6 +105,24 @@ public class ArtistController extends Controller {
     }
 
     /**
+     * Endpoint for landing page for viweing details of artists
+     *
+     * @param request client request
+     * @return CompletionStage rendering artist page
+     */
+    public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistID) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        Artist artist = artistRepository.getArtistById(artistID);
+        if (artist == null) {
+            return profileRepository.findById (profId).thenApplyAsync(profile -> redirect("/artists"));
+        }
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileRec -> profileRec.map(profile ->
+                        ok(viewArtist.render(profile, artist, request, messagesApi.preferred(request))))
+                        .orElseGet(() -> redirect("/profile")));
+    }
+
+    /**
      * Method to call repository method to save an Artist profile to the database
      * grabs the artistProfile object required for the insert
      * @param request
@@ -113,26 +141,29 @@ public class ArtistController extends Controller {
                     artistRepository.insert(artist).thenApplyAsync(artistId -> {
                         Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
                         if (optionalProfiles.isPresent()) {
-                            if (!optionalProfiles.get().isEmpty()) {
-                                for (String profileIdString: optionalProfiles.get().split(",")){
+                            if (!optionalProfiles.get().isEmpty())
+                                for (String profileIdString : optionalProfiles.get().split(",")) {
                                     Integer profileId = parseInt(profileIdString);
                                     ArtistProfile artistProfile = new ArtistProfile(artistId, profileId);
                                     artistRepository.insertProfileLink(artistProfile);
                                 }
-                            }
                         }
-                        artistRepository.insertProfileLink(new ArtistProfile(SessionController.getCurrentUserId(request), artistId));
+                        artistRepository.insertProfileLink(new ArtistProfile(artistId, SessionController.getCurrentUserId(request)));
                         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
                         if (optionalGenres.isPresent()) {
-                            for (String genre: optionalGenres.get().split(",")) {
-                                genreRepository.insertArtistGenre(artistId, parseInt(genre));
+                            if (!optionalGenres.get().isEmpty()) {
+                                for (String genre : optionalGenres.get().split(",")) {
+                                    genreRepository.insertArtistGenre(artistId, parseInt(genre));
+                                }
                             }
                         }
+                        saveArtistCountries(artist, artistProfileForm);
+
                         return null;
                     });
                     return redirect("/artists").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
                 } else {
-                    return redirect("/artists").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
+                    return redirect("/artists").flashing("error", "Artist with the name " + artist.getArtistName() + " already exists!");
                 }
             });
         }
@@ -140,25 +171,32 @@ public class ArtistController extends Controller {
     }
 
     /**
-     * Takes in a list of artists and loads (sets) countries into each of them.
-     * Used for displaying the artist countries
-     *
-     * @param artistList
-     * @return the same list of artists set with countries
+     * Method to get the country data for an artist to then save in the linking table
+     * @param artist the countries are getting added too
+     * @param artistProfileForm form holding he artistFormData needed to get out the country list
      */
-    private List<Artist> loadCountries(List<Artist> artistList) {
-        for (Artist artist : artistList) {
-            List<PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-            Map<Integer, PassportCountry> countriesMap = new HashMap<>();
-            for (PassportCountry i : passportCountries) {
-                //Todo fix this
-                countriesMap.put(1, i);
-            }
-            artist.setCountry(countriesMap);
-        }
-        return artistList;
-    }
+    private void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
+        Optional<String> optionalCountries = artistProfileForm.field("countries").value();
+        if(optionalCountries.isPresent()){
+            for (String country: optionalCountries.get().split(",")) {
+                Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(country);
+                if (countryObject.isPresent()) {
+                    ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), countryObject.get());
+                    artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                } else {
+                    PassportCountry passportCountry = new PassportCountry(country);
+                    passportCountryRepository.insert(passportCountry).thenApplyAsync(id -> {
+                        if (id.isPresent()) {
+                            ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), id.get());
+                            artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                        }
+                        return null;
+                    });
 
+                }
+            }
+        }
+    }
 
     /**
      * Method for user to delete their artist profile
@@ -203,5 +241,27 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> leaveArtist(Http.Request request, int artistId) {
         return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artist")); //TODO update redirect when my artist page is present
+    }
+
+    /**
+     * A helper function to set the changes in an artist edit request from the artist form
+     *
+     * @param artistId the id of the artist to be edited
+     * @param values the form of artist information that was filled in by the user
+     * @return an artist object with newly set values from the user artist form
+     */
+    public Artist setValues(Integer artistId, Form<Artist> values){
+        Artist artist = values.get();
+
+        artist.setArtistName(values.field("artistName").value().get());
+        artist.setBiography(values.field("biography").value().get());
+        artist.setFacebookLink(values.field("facebookLink").value().get());
+        artist.setInstagramLink(values.field("instagramLink").value().get());
+        artist.setTwitterLink(values.field("twitterLink").value().get());
+        artist.setSpotifyLink(values.field("spotifyLink").value().get());
+        artist.setWebsiteLink(values.field("websiteLink").value().get());
+        artist.setArtistId(artistId);
+
+        return artist;
     }
 }
