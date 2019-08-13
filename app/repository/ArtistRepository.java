@@ -134,7 +134,6 @@ public class ArtistRepository {
         Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
         if(genreList.isPresent()) {
             if(!genreList.get().isEmpty()) {
-                System.out.println(genreList.get());
                 artist.setGenre(genreList.get());
             }
         }
@@ -323,7 +322,6 @@ public class ArtistRepository {
         if(name.equals("") && genre.equals("") && country.equals("")) {
             return getAllArtists();
         }
-        System.out.println(country);
         String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
                 "LEFT OUTER JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
                 "LEFT OUTER JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
@@ -374,7 +372,6 @@ public class ArtistRepository {
         // TODO: 8/08/19 turn into another function
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
-        System.out.println(foundRows);
         if (!foundRows.isEmpty()){
             for (SqlRow sqlRow : foundRows){
                 foundArtists.add(populateArtist(new Artist(sqlRow.getInteger("artist_id"), sqlRow.getString("artist_name")
@@ -415,15 +412,16 @@ public class ArtistRepository {
     }
 
     public List<PassportCountry> getArtistCounties(int artistId) {
-         List<ArtistCountry> artistCountries = ebeanServer.find(ArtistCountry.class)
+        List<ArtistCountry> artistCountries = ebeanServer.find(ArtistCountry.class)
                 .where().eq("artist_id", artistId).findList();
 
-         List<PassportCountry> passportCountries = new ArrayList<>();
-         for (ArtistCountry artistCountry: artistCountries) {
-             passportCountries.add(ebeanServer.find(PassportCountry.class)
-             .where().eq("passport_country_id", artistCountry.getCountryId()).findOne());
-         }
-         return passportCountries;
+        List<PassportCountry> passportCountries = new ArrayList<>();
+        for (ArtistCountry artistCountry : artistCountries) {
+            passportCountries.add(ebeanServer.find(PassportCountry.class)
+                    .where().eq("passport_country_id", artistCountry.getCountryId()).findOne());
+        }
+        return passportCountries;
+    }
     /**
      * Method to insert an artists country to the artist_country table
      * @param artistCountry artistCountry object to be added to the database

@@ -23,18 +23,18 @@ public class ArtistRepositoryTest  {
     @Test
     public void getAllArtist(){
         List<Artist> artists = TestApplication.getArtistRepository().getAllArtists();
-        assertEquals(4, artists.size());
+        assertEquals(5, artists.size());
     }
 
     @Test
-    public void searchArtistsEmptyResult(){
+    public void searchArtistsEmptySearchFullResult(){
         List<Artist> artists = TestApplication.getArtistRepository().searchArtist("","","", 1);
-        assertEquals(4, artists.size());
+        assertEquals(5, artists.size());
     }
 
     @Test
     public void searchArtistsOneResult(){
-        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("James","","", 1);
+        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("Mr Walsh","","", 1);
         assertEquals(1, artists.size());
     }
 
