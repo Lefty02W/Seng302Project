@@ -81,10 +81,6 @@ public class Profile extends Model {
     @Transient
     private List<String> roles;
 
-    @Transient
-    private final int WORKLOAD = 12;
-
-
     /**
      * Traditional constructor for profile. Used when retrieving a Profile from DB.
      * @param firstName
@@ -222,9 +218,8 @@ public class Profile extends Model {
 
     public void setPassword(String password) {
         //Hash the password for added security
-         String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
+         String passwordHash = BCrypt.hashpw(password, "$2a$12$nODuNzk9U7Hrq6DgspSp4.");
          this.password = passwordHash;
-//        this.password = password;
     }
 
     public void setGender(String gender) {
