@@ -39,6 +39,8 @@ public class Artist extends Model {
 
     private int softDelete;
 
+    private int verified;
+
     @Transient
     private Map<Integer, PassportCountry> country;
 
@@ -164,6 +166,10 @@ public class Artist extends Model {
 
     public List<MusicGenre> getGenreList() {
         return genreList;
+    }
+
+    public int getVerified() {
+        return verified;
     }
 
     public String getMembers() {

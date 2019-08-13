@@ -143,32 +143,62 @@ public class ArtistController extends Controller {
                     artistRepository.insert(artist).thenApplyAsync(artistId -> {
                         Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
                         if (optionalProfiles.isPresent()) {
-                            if (!optionalProfiles.get().isEmpty()) {
-                                for (String profileIdString: optionalProfiles.get().split(",")){
+                            if (!optionalProfiles.get().isEmpty())
+                                for (String profileIdString : optionalProfiles.get().split(",")) {
                                     Integer profileId = parseInt(profileIdString);
                                     ArtistProfile artistProfile = new ArtistProfile(artistId, profileId);
                                     artistRepository.insertProfileLink(artistProfile);
                                 }
-                            }
                         }
-                        artistRepository.insertProfileLink(new ArtistProfile(SessionController.getCurrentUserId(request), artistId));
+                        artistRepository.insertProfileLink(new ArtistProfile(artistId, SessionController.getCurrentUserId(request)));
                         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
                         if (optionalGenres.isPresent()) {
-                            for (String genre: optionalGenres.get().split(",")) {
-                                genreRepository.insertArtistGenre(artistId, parseInt(genre));
+                            if (!optionalGenres.get().isEmpty()) {
+                                for (String genre : optionalGenres.get().split(",")) {
+                                    genreRepository.insertArtistGenre(artistId, parseInt(genre));
+                                }
                             }
                         }
+                        saveArtistCountries(artist, artistProfileForm);
+
                         return null;
                     });
                     return redirect("/artists").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
                 } else {
-                    return redirect("/artists").flashing("info", "Artist with the name " + artist.getArtistName() + " already exists!");
+                    return redirect("/artists").flashing("error", "Artist with the name " + artist.getArtistName() + " already exists!");
                 }
             });
         }
         return supplyAsync(() -> redirect("/artists").flashing("error", "Artist Profile save failed"));
     }
 
+    /**
+     * Method to get the country data for an artist to then save in the linking table
+     * @param artist the countries are getting added too
+     * @param artistProfileForm form holding he artistFormData needed to get out the country list
+     */
+    private void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
+        Optional<String> optionalCountries = artistProfileForm.field("countries").value();
+        if(optionalCountries.isPresent()){
+            for (String country: optionalCountries.get().split(",")) {
+                Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(country);
+                if (countryObject.isPresent()) {
+                    ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), countryObject.get());
+                    artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                } else {
+                    PassportCountry passportCountry = new PassportCountry(country);
+                    passportCountryRepository.insert(passportCountry).thenApplyAsync(id -> {
+                        if (id.isPresent()) {
+                            ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), id.get());
+                            artistRepository.addCountrytoArtistCountryTable(artistCountry);
+                        }
+                        return null;
+                    });
+
+                }
+            }
+        }
+    }
 
     /**
      * Method for user to delete their artist profile

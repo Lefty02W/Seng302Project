@@ -2,10 +2,17 @@ package repository;
 
 import io.ebean.*;
 import models.*;
+import io.ebean.Ebean;
+import io.ebean.EbeanServer;
+import models.Artist;
+import models.ArtistCountry;
+import models.ArtistProfile;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -79,23 +86,7 @@ public class ArtistRepository {
      */
     public CompletionStage<Integer> insert(Artist artist) {
         return supplyAsync(() -> {
-
             ebeanServer.insert(artist);
-
-            // Adding artist countries to artist_country in the database
-            for (String countryName : artist.getCountryList()) {
-                PassportCountry country = ebeanServer.find(PassportCountry.class)
-                        .where().eq("passport_name", countryName)
-                        .findOne();
-
-                if (country == null) { passportCountryRepository.insert(new PassportCountry(countryName)); }
-                Optional<Integer> passportCountryId = passportCountryRepository.getPassportCountryId(countryName);
-                supplyAsync(() -> {
-                    ebeanServer.insert(new ArtistCountry(artist.getArtistId(), passportCountryId.get()));
-                    return null;
-                });
-            }
-
             return artist.getArtistId();
         }, executionContext);
     }
@@ -433,5 +424,30 @@ public class ArtistRepository {
              .where().eq("passport_country_id", artistCountry.getCountryId()).findOne());
          }
          return passportCountries;
+    /**
+     * Method to insert an artists country to the artist_country table
+     * @param artistCountry artistCountry object to be added to the database
+     * @return void CompletionStage
+     */
+    public CompletionStage<Void> addCountrytoArtistCountryTable(ArtistCountry artistCountry){
+        return supplyAsync(() -> {
+            try {
+                ebeanServer.insert(artistCountry);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Method to retrieve an artist from the database using a passed database id
+     *
+     * @param artistId the id of the artist to retrieve
+     * @return the found artist
+     */
+    public Artist getArtist(int artistId) {
+        //TODO pass to populate artist method once merged with artist-profile branch
+        return ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
     }
 }

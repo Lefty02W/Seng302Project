@@ -58,9 +58,7 @@ public class GenreRepository {
         Optional<MusicGenre> musicGenre;
         for (ArtistGenre genre : artistGenres) {
             musicGenre = Optional.ofNullable(ebeanServer.find(MusicGenre.class).where().eq("genre_id", genre.getGenreId()).findOne());
-            if (musicGenre.isPresent()) {
-                genres.add(musicGenre.get());
-            }
+            musicGenre.ifPresent(genres::add);
         }
         return Optional.of(genres);
     }

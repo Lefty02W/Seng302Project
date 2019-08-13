@@ -12,12 +12,15 @@ import static org.junit.Assert.assertEquals;
 
 public class GenreRepositoryTest {
 
+    private final String EXPECTED_GENRE = "Indie";
+
     @Test
     public void getArtistGenres() {
         Optional<List<MusicGenre>> genres = TestApplication.getGenreRepository().getArtistGenres(1);
-        if (genres.isPresent()) {
+        if(genres.isPresent()) {
             assertEquals(2, genres.get().size());
-            assertEquals("Indie", genres.get().get(0).getGenre());
+            assertEquals(EXPECTED_GENRE, genres.get().get(0).getGenre());
         }
+
     }
 }
