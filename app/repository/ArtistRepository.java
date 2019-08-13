@@ -242,8 +242,9 @@ public class ArtistRepository {
                 .where().eq("verified", 0).findList());
     }
 
-
+// TODO: 13/08/19 Please stop copy-paste programming
     /**
+     *
      * Method returns all followed destinations ids from a user
      *
      * @param profileId User id for the user followed destinations
@@ -254,6 +255,7 @@ public class ArtistRepository {
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Integer> artIdList = new ArrayList<>();
         for (SqlRow aRowList : rowList) {
+            // TODO: 13/08/19 this should not be getting destination_id if we are getting artists????
             int id = aRowList.getInteger("destination_id");
             artIdList.add(id);
         }
