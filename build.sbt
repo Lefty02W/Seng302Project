@@ -33,7 +33,7 @@ libraryDependencies += "io.cucumber" % "cucumber-java" % "4.2.0" % Test
 libraryDependencies += "org.seleniumhq.selenium" % "selenium-java" % "3.141.59" % Test
 libraryDependencies += "io.github.bonigarcia" % "webdrivermanager" % "3.4.0" % Test
 
-libraryDependencies += "org.mindrot" % "jbcrypt" % "0.4"
+libraryDependencies += "org.mindrot" % "jbcrypt" % "0.3m"
 
 
 libraryDependencies += javaJdbc
