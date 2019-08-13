@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class AdminControllerTest {
 
-    private Integer profileId;
+    private Integer profileId = 2;
 
     @Before
     public void setUp() throws Exception {
