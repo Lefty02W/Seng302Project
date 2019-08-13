@@ -242,21 +242,53 @@ public class ArtistRepository {
                 .where().eq("verified", 0).findList());
     }
 
-// TODO: 13/08/19 Please stop copy-paste programming
+
     /**
+     * Method returns all of the users followed artists
      *
-     * Method returns all followed destinations ids from a user
+     * @param profileId User if of the followed artists to return
+     * @return Optional array list of artists followed by the user
+     */
+    public List<Artist> getFollowedArtists(int profileId) {
+        String getArtistQuery = "Select t0.artist_id, t0.artist_name, t0.biography, t0.facebook_link, t0.instagram_link, t0.spotify_link, " +
+                "t0.twitter_link, t0.website_link, t0.members, t0.soft_delete from artist t0 JOIN follow_artist A on " +
+                "t0.artist_id = A.artist_id where A.profile_id = ? and t0.soft_delete = 0";
+
+        List<SqlRow> rowArtistList = ebeanServer.createSqlQuery(getArtistQuery).setParameter(1, profileId).findList();
+
+        List<Artist> ArtistList  = new ArrayList<>();
+        Artist artToAdd;
+        for (SqlRow aRowList : rowArtistList) {
+            artToAdd = new Artist();
+            artToAdd.setArtistId(aRowList.getInteger("artist_id"));
+            artToAdd.setArtistName(aRowList.getString("artist_name"));
+            artToAdd.setBiography(aRowList.getString("biography"));
+            artToAdd.setFacebookLink(aRowList.getString("facebook_link"));
+            artToAdd.setInstagramLink(aRowList.getString("instagram_link"));
+            artToAdd.setSpotifyLink(aRowList.getString("spotify_link"));
+            artToAdd.setTwitterLink(aRowList.getString("twitter_link"));
+            artToAdd.setWebsiteLink(aRowList.getString("website_link"));
+            artToAdd.setMembers(aRowList.getString("members"));
+            artToAdd.setSoftDelete(aRowList.getInteger("soft_delete"));
+            artToAdd.setCountry(getArtistCounties(artToAdd.getArtistId()));
+            artToAdd.setGenre(genreRepository.getArtistGenres(aRowList.getInteger("artist_id")));
+            ArtistList.add(artToAdd);
+        }
+        return ArtistList;
+    }
+
+    /**
+     * Method returns all followed artist ids from a user
      *
-     * @param profileId User id for the user followed destinations
-     * @return Optional array list of integers of the followed destination ids
+     * @param profileId User id for the user followed artist
+     * @return Optional array list of integers of the followed artist ids
      */
     public Optional<ArrayList<Integer>> getFollowedArtistIds(int profileId) {
         String updateQuery = "Select artist_id from follow_artist where profile_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
         ArrayList<Integer> artIdList = new ArrayList<>();
         for (SqlRow aRowList : rowList) {
-            // TODO: 13/08/19 this should not be getting destination_id if we are getting artists????
-            int id = aRowList.getInteger("destination_id");
+            int id = aRowList.getInteger("artist_id");
             artIdList.add(id);
         }
         return Optional.of(artIdList);
@@ -428,14 +460,14 @@ public class ArtistRepository {
         }, executionContext);
     }
 
-    public List<PassportCountry> getArtistCounties(int artistId) {
+    public Map<Integer, PassportCountry> getArtistCounties(int artistId) {
          List<ArtistCountry> artistCountries = ebeanServer.find(ArtistCountry.class)
                 .where().eq("artist_id", artistId).findList();
 
-         List<PassportCountry> passportCountries = new ArrayList<>();
+         Map<Integer, PassportCountry> passportCountries = new HashMap<>();
          for (ArtistCountry artistCountry: artistCountries) {
-             passportCountries.add(ebeanServer.find(PassportCountry.class)
-             .where().eq("passport_country_id", artistCountry.getArtistCountryId()).findOne());
+             passportCountries.put(artistCountry.getCountryId(), ebeanServer.find(PassportCountry.class)
+             .where().eq("passport_country_id", artistCountry.getCountryId()).findOne());
          }
          return passportCountries;
     }

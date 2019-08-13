@@ -69,6 +69,7 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         List<Artist> artistList = artistRepository.getInvalidArtists();
+        List<Artist> artistFollowedList = artistRepository.getFollowedArtists(profId);
         loadCountries(artistList);
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
@@ -148,13 +149,8 @@ public class ArtistController extends Controller {
      */
     private List<Artist> loadCountries(List<Artist> artistList) {
         for (Artist artist : artistList) {
-            List<PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-            Map<Integer, PassportCountry> countriesMap = new HashMap<>();
-            for (PassportCountry i : passportCountries) {
-                //Todo fix this
-                countriesMap.put(1, i);
-            }
-            artist.setCountry(countriesMap);
+            Map<Integer, PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
+            artist.setCountry(passportCountries);
         }
         return artistList;
     }

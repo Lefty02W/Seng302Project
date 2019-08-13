@@ -51,7 +51,7 @@ public class GenreRepository {
      * @return List of found MusicGenre objects
      */
     public List<MusicGenre> getArtistGenres(int artistId) {
-        List<Integer> genreIds = ebeanServer.find(ArtistGenre.class).select("genre").where().eq("artist", artistId).findSingleAttributeList();
+        List<Integer> genreIds = ebeanServer.find(ArtistGenre.class).select("genreId").where().eq("artistId", artistId).findSingleAttributeList();
         return ebeanServer.find(MusicGenre.class).where().idIn(genreIds).findList();
     }
 
