@@ -1,13 +1,13 @@
 # --- !Ups
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
-  (1, 'john', 'James', 'john@gmail.com', 'password', CURRENT_DATE, 'Male');
+  (1, 'john', 'James', 'john@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
-  (2, 'Bob', 'James', 'bob@gmail.com', 'password', CURRENT_DATE, 'Male');
+  (2, 'Bob', 'James', 'bob@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
 INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_date, gender) values
-  (3, 'John', 'Doe', 'john.gherkin.doe@travelea.com', 'password', CURRENT_DATE, 'Male');
+  (3, 'John', 'Doe', 'john.gherkin.doe@travelea.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
 INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_date, gender) values
   (4, 'Admin', 'Doe', 'admin.jane.doe@travelea.com', 'yolo', CURRENT_DATE, 'Female');
@@ -16,22 +16,22 @@ INSERT INTO profile(profile_id, first_name, last_name, email, password, birth_da
   (5, 'To', 'Be', 'DELETED@travelea.com', 'swag', CURRENT_DATE, 'Male');
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
-  (6, 'Dave', 'Brown', 'dave@email', 'password', CURRENT_DATE, 'Male');
+  (6, 'Dave', 'Brown', 'dave@email', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender) values
-  (7, 'steve', 'miller', 'steve@email', 'password', CURRENT_DATE, 'Male');
+  (7, 'steve', 'miller', 'steve@email', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
 INSERT INTO profile (profile_id, first_name, last_name, email, password, birth_date, gender, soft_delete) values
-  (8, 'Johnny', 'Sins', 'sins@gmail.com', 'password', CURRENT_DATE, 'Male', 1);
+  (8, 'Johnny', 'Sins', 'sins@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male', 1);
 
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender,soft_delete) values
-  (9, 'Lisa', 'Curt', 'lisa@gmail.com', 'password', CURRENT_DATE, 'Female', 1);
+  (9, 'Lisa', 'Curt', 'lisa@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Female', 1);
 
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
-  (10, 'Burt', 'Curt', 'BurtCurt@gmail.com', 'password', CURRENT_DATE, 'Female');
+  (10, 'Burt', 'Curt', 'BurtCurt@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Female');
 
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
-  (11, 'Bort', 'Cort', 'BortCort@gmail.com', 'password', CURRENT_DATE, 'Male');
+  (11, 'Bort', 'Cort', 'BortCort@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
 INSERT into roles (role_id, role_name) values
   (1, 'admin');

@@ -2,6 +2,11 @@ Feature: view destinations
   As a user
   I want to sign up to public destinations
   So that I can use them
+
+  Background:
+    Given Password hash setup has been done
+
+
   Scenario: sign up to destination
     Given User is logged in to the application
     And user is at the destinations page
