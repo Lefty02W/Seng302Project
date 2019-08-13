@@ -24,7 +24,7 @@ public class GenreRepositoryTest {
         Optional<List<MusicGenre>> genres = TestApplication.getGenreRepository().getArtistGenres(1);
         if (genres.isPresent()) {
             assertEquals(2, genres.get().size());
-            assertEquals("Reggae", genres.get().get(0).getGenre());
+            assertEquals("Indie", genres.get().get(0).getGenre());
         }
     }
 }
