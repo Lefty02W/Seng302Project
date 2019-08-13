@@ -123,7 +123,8 @@
                                                 <option value="@genre">@genre.getGenre</option>
                                             }
                                             </select>
-                                            <input type="checkbox" id="toggle" checked data-toggle="toggle" data-on="New Artists" data-off="Followed Artists" data-offstyle="info">
+                                            <input type="checkbox" id="toggle">
+                                            <label for="toggle">Followed Artists</label>
                                             }
                                             <button class="btn btn-primary">Clear</button>
                                         </div>
@@ -143,7 +144,12 @@
                         <div class="card-header"> @artist.getArtistName</div>
                         <div class="row">
                             <div class="col col-10">
-                            <p id="artist-stats"> @artist.getCountry <br> @artist.getBiography <br> @artist.getGenreList </p>
+                            <p id="artist-stats"> <ul>
+                                @for(country <- artist.getCountryList) {
+                                    <li>@country</li>
+                                }
+                            </ul> <br> @artist.getBiography <br>
+                            @artist.getGenreList </p>
                             </div>
                             <div class="col col-2">
                                 <div class="row">

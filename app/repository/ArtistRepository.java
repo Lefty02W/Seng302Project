@@ -218,11 +218,17 @@ public class ArtistRepository {
      */
     public List<Artist> getPagedArtists(int page) {
         int pageSize = 50;
-        return ebeanServer.find(Artist.class).where()
+        List <Artist> returnArtistList = new ArrayList<>();
+        List<Artist> artistList = ebeanServer.find(Artist.class).where()
                 .setFirstRow(page * pageSize)
                 .setMaxRows(pageSize)
                 .findPagedList().getList();
+        for(Artist artist : artistList) {
+            returnArtistList.add(populateArtist(artist));
+        }
+        return returnArtistList;
     }
+
 
 
 
