@@ -311,7 +311,8 @@ public class ArtistRepository {
             artToAdd.setMembers(aRowList.getString("members"));
             artToAdd.setSoftDelete(aRowList.getInteger("soft_delete"));
             artToAdd.setCountry(getArtistCounties(artToAdd.getArtistId()));
-            artToAdd.setGenre(genreRepository.getArtistGenres(aRowList.getInteger("artist_id")));
+            //TODO fix NoSuchElementException that occurs when this function is called on a artist with no genres.
+            //artToAdd.setGenre(genreRepository.getArtistGenres(aRowList.getInteger("artist_id")));
             ArtistList.add(artToAdd);
         }
         return ArtistList;
@@ -343,7 +344,7 @@ public class ArtistRepository {
      */
     public CompletionStage<Optional<ArrayList<Integer>>> followArtist(int artId, int profileId) {
         return supplyAsync(() -> {
-            String updateQuery = "INSERT into follow_artist(profile_id, destination_id) values (?, ?)";
+            String updateQuery = "INSERT into follow_artist(profile_id, artist_id) values (?, ?)";
             SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
             query.setParameter(1, profileId);
             query.setParameter(2, artId);
@@ -361,7 +362,7 @@ public class ArtistRepository {
      */
     public CompletionStage<Optional<ArrayList<Integer>>> unfollowArtist(int artId, int profileId) {
         return supplyAsync(() -> {
-            String updateQuery = "DELETE from follow_artist where profile_id = ? and destination_id =  ?";
+            String updateQuery = "DELETE from follow_artist where profile_id = ? and artist_id =  ?";
             SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
             query.setParameter(1, profileId);
             query.setParameter(2, artId);
@@ -496,6 +497,12 @@ public class ArtistRepository {
                 return 0;
             }
         }, executionContext);
+    }
+
+    public Artist getArtist(int artistId) {
+        return ebeanServer.find(Artist.class)
+                .where()
+                .eq("artist_id", artistId).findOne();
     }
 
     public Map<Integer, PassportCountry> getArtistCounties(int artistId) {

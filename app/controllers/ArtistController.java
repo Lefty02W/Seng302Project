@@ -70,10 +70,9 @@ public class ArtistController extends Controller {
         //Start with page = 0
         List<Artist> artistList = artistRepository.getPagedArtists(0);
         List<Artist> artistList = artistRepository.getInvalidArtists();
-        List<Artist> artistFollowedList = artistRepository.getFollowedArtists(profId);
         loadCountries(artistList);
         return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistList, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
     }
 
@@ -100,7 +99,7 @@ public class ArtistController extends Controller {
                     if (profile.isPresent()) {
                         Form<ArtistFormData> searchArtistForm = searchForm.bindFromRequest(request);
                         ArtistFormData formData = searchArtistForm.get();
-                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, 0), request, messagesApi.preferred(request)));
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, 0), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
                     }
@@ -225,7 +224,7 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId){
         return artistRepository.unfollowArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist unfollowed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist '"+artistRepository.getArtist(artistId).getArtistName()+"' unfollowed"));
     }
 
     /**
@@ -236,7 +235,7 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> followArtist(Http.Request request, Integer artistId){
         return artistRepository.followArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist followed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist '"+artistRepository.getArtist(artistId).getArtistName()+"' followed"));
     }
 
     /**
