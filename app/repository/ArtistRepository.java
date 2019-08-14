@@ -2,12 +2,14 @@ package repository;
 
 import io.ebean.*;
 import models.*;
+import play.data.Form;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class ArtistRepository {
@@ -284,7 +286,7 @@ public class ArtistRepository {
      * @param newArtist the artist object that will be edited
      * @return the same artist id of the artist object that got edited
      */
-    public CompletionStage<Integer> editArtistProfile(Integer artistId, Artist newArtist) {
+    public CompletionStage<Integer> editArtistProfile(Integer artistId, Artist newArtist, Form<Artist> artistForm) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Artist targetArtist = ebeanServer.find(Artist.class).setId(artistId).findOne();
@@ -301,9 +303,10 @@ public class ArtistRepository {
 
                 newArtist.setArtistId(artistId);
                 deleteAllArtistCountryForAnArtist(artistId);
+                deleteAllGenresForAnArtist(artistId);
 
                 saveAdminArtistCountries(newArtist);
-
+                saveAdminArtistGenres(newArtist, artistForm);
             }
 
             return artistId;
@@ -461,6 +464,27 @@ public class ArtistRepository {
     }
 
     /**
+     * Method to delete find all the the genres associated with a particular artist and delete them
+     * @param id the id of the artist
+     * @return void CompletionStage
+     */
+    public CompletionStage<Void> deleteAllGenresForAnArtist(int id) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String qry = "DELETE from artist_genre where artist_id = ?";
+            try {
+                SqlUpdate query = Ebean.createSqlUpdate(qry);
+                query.setParameter(1, id);
+                query.execute();
+                txn.commit();
+            } finally {
+                txn.end();
+            }
+            return null;
+        });
+    }
+
+    /**
      * Method to save a new artist object with newly set attributes from the edit artist model
      *
      * @param newArtist the artist object to be edited
@@ -482,7 +506,23 @@ public class ArtistRepository {
                 });
             }
         }
+    }
 
+    /**
+     * Method used to extract selected genres from a form binding and insert it into the artist_genre linking table
+     * for the related artist.
+     * @param newArtist an artist object
+     * @param artistProfileForm the form containing all newly input the attributes of an artist
+     */
+    public void saveAdminArtistGenres(Artist newArtist, Form<Artist> artistProfileForm) {
+        Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
+        if (optionalGenres.isPresent()) {
+            if (!optionalGenres.get().isEmpty()) {
+                for (String genre : optionalGenres.get().split(",")) {
+                    genreRepository.insertArtistGenre(newArtist.getArtistId(), parseInt(genre));
+                }
+            }
+        }
     }
 
 

@@ -701,7 +701,7 @@ public class AdminController {
 
         Artist artist = artistController.setValues(artistId, artistProfileForm);
         return supplyAsync(() -> {
-            artistRepository.editArtistProfile(id, artist);
+            artistRepository.editArtistProfile(id, artist, artistProfileForm);
             return redirect(adminEndpoint).flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
         });
     }
