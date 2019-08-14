@@ -2,17 +2,10 @@ package repository;
 
 import io.ebean.*;
 import models.*;
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import models.Artist;
-import models.ArtistCountry;
-import models.ArtistProfile;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -137,7 +130,7 @@ public class ArtistRepository {
                 artist.setGenre(genreList.get());
             }
         }
-        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
+        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artist.getArtistId()).findSingleAttributeList();
         if (!linkIds.isEmpty()) {
             artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
         } else {
