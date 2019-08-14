@@ -47,7 +47,7 @@ def getVersion(cursor):
 
 def hashPassword(password):
     SALT = "$2a$12$nODuNzk9U7Hrq6DgspSP4."
-    return bcrypt.hashpw(password.encode("utf8"), SALT)
+    return bcrypt.hashpw(password.encode("utf8"), SALT.encode("utf8")).decode("utf8")
 
 
 def main():
