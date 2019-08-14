@@ -7,5 +7,5 @@ public class ArtistFormData {
     public String name = "";
     public String genre = "";
     public String country = "";
-    public int followed = 0;
+    public String followed = "";
 }

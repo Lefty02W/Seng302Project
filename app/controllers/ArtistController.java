@@ -21,6 +21,7 @@ import views.html.viewArtist;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -69,7 +70,6 @@ public class ArtistController extends Controller {
 
         //Start with page = 0
         List<Artist> artistList = artistRepository.getPagedArtists(0);
-        List<Artist> artistList = artistRepository.getInvalidArtists();
         loadCountries(artistList);
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
@@ -97,9 +97,13 @@ public class ArtistController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
                     if (profile.isPresent()) {
+                        int followed = 0;
                         Form<ArtistFormData> searchArtistForm = searchForm.bindFromRequest(request);
                         ArtistFormData formData = searchArtistForm.get();
-                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, 0), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
+                        if(formData.followed.equals("on")) {
+                            followed = 1;
+                        }
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, profId), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
                     }
@@ -179,8 +183,8 @@ public class ArtistController extends Controller {
      */
     private void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
         Optional<String> optionalCountries = artistProfileForm.field("countries").value();
-        if(optionalCountries.isPresent()){
-            for (String country: optionalCountries.get().split(",")) {
+        if (optionalCountries.isPresent()) {
+            for (String country : optionalCountries.get().split(",")) {
                 Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(country);
                 if (countryObject.isPresent()) {
                     ArtistCountry artistCountry = new ArtistCountry(artist.getArtistId(), countryObject.get());
@@ -197,11 +201,14 @@ public class ArtistController extends Controller {
 
                 }
             }
+        }
+    }
     private List<Artist> loadCountries(List<Artist> artistList) {
         for (Artist artist : artistList) {
             Map<Integer, PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
             artist.setCountry(passportCountries);
         }
+        return artistList;
     }
 
     /**

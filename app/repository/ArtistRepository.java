@@ -406,8 +406,8 @@ public class ArtistRepository {
      * @param followed 1 or 0 if followed or not
      * @return List of artists
      */
-    public List<Artist> searchArtist(String name, String genre, String country, int followed){
-        if(name.equals("") && genre.equals("") && country.equals("")) {
+    public List<Artist> searchArtist(String name, String genre, String country, int followed, int userId){
+        if(name.equals("") && genre.equals("") && country.equals("") && followed == 0) {
             return getAllArtists();
         }
         String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
@@ -497,12 +497,6 @@ public class ArtistRepository {
                 return 0;
             }
         }, executionContext);
-    }
-
-    public Artist getArtist(int artistId) {
-        return ebeanServer.find(Artist.class)
-                .where()
-                .eq("artist_id", artistId).findOne();
     }
 
     public Map<Integer, PassportCountry> getArtistCounties(int artistId) {
