@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 
-@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -149,7 +149,17 @@
                                     <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
                                 </div>
                                 <div class="row">
-                                    <button class="btn btn-primary" href="/artist/@artist.getArtistId/follow">Follow</button>
+                                    @if(followedArtists contains artist) {
+                                        @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
+                                            @CSRF.formField
+                                            <button type="submit" class="btn btn-primary">Unfollow</button>
+                                        }
+                                    } else {
+                                        @helper.form(routes.ArtistController.followArtist(artist.getArtistId)) {
+                                            @CSRF.formField
+                                            <button type="submit" class="btn btn-primary">Follow</button>
+                                        }
+                                    }
                                 </div>
                             </div>
                         </div>
