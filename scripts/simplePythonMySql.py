@@ -68,12 +68,11 @@ def main():
     lastName = "script"
     email = "python@gmail.com"
     password = hashPassword("password")
-    password = "password"
     birthDate = datetime.datetime(1980, 10, 25, 17, 30)
     gender = "Male"
     timeCreate = date.today()
     query = "INSERT INTO profile(first_name, middle_name, last_name, email, password, birth_date, gender)" \
-          + " VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, '{6}')".format(firstName, middleName, lastName, email, password, timeCreate, gender)
+          + " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(firstName, middleName, lastName, email, password, timeCreate, gender)
 
     print("QUERY")
     print(query)
