@@ -298,7 +298,14 @@ public class ArtistRepository {
                 targetArtist.setTwitterLink(newArtist.getTwitterLink());
                 targetArtist.update();
                 txn.commit();
+
+                newArtist.setArtistId(artistId);
+                deleteAllArtistCountryForAnArtist(artistId);
+
+                saveAdminArtistCountries(newArtist);
+
             }
+
             return artistId;
         });
     }
@@ -430,6 +437,54 @@ public class ArtistRepository {
             return null;
         });
     }
+
+    /**
+     * Method to delete find all the the countries associated with a particular artist and delete them
+     * @param id the id of the artist
+     * @return void CompletionStage
+     */
+    public CompletionStage<Void> deleteAllArtistCountryForAnArtist(int id) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String qry = "DELETE from artist_country where artist_id " +
+                    "= ?";
+            try {
+                SqlUpdate query = Ebean.createSqlUpdate(qry);
+                query.setParameter(1, id);
+                query.execute();
+                txn.commit();
+            } finally {
+                txn.end();
+            }
+            return null;
+        });
+    }
+
+    /**
+     * Method to save a new artist object with newly set attributes from the edit artist model
+     *
+     * @param newArtist the artist object to be edited
+     */
+    public void saveAdminArtistCountries(Artist newArtist) {
+        for (String countryName : newArtist.getCountryList()) {
+            Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(countryName);
+            if (countryObject.isPresent()) {
+                ArtistCountry artistCountry = new ArtistCountry(newArtist.getArtistId(), countryObject.get());
+                addCountrytoArtistCountryTable(artistCountry);
+            } else {
+                PassportCountry passportCountry = new PassportCountry(countryName);
+                passportCountryRepository.insert(passportCountry).thenApplyAsync(id -> {
+                    if (id.isPresent()) {
+                        ArtistCountry artistCountry = new ArtistCountry(newArtist.getArtistId(), id.get());
+                        addCountrytoArtistCountryTable(artistCountry);
+                    }
+                    return null;
+                });
+            }
+        }
+
+    }
+
 
     /**
      * Method to retrieve an artist from the database using a passed database id
