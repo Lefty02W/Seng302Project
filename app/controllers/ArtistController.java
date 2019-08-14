@@ -146,28 +146,25 @@ public class ArtistController extends Controller {
                 if (!x) {
                     artistRepository.insert(artist).thenApplyAsync(artistId -> {
                         Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
-                        if (optionalProfiles.isPresent()) {
-                            if (!optionalProfiles.get().isEmpty())
-                                for (String profileIdString : optionalProfiles.get().split(",")) {
-                                    Integer profileId = parseInt(profileIdString);
-                                    ArtistProfile artistProfile = new ArtistProfile(artistId, profileId);
-                                    artistRepository.insertProfileLink(artistProfile);
-                                }
+                        if (optionalProfiles.isPresent() && !optionalProfiles.get().isEmpty()) {
+                            for (String profileIdString : optionalProfiles.get().split(",")) {
+                                Integer profileId = parseInt(profileIdString);
+                                ArtistProfile artistProfile = new ArtistProfile(artistId, profileId);
+                                artistRepository.insertProfileLink(artistProfile);
+                            }
                         }
                         artistRepository.insertProfileLink(new ArtistProfile(artistId, SessionController.getCurrentUserId(request)));
                         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
-                        if (optionalGenres.isPresent()) {
-                            if (!optionalGenres.get().isEmpty()) {
-                                for (String genre : optionalGenres.get().split(",")) {
-                                    genreRepository.insertArtistGenre(artistId, parseInt(genre));
-                                }
+                        if (optionalGenres.isPresent() && !optionalGenres.get().isEmpty()) {
+                            for (String genre : optionalGenres.get().split(",")) {
+                                genreRepository.insertArtistGenre(artistId, parseInt(genre));
                             }
                         }
                         saveArtistCountries(artist, artistProfileForm);
 
                         return null;
                     });
-                    return redirect("/artists").flashing("info", "Artist Profile : " + artist.getArtistName() + " created");
+                    return redirect("/artists").flashing("info", "Artist Profile : " + artist.getArtistName() + " ready to be approved by admin");
                 } else {
                     return redirect("/artists").flashing("error", "Artist with the name " + artist.getArtistName() + " already exists!");
                 }
