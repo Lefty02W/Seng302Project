@@ -1,6 +1,7 @@
 package repository;
 
 import io.ebean.*;
+import models.ArtistCountry;
 import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
@@ -111,7 +112,6 @@ public class PassportCountryRepository {
         }
         return Optional.of(countryId);
     }
-
 
     /**
      *

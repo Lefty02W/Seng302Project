@@ -175,7 +175,7 @@ public class ArtistController extends Controller {
      * @param artist the countries are getting added too
      * @param artistProfileForm form holding he artistFormData needed to get out the country list
      */
-    private void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
+    public void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
         Optional<String> optionalCountries = artistProfileForm.field("countries").value();
         if(optionalCountries.isPresent()){
             for (String country: optionalCountries.get().split(",")) {
@@ -230,6 +230,10 @@ public class ArtistController extends Controller {
      */
     public Artist setValues(Integer artistId, Form<Artist> values){
         Artist artist = values.get();
+
+        artist.initCountry();
+        artist.setCountry(artist.getCountry());
+//        artist.setGenre(artist.getGenre());
 
         artist.setArtistName(values.field("artistName").value().get());
         artist.setBiography(values.field("biography").value().get());
