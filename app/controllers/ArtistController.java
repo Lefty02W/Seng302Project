@@ -69,6 +69,9 @@ public class ArtistController extends Controller {
 
         //Start with page = 0
         List<Artist> artistList = artistRepository.getPagedArtists(0);
+        List<Artist> artistList = artistRepository.getInvalidArtists();
+        List<Artist> artistFollowedList = artistRepository.getFollowedArtists(profId);
+        loadCountries(artistList);
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistList, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
@@ -195,6 +198,10 @@ public class ArtistController extends Controller {
 
                 }
             }
+    private List<Artist> loadCountries(List<Artist> artistList) {
+        for (Artist artist : artistList) {
+            Map<Integer, PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
+            artist.setCountry(passportCountries);
         }
     }
 
