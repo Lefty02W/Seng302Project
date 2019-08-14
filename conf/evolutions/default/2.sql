@@ -180,13 +180,23 @@ INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (2, 'James', 'James', 'james');
 
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (3, 'Jerry', 'Jerry', 'jerry');
+  (3, 'Jerry', 'Jerry', 'jerry'); /* If you add any artists pls update the getAll Repo test as it expects only 3 artists*/
+
+
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (4, 'Yes', 'Jerry', 'jerry');
 
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
+
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (2, 4);
 
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 3);
 
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (3, 1);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (2, 2)

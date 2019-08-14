@@ -1,6 +1,7 @@
 package repository;
 
 import io.ebean.*;
+import models.ArtistCountry;
 import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
@@ -77,11 +78,13 @@ public class PassportCountryRepository {
      * @param passport the PassportCountry to delete
      * @return CompletionStage holding an Optional of the nationalities database id
      */
-    public Optional<Integer> insert(PassportCountry passport) {
-        ebeanServer.insert(passport);
+    public CompletionStage<Optional<Integer>> insert(PassportCountry passport) {
+        return supplyAsync(() -> {
+            ebeanServer.insert(passport);
 
 
-        return Optional.of(passport.getPassportId());
+            return Optional.of(passport.getPassportId());
+        });
     }
 
     /**
@@ -109,7 +112,6 @@ public class PassportCountryRepository {
         }
         return Optional.of(countryId);
     }
-
 
     /**
      *

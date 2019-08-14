@@ -35,9 +35,11 @@ public class Artist extends Model {
     private String members;
 
     @Transient
-    private List<MusicGenre> genreList;
+    private List<MusicGenre> genreList = new ArrayList<>();
 
     private int softDelete;
+
+    private int verified;
 
     @Transient
     private Map<Integer, PassportCountry> country;
@@ -164,6 +166,10 @@ public class Artist extends Model {
 
     public List<MusicGenre> getGenreList() {
         return genreList;
+    }
+
+    public int getVerified() {
+        return verified;
     }
 
     public String getMembers() {

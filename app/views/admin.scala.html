@@ -46,7 +46,7 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/vinyl-record.png")"/>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
                         Treasure Hunt</a>
@@ -1660,7 +1660,7 @@
                         <h4 class="modal-title">Edit Artist: @editArtist.getObject.getArtistName</h4>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
-                    @form(routes.AdminController.createArtist()) {
+                    @form(routes.AdminController.editArtist(editArtist.getObject.getArtistId)) {
                         @CSRF.formField
                             <!-- body -->
                         <div class="modal-body">
