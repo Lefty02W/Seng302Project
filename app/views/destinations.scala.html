@@ -49,6 +49,10 @@
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
+                    <a href="@routes.EventsController.show()" class="list-group-item list-group-item-action bg-transparent">
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                        Events
+                    </a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
                 </div>
@@ -84,7 +88,7 @@
 
                                 <div id="btn-row" class="row">
                                         <!--a href="routes.DestinationsController.showCreate()"--> <button id="destButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
-                                                Create Destination</button> </a>
+                                                Create Destination</button>
                                         @if(!isPublic) {
                                             @helper.form(routes.DestinationsController.show(true)) {
                                             @CSRF.formField

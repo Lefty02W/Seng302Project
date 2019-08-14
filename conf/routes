@@ -111,3 +111,5 @@ POST    /artists                                controllers.ArtistController.cre
 GET     /artists                                controllers.ArtistController.show(request : Request)
 GET     /artists/:id/delete                     controllers.ArtistController.deleteArtist(request : Request, id : Integer)
 
+#Events
+GET     /events                                 controllers.EventsController.show(request : Request)
