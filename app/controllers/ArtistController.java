@@ -233,7 +233,6 @@ public class ArtistController extends Controller {
 
         artist.initCountry();
         artist.setCountry(artist.getCountry());
-//        artist.setGenre(artist.getGenre());
 
         artist.setArtistName(values.field("artistName").value().get());
         artist.setBiography(values.field("biography").value().get());

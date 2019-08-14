@@ -694,6 +694,7 @@ public class AdminController {
     public CompletionStage<Result> editArtist(Http.Request request, Integer id) {
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
         Integer artistId = SessionController.getCurrentUserId(request);
+        Integer currentUserId = SessionController.getCurrentUserId(request);
         Optional<String> artistFormString = artistProfileForm.field("artistId").value();
         if (artistFormString.isPresent()) {
             artistId = Integer.parseInt(artistFormString.get());
@@ -701,7 +702,7 @@ public class AdminController {
 
         Artist artist = artistController.setValues(artistId, artistProfileForm);
         return supplyAsync(() -> {
-            artistRepository.editArtistProfile(id, artist, artistProfileForm);
+            artistRepository.editArtistProfile(id, artist, artistProfileForm, currentUserId);
             return redirect(adminEndpoint).flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
         });
     }
