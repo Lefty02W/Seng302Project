@@ -4,8 +4,10 @@ import controllers.TestApplication;
 import models.Artist;
 import org.junit.Test;
 import org.junit.runner.notification.RunListener;
+import play.mvc.Result;
 
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,13 +25,13 @@ public class ArtistRepositoryTest  {
     @Test
     public void getAllArtist(){
         List<Artist> artists = TestApplication.getArtistRepository().getAllArtists();
-        assertEquals(4, artists.size());
+        assertEquals(5, artists.size());
     }
 
     @Test
     public void searchArtistsEmptySearchFullResult(){
         List<Artist> artists = TestApplication.getArtistRepository().searchArtist("","","", 0, 1);
-        assertEquals(4, artists.size());
+        assertEquals(5, artists.size());
     }
 
     @Test
@@ -58,13 +60,13 @@ public class ArtistRepositoryTest  {
 
     @Test
     public void searchValidArtistsFollowedOneResultFollowed(){
-        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("Yes","","", 1, 1);
+        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("Jerry","","", 1, 1);
         assertEquals(1, artists.size());
     }
 
     @Test
     public void searchHalfNameValidArtistsFollowedOneResultFollowed(){
-        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("Ye","","", 1, 1);
+        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("Je","","", 1, 1);
         assertEquals(1, artists.size());
     }
 
@@ -76,9 +78,7 @@ public class ArtistRepositoryTest  {
 
     @Test
     public void searchAllFieldsOneResult(){
-        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("Ye","Indie","New Zealand", 1, 1);
+        List<Artist> artists = TestApplication.getArtistRepository().searchArtist("Je","Indie","New Zealand", 1, 1);
         assertEquals(1, artists.size());
     }
-
-
 }

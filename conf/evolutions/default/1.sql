@@ -421,11 +421,6 @@ create table if not exists follow_artist
 		foreign key (artist_id) references artist (artist_id)
 );
 
-create index artist_id
-	on follow_artist (artist_id);
-
-create index profile_id
-	on follow_artist (profile_id);
 
 
 
