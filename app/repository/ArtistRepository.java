@@ -414,9 +414,11 @@ public class ArtistRepository {
                 "LEFT OUTER JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
                 "LEFT OUTER JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
                 "LEFT OUTER JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
-                "LEFT OUTER JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id ";
+                "LEFT OUTER JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id " +
+                "LEFT OUTER JOIN follow_artist ON artist.artist_id = follow_artist.artist_id ";
         boolean namePresent = false;
         boolean genrePresent = false;
+        boolean countryPresent = false;
         if (!name.equals("")){
             queryString += "WHERE artist_name LIKE ? ";
             namePresent = true;
@@ -424,6 +426,7 @@ public class ArtistRepository {
         if (!genre.equals("")){
             if (namePresent){
                 queryString += "AND genre = ? ";
+                genrePresent = true;
             } else {
                 queryString += "WHERE genre = ? ";
                 genrePresent = true;
@@ -432,10 +435,21 @@ public class ArtistRepository {
         if (!country.equals("")){
             if(namePresent || genrePresent){
                 queryString += "AND passport_name = ? ";
+                countryPresent = true;
             } else {
                 queryString += "WHERE passport_name = ? ";
+                countryPresent = true;
             }
         }
+
+        if (followed == 1){
+            if(namePresent || genrePresent || countryPresent){
+                queryString += "AND profile_id = ? ";
+            } else {
+                queryString += "WHERE profile_id = ? ";
+            }
+        }
+
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
             sqlQuery.setParameter(1, "%" + name + "%");
@@ -454,6 +468,18 @@ public class ArtistRepository {
                 sqlQuery.setParameter(2,country);
             } else {
                 sqlQuery.setParameter(1,country);
+            }
+        }
+
+        if (followed == 1){
+            if (namePresent && genrePresent && countryPresent){
+                sqlQuery.setParameter(4,userId);
+            } else if ((namePresent && genrePresent && !countryPresent) || (namePresent && !genrePresent && countryPresent) || (!namePresent && genrePresent && countryPresent)){
+                sqlQuery.setParameter(3,userId);
+            } else if(namePresent || genrePresent || countryPresent) {
+                sqlQuery.setParameter(2,userId);
+            } else {
+                sqlQuery.setParameter(1,userId);
             }
         }
 

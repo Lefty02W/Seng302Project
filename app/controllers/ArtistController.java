@@ -111,7 +111,7 @@ public class ArtistController extends Controller {
     }
 
     /**
-     * Endpoint for landing page for viweing details of artists
+     * Endpoint for landing page for viewing details of artists
      *
      * @param request client request
      * @return CompletionStage rendering artist page
