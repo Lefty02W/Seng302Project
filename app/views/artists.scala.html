@@ -148,8 +148,12 @@
                                 @for(country <- artist.getCountryList) {
                                     <li>@country</li>
                                 }
-                            </ul> <br> @artist.getBiography <br>
-                            @artist.getGenreList </p>
+                            </ul> <br> @artist.getBiography <br> <ul>
+                            @for(genre <- artist.getGenreList) {
+                                <li>@genre.getGenre</li>
+                            }
+                            </ul>
+                                 </p>
                             </div>
                             <div class="col col-2">
                                 <div class="row">
