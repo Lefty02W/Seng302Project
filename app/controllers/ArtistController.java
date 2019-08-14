@@ -233,14 +233,6 @@ public class ArtistController extends Controller {
 
         artist.initCountry();
         artist.setCountry(artist.getCountry());
-
-        artist.setArtistName(values.field("artistName").value().get());
-        artist.setBiography(values.field("biography").value().get());
-        artist.setFacebookLink(values.field("facebookLink").value().get());
-        artist.setInstagramLink(values.field("instagramLink").value().get());
-        artist.setTwitterLink(values.field("twitterLink").value().get());
-        artist.setSpotifyLink(values.field("spotifyLink").value().get());
-        artist.setWebsiteLink(values.field("websiteLink").value().get());
         artist.setArtistId(artistId);
 
         return artist;
