@@ -8,11 +8,8 @@ tag_checker:
 junit:
   stage: test
   script:
-    - sudo update-java-alternatives --set java-8-oracle
-    - sbt jacoco
-    - sudo mkdir -p /home/JACOCO
-    - sudo cp -r target/ /home/JACOCO/
-    - sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+  - sbt test
+
 
   artifacts:
     paths:
