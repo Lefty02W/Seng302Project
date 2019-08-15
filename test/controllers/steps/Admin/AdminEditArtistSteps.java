@@ -5,12 +5,14 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import models.Artist;
 import models.MusicGenre;
+import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
 import java.util.*;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -19,6 +21,9 @@ public class AdminEditArtistSteps {
     private Map<String, String> EDIT_FORM = new HashMap<>();
     private final int ARTIST_ID_TO_EDIT = 5;
     private final List<String> EXPECTED_GENRES = new ArrayList<>(Arrays.asList("Rock", "Indie"));
+    private final List<String> EXPECTED_COUNTRIES = new ArrayList<>(Arrays.asList("New Zealand", " Fiji"));
+    private final List<Integer> EXPECTED_ADMINS = new ArrayList<>(Arrays.asList(1, 2));
+    private final String EXPECTED_MEMBERS = "James Johnston, Steve Stevenson";
 
     @And("^I select artist (\\d+) to edit$")
     public void iSelectArtistToEdit(int arg0) throws Throwable {
@@ -32,8 +37,6 @@ public class AdminEditArtistSteps {
             EDIT_FORM.put("biography", artist.get().getBiography());
             EDIT_FORM.put("countries", artist.get().getCountryListString());
             EDIT_FORM.put("members", artist.get().getMembers());
-            EDIT_FORM.put("genreForm", artist.get().getGenre());
-            EDIT_FORM.put("adminForm", "1,");
         }
     }
 
@@ -67,6 +70,48 @@ public class AdminEditArtistSteps {
             assertTrue(valid);
         } else {
             fail("Genres not found");
+        }
+    }
+
+    @Then("^The new countries are saved$")
+    public void theNewCountriesAreSaved() throws Throwable {
+        Optional<Artist> artist =TestApplication.getArtistRepository().getArtist(ARTIST_ID_TO_EDIT);
+        if (artist.isPresent()) {
+            boolean valid = true;
+            for (String country : artist.get().getCountryList()) {
+                if (!EXPECTED_COUNTRIES.contains(country)) {
+                    valid = false;
+                }
+            }
+            assertTrue(valid);
+        } else {
+            fail("Countries not found");
+        }
+    }
+
+    @Then("^The new admins are saved$")
+    public void theNewAdminsAreSaved() throws Throwable {
+        Optional<Artist> artist =TestApplication.getArtistRepository().getArtist(ARTIST_ID_TO_EDIT);
+        if (artist.isPresent()) {
+            boolean valid = true;
+            for (Profile profile : artist.get().getAdminsList()) {
+                if (!EXPECTED_ADMINS.contains(profile.getProfileId())) {
+                    valid = false;
+                }
+            }
+            assertTrue(valid);
+        } else {
+            fail("Countries not found");
+        }
+    }
+
+    @Then("^The new members are saved$")
+    public void theNewMembersAreSaved() throws Throwable {
+        Optional<Artist> artist =TestApplication.getArtistRepository().getArtist(ARTIST_ID_TO_EDIT);
+        if (artist.isPresent()) {
+            assertEquals(EXPECTED_MEMBERS, artist.get().getMembers());
+        } else {
+            fail("members string incorrect");
         }
     }
 

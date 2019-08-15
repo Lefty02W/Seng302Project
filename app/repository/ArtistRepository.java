@@ -544,7 +544,7 @@ public class ArtistRepository {
         if (artist == null) {
             return Optional.empty();
         } else {
-            return Optional.of(artist);
+            return Optional.of(populateArtist(artist));
         }
     }
 }
