@@ -61,7 +61,6 @@ public class AdminEditArtistSteps {
 
     @Then("^The new genres are saved$")
     public void theNewGenresAreSaved() throws Throwable {
-        Optional<Artist> artist = TestApplication.getArtistRepository().getArtist(ARTIST_ID_TO_EDIT);
         Optional<List<MusicGenre>> genres =TestApplication.getGenreRepository().getArtistGenres(ARTIST_ID_TO_EDIT);
         if (genres.isPresent()) {
             boolean valid = true;
