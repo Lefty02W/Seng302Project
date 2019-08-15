@@ -202,4 +202,10 @@ INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (3, 1);
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
-  (2, 2)
+  (2, 2);
+
+INSERT INTO passport_country (passport_country_id, passport_name) VALUES
+  (1, 'New Zealand');
+
+INSERT INTO passport_country (passport_country_id, passport_name) VALUES
+  (2, 'Fiji');

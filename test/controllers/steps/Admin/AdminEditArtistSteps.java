@@ -20,7 +20,7 @@ public class AdminEditArtistSteps {
 
     private Map<String, String> EDIT_FORM = new HashMap<>();
     private final int ARTIST_ID_TO_EDIT = 5;
-    private final List<String> EXPECTED_GENRES = new ArrayList<>(Arrays.asList("Rock", "Indie"));
+    private final List<String> EXPECTED_GENRES = new ArrayList<>(Arrays.asList("Rock", "Alternative"));
     private final List<String> EXPECTED_COUNTRIES = new ArrayList<>(Arrays.asList("New Zealand", " Fiji"));
     private final List<Integer> EXPECTED_ADMINS = new ArrayList<>(Arrays.asList(1, 2));
     private final String EXPECTED_MEMBERS = "James Johnston, Steve Stevenson";

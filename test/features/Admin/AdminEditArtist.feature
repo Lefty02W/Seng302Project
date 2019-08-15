@@ -8,7 +8,7 @@ Feature: Edit an artist profile as an admin
   Scenario: Edit artists genres
     Given I am on the admin page
     And I select artist 5 to edit
-    And I change the "genreForm" to "Indie" and "Rock"
+    And I change the "genreForm" to "1" and "2"
     And I save the edit of artist "5"
     Then The new genres are saved
 
