@@ -15,23 +15,24 @@ Feature: Admin create artist page
     And admin presses save artist
     Then the admin artist is saved in the database
 
-#  Scenario: Artist genre links are saved after create
-#    Given I am on the artist create page
-#    And I enter "Jim James" into the "artistName" form field
-#    And I enter "Indie" and "Rock" into the "genreFrom" form field
-#    And I enter "James, Steve" into the "members" form field
-#    And I enter "3 times as good as 2 Chainz" into the "biography" form field
-#    And I enter "United States of America" into the "countries" form field
-#    And I submit the form
-#    Then The artist genre links are saved
-#
-#  Scenario: Duplicate artist name is caught
-#    Given I am on the artist create page
-#    And I enter "James" into the "artistName" form field
-#    And I enter "Rock" and "Indie" into the "genreFrom" form field
-#    And I enter "James, Steve" into the "members" form field
-#    And I enter "3 times as good as 2 Chainz" into the "biography" form field
-#    And I enter "United States of America" into the "countries" form field
-#    And I enter "2" into the "adminForm" field
-#    And I submit the form
-#    Then There is a flashing sent with id "error"
+  Scenario: Artist genre links are saved after create
+    Given admin is on the admin page
+    When admin presses the create artist button
+    And admin enters "George's Story" for artist name
+    And admin enters "George, Jacoco, Selenium" for artist members
+    And admin enters the user with email "bob@gmail.com" for artist admins
+    And admin enters "The band of the year" for artist bio
+    And admin enters "1" for artist genres
+    And admin presses save artist
+    Then The artist genre links are saved
+
+  Scenario: Artist country links are saved after create
+    Given admin is on the admin page
+    When admin presses the create artist button
+    And admin enters "Dusk Winds" for artist name
+    And admin enters "Bill, Bob" for artist members
+    And admin enters the user with email "bob@gmail.com" for artist admins
+    And admin enters "Hardcore Death Metal Band from Picton" for artist bio
+    And admin enters "1,2" for artist country
+    And admin presses save artist
+    Then The artist country links are saved

@@ -1,12 +1,14 @@
 package controllers.steps.Artist;
 
 import controllers.TestApplication;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.Artist;
 import models.MusicGenre;
+import models.PassportCountry;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -23,6 +25,7 @@ public class CreateArtistSteps {
     private Map<String, String> dupArtistFrom = new HashMap<>();
     private Result dupResult;
     private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Rock", "Indie"));
+    private List<String> ARTIST_COUNTRIES = new ArrayList<>(Arrays.asList("Papua New Guinea", "New Zealand"));
 
 
     @When("^user is at the artist page$")
@@ -145,6 +148,25 @@ public class CreateArtistSteps {
         }
     }
 
+    @Then("^The artist country links are saved$")
+    public void theArtistCountryLinksAreSaved() throws Throwable {
+        //Note that artistId 2 is an admin
+        Optional<Artist> foundArtist = TestApplication.getArtistRepository().getArtist(2);
+        if (foundArtist.isPresent()) {
+            Optional<List<PassportCountry>> optional = TestApplication.getPassportCountryRepository().getArtistCountries(foundArtist.get().getArtistId());
+            if (optional.isPresent()) {
+                for (PassportCountry country : optional.get()) {
+                    if (!ARTIST_COUNTRIES.contains(country.getPassportName())) {
+                        fail();
+                    }
+                }
+            } else {
+                fail();
+            }
+        } else {
+            fail();
+        }
+    }
 }
 
 
