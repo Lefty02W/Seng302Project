@@ -9,6 +9,7 @@ import cucumber.api.java.en.When;
 import models.Artist;
 import models.MusicGenre;
 import models.PassportCountry;
+import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -24,8 +25,9 @@ public class CreateArtistSteps {
     private Map<String, String> artistForm = new HashMap<>();
     private Map<String, String> dupArtistFrom = new HashMap<>();
     private Result dupResult;
-    private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Rock", "Indie"));
-    private List<String> ARTIST_COUNTRIES = new ArrayList<>(Arrays.asList("Papua New Guinea", "New Zealand"));
+    private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Indie", "Rock"));
+    private List<String> ARTIST_COUNTRIES = new ArrayList<>(Arrays.asList("New Zealand", "Papua New Guinea"));
+    private List<Integer> ARTIST_ADMINS = new ArrayList<>(Arrays.asList(1, 2));
 
 
     @When("^user is at the artist page$")
@@ -131,7 +133,7 @@ public class CreateArtistSteps {
 
     @Then("^The artist genre links are saved$")
     public void theArtistGenreLinksAreSaved() throws Throwable {
-        Optional<Artist> foundArtist = TestApplication.getArtistRepository().getArtist(2);
+        Optional<Artist> foundArtist = TestApplication.getArtistRepository().getArtist(8);
         if (foundArtist.isPresent()) {
             Optional<List<MusicGenre>> optional = TestApplication.getGenreRepository().getArtistGenres(foundArtist.get().getArtistId());
             if (optional.isPresent()) {
@@ -151,20 +153,34 @@ public class CreateArtistSteps {
     @Then("^The artist country links are saved$")
     public void theArtistCountryLinksAreSaved() throws Throwable {
         //Note that artistId 2 is an admin
-        Optional<Artist> foundArtist = TestApplication.getArtistRepository().getArtist(2);
-        if (foundArtist.isPresent()) {
-            Optional<List<PassportCountry>> optional = TestApplication.getPassportCountryRepository().getArtistCountries(foundArtist.get().getArtistId());
-            if (optional.isPresent()) {
-                for (PassportCountry country : optional.get()) {
-                    if (!ARTIST_COUNTRIES.contains(country.getPassportName())) {
-                        fail();
-                    }
+        Optional<Artist> artist =TestApplication.getArtistRepository().getArtist(2);
+        if (artist.isPresent()) {
+            boolean valid = true;
+            for (String country : artist.get().getCountryList()) {
+                if (!ARTIST_COUNTRIES.contains(country)) {
+                    valid = false;
                 }
-            } else {
-                fail();
             }
+            assertTrue(valid);
         } else {
-            fail();
+            fail("Countries not found");
+        }
+    }
+
+    @Then("^The artist admin links are saved$")
+    public void theArtistAdminLinksAreSaved() throws Throwable {
+        Optional<Artist> artist =TestApplication.getArtistRepository().getArtist(10);
+        if (artist.isPresent()) {
+            boolean valid = true;
+            for (Profile admin : artist.get().getAdminsList()) {
+//                System.out.println("AAAA " + admin.getFirstName());
+                if (!ARTIST_ADMINS.contains(admin.getProfileId())) {
+                    valid = false;
+                }
+            }
+            assertTrue(valid);
+        } else {
+            fail("Admins not found");
         }
     }
 }

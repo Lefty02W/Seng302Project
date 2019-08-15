@@ -86,6 +86,11 @@ public class AdminCreateArtistSteps {
         Profile profile = TestApplication.getProfileRepository().getProfileById(arg0);
         artistForm.put("adminForm", profile.getProfileId().toString());
     }
+
+    @And("^admin enters \"([^\"]*)\" for artist admin$")
+    public void adminEntersForArtistAdmin(String arg0) throws Throwable {
+        artistForm.put("adminForm", arg0);
+    }
 }
 
 
