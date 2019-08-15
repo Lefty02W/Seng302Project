@@ -70,9 +70,10 @@ def main():
     password = hashPassword("password")
     birthDate = datetime.datetime(1980, 10, 25, 17, 30)
     gender = "Male"
-    timeCreate = date.today()
+    birth_date = date.today()
     query = "INSERT INTO profile(first_name, middle_name, last_name, email, password, birth_date, gender)" \
-          + " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(firstName, middleName, lastName, email, password, timeCreate, gender)
+          + " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(firstName, middleName, lastName, email, password, birth_date, gender)
+
 
     print("QUERY")
     print(query)
@@ -92,5 +93,6 @@ def main():
 
     # disconnect from server
     db.close()
+
 
 main()
