@@ -1,6 +1,5 @@
 package repository;
 
-import controllers.SessionController;
 import io.ebean.*;
 import models.*;
 import play.data.Form;
@@ -540,8 +539,12 @@ public class ArtistRepository {
      * @param artistId the id of the artist to retrieve
      * @return the found artist
      */
-    public Artist getArtist(int artistId) {
-        //TODO pass to populate artist method once merged with artist-profile branch
-        return ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
+    public Optional<Artist> getArtist(int artistId) {
+        Artist artist = ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
+        if (artist == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(artist);
+        }
     }
 }

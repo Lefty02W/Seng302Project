@@ -10,11 +10,9 @@ junit:
   script:
   - sbt test
 
-
   artifacts:
     paths:
       - target/scala-2.12/classes/
-      - target/scala-2.12/jacoco/data/jacoco.exec
       - target/*
 
 
@@ -77,9 +75,6 @@ deploy-prod:
     url: http://csse-s302g7.canterbury.ac.nz:443
   only:
   - tags
-
-
-
 
 
 update-sonar:
