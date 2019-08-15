@@ -2,6 +2,9 @@ package models;
 
 import javax.persistence.Entity;
 
+/**
+ * Model class to hold a link between and artist and a country
+ */
 @Entity
 public class ArtistCountry {
 
