@@ -91,3 +91,56 @@ def create_destination_queries(destinations):
     new_query = query[0:-1]
     new_query += ';'
     return new_query
+
+
+def read_artists():
+    """Reads a JSON file holding artists and converts it to a list of artists"""
+    artists = []
+    with open('artists.JSON') as json_file:
+        data = json.load(json_file)
+        for i in range(2):
+            artist = []
+            artist.append(data[i]['artist_name'])
+            artist.append(data[i]['biography'])
+            artist.append(data[i]['facebook_link'])
+            artist.append(data[i]['instagram_link'])
+            artist.append(data[i]['spotify_link'])
+            artist.append(data[i]['twitter_link'])
+            artist.append(data[i]['website_link'])
+            
+            # Add members as comma separated string
+            members_string = ""
+            for member in data[i]['members']:
+                members_string += member['name'] + ", "
+            members_string = members_string[0:-2]
+            artist.append(members_string)
+            
+            #Add list of countries
+            countries = []
+            for country in data[i]['countries']:
+                countries.append(country['country'])
+            artist.append(countries)
+            
+            # Add list of genres
+            genres = []
+            for genre in data[i]['genres']:
+                genres.append(genre['genre'])
+            artist.append(genres)            
+
+            artists.append(artist)
+    return artists    
+
+
+def create_artist_queries(artists):
+    """Takes in a list of artists to create a query"""
+    query = 'INSERT INTO artist(artist_name, biography, facebook_link, instagram_link, ' \
+        + 'spotify_link, twitter_link, website_link, members) VALUES '
+    
+    for artist in artists:
+        query += "('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}'),".format(artist[0], artist[1], artist[2],
+                                                                           artist[3], artist[4], artist[5],
+                                                                           artist[6], artist[7])
+    query = query[0:-1]
+    query += ';'
+    # TODO: query for countries and genres
+    return query        
