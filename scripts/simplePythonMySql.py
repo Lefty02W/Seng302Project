@@ -46,6 +46,53 @@ def execute_query(cursor, query):
         print("ERROR: ", e, "\n")
 
 
+def execute_nationalities_queries(profile, cursor):
+    """Helper function for execute profile queries
+    Will check if the requested nationality exists and then will insert a linking table between the nationality and the
+    profile. If didn't exist will create it"""
+    global db
+    try:
+        cursor.execute("SELECT nationality_id from nationality WHERE nationality_name = '{0}'".format(profile[7]))
+        db.commit()
+        results = cursor.fetchall()
+        if results != ():
+            result = results[0][0]
+        else:
+            # case nationality is not already inserted into database
+            cursor.execute("INSERT INTO nationality (nationality_name) VALUES ('{}')".format(profile[7]))
+            db.commit()
+            cursor.execute(
+                "SELECT nationality_id from nationality WHERE nationality_name = '{0}'".format(profile[7]))
+            db.commit()
+            results = cursor.fetchall()
+            result = results[0][0]
+    except Exception as e:
+        # Rollback in case there is any error
+        db.rollback()
+        return "Failed to get or insert nationality_id " + "ERROR: " + e + "\n"
+
+    try:
+        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(profile[3]))
+        db.commit()
+        id = cursor.fetchone()
+
+        cursor.execute("SELECT profile from profile_nationality WHERE profile = '{0}'".format(id[0]))
+        db.commit()
+        exists = cursor.fetchone()
+        if exists is None:
+            #case is not already inserted
+            cursor.execute(
+                "INSERT INTO profile_nationality (profile, nationality) VALUES ('{0}', '{1}')".format(id[0], result))
+            db.commit()
+            return "successfully added nationality"
+        else:
+            return "Nationality already exists (query still successful)"
+    except Exception as e:
+        db.rollback()
+        return "failed to insert profile_nationality " + "ERROR: " + e + "\n"
+
+
+
 def execute_profile_queries(cursor):
     profile_list = read_profiles()
     for profile in profile_list:
@@ -54,14 +101,20 @@ def execute_profile_queries(cursor):
         global db
         try:
             cursor.execute("INSERT INTO profile (first_name, middle_name, last_name, email, password, birth_date, gender)"
-                           " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(profile[0], profile[1], profile[2], profile[3], profile[4], profile[5], profile[6]))
+                           " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(profile[0], profile[1],
+                                                                                              profile[2], profile[3],
+                                                                                              profile[4], profile[5],
+                                                                                              profile[6]))
             db.commit()
-            print("Query executed successfully!")
+            print("Profile executed successfully!")
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()
-            print("Failed to insert, rolling back\n")
+            print("Failed to insert, rolling back")
             print("ERROR: ", e, "\n")
+
+        print(execute_nationalities_queries(profile, cursor))
+
 
 
 def add_artists(cursor):
