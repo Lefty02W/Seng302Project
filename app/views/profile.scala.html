@@ -369,7 +369,7 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Artist Page</th>
-                                            <th>Un-follow</th>
+                                            <th>Unfollow</th>
                                         </tr>
                                     </thead>
                                     @for(artist <- followedArtistList) {
@@ -382,7 +382,7 @@
                                             </td>
                                             <td>
                                                 <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
-                                                    <button type="button" class="btn btn-primary">Un Follow</button>
+                                                    <button type="button" class="btn btn-primary">Unfollow</button>
                                                 </a>
                                                 </td>
                                         </tr>
