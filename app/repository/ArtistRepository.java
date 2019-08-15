@@ -212,7 +212,7 @@ public class ArtistRepository {
     public List<Artist> getPagedArtists(int page) {
         int pageSize = 50;
         List <Artist> returnArtistList = new ArrayList<>();
-        List<Artist> artistList = ebeanServer.find(Artist.class).where()
+        List<Artist> artistList = ebeanServer.find(Artist.class).where()499
                 .setFirstRow(page * pageSize)
                 .setMaxRows(pageSize)
                 .findPagedList().getList();
@@ -528,6 +528,11 @@ public class ArtistRepository {
         }, executionContext);
     }
 
+    /**
+     * Function to get all countries of a given artist
+     * @param artistId Id of the artists to get countries for
+     * @return Map<Integer, PassportCountry> Map holding the country and key.
+     */
     public Map<Integer, PassportCountry> getArtistCounties(int artistId) {
          List<ArtistCountry> artistCountries = ebeanServer.find(ArtistCountry.class)
                 .where().eq("artist_id", artistId).findList();
@@ -557,7 +562,6 @@ public class ArtistRepository {
 
     /**
      * Method to retrieve an artist from the database using a passed database id
-     *
      * @param artistId the id of the artist to retrieve
      * @return the found artist
      */

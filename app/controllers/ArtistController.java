@@ -199,6 +199,12 @@ public class ArtistController extends Controller {
             }
         }
     }
+
+    /**
+     * Function to load countries for an artists
+     * @param artistList List of artists to be loaded with
+     * @return List<Artists> List of all artists loaded with countries
+     */
     private List<Artist> loadCountries(List<Artist> artistList) {
         for (Artist artist : artistList) {
             Map<Integer, PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
