@@ -5,6 +5,8 @@ import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -29,6 +31,15 @@ public class Events {
     private Date endDate;
 
     private int ageRestriction;
+
+    @Transient
+    private ArrayList<MusicGenre> eventGenres = new ArrayList<>();
+
+    @Transient
+    private ArrayList<String> eventTypes = new ArrayList<>();
+
+    @Transient
+    private ArrayList<Artist> eventArtists = new ArrayList<>();
 
     /**
      * Traditional constructor for events used when retrieving an Event from the data base
@@ -106,4 +117,16 @@ public class Events {
     public void setAgeRestriction(int ageRestriction) {
         this.ageRestriction = ageRestriction;
     }
+
+    public void setEventGenres(ArrayList<MusicGenre> genres) { this.eventGenres = genres;}
+
+    public void setEventArtists(ArrayList<Artist> artists) {this.eventArtists = artists;}
+
+    public void setEventTypes(ArrayList<String> types) {this.eventTypes = types;}
+
+    public ArrayList<MusicGenre> getEventGenres(){return this.eventGenres;}
+
+    public ArrayList<Artist> getEventArtists(){return this.eventArtists;}
+
+    public ArrayList<String> getEventTypes(){return this.eventTypes;}
 }
