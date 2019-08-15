@@ -10,6 +10,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Model class to hold that data for an artist
+ */
 @Entity
 public class Artist {
 
