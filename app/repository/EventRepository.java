@@ -5,6 +5,7 @@ import io.ebean.EbeanServer;
 import models.*;
 import play.db.ebean.EbeanConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -44,11 +45,35 @@ public class EventRepository {
     /**
      * Get all events from the events table in the database
      * uses ebeans to access the database
+     * also populates each event object with linking table data
      * @return Optional<List<Events>> Events - Optional list of all events in the database
      */
     public Optional<List<Events>> getAll() {
-        // TODO Needs to be populated by link tables
-        return Optional.of(ebeanServer.find(Events.class).findList());
+        List<Events> eventsList = new ArrayList<>();
+        List<Events> events = ebeanServer.find(Events.class).findList();
+        for (Events event : events){
+            eventsList.add(populateEvent(event));
+        }
+        return Optional.of(eventsList);
+    }
+
+    /**
+     * Lookup an event using the id to find the object in the database
+     * @param eventId Id of the event to find
+     * @return event Event object that has been found then populated then returned
+     */
+    public Events lookup(Integer eventId) {
+        return populateEvent(ebeanServer.find(Events.class).where().eq("event_id", eventId).findOne());
+    }
+
+    /**
+     * Method to populate an event with the objects from the linking tables
+     * including Genres, Types and Artists for the event
+     * @param event Event object to be populated
+     * @return event Event object that has been populated
+     */
+    private Events populateEvent(Events event) {
+        return event;
     }
 
     /**
