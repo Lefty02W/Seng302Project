@@ -48,17 +48,17 @@ def read_destinations():
     destinations = []
     with open('destinations.JSON') as json_file:
         data = json.load(json_file)
-        for i in range(len(data)):
+        for i in range(2):
             destination = []
             # TODO: change this so that we get the max profileId
             # random range would then be (max - numProfilesInserted, max)
             destination.append(random.randint(1, 2000))
             destination.append(data[i]["name"])
             destination.append(data[i]["type"])
+            destination.append(data[i]['country'])
             destination.append(data[i]['district'])
             destination.append(data[i]['crd_latitude'])
             destination.append(data[i]['crd_longitude'])
-            destination.append(data[i]['country'])
 
             destinations.append(destination)
     return destinations
@@ -66,10 +66,13 @@ def read_destinations():
 
 def create_profile_queries(profiles):
     """Takes in a list of profiles and uses the data to create a query"""
-    query = 'INSERT INTO profile(first_name, last_name, email, password, birth_date, gender) VALUES '
+    query = 'INSERT INTO profile(first_name, middle_name, last_name, email, password, birth_date, gender) VALUES '
     for profile in profiles:
-        query += "('{0}', '{1}', '{2}', '{3}', '{4}', '{5}'),".format(profile[0], profile[2], profile[3],
-                                                               profile[4], profile[5], profile[6])
+        if profile[1] is None:
+            profile[1] = ''
+        query += "('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}'),".format(profile[0], profile[1], profile[2],
+                                                                           profile[3], profile[4], profile[5],
+                                                                           profile[6])
     new_query = query[0:-1]
     new_query += ';'
     # TODO: add insert statements for nationalities ect
@@ -78,12 +81,13 @@ def create_profile_queries(profiles):
 
 def create_destination_queries(destinations):
     """Takes in a list of destinations and uses the data to create a query"""
-    query = ''
+    query = 'INSERT INTO destination(profile_id, name, type, country, district, latitude, longitude) VALUES '
     for destination in destinations:
-        query += "INSERT INTO destination(profile_id, name, type, country, district, latitude, longitude)" \
-                 + " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}');\n".format(destination[0], destination[1],
-                                                                                         destination[2],
-                                                                                         destination[3], destination[4],
-                                                                                         destination[5],
-                                                                                         destination[6])
-    return query
+        query += "('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}'),".format(destination[0], destination[1],
+                                                                             destination[2],
+                                                                             destination[3], destination[4],
+                                                                             destination[5],
+                                                                             destination[6])
+    new_query = query[0:-1]
+    new_query += ';'
+    return new_query

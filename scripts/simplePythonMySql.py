@@ -58,12 +58,16 @@ def main():
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
 
-    # gets the query for inserting profiles
-    profile_list = read_profiles()
-    profile_query = create_profile_queries(profile_list)
-    print(profile_query)
-    # TODO: Execute query when pagination is completed
-    execute_query(cursor, profile_query)
+    # get queries
+    # profile_list = read_profiles()
+    # profile_query = create_profile_queries(profile_list)
+    # print(profile_query)
+    # destination_list = read_destinations()
+    # destination_query = create_destination_queries(destination_list)
+    # print(destination_query)
+
+    # Execute query
+    execute_query(cursor, destination_query)
 
     # disconnect from server
     db.close()

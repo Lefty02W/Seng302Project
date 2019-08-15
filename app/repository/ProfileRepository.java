@@ -4,6 +4,7 @@ import io.ebean.*;
 import models.*;
 import org.mindrot.jbcrypt.BCrypt;
 import play.db.ebean.EbeanConfig;
+import scala.xml.Null;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;

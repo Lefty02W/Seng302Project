@@ -2,7 +2,7 @@
   {
     "id": 1,
     "first_name": "Francisca",
-    "middle_name": "",
+    "middle_name": null,
     "last_name": "Cassely",
     "date_of_birth": "15-05-94",
     "gender": "Female",
@@ -13,7 +13,7 @@
   {
     "id": 2,
     "first_name": "Ezmeralda",
-    "middle_name": "",
+    "middle_name": null,
     "last_name": "Goshawk",
     "date_of_birth": "03-09-76",
     "gender": "Female",
