@@ -46,23 +46,23 @@ def execute_query(cursor, query):
         print("ERROR: ", e, "\n")
 
 
-def execute_nationalities_queries(profile, cursor):
+def execute_passports_queries(passport_country, email, cursor):
     """Helper function for execute profile queries
-    Will check if the requested nationality exists and then will insert a linking table between the nationality and the
-    profile. If didn't exist will create it"""
+        Will check if the requested passport exists and then will insert a linking table between the passport and the
+        profile. If didn't exist will create it"""
     global db
     try:
-        cursor.execute("SELECT nationality_id from nationality WHERE nationality_name = '{0}'".format(profile[7]))
+        cursor.execute("SELECT passport_country_id from passport_country WHERE passport_name = '{0}'".format(passport_country))
         db.commit()
         results = cursor.fetchall()
         if results != ():
             result = results[0][0]
         else:
-            # case nationality is not already inserted into database
-            cursor.execute("INSERT INTO nationality (nationality_name) VALUES ('{}')".format(profile[7]))
+            # case passport is not already inserted into database
+            cursor.execute("INSERT INTO passport_country (passport_name) VALUES ('{}')".format(passport_country))
             db.commit()
             cursor.execute(
-                "SELECT nationality_id from nationality WHERE nationality_name = '{0}'".format(profile[7]))
+                "SELECT passport_country_id from passport_country WHERE passport_name = '{0}'".format(passport_country))
             db.commit()
             results = cursor.fetchall()
             result = results[0][0]
@@ -72,7 +72,53 @@ def execute_nationalities_queries(profile, cursor):
         return "Failed to get or insert nationality_id " + "ERROR: " + e + "\n"
 
     try:
-        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(profile[3]))
+        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(email))
+        db.commit()
+        id = cursor.fetchone()
+
+        cursor.execute("SELECT profile from profile_passport_country WHERE profile = '{0}'".format(id[0]))
+        db.commit()
+        exists = cursor.fetchone()
+        if exists is None:
+            # case is not already inserted
+            cursor.execute(
+                "INSERT INTO profile_passport_country (profile, passport_country) VALUES ('{0}', '{1}')".format(id[0], result))
+            db.commit()
+            return "successfully added passport"
+        else:
+            return "Passport already exists (query still successful)"
+    except Exception as e:
+        db.rollback()
+        return "failed to insert passport " + "ERROR: " + e + "\n"
+
+
+def execute_nationalities_queries(nationality, email, cursor):
+    """Helper function for execute profile queries
+    Will check if the requested nationality exists and then will insert a linking table between the nationality and the
+    profile. If didn't exist will create it"""
+    global db
+    try:
+        cursor.execute("SELECT nationality_id from nationality WHERE nationality_name = '{0}'".format(nationality))
+        db.commit()
+        results = cursor.fetchall()
+        if results != ():
+            result = results[0][0]
+        else:
+            # case nationality is not already inserted into database
+            cursor.execute("INSERT INTO nationality (nationality_name) VALUES ('{}')".format(nationality))
+            db.commit()
+            cursor.execute(
+                "SELECT nationality_id from nationality WHERE nationality_name = '{0}'".format(nationality))
+            db.commit()
+            results = cursor.fetchall()
+            result = results[0][0]
+    except Exception as e:
+        # Rollback in case there is any error
+        db.rollback()
+        return "Failed to get or insert nationality_id " + "ERROR: " + e + "\n"
+
+    try:
+        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(email))
         db.commit()
         id = cursor.fetchone()
 
@@ -113,8 +159,8 @@ def execute_profile_queries(cursor):
             print("Failed to insert, rolling back")
             print("ERROR: ", e, "\n")
 
-        print(execute_nationalities_queries(profile, cursor))
-
+        #print(execute_nationalities_queries(profile[7], profile[3], cursor))
+        print(execute_passports_queries(profile[8], profile[3], cursor))
 
 
 def add_artists(cursor):
