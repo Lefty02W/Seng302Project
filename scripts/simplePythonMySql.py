@@ -46,6 +46,13 @@ def execute_query(cursor, query):
         print("ERROR: ", e, "\n")
 
 
+def add_artists(cursor):
+    """Add artists to database"""
+    artists = read_artists()
+    query = create_artist_queries(artists)
+    execute_query(cursor, query)
+
+
 def main():
     global db
     """Set up DB connection, cursor and queries"""
@@ -67,8 +74,10 @@ def main():
     # print(destination_query)
 
     # Execute query
-    execute_query(cursor, destination_query)
-
+    #execute_query(cursor, destination_query)
+    
+    #add_artists(cursor)
+    
     # disconnect from server
     db.close()
 
