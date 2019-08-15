@@ -31,32 +31,37 @@ public class ProfilePassportCountryRepository {
      * @param passport The passport to add
      * @return
      */
-    public Optional<Integer> insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
-        Integer idOpt;
-        try {
-            idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName()).get();
-        } catch(Exception e) {
-           idOpt = null;
-        }
-        Integer passportId;
-        if (idOpt == -1) {
-            passportId = passportCountryRepository.insert(passport).get();
+    public void insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
+        Optional<Integer> idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName());
+        if (!idOpt.isPresent()) {
+            passportCountryRepository.insert(passport).thenApplyAsync(id -> {
+                id.ifPresent(integer -> insertPassportCountry(profileId, integer));
+                return null;
+            });
         } else {
-            passportId = idOpt;
+            insertPassportCountry(profileId, idOpt.get());
         }
+    }
+
+
+    /**
+     * Helper method to perform insert of profile passport country
+     * @param profileId profile id
+     * @param id passport country id
+     */
+    private void insertPassportCountry(int profileId, int  id) {
         Transaction txn = ebeanServer.beginTransaction();
         String qry = "INSERT into profile_passport_country (profile, passport_country) " +
                 "VALUES (?, ?)";
         try {
             SqlUpdate query = Ebean.createSqlUpdate(qry);
             query.setParameter(1, profileId);
-            query.setParameter(2, passportId);
+            query.setParameter(2, id);
             query.execute();
             txn.commit();
         } finally {
             txn.end();
         }
-        return Optional.of(passportId);
     }
 
     /**

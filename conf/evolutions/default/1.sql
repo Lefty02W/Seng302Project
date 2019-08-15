@@ -318,6 +318,100 @@ create table if not exists undo_stack
 )
 ;
 
+create table artist
+(
+	artist_id int auto_increment,
+	artist_name varchar(30) not null,
+	biography varchar(255) not null,
+	facebook_link varchar(50) null,
+	instagram_link varchar(50) null,
+	spotify_link varchar(50) null,
+	twitter_link varchar(50) null,
+	website_link varchar(50) null,
+	soft_delete tinyint default '0' null,
+	verified int default '0' null,
+	members varchar(100) not null,
+	constraint artist_profile_artist_id_uindex
+		unique (artist_id)
+)
+;
+
+alter table artist
+	add primary key (artist_id)
+;
+
+
+create table artist_profile
+(
+	artist_id int not null,
+	profile_id int null,
+	constraint artist_profile__artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_profile_profile__fk
+		foreign key (profile_id) references profile (profile_id)
+			on update cascade on delete cascade
+)
+;
+
+create index artist_profile__artist_fk
+	on artist_profile (artist_id)
+;
+
+create index artist_profile_profile__fk
+	on artist_profile (profile_id)
+;
+
+
+
+
+create table music_genre
+(
+	genre_id int auto_increment
+		primary key,
+	genre varchar(20) not null,
+	constraint music_genre_genreId_uindex
+		unique (genre_id)
+)
+;
+
+create table artist_genre
+(
+	artist_id int not null,
+	genre_id int not null,
+	constraint artist_genre_artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_genre_genre_fk
+		foreign key (genre_id) references music_genre (genre_Id)
+			on update cascade on delete cascade
+)
+;
+
+create index artist_genre_artist_fk
+	on artist_genre (artist_id)
+;
+
+create index artist_genre_genre_fk
+	on artist_genre (genre_id)
+;
+
+
+
+
+create table artist_country
+(
+	artist_id int not null,
+	country_id int not null,
+	constraint artist_country__artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_country_country__fk
+		foreign key (country_id) references passport_country (passport_country_id)
+			on update cascade on delete cascade
+)
+;
+
 
 
 
@@ -371,3 +465,13 @@ drop table if exists destination_traveller_type;
 drop table if exists undo_stack;
 
 drop table if exists treasure_hunt
+
+drop table if exists artist;
+
+drop table if exists artist_genre;
+
+drop table if exists music_genre;
+
+drop table if exists artist_profile;
+
+drop table if exists artist_country;
