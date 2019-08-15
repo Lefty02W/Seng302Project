@@ -297,6 +297,7 @@ public class ArtistRepository {
             if (targetArtist != null) {
                 targetArtist.setArtistName(newArtist.getArtistName());
                 targetArtist.setBiography(newArtist.getBiography());
+                targetArtist.setMembers(newArtist.getMembers());
                 targetArtist.setFacebookLink(newArtist.getFacebookLink());
                 targetArtist.setSpotifyLink(newArtist.getSpotifyLink());
                 targetArtist.setWebsiteLink(newArtist.getWebsiteLink());
