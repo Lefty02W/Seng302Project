@@ -46,6 +46,24 @@ def execute_query(cursor, query):
         print("ERROR: ", e, "\n")
 
 
+def execute_profile_queries(cursor):
+    profile_list = read_profiles()
+    for profile in profile_list:
+        if profile[1] is None:
+            profile[1] = ''
+        global db
+        try:
+            cursor.execute("INSERT INTO profile (first_name, middle_name, last_name, email, password, birth_date, gender)"
+                           " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(profile[0], profile[1], profile[2], profile[3], profile[4], profile[5], profile[6]))
+            db.commit()
+            print("Query executed successfully!")
+        except Exception as e:
+            # Rollback in case there is any error
+            db.rollback()
+            print("Failed to insert, rolling back\n")
+            print("ERROR: ", e, "\n")
+
+
 def add_artists(cursor):
     """Add artists to database"""
     artists = read_artists()
@@ -66,18 +84,15 @@ def main():
     cursor = db.cursor()
 
     # get queries
-    # profile_list = read_profiles()
-    # profile_query = create_profile_queries(profile_list)
-    # print(profile_query)
+    execute_profile_queries(cursor)
+
     # destination_list = read_destinations()
     # destination_query = create_destination_queries(destination_list)
     # print(destination_query)
 
     # Execute query
-    #execute_query(cursor, destination_query)
-    
-    #add_artists(cursor)
-    
+    # execute_query(cursor, profile_query)
+
     # disconnect from server
     db.close()
 

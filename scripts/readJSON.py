@@ -64,19 +64,17 @@ def read_destinations():
     return destinations
 
 
-def create_profile_queries(profiles):
+def create_profile_queries(profile):
     """Takes in a list of profiles and uses the data to create a query"""
     query = 'INSERT INTO profile(first_name, middle_name, last_name, email, password, birth_date, gender) VALUES '
-    for profile in profiles:
-        if profile[1] is None:
-            profile[1] = ''
-        query += "('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}'),".format(profile[0], profile[1], profile[2],
-                                                                           profile[3], profile[4], profile[5],
-                                                                           profile[6])
-    new_query = query[0:-1]
-    new_query += ';'
+    if profile[1] is None:
+        profile[1] = ''
+    query += "(?, ?, ?, ?, ?, ?, ?)", (profile[0], profile[1], profile[2], profile[3], profile[4], profile[5],
+                                       profile[6])
+    query += ' WHERE NOT EXISTS (Select * from profile where (email = ?));'
+
     # TODO: add insert statements for nationalities ect
-    return new_query
+    return query
 
 
 def create_destination_queries(destinations):
