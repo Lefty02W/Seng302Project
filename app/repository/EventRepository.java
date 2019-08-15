@@ -2,9 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import models.Artist;
-import models.Events;
-import models.MusicGenre;
+import models.*;
 import play.db.ebean.EbeanConfig;
 
 import java.util.List;
@@ -20,13 +18,27 @@ public class EventRepository {
 
     private final EbeanServer ebeanServer;
     private final DatabaseExecutionContext executionContext;
+    private final EventTypeRepository eventTypeRepository;
+    private final EventArtistRepository eventArtistRepository;
+    private final EventGenreRepository eventGenreRepository;
+    private final ArtistRepository artistRepository;
+    private final GenreRepository genreRepository;
 
     /**
      * Constructor for the events repository class
      */
-    public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext) {
+    public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
+                           EventTypeRepository eventTypeRepository, EventArtistRepository eventArtistRepository,
+                           EventGenreRepository eventGenreRepository, ArtistRepository artistRepository,
+                           GenreRepository genreRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
+        this.eventTypeRepository = eventTypeRepository;
+        this.eventArtistRepository = eventArtistRepository;
+        this.eventGenreRepository = eventGenreRepository;
+        this.artistRepository = artistRepository;
+        this.genreRepository = genreRepository;
+
     }
 
     /**
@@ -61,13 +73,13 @@ public class EventRepository {
     public CompletionStage<Integer> insert(Events event) {
         CompletionStage<Integer> event_id_out = insertEvent(event);
         for (MusicGenre genre : event.getEventGenres()) {
-            //eventGenreRepository.insert(genre, event.getEventId())
+            eventGenreRepository.insert(new EventGenres(genreRepository.getGenreIdByName(genre.getGenre()), event.getEventId()));
         }
         for (String type : event.getEventTypes()) {
-            //eventTypeRepository.insert(type, event.getEventId())
+            eventTypeRepository.insert(new EventType(eventTypeRepository.getTypeOfEventsIdByName(type), event.getEventId()));
         }
         for (Artist artist : event.getEventArtists()) {
-            //artistEventRepository.insert(artist, event.getEventId())
+            eventArtistRepository.insert(new EventArtists(artistRepository.getArtistIdByName(artist.getArtistName()), event.getEventId()));
         }
         return event_id_out;
     }

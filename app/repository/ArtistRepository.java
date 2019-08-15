@@ -205,4 +205,14 @@ public class ArtistRepository {
         //TODO pass to populate artist method once merged with artist-profile branch
         return ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
     }
+
+    /**
+     * Method to retrieve artistId using an artist name
+     *
+     * @param artistName the name of the artist
+     * @return the found id
+     */
+    public Integer getArtistIdByName(String artistName){
+        return (ebeanServer.find(Artist.class).where().eq("artist_name", artistName).findOne().getArtistId());
+    }
 }

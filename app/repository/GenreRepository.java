@@ -97,4 +97,14 @@ public class GenreRepository {
         }, executionContext);
     }
 
+    /**
+     * Method to retrieve genreId using an genre name
+     *
+     * @param genreName the name of the genre
+     * @return the found id
+     */
+    public Integer getGenreIdByName(String genreName){
+        return (ebeanServer.find(MusicGenre.class).where().eq("genre", genreName).findOne().getGenreId());
+    }
+
 }

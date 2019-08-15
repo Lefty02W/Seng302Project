@@ -3,6 +3,7 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import models.EventType;
+import models.TypeOfEvents;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -27,7 +28,7 @@ public class EventTypeRepository {
      * @param eventType EventType object that will be inserted into the database
      * @return Integer: eventType id
      */
-    public CompletionStage<Integer> insertEventType(EventType eventType){
+    public CompletionStage<Integer> insert(EventType eventType){
         return supplyAsync(() -> {
             ebeanServer.insert(eventType);
             return eventType.getEventId();
@@ -76,4 +77,15 @@ public class EventTypeRepository {
             return null;
         });
     }
+
+
+    /**
+     * Method to retrieve type_of_Event Id using an type name
+     * @param typeName the name of the type
+     * @return the found id
+     */
+    public Integer getTypeOfEventsIdByName(String typeName){
+        return (ebeanServer.find(TypeOfEvents.class).where().eq("type_name", typeName).findOne().getTypeId());
+    }
+
 }
