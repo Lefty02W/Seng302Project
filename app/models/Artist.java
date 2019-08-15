@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.*;
 
+/**
+ * Model class to hold that data for an artist
+ */
 @Entity
 public class Artist extends Model {
 

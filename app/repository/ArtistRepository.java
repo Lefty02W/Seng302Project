@@ -13,6 +13,9 @@ import java.util.concurrent.CompletionStage;
 import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+/**
+ * Database access class for the artist table. Handles all database interactions with this table
+ */
 public class ArtistRepository {
 
 

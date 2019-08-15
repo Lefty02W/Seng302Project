@@ -3,6 +3,9 @@ Feature: Login
   I want to log in
   So that I can access my profile
 
+  Background:
+    Given Password hash setup has been done
+
   Scenario: Log in an existing user
     Given John is at the login page
     When he fills in his email with "john@gmail.com"

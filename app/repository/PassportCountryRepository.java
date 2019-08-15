@@ -99,18 +99,16 @@ public class PassportCountryRepository {
     /**
      * Gets the ID of a passport country based on the name sent in
      * @param country The country to find
-     * @return
+     * @return An optional holding the country id if found else empty
      */
     public Optional<Integer> getPassportCountryId(String country) {
         String sql = ("select passport_country_id from passport_country where passport_name = ?");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, country).findList();
-        Integer countryId;
-        try {
-            countryId = rowList.get(0).getInteger("passport_country_id");
-        } catch(Exception e) {
-            countryId = -1;
+        if (rowList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(rowList.get(0).getInteger("passport_country_id"));
         }
-        return Optional.of(countryId);
     }
 
     /**
