@@ -23,13 +23,13 @@ public class ArtistRepositoryTest  {
     @Test
     public void getAllArtist(){
         List<Artist> artists = TestApplication.getArtistRepository().getAllArtists();
-        assertEquals(5, artists.size());
+        assertEquals(6, artists.size());
     }
 
     @Test
     public void searchArtistsEmptySearchFullResult(){
         List<Artist> artists = TestApplication.getArtistRepository().searchArtist("","","", 1);
-        assertEquals(5, artists.size());
+        assertEquals(6, artists.size());
     }
 
     @Test

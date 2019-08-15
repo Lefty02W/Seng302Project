@@ -1,8 +1,6 @@
 package controllers.steps.Artist;
 
 import controllers.TestApplication;
-
-import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -24,7 +22,6 @@ public class CreateArtistSteps {
     private Map<String, String> artistForm = new HashMap<>();
     private Map<String, String> dupArtistFrom = new HashMap<>();
     private Result dupResult;
-    private Artist foundArtist;
     private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Rock", "Indie"));
 
 
@@ -131,14 +128,9 @@ public class CreateArtistSteps {
 
     @Then("^The artist genre links are saved$")
     public void theArtistGenreLinksAreSaved() throws Throwable {
-        List<Artist> artists = TestApplication.getArtistRepository().getAllUserArtists(2);
-        for (Artist artist : artists) {
-            if (artist.getArtistName().equals("Jim James")) {
-                foundArtist = artist;
-            }
-        }
-        if (foundArtist != null) {
-            Optional<List<MusicGenre>> optional = TestApplication.getGenreRepository().getArtistGenres(foundArtist.getArtistId());
+        Optional<Artist> foundArtist = TestApplication.getArtistRepository().getArtist(2);
+        if (foundArtist.isPresent()) {
+            Optional<List<MusicGenre>> optional = TestApplication.getGenreRepository().getArtistGenres(foundArtist.get().getArtistId());
             if (optional.isPresent()) {
                 for (MusicGenre genre : optional.get()) {
                     if (!ARTIST_GENRES.contains(genre.getGenre())) {
@@ -152,6 +144,7 @@ public class CreateArtistSteps {
             fail();
         }
     }
+
 }
 
 
