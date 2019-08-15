@@ -361,31 +361,35 @@
                         </div>
                     </div>
                     <div id="followedArtistsTab" class="tab-pane fade">
-                        <div id="table-card">
-                            <table id="followedArtistsTable">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Artist Page</th>
-                                        <th>Un follow</th>
-                                    </tr>
-                                </thead>
-                                @for(artist <- followedArtistList) {
-                                    <tr>
-                                        <td>@artist.getArtistName</td>
-                                        <td>
-                                            <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
-                                                <button type="button" class="btn btn-primary">View</button>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
-                                                <button type="button" class="btn btn-primary">Un Follow</button>
-                                            </a>
+                        <div class="col">
+                            <div id="card-large lower-card">
+                                <div class="card center-col overflow-auto" id="followedArtistsCard">
+                                <table id="followedArtistsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Artist Page</th>
+                                            <th>Un-follow</th>
+                                        </tr>
+                                    </thead>
+                                    @for(artist <- followedArtistList) {
+                                        <tr>
+                                            <td>@artist.getArtistName</td>
+                                            <td>
+                                                <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
+                                                    <button type="button" class="btn btn-primary">View</button>
+                                                </a>
                                             </td>
-                                    </tr>
-                                }
-                            </table>
+                                            <td>
+                                                <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
+                                                    <button type="button" class="btn btn-primary">Un Follow</button>
+                                                </a>
+                                                </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            </div>
                         </div>
                     </div>
 
