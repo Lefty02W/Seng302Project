@@ -306,9 +306,9 @@ public class ArtistRepository {
                 txn.commit();
 
                 newArtist.setArtistId(artistId);
-                deleteAllArtistCountryForAnArtist(artistId);
-                deleteAllGenresForAnArtist(artistId);
-                deleteAllAdminsForAnArtist(artistId);
+                deleteAllSpecifiedEntriesForAnArtist(artistId, "artist_country");
+                deleteAllSpecifiedEntriesForAnArtist(artistId, "artist_genre");
+                deleteAllSpecifiedEntriesForAnArtist(artistId, "artist_profile");
 
                 saveAdminArtistCountries(newArtist);
                 saveAdminArtistGenres(newArtist, artistForm);
@@ -448,57 +448,18 @@ public class ArtistRepository {
     }
 
     /**
-     * Method to delete find all the the countries associated with a particular artist and delete them
+     * Helper method that takes in a specified artist table  and artist id and deletes all entries for that particular
+     * artist in the given artist table. Used for the admin update artist.
+     *
      * @param id the id of the artist
+     * @param table the intended artist table that all artist entries are going to be removed from
      * @return void CompletionStage
      */
-    public CompletionStage<Void> deleteAllArtistCountryForAnArtist(int id) {
+    private CompletionStage<Void> deleteAllSpecifiedEntriesForAnArtist(int id, String table) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            String qry = "DELETE from artist_country where artist_id " +
-                    "= ?";
-            try {
-                SqlUpdate query = Ebean.createSqlUpdate(qry);
-                query.setParameter(1, id);
-                query.execute();
-                txn.commit();
-            } finally {
-                txn.end();
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Method to delete find all the the genres associated with a particular artist and delete them
-     * @param id the id of the artist
-     * @return void CompletionStage
-     */
-    public CompletionStage<Void> deleteAllGenresForAnArtist(int id) {
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            String qry = "DELETE from artist_genre where artist_id = ?";
-            try {
-                SqlUpdate query = Ebean.createSqlUpdate(qry);
-                query.setParameter(1, id);
-                query.execute();
-                txn.commit();
-            } finally {
-                txn.end();
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Method to delete find all the the profiles associated with a particular artist and delete them
-     * @param id the id of the artist
-     * @return void CompletionStage
-     */
-    public CompletionStage<Void> deleteAllAdminsForAnArtist(int id) {
-        return supplyAsync(() -> {
-            Transaction txn = ebeanServer.beginTransaction();
-            String qry = "DELETE from artist_profile where artist_id = ?";
+            String qry = "DELETE from " + table + " where artist_id = ?";
+            System.out.println(qry);
             try {
                 SqlUpdate query = Ebean.createSqlUpdate(qry);
                 query.setParameter(1, id);
