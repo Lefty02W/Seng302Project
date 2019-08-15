@@ -120,7 +120,7 @@ public class ArtistRepository {
      * @param artist Artist to be have added linking table data
      * @return Artist that has had genre and country added
      */
-    public Artist populateArtistAdmin(Artist artist) {
+    private Artist populateArtistAdmin(Artist artist) {
 
         artist = populateArtist(artist);
         List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artist.getArtistId()).findSingleAttributeList();
@@ -144,7 +144,6 @@ public class ArtistRepository {
        countries = countryMap.get();
      }
      artist.setCountry(countries);
-     //TODO fix below function
         Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
         if(genreList.isPresent()) {
             if(!genreList.get().isEmpty()) {
@@ -164,9 +163,7 @@ public class ArtistRepository {
         Optional<PassportCountry> countryName;
         for (SqlRow aRowList : rowList) {
             countryName = passportCountryRepository.findById(aRowList.getInteger("country_id"));
-            if(countryName.isPresent()) {
-                country.put(aRowList.getInteger("country_id"), countryName.get());
-            }
+            countryName.ifPresent(passportCountry -> country.put(aRowList.getInteger("country_id"), passportCountry));
         }
         return Optional.of(country);
     }
@@ -388,7 +385,6 @@ public class ArtistRepository {
             }
         }
 
-        // TODO: 8/08/19 turn into another function
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
         if (!foundRows.isEmpty()){
@@ -486,7 +482,7 @@ public class ArtistRepository {
      *
      * @param newArtist the artist object to be edited
      */
-    public void saveAdminArtistCountries(Artist newArtist) {
+    private void saveAdminArtistCountries(Artist newArtist) {
         for (String countryName : newArtist.getCountryList()) {
             Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(countryName);
             if (countryObject.isPresent()) {
@@ -511,7 +507,7 @@ public class ArtistRepository {
      * @param newArtist an artist object
      * @param artistProfileForm the form containing all newly input the attributes of an artist
      */
-    public void saveAdminArtistGenres(Artist newArtist, Form<Artist> artistProfileForm) {
+    private void saveAdminArtistGenres(Artist newArtist, Form<Artist> artistProfileForm) {
         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
         if (optionalGenres.isPresent()) {
             if (!optionalGenres.get().isEmpty()) {
@@ -528,7 +524,7 @@ public class ArtistRepository {
      * @param newArtist an artist object
      * @param artistProfileForm the form containing all newly input the attributes of an artist
      */
-    public void saveAdminArtistAdmins(Artist newArtist, Form<Artist> artistProfileForm, Integer currentUserId) {
+    private void saveAdminArtistAdmins(Artist newArtist, Form<Artist> artistProfileForm, Integer currentUserId) {
         Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
         if (optionalProfiles.isPresent() && !optionalProfiles.get().isEmpty()) {
             //Insert ArtistProfiles for new Artist.
@@ -554,7 +550,7 @@ public class ArtistRepository {
         if (artist == null) {
             return Optional.empty();
         } else {
-            return Optional.of(populateArtist(artist));
+            return Optional.of(populateArtistAdmin(artist));
         }
     }
 }
