@@ -503,19 +503,6 @@ public class ProfileRepository {
         return Optional.of(destList);
     }
 
-    public List<Artist> getFollowedArtists(int profileId){
-        List<Integer> artistIds = ebeanServer.find(FollowArtist.class)
-                .select("artistId")
-                .where()
-                .eq("profile_id", profileId)
-                .findSingleAttributeList();
-        if (artistIds.isEmpty()){
-            return Collections.emptyList();
-        }
-        return ebeanServer.find(Artist.class).where().idIn(artistIds).findList();
-
-    }
-
     /**
      * Method for edit profile-email to check if there is a traveller account under the supplied email that already
      * exists (not the same user)

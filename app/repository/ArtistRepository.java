@@ -2,17 +2,10 @@ package repository;
 
 import io.ebean.*;
 import models.*;
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import models.Artist;
-import models.ArtistCountry;
-import models.ArtistProfile;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -293,32 +286,15 @@ public class ArtistRepository {
      * @return Optional array list of artists followed by the user
      */
     public List<Artist> getFollowedArtists(int profileId) {
-        String getArtistQuery = "Select t0.artist_id, t0.artist_name, t0.biography, t0.facebook_link, t0.instagram_link, t0.spotify_link, " +
-                "t0.twitter_link, t0.website_link, t0.members, t0.soft_delete from artist t0 JOIN follow_artist A on " +
-                "t0.artist_id = A.artist_id where A.profile_id = ? and t0.soft_delete = 0";
-
-        List<SqlRow> rowArtistList = ebeanServer.createSqlQuery(getArtistQuery).setParameter(1, profileId).findList();
-
-        List<Artist> ArtistList  = new ArrayList<>();
-        Artist artToAdd;
-        for (SqlRow aRowList : rowArtistList) {
-            artToAdd = new Artist();
-            artToAdd.setArtistId(aRowList.getInteger("artist_id"));
-            artToAdd.setArtistName(aRowList.getString("artist_name"));
-            artToAdd.setBiography(aRowList.getString("biography"));
-            artToAdd.setFacebookLink(aRowList.getString("facebook_link"));
-            artToAdd.setInstagramLink(aRowList.getString("instagram_link"));
-            artToAdd.setSpotifyLink(aRowList.getString("spotify_link"));
-            artToAdd.setTwitterLink(aRowList.getString("twitter_link"));
-            artToAdd.setWebsiteLink(aRowList.getString("website_link"));
-            artToAdd.setMembers(aRowList.getString("members"));
-            artToAdd.setSoftDelete(aRowList.getInteger("soft_delete"));
-            artToAdd.setCountry(getArtistCounties(artToAdd.getArtistId()));
-            //TODO fix NoSuchElementException that occurs when this function is called on a artist with no genres.
-            //artToAdd.setGenre(genreRepository.getArtistGenres(aRowList.getInteger("artist_id")));
-            ArtistList.add(artToAdd);
+        List<Integer> artistIds = ebeanServer.find(FollowArtist.class)
+                .select("artistId")
+                .where()
+                .eq("profile_id", profileId)
+                .findSingleAttributeList();
+        if (artistIds.isEmpty()){
+            return Collections.emptyList();
         }
-        return ArtistList;
+        return ebeanServer.find(Artist.class).where().idIn(artistIds).findList();
     }
 
     /**
