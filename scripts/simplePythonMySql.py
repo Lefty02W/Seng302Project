@@ -8,11 +8,25 @@ import getpass
 import bcrypt
 from datetime import date
 import datetime
+from readJSON import *
 
 global db
 
 
-def executeQuery(cursor, query):
+def get_version(cursor):
+    """This is an exmaple function to demonstrate successful connection,
+       simply prints the current database version
+       @param cursor - The cursor object to use for executing queries
+    """
+    # execute SQL query using execute() method.
+    cursor.execute("SELECT VERSION()")
+
+    # Fetch a single row using fetchone() method.
+    data = cursor.fetchone()
+    print("Database version : %s " % data)
+
+
+def execute_query(cursor, query):
     """Run a given query on the database. The database must already be set up
        and a connection established.
        @param cursor - The cursor object to execute database calls
@@ -32,28 +46,9 @@ def executeQuery(cursor, query):
         print("ERROR: ", e, "\n")
 
 
-def getVersion(cursor):
-    """This is an exmaple function to demonstrate successful connection,
-       simply prints the current database version
-       @param cursor - The cursor object to use for executing queries
-    """
-    # execute SQL query using execute() method.
-    cursor.execute("SELECT VERSION()")
-
-    # Fetch a single row using fetchone() method.
-    data = cursor.fetchone()
-    print("Database version : %s " % data)
-
-
-def hashPassword(password):
-    SALT = "$2a$12$nODuNzk9U7Hrq6DgspSP4."
-    return bcrypt.hashpw(password.encode("utf8"), SALT.encode("utf8")).decode("utf8")
-
-
 def main():
     global db
     """Set up DB connection, cursor and queries"""
-
 
     password = getpass.getpass()  # Get password without echoing (showing) it on terminal
 
@@ -63,33 +58,12 @@ def main():
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
 
-    firstName = "python"
-    middleName = "3"
-    lastName = "script"
-    email = "python@gmail.com"
-    password = hashPassword("password")
-    birthDate = datetime.datetime(1980, 10, 25, 17, 30)
-    gender = "Male"
-    birth_date = date.today()
-    query = "INSERT INTO profile(first_name, middle_name, last_name, email, password, birth_date, gender)" \
-          + " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(firstName, middleName, lastName, email, password, birth_date, gender)
-
-
-    print("QUERY")
-    print(query)
-    print("OVER")
-    ###TODO
-    # READ JSON
-
-    # PARSE
-
-    # FORMAT query
-
-    # Execute query
-    executeQuery(cursor, query)
-    ### END TODO
-
-    # getVersion(cursor) #Example output
+    # gets the query for inserting profiles
+    profile_list = read_profiles()
+    profile_query = create_profile_queries(profile_list)
+    print(profile_query)
+    # TODO: Execute query when pagination is completed
+    execute_query(cursor, profile_query)
 
     # disconnect from server
     db.close()
