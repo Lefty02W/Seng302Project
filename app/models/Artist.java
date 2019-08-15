@@ -35,6 +35,7 @@ public class Artist extends Model {
 
     private Collection<Profile> adminsList;
 
+    @Constraints.Required
     private String members;
 
     @Transient

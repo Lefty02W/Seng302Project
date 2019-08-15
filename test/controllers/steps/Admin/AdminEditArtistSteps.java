@@ -31,12 +31,7 @@ public class AdminEditArtistSteps {
             EDIT_FORM.put("artistName", artist.get().getArtistName());
             EDIT_FORM.put("biography", artist.get().getBiography());
             EDIT_FORM.put("countries", artist.get().getCountryListString());
-            EDIT_FORM.put("facebookLink", artist.get().getFacebookLink());
-            EDIT_FORM.put("instagramLink", artist.get().getInstagramLink());
             EDIT_FORM.put("members", artist.get().getMembers());
-            EDIT_FORM.put("spotifyLink", artist.get().getSpotifyLink());
-            EDIT_FORM.put("twitterLink", artist.get().getTwitterLink());
-            EDIT_FORM.put("websiteLink", artist.get().getWebsiteLink());
             EDIT_FORM.put("genreForm", artist.get().getGenre());
             EDIT_FORM.put("adminForm", "1,");
         }
