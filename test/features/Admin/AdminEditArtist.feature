@@ -1,0 +1,13 @@
+Feature: Edit an artist profile as an admin
+  As an admin user
+  I want to be able to edit any artists in the system
+
+  Background:
+    Given I am logged into the application as user "bob@gmail.com" with password "password"
+
+  Scenario: Edit artists genres
+    Given I am on the admin page
+    And I select artist 5 to edit
+    And I change the "genreForm" to "Indie" and "Rock"
+    And I save the edit of artist "5"
+    Then The new genres are saved

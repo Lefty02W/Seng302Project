@@ -1,6 +1,5 @@
 package repository;
 
-import controllers.SessionController;
 import io.ebean.*;
 import models.*;
 import play.data.Form;
@@ -452,7 +451,7 @@ public class ArtistRepository {
      * @param id the id of the artist
      * @return void CompletionStage
      */
-    public CompletionStage<Void> deleteAllArtistCountryForAnArtist(int id) {
+    private CompletionStage<Void> deleteAllArtistCountryForAnArtist(int id) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             String qry = "DELETE from artist_country where artist_id " +
@@ -474,7 +473,7 @@ public class ArtistRepository {
      * @param id the id of the artist
      * @return void CompletionStage
      */
-    public CompletionStage<Void> deleteAllGenresForAnArtist(int id) {
+    private CompletionStage<Void> deleteAllGenresForAnArtist(int id) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             String qry = "DELETE from artist_genre where artist_id = ?";
@@ -495,7 +494,7 @@ public class ArtistRepository {
      * @param id the id of the artist
      * @return void CompletionStage
      */
-    public CompletionStage<Void> deleteAllAdminsForAnArtist(int id) {
+    private CompletionStage<Void> deleteAllAdminsForAnArtist(int id) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             String qry = "DELETE from artist_profile where artist_id = ?";
@@ -516,7 +515,7 @@ public class ArtistRepository {
      *
      * @param newArtist the artist object to be edited
      */
-    public void saveAdminArtistCountries(Artist newArtist) {
+    private void saveAdminArtistCountries(Artist newArtist) {
         for (String countryName : newArtist.getCountryList()) {
             Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(countryName);
             if (countryObject.isPresent()) {
@@ -541,7 +540,7 @@ public class ArtistRepository {
      * @param newArtist an artist object
      * @param artistProfileForm the form containing all newly input the attributes of an artist
      */
-    public void saveAdminArtistGenres(Artist newArtist, Form<Artist> artistProfileForm) {
+    private void saveAdminArtistGenres(Artist newArtist, Form<Artist> artistProfileForm) {
         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
         if (optionalGenres.isPresent()) {
             if (!optionalGenres.get().isEmpty()) {
@@ -558,7 +557,7 @@ public class ArtistRepository {
      * @param newArtist an artist object
      * @param artistProfileForm the form containing all newly input the attributes of an artist
      */
-    public void saveAdminArtistAdmins(Artist newArtist, Form<Artist> artistProfileForm, Integer currentUserId) {
+    private void saveAdminArtistAdmins(Artist newArtist, Form<Artist> artistProfileForm, Integer currentUserId) {
         Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
         if (optionalProfiles.isPresent() && !optionalProfiles.get().isEmpty()) {
             //Insert ArtistProfiles for new Artist.
@@ -579,8 +578,11 @@ public class ArtistRepository {
      * @param artistId the id of the artist to retrieve
      * @return the found artist
      */
-    public Artist getArtist(int artistId) {
-        //TODO pass to populate artist method once merged with artist-profile branch
-        return ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
+    public Optional<Artist> getArtist(int artistId) {
+        Artist artist = ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
+        if (artist != null) {
+            return Optional.of(populateArtist(artist));
+        }
+        return Optional.empty();
     }
 }
