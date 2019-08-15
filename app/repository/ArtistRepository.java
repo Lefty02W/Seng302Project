@@ -22,7 +22,7 @@ public class ArtistRepository {
     private final DatabaseExecutionContext executionContext;
     private final PassportCountryRepository passportCountryRepository;
     private final GenreRepository genreRepository;
-
+    private static final int PAGE_SIZE = 10;
     /**
      * Ebeans injector constructor method for Artist repository.
      *
@@ -52,7 +52,7 @@ public class ArtistRepository {
         List<Artist> outputList = new ArrayList<>();
         for( Artist artist : artistList) {
             artist.setGenre(new ArrayList<>());
-            outputList.add(populateArtist(artist));
+            outputList.add(populateArtistAdmin(artist));
         }
         return outputList;
     }
@@ -115,6 +115,22 @@ public class ArtistRepository {
     }
 
 
+    /**
+     * Method to populate a artist to add admins into artists used for admin page
+     * @param artist Artist to be have added linking table data
+     * @return Artist that has had genre and country added
+     */
+    public Artist populateArtistAdmin(Artist artist) {
+
+        artist = populateArtist(artist);
+        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artist.getArtistId()).findSingleAttributeList();
+        if (!linkIds.isEmpty()) {
+            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
+        } else {
+            artist.setAdminsList(new ArrayList<>());
+        }
+        return artist;
+    }
 
     /**
      * Method to populate a artist with all linking table data eg genre and country
@@ -134,12 +150,6 @@ public class ArtistRepository {
             if(!genreList.get().isEmpty()) {
                 artist.setGenre(genreList.get());
             }
-        }
-        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artist.getArtistId()).findSingleAttributeList();
-        if (!linkIds.isEmpty()) {
-            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
-        } else {
-            artist.setAdminsList(new ArrayList<>());
         }
         return artist;
     }
@@ -205,16 +215,16 @@ public class ArtistRepository {
      * @return A list of artists.
      */
     public List<Artist> getPagedArtists(int page) {
-        int pageSize = 50;
+
         List <Artist> returnArtistList = new ArrayList<>();
         List<Artist> artistList = ebeanServer.find(Artist.class).where()
-                .setFirstRow(page * pageSize)
-                .setMaxRows(pageSize)
+                .setFirstRow(page * PAGE_SIZE)
+                .setMaxRows(PAGE_SIZE)
                 .findPagedList().getList();
         for(Artist artist : artistList) {
             returnArtistList.add(populateArtist(artist));
         }
-        return returnArtistList;
+        return artistList;
     }
 
 

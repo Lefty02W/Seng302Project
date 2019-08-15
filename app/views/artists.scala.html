@@ -353,17 +353,31 @@
         function artistJSONtoHTML(jsonData){
             
             var html = "";
-            var i;
+            var i, c, g;
             for (i = 0; i < jsonData.length; i++) {
 
                 var artist = jsonData[i];
                 var id = parseInt(artist.artistId);
+                var countries = artist.countryListString.split(",");
 
                 html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
                             "<div class='card-header'>"+artist.artistName+"</div> " +
                                 "<div class='row'>" +
                                     "<div class='col col-10'>" +
-                                        "<p id='artist-stats'>"+ artist.country +"<br>"+ artist.biography +"<br>"+ artist.genre +"</p>" +
+                                    "<p id='artist-stats'>" +
+                                    "<ul>";
+                                        for(c = 0; c < countries.length -1; c++) {
+                                            html += "<li>"+countries[c]+"</li>";
+                                        }
+
+                                        html += "</ul><br>" +artist.biography+"<br><ul>";
+
+                                        for(g = 0; g < artist.genreList.length; g++) {
+                                            html += "<li>"+artist.genreList[g].genre+"</li>"
+                                        }
+
+                                    html+=
+                                    "</ul>"+
                                     " </div>" +
                                     "<div class='col col-2'>" +
                                         "<div class='row'>" +
