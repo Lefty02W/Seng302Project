@@ -3,7 +3,7 @@ package models;
 import com.google.common.collect.TreeMultimap;
 import io.ebean.Finder;
 import io.ebean.Model;
-import org.mindrot.jbcrypt.*;
+import org.mindrot.jbcrypt.BCrypt;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 
@@ -216,6 +216,10 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
     }
 
+    /**
+     * Hashes that users password and sets hash to password attribute
+     * @param password password to hash
+     */
     public void setPassword(String password) {
         //Hash the password for added security
          String passwordHash = BCrypt.hashpw(password, "$2a$12$nODuNzk9U7Hrq6DgspSp4.");

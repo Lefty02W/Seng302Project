@@ -195,7 +195,6 @@ public class ArtistController extends Controller {
                         }
                         return null;
                     });
-
                 }
             }
         }

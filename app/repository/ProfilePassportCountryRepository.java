@@ -32,19 +32,14 @@ public class ProfilePassportCountryRepository {
      * @return
      */
     public void insertProfilePassportCountry(PassportCountry passport, Integer profileId) {
-        Integer idOpt;
-        try {
-            idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName()).get();
-        } catch(Exception e) {
-           idOpt = null;
-        }
-        if (idOpt == -1) {
+        Optional<Integer> idOpt = passportCountryRepository.getPassportCountryId(passport.getPassportName());
+        if (!idOpt.isPresent()) {
             passportCountryRepository.insert(passport).thenApplyAsync(id -> {
                 id.ifPresent(integer -> insertPassportCountry(profileId, integer));
                 return null;
             });
         } else {
-            insertPassportCountry(profileId, idOpt);
+            insertPassportCountry(profileId, idOpt.get());
         }
     }
 
