@@ -1,20 +1,18 @@
 package models;
 
+import io.ebean.Model;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Model class to hold that data for an artist
  */
 @Entity
-public class Artist {
+public class Artist extends Model {
 
     @Id
     private Integer artistId;
@@ -39,12 +37,15 @@ public class Artist {
 
     private String members;
 
+    @Transient
+    private List<MusicGenre> genreList;
+
+    private int softDelete;
+
     private int verified;
 
     @Transient
     private Map<Integer, PassportCountry> country;
-
-    private int softDelete;
 
     @Transient
     private String genreFrom;
@@ -58,6 +59,30 @@ public class Artist {
 
     public Artist() {
 
+    }
+
+    /**
+     * Traditional constructor used for retrieving object from DB
+     * @param artistId
+     * @param artistName
+     * @param biography
+     * @param facebookLink
+     * @param instagramLink
+     * @param spotifyLink
+     * @param twitterLink
+     * @param websiteLink
+     */
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, int softDelete, List<MusicGenre> genreList) {
+        this.artistId = artistId;
+        this.artistName = artistName;
+        this.biography = biography;
+        this.facebookLink = facebookLink;
+        this.instagramLink = instagramLink;
+        this.spotifyLink = spotifyLink;
+        this.twitterLink = twitterLink;
+        this.websiteLink = websiteLink;
+        this.softDelete = softDelete;
+        this.genreList = genreList;
     }
 
     /**
@@ -139,6 +164,13 @@ public class Artist {
     }
 
     //Getters and setters
+
+    public void setGenre(List<MusicGenre> genre) { this.genreList = genre;}
+
+    public List<MusicGenre> getGenreList() {
+        return genreList;
+    }
+
     public int getVerified() {
         return verified;
     }
@@ -154,6 +186,10 @@ public class Artist {
     public Integer getArtistId() {
         return artistId;
     }
+
+    public String getCountrys() {return countries;}
+
+    public String getGenre() {return genreFrom;}
 
     public void setArtistId(Integer artistId) {
         this.artistId = artistId;

@@ -1,6 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+
+@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -19,18 +20,15 @@
         <script src="@routes.Assets.at("javascripts/bootstrap-select.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/jquery.dataTables.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/dataTables.bootstrap4.js")" type="text/javascript"></script>
-@*        <script src="@routes.Assets.at("javascripts/bootstrap.js")" type="text/javascript"></script>*@
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/artists.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/artist.css")">
 
-@*        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/croppie.css")"/>*@
+        <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 
-
-
-        <script src="@routes.Assets.at("javascripts/croppie.js")" type="text/javascript"></script>
 
 
     </head>
@@ -51,6 +49,8 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a style="color: #ca6636" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                        Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
@@ -60,18 +60,22 @@
                         Logout</a>
                 </div>
             </div>
-        </div>
             <!-- /#sidebar-wrapper -->
 
-            <!-- Page Content -->
-        <div id="page-content-wrapper">
+                <!-- Page Content -->
+            <div id="page-content-wrapper">
 
-            <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
-                <div id="pageTitle">
-                    <h2>Artists</h2>
-                </div>
-            </nav>
+                <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
+                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <div id="pageTitle">
+                        <h2> Artists</h2> <!-- TODO align this in the center -->
+                    </div>
+                </nav>
+            </div>
+        </div>
+
+
+
 
             <div class="container">
                 @if(request.flash.getOptional("info").isPresent) {
@@ -90,7 +94,97 @@
             <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
 
 
+        <div class="row justify-content-center" id="artist-container">
+            <div class="col-lg-9 col-sm-11">
+                @form(routes.ArtistController.search()){
+                    @CSRF.formField
+
+                    <div class="accordion" id="filterAccordion">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <input type="search" id="name" name="name" placeholder="Search..">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                        data-target="#collapseFilters" aria-expanded="false"
+                                        aria-controls="collapseFilters">Filters
+                                </button>
+                            </div>
+                            <div id="collapseFilters" class="collapse" aria-labelledby="headingOne" data-parent="#filterAccordion">
+                                <div class="card-body">
+                                    <div class="search justify-content-center">
+                                        <div>
+                                            <select class="selectpicker" id="country" name="country" title="Countries">
+                                            @for(nation <- countries) {
+                                                <option value="@nation">@nation</option>
+                                            }
+                                            </select>
+                                            <select class="selectpicker" id="genre" name="genre" title="Genres">
+                                            @for(genre <- genres) {
+                                                <option value="@genre.getGenre">@genre.getGenre</option>
+                                            }
+                                            </select>
+                                            <input type="checkbox" id="followed" name="followed">
+                                            <label for="toggle">Followed Artists</label>
+                                            }
+                                            <button class="btn btn-primary">Clear</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                <div class="viewArtists">
+                    <div class="row" id="all-artist-cards">
+                @for(artist <- artists) {
+                    <div class="card-body col col-md-12 col-xl-6" id="artist-card">
+                        <div class="card-header"> @artist.getArtistName</div>
+                        <div class="row">
+                            <div class="col col-10">
+                            <p id="artist-stats"> <ul>
+                                @for(country <- artist.getCountryList) {
+                                    <li>@country</li>
+                                }
+                            </ul> <br> @artist.getBiography <br>
+                            @artist.getGenreList </p>
+                            </div>
+                            <div class="col col-2">
+                                <div class="row">
+                                    <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)">
+                                        <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
+                                    </a>
+                                </div>
+                                <div class="row">
+                                    @if(followedArtists contains artist) {
+                                        @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
+                                            @CSRF.formField
+                                            <button type="submit" class="btn btn-primary">Unfollow</button>
+                                        }
+                                    } else {
+                                        @helper.form(routes.ArtistController.followArtist(artist.getArtistId)) {
+                                            @CSRF.formField
+                                            <button type="submit" class="btn btn-primary">Follow</button>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                    </div>
+                    <div class="row">
+                        <button class="btn btn-outline-primary"  id="show-more" onclick="load_infinite()">Load more...</button>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
+
     </body>
 
 
@@ -206,10 +300,93 @@
     </div>
 
     <script>
-                    function fillValsArtist() {
-                        $('#genreForm').val($('#genreDropdown').val());
-                        $('#adminForm').val($('#adminDropdown').val());
-                        $('#countries').val($('#originDropdown').val());
-                    }
-            </script>
+            function fillValsArtist() {
+                $('#genreForm').val($('#genreDropdown').val());
+                $('#adminForm').val($('#adminDropdown').val());
+                $('#countries').val($('#originDropdown').val());
+            }
+
+            $("#menu-toggle").click(function (e) {
+                e.preventDefault();
+                $("#wrapper").toggleClass("toggled");
+            });
+
+//==============================================INFINITE SCROLLING======================================================
+        var page_count;
+
+        $(function() {
+            page_count = 0;
+        });
+
+
+        function load_infinite() {
+            page_count++;
+
+            $("#show-more").text("Loading...");
+            $("#show-more").prop('disabled', true);
+            setTimeout(fetch_artists, 500);
+        }
+
+        function fetch_artists(){
+
+            fetch('/artists/page/'+page_count)
+                    .then(
+                            function(response) {
+                                if (response.status !== 200) {
+                                    console.log('Looks like there was a problem. Status Code: ' +
+                                            response.status);
+                                    return;
+                                }
+                                //
+                                $("#show-more").text("Load more");
+                                $("#show-more").prop('disabled', false);
+
+                                // Examine the text in the response
+                                response.json().then(function(data) {
+
+                                    $("#all-artist-cards").append(artistJSONtoHTML(data))
+
+
+                                });
+                            }
+                    )
+                    .catch(function(err) {
+                        console.log('Fetch Error :-S', err);
+                    });
+
+        };
+
+        function artistJSONtoHTML(jsonData){
+            
+            var html = "";
+            var i;
+            for (i = 0; i < jsonData.length; i++) {
+
+                var artist = jsonData[i];
+                var id = parseInt(artist.artistId);
+
+                html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
+                            "<div class='card-header'>"+artist.artistName+"</div> " +
+                                "<div class='row'>" +
+                                    "<div class='col col-10'>" +
+                                        "<p id='artist-stats'>"+ artist.country +"<br>"+ artist.biography +"<br>"+ artist.genre +"</p>" +
+                                    " </div>" +
+                                    "<div class='col col-2'>" +
+                                        "<div class='row'>" +
+                                            "<a href='artists/"+id+"'>"+
+                                            "<button class='btn btn-primary' id='view' style='margin-bottom: 5px;'>View</button></a>" +
+                                        "</div>" +
+                                        "<div class='row'>" +
+                                            "<button class='btn btn-primary'>Follow</button>" +
+                                        "</div>" +
+                                    "</div>" +
+                                "</div>" +
+                            "</div>" +
+                        "</div>"
+                
+            };
+            return html
+
+        }
+    </script>
 </html>

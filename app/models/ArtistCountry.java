@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 @Entity
 public class ArtistCountry {
 
-
     private Integer artistId;
 
     private Integer countryId;

@@ -4,7 +4,8 @@
         destinations: List[Destination], profile: RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
-        countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+        countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
+        artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -45,6 +46,8 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                        Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
                         Treasure Hunt</a>
                     <a style="color: #ca6636" href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
@@ -62,7 +65,6 @@
                     <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
                     <div id="pageTitle">
                         <h2>Admin</h2>
-                            <!-- TODO align this in the center -->
                     </div>
                 </nav>
 
@@ -293,6 +295,10 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#treasureHunts" role="tab" aria-controls="deals" aria-selected="false">
                                     Treasure Hunts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#artists" role="tab" aria-controls="deals" aria-selected="false">
+                                    Artists</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#artistRequests" role="tab" aria-controls="deals" aria-selected="false">
@@ -548,12 +554,65 @@
                             </div>
 
 
+                            <div class="tab-pane" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#createArtistModal">
+                                            Create Artist</button>
+                                    </div>
+
+                                    <table id="artistsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ArtistId</th>
+                                                <th>Name</th>
+                                                <th>Countries</th>
+                                                <th>Members</th>
+                                                <th>Genres</th>
+                                                <th>Artist Admins</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        @for(artist <- artists) {
+                                            <tr>
+                                                <td>@artist.getArtistId</td>
+                                                <td>@artist.getArtistName</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(country <- artist.getCountryList) {
+                                                        <li>@country</li>
+                                                    }
+                                                    </ul>
+                                                </td>
+                                                <td>@artist.getMembers</td>
+                                                <td>
+
+                                                </td>
+                                                <td>
+                                                    <ul>
+                                                        @for(profile <- artist.getAdminsList) {
+                                                            <li>@profile.getProfileId: @profile.getFirstName @profile.getLastName</li>
+                                                        }
+                                                    </ul>
+                                                </td>
+                                                <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
+                                                <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
+                                                <td><a href="artist/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+
+
                             <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
                                 <div class="row">
                                     <table id="artistRequestsTable" class="table table-striped">
                                         <thead>
                                             <tr>
-                                                <th>ArtistID</th>
+                                                <th>ArtistId</th>
                                                 <th>Name</th>
                                                 <th>Members</th>
                                                 <th>Verify</th>
@@ -595,6 +654,17 @@
                 $('#travellerTypesForm').val($('#typeDropdownEdit').val());
             }
 
+            function fillValsArtist() {
+                $('#genreForm').val($('#genreDropdown').val());
+                $('#adminForm').val($('#adminDropdown').val());
+                $('#countries').val($('#originDropdown').val());
+            }
+
+            function fillValsEditArtist() {
+                $('#genreEditForm').val($('#genreEditDropdown').val());
+                $('#adminEditForm').val($('#adminEditDropdown').val());
+                $('#countriesEdit').val($('#originEditDropdown').val());
+            }
 
             $("#menu-toggle").click(function (e) {
                 e.preventDefault();
@@ -681,6 +751,14 @@
 
             $(document).ready(function () {
                 $('#artistRequestsTable').DataTable({
+                    "searching": false,
+                    "pageLength": 8,
+                    "lengthChange": false
+                });
+            });
+
+            $(document).ready(function () {
+                $('#artistsTable').DataTable({
                     "searching": false,
                     "pageLength": 8,
                     "lengthChange": false
@@ -1379,7 +1457,7 @@
                             <div class="row">
                                 <div class="hidden-div-edit">
                                     <input type="text" id="travellerTypesStringDest" name="travellerTypesStringDestCreate" class="hidden-field typesField">
-                                </div>
+                                </div>fill
                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownDest" data-width="100%">
                                     <option value="ThrillSeeker">ThrillSeeker</option>
                                     <option value="Backpacker">Backpacker</option>
@@ -1450,6 +1528,250 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal" id="createArtistModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Create Artist</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @form(routes.AdminController.createArtist()) {
+                    @CSRF.formField
+                        <!-- body -->
+                    <div class="modal-body">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder"> <small id="label">Artist Name*</small>
+                                            <input type="text" id="artistName" placeholder="Artist Name" name="artistName" class="inputField" required oninvalid="this.setCustomValidity('Artist name is required')" oninput="setCustomValidity('')">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder"> <small id="label">Members*</small>
+                                            <input type="text" id="members" placeholder="member 1, member 2" name="members" class="inputField" required oninvalid="this.setCustomValidity('Members is required')" oninput="setCustomValidity('')">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Countries of Origin</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="countries" name="countries" class="hidden-field">
+                                        </div>
+                                        <select class="selectpicker" data-live-search="true" multiple title="Countries of Origin" id="originDropdown" data-width="50%">
+                                        @for(nation <- countries) {
+                                            <option value="@nation">@nation</option>
+                                        }
+                                        </select>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Genres</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="genreForm" name="genreForm" class="hidden-field">
+                                        </div>
+                                        <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
+                                            @for(genre <- genres) {
+                                                <option value="@genre.getGenreId">@genre.getGenre</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Artist Admins*</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="hidden-div-edit">
+                                            <input type="text" id="adminForm" name="adminForm" class="hidden-field" required>
+                                        </div>
+                                        <select class="selectpicker" data-live-search="true" multiple title="Artist Admins" id="adminDropdown" data-width="50%">
+                                        @for(profile <- profiles) {
+                                            <option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>
+                                        }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder"> <small id="label">Facebook Link</small>
+                                            <input type="url" id="facebookLink" placeholder="Facebook Link" name="facebookLink" class="inputField">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder"> <small id="label">Instagram Link</small>
+                                            <input type="url" id="instagramLink" placeholder="Instagram Link" name="instagramLink" class="inputField">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder"> <small id="label">Spotify Link</small>
+                                            <input type="url" id="spotifyLink" placeholder="Spotify Link" name="spotifyLink" class="inputField">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder"> <small id="label">Twitter Link</small>
+                                            <input type="url" id="twitterLink" placeholder="Twitter Link" name="twitterLink" class="inputField">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder"> <small id="label">Website Link</small>
+                                            <input type="url" id="websiteLink" placeholder="Website Link" name="websiteLink" class="inputField">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <textarea id="biography" rows="4" placeholder="Biography" name="biography" required oninvalid="this.setCustomValidity('Biography is required')" oninput="setCustomValidity('')"></textarea>
+                            </div>
+                            <div class="row justify-content-center">
+                                <small>Fields with a * are required</small>
+                            </div>
+                        </div>
+                    </div>
+                        <!-- footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" onclick="fillValsArtist()">Save</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @if(editArtist.isEdit && editArtist.getObject != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#editArtistModal').modal('show');
+                });
+        </script>
+
+        <div class="modal" id="editArtistModal">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Artist: @editArtist.getObject.getArtistName</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    @form(routes.AdminController.editArtist(editArtist.getObject.getArtistId)) {
+                        @CSRF.formField
+                            <!-- body -->
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Artist Name*</small>
+                                                <input type="text" id="artistName" placeholder="Artist Name" name="artistName" class="inputField" value="@editArtist.getObject.getArtistName" required oninvalid="this.setCustomValidity('Artist name is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Members*</small>
+                                                <input type="text" id="members" placeholder="member 1, member 2" name="members" class="inputField" value="@editArtist.getObject.getMembers" required oninvalid="this.setCustomValidity('Members is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Countries of Origin</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="countriesEdit" name="countries" class="hidden-field">
+                                            </div>
+                                            <select class="selectpicker" data-live-search="true" multiple title="Countries of Origin" id="originEditDropdown" data-width="50%">
+                                            @for(nation <- countries) {
+                                                @if(editArtist.getObject.getCountryList.contains(nation)) {
+                                                    <option value="@nation" selected>@nation</option>
+                                                } else {
+                                                    <option value="@nation">@nation</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Genres</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="genreEditForm" name="genreForm" class="hidden-field">
+                                            </div>
+                                            <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreEditDropdown" data-width="50%">
+                                            @for(genre <- genres) {
+                                                @if(editArtist.getObject.getGenreList.contains(genre)) {
+                                                    <option value="@genre.getGenreId" selected>@genre.getGenre</option>
+                                                } else {
+                                                    <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Artist Admins</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="adminEditForm" name="adminForm" class="hidden-field">
+                                            </div>
+                                            <select class="selectpicker" data-live-search="true" multiple title="Artist Admins" id="adminEditDropdown" data-width="50%">
+                                            @for(profile <- profiles) {
+                                                @if(editArtist.getObject.getAdminsList.contains(profile)) {
+                                                    <option value="@profile.getProfileId" selected>@profile.getFirstName @profile.getLastName</option>
+                                                } else {
+                                                    <option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Facebook Link</small>
+                                                <input type="url" id="facebookLink" placeholder="Facebook Link" name="facebookLink" class="inputField" value="@editArtist.getObject.getFacebookLink">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Instagram Link</small>
+                                                <input type="url" id="instagramLink" placeholder="Instagram Link" name="instagramLink" class="inputField" value="@editArtist.getObject.getInstagramLink">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Spotify Link</small>
+                                                <input type="url" id="spotifyLink" placeholder="Spotify Link" name="spotifyLink" class="inputField" value="@editArtist.getObject.getSpotifyLink">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Twitter Link</small>
+                                                <input type="url" id="twitterLink" placeholder="Twitter Link" name="twitterLink" class="inputField" value="@editArtist.getObject.getTwitterLink">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Website Link</small>
+                                                <input type="url" id="websiteLink" placeholder="Website Link" name="websiteLink" class="inputField" value="@editArtist.getObject.getWebsiteLink">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <textarea id="biography" rows="4" placeholder="Biography" name="biography" required oninvalid="this.setCustomValidity('Biography is required')" oninput="setCustomValidity('')">@editArtist.getObject.getBiography</textarea>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <small>Fields with a * are required</small>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillValsEditArtist()">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
 
 </html>
 

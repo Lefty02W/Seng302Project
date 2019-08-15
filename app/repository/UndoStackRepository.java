@@ -28,17 +28,20 @@ public class UndoStackRepository {
     private final TripRepository tripRepository;
     private final DestinationRepository destinationRepository;
     private final TreasureHuntRepository treasureHuntRepository;
+    private final ArtistRepository artistRepository;
 
     @Inject
     public UndoStackRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                                ProfileRepository profileRepository, TripRepository tripRepository,
-                               DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository) {
+                               DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository,
+                               ArtistRepository artistRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.profileRepository = profileRepository;
         this.tripRepository = tripRepository;
         this.destinationRepository = destinationRepository;
         this.treasureHuntRepository = treasureHuntRepository;
+        this.artistRepository = artistRepository;
     }
 
     /**
@@ -143,6 +146,9 @@ public class UndoStackRepository {
                 case "treasure_hunt":
                     treasureHuntRepository.setSoftDelete(topOfStack.getObjectId(), 0);
                     break;
+                case "artist":
+                    artistRepository.setSoftDelete(topOfStack.getObjectId(), 0);
+                    break;
                 default:
                     break;
             }
@@ -218,6 +224,9 @@ public class UndoStackRepository {
                 break;
             case "treasure_hunt":
                 treasureHuntRepository.deleteTreasureHunt(command.getObjectId());
+                break;
+            case "artist":
+                artistRepository.deleteArtist(command.getObjectId());
                 break;
             default:
                 break;

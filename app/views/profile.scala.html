@@ -1,7 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -27,13 +27,6 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/profile.css")">
 
-@*        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/croppie.css")"/>*@
-
-
-
-        <script src="@routes.Assets.at("javascripts/croppie.js")" type="text/javascript"></script>
-
-
     </head>
 
     <body>
@@ -52,6 +45,8 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                        Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
@@ -152,6 +147,7 @@
                         <li><a data-toggle="tab" href="#photosTab" id="photosTabLink">Photos</a></li>
                         <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
                         <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
+                        <li><a data-toggle="tab" href="#followedArtistsTab" id="followedArtistsLink">Following</a></li>
                     </ul>
 
                 </div>
@@ -340,6 +336,7 @@
                                         <th>Country</th>
                                         <th>Edit</th>
                                         <th>Delete</th>
+                                    </tr>
                                 </thead>
 
                                 @for(destination <- destinationsList) {
@@ -361,6 +358,38 @@
                                     </tr>
                                 }
                             </table>
+                        </div>
+                    </div>
+                    <div id="followedArtistsTab" class="tab-pane fade">
+                        <div class="col">
+                            <div id="card-large lower-card">
+                                <div class="card center-col overflow-auto" id="followedArtistsCard">
+                                <table id="followedArtistsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Artist Page</th>
+                                            <th>Unfollow</th>
+                                        </tr>
+                                    </thead>
+                                    @for(artist <- followedArtistList) {
+                                        <tr>
+                                            <td>@artist.getArtistName</td>
+                                            <td>
+                                                <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
+                                                    <button type="button" class="btn btn-primary">View</button>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
+                                                    <button type="button" class="btn btn-primary">Unfollow</button>
+                                                </a>
+                                                </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            </div>
                         </div>
                     </div>
 

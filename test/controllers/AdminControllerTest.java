@@ -1,5 +1,6 @@
 package controllers;
 
+import models.Artist;
 import models.Profile;
 import models.Trip;
 import org.junit.Assert;
@@ -69,6 +70,36 @@ public class AdminControllerTest {
         Assert.assertTrue(result.flash().getOptional("info").isPresent());
     }
 
+    /**
+     * Test deleting an artist
+     */
+    @Test
+    public void deleteValidArtist() {
+        List<Artist> artists = TestApplication.getArtistRepository().getAllArtists();
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/artist/" + artists.get(0).getArtistId() + "/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        Assert.assertTrue(result.flash().getOptional("info").isPresent());
+    }
+
+    /**
+     * Test deleting a non-existent profile, the application should not crash
+     */
+    @Test
+    public void deleteInvalidProfile() {
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin/-1/delete")
+                .session("connected", profileId.toString());
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+
+        Assert.assertEquals(303, result.status());
+    }
 
     /**
      * Test a profile deletion by retrieving all profiles
@@ -101,11 +132,11 @@ public class AdminControllerTest {
      * Test deleting a non-existent profile, the application should not crash
      */
     @Test
-    public void deleteInvalidProfile() {
+    public void deleteInvalidArtist() {
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/-1/delete")
+                .uri("/admin/artist/-1/delete")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(TestApplication.getApplication(), request);
 
