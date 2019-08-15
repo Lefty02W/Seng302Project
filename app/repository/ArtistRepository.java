@@ -212,7 +212,7 @@ public class ArtistRepository {
     public List<Artist> getPagedArtists(int page) {
         int pageSize = 50;
         List <Artist> returnArtistList = new ArrayList<>();
-        List<Artist> artistList = ebeanServer.find(Artist.class).where()499
+        List<Artist> artistList = ebeanServer.find(Artist.class).where()
                 .setFirstRow(page * pageSize)
                 .setMaxRows(pageSize)
                 .findPagedList().getList();
