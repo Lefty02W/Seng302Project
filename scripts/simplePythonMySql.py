@@ -10,6 +10,7 @@ from datetime import date
 import datetime
 from readJSON import *
 from profiles import *
+from destinations import *
 
 global db
 
@@ -35,8 +36,7 @@ def main():
 
     # queries
     # execute_profile_queries(cursor, db)
-
-    print(read_destinations())
+    execute_destination_queries(cursor, db)
 
     # destination_query = create_destination_queries(destination_list)
     # print(destination_query)

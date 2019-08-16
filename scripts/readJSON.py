@@ -48,12 +48,8 @@ def read_destinations():
     destinations = []
     with open('destinations.JSON') as json_file:
         data = json.load(json_file)
-        print(len(data))
         for i in range(2):
             destination = []
-            # TODO: change this so that we get the max profileId
-            # random range would then be (max - numProfilesInserted, max)
-            destination.append(random.randint(1, 2000))
             destination.append(data[i]["name"])
             destination.append(data[i]["type"])
             destination.append(data[i]['country'])
@@ -81,31 +77,32 @@ def add_traveller_type_to_destinations(destinations):
         destination.append(random_traveller_type)
     return destinations
 
-def create_profile_queries(profile):
-    """Takes in a list of profiles and uses the data to create a query"""
-    query = 'INSERT INTO profile(first_name, middle_name, last_name, email, password, birth_date, gender) VALUES '
-    if profile[1] is None:
-        profile[1] = ''
-    query += "(?, ?, ?, ?, ?, ?, ?)", (profile[0], profile[1], profile[2], profile[3], profile[4], profile[5],
-                                       profile[6])
-    query += ' WHERE NOT EXISTS (Select * from profile where (email = ?));'
 
-    # TODO: add insert statements for nationalities ect
-    return query
+# def create_profile_queries(profile):
+#     """Takes in a list of profiles and uses the data to create a query"""
+#     query = 'INSERT INTO profile(first_name, middle_name, last_name, email, password, birth_date, gender) VALUES '
+#     if profile[1] is None:
+#         profile[1] = ''
+#     query += "(?, ?, ?, ?, ?, ?, ?)", (profile[0], profile[1], profile[2], profile[3], profile[4], profile[5],
+#                                        profile[6])
+#     query += ' WHERE NOT EXISTS (Select * from profile where (email = ?));'
+#
+#     # TODO: add insert statements for nationalities ect
+#     return query
 
 
-def create_destination_queries(destinations):
-    """Takes in a list of destinations and uses the data to create a query"""
-    query = 'INSERT INTO destination(profile_id, name, type, country, district, latitude, longitude) VALUES '
-    for destination in destinations:
-        query += "('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}'),".format(destination[0], destination[1],
-                                                                             destination[2],
-                                                                             destination[3], destination[4],
-                                                                             destination[5],
-                                                                             destination[6])
-    new_query = query[0:-1]
-    new_query += ';'
-    return new_query
+# def create_destination_queries(destinations):
+#     """Takes in a list of destinations and uses the data to create a query"""
+#     query = 'INSERT INTO destination(profile_id, name, type, country, district, latitude, longitude) VALUES '
+#     for destination in destinations:
+#         query += "('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}'),".format(destination[0], destination[1],
+#                                                                              destination[2],
+#                                                                              destination[3], destination[4],
+#                                                                              destination[5],
+#                                                                              destination[6])
+#     new_query = query[0:-1]
+#     new_query += ';'
+#     return new_query
 
 
 def read_artists():
