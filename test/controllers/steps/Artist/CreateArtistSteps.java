@@ -25,7 +25,7 @@ public class CreateArtistSteps {
     private Map<String, String> artistForm = new HashMap<>();
     private Map<String, String> dupArtistFrom = new HashMap<>();
     private Result dupResult;
-    private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Indie", "Rock"));
+    private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Alternative", "Rock"));
     private List<String> ARTIST_COUNTRIES = new ArrayList<>(Arrays.asList("New Zealand", "Papua New Guinea"));
     private List<Integer> ARTIST_ADMINS = new ArrayList<>(Arrays.asList(1, 2));
 
@@ -133,9 +133,17 @@ public class CreateArtistSteps {
 
     @Then("^The artist genre links are saved$")
     public void theArtistGenreLinksAreSaved() throws Throwable {
-        Optional<Artist> foundArtist = TestApplication.getArtistRepository().getArtist(8);
-        if (foundArtist.isPresent()) {
-            Optional<List<MusicGenre>> optional = TestApplication.getGenreRepository().getArtistGenres(foundArtist.get().getArtistId());
+        List<Artist> allArtistList = TestApplication.getArtistRepository().getAllArtists();
+        Artist foundArtist = null;
+
+        for(Artist oneArtist: allArtistList){
+            if(oneArtist.getArtistName().equals("George's Story")){
+                foundArtist = oneArtist;
+            }
+        }
+
+        if (foundArtist != null) {
+            Optional<List<MusicGenre>> optional = TestApplication.getGenreRepository().getArtistGenres(foundArtist.getArtistId());
             if (optional.isPresent()) {
                 for (MusicGenre genre : optional.get()) {
                     if (!ARTIST_GENRES.contains(genre.getGenre())) {
@@ -153,10 +161,18 @@ public class CreateArtistSteps {
     @Then("^The artist country links are saved$")
     public void theArtistCountryLinksAreSaved() throws Throwable {
         //Note that artistId 2 is an admin
-        Optional<Artist> artist =TestApplication.getArtistRepository().getArtist(2);
-        if (artist.isPresent()) {
+        List<Artist> allArtistList =TestApplication.getArtistRepository().getAllArtists();
+        Artist foundArtist = null;
+
+        for(Artist oneArtist: allArtistList){
+            if(oneArtist.getArtistName().equals("Dusk Winds")){
+                foundArtist = oneArtist;
+            }
+        }
+
+        if (foundArtist != null) {
             boolean valid = true;
-            for (String country : artist.get().getCountryList()) {
+            for (String country : foundArtist.getCountryList()) {
                 if (!ARTIST_COUNTRIES.contains(country)) {
                     valid = false;
                 }
@@ -169,11 +185,17 @@ public class CreateArtistSteps {
 
     @Then("^The artist admin links are saved$")
     public void theArtistAdminLinksAreSaved() throws Throwable {
-        Optional<Artist> artist =TestApplication.getArtistRepository().getArtist(10);
-        if (artist.isPresent()) {
+        List<Artist> allArtistList = TestApplication.getArtistRepository().getAllArtists();
+        Artist foundArtist = null;
+
+        for(Artist oneArtist: allArtistList){
+            if(oneArtist.getArtistName().equals("Cherry Pop")){
+                foundArtist = oneArtist;
+            }
+        }
+        if (foundArtist != null) {
             boolean valid = true;
-            for (Profile admin : artist.get().getAdminsList()) {
-//                System.out.println("AAAA " + admin.getFirstName());
+            for (Profile admin : foundArtist.getAdminsList()) {
                 if (!ARTIST_ADMINS.contains(admin.getProfileId())) {
                     valid = false;
                 }
