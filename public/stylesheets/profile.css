@@ -93,12 +93,16 @@
     width: 100%;
 }
 
-#destsTable span, #tripTable span {
+#destsTable span, #tripTable span, followedArtistsTable span {
     display: none;
 }
 
 #tripName {
     float: left;
+}
+
+#followedArtistsCard{
+    width: 50%;
 }
 
 .trip-icon {
@@ -228,17 +232,12 @@ img.thumbnail {
     padding: 15px;
 }
 
-#profileTabs, #photosCard, #photosTabCard {
+#profileTabs, #photosCard, #photosTabCard, #followedArtistsCard {
     margin-left: auto;
     margin-right: auto;
 }
 
-#destsTab {
-    padding-left: 10%;
-    padding-right: 10%;
-}
-
-#tripsTab {
+#destsTab, #tripsTab, followedArtistsTab{
     padding-left: 10%;
     padding-right: 10%;
 }
@@ -249,8 +248,12 @@ img.thumbnail {
     /*width: 50%;*/
 }
 
-.nav .nav-tabs, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
+.nav .nav-tabs, #followedArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
     font-size: 18pt;
+}
+
+#followedArtistsLink:hover, #informationTabLink:hover, #photosTabLink:hover, #destsTabLink:hover, #tripsTabLink:hover{
+    font-weight: bold;
 }
 
 #selectPhotoModal {
@@ -279,7 +282,7 @@ img.thumbnail {
     cursor: pointer;
 }
 
-#photosCard {
+#photosCard{
     height: 500px;
 }
 

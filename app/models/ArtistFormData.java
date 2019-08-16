@@ -7,7 +7,7 @@ public class ArtistFormData {
     public String name = "";
     public String genre = "";
     public String country = "";
-    public int followed = 0;
+    public String followed = "";
 
     public void setName(String name) {
         this.name = name;
@@ -22,6 +22,7 @@ public class ArtistFormData {
     }
 
     public void setFollowed(String followed) {
-        this.followed = Integer.parseInt(followed);
+        this.followed = followed;
     }
+
 }

@@ -409,6 +409,20 @@ create table if not exists artist_country
 			on update cascade on delete cascade
 );
 
+create table if not exists follow_artist
+(
+	artist_follow_id int auto_increment
+		primary key,
+	profile_id int not null,
+	artist_id int not null,
+	constraint follow_artist_ibfk_1
+		foreign key (profile_id) references profile (profile_id),
+	constraint follow_artist_ibfk_2
+		foreign key (artist_id) references artist (artist_id)
+);
+
+
+
 
 
 
@@ -472,3 +486,5 @@ drop table if exists music_genre;
 drop table if exists artist_profile;
 
 drop table if exists artist_country;
+
+drop table if exists follow_artist;
