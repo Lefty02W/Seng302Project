@@ -52,9 +52,7 @@ def public_or_private(destination_name):
 
 
 def read_destinations():
-    """Reads the file destinations.JSON and converts the json into a list of destinations
-    Note: the profileId is decided randomly by a number between 1 and 2000 as there should be 2000 profiles inserted
-    above"""
+    """Reads the file destinations.JSON and converts the json into a list of destinations"""
     destinations = []
     with open('destinations.JSON') as json_file:
         data = json.load(json_file)
@@ -71,6 +69,21 @@ def read_destinations():
             destinations.append(destination)
     destinations = add_traveller_type_to_destinations(destinations)
     return destinations
+
+
+def read_trips():
+    """Reads the file trips.JSON and converts the json into a list of trips"""
+    trips = []
+    with open('trips.JSON') as json_file:
+        data = json.load(json_file)
+        for i in range(2):
+            trip = []
+            trip.append(data[i]['trip_name'])
+            destination_names = []
+            for x in range(len(data[i]['destinations'])):
+                destination_names.append(data[i]['destinations'][x]['destination'])
+            trip.append(destination_names)
+
 
 
 def add_traveller_type_to_destinations(destinations):
