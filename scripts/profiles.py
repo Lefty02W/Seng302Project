@@ -92,28 +92,18 @@ def execute_nationalities_queries(nationality, email, cursor, db):
             # case nationality is not already inserted into database
             cursor.execute("INSERT INTO nationality (nationality_name) VALUES ('{}')".format(nationality))
             db.commit()
-            cursor.execute(
-                "SELECT nationality_id from nationality WHERE nationality_name = '{0}'".format(nationality))
-            db.commit()
-            results = cursor.fetchall()
-            result = results[0][0]
     except Exception as e:
         # Rollback in case there is any error
         db.rollback()
         return "Failed to get or insert nationality_id " + "ERROR: " + e
 
     try:
-        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(email))
-        db.commit()
-        id = cursor.fetchone()
-
-        cursor.execute("SELECT profile from profile_nationality WHERE profile = '{0}'".format(id[0]))
+        cursor.execute("SELECT profile from profile_nationality WHERE profile = (SELECT profile_id from profile WHERE email = '{0}') and nationality = (SELECT nationality_id from nationality WHERE nationality_name = '{1}')".format(email, nationality))
         db.commit()
         exists = cursor.fetchone()
         if exists is None:
-            #case is not already inserted
-            cursor.execute(
-                "INSERT INTO profile_nationality (profile, nationality) VALUES ('{0}', '{1}')".format(id[0], result))
+            # case is not already inserted
+            cursor.execute("INSERT INTO profile_nationality (profile, nationality) VALUES ((SELECT profile_id from profile WHERE email = '{0}'), (SELECT nationality_id from nationality WHERE nationality_name = '{1}')".format(email, nationality))
             db.commit()
             return "successfully inserted nationality"
         else:
@@ -146,5 +136,5 @@ def execute_profile_queries(cursor, db):
             print("ERROR: ", e)
 
         print(execute_nationalities_queries(profile[7], profile[3], cursor, db))
-        print(execute_passports_queries(profile[8], profile[3], cursor, db))
-        print(execute_traveller_type_queries(profile[9], profile[3], cursor, db))
+        execute_passports_queries(profile[8], profile[3], cursor, db)
+        execute_traveller_type_queries(profile[9], profile[3], cursor, db)
