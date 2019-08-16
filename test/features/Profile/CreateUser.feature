@@ -49,5 +49,5 @@ Feature: Create a user profile
     And I enter "Argentina", "Belarus" into the "passportsForm" field
     Then I save my new profile
     And My user profile is saved in the database
-    And my passports are "Argentina, Belarus"
+    And my passports are "Belarus, Argentina"
     And my nationalities are "New Zealand,Europe"
