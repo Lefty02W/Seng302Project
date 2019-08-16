@@ -41,6 +41,16 @@ def read_profiles():
     return profiles
 
 
+def public_or_private(destination_name):
+    """Takes a destination name, searches for the destination in a list and assigns it a public value if is in list as
+    it will be used by a trip"""
+    public_destination_list = ["15 Mile Creek", "Adams Bank", "Ahimanawa", "Akapatiki Flat", "Alexandra Stream", "Also Gully", "Anawhenua Stream", "Annette Plateau", "Apakura Stream", "Arapaoa River Scenic Reserve", "Arch Hill", "Arnold River", "Ashbys Pit", "Auckland", "Awahoa Bay", "Awapuni", "Axis Spur", "Balcairn", "Banks Range", "Barron Saddle", "Baylys Beach Post Office", "Beelzebub Glacier", "Benford Creek", "Beta Creek", "Big Gully West Branch", "Birchalls Gully", "Blackcleugh Burn", "Black Ridge", "Dead Creek", "Deep Creek", "Demon Gap Icefall", "Devils Punchbowl", "Dillons Stream", "Dockeys Stream", "Donald Stream", "Doubtless Bay", "Driblet Creek", "Duck Creek", "Dunedin", "Earnslaw Park Recreation Reserve", "East Windward Island", "Eight Mile Creek or Close Burn", "Elms Creek", "Entrance Shoal", "Ethne Stream", "Flat Stream", "Flowers Creek", "Gentle Annie Saddle", "Gibsons Creek", "Glamour Torrent", "Gleniti", "Goat Creek", "Goldney Glacier", "Gorge Creek", "Gradwell", "Grants Stream", "Green Hill", "Hillcrest Creek", "Hinge Bay", "Hohonu Range", "Home Creek", "Hoopers Inlet", "Horokiri Wildlife Management Reserve", "Hospital Hill", "Huaero Stream", "Hukainui Point", "Hunter River", "Husband Creek", "Ihawhanui Pa", "Inverness Stream", "Island Hill Homestead", "Jack Creek", "Kaipaki", "Kaitane Stream", "Kaituna Stream", "Kakahi Stream", "Manganuku Stream", "Mangaongaonga Stream", "Mangapapa", "Moengawahine Stream", "Mokauiti", "Molesworth Stream", "Monument Harbour", "Moropunga Island", "Motu", "Motukauatirahi/Cass Bay", "Motungarara Island", "Moturoa Island (Tower Rock)", "Motu Wai Island (Red Island)", "Mount Ambrose", "Mount Beautiful", "Mount Calliope", "Mount Cook", "Pelorus Sound", "Perry Creek", "Piano Creek", "Puhikereru", "Pukeareinga", "Pukekarara", "Pukemiki", "Pukepoto Stream", "Puketapu Pa", "Rakis Table", "Ranger Spur", "Rangiriri West", "Rangiwaea Scenic Reserve", "Raroa Railway Station", "Raukumara Conservation Park", "Rawtor Creek", "Stony Creek", "Stranraer Hill", "Sugar Loaf", "Sunshine", "Swampy Stream", "Table Creek", "Taho Flats", "Taieri River Scenic Reserve", "Taitapu", "Takapurau", "Talus Creek", "Tangent Creek", "Tapanui Hill", "Tapui Stream", "Taranaki Point", "Tarere", "Tatapouri", "Taumarere", "Taunoa Stream", "Taurangatao Spur", "Tauwhare Stream", "Tawhiti", "Te Ahuahu", "Te Apu", "Te Awaatu Channel (The Gut) Marine Reserve", "Te Harua Stream", "Te Horo Marae", "Te Iwi Roa", "Te Karaka Point", "Te Koere Creek", "Te Kumi", "Te Mari", "Te More", "Te Nunuhe Rock", "Te Papiri Point", "Te Tarata Ridge"]
+    if destination_name in public_destination_list:
+        return 1
+    else:
+        return random.randint(0, 1)
+
+
 def read_destinations():
     """Reads the file destinations.JSON and converts the json into a list of destinations
     Note: the profileId is decided randomly by a number between 1 and 2000 as there should be 2000 profiles inserted
@@ -56,6 +66,7 @@ def read_destinations():
             destination.append(data[i]['district'])
             destination.append(data[i]['crd_latitude'])
             destination.append(data[i]['crd_longitude'])
+            destination.append(public_or_private(data[i]['name']))
 
             destinations.append(destination)
     destinations = add_traveller_type_to_destinations(destinations)

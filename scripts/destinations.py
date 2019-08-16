@@ -83,11 +83,11 @@ def execute_destination_queries(cursor, db):
                                                                                        destination[3],
                                                                                        destination[4],
                                                                                        destination[5],
-                                                                                       random.randint(0, 1)))
+                                                                                       destination[6]))
                 db.commit()
                 print("\nDestination inserted successfully!")
                 destination_id = get_destination_id(destination[0], destination[1], destination[2], cursor, db)
-                print(execute_traveller_types_queries(destination[6], destination_id, cursor, db))
+                print(execute_traveller_types_queries(destination[7], destination_id, cursor, db))
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()
