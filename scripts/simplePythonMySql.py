@@ -33,10 +33,11 @@ def main():
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
 
-    # get queries
-    execute_profile_queries(cursor, db)
+    # queries
+    # execute_profile_queries(cursor, db)
 
-    # destination_list = read_destinations()
+    print(read_destinations())
+
     # destination_query = create_destination_queries(destination_list)
     # print(destination_query)
 

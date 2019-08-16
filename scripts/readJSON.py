@@ -48,6 +48,7 @@ def read_destinations():
     destinations = []
     with open('destinations.JSON') as json_file:
         data = json.load(json_file)
+        print(len(data))
         for i in range(2):
             destination = []
             # TODO: change this so that we get the max profileId
@@ -61,8 +62,24 @@ def read_destinations():
             destination.append(data[i]['crd_longitude'])
 
             destinations.append(destination)
+    destinations = add_traveller_type_to_destinations(destinations)
     return destinations
 
+
+def add_traveller_type_to_destinations(destinations):
+    switcher = {
+        1: "gap year",
+        2: "frequent weekender",
+        3: "thrillSeeker",
+        4: "groupie",
+        5: "functional/business traveller",
+        6: "holidaymaker",
+        7: "backpacker"
+    }
+    for destination in destinations:
+        random_traveller_type = switcher.get(random.randint(1, 7))
+        destination.append(random_traveller_type)
+    return destinations
 
 def create_profile_queries(profile):
     """Takes in a list of profiles and uses the data to create a query"""
@@ -141,4 +158,4 @@ def create_artist_queries(artists):
     query = query[0:-1]
     query += ';'
     # TODO: query for countries and genres
-    return query        
+    return query
