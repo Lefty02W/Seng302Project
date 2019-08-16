@@ -13,8 +13,7 @@ POST    /user/create                            controllers.LoginController.save
 # Destination
 GET     /destinations/show/:isPublic            controllers.DestinationsController.show(request: Request, isPublic: Boolean)
 GET     /destinations/create                    controllers.DestinationsController.showCreate(request: Request)
-POST    /destinations/:id/edit                  controllers.DestinationsController.edit(request: Request, id: Integer)
-GET     /destinations/:id/edit/show             controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
+GET     /destinations/:id/edit/show/:isPublic   controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
 POST    /destinations/:id                       controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations                           controllers.DestinationsController.saveDestination(request: Request)
 GET     /destinations/:id/delete                controllers.DestinationsController.delete(request: Request, id: Integer)
@@ -29,7 +28,7 @@ POST    /destinations/type/request              controllers.DestinationsControll
 GET     /assets/*file                           controllers.Assets.at(path="/public", file)
 
 # Trips
-GET     /trips                                  controllers.TripsController.show(request: Request)
+GET     /trips/:offset                          controllers.TripsController.show(request: Request, offset : Integer)
 GET     /trips/:userId/create                   controllers.TripsController.showCreate(request: Request, userId: Integer)
 POST    /trips/:userId/:id/editTrip             controllers.TripsController.saveEdit(request: Request, id: Integer, userId: Integer)
 GET     /trips/:userId/:id/edit                 controllers.TripsController.showEdit(request: Request, id: Integer, userId: Integer)
