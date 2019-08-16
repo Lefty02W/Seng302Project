@@ -13,13 +13,14 @@ def execute_artist_country_queries(countries, name, cursor, db):
             if results != ():
                 result = results[0][0]
             else:
-                # case nationality is not already inserted into database
+                # country is not already inserted into database
                 cursor.execute("INSERT INTO passport_country(passport_name) VALUES ('{}')".format(country))
                 db.commit()
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()
-            return "Failed to get or insert country " + "ERROR: " + e
+            print("Failed to get or insert country " + "ERROR: " + str(e))
+            return
 
         try:
             cursor.execute("SELECT artist_id from artist WHERE artist_name = '{0}'".format(name))
@@ -30,17 +31,58 @@ def execute_artist_country_queries(countries, name, cursor, db):
             db.commit()
             exists = cursor.fetchone()
             if exists is None:
-                # case is not already inserted
+                # Not already inserted
                 cursor.execute(
                     "INSERT INTO artist_country (artist_id, country_id) VALUES ('{0}', '{1}')".format(id[0], result))
                 db.commit()
-                return "Successfully inserted artist country"
+                print("Successfully inserted artist country")
             else:
-                return "Artist country already exists (query still successful)"
+                print("Artist country already exists (query still successful)")
         except Exception as e:
             db.rollback()
-            return "Failed to insert artist country " + "ERROR: " + str(e)
+            print("Failed to insert artist country " + "ERROR: " + str(e))
+        
+        
+def execute_genre_queries(genres, name, cursor, db):
+    """Helper function for inserting artists. Adds artist's genres to database.
+    Genre added to database if it does not exist"""
+    for genre in genres:
+        try:
+            cursor.execute("SELECT genre_id from music_genre WHERE genre = '{0}'".format(genre))
+            db.commit()
+            results = cursor.fetchall()
+            if results != ():
+                result = results[0][0]
+            else:
+                # Genre not in database
+                cursor.execute("INSERT INTO music_genre(genre) VALUES ('{}')".format(genre))
+                db.commit()
+        except Exception as e:
+            # Rollback on error
+            db.rollback()
+            print("Failed to get or insert genre " + "ERROR: " + str(e))
+            return
 
+        try:
+            cursor.execute("SELECT artist_id from artist WHERE artist_name = '{0}'".format(name))
+            db.commit()
+            id = cursor.fetchone()
+    
+            cursor.execute("SELECT artist_id from artist_genre WHERE artist_id = '{0}'".format(id[0]))
+            db.commit()
+            exists = cursor.fetchone()
+            if exists is None:
+                # case is not already inserted
+                cursor.execute(
+                    "INSERT INTO artist_genre (artist_id, genre_id) VALUES ('{0}', '{1}')".format(id[0], result))
+                db.commit()
+                print("Successfully inserted artist genre")
+            else:
+                print("Artist genre already exists (query still successful)")
+        except Exception as e:
+            db.rollback()
+            print("Failed to insert artist genre " + "ERROR: " + str(e))
+        
 
 def execute_artist_queries(cursor, db):
     """Execute artist queries to insert the artist. Other functions called to 
@@ -63,6 +105,5 @@ def execute_artist_queries(cursor, db):
             print("Failed to insert, rolling back \n")
             print("ERROR: ", e)
 
-        print(execute_artist_country_queries(artist[7], artist[0],cursor, db))
-        # TODO: artist genre queries
-        #execute_genre_queries(artist[8], artist[0], cursor, db)
+        execute_artist_country_queries(artist[7], artist[0],cursor, db)
+        execute_genre_queries(artist[8], artist[0], cursor, db)

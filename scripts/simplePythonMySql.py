@@ -37,7 +37,7 @@ def main():
 
     # queries
     # execute_profile_queries(cursor, db)
-    execute_destination_queries(cursor, db)
+    # execute_destination_queries(cursor, db)
     # execute_artist_queries(cursor, db)
 
     # destination_query = create_destination_queries(destination_list)
