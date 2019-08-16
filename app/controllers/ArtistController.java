@@ -97,7 +97,11 @@ public class ArtistController extends Controller {
                     if (profile.isPresent()) {
                         Form<ArtistFormData> searchArtistForm = searchForm.bindFromRequest(request);
                         ArtistFormData formData = searchArtistForm.get();
-                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, 0), request, messagesApi.preferred(request)));
+                        searchArtistForm.field("name").value().ifPresent(formData::setName);
+                        searchArtistForm.field("genre").value().ifPresent(formData::setGenre);
+                        searchArtistForm.field("country").value().ifPresent(formData::setCountry);
+                        searchArtistForm.field("followed").value().ifPresent(formData::setFollowed);
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, formData.followed), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
                     }
@@ -172,7 +176,7 @@ public class ArtistController extends Controller {
      * @param artist the countries are getting added too
      * @param artistProfileForm form holding he artistFormData needed to get out the country list
      */
-    public void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
+    void saveArtistCountries(Artist artist, Form<Artist> artistProfileForm) {
         Optional<String> optionalCountries = artistProfileForm.field("countries").value();
         if(optionalCountries.isPresent()){
             for (String country: optionalCountries.get().split(",")) {
@@ -224,7 +228,7 @@ public class ArtistController extends Controller {
      * @param values the form of artist information that was filled in by the user
      * @return an artist object with newly set values from the user artist form
      */
-    public Artist setValues(Integer artistId, Form<Artist> values){
+    Artist setValues(Integer artistId, Form<Artist> values){
         Artist artist = values.get();
 
         artist.initCountry();

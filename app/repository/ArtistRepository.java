@@ -335,7 +335,7 @@ public class ArtistRepository {
      * @return List of artists
      */
     public List<Artist> searchArtist(String name, String genre, String country, int followed){
-        if(name.equals("") && genre.equals("") && country.equals("")) {
+        if(name.equals("") && genre.equals("") && country.equals("") && followed == 0) {
             return getAllArtists();
         }
         String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
@@ -384,7 +384,6 @@ public class ArtistRepository {
                 sqlQuery.setParameter(1,country);
             }
         }
-
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
         if (!foundRows.isEmpty()){
