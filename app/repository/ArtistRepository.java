@@ -28,6 +28,7 @@ public class ArtistRepository {
      *
      * @param ebeanConfig The ebeans config which the ebean server will be supplied from
      * @param executionContext the database execution context object for this instance.
+     * @param passportCountryRepository passportCountryRepository required for initialisation
      */
     @Inject
     public ArtistRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, PassportCountryRepository passportCountryRepository) {
@@ -90,7 +91,8 @@ public class ArtistRepository {
     }
 
     /** Checks if the artist to add is a duplicate of an existing artist
-     *
+     * @param artistName Name of the artist the duplicate check is on
+     * @return Completion stage boolean that returns true if there is an artist with the given name in the database
      */
     public CompletionStage<Boolean> checkDuplicate(String artistName) {
         return supplyAsync(() -> {
@@ -145,16 +147,15 @@ public class ArtistRepository {
      }
      artist.setCountry(countries);
         Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
-        if(genreList.isPresent()) {
-            if(!genreList.get().isEmpty()) {
-                artist.setGenre(genreList.get());
-            }
+        if(genreList.isPresent() && !genreList.get().isEmpty()) {
+            artist.setGenre(genreList.get());
         }
         return artist;
     }
     /**
      * Helper function to get country of an artist
      * @param artistId id of the artist to find country for
+     * @return country if one is present as an Optional
      */
     private Optional<Map<Integer, PassportCountry>> getCountryList(Integer artistId) {
         String qry = "Select * from artist_country where artist_id = ?";
@@ -547,11 +548,7 @@ public class ArtistRepository {
      */
     public CompletionStage<Void> addCountrytoArtistCountryTable(ArtistCountry artistCountry){
         return supplyAsync(() -> {
-            try {
-                ebeanServer.insert(artistCountry);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ebeanServer.insert(artistCountry);
             return null;
         });
     }
@@ -612,11 +609,9 @@ public class ArtistRepository {
      */
     private void saveAdminArtistGenres(Artist newArtist, Form<Artist> artistProfileForm) {
         Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
-        if (optionalGenres.isPresent()) {
-            if (!optionalGenres.get().isEmpty()) {
-                for (String genre : optionalGenres.get().split(",")) {
-                    genreRepository.insertArtistGenre(newArtist.getArtistId(), parseInt(genre));
-                }
+        if (optionalGenres.isPresent() && !optionalGenres.get().isEmpty()) {
+            for (String genre : optionalGenres.get().split(",")) {
+                genreRepository.insertArtistGenre(newArtist.getArtistId(), parseInt(genre));
             }
         }
     }

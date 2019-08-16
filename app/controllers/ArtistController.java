@@ -6,7 +6,6 @@ import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.libs.Json;
-import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -21,7 +20,6 @@ import views.html.viewArtist;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -35,7 +33,6 @@ public class ArtistController extends Controller {
 
     private final Form<Artist> artistForm;
     private MessagesApi messagesApi;
-    private final HttpExecutionContext httpExecutionContext;
     private final ArtistRepository artistRepository;
     private final ProfileRepository profileRepository;
     private final PassportCountryRepository passportCountryRepository;
@@ -44,12 +41,11 @@ public class ArtistController extends Controller {
 
 
     @Inject
-    public ArtistController(FormFactory artistProfileFormFactory, HttpExecutionContext httpExecutionContext,
-                            MessagesApi messagesApi, ArtistRepository artistRepository, ProfileRepository profileRepository,
+    public ArtistController(FormFactory artistProfileFormFactory, MessagesApi messagesApi,
+                            ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
                             GenreRepository genreRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
-        this.httpExecutionContext = httpExecutionContext;
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
         this.profileRepository = profileRepository;
@@ -67,9 +63,6 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
-
-        //Start with page = 0
-        List<Artist> artistList = artistRepository.getPagedArtists(0);
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAll(), Country.getInstance().getAllCountries(),  artistRepository.getAllArtists(), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
@@ -135,8 +128,8 @@ public class ArtistController extends Controller {
     /**
      * Method to call repository method to save an Artist profile to the database
      * grabs the artistProfile object required for the insert
-     * @param request
-     * @return
+     * @param request client request
+     * @return returns completion stage with the result of the redirect
      */
     public CompletionStage<Result> createArtist(Http.Request request){
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
@@ -202,19 +195,6 @@ public class ArtistController extends Controller {
                 }
             }
         }
-    }
-
-    /**
-     * Function to load countries for an artists
-     * @param artistList List of artists to be loaded with
-     * @return List<Artists> List of all artists loaded with countries
-     */
-    private List<Artist> loadCountries(List<Artist> artistList) {
-        for (Artist artist : artistList) {
-            Map<Integer, PassportCountry> passportCountries = artistRepository.getArtistCounties(artist.getArtistId());
-            artist.setCountry(passportCountries);
-        }
-        return artistList;
     }
 
     /**
