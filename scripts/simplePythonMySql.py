@@ -12,6 +12,7 @@ from readJSON import *
 from profiles import *
 from destinations import *
 from artists import *
+from trips import *
 
 global db
 
@@ -35,16 +36,11 @@ def main():
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
 
-    # queries
+    # -------------queries-------------
     # execute_profile_queries(cursor, db)
     # execute_destination_queries(cursor, db)
     # execute_artist_queries(cursor, db)
-
-    # destination_query = create_destination_queries(destination_list)
-    # print(destination_query)
-
-    # Execute query
-    # execute_query(cursor, profile_query)
+    # execute_trips_queries(cursor, db)
 
     # disconnect from server
     cursor.close()

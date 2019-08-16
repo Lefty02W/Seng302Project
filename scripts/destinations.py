@@ -16,6 +16,7 @@ def get_destination_id(name, type, country, cursor, db):
         return 0
 
 
+
 def execute_traveller_types_queries(traveller_type, destination_id, cursor, db):
     """Is a helper function for execute_destination_queries()
     finds the destination_id and then inserts a link from the destination to the traveller type in
@@ -66,7 +67,7 @@ def execute_destination_queries(cursor, db):
     Note: if destination already exists in table will not insert destination and result in an error which is
     handled"""
     destination_list = read_destinations()
-    _, emails = read_profiles()
+    emails = read_profiles()[1]
     for destination in destination_list:
         try:
             destination_exists = get_destination_id(destination[0], destination[1], destination[2], cursor, db) != 0

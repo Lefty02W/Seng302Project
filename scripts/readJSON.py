@@ -85,6 +85,8 @@ def read_trips():
             for x in range(len(data[i]['destinations'])):
                 destination_names.append(data[i]['destinations'][x]['destination'])
             trip.append(destination_names)
+            trips.append(trip)
+    return trips
 
 
 

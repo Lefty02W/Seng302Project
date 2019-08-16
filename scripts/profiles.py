@@ -7,7 +7,7 @@ def execute_traveller_type_queries(traveller_type, email, cursor, db):
     try:
         # get profile
         # see if profile_traveller_type already exists
-        cursor.execute("SELECT profile_traveller_type_id from profile_traveller_type WHERE profile = '{0}'".format(id[0]))
+        cursor.execute("SELECT profile_traveller_type_id from profile_traveller_type WHERE profile = (SELECT profile_id from profile WHERE email = '{0}')".format(email))
         db.commit()
         if cursor.fetchone() is None:
             cursor.execute("INSERT INTO profile_traveller_type (profile, traveller_type) VALUES ((SELECT profile_id from profile WHERE email = '{0}'), (SELECT traveller_type_id from traveller_type where traveller_type_name = '{1}'))".format(email, traveller_type))
@@ -82,7 +82,7 @@ def execute_nationalities_queries(nationality, email, cursor, db):
         exists = cursor.fetchone()
         if exists is None:
             # case is not already inserted
-            cursor.execute("INSERT INTO profile_nationality (profile, nationality) VALUES ((SELECT profile_id from profile WHERE email = '{0}'), (SELECT nationality_id from nationality WHERE nationality_name = '{1}')".format(email, nationality))
+            cursor.execute("INSERT INTO profile_nationality (profile, nationality) VALUES ((SELECT profile_id from profile WHERE email = '{0}'), (SELECT nationality_id from nationality WHERE nationality_name = '{1}'))".format(email, nationality))
             db.commit()
             return "successfully inserted nationality"
         else:
@@ -96,7 +96,7 @@ def execute_profile_queries(cursor, db):
     """Inserts the profile query to insert the profile and then calls functions to insert additional information in
     linking tables.
     Note: if profile already exists in table will not insert profile and result in an error which is handled"""
-    profile_list = read_profiles()
+    profile_list = read_profiles()[0]
     for profile in profile_list:
         if profile[1] is None:
             profile[1] = ''
@@ -115,5 +115,5 @@ def execute_profile_queries(cursor, db):
             print("ERROR: ", e)
 
         print(execute_nationalities_queries(profile[7], profile[3], cursor, db))
-        execute_passports_queries(profile[8], profile[3], cursor, db)
-        execute_traveller_type_queries(profile[9], profile[3], cursor, db)
+        print(execute_passports_queries(profile[8], profile[3], cursor, db))
+        print(execute_traveller_type_queries(profile[9], profile[3], cursor, db))
