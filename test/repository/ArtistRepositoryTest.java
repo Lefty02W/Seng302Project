@@ -28,7 +28,7 @@ public class ArtistRepositoryTest  {
     @Test
     public void searchArtistsEmptySearchFullResult(){
         List<Artist> artists = TestApplication.getArtistRepository().searchArtist("","","", 0, 1);
-        assertEquals(11, artists.size());
+        assertEquals(10, artists.size());
     }
 
     @Test
