@@ -88,3 +88,17 @@ h1, h2, h3, h4, h5, h6 {
     left: 50%;
     margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
 }
+
+.adminCard {
+    width: 100%;
+    min-height: 80vh;
+}
+
+.adminCard a {
+    color: #2e7d32;
+    font-size: large;
+}
+
+.container, .adminCard {
+    max-width: 1300px;
+}

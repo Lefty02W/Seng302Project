@@ -1,10 +1,12 @@
 package repository;
 
 import io.ebean.*;
+import models.ArtistCountry;
 import models.PassportCountry;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,12 +79,13 @@ public class PassportCountryRepository {
      * @param passport the PassportCountry to delete
      * @return CompletionStage holding an Optional of the nationalities database id
      */
-    public Optional<Integer> insert(PassportCountry passport) {
+    public CompletionStage<Optional<Integer>> insert(PassportCountry passport) {
+        return supplyAsync(() -> {
+            ebeanServer.insert(passport);
 
-        ebeanServer.insert(passport);
 
-
-        return Optional.of(passport.getPassportId());
+            return Optional.of(passport.getPassportId());
+        });
     }
 
     /**
@@ -97,20 +100,17 @@ public class PassportCountryRepository {
     /**
      * Gets the ID of a passport country based on the name sent in
      * @param country The country to find
-     * @return
+     * @return An optional holding the country id if found else empty
      */
     public Optional<Integer> getPassportCountryId(String country) {
         String sql = ("select passport_country_id from passport_country where passport_name = ?");
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, country).findList();
-        Integer countryId;
-        try {
-            countryId = rowList.get(0).getInteger("passport_country_id");
-        } catch(Exception e) {
-            countryId = -1;
+        if (rowList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(rowList.get(0).getInteger("passport_country_id"));
         }
-        return Optional.of(countryId);
     }
-
 
     /**
      *
@@ -122,6 +122,23 @@ public class PassportCountryRepository {
         return supplyAsync(() -> Optional.of(ebeanServer.find(PassportCountry.class).findMap()), executionContext);
     }
 
+
+    /**
+     * Retrieves all countries for a given artist
+     *
+     * @param artistId database id of artist to find countries for
+     * @return List of found PassportCountry objects
+     */
+    public Optional<List<PassportCountry>> getArtistCountries(int artistId) {
+        List<ArtistCountry> artistCountries = ebeanServer.find(ArtistCountry.class).where().eq("artist_id", artistId).findList();
+        List<PassportCountry> countries = new ArrayList<>();
+        Optional<PassportCountry> passportCountries;
+        for (ArtistCountry country : artistCountries) {
+            passportCountries = Optional.ofNullable(ebeanServer.find(PassportCountry.class).where().eq("passport_country_id", country.getCountryId()).findOne());
+            passportCountries.ifPresent(countries::add);
+        }
+        return Optional.of(countries);
+    }
 
 
 }

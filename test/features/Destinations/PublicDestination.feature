@@ -3,6 +3,10 @@ Feature: Public Destinations
   I want to create and private destinations
   So that I can have the option to follow public destinations
 
+
+  Background:
+    Given Password hash setup has been done
+
   Scenario: Create a private destination same as a public destination
     Given User is logged in to the application
     And user is at the destinations page

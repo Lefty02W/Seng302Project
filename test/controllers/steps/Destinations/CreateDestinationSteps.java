@@ -1,7 +1,6 @@
 package controllers.steps.Destinations;
 
-import controllers.ProvideApplication;
-import cucumber.api.PendingException;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -15,9 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
-public class CreateDestinationSteps extends ProvideApplication {
+public class CreateDestinationSteps {
     private Map<String, String> loginForm = new HashMap<>();
     private Map<String, String> destForm = new HashMap<>();
     private Result redirectDestination;
@@ -34,7 +32,7 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "1");
 
-        Result loginResult = Helpers.route(provideApplication(), request);
+        Result loginResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Given("user is at the destinations page")
@@ -43,7 +41,7 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .method("GET")
                 .uri("/destinations/show/false")
                 .session("connected", "1");
-        Result destinationResult = Helpers.route(provideApplication(), requestDest);
+        Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         assertEquals(200, destinationResult.status());
     }
 
@@ -59,7 +57,7 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .uri("/destinations")
                 .bodyForm(destForm)
                 .session("connected", "1");
-        redirectDestination = Helpers.route(provideApplication(), request);
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(303, redirectDestination.status());
     }
 
@@ -107,7 +105,7 @@ public class CreateDestinationSteps extends ProvideApplication {
                 .uri("/destinations")
                 .bodyForm(destForm)
                 .session("connected", "1");
-        redirectDestination = Helpers.route(provideApplication(), request);
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(303, redirectDestination.status());
     }
 
