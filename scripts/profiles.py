@@ -138,7 +138,7 @@ def execute_profile_queries(cursor, db):
                                                                                               profile[4], profile[5],
                                                                                               profile[6]))
             db.commit()
-            print("\nProfile inserted successfully!\n")
+            print("\nProfile inserted successfully!")
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()
