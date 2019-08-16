@@ -3,82 +3,81 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.LoginController.show(request: Request)
+GET     /                                       controllers.LoginController.show(request: Request)
 
 # Login
-GET      /login                       controllers.LoginController.show(request: Request)
-POST     /login                      controllers.LoginController.login(request: Request)
-POST    /user/create                 controllers.LoginController.save(request: Request)
+GET     /login                                  controllers.LoginController.show(request: Request)
+POST    /login                                  controllers.LoginController.login(request: Request)
+POST    /user/create                            controllers.LoginController.save(request: Request)
 
 # Destination
-GET     /destinations/show/:isPublic     controllers.DestinationsController.show(request: Request, isPublic: Boolean)
-GET     /destinations/create        controllers.DestinationsController.showCreate(request: Request)
-POST     /destinations/:id/edit      controllers.DestinationsController.edit(request: Request, id: Integer)
-GET     /destinations/:id/edit/show      controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
-POST    /destinations/:id           controllers.DestinationsController.update(request: Request, id: Integer)
-POST    /destinations               controllers.DestinationsController.saveDestination(request: Request)
-GET    /destinations/:id/delete    controllers.DestinationsController.delete(request: Request, id: Integer)
+GET     /destinations/show/:isPublic            controllers.DestinationsController.show(request: Request, isPublic: Boolean)
+GET     /destinations/create                    controllers.DestinationsController.showCreate(request: Request)
+POST    /destinations/:id/edit                  controllers.DestinationsController.edit(request: Request, id: Integer)
+GET     /destinations/:id/edit/show             controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
+POST    /destinations/:id                       controllers.DestinationsController.update(request: Request, id: Integer)
+POST    /destinations                           controllers.DestinationsController.saveDestination(request: Request)
+GET     /destinations/:id/delete                controllers.DestinationsController.delete(request: Request, id: Integer)
 POST    /destinations/follow/:destId/:isPublic      controllers.DestinationsController.follow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
-POST    /destinations/unfollow/:destId/:isPublic     controllers.DestinationsController.unfollow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
-GET    /destinations/:photoId/:destId/linkphoto      controllers.DestinationsController.linkPhotoToDestination(request: Request, photoId: Integer, destId: Integer)
-GET    /destinations/:photoId/:destId/unlinkPhoto       controllers.DestinationsController.unlinkPhotoFromDestination(request: Request, photoId: Integer, destId: Integer)
-GET     /destinations/photo/:id/update/privacy     controllers.DestinationsController.updatePhotoPrivacy(id: Integer)
-POST    /destinations/type/request       controllers.DestinationsController.createEditRequest(request : Request)
+POST    /destinations/unfollow/:destId/:isPublic    controllers.DestinationsController.unfollow(request: Request, profileId: Integer, destId: Integer, isPublic: Boolean)
+GET     /destinations/:photoId/:destId/linkphoto    controllers.DestinationsController.linkPhotoToDestination(request: Request, photoId: Integer, destId: Integer)
+GET     /destinations/:photoId/:destId/unlinkPhoto  controllers.DestinationsController.unlinkPhotoFromDestination(request: Request, photoId: Integer, destId: Integer)
+GET     /destinations/photo/:id/update/privacy  controllers.DestinationsController.updatePhotoPrivacy(id: Integer)
+POST    /destinations/type/request              controllers.DestinationsController.createEditRequest(request : Request)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file                           controllers.Assets.at(path="/public", file)
 
 # Trips
-GET     /trips                       controllers.TripsController.show(request: Request)
-GET     /trips/:userId/create                controllers.TripsController.showCreate(request: Request, userId: Integer)
-POST    /trips/:userId/:id/editTrip          controllers.TripsController.saveEdit(request: Request, id: Integer, userId: Integer)
-GET     /trips/:userId/:id/edit     controllers.TripsController.showEdit(request: Request, id: Integer, userId: Integer)
-POST    /trips/:userId/:id/edit              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, userId: Integer)
-POST    /trips/:userId/:id/edit              controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, userId: Integer)
-GET     /trips/:userId/:id/edit/update       controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer, id: Integer, userId: Integer)
-POST    /trips/update                controllers.TripsController.updateDestination(request: Request, destOrder: Integer, userId: Integer)
-POST    /trips/create/update         controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer, userId: Integer)
-GET     /trips/create/update         controllers.TripsController.createTripDestinationCreate(request: Request, destOrder: Integer, userId: Integer)
-POST    /trips                       controllers.TripsController.save(request: Request,  userId: Integer)
-POST    /trips/create                controllers.TripsController.addDestination(request: Request, userId: Integer)
-GET    /trips/:userId/:id/edit/:order/delete       controllers.TripsController.deleteDestinationEditTrip(order: Integer, id: Integer, userId: Integer)
-GET     /trips/:id/delete             controllers.TripsController.delete(id: Integer)
-GET     /trips/:id/create/delete            controllers.TripsController.deleteDestination(id: Integer, userId: Integer)
+GET     /trips                                  controllers.TripsController.show(request: Request)
+GET     /trips/:userId/create                   controllers.TripsController.showCreate(request: Request, userId: Integer)
+POST    /trips/:userId/:id/editTrip             controllers.TripsController.saveEdit(request: Request, id: Integer, userId: Integer)
+GET     /trips/:userId/:id/edit                 controllers.TripsController.showEdit(request: Request, id: Integer, userId: Integer)
+POST    /trips/:userId/:id/edit                 controllers.TripsController.addDestinationEditTrip(request: Request, id: Integer, userId: Integer)
+GET     /trips/:userId/:id/edit/update          controllers.TripsController.editTripDestinationCreate(request: Request, destOrder: Integer, id: Integer, userId: Integer)
+POST    /trips/update                           controllers.TripsController.updateDestination(request: Request, destOrder: Integer, userId: Integer)
+POST    /trips/create/update                    controllers.TripsController.updateDestinationEdit(request: Request, destOrder: Integer, tripId: Integer, userId: Integer)
+GET     /trips/create/update                    controllers.TripsController.createTripDestinationCreate(request: Request, destOrder: Integer, userId: Integer)
+POST    /trips                                  controllers.TripsController.save(request: Request,  userId: Integer)
+POST    /trips/create                           controllers.TripsController.addDestination(request: Request, userId: Integer)
+GET     /trips/:userId/:id/edit/:order/delete   controllers.TripsController.deleteDestinationEditTrip(order: Integer, id: Integer, userId: Integer)
+GET     /trips/:id/delete                       controllers.TripsController.delete(id: Integer)
+GET     /trips/:id/create/delete                controllers.TripsController.deleteDestination(id: Integer, userId: Integer)
 
 # Travellers
-GET     /travellers                  controllers.TravellersController.show(request: Request)
-GET     /travellers/search           controllers.TravellersController.search(request: Request)
-GET     /travellers/photos           controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
+GET     /travellers                             controllers.TravellersController.show(request: Request)
+GET     /travellers/search                      controllers.TravellersController.search(request: Request)
+GET     /travellers/photos                      controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
 
 # Profile
-GET     /profile                        controllers.ProfileController.show(request: Request)
-POST    /profile                        controllers.ProfileController.update(request: Request)
-POST    /profile/photo                  controllers.ProfileController.uploadPhoto(request: Request)
-GET     /profile/edit/photo/:id         controllers.ProfileController.updatePrivacy(id: Integer)
-GET     /profile/photo/save/:photoId    controllers.ProfileController.setProfilePicture(request: Request, photoId: Integer)
-GET     /profile/photo/remove           controllers.ProfileController.removeProfilePicture(request: Request)
-GET     /profile/photo                  controllers.ProfileController.photoAt(id: Integer)
-GET     /profile/photo/:photoId/delete  controllers.ProfileController.deletePhoto(request: Request, photoId: Integer)
-POST    /profile/photo/profile/upload   controllers.ProfileController.uploadProfilePicture(request: Request)
+GET     /profile                                controllers.ProfileController.show(request: Request)
+POST    /profile                                controllers.ProfileController.update(request: Request)
+POST    /profile/photo                          controllers.ProfileController.uploadPhoto(request: Request)
+GET     /profile/edit/photo/:id                 controllers.ProfileController.updatePrivacy(id: Integer)
+GET     /profile/photo/save/:photoId            controllers.ProfileController.setProfilePicture(request: Request, photoId: Integer)
+GET     /profile/photo/remove                   controllers.ProfileController.removeProfilePicture(request: Request)
+GET     /profile/photo                          controllers.ProfileController.photoAt(id: Integer)
+GET     /profile/photo/:photoId/delete          controllers.ProfileController.deletePhoto(request: Request, photoId: Integer)
+POST    /profile/photo/profile/upload           controllers.ProfileController.uploadProfilePicture(request: Request)
 
 # Admins
-POST    /admin/:id                controllers.ProfileController.updateAdmin(request: Request, id: Integer)
-GET     /admin                    controllers.AdminController.show(request: Request)
-GET     /admin/undo/              controllers.AdminController.undoTopOfStack(request : Request)
+POST    /admin/:id                              controllers.ProfileController.updateAdmin(request: Request, id: Integer)
+GET     /admin                                  controllers.AdminController.show(request: Request)
+GET     /admin/undo/                            controllers.AdminController.undoTopOfStack(request : Request)
 
 ## Admin Trips
-GET     /admin/trips/:tripId/delete     controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
-GET     /admin/trips/:tripId            controllers.AdminController.viewTrip(request: Request, tripId: Integer)
+GET     /admin/trips/:tripId/delete             controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
+GET     /admin/trips/:tripId                    controllers.AdminController.viewTrip(request: Request, tripId: Integer)
 
 ## Admin Profiles
-GET     /admin/profile/:id/edit                controllers.AdminController.showEditProfile(request: Request, id: Integer)
-POST   /admin/profile/:id/edit                      controllers.AdminController.updateProfile(request: Request, id: Integer)
-GET   /admin/:profileId/delete         controllers.AdminController.deleteProfile(request: Request, profileId: Integer)
-GET     /admin/profile/:id/view        controllers.AdminController.viewProfile(request: Request, id: Integer)
+GET     /admin/profile/:id/edit                 controllers.AdminController.showEditProfile(request: Request, id: Integer)
+POST    /admin/profile/:id/edit                 controllers.AdminController.updateProfile(request: Request, id: Integer)
+GET     /admin/:profileId/delete                controllers.AdminController.deleteProfile(request: Request, profileId: Integer)
+GET     /admin/profile/:id/view                 controllers.AdminController.viewProfile(request: Request, id: Integer)
 
-POST    /admin/profile/create           controllers.AdminController.createProfile(request: Request)
-GET    /admin/:userId/admin             controllers.AdminController.makeAdmin(userId: Integer)
-GET   /admin/:userId/admin/remove       controllers.AdminController.removeAdmin(userId: Integer)
+POST    /admin/profile/create                   controllers.AdminController.createProfile(request: Request)
+GET     /admin/:userId/admin                    controllers.AdminController.makeAdmin(userId: Integer)
+GET     /admin/:userId/admin/remove             controllers.AdminController.removeAdmin(userId: Integer)
 
 ## Admin Destinations
 GET     /admin/destinations/:destId             controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)
@@ -89,15 +88,37 @@ GET     /admin/destinations/:id/request/reject  controllers.AdminController.reje
 GET     /admin/destinations/:id/request/accept  controllers.AdminController.acceptDestinationRequest(request : Request, id : Integer)
 
 ## Admin Treasure Hunts
-POST    /admin/hunts/create                         controllers.AdminController.createHunt(request : Request)
-GET     /admin/hunts/:id/delete                     controllers.AdminController.deleteHunt(request : Request, id : Integer)
-GET     /admin/hunts/:id/edit/show                  controllers.AdminController.showEditHunt(request : Request, id : Integer)
-POST    /admin/hunts/:id/edit                       controllers.AdminController.editTreasureHunt(request : Request, id : Integer)
+POST    /admin/hunts/create                     controllers.AdminController.createHunt(request : Request)
+GET     /admin/hunts/:id/delete                 controllers.AdminController.deleteHunt(request : Request, id : Integer)
+GET     /admin/hunts/:id/edit/show              controllers.AdminController.showEditHunt(request : Request, id : Integer)
+POST    /admin/hunts/:id/edit                   controllers.AdminController.editTreasureHunt(request : Request, id : Integer)
+
+## Admin Artists
+GET    /admin/artist/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
+GET    /admin/artist/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
+POST   /admin/artist/create                    controllers.AdminController.createArtist(request : Request)
+GET    /admin/artist/:id/delete                controllers.AdminController.deleteArtist(request : Request, id : Integer)
+GET    /admin/artist/:id/edit/show             controllers.AdminController.showEditArtist(request : Request, id : Integer)
+POST   /admin/artist/:id/edit                  controllers.AdminController.editArtist(request : Request, id : Integer)
 
 
 # Tresure Hunts
-GET     /treasure                    controllers.TreasureHuntController.show(request: Request)
-POST    /hunts/create                controllers.TreasureHuntController.createHunt(request : Request)
-GET     /hunts/:id/delete            controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
-GET     /hunts/:id/edit/show         controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer)
-POST    /hunts/:id/edit              controllers.TreasureHuntController.editTreasureHunt(request : Request, id: Integer)
+GET     /treasure                               controllers.TreasureHuntController.show(request: Request)
+POST    /hunts/create                           controllers.TreasureHuntController.createHunt(request : Request)
+GET     /hunts/:id/delete                       controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
+GET     /hunts/:id/edit/show                    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer)
+POST    /hunts/:id/edit                         controllers.TreasureHuntController.editTreasureHunt(request : Request, id: Integer)
+
+
+# Artists
+POST    /artists                                controllers.ArtistController.createArtist(request : Request)
+GET     /artists                                controllers.ArtistController.show(request : Request)
+GET     /artists/:id/delete                     controllers.ArtistController.deleteArtist(request : Request, id : Integer)
+GET     /artists/search                         controllers.ArtistController.search(request : Request)
+GET     /artist/:id/follow                      controllers.ArtistController.followArtist(request : Request, id : Integer)
+GET     /artist/:id/unfollow                      controllers.ArtistController.unfollowArtist(request : Request, id : Integer)
+GET     /artists/page/:page_number              controllers.ArtistController.pageArtist(page_number : Integer)
+
+# Detailed Artist's page
+GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
+

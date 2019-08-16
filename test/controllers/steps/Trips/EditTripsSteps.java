@@ -1,6 +1,6 @@
 package controllers.steps.Trips;
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 
-public class EditTripsSteps extends ProvideApplication {
+public class EditTripsSteps {
 
     private String userEmail;
 
@@ -33,7 +33,7 @@ public class EditTripsSteps extends ProvideApplication {
                 .bodyForm(loginForm)
                 .session("connected", "1");
 
-        Result loginResult = Helpers.route(provideApplication(), request);
+        Result loginResult = Helpers.route(TestApplication.getApplication(), request);
 
         assertEquals(303, loginResult.status());
     }

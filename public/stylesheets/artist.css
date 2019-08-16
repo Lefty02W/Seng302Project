@@ -1,0 +1,40 @@
+
+.viewArtists {
+    width: 100%;
+    height: 70%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #b3b7bb;
+}
+
+.search {
+    height: 200px;
+}
+
+#show-more{
+    min-width: 91%;
+    margin: 61px;
+}
+
+.viewArtists {
+    height: 650px;
+}
+
+#artist-card {
+    margin: 0px;
+}
+
+#artist-stats {
+    width: 50%;
+}
+
+#toggle {
+    border-width: 1px;
+    border-style: solid;
+}
+
+#view {
+    width: 72px;
+}

@@ -1,7 +1,7 @@
 package controllers.steps.Profile;
 
 
-import controllers.ProvideApplication;
+import controllers.TestApplication;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 /**
  * Implements steps for testing CreateUser
  */
-public class CreateUserSteps extends ProvideApplication {
+public class CreateUserSteps {
 
     private Map<String, String> createForm = new HashMap<>();
     private Map<String, String> createFormSecond = new HashMap<>();
@@ -93,8 +93,7 @@ public class CreateUserSteps extends ProvideApplication {
 
     @Then("his account should be saved")
     public void saved_account() {
-        injectRepositories();
-        profileRepository.lookupEmail("john.gherkin.doe@travelea.com").thenApplyAsync(profileOpt -> {
+        TestApplication.getProfileRepository().lookupEmail("john.gherkin.doe@travelea.com").thenApplyAsync(profileOpt -> {
             profileOpt.ifPresent(profile -> {
                 assertEquals("John", profile.getFirstName());
                 assertEquals("Gherkin", profile.getMiddleName());
@@ -116,7 +115,7 @@ public class CreateUserSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/login");
-        Helpers.route(provideApplication(), request);
+        Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Given("^I am on the admin page$")
@@ -124,7 +123,7 @@ public class CreateUserSteps extends ProvideApplication {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/admin");
-        Helpers.route(provideApplication(), request);
+        Helpers.route(TestApplication.getApplication(), request);
     }
 
     @When("^I press the create user button$")
@@ -160,7 +159,7 @@ public class CreateUserSteps extends ProvideApplication {
                 .method("POST")
                 .uri("/user/create")
                 .bodyForm(createFormSecond);
-        createResult = Helpers.route(provideApplication(), request);
+        createResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
     @Then("^admin saves the profile$")
@@ -170,21 +169,19 @@ public class CreateUserSteps extends ProvideApplication {
                 .uri("/admin/profile/create")
                 .bodyForm(createFormThird)
                 .session("connected", "2");
-        createResult = Helpers.route(provideApplication(), request);
+        createResult = Helpers.route(TestApplication.getApplication(), request);
     }
 
 
     @And("^My user profile is saved in the database$")
     public void myUserProfileIsSavedInTheDatabase() throws Throwable {
-        injectRepositories();
-        createdProfile = profileRepository.getProfileById(USER_EMAIL);
+        createdProfile = TestApplication.getProfileRepository().getProfileById(USER_EMAIL);
         assertNotNull(createdProfile);
     }
 
     @And("^The created profile is saved in the database$")
     public void theCreatedProfileIsSavedInTheDatabase() throws Throwable {
-        injectRepositories();
-        createdProfile = profileRepository.getProfileById(USER_EMAIL_ADMIN);
+        createdProfile = TestApplication.getProfileRepository().getProfileById(USER_EMAIL_ADMIN);
         assertNotNull(createdProfile);
     }
 

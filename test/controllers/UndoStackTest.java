@@ -6,20 +6,21 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
+import play.mvc.Result;
 import play.test.Helpers;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
-public class UndoStackTest extends ProvideApplication {
+public class UndoStackTest {
 
 
     @Before
     @Ignore
     public void clearStack() {
-        injectRepositories();
-        undoStackRepository.clearStack(1);
-        undoStackRepository.clearStack(2);
+        TestApplication.getUndoStackRepository().clearStack(1);
+        TestApplication.getUndoStackRepository().clearStack(2);
     }
 
 
@@ -32,7 +33,7 @@ public class UndoStackTest extends ProvideApplication {
                 .method("GET")
                 .uri(endPoint)
                 .session("connected", profileId.toString());
-        Helpers.route(provideApplication(), request);
+        Helpers.route(TestApplication.getApplication(), request);
     }
 
 
@@ -42,8 +43,8 @@ public class UndoStackTest extends ProvideApplication {
      */
     @Ignore
     private void addItemToUndoStack(UndoStack undoItem) {
-        undoStackRepository.addToStack(undoItem).thenRun(() -> {
-            if (undoStackRepository.getUsersStack(undoItem.getProfileId()).isEmpty()) {
+        TestApplication.getUndoStackRepository().addToStack(undoItem).thenRun(() -> {
+            if (TestApplication.getUndoStackRepository().getUsersStack(undoItem.getProfileId()).isEmpty()) {
                 Assert.fail("ERROR: Undo item was not added to stack. Check repository methods work!");
             }
         });
@@ -58,14 +59,24 @@ public class UndoStackTest extends ProvideApplication {
     @Test
     @Ignore
     public void adminProfileShowClearStack() {
-        adminLogin();
-        undoStackRepository.clearStack(2);
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "bob@gmail.com");
+        formData.put("password", "password");
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        TestApplication.getUndoStackRepository().clearStack(2);
 
         UndoStack undoDest = new UndoStack("destination", 1, 2);
         addItemToUndoStack(undoDest);
         navigateToPage("/profile", 2);
 
-        Assert.assertTrue(undoStackRepository.getUsersStack(2).isEmpty());
+        Assert.assertTrue(TestApplication.getUndoStackRepository().getUsersStack(2).isEmpty());
     }
 
 
@@ -78,15 +89,22 @@ public class UndoStackTest extends ProvideApplication {
     @Test
     @Ignore
     public void nonAdminProfileShowClearStack() {
-        loginUser();
-        injectRepositories();
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "john@gmail.com");
+        formData.put("password", "password");
 
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
         UndoStack undoDest = new UndoStack("destination", 3, 1);
         addItemToUndoStack(undoDest);
         navigateToPage("/profile", 1);
 
-        Assert.assertFalse(undoStackRepository.getUsersStack(1).isEmpty());
+        Assert.assertFalse(TestApplication.getUndoStackRepository().getUsersStack(1).isEmpty());
     }
 
 
@@ -98,15 +116,22 @@ public class UndoStackTest extends ProvideApplication {
     @Test
     @Ignore
     public void adminDestinationShowClearStack() {
-        adminLogin();
-        injectRepositories();
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "bob@gmail.com");
+        formData.put("password", "password");
 
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
         UndoStack undoDest = new UndoStack("destination", 1, 2);
         addItemToUndoStack(undoDest);
         navigateToPage("/destinations/show/false", 2);
 
-        Assert.assertTrue(undoStackRepository.getUsersStack(2).isEmpty());
+        Assert.assertTrue(TestApplication.getUndoStackRepository().getUsersStack(2).isEmpty());
     }
 
 
@@ -118,14 +143,22 @@ public class UndoStackTest extends ProvideApplication {
     @Test
     @Ignore
     public void adminTripsShowClearStack() {
-        adminLogin();
-        injectRepositories();
+        Map<String, String> formData = new HashMap<>();
+        formData.put("email", "bob@gmail.com");
+        formData.put("password", "password");
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/login")
+                .bodyForm(formData);
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
         UndoStack undoDest = new UndoStack("destination", 2, 2);
         addItemToUndoStack(undoDest);
         navigateToPage("/trips", 2);
 
-        Assert.assertTrue(undoStackRepository.getUsersStack(2).isEmpty());
+        Assert.assertTrue(TestApplication.getUndoStackRepository().getUsersStack(2).isEmpty());
     }
 
 }

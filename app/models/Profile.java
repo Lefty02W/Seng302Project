@@ -3,6 +3,7 @@ package models;
 import com.google.common.collect.TreeMultimap;
 import io.ebean.Finder;
 import io.ebean.Model;
+import org.mindrot.jbcrypt.BCrypt;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 
@@ -79,8 +80,6 @@ public class Profile extends Model {
     private static SimpleDateFormat dateFormatSort = new SimpleDateFormat("dd/MM/yyyy");
     @Transient
     private List<String> roles;
-
-
 
     /**
      * Traditional constructor for profile. Used when retrieving a Profile from DB.
@@ -217,10 +216,14 @@ public class Profile extends Model {
         this.timeCreated = timeCreated;
     }
 
+    /**
+     * Hashes that users password and sets hash to password attribute
+     * @param password password to hash
+     */
     public void setPassword(String password) {
         //Hash the password for added security
-        // String passwordHash = BCrypt.hashpw(password, BCrypt.gensalt(WORKLOAD));
-        this.password = password;
+         String passwordHash = BCrypt.hashpw(password, "$2a$12$nODuNzk9U7Hrq6DgspSp4.");
+         this.password = passwordHash;
     }
 
     public void setGender(String gender) {

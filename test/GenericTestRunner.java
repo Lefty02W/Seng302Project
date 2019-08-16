@@ -1,7 +1,6 @@
 import cucumber.api.CucumberOptions;
 import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
@@ -12,11 +11,4 @@ import org.junit.runner.RunWith;
 
 public class GenericTestRunner {
 
-    /**
-     * This method populates the database with test data that is used during acceptance tests
-     */
-    @BeforeClass
-    public static void setUpTestData() {
-
-    }
 }
