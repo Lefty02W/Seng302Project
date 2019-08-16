@@ -45,17 +45,15 @@ def execute_traveller_types_queries(traveller_type, destination_id, cursor, db):
         return "Failed to insert traveller types ERROR: " + e
 
 
-def get_profile_id(cursor, db):
+def get_profile_id(cursor, db, emails):
     """Is a helper function for execute_destination_queries()
     Returns a profile id for the destination to be linked to"""
-    # TODO: change this so that we get the max profileId
-    # random range would then be (max - numProfilesInserted, max)
-    number_of_profiles_recently_inserted = 2
+    email = random.choice(emails)
     try:
-        cursor.execute("SELECT MAX(profile_id) from profile")
+        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(email))
         db.commit()
         profile_id = cursor.fetchone()[0]
-        return random.randint((profile_id - number_of_profiles_recently_inserted + 1), profile_id)
+        return profile_id
     except Exception as e:
         db.rollback()
         print("failed to get max profile" + e)
@@ -68,6 +66,7 @@ def execute_destination_queries(cursor, db):
     Note: if destination already exists in table will not insert destination and result in an error which is
     handled"""
     destination_list = read_destinations()
+    _, emails = read_profiles()
     for destination in destination_list:
         try:
             destination_exists = get_destination_id(destination[0], destination[1], destination[2], cursor, db) != 0
@@ -76,7 +75,7 @@ def execute_destination_queries(cursor, db):
             else:
                 cursor.execute(
                     "INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible)"
-                    " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')".format(get_profile_id(cursor, db),
+                    " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}')".format(get_profile_id(cursor, db, emails),
                                                                                        destination[0],
                                                                                        destination[1],
                                                                                        destination[2],

@@ -22,23 +22,25 @@ def get_date(json_string):
 def read_profiles():
     """Reads the file profiles.JSON and converts the json into a list of profiles with the data"""
     profiles = []
+    emails = []
     with open('profiles.JSON') as json_file:
         data = json.load(json_file)
         for i in range(2):
+            email = data[i]['first_name'] + "." + data[i]['last_name'] + "@gmail.com"
             profile = []
             profile.append(data[i]['first_name'])
             profile.append(data[i]['middle_name'])
             profile.append(data[i]['last_name'])
-            profile.append(data[i]['first_name'] + "@gmail.com")
+            profile.append(email)
             profile.append(hash_password("password"))
             profile.append(get_date(data[i]['date_of_birth']))
             profile.append(data[i]['gender'])
             profile.append(data[i]['nationality'])
             profile.append(data[i]['passport_country'])
             profile.append(data[i]['traveller_type'])
-
+            emails.append(email)
             profiles.append(profile)
-    return profiles
+    return profiles, emails
 
 
 def public_or_private(destination_name):
