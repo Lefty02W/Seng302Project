@@ -1,14 +1,15 @@
 package controllers.steps.Artist;
 
 import controllers.TestApplication;
-
-import controllers.TestApplication;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.Artist;
 import models.MusicGenre;
+import models.PassportCountry;
+import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -24,8 +25,9 @@ public class CreateArtistSteps {
     private Map<String, String> artistForm = new HashMap<>();
     private Map<String, String> dupArtistFrom = new HashMap<>();
     private Result dupResult;
-    private Artist foundArtist;
-    private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Rock", "Indie"));
+    private List<String> ARTIST_GENRES = new ArrayList<>(Arrays.asList("Alternative", "Rock"));
+    private List<String> ARTIST_COUNTRIES = new ArrayList<>(Arrays.asList("New Zealand", "Papua New Guinea"));
+    private List<Integer> ARTIST_ADMINS = new ArrayList<>(Arrays.asList(1, 2));
 
 
     @When("^user is at the artist page$")
@@ -131,12 +133,15 @@ public class CreateArtistSteps {
 
     @Then("^The artist genre links are saved$")
     public void theArtistGenreLinksAreSaved() throws Throwable {
-        List<Artist> artists = TestApplication.getArtistRepository().getAllUserArtists(2);
-        for (Artist artist : artists) {
-            if (artist.getArtistName().equals("Jim James")) {
-                foundArtist = artist;
+        List<Artist> allArtistList = TestApplication.getArtistRepository().getAllArtists();
+        Artist foundArtist = null;
+
+        for(Artist oneArtist: allArtistList){
+            if(oneArtist.getArtistName().equals("George's Story")){
+                foundArtist = oneArtist;
             }
         }
+
         if (foundArtist != null) {
             Optional<List<MusicGenre>> optional = TestApplication.getGenreRepository().getArtistGenres(foundArtist.getArtistId());
             if (optional.isPresent()) {
@@ -150,6 +155,54 @@ public class CreateArtistSteps {
             }
         } else {
             fail();
+        }
+    }
+
+    @Then("^The artist country links are saved$")
+    public void theArtistCountryLinksAreSaved() throws Throwable {
+        //Note that artistId 2 is an admin
+        List<Artist> allArtistList =TestApplication.getArtistRepository().getAllArtists();
+        Artist foundArtist = null;
+
+        for(Artist oneArtist: allArtistList){
+            if(oneArtist.getArtistName().equals("Dusk Winds")){
+                foundArtist = oneArtist;
+            }
+        }
+
+        if (foundArtist != null) {
+            boolean valid = true;
+            for (String country : foundArtist.getCountryList()) {
+                if (!ARTIST_COUNTRIES.contains(country)) {
+                    valid = false;
+                }
+            }
+            assertTrue(valid);
+        } else {
+            fail("Countries not found");
+        }
+    }
+
+    @Then("^The artist admin links are saved$")
+    public void theArtistAdminLinksAreSaved() throws Throwable {
+        List<Artist> allArtistList = TestApplication.getArtistRepository().getAllArtists();
+        Artist foundArtist = null;
+
+        for(Artist oneArtist: allArtistList){
+            if(oneArtist.getArtistName().equals("Cherry Pop")){
+                foundArtist = oneArtist;
+            }
+        }
+        if (foundArtist != null) {
+            boolean valid = true;
+            for (Profile admin : foundArtist.getAdminsList()) {
+                if (!ARTIST_ADMINS.contains(admin.getProfileId())) {
+                    valid = false;
+                }
+            }
+            assertTrue(valid);
+        } else {
+            fail("Admins not found");
         }
     }
 }

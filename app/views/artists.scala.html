@@ -109,9 +109,9 @@
                                         aria-controls="collapseFilters">Filters
                                 </button>
                             </div>
-                            <div id="collapseFilters" class="collapse" aria-labelledby="headingOne" data-parent="#filterAccordion">
+                            <div id="collapseFilters" class="collapse artistFilters" aria-labelledby="headingOne" data-parent="#filterAccordion">
                                 <div class="card-body">
-                                    <div class="search justify-content-center">
+                                    <div class="search">
                                         <div>
                                             <select class="selectpicker" id="country" name="country" title="Countries">
                                             @for(nation <- countries) {
@@ -126,7 +126,10 @@
                                             <input type="checkbox" id="followed" name="followed">
                                             <label for="toggle">Followed Artists</label>
                                             }
-                                            <button class="btn btn-primary">Clear</button>
+                                            <a href="@routes.ArtistController.show()">
+                                                <button class="btn btn-primary">Clear</button>
+                                            </a>
+
                                         </div>
                                     </div>
                                 </div>
@@ -148,8 +151,12 @@
                                 @for(country <- artist.getCountryList) {
                                     <li>@country</li>
                                 }
-                            </ul> <br> @artist.getBiography <br>
-                            @artist.getGenreList </p>
+                            </ul> <br> @artist.getBiography <br> <ul>
+                            @for(genre <- artist.getGenreList) {
+                                <li>@genre.getGenre</li>
+                            }
+                            </ul>
+                                 </p>
                             </div>
                             <div class="col col-2">
                                 <div class="row">
@@ -359,17 +366,31 @@
         function artistJSONtoHTML(jsonData){
             
             var html = "";
-            var i;
+            var i, c, g;
             for (i = 0; i < jsonData.length; i++) {
 
                 var artist = jsonData[i];
                 var id = parseInt(artist.artistId);
+                var countries = artist.countryListString.split(",");
 
                 html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
                             "<div class='card-header'>"+artist.artistName+"</div> " +
                                 "<div class='row'>" +
                                     "<div class='col col-10'>" +
-                                        "<p id='artist-stats'>"+ artist.country +"<br>"+ artist.biography +"<br>"+ artist.genre +"</p>" +
+                                    "<p id='artist-stats'>" +
+                                    "<ul>";
+                                        for(c = 0; c < countries.length -1; c++) {
+                                            html += "<li>"+countries[c]+"</li>";
+                                        }
+
+                                        html += "</ul><br>" +artist.biography+"<br><ul>";
+
+                                        for(g = 0; g < artist.genreList.length; g++) {
+                                            html += "<li>"+artist.genreList[g].genre+"</li>"
+                                        }
+
+                                    html+=
+                                    "</ul>"+
                                     " </div>" +
                                     "<div class='col col-2'>" +
                                         "<div class='row'>" +
