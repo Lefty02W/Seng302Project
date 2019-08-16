@@ -4,25 +4,13 @@ from readJSON import *
 def execute_traveller_type_queries(traveller_type, email, cursor, db):
     """Helper function for execute profile queries
     will break up traveller types if more than one, then add linking tables to the traveller types"""
-    switcher = {
-        "gap year": 1,
-        "frequent weekender": 2,
-        "thrillSeeker": 3,
-        "groupie": 4,
-        "functional/business traveller": 5,
-        "holidaymaker": 6,
-        "backpacker": 7
-    }
     try:
         # get profile
-        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(email))
-        db.commit()
-        id = cursor.fetchone()
         # see if profile_traveller_type already exists
-        cursor.execute("SELECT profile_traveller_type_id from profile_traveller_type WHERE profile = '{}'".format(id[0]))
+        cursor.execute("SELECT profile_traveller_type_id from profile_traveller_type WHERE profile = '{0}'".format(id[0]))
         db.commit()
         if cursor.fetchone() is None:
-            cursor.execute("INSERT INTO profile_traveller_type (profile, traveller_type) VALUES ('{}', '{}')".format(id[0], switcher.get(traveller_type)))
+            cursor.execute("INSERT INTO profile_traveller_type (profile, traveller_type) VALUES ((SELECT profile_id from profile WHERE email = '{0}'), (SELECT traveller_type_id from traveller_type where traveller_type_name = '{1}'))".format(email, traveller_type))
             db.commit()
             return "Successfully inserted Traveller Types"
         else:
@@ -45,30 +33,21 @@ def execute_passports_queries(passport_country, email, cursor, db):
             result = results[0][0]
         else:
             # case passport is not already inserted into database
-            cursor.execute("INSERT INTO passport_country (passport_name) VALUES ('{}')".format(passport_country))
+            cursor.execute("INSERT INTO passport_country (passport_name) VALUES ('{0}')".format(passport_country))
             db.commit()
-            cursor.execute(
-                "SELECT passport_country_id from passport_country WHERE passport_name = '{0}'".format(passport_country))
-            db.commit()
-            results = cursor.fetchall()
-            result = results[0][0]
     except Exception as e:
         # Rollback in case there is any error
         db.rollback()
         return "Failed to get or insert nationality_id " + "ERROR: " + e
 
     try:
-        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(email))
-        db.commit()
-        id = cursor.fetchone()
-
-        cursor.execute("SELECT profile from profile_passport_country WHERE profile = '{0}'".format(id[0]))
+        cursor.execute("SELECT profile from profile_passport_country WHERE profile = (SELECT profile_id from profile WHERE email = '{0}') and passport_country = (SELECT passport_country_id from passport_country WHERE passport_name = '{1}')".format(email, passport_country))
         db.commit()
         exists = cursor.fetchone()
         if exists is None:
             # case is not already inserted
             cursor.execute(
-                "INSERT INTO profile_passport_country (profile, passport_country) VALUES ('{0}', '{1}')".format(id[0], result))
+                "INSERT INTO profile_passport_country (profile, passport_country) VALUES ((SELECT profile_id from profile WHERE email = '{0}'), (SELECT passport_country_id from passport_country WHERE passport_name = '{1}'))".format(email, passport_country))
             db.commit()
             return "successfully inserted passport"
         else:
@@ -90,7 +69,7 @@ def execute_nationalities_queries(nationality, email, cursor, db):
             result = results[0][0]
         else:
             # case nationality is not already inserted into database
-            cursor.execute("INSERT INTO nationality (nationality_name) VALUES ('{}')".format(nationality))
+            cursor.execute("INSERT INTO nationality (nationality_name) VALUES ('{0}')".format(nationality))
             db.commit()
     except Exception as e:
         # Rollback in case there is any error
