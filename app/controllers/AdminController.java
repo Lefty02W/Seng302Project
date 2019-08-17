@@ -78,6 +78,14 @@ public class AdminController {
         this.genreRepository = genreRepository;
     }
 
+    /**
+     * Endpoint for admin to view all user trips
+     *
+     * @apiNote GET /admin/trips/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showTrips(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), tripRepository.getAll(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
@@ -87,6 +95,14 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), 2, request, messagesApi.preferred(request))));
     }
 
+    /**
+     * Endpoint for admin to view all user profiles
+     *
+     * @apiNote GET /admin/profiles/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showProfiles(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
@@ -96,6 +112,14 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), 1, request, messagesApi.preferred(request))));
     }
 
+    /**
+     * Endpoint for admin to view all admins
+     *
+     * @apiNote GET /admin/admins/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showAdmins(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), getAdmins(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
@@ -105,6 +129,14 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), 0, request, messagesApi.preferred(request))));
     }
 
+    /**
+     * Endpoint for admin to view all user destinations
+     *
+     * @apiNote GET /admin/destinations/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showDestinations(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
@@ -114,6 +146,14 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), 3, request, messagesApi.preferred(request))));
     }
 
+    /**
+     * Endpoint for admin to view all user destination requests
+     *
+     * @apiNote GET /admin/destinations/requests/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showDestinationRequests(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
@@ -123,6 +163,14 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), 4, request, messagesApi.preferred(request))));
     }
 
+    /**
+     * Endpoint for admin to view all user treasure hunts
+     *
+     * @apiNote GET /admin/hunts/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showHunts(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
@@ -132,6 +180,14 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), 5, request, messagesApi.preferred(request))));
     }
 
+    /**
+     * Endpoint for admin to view all artists
+     *
+     * @apiNote GET /admin/artists/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showArtists(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
@@ -141,6 +197,14 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), 6, request, messagesApi.preferred(request))));
     }
 
+    /**
+     * Endpoint for admin to view all artist requests
+     *
+     * @apiNote GET /admin/artists/requests/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
     public CompletionStage<Result> showArtistRequests(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,

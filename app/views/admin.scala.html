@@ -51,7 +51,7 @@
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
                         Treasure Hunt</a>
-                    <a style="color: #ca6636" href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                    <a style="color: #ca6636" href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
                         Admin</a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
@@ -272,76 +272,76 @@
             <div class="row">
                 <div class="card adminCard">
                     <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" id="admin-list" role="tablist">
+                        <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
                                 @if(activeTab == 0) {
-                                    <a class="nav-link active" href="/admin/admins/0" role="tab" aria-controls="description" aria-selected="true">
+                                    <a class="nav-link active" href="/admin/admins/0">
                                         Admins</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/admins/0" role="tab" aria-controls="description" aria-selected="false">
+                                    <a class="nav-link" href="/admin/admins/0">
                                         Admins</a>
                                 }
                             </li>
                             <li class="nav-item">
                                 @if(activeTab == 1) {
-                                    <a class="nav-link active" href="/admin/profiles/0" role="tab" aria-controls="history" aria-selected="true">
+                                    <a class="nav-link active" href="/admin/profiles/0">
                                         User Profiles</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/profiles/0" role="tab" aria-controls="history" aria-selected="false">
+                                    <a class="nav-link" href="/admin/profiles/0">
                                         User Profiles</a>
                                 }
                             </li>
                             <li class="nav-item">
                                 @if(activeTab == 2) {
-                                    <a class="nav-link active" href="/admin/trips/0" role="tab" aria-controls="deals" aria-selected="true">
+                                    <a class="nav-link active" href="/admin/trips/0">
                                         User Trips</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/trips/0" role="tab" aria-controls="deals" aria-selected="false">
+                                    <a class="nav-link" href="/admin/trips/0">
                                         User Trips</a>
                                 }
                             </li>
                             <li class="nav-item">
                                 @if(activeTab == 3) {
-                                    <a class="nav-link active" href="/admin/destinations/0" role="tab" aria-controls="deals" aria-selected="true">
+                                    <a class="nav-link active" href="/admin/destinations/0">
                                         User Destinations</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/destinations/0" role="tab" aria-controls="deals" aria-selected="false">
+                                    <a class="nav-link" href="/admin/destinations/0">
                                         User Destinations</a>
                                 }
                             </li>
                             <li class="nav-item">
                                 @if(activeTab == 4) {
-                                    <a class="nav-link active" href="/admin/destinations/requests/0" role="tab" aria-controls="deals" aria-selected="true">
+                                    <a class="nav-link active" href="/admin/destinations/requests/0">
                                         Destination Edit Requests</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/destinations/requests/0" role="tab" aria-controls="deals" aria-selected="false">
+                                    <a class="nav-link" href="/admin/destinations/requests/0">
                                         Destination Edit Requests</a>
                                 }
                             </li>
                             <li class="nav-item">
                                 @if(activeTab == 5) {
-                                    <a class="nav-link active" href="/admin/hunts/0" role="tab" aria-controls="deals" aria-selected="false">
+                                    <a class="nav-link active" href="/admin/hunts/0">
                                         Treasure Hunts</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/hunts/0" role="tab" aria-controls="deals" aria-selected="false">
+                                    <a class="nav-link" href="/admin/hunts/0">
                                         Treasure Hunts</a>
                                 }
                             </li>
                             <li class="nav-item">
                                 @if(activeTab == 6) {
-                                    <a class="nav-link active" href="/admin/artists/0" role="tab" aria-controls="deals" aria-selected="true">
+                                    <a class="nav-link active" href="/admin/artists/0">
                                         Artists</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/artists/0" role="tab" aria-controls="deals" aria-selected="false">
+                                    <a class="nav-link" href="/admin/artists/0">
                                         Artists</a>
                                 }
                             </li>
                             <li class="nav-item">
                                 @if(activeTab == 7) {
-                                    <a class="nav-link active" href="/admin/artist/requests/0" role="tab" aria-controls="deals" aria-selected="true">
+                                    <a class="nav-link active" href="/admin/artist/requests/0">
                                         Artist Requests</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/artist/requests/0" role="tab" aria-controls="deals" aria-selected="false">
+                                    <a class="nav-link" href="/admin/artist/requests/0">
                                         Artist Requests</a>
                                 }
                             </li>
@@ -666,7 +666,7 @@
                                                 </td>
                                                 <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
                                                 <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
-                                                <td><a href="artist/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
+                                                <td><a href="/artists/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
                                             </tr>
                                         }
                                     </table>
