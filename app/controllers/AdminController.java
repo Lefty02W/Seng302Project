@@ -79,6 +79,13 @@ public class AdminController {
     }
 
 
+    /**
+     * Creates a PaginationHelper object with given offset and maxSize
+     * Sets up initial next/previous indexes
+     * @param offset offset for page
+     * @param maxSize max amount of items
+     * @return PaginationHelper object ready to be used
+     */
     private PaginationHelper initialisePaginatior(int offset, int maxSize) {
         PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 2, true, true, maxSize);
         paginationHelper.alterNext(pageSize);
