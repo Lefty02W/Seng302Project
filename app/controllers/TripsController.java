@@ -1,6 +1,5 @@
 package controllers;
 
-import com.google.common.collect.TreeMultimap;
 import com.google.inject.Inject;
 import models.Destination;
 import models.Profile;
@@ -46,7 +45,7 @@ public class TripsController extends Controller {
     private boolean showEmptyEdit = false;
 
     private static final String dateFlashingMessage = "The arrival date must be before the departure date";
-    private static final String tripsEndPoint = "/trips";
+    private static final String tripsEndPoint = "/trips/0";
     private static final String editUrl = "/edit";
     private static final String dupDestFlashing = "The same destination cannot be after itself in a trip";
 
@@ -72,7 +71,7 @@ public class TripsController extends Controller {
      * @return a render of the trips page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> show(Http.Request request) {
+    public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
@@ -82,9 +81,16 @@ public class TripsController extends Controller {
                 toSend = tripRepository.setUserTrips(toSend);
                 showEmptyEdit = false;
                 orderedCurrentDestinations.clear();
-                TreeMultimap<Long, Integer> tripsMap = profile.get().getTrips();
-                List<Integer> tripValues = new ArrayList<>(tripsMap.values());
-                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, toSend, request, messagesApi.preferred(request)));
+                Optional<List<Integer>> tripsOptional = tripRepository.getUserTripIds(profId, offset);
+                List<Integer> tripValues = new ArrayList<>();
+                if (tripsOptional.isPresent()) {
+                    tripValues = tripsOptional.get();
+                }
+                int nextOffset = offset + 9;
+                if (nextOffset > toSend.getTrips().size()) {
+                    nextOffset = offset;
+                }
+                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, toSend, nextOffset, Math.max(0, offset - 9), request, messagesApi.preferred(request)));
         } else {
                 return redirect("/profile");
             }
@@ -126,7 +132,7 @@ public class TripsController extends Controller {
                     destinationsList = new ArrayList<>();
                 }
                 return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), null, userId, request, messagesApi.preferred(request)));            }
-            return redirect("/trips");
+            return redirect("/trips/0");
         });
     }
 
@@ -164,7 +170,7 @@ public class TripsController extends Controller {
                 }
                 return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, null, userId, request, messagesApi.preferred(request)));
             }
-            return redirect("/trips");
+            return redirect("/trips/0");
         });
     }
 
@@ -443,7 +449,7 @@ public class TripsController extends Controller {
                 TripDestination dest = orderedCurrentDestinations.get(order);
                 return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), dest, profId, request, messagesApi.preferred(request)));
             } else {
-                return redirect("/trips");
+                return redirect("/trips/0");
             }
         });
     }
