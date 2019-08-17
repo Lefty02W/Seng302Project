@@ -6,7 +6,7 @@
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
         countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
         artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre],
-        activeTab : Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
+        pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -274,7 +274,7 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
-                                @if(activeTab == 0) {
+                                @if(pagination.getActiveTab == 0) {
                                     <a class="nav-link active" href="/admin/admins/0">
                                         Admins</a>
                                 } else {
@@ -283,7 +283,7 @@
                                 }
                             </li>
                             <li class="nav-item">
-                                @if(activeTab == 1) {
+                                @if(pagination.getActiveTab == 1) {
                                     <a class="nav-link active" href="/admin/profiles/0">
                                         User Profiles</a>
                                 } else {
@@ -292,7 +292,7 @@
                                 }
                             </li>
                             <li class="nav-item">
-                                @if(activeTab == 2) {
+                                @if(pagination.getActiveTab == 2) {
                                     <a class="nav-link active" href="/admin/trips/0">
                                         User Trips</a>
                                 } else {
@@ -301,7 +301,7 @@
                                 }
                             </li>
                             <li class="nav-item">
-                                @if(activeTab == 3) {
+                                @if(pagination.getActiveTab == 3) {
                                     <a class="nav-link active" href="/admin/destinations/0">
                                         User Destinations</a>
                                 } else {
@@ -310,7 +310,7 @@
                                 }
                             </li>
                             <li class="nav-item">
-                                @if(activeTab == 4) {
+                                @if(pagination.getActiveTab == 4) {
                                     <a class="nav-link active" href="/admin/destinations/requests/0">
                                         Destination Edit Requests</a>
                                 } else {
@@ -319,7 +319,7 @@
                                 }
                             </li>
                             <li class="nav-item">
-                                @if(activeTab == 5) {
+                                @if(pagination.getActiveTab == 5) {
                                     <a class="nav-link active" href="/admin/hunts/0">
                                         Treasure Hunts</a>
                                 } else {
@@ -328,7 +328,7 @@
                                 }
                             </li>
                             <li class="nav-item">
-                                @if(activeTab == 6) {
+                                @if(pagination.getActiveTab == 6) {
                                     <a class="nav-link active" href="/admin/artists/0">
                                         Artists</a>
                                 } else {
@@ -337,7 +337,7 @@
                                 }
                             </li>
                             <li class="nav-item">
-                                @if(activeTab == 7) {
+                                @if(pagination.getActiveTab == 7) {
                                     <a class="nav-link active" href="/admin/artist/requests/0">
                                         Artist Requests</a>
                                 } else {
@@ -349,7 +349,7 @@
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                        @if(activeTab == 0) {
+                        @if(pagination.getActiveTab == 0) {
                             <div class="tab-pane active" id="admins" role="tabpanel">
                         }else {
                             <div class="tab-pane" id="admins" role="tabpanel">
@@ -378,7 +378,7 @@
                                 </div>
                             </div>
 
-                        @if(activeTab == 1) {
+                        @if(pagination.getActiveTab == 1) {
                             <div class="tab-pane active" id="userProfiles" role="tabpanel" aria-labelledby="history-tab">
                         }else {
                             <div class="tab-pane" id="userProfiles" role="tabpanel" aria-labelledby="history-tab">
@@ -449,7 +449,7 @@
                                 </div>
                             </div>
 
-                        @if(activeTab == 2) {
+                        @if(pagination.getActiveTab == 2) {
                             <div class="tab-pane active" id="userTrips" role="tabpanel" aria-labelledby="deals-tab">
                         }else {
                             <div class="tab-pane" id="userTrips" role="tabpanel" aria-labelledby="deals-tab">
@@ -492,9 +492,16 @@
 
                                         }
                                     </table>
+                                    <div class="col">
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/trips/0">Start</a></li>
+                                            <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getPrevious">Previous</a></li>
+                                            <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getNext">Next</a></li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        @if(activeTab == 3) {
+                        @if(pagination.getActiveTab == 3) {
                             <div class="tab-pane active" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
                         }else {
                             <div class="tab-pane" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
@@ -539,7 +546,7 @@
                                     </table>
                                 </div>
                             </div>
-                        @if(activeTab == 4) {
+                        @if(pagination.getActiveTab == 4) {
                             <div class="tab-pane active" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
                         }else {
                             <div class="tab-pane" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
@@ -574,7 +581,7 @@
                                     </table>
                                 </div>
                             </div>
-                        @if(activeTab == 5) {
+                        @if(pagination.getActiveTab == 5) {
                             <div class="tab-pane active" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
                         }else {
                             <div class="tab-pane" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
@@ -613,7 +620,7 @@
                                     </table>
                                 </div>
                             </div>
-                        @if(activeTab == 6) {
+                        @if(pagination.getActiveTab == 6) {
                             <div class="tab-pane active" id="artists" role="tabpanel" aria-labelledby="deals-tab">
                         }else {
                             <div class="tab-pane" id="artists" role="tabpanel" aria-labelledby="deals-tab">
@@ -672,7 +679,7 @@
                                     </table>
                                 </div>
                             </div>
-                        @if(activeTab == 7) {
+                        @if(pagination.getActiveTab == 7) {
                             <div class="tab-pane active" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
                         }else {
                             <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
@@ -765,16 +772,17 @@
             $(document).ready(function () {
                 $('#profileTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "lengthChange": false,
+                    "bPaginate": false
                 });
             });
 
             $(document).ready(function () {
                 $('#tripsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
