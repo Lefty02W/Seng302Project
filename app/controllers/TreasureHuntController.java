@@ -31,7 +31,7 @@ public class TreasureHuntController {
     private final TreasureHuntRepository treasureHuntRepository;
     private final UndoStackRepository undoStackRepository;
     private final Form<TreasureHunt> huntForm;
-    private String huntShowRoute = "/treasure";
+    private String huntShowRoute = "/treasure/0";
 
 
     /**
@@ -56,9 +56,9 @@ public class TreasureHuntController {
      * @param request the users request
      * @return a redirect to the treasure hunt page
      */
-    public CompletionStage<Result> show(Http.Request request) {
+    public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
-        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(offset);
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             undoStackRepository.clearStackOnAllowed(profile.get());
@@ -156,11 +156,11 @@ public class TreasureHuntController {
      * @param id unique treasure hunt id
      * @return a redirect to the treasure hunt page
      */
-    public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id) {
+    public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id, Integer offset) {
         TreasureHunt hunt = treasureHuntRepository.lookup(id);
         huntForm.fill(hunt);
         Integer profId = SessionController.getCurrentUserId(request);
-        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(offset);
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {

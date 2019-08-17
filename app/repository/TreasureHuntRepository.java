@@ -59,8 +59,10 @@ public class TreasureHuntRepository {
      *
      * @return TreasureHunts, an arrayList of all currently active treasureHunts
      */
-    public List<TreasureHunt> getAllActiveTreasureHunts() {
+    public List<TreasureHunt> getAllActiveTreasureHunts(int offset) {
         return new ArrayList<> (ebeanServer.find(TreasureHunt.class)
+                .setMaxRows(9)
+                .setFirstRow(offset)
                 .where()
                 .eq("soft_delete", 0)
                 .gt("end_date", DateTime.now())
