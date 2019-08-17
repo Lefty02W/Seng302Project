@@ -1,6 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt], destinations: List[Destination], form: Form[TreasureHunt], editHunt: RoutedObject[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt],
+        destinations: List[Destination], form: Form[TreasureHunt],
+        editHunt: RoutedObject[TreasureHunt], pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -85,12 +87,18 @@
                             </thead>
                             @for(hunt <- availableHunts) {
                                 <tr>
-
                                     <td>@hunt.getRiddle</td>
                                     <td>@hunt.getEndDateString</td>
                                 </tr>
                             }
                         </table>
+                        <div class="col">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" href="/treasure/0">Start</a></li>
+                                <li class="page-item"><a class="page-link" href="/treasure/@pagination.getPrevious">Previous</a></li>
+                                <li class="page-item"><a class="page-link" href="/treasure/@pagination.getNext">Next</a></li>
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="row">

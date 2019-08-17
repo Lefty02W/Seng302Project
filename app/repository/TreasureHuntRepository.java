@@ -146,6 +146,15 @@ public class TreasureHuntRepository {
     }
 
     /**
+     * Finds total number of treasure hunts in the database
+     * used for pagination purposes
+     * @return int number of found treasure hunts
+     */
+    public int getNumHunts(){
+        return ebeanServer.find(TreasureHunt.class).findCount();
+    }
+
+    /**
      * sets soft delete for a treasureHunt which eather deletes it or
      * undoes the delete
      * @param huntId The ID of the treasure hunt to soft delete
