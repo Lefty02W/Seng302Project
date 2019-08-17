@@ -188,4 +188,29 @@ public class TripRepository {
         return allTrips;
     }
 
+    /**
+     * Gets a subset of the trips from the database
+     * used for pagination on the admin page
+     *
+     * @param offset amount to offset query by
+     * @param amount amount of trips to get
+     * @return List of trips found
+     */
+    public List<Trip> getPaginateTrip(int offset, int amount) {
+        List<Trip> trips = new ArrayList<>();
+        List<Integer> tripIds = ebeanServer.find(Trip.class).setMaxRows(amount).setFirstRow(offset).findIds();
+        for (int id : tripIds) {
+            trips.add(getTrip(id));
+        }
+        return trips;
+    }
+
+    /**
+     * Finds the number of trips in the database
+     * Used for pagination purposes
+     * @return int of number found
+     */
+    public int getNumTrips() {
+        return ebeanServer.find(Trip.class).findCount();
+    }
 }
