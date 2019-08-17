@@ -35,10 +35,11 @@ public class Artist extends Model {
 
     private Collection<Profile> adminsList;
 
+    @Constraints.Required
     private String members;
 
     @Transient
-    private List<MusicGenre> genreList;
+    private List<MusicGenre> genreList = new ArrayList<>();
 
     private int softDelete;
 
@@ -72,7 +73,9 @@ public class Artist extends Model {
      * @param twitterLink
      * @param websiteLink
      */
-    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, int softDelete, List<MusicGenre> genreList) {
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink,
+                  String spotifyLink, String twitterLink, String websiteLink, int softDelete,
+                  List<MusicGenre> genreList) {
         this.artistId = artistId;
         this.artistName = artistName;
         this.biography = biography;
@@ -98,7 +101,9 @@ public class Artist extends Model {
      * @param adminsList
      * @param country
      */
-    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink, String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> adminsList, Map<Integer, PassportCountry> country, int softDelete) {
+    public Artist(Integer artistId, String artistName, String biography, String facebookLink, String instagramLink,
+                  String spotifyLink, String twitterLink, String websiteLink, Collection<Profile> adminsList,
+                  Map<Integer, PassportCountry> country, int softDelete) {
         this.artistId = artistId;
         this.artistName = artistName;
         this.biography = biography;
@@ -135,7 +140,7 @@ public class Artist extends Model {
      *
      * @return Array of Strings of country names
      */
-    public ArrayList<String> getCountryList() {
+    public List<String> getCountryList() {
         if (country != null) {
             ArrayList<PassportCountry> countryObjects = new ArrayList<>(country.values());
             ArrayList<String> countryList = new ArrayList<>();
@@ -155,7 +160,7 @@ public class Artist extends Model {
      * @return a string of countries to be displayed
      */
     public String getCountryListString() {
-        ArrayList<String> listOfCountries = getCountryList();
+        List<String> listOfCountries = getCountryList();
         String countryNameStrings = "";
         for (String countryName : listOfCountries) {
             countryNameStrings += countryName + ", ";

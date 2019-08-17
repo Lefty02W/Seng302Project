@@ -38,3 +38,9 @@
 #view {
     width: 72px;
 }
+
+.artistFilters{
+    overflow: auto;
+}
+
+
