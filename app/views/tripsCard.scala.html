@@ -66,13 +66,6 @@
                     </div>
                 </nav>
                 <div id="tripsPane" class="container-fluid">
-
-                    <div class="row">
-                        <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" class="btn btn-primary">
-                            Add New Trip
-                        </button> </a>
-                    </div>
-
                     <div class="row pt-2">
                            @for(trip <- trips) {
                                <div class="col-lg-4 col-md-6 col-sm-10 justify-content-center">
@@ -125,6 +118,9 @@
                     <li class="page-item"><a class="page-link" href="/trips/@previous">Previous</a></li>
                     <li class="page-item"><a class="page-link" href="/trips/@next">Next</a></li>
                 </ul>
+                <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" id="addButton" class="btn btn-primary">
+                            Add New Trip
+                </button> </a>
             </div>
         </div>
 
