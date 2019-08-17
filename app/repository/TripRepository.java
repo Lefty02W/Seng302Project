@@ -198,7 +198,7 @@ public class TripRepository {
      */
     public List<Trip> getPaginateTrip(int offset, int amount) {
         List<Trip> trips = new ArrayList<>();
-        List<Integer> tripIds = ebeanServer.find(Trip.class).setMaxRows(amount).setFirstRow(offset).findIds();
+        List<Integer> tripIds = ebeanServer.find(Trip.class).setMaxRows(amount).setFirstRow(offset).where().eq("soft_delete", 0).findIds();
         for (int id : tripIds) {
             trips.add(getTrip(id));
         }
