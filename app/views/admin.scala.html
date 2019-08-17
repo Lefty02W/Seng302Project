@@ -5,7 +5,8 @@
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
         countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
-        artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre])(implicit request: Http.Request, messages: play.i18n.Messages)
+        artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre],
+        activeTab : Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -273,42 +274,86 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs" id="admin-list" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" href="#admins" role="tab" aria-controls="description" aria-selected="true">
-                                    Admins</a>
+                                @if(activeTab == 0) {
+                                    <a class="nav-link active" href="/admin/admins/0" role="tab" aria-controls="description" aria-selected="true">
+                                        Admins</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/admins/0" role="tab" aria-controls="description" aria-selected="false">
+                                        Admins</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#userProfiles" role="tab" aria-controls="history" aria-selected="false">
-                                    User Profiles</a>
+                                @if(activeTab == 1) {
+                                    <a class="nav-link active" href="/admin/profiles/0" role="tab" aria-controls="history" aria-selected="true">
+                                        User Profiles</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/profiles/0" role="tab" aria-controls="history" aria-selected="false">
+                                        User Profiles</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#userTrips" role="tab" aria-controls="deals" aria-selected="false">
-                                    User Trips</a>
+                                @if(activeTab == 2) {
+                                    <a class="nav-link active" href="/admin/trips/0" role="tab" aria-controls="deals" aria-selected="true">
+                                        User Trips</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/trips/0" role="tab" aria-controls="deals" aria-selected="false">
+                                        User Trips</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#userDestinations" role="tab" aria-controls="deals" aria-selected="false">
-                                    User Destinations</a>
+                                @if(activeTab == 3) {
+                                    <a class="nav-link active" href="/admin/destinations/0" role="tab" aria-controls="deals" aria-selected="true">
+                                        User Destinations</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/destinations/0" role="tab" aria-controls="deals" aria-selected="false">
+                                        User Destinations</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#destinationEditRequests" role="tab" aria-controls="deals" aria-selected="false">
-                                    Destination Edit Requests</a>
+                                @if(activeTab == 4) {
+                                    <a class="nav-link active" href="/admin/destinations/requests/0" role="tab" aria-controls="deals" aria-selected="true">
+                                        Destination Edit Requests</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/destinations/requests/0" role="tab" aria-controls="deals" aria-selected="false">
+                                        Destination Edit Requests</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#treasureHunts" role="tab" aria-controls="deals" aria-selected="false">
-                                    Treasure Hunts</a>
+                                @if(activeTab == 5) {
+                                    <a class="nav-link active" href="/admin/hunts/0" role="tab" aria-controls="deals" aria-selected="false">
+                                        Treasure Hunts</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/hunts/0" role="tab" aria-controls="deals" aria-selected="false">
+                                        Treasure Hunts</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#artists" role="tab" aria-controls="deals" aria-selected="false">
-                                    Artists</a>
+                                @if(activeTab == 6) {
+                                    <a class="nav-link active" href="/admin/artists/0" role="tab" aria-controls="deals" aria-selected="true">
+                                        Artists</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/artists/0" role="tab" aria-controls="deals" aria-selected="false">
+                                        Artists</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#artistRequests" role="tab" aria-controls="deals" aria-selected="false">
-                                    Artist Requests</a>
+                                @if(activeTab == 7) {
+                                    <a class="nav-link active" href="/admin/artist/requests/0" role="tab" aria-controls="deals" aria-selected="true">
+                                        Artist Requests</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/artist/requests/0" role="tab" aria-controls="deals" aria-selected="false">
+                                        Artist Requests</a>
+                                }
                             </li>
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
+                        @if(activeTab == 0) {
                             <div class="tab-pane active" id="admins" role="tabpanel">
+                        }else {
+                            <div class="tab-pane" id="admins" role="tabpanel">
+                        }
                                 <div class="col">
                                     <div class="row">
                                         <table id="adminsTable" class="table table-striped">
@@ -333,7 +378,11 @@
                                 </div>
                             </div>
 
+                        @if(activeTab == 1) {
+                            <div class="tab-pane active" id="userProfiles" role="tabpanel" aria-labelledby="history-tab">
+                        }else {
                             <div class="tab-pane" id="userProfiles" role="tabpanel" aria-labelledby="history-tab">
+                        }
                                     <!-- Profile table -->
                                 <div class="row">
                                     <div class="col text-center">
@@ -400,7 +449,11 @@
                                 </div>
                             </div>
 
+                        @if(activeTab == 2) {
+                            <div class="tab-pane active" id="userTrips" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="userTrips" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createTripModal">
@@ -441,8 +494,11 @@
                                     </table>
                                 </div>
                             </div>
-
+                        @if(activeTab == 3) {
+                            <div class="tab-pane active" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
@@ -483,8 +539,11 @@
                                     </table>
                                 </div>
                             </div>
-
+                        @if(activeTab == 4) {
+                            <div class="tab-pane active" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <table id="requestsTable" class="table table-striped">
                                         <thead>
@@ -515,9 +574,11 @@
                                     </table>
                                 </div>
                             </div>
-
-
+                        @if(activeTab == 5) {
+                            <div class="tab-pane active" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createHuntModal">
@@ -552,9 +613,11 @@
                                     </table>
                                 </div>
                             </div>
-
-
+                        @if(activeTab == 6) {
+                            <div class="tab-pane active" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createArtistModal">
@@ -609,9 +672,11 @@
                                     </table>
                                 </div>
                             </div>
-
-
+                        @if(activeTab == 7) {
+                            <div class="tab-pane active" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <table id="artistRequestsTable" class="table table-striped">
                                         <thead>
