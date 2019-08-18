@@ -1,9 +1,8 @@
 @import java.util._
 
 @import play.mvc.Http
-@import views.html.helper.CSRF
-@(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist],
-        destinations: List[Destination], eventForm : Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import views.html.helper.{CSRF, form}
+@(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist], destinations: List[Destination], events: List[Events], eventForm : Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -137,6 +136,8 @@
                                                 <input type="datetime-local" id="startDate" name="startDate">
                                                 <small id="label" for="endDate">End date</small>
                                                 <input type="datetime-local" id="endDate" name="endDate">
+                            @*//                }*@
+
                                                 <button class="btn btn-primary">Clear</button>
                                             </div>
 
@@ -146,7 +147,50 @@
                                 </div>
                             </div>
                         </div>
-@*//                }*@
+
+                <div class="viewEvents">
+                    <div class="row" id="allEventCards">
+                        @for(event <- events){
+                            <div class="card-body col col-md-12 col-xl-6" id="eventCard">
+                                <div class="card-header">@event.getEventName</div>
+                                <div class="row">
+                                    <div class="col col-10">
+                                        <p id="eventStats">
+                                            <ul>
+                                                @for(artist <- event.getEventArtists){
+                                                    <li>artist</li>
+                                                    }
+                                            </ul>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col col-10">
+                                        Date & Time: @event.getStartDate -> @event.getEndDate
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col col-10">
+                                        @*todo change this to destination name*@
+                                        Destination: @event.getDestinationId
+                                    </div>
+                                </div>
+                                <div class="col col-2">
+                                    <div class="row">
+                                        @*todo change this when route is implemented; *@
+                                        <a href="@routes.EventsController.show()">
+                                        <button class="btn btn-primary" id="viewEvent">View</button>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <p id="eventType">@event.getEventTypes</p>
+                                    <p id="eventRestriction">Age Restriction: @event.getAgeRestriction</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
 

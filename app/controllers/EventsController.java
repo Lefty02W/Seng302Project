@@ -13,6 +13,8 @@ import utility.Country;
 import views.html.events;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -51,10 +53,18 @@ public class EventsController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
 
         return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(events.render(profile,
-                        Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                        destinationRepository.getAllDestinations(), eventForm, request, messagesApi.preferred(request))))
-                .orElseGet(() -> redirect("/")));
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> {
+                    Optional<List<Events>> optionalEventsList = eventRepository.getAll();
+                    List<Events> eventsList = new ArrayList<>();
+                    if (optionalEventsList.isPresent()){
+                        eventsList = optionalEventsList.get();
+                    }
+                    return ok(events.render(profile,
+                            Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
+                            destinationRepository.getAllDestinations(), eventsList, eventForm,
+                            request, messagesApi.preferred(request)));
+                })
+                        .orElseGet(() -> redirect("/")));
     }
 
 
@@ -62,7 +72,7 @@ public class EventsController extends Controller {
     public CompletionStage<Result> createEvent(Http.Request request) {
         return supplyAsync( ()-> {
             Form<Events> form = eventForm.bindFromRequest(request);
-            Optional<Events> event = form.value(); // TODO: 18/08/19 Once modal is up check all form values are filling and being passed to insert correctly 
+            Optional<Events> event = form.value(); // TODO: 18/08/19 Once modal is up check all form values are filling and being passed to insert correctly
             event.ifPresent(eventRepository::insert);
             return redirect("/events");
         });
