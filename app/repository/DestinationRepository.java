@@ -187,7 +187,7 @@ public class DestinationRepository {
      * sets soft delete for a destination which eather deletes it or
      * undoes the delete
      * @param destId The ID of the destination to soft delete
-     * @param delete Boolean, true if is to be deleted, false if cancel a delete
+     * @param softDelete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
     public CompletionStage<Integer> setSoftDelete(int destId, int softDelete) {
