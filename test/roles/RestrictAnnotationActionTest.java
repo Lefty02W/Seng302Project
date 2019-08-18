@@ -36,7 +36,7 @@ public class RestrictAnnotationActionTest {
 
         request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/admin")
+                .uri("/admin/admins/0")
                 .session("connected", "1");
 
         result = Helpers.route(TestApplication.getApplication(),request);
@@ -63,7 +63,7 @@ public class RestrictAnnotationActionTest {
 
         request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/admin")
+                .uri("/admin/admins/0")
                 .session("connected", "4");
 
         result = Helpers.route(TestApplication.getApplication(),request);
