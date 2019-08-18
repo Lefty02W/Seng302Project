@@ -44,9 +44,9 @@ GET     /trips/:id/delete                       controllers.TripsController.dele
 GET     /trips/:id/create/delete                controllers.TripsController.deleteDestination(id: Integer, userId: Integer)
 
 # Travellers
-GET     /travellers                             controllers.TravellersController.show(request: Request)
-GET     /travellers/search                      controllers.TravellersController.search(request: Request)
-GET     /travellers/photos                      controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
+GET     /travellers/:offset                     controllers.TravellersController.show(request: Request, offset : Integer)
+GET     /travellers/profile/search              controllers.TravellersController.search(request: Request)
+GET     /travellers/profile/photos              controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
 
 # Profile
 GET     /profile                                controllers.ProfileController.show(request: Request)

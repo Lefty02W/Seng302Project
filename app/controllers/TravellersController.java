@@ -155,13 +155,13 @@ public class TravellersController extends Controller {
      * @return result of the rendering of the travellers page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> show(Http.Request request) {
+    public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
 
-                List<Profile> profiles = profileRepository.getAll();
+                List<Profile> profiles = profileRepository.getAllTravellersPaginate(offset);
                 return ok(travellers.render(form, profiles, photoList, profile.get(), Country.getInstance().getAllCountries(), new PartnerFormData(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");

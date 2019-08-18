@@ -91,6 +91,36 @@ public class ProfileRepository {
 
     }
 
+    /**
+     * Method to get all profiles for the travellers page with pagination. Gets the first 9 initially and uses
+     * an offset to load the next set of profiles to display with each new page.
+     *
+     * All profiles roles will also be filled.
+     *
+     * @return List of all profiles
+     */
+    public List<Profile> getAllTravellersPaginate(Integer offset) {
+        String selectQuery = "SELECT * " +
+                "FROM profile " +
+                "WHERE soft_delete = 0 " +
+                "ORDER BY profile_id ASC " +
+                "LIMIT 10 OFFSET ?";
+
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery)
+                .setParameter(1, offset)
+                .findList();
+        List<Profile> allProfiles = new ArrayList<>();
+
+        for (SqlRow row : rows) {
+
+            allProfiles.add(profileFromRow(row));
+
+        }
+
+        return allProfiles;
+
+    }
+
 
     /**
      * Method for getting a profile
