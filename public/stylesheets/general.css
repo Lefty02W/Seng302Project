@@ -15,6 +15,10 @@
     padding-left: 40px;
 }
 
+#label {
+    z-index: 2;
+}
+
 body {
     background-color: #f5f5f5;
 }
