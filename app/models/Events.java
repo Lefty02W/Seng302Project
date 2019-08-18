@@ -7,6 +7,7 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -138,4 +139,36 @@ public class Events extends Model {
     public List<Artist> getEventArtists(){return this.eventArtists;}
 
     public List<String> getEventTypes(){return this.eventTypes;}
+
+    public String getArtistForm() {
+        return artistForm;
+    }
+
+    public String getGenreForm() {
+        return genreForm;
+    }
+
+    public String getTypeForm() {
+        return typeForm;
+    }
+
+    public String getAgeForm() {
+        return ageForm;
+    }
+
+    public void setArtistForm(String artistForm) {
+        this.artistForm = artistForm;
+    }
+
+    public void setGenreForm(String genreForm) {
+        this.genreForm = genreForm;
+    }
+
+    public void setTypeForm(String typeForm) {
+        this.typeForm = typeForm;
+    }
+
+    public void setAgeForm(String ageForm) {
+        this.ageForm = ageForm;
+    }
 }

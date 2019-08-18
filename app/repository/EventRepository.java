@@ -90,7 +90,12 @@ public class EventRepository {
      */
     private CompletionStage<Integer> insertEvent(Events event){
             return supplyAsync(() -> {
-                ebeanServer.insert(event);
+                System.out.println("insert");
+                try {
+                    ebeanServer.insert(event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 return event.getEventId();
             }, executionContext);
     }
@@ -109,7 +114,12 @@ public class EventRepository {
                 });
     }
 
-
+    /**
+     * Method to update a given event and event linking tables
+     * @param eventId id of event to be updated
+     * @param event Event object storing new changes
+     * @return Completion stage integer holding event id
+     */
     public CompletionStage<Integer> update(Integer eventId, Events event){
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
@@ -131,21 +141,29 @@ public class EventRepository {
     });
     }
 
+    /**
+     * helper function to remove links from a given event
+     * @param event Event to have links removed
+     */
     private void removeLinkingTables(Events event) {
         eventGenreRepository.remove(event.getEventId());
         eventTypeRepository.remove(event.getEventId());
         eventArtistRepository.remove(event.getEventId());
     }
 
+    /**
+     * Helper function to save links inside the table so accesses all linking tables when event is stored
+     * @param event Event holding forms with updated values
+     */
     private void saveLinkingTables(Events event) {
-        for (MusicGenre genre : event.getEventGenres()) {
-            eventGenreRepository.insert(new EventGenres(genreRepository.getGenreIdByName(genre.getGenre()), event.getEventId()));
+        for (String genreId : event.getGenreForm().split(",")) {
+            eventGenreRepository.insert(new EventGenres(event.getEventId(), Integer.parseInt(genreId)));
         }
-        for (String type : event.getEventTypes()) {
-            eventTypeRepository.insert(new EventType(eventTypeRepository.getTypeOfEventsIdByName(type), event.getEventId()));
+        for (String type : event.getTypeForm().split(",")) {
+            eventTypeRepository.insert(new EventType(event.getEventId(),eventTypeRepository.getTypeOfEventsIdByName(type)));
         }
-        for (Artist artist : event.getEventArtists()) {
-            eventArtistRepository.insert(new EventArtists(artistRepository.getArtistIdByName(artist.getArtistName()), event.getEventId()));
+        for (String artistId : event.getArtistForm().split(",")) {
+            eventArtistRepository.insert(new EventArtists(event.getEventId(), Integer.parseInt(artistId)));
         }
     }
 }

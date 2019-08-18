@@ -77,11 +77,14 @@ public class EventsController extends Controller {
     public CompletionStage<Result> createEvent(Http.Request request) {
         return supplyAsync( ()-> {
             Form<Events> form = eventForm.bindFromRequest(request);
-
             Optional<Events> event = form.value();
             event.ifPresent(event1 -> {
                 Optional<String> startDate = form.field("startDate").value();
                 Optional<String> endDate = form.field("endDate").value();
+                Optional<String> genreForm = form.field("genreForm").value();
+                Optional<String> ageForm = form.field("ageForm").value();
+                Optional<String> artistForm = form.field("artistForm").value();
+
                 if (startDate.isPresent()) {
                     try {
                         event1.setStartDate(dateTimeEntry.parse(startDate.get()));
@@ -95,6 +98,15 @@ public class EventsController extends Controller {
                     } catch (ParseException e) {
                         event1.setEndDate(new Date());
                     }
+                }
+                if (genreForm.isPresent()) {
+                    event1.setGenreForm(genreForm.get());
+                }
+                if (ageForm.isPresent()) {
+                    event1.setAgeForm(ageForm.get());
+                }
+                if (artistForm.isPresent()) {
+                    event1.setArtistForm(artistForm.get());
                 }
                 eventRepository.insert(event1);
             });
