@@ -78,7 +78,7 @@ public class EventsController extends Controller {
         return supplyAsync( ()-> {
             Form<Events> form = eventForm.bindFromRequest(request);
             Optional<Events> event = form.value();
-            event.ifPresent(event1 -> {
+            if (event.isPresent()) {
                 Optional<String> startDate = form.field("startDate").value();
                 Optional<String> endDate = form.field("endDate").value();
                 Optional<String> genreForm = form.field("genreForm").value();
@@ -87,30 +87,50 @@ public class EventsController extends Controller {
 
                 if (startDate.isPresent()) {
                     try {
-                        event1.setStartDate(dateTimeEntry.parse(startDate.get()));
+                        event.get().setStartDate(dateTimeEntry.parse(startDate.get()));
                     } catch (ParseException e) {
-                        event1.setStartDate(new Date());
+                        event.get().setStartDate(new Date());
                     }
                 }
                 if (endDate.isPresent()) {
                     try {
-                        event1.setEndDate(dateTimeEntry.parse(endDate.get()));
+                        event.get().setEndDate(dateTimeEntry.parse(endDate.get()));
                     } catch (ParseException e) {
-                        event1.setEndDate(new Date());
+                        event.get().setEndDate(new Date());
                     }
                 }
                 if (genreForm.isPresent()) {
-                    event1.setGenreForm(genreForm.get());
+                    event.get().setGenreForm(genreForm.get());
                 }
                 if (ageForm.isPresent()) {
-                    event1.setAgeForm(ageForm.get());
+                    event.get().setAgeForm(ageForm.get());
                 }
                 if (artistForm.isPresent()) {
-                    event1.setArtistForm(artistForm.get());
+                    event.get().setArtistForm(artistForm.get());
                 }
-                eventRepository.insert(event1);
-            });
-            return redirect("/events");
+                eventRepository.insert(event.get());
+
+                if(checkDates(event.get())){
+                    eventRepository.insert(event.get());
+                } else {
+                    return redirect("/events").flashing("error", "Error creating event. Start Date must be before End date");
+                }
+            }
+            return redirect("/events").flashing("info", "Successfully added your new event");
         });
+    }
+
+    /**
+     * This method checks that the start and end dates are valid.
+     * In this context valid is that the start date is prior to the end date
+     * @param event the event object holding both start and end dates
+     * @return a boolean holding true if the dates are valid
+     */
+    private boolean checkDates(Events event) {
+        // Possibly add check to stop overlap with other destinations in the trip
+        if (event.getStartDate() != null && event.getEndDate() != null) {
+            return event.getStartDate().before(event.getEndDate());
+        }
+        return false;
     }
 }
