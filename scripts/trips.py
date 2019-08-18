@@ -4,7 +4,6 @@ from readJSON import *
 def get_trip_id(name, profile_id, cursor, db):
     """Is a helper function for execute_trips_query()
     Gets unique trip id for the trip name and profile_id"""
-    print(name, profile_id)
     cursor.execute("SELECT trip_id from trip WHERE name = '{}' AND profile_id = '{}'".format(name, profile_id))
     db.commit()
     id = cursor.fetchone()
@@ -31,10 +30,9 @@ def get_profile_id(emails, cursor, db):
 
 def execute_trip_dest_queries(destinations, trip_id, cursor, db):
     """For each destination the trip visits, will insert into the linking table the trip_id and destination_id"""
-    for destination in destinations:
+    for destination_num in range(0, len(destinations)):
         try:
-            print(destination)
-            cursor.execute("INSERT INTO trip_destination (trip_id, destination_id) VALUES ('{0}', (SELECT destination_id from destination WHERE name = '{1}' AND visible = 1))".format(trip_id, destination))
+            cursor.execute("INSERT INTO trip_destination (trip_id, destination_id, dest_order) VALUES ('{0}', (SELECT destination_id from destination WHERE name = '{1}' AND visible = 1), '{2}')".format(trip_id, destinations[destination_num], destination_num+1))
             db.commit()
             print("Successfully inserted tripDestination")
         except Exception as e:
@@ -66,7 +64,7 @@ def execute_trips_queries(cursor, db, number_trips, number_destinations, number_
                 db.commit()
                 trip_id = get_trip_id(trip[0], profile_id, cursor, db)
                 print("\nTrip inserted successfully")
-                print(execute_trip_dest_queries(trip[1], trip_id, cursor, db))
+                execute_trip_dest_queries(trip[1], trip_id, cursor, db)
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()

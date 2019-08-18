@@ -115,7 +115,7 @@ def select_2random_destinations(destination_names):
     dest2 = dest
     while dest2 == dest:
         dest2 = random.randint(1, len(destination_names))
-    return [destination_names[dest], destination_names[dest2]]
+    return [destination_names[dest-1], destination_names[dest2-1]]
 
 
 def read_trips(number_trips, number_destinations):

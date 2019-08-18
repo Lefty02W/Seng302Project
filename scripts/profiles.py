@@ -14,7 +14,7 @@ def execute_traveller_type_queries(traveller_type, email, cursor, db):
             db.commit()
             return "Successfully inserted Traveller Types"
         else:
-            return "Traveller type already exists (query still successful)"
+            return "Traveller type already exists"
     except Exception as e:
         # Rollback in case there is any error
         db.rollback()
@@ -51,7 +51,7 @@ def execute_passports_queries(passport_country, email, cursor, db):
             db.commit()
             return "successfully inserted passport"
         else:
-            return "Passport already exists (query still successful)"
+            return "Passport already exists"
     except Exception as e:
         db.rollback()
         return "failed to insert passport " + "ERROR: " + e
@@ -86,7 +86,7 @@ def execute_nationalities_queries(nationality, email, cursor, db):
             db.commit()
             return "successfully inserted nationality"
         else:
-            return "Nationality already exists (query still successful)"
+            return "Nationality already exists"
     except Exception as e:
         db.rollback()
         return "failed to insert profile_nationality " + "ERROR: " + e
@@ -123,14 +123,13 @@ def execute_profile_queries(cursor, db, number_profiles):
                                                                                                   profile[6]))
                 db.commit()
                 print("\nProfile inserted successfully!")
+                print(execute_nationalities_queries(profile[7], profile[3], cursor, db))
+                print(execute_passports_queries(profile[8], profile[3], cursor, db))
+                print(execute_traveller_type_queries(profile[9], profile[3], cursor, db))
             else:
-                print("Profile already exists (query still successful)")
+                print("Profile already exists")
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()
             print("\nFailed to insert, rolling back ")
             print("ERROR: ", e)
-
-        print(execute_nationalities_queries(profile[7], profile[3], cursor, db))
-        print(execute_passports_queries(profile[8], profile[3], cursor, db))
-        print(execute_traveller_type_queries(profile[9], profile[3], cursor, db))
