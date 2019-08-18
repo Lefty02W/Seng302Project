@@ -533,6 +533,16 @@ public class ProfileRepository {
         return Optional.of(destList);
     }
 
+
+    /**
+     * Finds the number of profiles in the database
+     * Used for pagination purposes
+     * @return int of number found
+     */
+    public int getNumProfiles() {
+        return ebeanServer.find(Profile.class).findCount();
+    }
+
     /**
      * Method for edit profile-email to check if there is a traveller account under the supplied email that already
      * exists (not the same user)

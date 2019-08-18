@@ -5,7 +5,8 @@
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
         countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
-        artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre])(implicit request: Http.Request, messages: play.i18n.Messages)
+        artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre],
+        pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -48,9 +49,9 @@
                         Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
                         Treasure Hunt</a>
-                    <a style="color: #ca6636" href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                    <a style="color: #ca6636" href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
                         Admin</a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
@@ -271,44 +272,88 @@
             <div class="row">
                 <div class="card adminCard">
                     <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" id="admin-list" role="tablist">
+                        <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
-                                <a class="nav-link active" href="#admins" role="tab" aria-controls="description" aria-selected="true">
-                                    Admins</a>
+                                @if(pagination.getActiveTab == 0) {
+                                    <a class="nav-link active" href="/admin/admins/0">
+                                        Admins</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/admins/0">
+                                        Admins</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#userProfiles" role="tab" aria-controls="history" aria-selected="false">
-                                    User Profiles</a>
+                                @if(pagination.getActiveTab == 1) {
+                                    <a class="nav-link active" href="/admin/profiles/0">
+                                        User Profiles</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/profiles/0">
+                                        User Profiles</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#userTrips" role="tab" aria-controls="deals" aria-selected="false">
-                                    User Trips</a>
+                                @if(pagination.getActiveTab == 2) {
+                                    <a class="nav-link active" href="/admin/trips/0">
+                                        User Trips</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/trips/0">
+                                        User Trips</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#userDestinations" role="tab" aria-controls="deals" aria-selected="false">
-                                    User Destinations</a>
+                                @if(pagination.getActiveTab == 3) {
+                                    <a class="nav-link active" href="/admin/destinations/0">
+                                        User Destinations</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/destinations/0">
+                                        User Destinations</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#destinationEditRequests" role="tab" aria-controls="deals" aria-selected="false">
-                                    Destination Edit Requests</a>
+                                @if(pagination.getActiveTab == 4) {
+                                    <a class="nav-link active" href="/admin/destinations/requests/0">
+                                        Destination Edit Requests</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/destinations/requests/0">
+                                        Destination Edit Requests</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#treasureHunts" role="tab" aria-controls="deals" aria-selected="false">
-                                    Treasure Hunts</a>
+                                @if(pagination.getActiveTab == 5) {
+                                    <a class="nav-link active" href="/admin/hunts/0">
+                                        Treasure Hunts</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/hunts/0">
+                                        Treasure Hunts</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#artists" role="tab" aria-controls="deals" aria-selected="false">
-                                    Artists</a>
+                                @if(pagination.getActiveTab == 6) {
+                                    <a class="nav-link active" href="/admin/artists/0">
+                                        Artists</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/artists/0">
+                                        Artists</a>
+                                }
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#artistRequests" role="tab" aria-controls="deals" aria-selected="false">
-                                    Artist Requests</a>
+                                @if(pagination.getActiveTab == 7) {
+                                    <a class="nav-link active" href="/admin/artist/requests/0">
+                                        Artist Requests</a>
+                                } else {
+                                    <a class="nav-link" href="/admin/artist/requests/0">
+                                        Artist Requests</a>
+                                }
                             </li>
                         </ul>
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
+                        @if(pagination.getActiveTab == 0) {
                             <div class="tab-pane active" id="admins" role="tabpanel">
+                        }else {
+                            <div class="tab-pane" id="admins" role="tabpanel">
+                        }
                                 <div class="col">
                                     <div class="row">
                                         <table id="adminsTable" class="table table-striped">
@@ -333,7 +378,11 @@
                                 </div>
                             </div>
 
+                        @if(pagination.getActiveTab == 1) {
+                            <div class="tab-pane active" id="userProfiles" role="tabpanel" aria-labelledby="history-tab">
+                        }else {
                             <div class="tab-pane" id="userProfiles" role="tabpanel" aria-labelledby="history-tab">
+                        }
                                     <!-- Profile table -->
                                 <div class="row">
                                     <div class="col text-center">
@@ -400,7 +449,11 @@
                                 </div>
                             </div>
 
+                        @if(pagination.getActiveTab == 2) {
+                            <div class="tab-pane active" id="userTrips" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="userTrips" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createTripModal">
@@ -431,7 +484,7 @@
                                                     <button class="btn btn-danger" onclick="fillDeleteValues('/admin/trips/@trip.getTripId/delete')">Delete</button>
                                                 </td>
                                                 <td>
-                                                    <a href="/admin/trips/@trip.getTripId">
+                                                    <a href="/admin/trips/@trip.getTripId/view">
                                                         <button class="btn btn-info">View</button>
                                                     </a>
                                                 </td>
@@ -439,10 +492,29 @@
 
                                         }
                                     </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/trips/0">Start</a></li>
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/trips/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/trips/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-
+                        @if(pagination.getActiveTab == 3) {
+                            <div class="tab-pane active" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
@@ -483,8 +555,11 @@
                                     </table>
                                 </div>
                             </div>
-
+                        @if(pagination.getActiveTab == 4) {
+                            <div class="tab-pane active" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <table id="requestsTable" class="table table-striped">
                                         <thead>
@@ -515,9 +590,11 @@
                                     </table>
                                 </div>
                             </div>
-
-
+                        @if(pagination.getActiveTab == 5) {
+                            <div class="tab-pane active" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createHuntModal">
@@ -552,9 +629,11 @@
                                     </table>
                                 </div>
                             </div>
-
-
+                        @if(pagination.getActiveTab == 6) {
+                            <div class="tab-pane active" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <div class="col text-center">
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#createArtistModal">
@@ -603,15 +682,17 @@
                                                 </td>
                                                 <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
                                                 <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
-                                                <td><a href="artist/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
+                                                <td><a href="/artists/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
                                             </tr>
                                         }
                                     </table>
                                 </div>
                             </div>
-
-
+                        @if(pagination.getActiveTab == 7) {
+                            <div class="tab-pane active" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
                             <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }
                                 <div class="row">
                                     <table id="artistRequestsTable" class="table table-striped">
                                         <thead>
@@ -700,16 +781,17 @@
             $(document).ready(function () {
                 $('#profileTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "lengthChange": false,
+                    "bPaginate": false
                 });
             });
 
             $(document).ready(function () {
                 $('#tripsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
@@ -865,7 +947,7 @@
                     </div>
                         <!-- footer -->
                     <div class="modal-footer">
-                        <a href="@routes.AdminController.show()">
+                        <a href="@routes.AdminController.showTrips(0)">
                             <button class="btn btn-secondary">Close</button>
                         </a>
                     </div>

@@ -12,8 +12,7 @@ POST    /user/create                            controllers.LoginController.save
 
 # Destination
 GET     /destinations/show/:isPublic            controllers.DestinationsController.show(request: Request, isPublic: Boolean)
-GET     /destinations/create                    controllers.DestinationsController.showCreate(request: Request)
-GET     /destinations/:id/edit/show/:isPublic   controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
+GET     /destinations/:id/edit/show/:isPublic             controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)
 POST    /destinations/:id                       controllers.DestinationsController.update(request: Request, id: Integer)
 POST    /destinations                           controllers.DestinationsController.saveDestination(request: Request)
 GET     /destinations/:id/delete                controllers.DestinationsController.delete(request: Request, id: Integer)
@@ -62,13 +61,16 @@ POST    /profile/photo/profile/upload           controllers.ProfileController.up
 # Admins
 POST    /admin/:id                              controllers.ProfileController.updateAdmin(request: Request, id: Integer)
 GET     /admin                                  controllers.AdminController.show(request: Request)
+GET     /admin/admins/:offset                   controllers.AdminController.showAdmins(request: Request, offset: Integer)
 GET     /admin/undo/                            controllers.AdminController.undoTopOfStack(request : Request)
 
 ## Admin Trips
+GET     /admin/trips/:tripId/view               controllers.AdminController.viewTrip(request: Request, tripId: Integer)
 GET     /admin/trips/:tripId/delete             controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
-GET     /admin/trips/:tripId                    controllers.AdminController.viewTrip(request: Request, tripId: Integer)
+GET     /admin/trips/:offset                    controllers.AdminController.showTrips(request: Request, offset: Integer)
 
 ## Admin Profiles
+GET     /admin/profiles/:offset                    controllers.AdminController.showProfiles(request: Request, offset: Integer)
 GET     /admin/profile/:id/edit                 controllers.AdminController.showEditProfile(request: Request, id: Integer)
 POST    /admin/profile/:id/edit                 controllers.AdminController.updateProfile(request: Request, id: Integer)
 GET     /admin/:profileId/delete                controllers.AdminController.deleteProfile(request: Request, profileId: Integer)
@@ -79,7 +81,9 @@ GET     /admin/:userId/admin                    controllers.AdminController.make
 GET     /admin/:userId/admin/remove             controllers.AdminController.removeAdmin(userId: Integer)
 
 ## Admin Destinations
-GET     /admin/destinations/:destId             controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)
+GET     /admin/destinations/:offset             controllers.AdminController.showDestinations(request: Request, offset: Integer)
+GET     /admin/destinations/requests/:offset    controllers.AdminController.showDestinationRequests(request: Request, offset: Integer)
+GET     /admin/destinations/destination/:destId controllers.AdminController.showDestination(request: Request, destId : Integer, isEdit : Boolean)
 POST    /admin/destinations/:destId             controllers.AdminController.editDestination(request: Request, destId : Integer)
 GET     /admin/destinations/:destId/delete      controllers.AdminController.deleteDestination(request: Request, destId: Integer)
 POST    /admin/create/destinations              controllers.AdminController.addDestination(request: Request)
@@ -87,12 +91,15 @@ GET     /admin/destinations/:id/request/reject  controllers.AdminController.reje
 GET     /admin/destinations/:id/request/accept  controllers.AdminController.acceptDestinationRequest(request : Request, id : Integer)
 
 ## Admin Treasure Hunts
+GET     /admin/hunts/:offset                    controllers.AdminController.showHunts(request: Request, offset: Integer)
 POST    /admin/hunts/create                     controllers.AdminController.createHunt(request : Request)
 GET     /admin/hunts/:id/delete                 controllers.AdminController.deleteHunt(request : Request, id : Integer)
 GET     /admin/hunts/:id/edit/show              controllers.AdminController.showEditHunt(request : Request, id : Integer)
 POST    /admin/hunts/:id/edit                   controllers.AdminController.editTreasureHunt(request : Request, id : Integer)
 
 ## Admin Artists
+GET     /admin/artists/:offset                 controllers.AdminController.showArtists(request: Request, offset: Integer)
+GET     /admin/artists/requests/:offset        controllers.AdminController.showArtistRequests(request: Request, offset: Integer)
 GET    /admin/artist/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
 GET    /admin/artist/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
 POST   /admin/artist/create                    controllers.AdminController.createArtist(request : Request)
@@ -102,10 +109,10 @@ POST   /admin/artist/:id/edit                  controllers.AdminController.editA
 
 
 # Tresure Hunts
-GET     /treasure                               controllers.TreasureHuntController.show(request: Request)
+GET     /treasure/:offset                       controllers.TreasureHuntController.show(request: Request, offset : Integer)
 POST    /hunts/create                           controllers.TreasureHuntController.createHunt(request : Request)
 GET     /hunts/:id/delete                       controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
-GET     /hunts/:id/edit/show                    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer)
+GET     /hunts/:id/edit/show/:offset                    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer, offset : Integer)
 POST    /hunts/:id/edit                         controllers.TreasureHuntController.editTreasureHunt(request : Request, id: Integer)
 
 

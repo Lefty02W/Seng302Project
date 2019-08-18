@@ -1,6 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt], destinations: List[Destination], form: Form[TreasureHunt], editHunt: RoutedObject[TreasureHunt])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, availableHunts: List[TreasureHunt], myHunts: List[TreasureHunt],
+        destinations: List[Destination], form: Form[TreasureHunt],
+        editHunt: RoutedObject[TreasureHunt], pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -38,9 +40,9 @@
                     <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
-                    <a style="color: #ca6636" href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a style="color: #ca6636" href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
@@ -85,12 +87,21 @@
                             </thead>
                             @for(hunt <- availableHunts) {
                                 <tr>
-
                                     <td>@hunt.getRiddle</td>
                                     <td>@hunt.getEndDateString</td>
                                 </tr>
                             }
                         </table>
+                        <div class="col">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" href="/treasure/0">Start</a></li>
+                                @if(pagination.isPreviousEnabled){
+                                    <li class="page-item"><a class="page-link" href="/treasure/@pagination.getPrevious">Previous</a></li>
+                                }@if(pagination.isNextEnabled){
+                                <li class="page-item"><a class="page-link" href="/treasure/@pagination.getNext">Next</a></li>
+                            }
+                            </ul>
+                        </div>
                     </div>
 
                     <div class="row">
@@ -283,7 +294,8 @@
             $(document).ready(function() {
                 $('#huntsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
+                    "bPaginate": false,
+                    "bInfo": false,
                     "lengthChange": false
                 });
             } );
@@ -291,7 +303,8 @@
             $(document).ready(function() {
                 $('#avalHunts').DataTable({
                     "searching": false,
-                    "pageLength": 8,
+                    "bPaginate": false,
+                    "bInfo": false,
                     "lengthChange": false
                 });
             } );

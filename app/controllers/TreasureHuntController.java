@@ -1,6 +1,7 @@
 package controllers;
 
 
+import models.PaginationHelper;
 import models.RoutedObject;
 import models.TreasureHunt;
 import play.data.Form;
@@ -25,13 +26,14 @@ import static play.mvc.Results.redirect;
 
 public class TreasureHuntController {
 
+
     private MessagesApi messagesApi;
     private final ProfileRepository profileRepository;
     private final DestinationRepository destinationRepository;
     private final TreasureHuntRepository treasureHuntRepository;
     private final UndoStackRepository undoStackRepository;
     private final Form<TreasureHunt> huntForm;
-    private String huntShowRoute = "/treasure";
+    private String huntShowRoute = "/treasure/0";
 
 
     /**
@@ -56,14 +58,21 @@ public class TreasureHuntController {
      * @param request the users request
      * @return a redirect to the treasure hunt page
      */
-    public CompletionStage<Result> show(Http.Request request) {
+    public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
-        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, treasureHuntRepository.getNumHunts());
+        paginationHelper.alterNext(9);
+        paginationHelper.alterPrevious(9);
+        paginationHelper.checkButtonsEnabled();
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(offset);
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             undoStackRepository.clearStackOnAllowed(profile.get());
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts,
+                        destinationRepository.getPublicDestinations(), huntForm,
+                        new RoutedObject<TreasureHunt>(null, false, false),
+                        paginationHelper, request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }
@@ -156,19 +165,21 @@ public class TreasureHuntController {
      * @param id unique treasure hunt id
      * @return a redirect to the treasure hunt page
      */
-    public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id) {
+    public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id, Integer offset) {
         TreasureHunt hunt = treasureHuntRepository.lookup(id);
+        PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, treasureHuntRepository.getNumHunts());
+        paginationHelper.alterNext(9);
+        paginationHelper.alterPrevious(9);
         huntForm.fill(hunt);
         Integer profId = SessionController.getCurrentUserId(request);
-        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts();
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(offset);
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), paginationHelper, request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }
-
 
     /**
      * Implement the undo delete method from interface

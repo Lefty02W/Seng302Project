@@ -10,7 +10,6 @@ import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
 import utility.Country;
-import views.html.createDestinations;
 import views.html.destinations;
 
 import javax.inject.Inject;
@@ -310,31 +309,6 @@ public class DestinationsController extends Controller {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         return imageList.orElseGet(ArrayList::new);
     }
-
-
-    /**
-     * Displays a page to create a destination
-     *
-     * @param request
-     * @return redirect
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> showCreate(Http.Request request) {
-        Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.findById(profId).thenApplyAsync(profile -> {
-            if (profile.isPresent()) {
-                Destination dest = new Destination();
-                dest.setLatitude(0.0);
-                dest.setLongitude(0.0);
-                Form<Destination> destinationForm = form.fill(dest);
-                return ok(createDestinations.render(destinationForm, profile.get(), request, messagesApi.preferred(request)));
-            } else {
-                return redirect(destShowRoute);
-            }
-        });
-    }
-
-
 
     /**
      * This method updates destination in the database
