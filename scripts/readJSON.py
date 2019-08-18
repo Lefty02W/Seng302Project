@@ -136,6 +136,25 @@ def read_trips(number_trips, number_destinations):
             trips.append(trip)
     return trips
 
+def read_treasure_hunts(number_hunts, number_destinations):
+    """Reads the file treasureHunts.JSON and converts the json into a list of hunts"""
+    hunts = []
+    destination_names = read_destination_names(number_destinations)
+    with open('treasureHunts.JSON') as json_file:
+        data = json.load(json_file)
+        if number_hunts is True:
+            number_hunts = len(data)
+        elif number_hunts > len(data):
+            number_hunts = len(data)
+        for i in range(number_hunts):
+            hunt = []
+            hunt.append(data[i]['riddle'])
+            hunt.append(data[i]['start_date'])
+            hunt.append(data[i]['end_date'])
+            hunt.append(data[i]['destination'])
+            hunts.append(hunt)
+    return hunts
+
 
 
 def add_traveller_type_to_destinations(destinations):
