@@ -84,12 +84,11 @@ def execute_genre_queries(genres, name, cursor, db):
             print("Failed to insert artist genre " + "ERROR: " + str(e))
         
 
-def execute_artist_queries(cursor, db):
+def execute_artist_queries(cursor, db, number_artists):
     """Execute artist queries to insert the artist. Other functions called to 
     insert additional information in linking tables."""
-    
-    artist_list = read_artists()
-
+    print("\n----------Artists----------")
+    artist_list = read_artists(number_artists)
     for artist in artist_list:
         try:
             cursor.execute("INSERT INTO artist(artist_name, biography, facebook_link, instagram_link, " \

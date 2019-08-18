@@ -92,11 +92,12 @@ def execute_nationalities_queries(nationality, email, cursor, db):
         return "failed to insert profile_nationality " + "ERROR: " + e
 
 
-def execute_profile_queries(cursor, db):
+def execute_profile_queries(cursor, db, number_profiles):
     """Inserts the profile query to insert the profile and then calls functions to insert additional information in
     linking tables.
     Note: if profile already exists in table will not insert profile and result in an error which is handled"""
-    profile_list = read_profiles()[0]
+    print("\n----------Profiles----------")
+    profile_list = read_profiles(number_profiles)[0]
     for profile in profile_list:
         if profile[1] is None:
             profile[1] = ''

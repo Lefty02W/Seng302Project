@@ -19,13 +19,17 @@ def get_date(json_string):
     return date(year, int(date_parts[1]), int(date_parts[0]))
 
 
-def read_profiles():
+def read_profiles(number_profiles):
     """Reads the file profiles.JSON and converts the json into a list of profiles with the data"""
     profiles = []
     emails = []
     with open('profiles.JSON') as json_file:
         data = json.load(json_file)
-        for i in range(2):
+        if number_profiles is True:
+            number_profiles = len(data)
+        elif number_profiles > len(data):
+            number_profiles = len(data)
+        for i in range(number_profiles):
             email = data[i]['first_name'] + "." + data[i]['last_name'] + "@gmail.com"
             profile = []
             profile.append(data[i]['first_name'])
@@ -40,7 +44,21 @@ def read_profiles():
             profile.append(data[i]['traveller_type'])
             emails.append(email)
             profiles.append(profile)
-    return profiles, emails
+    return profiles
+
+
+def read_profile_emails(number_profiles):
+    """Reads the profiles file to get just the emails of the profiles"""
+    profile_emails = []
+    with open("profiles.JSON") as json_file:
+        data = json.load(json_file)
+        if number_profiles is True:
+            number_profiles = len(data)
+        elif number_profiles > len(data):
+            number_profiles = len(data)
+        for i in range(number_profiles):
+            profile_emails.append(data[i]['first_name'] + "." + data[i]['last_name'] + "@gmail.com")
+    return profile_emails
 
 
 def public_or_private(destination_name):
@@ -53,12 +71,16 @@ def public_or_private(destination_name):
         return random.randint(0, 1)
 
 
-def read_destinations():
+def read_destinations(number_destinations):
     """Reads the file destinations.JSON and converts the json into a list of destinations"""
     destinations = []
     with open('destinations.JSON') as json_file:
         data = json.load(json_file)
-        for i in range(2):
+        if number_destinations is True:
+            number_destinations = len(data)
+        elif number_destinations > len(data):
+            number_destinations = len(data)
+        for i in range(number_destinations):
             destination = []
             destination.append(data[i]["name"])
             destination.append(data[i]["type"])
@@ -73,17 +95,43 @@ def read_destinations():
     return destinations
 
 
-def read_trips():
+def read_destination_names(number_destinations):
+    """Reads the destinations file to get just the names of the destinations"""
+    destination_names = []
+    with open("destinations.JSON") as json_file:
+        data = json.load(json_file)
+        if number_destinations is True:
+            number_destinations = len(data)
+        elif number_destinations > len(data):
+            number_destinations = len(data)
+        for i in range(number_destinations):
+            destination_names.append(data[i]['name'])
+    return destination_names
+
+
+def select_2random_destinations(destination_names):
+    """Returns 2 randomly selected destinations from the list that are not the same as each other"""
+    dest = random.randint(1, len(destination_names))
+    dest2 = dest
+    while dest2 == dest:
+        dest2 = random.randint(1, len(destination_names))
+    return [destination_names[dest], destination_names[dest2]]
+
+
+def read_trips(number_trips, number_destinations):
     """Reads the file trips.JSON and converts the json into a list of trips"""
     trips = []
+    destination_names = read_destination_names(number_destinations)
     with open('trips.JSON') as json_file:
         data = json.load(json_file)
-        for i in range(2):
+        if number_trips is True:
+            number_trips = len(data)
+        elif number_trips > len(data):
+            number_trips = len(data)
+        for i in range(number_trips):
             trip = []
             trip.append(data[i]['trip_name'])
-            destination_names = []
-            for x in range(len(data[i]['destinations'])):
-                destination_names.append(data[i]['destinations'][x]['destination'])
+            destination_names = select_2random_destinations(destination_names)
             trip.append(destination_names)
             trips.append(trip)
     return trips
@@ -133,12 +181,16 @@ def add_traveller_type_to_destinations(destinations):
 #     return new_query
 
 
-def read_artists():
+def read_artists(number_artists):
     """Reads a JSON file holding artists and converts it to a list of artists"""
     artists = []
     with open('artists.JSON') as json_file:
         data = json.load(json_file)
-        for i in range(2):
+        if number_artists is True:
+            number_artists = len(data)
+        elif number_artists > len(data):
+            number_artists = len(data)
+        for i in range(number_artists):
             artist = []
             artist.append(data[i]['artist_name'])
             artist.append(data[i]['biography'])

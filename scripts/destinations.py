@@ -61,12 +61,13 @@ def get_profile_id(cursor, db, emails):
         return 0
 
 
-def execute_destination_queries(cursor, db):
+def execute_destination_queries(cursor, db, number_destinations):
     """Inserts the destination query to insert the destination and then calls functions to insert additional information
      in linking tables.
     Note: if destination already exists in table will not insert destination and result in an error which is
     handled"""
-    destination_list = read_destinations()
+    print("\n----------Destinations----------")
+    destination_list = read_destinations(number_destinations)
     emails = read_profiles()[1]
     for destination in destination_list:
         try:
