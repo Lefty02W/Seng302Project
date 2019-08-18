@@ -42,14 +42,14 @@ release-artifacts:
 deploy-dev:
   stage: deploy
   script:
-#    - sudo cp -a /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/photos/ /opt/
+    - sudo cp -a /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/photos/ /opt/
     - sudo rm -rf /opt/dev_server/*
     - sbt dist
     - sudo cp /var/lib/gitlab-runner/builds/00188c57/0/seng302-2019/team-700/target/universal/seng302-team-700-0.0.1-SNAPSHOT.zip /opt/dev_server
     - cd /opt/dev_server
     - sudo unzip seng302-team-700-0.0.1-SNAPSHOT.zip
-#    - sudo rm -rf /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/photos/*
-#    - sudo mv /opt/photos /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/
+    - sudo rm -rf /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/photos/*
+    - sudo mv /opt/photos /opt/dev_server/seng302-team-700-0.0.1-SNAPSHOT/
     - sudo systemctl restart development_server
   environment:
     name: development
@@ -64,7 +64,7 @@ deploy-prod:
   - sudo cp -a /opt/prod_server/seng302-team-700-0.0.1-SNAPSHOT/photos/ /opt/
   - sudo rm -rf /opt/prod_server/*
   - sbt dist
-  - sudo cp /var/lib/gitlab-runner/builds/cc082478/0/seng302-2019/team-700/target/universal/seng302-team-700-0.0.1-SNAPSHOT.zip /opt/prod_server
+  - sudo cp /var/lib/gitlab-runner/builds/00188c57/0/seng302-2019/team-700/target/universal/seng302-team-700-0.0.1-SNAPSHOT.zip /opt/prod_server
   - cd /opt/prod_server
   - sudo unzip seng302-team-700-0.0.1-SNAPSHOT.zip
   - sudo rm -rf /opt/prod_server/seng302-team-700-0.0.1-SNAPSHOT/photos/*
@@ -75,7 +75,6 @@ deploy-prod:
     url: http://csse-s302g7.canterbury.ac.nz:443
   only:
   - tags
-
 
 
 

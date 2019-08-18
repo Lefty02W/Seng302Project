@@ -57,6 +57,18 @@ public class TripRepository {
 
 
     /**
+     * Gets 9 of the passed user trips starting from a passed offset
+     *
+     * @param profileId database id of profile
+     * @param offset offset for trips to retrieve
+     * @return Optional list of ids of the trips found
+     */
+    public Optional<List<Integer>> getUserTripIds(int profileId, int offset) {
+        return Optional.of(ebeanServer.find(Trip.class).setMaxRows(9).setFirstRow(offset).where().eq("profile_id", profileId).findIds());
+    }
+
+
+    /**
      * Removes a trip from the database
      * @param tripID the id of the trip to remove
      * @return the completionStage
