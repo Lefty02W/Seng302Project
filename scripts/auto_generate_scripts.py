@@ -39,15 +39,15 @@ def main():
     # -------------queries-------------
     # Set the number of each data to be inserted, max is length of json around 2000 each roughly - doesnt matter if
     # exceed this number. Set to true if you want all data to be inserted, set to 0 if you don't want any
-    number_profiles = 0
+    number_profiles = 1
     number_destinations = 0
     number_artists = 0
     number_trips = True
 
     execute_profile_queries(cursor, db, number_profiles)
-    execute_destination_queries(cursor, db, number_destinations)
+    execute_destination_queries(cursor, db, number_destinations, number_profiles)
     execute_artist_queries(cursor, db, number_artists)
-    execute_trips_queries(cursor, db, number_trips, number_destinations)
+    execute_trips_queries(cursor, db, number_trips, number_destinations, number_profiles)
 
     # disconnect from server
     cursor.close()

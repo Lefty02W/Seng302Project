@@ -92,23 +92,39 @@ def execute_nationalities_queries(nationality, email, cursor, db):
         return "failed to insert profile_nationality " + "ERROR: " + e
 
 
+def get_profile_id(cursor, db, email):
+    """Is a helper function for execute_destination_queries()
+    Returns a profile id for the destination to be linked to"""
+    try:
+        cursor.execute("SELECT profile_id from profile WHERE email = '{0}'".format(email))
+        db.commit()
+        profile_id = cursor.fetchone()[0]
+        return profile_id
+    except Exception as e:
+        db.rollback()
+        return 0
+
+
 def execute_profile_queries(cursor, db, number_profiles):
     """Inserts the profile query to insert the profile and then calls functions to insert additional information in
     linking tables.
     Note: if profile already exists in table will not insert profile and result in an error which is handled"""
     print("\n----------Profiles----------")
-    profile_list = read_profiles(number_profiles)[0]
+    profile_list = read_profiles(number_profiles)
     for profile in profile_list:
         if profile[1] is None:
             profile[1] = ''
         try:
-            cursor.execute("INSERT INTO profile (first_name, middle_name, last_name, email, password, birth_date, gender)"
-                           " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(profile[0], profile[1],
-                                                                                              profile[2], profile[3],
-                                                                                              profile[4], profile[5],
-                                                                                              profile[6]))
-            db.commit()
-            print("\nProfile inserted successfully!")
+            if get_profile_id(cursor, db, profile[3]) == 0:
+                cursor.execute("INSERT INTO profile (first_name, middle_name, last_name, email, password, birth_date, gender)"
+                               " VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}')".format(profile[0], profile[1],
+                                                                                                  profile[2], profile[3],
+                                                                                                  profile[4], profile[5],
+                                                                                                  profile[6]))
+                db.commit()
+                print("\nProfile inserted successfully!")
+            else:
+                print("Profile already exists (query still successful)")
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()

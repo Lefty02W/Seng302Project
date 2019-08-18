@@ -68,7 +68,7 @@ def public_or_private(destination_name):
     if destination_name in public_destination_list:
         return 1
     else:
-        return random.randint(0, 1)
+        return 1
 
 
 def read_destinations(number_destinations):
