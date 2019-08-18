@@ -93,22 +93,23 @@ public class EventRepository {
     }
 
     /**
-     * Inserts all linking tables and event for an event objects
+     * Inserts all linking tables and event for an event object
      * uses ebeans and accesses other repository's to insert the objects into the database
      * @param event Event object that has been fully populated and is ready to insert
      * @return CompletionStage<Integer> Holding the inserted events Id
      */
     public CompletionStage<Integer> insert(Events event) {
-        CompletionStage<Integer> event_id_out = insertEvent(event);
-        for (MusicGenre genre : event.getEventGenres()) {
-            eventGenreRepository.insert(new EventGenres(genreRepository.getGenreIdByName(genre.getGenre()), event.getEventId()));
-        }
-        for (String type : event.getEventTypes()) {
-            eventTypeRepository.insert(new EventType(eventTypeRepository.getTypeOfEventsIdByName(type), event.getEventId()));
-        }
-        for (Artist artist : event.getEventArtists()) {
-            eventArtistRepository.insert(new EventArtists(artistRepository.getArtistIdByName(artist.getArtistName()), event.getEventId()));
-        }
-        return event_id_out;
+        return insertEvent(event).thenApplyAsync(eventId -> {
+            for (MusicGenre genre : event.getEventGenres()) {
+                eventGenreRepository.insert(new EventGenres(genreRepository.getGenreIdByName(genre.getGenre()), eventId));
+            }
+            for (String type : event.getEventTypes()) {
+                eventTypeRepository.insert(new EventType(eventTypeRepository.getTypeOfEventsIdByName(type), eventId));
+            }
+            for (Artist artist : event.getEventArtists()) {
+                eventArtistRepository.insert(new EventArtists(artistRepository.getArtistIdByName(artist.getArtistName()), eventId));
+            }
+            return eventId;
+        });
     }
-    }
+}

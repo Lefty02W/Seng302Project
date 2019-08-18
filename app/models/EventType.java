@@ -3,12 +3,10 @@ package models;
 import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 @Entity
 public class EventType {
 
-    @Id
     private int eventId;
 
     @Constraints.Required

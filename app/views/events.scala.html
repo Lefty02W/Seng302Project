@@ -1,6 +1,9 @@
+@import java.util._
+
 @import play.mvc.Http
-@import views.html.helper.{CSRF, form}
-@(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist], destinations: List[Destination])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import views.html.helper.CSRF
+@(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist],
+        destinations: List[Destination], eventForm : Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -161,7 +164,7 @@
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                     <!-- TODO Uncomment when create event controller method is set up. -->
-                    <!-- (at)form(routes.EventsController.createEvent()) { -->
+                    form(routes.EventsController.createEvent()) {
                     @CSRF.formField
                     <!-- body -->
                 <div class="modal-body">
@@ -191,13 +194,13 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-center">
-                                    <label>Event Desination</label>
+                                    <label>Event Destination</label>
                                 </div>
                                 <div class="row justify-content-center">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="desintation" name="Desintation" class="hidden-field">
+                                        <input type="text" id="destinationId" name="destinationId" class="hidden-field" required>
                                     </div>
-                                    <select class="selectpicker" data-live-search="true" title="Desintation" id="destinationDropdown" data-width="50%">
+                                    <select class="selectpicker" data-live-search="true" title="Destination" id="destinationDropdown" data-width="50%">
                                     @for(destination <- destinations) {
                                         <option value="@destination">@destination.getName</option>
                                     }
@@ -221,7 +224,7 @@
                                 </div>
                                 <div class="row justify-content-center">
                                     <div class="hidden-div-edit">
-                                        <input type="text" id="adminForm" name="adminForm" class="hidden-field">
+                                        <input type="text" id="adminForm" name="adminForm" class="hidden-field" required>
                                     </div>
                                     <select class="selectpicker" data-live-search="true" multiple title="Event Admins" id="adminDropdown" data-width="50%">
                                     @for(artist <- artists) {
@@ -245,7 +248,7 @@
                     <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary" onclick="fillValsEvent()">Save</button>
                 </div>
-                    <!-- } -->
+                    }
             </div>
         </div>
     </div>

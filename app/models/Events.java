@@ -6,7 +6,6 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +19,7 @@ public class Events {
     @Constraints.Required
     private String eventName;
 
+    @Constraints.Required
     private String description;
 
     @Constraints.Required
