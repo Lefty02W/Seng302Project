@@ -1,6 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile, countries : List[String], formData : PartnerFormData)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile, countries : List[String],
+        formData : PartnerFormData, pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -235,7 +236,18 @@
                                     }
                             </table>
                         </div>
+                    </div>
 
+                    <div class="col" id="pagination-links">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="/travellers/0">Start</a></li>
+                            @if(pagination.isPreviousEnabled){
+                                <li class="page-item"><a class="page-link" href="/travellers/@pagination.getPrevious">Previous</a></li>
+                            }@if(pagination.isNextEnabled) {
+                            <li class="page-item"><a class="page-link" href="/travellers/@pagination.getNext">
+                                Next</a></li>
+                        }
+                        </ul>
                     </div>
                 </div>
             </div>

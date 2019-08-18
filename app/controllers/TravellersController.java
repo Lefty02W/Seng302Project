@@ -1,5 +1,6 @@
 package controllers;
 
+import models.PaginationHelper;
 import models.PartnerFormData;
 import models.Photo;
 import models.Profile;
@@ -99,7 +100,7 @@ public class TravellersController extends Controller {
                         upperDate = getDateFromAge(500);
                         break;
                 }
-                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), formData, request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), formData, null, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");
             }
@@ -157,12 +158,17 @@ public class TravellersController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
+        PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, profileRepository.getNumProfiles());
+        paginationHelper.alterNext(10);
+        paginationHelper.alterPrevious(10);
+        paginationHelper.checkButtonsEnabled();
+
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
 
                 List<Profile> profiles = profileRepository.getAllTravellersPaginate(offset);
-                return ok(travellers.render(form, profiles, photoList, profile.get(), Country.getInstance().getAllCountries(), new PartnerFormData(), request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, profiles, photoList, profile.get(), Country.getInstance().getAllCountries(), new PartnerFormData(), paginationHelper, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }

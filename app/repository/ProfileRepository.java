@@ -121,7 +121,6 @@ public class ProfileRepository {
 
     }
 
-
     /**
      * Method for getting a profile
      *
