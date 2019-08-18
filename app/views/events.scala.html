@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser : Profile, countries: List[String], genres: List[MusicGenre])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -8,7 +8,7 @@
 
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | Artists</title>
+        <title>TravelEA | Events</title>
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
@@ -43,6 +43,8 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                        Artists</a>
                     <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
@@ -69,6 +71,72 @@
                 </div>
             </nav>
         </div>
+
+        <div class="container">
+            @if(request.flash.getOptional("info").isPresent) {
+                <div class="alert alert-info">
+                @request.flash.getOptional("info").get()
+                </div>
+            }
+            @if(request.flash.getOptional("error").isPresent) {
+                <div class="alert alert-danger">
+                @request.flash.getOptional("error").get()
+                </div>
+            }
+        </div>
+
+        <div class="row justify-content-center" id="eventsContainer">
+            <div class="col-lg-9 col-sm-11">
+@*//                @form(routes.EventsController.search()){*@
+@*//                        @CSRF.formField*@
+                        <div class="accordion" id="filterAccordion">
+                            <div class="card">
+                                <div class="card-header" id="searchHeader">
+                                    <input type="search" id="eventName" name =eventName placeholder="Search..">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                    <button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                            data-target="#eventFilters" aria-expanded="false"
+                                            aria-controls="eventFilters">Filters
+                                    </button>
+                                </div>
+                                <div class="collapse eventFilters" id="eventFilters" aria-labelledby="searchHeader" data-parent="#filterAccordion">
+                                    <div class="card-body">
+                                        <div class="search">
+                                            <input type="search" id="artistName" name="artistName" placeholder="Artist name..">
+                                            <select class="selectpicker" id="eventType" name="eventType" title="Event Type">
+                                                @*populate picker with event types*@
+                                            </select>
+                                            <select class="selectpicker" id="country" name="country" title="Countries">
+                                            @for(nation <- countries) {
+                                                <option value="@nation">@nation</option>
+                                            }
+                                            </select>
+                                            @*startdate*@
+
+                                            @*enddate*@
+
+                                            <select class="selectpicker" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                                <option value="0">All ages</option>
+                                                <option value="18">18+</option>
+                                                <option value="21">21+</option>
+                                            </select>
+                                            <select class="selectpicker" id="genre" name="genre" title="Genres">
+                                            @for(genre <- genres) {
+                                                <option value="@genre.getGenre">@genre.getGenre</option>
+                                            }
+                                            </select>
+                                            <button class="btn btn-primary">Clear</button>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+@*//                }*@
+            </div>
+        </div>
+
 
 
 
