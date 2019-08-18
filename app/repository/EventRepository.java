@@ -73,6 +73,9 @@ public class EventRepository {
      * @return event Event object that has been populated
      */
     private Events populateEvent(Events event) {
+        event.setEventGenres(genreRepository.getEventGenres(event.getEventId()));
+        event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
+        event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
         return event;
     }
 

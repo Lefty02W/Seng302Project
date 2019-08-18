@@ -3,6 +3,7 @@ package repository;
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import models.ArtistGenre;
+import models.EventGenres;
 import models.MusicGenre;
 import play.db.ebean.EbeanConfig;
 
@@ -105,6 +106,22 @@ public class GenreRepository {
      */
     public Integer getGenreIdByName(String genreName){
         return (ebeanServer.find(MusicGenre.class).where().eq("genre", genreName).findOne().getGenreId());
+    }
+
+    /**
+     * method to retrieve list of genres for an event
+     * @param eventId event id to retrieve
+     * @return List of music genres linked to genres
+     */
+    public List<MusicGenre> getEventGenres(int eventId) {
+        List<EventGenres> eventGenres = ebeanServer.find(EventGenres.class).where().eq("event_id", eventId).findList();
+        List<MusicGenre> genres = new ArrayList<>();
+        Optional<MusicGenre> musicGenre;
+        for (EventGenres genre : eventGenres) {
+            musicGenre = Optional.ofNullable(ebeanServer.find(MusicGenre.class).where().eq("genre_id", genre.getGenreId()).findOne());
+            musicGenre.ifPresent(genres::add);
+        }
+        return (genres);
     }
 
 }

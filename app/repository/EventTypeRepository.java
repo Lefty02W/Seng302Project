@@ -7,6 +7,9 @@ import models.TypeOfEvents;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -88,4 +91,21 @@ public class EventTypeRepository {
         return (ebeanServer.find(TypeOfEvents.class).where().eq("type_name", typeName).findOne().getTypeId());
     }
 
+    /**
+     * Get all types of event for an event
+     * @param eventId id of the event
+     * @return List of event types just taking in string of the name
+     */
+    public List<String> getEventTypeOfEvents(int eventId) {
+        List<EventType> eventTypes = ebeanServer.find(EventType.class).where().eq("event_id", eventId).findList();
+        List<String> types = new ArrayList<>();
+        Optional<TypeOfEvents> type;
+        for (EventType eventType : eventTypes) {
+            type = Optional.ofNullable(ebeanServer.find(TypeOfEvents.class).where().eq("type_id", eventType.getTypeId()).findOne());
+            if(type.isPresent()) {
+                types.add(type.get().getTypeName());
+            }
+        }
+        return (types);
+    }
 }

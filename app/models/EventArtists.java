@@ -28,4 +28,7 @@ public class EventArtists {
     public int getEventId() {
         return eventId;
     }
+
+    public int getArtistId() { return artistId;
+    }
 }
