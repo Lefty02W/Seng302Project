@@ -804,7 +804,7 @@ public class AdminController {
     public CompletionStage<Result> showEditArtist(Http.Request request, Integer id) {
         return supplyAsync(() -> {
             Artist artist = artistRepository.getArtistById(id);
-            artist = artistRepository.populateArtist(artist);
+            artist = artistRepository.populateArtistAdmin(artist);
             if (artist.getGenreList() == null) {
                 artist.setGenre(new ArrayList<>());
             }
@@ -840,7 +840,7 @@ public class AdminController {
         Artist artist = artistController.setValues(artistId, artistProfileForm);
         return supplyAsync(() -> {
             artistRepository.editArtistProfile(id, artist, artistProfileForm, currentUserId);
-            return redirect("/admin/artist/0").flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
+            return redirect("/admin/artists/0").flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
         });
     }
 }
