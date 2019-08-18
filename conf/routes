@@ -123,3 +123,4 @@ GET     /artists/:id                            controllers.ArtistController.sho
 
 #Events
 GET     /events                                 controllers.EventsController.show(request : Request)
+POST    /events/create                          controllers.EventsController.createEvent(request : Request)

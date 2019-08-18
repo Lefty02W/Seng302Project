@@ -17,19 +17,14 @@ public class Events extends Model {
     @Id
     private int eventId;
 
-    @Constraints.Required
     private String eventName;
 
-    @Constraints.Required
     private String description;
 
-    @Constraints.Required
     private int destinationId;
 
-    @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date startDate;
 
-    @Formats.DateTime(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     private int ageRestriction;
@@ -42,6 +37,18 @@ public class Events extends Model {
 
     @Transient
     private List<Artist> eventArtists;
+
+    @Transient
+    private String artistForm;
+
+    @Transient
+    private String genreForm;
+
+    @Transient
+    private String typeForm;
+
+    @Transient
+    private String ageForm;
 
     /**
      * Traditional constructor for events used when retrieving an Event from the data base

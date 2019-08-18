@@ -13,6 +13,8 @@ import utility.Country;
 import views.html.events;
 
 import javax.inject.Inject;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,8 @@ public class EventsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final EventRepository eventRepository;
     private final Form<Events> eventForm;
+    private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+
 
     @Inject
     public EventsController(ProfileRepository profileRepository, MessagesApi messagesApi, GenreRepository genreRepository,
@@ -71,9 +75,20 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createEvent(Http.Request request) {
         return supplyAsync( ()-> {
+            System.out.println("yeet");
             Form<Events> form = eventForm.bindFromRequest(request);
-            Optional<Events> event = form.value(); // TODO: 18/08/19 Once modal is up check all form values are filling and being passed to insert correctly
-            event.ifPresent(eventRepository::insert);
+            System.out.println(form);
+
+            Optional<Events> event = form.value();
+            event.ifPresent(event1 -> {
+                try {
+                    event1.setStartDate(dateTimeEntry.parse(form.field("startDate").value().get()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(event.get().getStartDate());
+                eventRepository.insert(event1);
+            });
             return redirect("/events");
         });
     }
