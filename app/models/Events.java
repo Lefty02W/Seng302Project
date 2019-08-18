@@ -1,5 +1,6 @@
 package models;
 
+import io.ebean.Model;
 import play.data.format.Formats;
 import play.data.validation.Constraints;
 
@@ -11,7 +12,7 @@ import java.util.List;
 
 
 @Entity
-public class Events {
+public class Events extends Model {
 
     @Id
     private int eventId;

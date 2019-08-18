@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.Transaction;
 import models.*;
 import play.db.ebean.EbeanConfig;
 
@@ -102,16 +103,49 @@ public class EventRepository {
      */
     public CompletionStage<Integer> insert(Events event) {
         return insertEvent(event).thenApplyAsync(eventId -> {
-            for (MusicGenre genre : event.getEventGenres()) {
-                eventGenreRepository.insert(new EventGenres(genreRepository.getGenreIdByName(genre.getGenre()), eventId));
+                    event.setEventId(eventId);
+                    saveLinkingTables(event);
+                    return eventId;
+                });
+    }
+
+
+    public CompletionStage<Integer> update(Integer eventId, Events event){
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();
+            if (targetEvent != null) {
+                targetEvent.setAgeRestriction(event.getAgeRestriction());
+                targetEvent.setDescription(event.getDescription());
+                targetEvent.setDestinationId(event.getDestinationId());
+                targetEvent.setEndDate(event.getEndDate());
+                targetEvent.setStartDate(event.getStartDate());
+                targetEvent.update();
+                txn.commit();
+                event.setEventId(targetEvent.getEventId());
+                removeLinkingTables(event);
+                saveLinkingTables(event);
             }
-            for (String type : event.getEventTypes()) {
-                eventTypeRepository.insert(new EventType(eventTypeRepository.getTypeOfEventsIdByName(type), eventId));
-            }
-            for (Artist artist : event.getEventArtists()) {
-                eventArtistRepository.insert(new EventArtists(artistRepository.getArtistIdByName(artist.getArtistName()), eventId));
-            }
-            return eventId;
-        });
+            txn.end();
+        return eventId;
+    });
+    }
+
+    private void removeLinkingTables(Events event) {
+        eventGenreRepository.remove(event.getEventId());
+        eventTypeRepository.remove(event.getEventId());
+        eventArtistRepository.remove(event.getEventId());
+    }
+
+    private void saveLinkingTables(Events event) {
+        for (MusicGenre genre : event.getEventGenres()) {
+            eventGenreRepository.insert(new EventGenres(genreRepository.getGenreIdByName(genre.getGenre()), event.getEventId()));
+        }
+        for (String type : event.getEventTypes()) {
+            eventTypeRepository.insert(new EventType(eventTypeRepository.getTypeOfEventsIdByName(type), event.getEventId()));
+        }
+        for (Artist artist : event.getEventArtists()) {
+            eventArtistRepository.insert(new EventArtists(artistRepository.getArtistIdByName(artist.getArtistName()), event.getEventId()));
+        }
     }
 }

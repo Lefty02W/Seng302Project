@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import models.EventGenres;
 import models.EventType;
 import models.TypeOfEvents;
 import play.db.ebean.EbeanConfig;
@@ -107,5 +108,21 @@ public class EventTypeRepository {
             }
         }
         return (types);
+    }
+
+    /**
+     * EventType Delete
+     * Method to delete an EventType object from the database by a given id
+     * @param eventId int: id of the EventType that will be removed
+     * @return null
+     */
+    public CompletionStage<Void> remove(int eventId){
+        return supplyAsync(() -> {
+            ebeanServer.find(EventType.class)
+                    .where()
+                    .eq("event_id", eventId)
+                    .delete();
+            return null;
+        });
     }
 }
