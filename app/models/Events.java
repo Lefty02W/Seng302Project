@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -33,13 +34,13 @@ public class Events {
     private int ageRestriction;
 
     @Transient
-    private ArrayList<MusicGenre> eventGenres = new ArrayList<>();
+    private List<MusicGenre> eventGenres;
 
     @Transient
-    private ArrayList<String> eventTypes = new ArrayList<>();
+    private List<String> eventTypes;
 
     @Transient
-    private ArrayList<Artist> eventArtists = new ArrayList<>();
+    private List<Artist> eventArtists;
 
     /**
      * Traditional constructor for events used when retrieving an Event from the data base
@@ -118,15 +119,15 @@ public class Events {
         this.ageRestriction = ageRestriction;
     }
 
-    public void setEventGenres(ArrayList<MusicGenre> genres) { this.eventGenres = genres;}
+    public void setEventGenres(List<MusicGenre> genres) { this.eventGenres = genres;}
 
-    public void setEventArtists(ArrayList<Artist> artists) {this.eventArtists = artists;}
+    public void setEventArtists(List<Artist> artists) {this.eventArtists = artists;}
 
-    public void setEventTypes(ArrayList<String> types) {this.eventTypes = types;}
+    public void setEventTypes(List<String> types) {this.eventTypes = types;}
 
-    public ArrayList<MusicGenre> getEventGenres(){return this.eventGenres;}
+    public List<MusicGenre> getEventGenres(){return this.eventGenres;}
 
-    public ArrayList<Artist> getEventArtists(){return this.eventArtists;}
+    public List<Artist> getEventArtists(){return this.eventArtists;}
 
-    public ArrayList<String> getEventTypes(){return this.eventTypes;}
+    public List<String> getEventTypes(){return this.eventTypes;}
 }

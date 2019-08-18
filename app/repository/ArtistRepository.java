@@ -660,4 +660,23 @@ public class ArtistRepository {
     public Integer getArtistIdByName(String artistName){
         return (ebeanServer.find(Artist.class).where().eq("artist_name", artistName).findOne().getArtistId());
     }
+
+
+    /**
+     * Get all artists for an event
+     * @param eventId id of the event
+     * @return List of artists linked to the event
+     */
+    public List<Artist> getEventArtists(int eventId) {
+        List<EventArtists> eventArtists = ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).findList();
+        List<Artist> artists = new ArrayList<>();
+        Optional<Artist> artist;
+        for (EventArtists eventArtist : eventArtists) {
+            artist = Optional.ofNullable(ebeanServer.find(Artist.class).where().eq("artist_id", eventArtist.getArtistId()).findOne());
+            if(artist.isPresent()) {
+                artists.add(artist.get());
+            }
+        }
+        return (artists);
+    }
 }

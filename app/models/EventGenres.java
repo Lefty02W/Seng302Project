@@ -29,4 +29,7 @@ public class EventGenres {
         return eventId;
     }
 
+    public Integer getGenreId() {
+        return genreId;
+    }
 }
