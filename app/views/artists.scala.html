@@ -307,24 +307,36 @@
     </div>
 
     <script>
-            function fillValsArtist() {
-                $('#genreForm').val($('#genreDropdown').val());
-                $('#adminForm').val($('#adminDropdown').val());
-                $('#countries').val($('#originDropdown').val());
-            }
+        function fillValsArtist() {
+            $('#genreForm').val($('#genreDropdown').val());
+            $('#adminForm').val($('#adminDropdown').val());
+            $('#countries').val($('#originDropdown').val());
+        }
 
-            $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
-            });
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+
+
+
 
 //==============================================INFINITE SCROLLING======================================================
+
         var page_count;
 
         $(function() {
             page_count = 0;
+
+            if ((window.location.href.split('/search?')).length > 1){
+                $("#show-more").hide();
+            }
+
         });
 
+        function hideLazyLoading(){
+            $("#show-more").hide()
+        }
 
         function load_infinite() {
             page_count++;
