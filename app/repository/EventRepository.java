@@ -5,6 +5,7 @@ import io.ebean.EbeanServer;
 import models.*;
 import play.db.ebean.EbeanConfig;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ public class EventRepository {
     /**
      * Constructor for the events repository class
      */
+    @Inject
     public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                            EventTypeRepository eventTypeRepository, EventArtistRepository eventArtistRepository,
                            EventGenreRepository eventGenreRepository, ArtistRepository artistRepository,
