@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -75,18 +76,26 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createEvent(Http.Request request) {
         return supplyAsync( ()-> {
-            System.out.println("yeet");
             Form<Events> form = eventForm.bindFromRequest(request);
-            System.out.println(form);
 
             Optional<Events> event = form.value();
             event.ifPresent(event1 -> {
-                try {
-                    event1.setStartDate(dateTimeEntry.parse(form.field("startDate").value().get()));
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                Optional<String> startDate = form.field("startDate").value();
+                Optional<String> endDate = form.field("endDate").value();
+                if (startDate.isPresent()) {
+                    try {
+                        event1.setStartDate(dateTimeEntry.parse(startDate.get()));
+                    } catch (ParseException e) {
+                        event1.setStartDate(new Date());
+                    }
                 }
-                System.out.println(event.get().getStartDate());
+                if (endDate.isPresent()) {
+                    try {
+                        event1.setEndDate(dateTimeEntry.parse(endDate.get()));
+                    } catch (ParseException e) {
+                        event1.setEndDate(new Date());
+                    }
+                }
                 eventRepository.insert(event1);
             });
             return redirect("/events");
