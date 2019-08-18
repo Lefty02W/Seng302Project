@@ -65,9 +65,9 @@ GET     /admin/admins/:offset                   controllers.AdminController.show
 GET     /admin/undo/                            controllers.AdminController.undoTopOfStack(request : Request)
 
 ## Admin Trips
-GET     /admin/trips/:offset                    controllers.AdminController.showTrips(request: Request, offset: Integer)
+GET     /admin/trips/:tripId/view               controllers.AdminController.viewTrip(request: Request, tripId: Integer)
 GET     /admin/trips/:tripId/delete             controllers.AdminController.deleteTrip(request: Request, tripId: Integer)
-GET     /admin/trips/:tripId                    controllers.AdminController.viewTrip(request: Request, tripId: Integer)
+GET     /admin/trips/:offset                    controllers.AdminController.showTrips(request: Request, offset: Integer)
 
 ## Admin Profiles
 GET     /admin/profiles/:offset                    controllers.AdminController.showProfiles(request: Request, offset: Integer)
