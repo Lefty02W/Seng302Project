@@ -50,8 +50,8 @@ def insert_treasure_hunts(cursor, db, num_hunts, number_profiles):
             if get_hunt_id(hunt[0], cursor, db) != 0:
                 print("\nTreasure Hunt '"+hunt[0]+"' already exists")
             else:
-                cursor.execute("INSERT INTO tresure_hunt(riddle, start_date, end_date, destination_id, " \
-                               + "profile_id) VALUES ('{0}', '{1}', '{2}', '{3}', '{4}')".format(hunt[0], hunt[1], hunt[2],
+                cursor.execute("INSERT INTO treasure_hunt(riddle, start_date, end_date, destination_id, " \
+                               + "profile_id) VALUES ('{0}', (select NOW()), '2020-09-01', '{1}', '{2}')".format(hunt[0],
                                                                                                  get_destination_id(cursor, db, hunt[3]),
                                                                                                  get_profile_id(cursor, db, emails)))
                 db.commit()

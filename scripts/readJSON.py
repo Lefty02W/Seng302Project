@@ -136,10 +136,9 @@ def read_trips(number_trips, number_destinations):
             trips.append(trip)
     return trips
 
-def read_treasure_hunts(number_hunts, number_destinations):
+def read_treasure_hunts(number_hunts):
     """Reads the file treasureHunts.JSON and converts the json into a list of hunts"""
     hunts = []
-    destination_names = read_destination_names(number_destinations)
     with open('treasureHunts.JSON') as json_file:
         data = json.load(json_file)
         if number_hunts is True:
