@@ -63,12 +63,16 @@ public class TreasureHuntController {
         PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, treasureHuntRepository.getNumHunts());
         paginationHelper.alterNext(9);
         paginationHelper.alterPrevious(9);
+        paginationHelper.checkButtonsEnabled();
         List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(offset);
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             undoStackRepository.clearStackOnAllowed(profile.get());
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(null, false, false), paginationHelper, request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts,
+                        destinationRepository.getPublicDestinations(), huntForm,
+                        new RoutedObject<TreasureHunt>(null, false, false),
+                        paginationHelper, request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }
