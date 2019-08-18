@@ -134,8 +134,6 @@
                                             <div class="form-group" id="holder">
                                                 <small id="label" for="startDate">Start date</small>
                                                 <input type="datetime-local" id="startDate" name="startDate">
-                                                <small id="label" for="endDate">End date</small>
-                                                <input type="datetime-local" id="endDate" name="endDate">
                             @*//                }*@
 
                                                 <button class="btn btn-primary">Clear</button>
@@ -175,17 +173,11 @@
                                         Destination: @event.getDestinationId
                                     </div>
                                 </div>
-                                <div class="col col-2">
-                                    <div class="row">
-                                        @*todo change this when route is implemented; *@
-                                        <a href="@routes.EventsController.show()">
-                                        <button class="btn btn-primary" id="viewEvent">View</button>
-                                        </a>
+                                <div class="row">
+                                    <div class="col col-10">
+                                        <p id="eventType">Event Type: @event.getEventTypes</p>
+                                        <p id="eventRestriction">Age Restriction: @event.getAgeRestriction</p>
                                     </div>
-                                </div>
-                                <div class="card-footer">
-                                    <p id="eventType">@event.getEventTypes</p>
-                                    <p id="eventRestriction">Age Restriction: @event.getAgeRestriction</p>
                                 </div>
                             </div>
                         }
