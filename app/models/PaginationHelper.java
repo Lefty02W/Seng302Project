@@ -103,6 +103,15 @@ public class PaginationHelper {
     }
 
     /**
+     * Forms an info string to show to the user on the travellers page
+     * Has info on what entries are being showed and total number of entries
+     * @return
+     */
+    public String getInfoStringTravellers() {
+        return "Showing " + (next - 9) + " - " + next + " of " + maxSize;
+    }
+
+    /**
      * Sets the next and previous to be enabled or disabled dependent on the current next and previous values
      */
     public void checkButtonsEnabled() {

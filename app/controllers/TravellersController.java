@@ -59,7 +59,7 @@ public class TravellersController extends Controller {
      * @return renders traveller view with queried list of travellers
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> search(Http.Request request){
+    public CompletionStage<Result> search(Http.Request request, Integer offset){
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
@@ -100,7 +100,14 @@ public class TravellersController extends Controller {
                         upperDate = getDateFromAge(500);
                         break;
                 }
-                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), formData, null, request, messagesApi.preferred(request)));
+
+                int sizeOfSearchResults = profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality).size();
+                PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, sizeOfSearchResults);
+                paginationHelper.alterNext(10);
+                paginationHelper.alterPrevious(10);
+                paginationHelper.checkButtonsEnabled();
+
+                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), formData, paginationHelper, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");
             }

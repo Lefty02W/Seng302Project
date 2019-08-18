@@ -62,7 +62,7 @@
                 <div class="container-fluid">
                     <div id="table-card" class="card-large table-hover">
                         <div class="col">
-                        @form(routes.TravellersController.search()) {
+                        @form(routes.TravellersController.search(0)) {
                             @CSRF.formField
 
 
@@ -238,17 +238,23 @@
                         </div>
                     </div>
 
-                    <div class="col" id="pagination-links">
+                    <div class="col">
+                        <a>@pagination.getInfoStringTravellers</a>
                         <ul class="pagination">
                             <li class="page-item"><a class="page-link" href="/travellers/0">Start</a></li>
-                            @if(pagination.isPreviousEnabled){
+                            @if(pagination.isPreviousEnabled) {
                                 <li class="page-item"><a class="page-link" href="/travellers/@pagination.getPrevious">Previous</a></li>
-                            }@if(pagination.isNextEnabled) {
-                            <li class="page-item"><a class="page-link" href="/travellers/@pagination.getNext">
-                                Next</a></li>
-                        }
+                            } else {
+                                <li class="page-item disabled"><a class="page-link" href="/travellers/@pagination.getPrevious">Previous</a></li>
+                            }
+                            @if(pagination.isNextEnabled) {
+                                <li class="page-item"><a class="page-link" href="/travellers/@pagination.getNext">Next</a></li>
+                            } else {
+                                <li class="page-item disabled"><a class="page-link" href="/travellers/@pagination.getNext">Next</a></li>
+                            }
                         </ul>
                     </div>
+
                 </div>
             </div>
 
