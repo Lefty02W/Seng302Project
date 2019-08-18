@@ -60,7 +60,6 @@ POST    /profile/photo/profile/upload           controllers.ProfileController.up
 
 # Admins
 POST    /admin/:id                              controllers.ProfileController.updateAdmin(request: Request, id: Integer)
-GET     /admin                                  controllers.AdminController.show(request: Request)
 GET     /admin/admins/:offset                   controllers.AdminController.showAdmins(request: Request, offset: Integer)
 GET     /admin/undo/                            controllers.AdminController.undoTopOfStack(request : Request)
 
