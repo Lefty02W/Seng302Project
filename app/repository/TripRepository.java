@@ -211,6 +211,6 @@ public class TripRepository {
      * @return int of number found
      */
     public int getNumTrips() {
-        return ebeanServer.find(Trip.class).findCount();
+        return ebeanServer.find(Trip.class).where().eq("soft_delete", 0).findCount();
     }
 }

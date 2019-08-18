@@ -81,7 +81,21 @@ public class PaginationHelper {
      * @return
      */
     public String getInfoString() {
-        return "Showing " + (next - 7) + " to " + next + " of " + maxSize;
+        String info = "Showing ";
+        if (!nextEnabled){
+            info += (next + 1) + " ";
+        } else if (previous == 0) {
+                info += "1 ";
+        } else {
+            info += (next - 7) + " ";
+        }
+        if (!nextEnabled) {
+            info += " to " + maxSize;
+        } else {
+            info += " to " + next;
+        }
+        info += " of " + maxSize;
+        return info;
     }
 
     /**
