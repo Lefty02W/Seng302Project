@@ -72,6 +72,10 @@ public class Events extends Model {
         this.ageRestriction = ageRestriction;
     }
 
+    /**
+     * Method to turn the age restriction integer into a readable string that can be displayed on the front end
+     * @return String of the age restriction is there is one
+     */
     public String getAgeRestrictionString(){
         if (ageRestriction == 0){
             return "All ages.";
