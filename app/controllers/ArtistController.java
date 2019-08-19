@@ -61,6 +61,7 @@ public class ArtistController extends Controller {
      * @param request client request
      * @return CompletionStage rendering artist page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId)
