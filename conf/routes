@@ -11,7 +11,7 @@ POST    /login                                  controllers.LoginController.logi
 POST    /user/create                            controllers.LoginController.save(request: Request)
 
 # Destination
-GET     /destinations/show/:isPublic            controllers.DestinationsController.show(request: Request, isPublic: Boolean)
+GET     /destinations/show/:isPublic/:page            controllers.DestinationsController.show(request: Request, isPublic: Boolean, page: Integer)
 GET     /destinations/create                    controllers.DestinationsController.showCreate(request: Request)
 POST    /destinations/:id/edit                  controllers.DestinationsController.edit(request: Request, id: Integer)
 GET     /destinations/:id/edit/show             controllers.DestinationsController.showDestinationEdit(request: Request, id: Integer, isPublic: Boolean)

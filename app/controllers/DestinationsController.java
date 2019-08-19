@@ -76,10 +76,12 @@ public class DestinationsController extends Controller {
      * Displays a page showing the destinations to the user
      *
      * @param request
+     * @param isPublic - Whether the target is public destinations
+     * @param rowOffset - The row/page offset to use for getting results back
      * @return the list of destinations
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> show(Http.Request request, boolean isPublic) {
+    public CompletionStage<Result> show(Http.Request request, boolean isPublic, Integer rowOffset) {
         destinationsList.clear();
         Integer userId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(userId).thenApplyAsync(profile -> {
@@ -95,7 +97,7 @@ public class DestinationsController extends Controller {
                     }
                 } else {
                     profileRepository.getDestinations(userId).ifPresent(dests -> destinationsList.addAll(dests));
-                    destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
+                    destinationRepository.getFollowedDestinations(userId, rowOffset).ifPresent(follows -> destinationsList.addAll(follows));
                 }
                 destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
@@ -198,7 +200,7 @@ public class DestinationsController extends Controller {
                 }
                 if (!isPublic) {
                     Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
-                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId);
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId, 0);
                     try {
                         destinationsList = destListTemp.get();
                         destinationsList.addAll(followedListTemp.get());
