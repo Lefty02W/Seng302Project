@@ -184,7 +184,7 @@
 
                     </div>
                     <div class="row">
-                        <button class="btn btn-outline-primary"  id="show-more" onclick="load_infinite()">Load more...</button>
+                        <button class="btn btn-outline-primary" id="show-more">Load more...</button>
                     </div>
                 </div>
             </div>
@@ -306,7 +306,7 @@
         </div>
     </div>
 
-    <script>
+    <script type="text/javascript">
         function fillValsArtist() {
             $('#genreForm').val($('#genreDropdown').val());
             $('#adminForm').val($('#adminDropdown').val());
@@ -324,19 +324,8 @@
 //==============================================INFINITE SCROLLING======================================================
 
         var page_count;
+        var followed_artists_ids;
 
-        $(function() {
-            page_count = 0;
-
-            if ((window.location.href.split('/search?')).length > 1){
-                $("#show-more").hide();
-            }
-
-        });
-
-        function hideLazyLoading(){
-            $("#show-more").hide()
-        }
 
         function load_infinite() {
             page_count++;
@@ -345,6 +334,24 @@
             $("#show-more").prop('disabled', true);
             setTimeout(fetch_artists, 500);
         }
+
+        $(document).ready(function() {
+            console.log("e")
+            page_count = 0;
+            document.getElementById("show-more").addEventListener("click", load_infinite);
+
+            if ((window.location.href.split('/search?')).length > 1){
+                $("#show-more").hide();
+            }
+
+            followed_artists_ids = [];
+            @for(artist <- followedArtists){
+                followed_artists_ids.push(@artist.getArtistId);
+            }
+            console.log(followed_artists_ids);
+
+
+        });
 
         function fetch_artists(){
 
@@ -379,11 +386,15 @@
             
             var html = "";
             var i, c, g;
+
+
             for (i = 0; i < jsonData.length; i++) {
 
                 var artist = jsonData[i];
                 var id = parseInt(artist.artistId);
                 var countries = artist.countryListString.split(",");
+
+
 
                 html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
                             "<div class='card-header'>"+artist.artistName+"</div> " +
@@ -409,15 +420,22 @@
                                             "<a href='artists/"+id+"'>"+
                                             "<button class='btn btn-primary' id='view' style='margin-bottom: 5px;'>View</button></a>" +
                                         "</div>" +
-                                        "<div class='row'>" +
-                                            "<button class='btn btn-primary'>Follow</button>" +
-                                        "</div>" +
+                                        "<div class='row'>";
+                                            if(followed_artists_ids.includes(id)) {
+                                                html +="<a href='artist/"+id+"/unfollow'>"+
+                                                    "<button class='btn btn-primary'>Unfollow</button>";
+                                            }else{
+                                                html +="<a href='artist/"+id+"/follow'>"+
+                                                "<button class='btn btn-primary'>Follow</button></a>";
+
+                                            }
+                                html += "</div>" +
                                     "</div>" +
                                 "</div>" +
                             "</div>" +
                         "</div>"
                 
-            };
+            }
             return html
 
         }
