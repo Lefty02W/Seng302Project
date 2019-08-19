@@ -1,8 +1,6 @@
 package repository;
 
-import io.ebean.Ebean;
-import io.ebean.EbeanServer;
-import io.ebean.Transaction;
+import io.ebean.*;
 import models.*;
 import play.db.ebean.EbeanConfig;
 
@@ -165,5 +163,120 @@ public class EventRepository {
         for (String artistId : event.getArtistForm().split(",")) {
             eventArtistRepository.insert(new EventArtists(event.getEventId(), Integer.parseInt(artistId)));
         }
+    }
+
+
+    /**
+     * Private method to form the query string from the given data in the eventForm
+     * @param eventFormData eventForm data required to generate the search query
+     * @return query string for the events search
+     */
+    private SqlQuery formSearchQuery(EventFormData eventFormData) {
+        String query = "SELECT DISTINCT events.event_id, events.event_name, events.description, events.destination_id, " +
+                "events.start_date, events.end_date, events.age_restriction FROM events " +
+                "LEFT OUTER JOIN event_genre ON events.event_id = event_genres.event_id " +
+                "LEFT OUTER JOIN event_type ON events.event_id = event_type.event_id " +
+                "LEFT OUTER JOIN event_artists ON events.event_id = event_artists.event_id ";
+        boolean whereAdded = false;
+        List<String> args = new ArrayList<>();
+        if (!eventFormData.getEventName().equals("")){
+            query += "WHERE events.event_name LIKE ? ";
+            whereAdded = true;
+            args.add(eventFormData.getEventName());
+        }
+        if (!eventFormData.getArtistName().equals("")) {
+            if (whereAdded){
+                // TODO: 19/08/19 make sure artists is a dropdown that sends artist id back 
+                query += "AND event_artists.artist_id = ?";
+            } else {
+                query += "WHERE event_artists.artist_id = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getArtistName());
+        }
+        if (!eventFormData.getEventType().equals("")) {
+            if (whereAdded){
+                query += "AND event_type.event_id = ?";
+            } else {
+                query += "WHERE event_type.event_id = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getEventType());
+        }
+        // TODO: 19/08/19 Waiting on eventDestination linking table
+//        if (!eventFormData.getCountry().equals("")) {
+//            if (whereAdded){
+//                query += "AND event_destination.destination_id = ?";
+//            } else {
+//                query += "WHERE event_destination.destination_id = ?";
+//                whereAdded = true;
+//            }
+//            args.add(eventFormData.getCountry());
+//        }
+        if (!eventFormData.getAgeRestriction().equals("")) {
+            if(whereAdded){
+                query += "AND events.age_restriction = ?";
+            } else {
+                query += "WHERE events.age_restriction = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getAgeRestriction());
+        }
+        if (!eventFormData.getGenre().equals("")) {
+            if (whereAdded){
+                query += "AND event_genres.genre_id = ?";
+            } else {
+                query += "WHERE event_genres.genre_id = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getGenre());
+        }
+        if (!eventFormData.getStartDate().equals("")) {
+            if (whereAdded){
+                query += "AND events.start_date <= ? And events.end_date >= ?";
+            } else {
+                query += "WHERE events.start_date <= ? And events.end_date >= ?";
+            }
+            args.add(eventFormData.getGenre());
+        }
+        SqlQuery sqlQuery = createSqlQuery(query, args);
+
+        return sqlQuery;
+    }
+
+    /**
+     * method to turn the given string into an SQL query adding a list of parameters as wildcards
+     * @param query base string query with wild cards
+     * @param args parameters to be added to the wildcards
+     * @return SqlQuery for searching events
+     */
+    private SqlQuery createSqlQuery(String query, List<String> args){
+        SqlQuery sqlQuery = ebeanServer.createSqlQuery(query);
+        for (int i=0; i < args.size(); i++){
+            sqlQuery.setParameter(i + 1, args.get(i));
+        }
+        return sqlQuery;
+    }
+
+
+    /**
+     * Method to search for events in the database
+     *
+     * @param eventFormData data used in search
+     * @return List holding resulting events from search
+     */
+    public List<Events> searchEvent(EventFormData eventFormData) {
+        SqlQuery query = formSearchQuery(eventFormData);
+        List<SqlRow> sqlRows = query.findList();
+        List<Events> events = new ArrayList<>();
+        if (!sqlRows.isEmpty()){
+            for (SqlRow foundEvent : sqlRows){
+                events.add(new Events(foundEvent.getInteger("event_id"), foundEvent.getString("event_name"),
+                        foundEvent.getString("description"), foundEvent.getInteger("destination_id"),
+                        foundEvent.getDate("start_date"), foundEvent.getDate("end_date"),
+                        foundEvent.getInteger("age_restriction")));
+            }
+        }
+        return events;
     }
 }

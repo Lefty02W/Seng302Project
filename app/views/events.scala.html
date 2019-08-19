@@ -5,7 +5,9 @@
 
 @import views.html.helper.form
 @import views.html.helper.{CSRF, form}
-@(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist], destinations: List[Destination], events: List[Events], eventForm : Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist],
+        destinations: List[Destination], events: List[Events], eventForm : Form[Events],
+        eventFormDataForm : Form[EventFormData])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -95,8 +97,8 @@
 
         <div class="row justify-content-center" id="eventsContainer">
             <div class="col-lg-9 col-sm-11">
-@*//                @form(routes.EventsController.search()){*@
-@*//                        @CSRF.formField*@
+                @form(routes.EventsController.search()){
+                        @CSRF.formField
                         <div class="accordion" id="filterAccordion">
                             <div class="card">
                                 <div class="card-header" id="searchHeader">
@@ -138,7 +140,7 @@
                                             <div class="form-group" id="holder">
                                                 <small id="label" for="startDate">Date</small>
                                                 <input type="datetime-local" id="startDate" name="startDate">
-                            @*//                }*@
+                                            }
 
                                                 <a href="@routes.EventsController.show()">
                                                     <button class="btn btn-primary">Clear</button>

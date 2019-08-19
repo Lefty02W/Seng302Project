@@ -1,5 +1,6 @@
 package controllers;
 
+import models.EventFormData;
 import models.Events;
 import play.data.Form;
 import play.data.FormFactory;
@@ -32,6 +33,7 @@ public class EventsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final EventRepository eventRepository;
     private final Form<Events> eventForm;
+    private final Form<EventFormData> eventFormDataForm;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
 
@@ -45,6 +47,7 @@ public class EventsController extends Controller {
         this.artistRepository = artistRepository;
         this.destinationRepository = destinationRepository;
         this.eventForm = formFactory.form(Events.class);
+        this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
     }
 
@@ -66,7 +69,7 @@ public class EventsController extends Controller {
                     }
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm,
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm,
                             request, messagesApi.preferred(request)));
                 })
                         .orElseGet(() -> redirect("/")));
@@ -99,15 +102,9 @@ public class EventsController extends Controller {
                         event.get().setEndDate(new Date());
                     }
                 }
-                if (genreForm.isPresent()) {
-                    event.get().setGenreForm(genreForm.get());
-                }
-                if (ageForm.isPresent()) {
-                    event.get().setAgeForm(ageForm.get());
-                }
-                if (artistForm.isPresent()) {
-                    event.get().setArtistForm(artistForm.get());
-                }
+                genreForm.ifPresent(s -> event.get().setGenreForm(s));
+                ageForm.ifPresent(s -> event.get().setAgeForm(s));
+                artistForm.ifPresent(s -> event.get().setArtistForm(s));
 
                 if(checkDates(event.get())){
                     eventRepository.insert(event.get());
@@ -117,6 +114,19 @@ public class EventsController extends Controller {
             }
             return redirect("/events").flashing("info", "Successfully added your new event");
         });
+    }
+
+    public CompletionStage<Result> search(Http.Request request){
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if(profile.isPresent()){
+                Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
+                EventFormData eventFormData = searchEventForm.get();
+
+            }
+            return redirect("/events");
+        });
+
     }
 
     /**
