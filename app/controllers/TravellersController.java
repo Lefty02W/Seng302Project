@@ -101,13 +101,15 @@ public class TravellersController extends Controller {
                         break;
                 }
 
-                int sizeOfSearchResults = profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality).size();
+                List<Profile> searchedProfiles = profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality, offset);
+                int sizeOfSearchResults = profileRepository.getNumSearchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality);
+
                 PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, sizeOfSearchResults);
                 paginationHelper.alterNext(10);
                 paginationHelper.alterPrevious(10);
                 paginationHelper.checkButtonsEnabled();
 
-                return ok(travellers.render(form, profileRepository.searchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality), photoList, profile.get(), Country.getInstance().getAllCountries(), formData, paginationHelper, request, messagesApi.preferred(request)));
+                return ok(travellers.render(form, searchedProfiles, photoList, profile.get(), Country.getInstance().getAllCountries(), formData, paginationHelper, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");
             }
