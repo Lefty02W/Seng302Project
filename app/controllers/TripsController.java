@@ -432,7 +432,7 @@ public class TripsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0);
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());
@@ -460,7 +460,7 @@ public class TripsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0);
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());

@@ -39,7 +39,7 @@
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
                         Profile</a>
-                    <a style="color: #ca6636" href="@routes.DestinationsController.show(isPublic)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a style="color: #ca6636" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
                     <a href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
@@ -86,12 +86,12 @@
                                         <!--a href="routes.DestinationsController.showCreate()"--> <button id="destButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
                                                 Create Destination</button> </a>
                                         @if(!isPublic) {
-                                            @helper.form(routes.DestinationsController.show(true)) {
+                                            @helper.form(routes.DestinationsController.show(true, 0)) {
                                             @CSRF.formField
                                                 <button type="submit" id="destButton" class="btn btn-primary">Show Public</button>
                                             }
                                         } else {
-                                            @helper.form(routes.DestinationsController.show(false)) {
+                                            @helper.form(routes.DestinationsController.show(false, 0)) {
                                             @CSRF.formField
                                                 <button type="submit" id="destButton" class="btn btn-primary">Show Private</button>
                                             }
