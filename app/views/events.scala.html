@@ -136,11 +136,13 @@
                                             </select>
 
                                             <div class="form-group" id="holder">
-                                                <small id="label" for="startDate">Start date</small>
+                                                <small id="label" for="startDate">Date</small>
                                                 <input type="datetime-local" id="startDate" name="startDate">
                             @*//                }*@
 
-                                                <button class="btn btn-primary">Clear</button>
+                                                <a href="@routes.EventsController.show()">
+                                                    <button class="btn btn-primary">Clear</button>
+                                                </a>
                                             </div>
 
 
@@ -179,8 +181,10 @@
                                 </div>
                                 <div class="row">
                                     <div class="col col-10">
-                                        <p id="eventType">Event Type: @event.getEventTypes</p>
-                                        <p id="eventRestriction">Age Restriction: @event.getAgeRestriction</p>
+                                        <p id="eventType">Event Type: @event.getEventTypes.get(0)</p>
+
+                                        <p id="eventRestriction">Age Restriction: @event.getAgeRestrictionString</p>
+
                                     </div>
                                 </div>
                                 <div class="row">

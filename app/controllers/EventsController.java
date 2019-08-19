@@ -108,7 +108,6 @@ public class EventsController extends Controller {
                 if (artistForm.isPresent()) {
                     event.get().setArtistForm(artistForm.get());
                 }
-                eventRepository.insert(event.get());
 
                 if(checkDates(event.get())){
                     eventRepository.insert(event.get());
@@ -127,7 +126,10 @@ public class EventsController extends Controller {
      * @return a boolean holding true if the dates are valid
      */
     private boolean checkDates(Events event) {
-        // Possibly add check to stop overlap with other destinations in the trip
+        Date current = new Date();
+        if (event.getStartDate().before(current)){
+            return false;
+        }
         if (event.getStartDate() != null && event.getEndDate() != null) {
             return event.getStartDate().before(event.getEndDate());
         }

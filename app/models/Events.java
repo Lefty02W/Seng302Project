@@ -72,6 +72,14 @@ public class Events extends Model {
         this.ageRestriction = ageRestriction;
     }
 
+    public String getAgeRestrictionString(){
+        if (ageRestriction == 0){
+            return "All ages.";
+        } else {
+            return Integer.toString(ageRestriction) + "+";
+        }
+    }
+
     public int getEventId() {
         return eventId;
     }
