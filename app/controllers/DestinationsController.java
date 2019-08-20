@@ -89,7 +89,7 @@ public class DestinationsController extends Controller {
                 undoStackRepository.clearStackOnAllowed(profile.get());
 
                 if (isPublic) {
-                    List<Destination> destListTemp = destinationRepository.getPublicDestinations();
+                    List<Destination> destListTemp = destinationRepository.getPublicDestinations(rowOffset);
                     try {
                         destinationsList = destListTemp;
                     } catch (NoSuchElementException e) {

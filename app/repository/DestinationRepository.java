@@ -73,11 +73,13 @@ public class DestinationRepository {
 
     /**
      * Get the all of the public destinations
-     *
+     * @param rowOffset - The row to being retrieving results from. Used for paginatino
      * @return destinations, list of all public destinations
      */
-    public List<Destination> getPublicDestinations() {
+    public List<Destination> getPublicDestinations(Integer rowOffset) {
         return new ArrayList<>(ebeanServer.find(Destination.class)
+                .setMaxRows(7)
+                .setFirstRow(rowOffset)
                 .where()
                 .eq("visible", 1)
                 .eq("soft_delete",0)
