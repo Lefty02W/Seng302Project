@@ -214,7 +214,7 @@ public class ProfileRepository {
                     .contains("gender", gender)
                     .gt("birth_date", dateFormat.format(upperAge))
                     .lt("birth_date", dateFormat.format(lowerAge))
-                    .setMaxRows(10)
+                    .setMaxRows(50)
                     .setFirstRow(offset)
                     .findList();
             for (Profile profile : foundProfiles) {
