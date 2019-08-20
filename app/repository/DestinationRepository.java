@@ -355,7 +355,7 @@ public class DestinationRepository {
     public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT ?, 7";
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT 7 OFFSET ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
                 .setParameter(2, rowOffset).findList();
         ArrayList<Destination> destList = new ArrayList<>();
