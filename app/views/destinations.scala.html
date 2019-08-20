@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(destinationsList: List[Destination], currentUser: Profile, isPublic: Boolean, page: Integer, followedDestinationIds: List[Integer],
+@(destinationsList: List[Destination], currentUser: Profile, isPublic: Boolean, pagination: PaginationHelper, followedDestinationIds: List[Integer],
         usersPhotos: List[Photo], destinationForm: Form[Destination], destination: RoutedObject[Destination],
         requestForm: Form[DestinationRequest], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
@@ -46,9 +46,11 @@
                         Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
-                    @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
+                        Treasure Hunt</a>
+                    @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                            Admin</a>
                     }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
@@ -156,16 +158,18 @@
                                             <a class="page-link" href="/destinations/show/@isPublic/0">Start</a>
                                         </li>
 
-                                        @if(page - 7 >= 0) {
+                                        @if(pagination.isPreviousEnabled) {
                                             <li class="page-item">
-                                                <a class="page-link" href="/destinations/show/@isPublic/@page">
+                                                <a class="page-link" href="/destinations/show/@isPublic/@pagination.getPrevious">
                                                     Previous</a>
                                             </li>
                                         }
 
-                                        <li class="page-item">
-                                            <a class="page-link" href="/destinations/show/@isPublic/@page">Next</a>
-                                        </li>
+                                        @if(pagination.isNextEnabled) {
+                                            <li class="page-item">
+                                                <a class="page-link" href="/destinations/show/@isPublic/@pagination.getNext">Next</a>
+                                            </li>
+                                        }
                                     </ul>
                                 </div>
                             </div>
@@ -621,22 +625,14 @@
                     </div>
                 </div>
             </div>
+        </div>
 
     </body>
     <script type="text/javascript">
 
             $(document).ready(function () {
                 $('#destTable').DataTable({
-                    "lengthChange": false,
-                    "pagingType": "full",
-                    "pageLength": 7,
-                    dom: '<l<"toolbar">f>rtip',
-                    language: {
-                        search: "_INPUT_", //To remove Search Label
-                        searchPlaceholder: "Search..."
-                    },
-                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
-                    "autoWidth": false
+                    "sDom": 't',
                 });
 
 
