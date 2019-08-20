@@ -40,7 +40,7 @@ def main():
     # -------------queries-------------
     # Set the number of each data to be inserted, max is length of json around 2000 each roughly - doesnt matter if
     # exceed this number. Set to true if you want all data to be inserted, set to 0 if you don't want any
-    number_profiles = 0
+    number_profiles = 1
     number_destinations = 2
     number_artists = 1
     number_trips = 1
