@@ -503,6 +503,16 @@ public class ProfileRepository {
         return Optional.of(destList);
     }
 
+    /**
+     * Function to get ten of the users destinations
+     *
+     * @param profileId users id
+     * @return destination list
+     */
+    public Optional<List<Destination>> getTenDestinations(int profileId) {
+        return Optional.of(ebeanServer.find(Destination.class).setMaxRows(10).where().eq("profile_id", profileId).eq("soft_delete", 0).findList());
+    }
+
 
     /**
      * Finds the number of profiles in the database
