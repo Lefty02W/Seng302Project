@@ -63,7 +63,7 @@ public class TreasureHuntController {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             undoStackRepository.clearStackOnAllowed(profile.get());
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(0), huntForm, new RoutedObject<TreasureHunt>(null, false, false), request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }
@@ -164,7 +164,7 @@ public class TreasureHuntController {
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(0), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }
