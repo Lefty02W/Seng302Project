@@ -50,7 +50,7 @@ def main():
     execute_destination_queries(cursor, db, number_destinations, number_profiles)
     execute_artist_queries(cursor, db, number_artists, number_profiles)
     execute_trips_queries(cursor, db, number_trips, number_destinations, number_profiles)
-    insert_treasure_hunts(cursor, db, number_treasure_hunts, number_profiles)
+    insert_treasure_hunts(cursor, db, number_treasure_hunts, number_profiles, number_destinations)
 
     # disconnect from server
     cursor.close()

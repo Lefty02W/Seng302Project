@@ -121,6 +121,7 @@ def select_2random_destinations(destination_names):
 def read_trips(number_trips, number_destinations):
     """Reads the file trips.JSON and converts the json into a list of trips"""
     trips = []
+
     destination_names = read_destination_names(number_destinations)
     with open('trips.JSON') as json_file:
         data = json.load(json_file)
@@ -130,15 +131,17 @@ def read_trips(number_trips, number_destinations):
             number_trips = len(data)
         for i in range(number_trips):
             trip = []
+            destination_name_add = []
             trip.append(data[i]['trip_name'])
-            destination_names = select_2random_destinations(destination_names)
-            trip.append(destination_names)
+            destination_name_add = select_2random_destinations(destination_names)
+            trip.append(destination_name_add)
             trips.append(trip)
     return trips
 
-def read_treasure_hunts(number_hunts):
+def read_treasure_hunts(number_hunts, number_destinations):
     """Reads the file treasureHunts.JSON and converts the json into a list of hunts"""
     hunts = []
+    destination_names = read_destination_names(number_destinations)
     with open('treasureHunts.JSON') as json_file:
         data = json.load(json_file)
         if number_hunts is True:
@@ -150,7 +153,7 @@ def read_treasure_hunts(number_hunts):
             hunt.append(data[i]['riddle'])
             hunt.append(data[i]['start_date'])
             hunt.append(data[i]['end_date'])
-            hunt.append(data[i]['destination'])
+            hunt.append(destination_names[random.randint(1, len(destination_names)) - 1])
             hunts.append(hunt)
     return hunts
 
