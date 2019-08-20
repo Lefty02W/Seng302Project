@@ -2,6 +2,9 @@ package models;
 
 import javax.persistence.Entity;
 
+/**
+ * Model class to hold a link from an artist to a profile. This link represents an admin of the artist
+ */
 @Entity
 public class ArtistProfile {
 

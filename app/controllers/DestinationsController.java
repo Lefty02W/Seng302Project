@@ -9,12 +9,8 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
-import scala.Int;
 import utility.Country;
-import views.html.admin;
-import views.html.createDestinations;
 import views.html.destinations;
-import views.html.editDestinations;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -314,56 +310,6 @@ public class DestinationsController extends Controller {
     private List<Photo> getUsersPhotos(int profileId) {
         Optional<List<Photo>> imageList = personalPhotoRepository.getAllProfilePhotos(profileId);
         return imageList.orElseGet(ArrayList::new);
-    }
-
-
-    /**
-     * Displays a page to create a destination
-     *
-     * @param request
-     * @return redirect
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> showCreate(Http.Request request) {
-        Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.findById(profId).thenApplyAsync(profile -> {
-            if (profile.isPresent()) {
-                Destination dest = new Destination();
-                dest.setLatitude(0.0);
-                dest.setLongitude(0.0);
-                Form<Destination> destinationForm = form.fill(dest);
-                return ok(createDestinations.render(destinationForm, profile.get(), request, messagesApi.preferred(request)));
-            } else {
-                return redirect(destShowRoute);
-            }
-        });
-    }
-
-    /**
-     * This method displays the editDestinations page for the destinations to the user
-     *
-     * @param request
-     * @param id      of the destination
-     * @return redirect to destination
-     */
-    @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> edit(Http.Request request, Integer id) {
-        Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.findById(profId).thenApplyAsync(profile -> {
-            if (profile.isPresent()) {
-                Destination destination = new Destination();
-                for (Destination dest : destinationsList) {
-                    if (dest.getDestinationId() == id) {
-                        destination = dest;
-                        break;
-                    }
-                }
-                Form<Destination> destinationForm = form.fill(destination);
-                return ok(editDestinations.render(id, destination, destinationForm, profile.get(), request, messagesApi.preferred(request)));
-            } else {
-                return redirect(destShowRoute);
-            }
-        });
     }
 
     /**

@@ -182,11 +182,24 @@ INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (3, 'Jerry', 'Jerry', 'jerry');
 
+
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (4, 'Yes', 'Jerry', 'jerry');
 
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (5, 'Steve', 'Big boi steve', 'jerry');
+
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
+
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (4, 4);
+
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (3, 4);
+
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (2, 4);
 
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 3);
@@ -195,4 +208,20 @@ INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (3, 1);
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
-  (2, 2)
+  (2, 2);
+
+INSERT INTO follow_artist (artist_follow_id, profile_id, artist_id) VALUES
+  (1, 1, 2);
+
+
+INSERT INTO follow_artist (artist_follow_id, profile_id, artist_id) VALUES
+  (2, 1, 3);
+
+INSERT INTO passport_country (passport_country_id, passport_name) VALUES
+  (1, 'New Zealand');
+
+INSERT INTO passport_country (passport_country_id, passport_name) VALUES
+  (2, 'Fiji');
+
+INSERT INTO artist_country (artist_id, country_id) VALUES
+  (3,1);

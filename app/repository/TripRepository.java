@@ -57,6 +57,18 @@ public class TripRepository {
 
 
     /**
+     * Gets 9 of the passed user trips starting from a passed offset
+     *
+     * @param profileId database id of profile
+     * @param offset offset for trips to retrieve
+     * @return Optional list of ids of the trips found
+     */
+    public Optional<List<Integer>> getUserTripIds(int profileId, int offset) {
+        return Optional.of(ebeanServer.find(Trip.class).setMaxRows(9).setFirstRow(offset).where().eq("profile_id", profileId).findIds());
+    }
+
+
+    /**
      * Removes a trip from the database
      * @param tripID the id of the trip to remove
      * @return the completionStage
@@ -188,4 +200,29 @@ public class TripRepository {
         return allTrips;
     }
 
+    /**
+     * Gets a subset of the trips from the database
+     * used for pagination on the admin page
+     *
+     * @param offset amount to offset query by
+     * @param amount amount of trips to get
+     * @return List of trips found
+     */
+    public List<Trip> getPaginateTrip(int offset, int amount) {
+        List<Trip> trips = new ArrayList<>();
+        List<Integer> tripIds = ebeanServer.find(Trip.class).setMaxRows(amount).setFirstRow(offset).where().eq("soft_delete", 0).findIds();
+        for (int id : tripIds) {
+            trips.add(getTrip(id));
+        }
+        return trips;
+    }
+
+    /**
+     * Finds the number of trips in the database
+     * Used for pagination purposes
+     * @return int of number found
+     */
+    public int getNumTrips() {
+        return ebeanServer.find(Trip.class).where().eq("soft_delete", 0).findCount();
+    }
 }
