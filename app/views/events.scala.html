@@ -120,12 +120,12 @@
                                             </select>
                                             <small id="label" for="eventType">Event type</small>
                                             <select class="selectpicker" id="eventType" name="eventType" title="Event Type">
-                                                <option value="Gig">Gig</option>
-                                                <option value="Meetup">Meetup</option>
-                                                <option value="Competition">Competition</option>
-                                                <option value="Party">Party</option>
-                                                <option value="Charity">Charity</option>
-                                                <option value="Festival">Festival</option>
+                                                <option value="1">Gig</option>
+                                                <option value="2">Meetup</option>
+                                                <option value="3">Competition</option>
+                                                <option value="4">Party</option>
+                                                <option value="5">Charity</option>
+                                                <option value="6">Festival</option>
                                             </select>
                                             <small id="label" for="country">Country</small>
                                             <select class="selectpicker" id="country" name="country" title="Countries">
@@ -142,7 +142,7 @@
                                             <small id="label" for="genre">Genre</small>
                                             <select class="selectpicker" id="genre" name="genre" title="Genres">
                                             @for(genre <- genres) {
-                                                <option value="@genre.getGenre">@genre.getGenre</option>
+                                                <option value="@genre.getGenreId">@genre.getGenre</option>
                                             }
                                             </select>
 

@@ -132,7 +132,6 @@ public class EventsController extends Controller {
             }
             return redirect("/events").flashing("error", "No events match your search");
         });
-
     }
 
     /**

@@ -185,25 +185,24 @@ public class EventRepository {
             whereAdded = true;
             args.add(eventFormData.getEventName());
         }
-//        if (!eventFormData.getArtistName().equals("")) {
-//            if (whereAdded){
-//                // TODO: 19/08/19 make sure artists is a dropdown that sends artist id back
-//                query += "AND event_artists.artist_id = ?";
-//            } else {
-//                query += "WHERE event_artists.artist_id = ?";
-//                whereAdded = true;
-//            }
-//            args.add(eventFormData.getArtistName());
-//        }
-//        if (!eventFormData.getEventType().equals("")) {
-//            if (whereAdded){
-//                query += "AND event_type.event_id = ?";
-//            } else {
-//                query += "WHERE event_type.event_id = ?";
-//                whereAdded = true;
-//            }
-//            args.add(eventFormData.getEventType());
-//        }
+        if (!eventFormData.getArtistName().equals("")) {
+            if (whereAdded){
+                query += "AND event_artists.artist_id = ?";
+            } else {
+                query += "WHERE event_artists.artist_id = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getArtistName());
+        }
+        if (!eventFormData.getEventType().equals("")) {
+            if (whereAdded){
+                query += "AND event_type.type_id = ?";
+            } else {
+                query += "WHERE event_type.type_id = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getEventType());
+        }
 //        // TODO: 19/08/19 Waiting on eventDestination linking table
 ////        if (!eventFormData.getCountry().equals("")) {
 ////            if (whereAdded){
@@ -214,32 +213,33 @@ public class EventRepository {
 ////            }
 ////            args.add(eventFormData.getCountry());
 ////        }
-//        if (!eventFormData.getAgeRestriction().equals("")) {
-//            if(whereAdded){
-//                query += "AND events.age_restriction = ?";
-//            } else {
-//                query += "WHERE events.age_restriction = ?";
-//                whereAdded = true;
-//            }
-//            args.add(eventFormData.getAgeRestriction());
-//        }
-//        if (!eventFormData.getGenre().equals("")) {
-//            if (whereAdded){
-//                query += "AND event_genres.genre_id = ?";
-//            } else {
-//                query += "WHERE event_genres.genre_id = ?";
-//                whereAdded = true;
-//            }
-//            args.add(eventFormData.getGenre());
-//        }
-//        if (!eventFormData.getStartDate().equals("")) {
-//            if (whereAdded){
-//                query += "AND events.start_date <= ? And events.end_date >= ?";
-//            } else {
-//                query += "WHERE events.start_date <= ? And events.end_date >= ?";
-//            }
-//            args.add(eventFormData.getGenre());
-//        }
+        if (!eventFormData.getAgeRestriction().equals("")) {
+            if(whereAdded){
+                query += "AND events.age_restriction = ?";
+            } else {
+                query += "WHERE events.age_restriction = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getAgeRestriction());
+        }
+        if (!eventFormData.getGenre().equals("")) {
+            if (whereAdded){
+                query += "AND event_genres.genre_id = ?";
+            } else {
+                query += "WHERE event_genres.genre_id = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getGenre());
+        }
+        if (!eventFormData.getStartDate().equals("")) {
+            if (whereAdded){
+                query += "AND events.start_date <= ? And events.end_date >= ?";
+            } else {
+                query += "WHERE events.start_date <= ? And events.end_date >= ?";
+            }
+            args.add(eventFormData.getStartDate());
+            args.add(eventFormData.getStartDate());
+        }
         return createSqlQuery(query, args, likeAdded);
     }
 
