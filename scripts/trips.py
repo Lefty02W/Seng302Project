@@ -44,6 +44,8 @@ def execute_trip_dest_queries(destinations, trip_id, cursor, db):
 def execute_trips_queries(cursor, db, number_trips, number_destinations, number_profiles):
     """Executes the rips query and calls helper functions to insert linking tables"""
     print("\n----------trips----------")
+    if number_trips == 0:
+        return "No trips are inserted"
     if number_destinations < 2:
         print("Number of destinations inserted must be more than 2 to create a trip : ERROR")
         return "Error"

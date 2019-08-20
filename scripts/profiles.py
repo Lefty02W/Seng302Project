@@ -110,6 +110,8 @@ def execute_profile_queries(cursor, db, number_profiles):
     linking tables.
     Note: if profile already exists in table will not insert profile and result in an error which is handled"""
     print("\n----------Profiles----------")
+    if number_profiles == 0:
+        return "No profiles are inserted"
     profile_list = read_profiles(number_profiles)
     for profile in profile_list:
         if profile[1] is None:

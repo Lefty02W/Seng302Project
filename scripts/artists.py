@@ -135,6 +135,8 @@ def execute_artist_queries(cursor, db, number_artists, number_profiles):
     """Execute artist queries to insert the artist. Other functions called to 
     insert additional information in linking tables."""
     print("\n----------Artists----------")
+    if number_artists == 0:
+        return "No artists are inserted"
     artist_list = read_artists(number_artists)
     if number_profiles < 1:
         print("Number of profiles inserted must be at least 1 to create a artist : ERROR")

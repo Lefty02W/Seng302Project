@@ -67,6 +67,8 @@ def execute_destination_queries(cursor, db, number_destinations, number_profiles
     Note: if destination already exists in table will not insert destination and result in an error which is
     handled"""
     print("\n----------Destinations----------")
+    if number_destinations == 0:
+        return "No destinations are inserted"
     destination_list = read_destinations(number_destinations)
     if number_profiles < 1:
         print("Number of profiles inserted must be at least 1 to create a destination : ERROR")

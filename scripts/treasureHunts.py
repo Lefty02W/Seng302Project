@@ -40,6 +40,8 @@ def get_hunt_id(riddle, destination, cursor, db):
 
 def insert_treasure_hunts(cursor, db, num_hunts, number_profiles):
     print("\n----------Treasure Hunts----------")
+    if num_hunts == 0:
+        return "No treasure hunts are inserted"
     hunt_list = read_treasure_hunts(num_hunts)
     if number_profiles < 1:
         print("Number of profiles inserted must be at least 1 to create a artist : ERROR")
