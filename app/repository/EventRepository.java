@@ -203,16 +203,15 @@ public class EventRepository {
             }
             args.add(eventFormData.getEventType());
         }
-//        // TODO: 19/08/19 Waiting on eventDestination linking table
-////        if (!eventFormData.getCountry().equals("")) {
-////            if (whereAdded){
-////                query += "AND event_destination.destination_id = ?";
-////            } else {
-////                query += "WHERE event_destination.destination_id = ?";
-////                whereAdded = true;
-////            }
-////            args.add(eventFormData.getCountry());
-////        }
+        if (!eventFormData.getDestinationId().equals("")) {
+            if (whereAdded){
+                query += "AND events.destination_id = ?";
+            } else {
+                query += "WHERE events.destination_id = ?";
+                whereAdded = true;
+            }
+            args.add(eventFormData.getDestinationId());
+        }
         if (!eventFormData.getAgeRestriction().equals("")) {
             if(whereAdded){
                 query += "AND events.age_restriction = ?";

@@ -8,7 +8,7 @@ public class EventFormData {
     private String eventName = "";
     private String artistName = "";
     private String eventType = "";
-    private String country = "";
+    private String destinationId = "";
     private String ageRestriction = "";
     private String genre = "";
     private String startDate = "";
@@ -25,8 +25,8 @@ public class EventFormData {
         this.eventType = eventType;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setDestinationId(String destinationId) {
+        this.destinationId = destinationId;
     }
 
     public void setAgeRestriction(String ageRestriction) {
@@ -53,8 +53,8 @@ public class EventFormData {
         return eventType;
     }
 
-    public String getCountry() {
-        return country;
+    public String getDestinationId() {
+        return destinationId;
     }
 
     public String getAgeRestriction() {

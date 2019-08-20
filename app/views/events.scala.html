@@ -127,10 +127,10 @@
                                                 <option value="5">Charity</option>
                                                 <option value="6">Festival</option>
                                             </select>
-                                            <small id="label" for="country">Country</small>
-                                            <select class="selectpicker" id="country" name="country" title="Countries">
-                                            @for(nation <- countries) {
-                                                <option value="@nation">@nation</option>
+                                            <small id="label" for="country">Destination</small>
+                                            <select class="selectpicker" title="Destination"  name="destinationId" id="destinationId">
+                                            @for(destination <- destinations) {
+                                                <option value="@destination.getDestinationId">@destination.getName</option>
                                             }
                                             </select>
                                             <small id="label" for="ageRestriction">Age Restriction</small>
