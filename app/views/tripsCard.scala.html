@@ -1,5 +1,7 @@
 @import play.mvc.Http
-@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination], trips: List[Integer], currentUser : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm : Form[Trip], tripDestinationForm: Form[TripDestination], destinations: List[Destination],
+        trips: List[Integer], currentUser : Profile, next : Integer, previous : Integer)(
+        implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -38,7 +40,7 @@
                         Profile</a>
                     <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
-                    <a style="color: #ca6636" href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a style="color: #ca6636" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
@@ -64,16 +66,9 @@
                     </div>
                 </nav>
                 <div id="tripsPane" class="container-fluid">
-
-                    <div class="row">
-                        <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" class="btn btn-primary">
-                            Add New Trip
-                        </button> </a>
-                    </div>
-
-                    <div class="row pt-3">
+                    <div class="row pt-2">
                            @for(trip <- trips) {
-                               <div class="col-lg-4 col-md-6 col-sm-10" align="center">
+                               <div class="col-lg-4 col-md-6 col-sm-10 justify-content-center">
                                    <div class="card" id="trip-card">
 
                                        <div class="card-header card-border"> <!-- Change to the dark green -->
@@ -113,6 +108,19 @@
                                }
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="container" id="trip-footer">
+            <div class="row justify-content-center">
+                <ul class="pagination pagination-lg" id="trip-paginator">
+                    <li class="page-item"><a class="page-link" href="/trips/0">Start</a></li>
+                    <li class="page-item"><a class="page-link" href="/trips/@previous">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="/trips/@next">Next</a></li>
+                </ul>
+                <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" id="addButton" class="btn btn-primary">
+                            Add New Trip
+                </button> </a>
             </div>
         </div>
 

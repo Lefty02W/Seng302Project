@@ -27,7 +27,7 @@ POST    /destinations/type/request              controllers.DestinationsControll
 GET     /assets/*file                           controllers.Assets.at(path="/public", file)
 
 # Trips
-GET     /trips                                  controllers.TripsController.show(request: Request)
+GET     /trips/:offset                          controllers.TripsController.show(request: Request, offset : Integer)
 GET     /trips/:userId/create                   controllers.TripsController.showCreate(request: Request, userId: Integer)
 POST    /trips/:userId/:id/editTrip             controllers.TripsController.saveEdit(request: Request, id: Integer, userId: Integer)
 GET     /trips/:userId/:id/edit                 controllers.TripsController.showEdit(request: Request, id: Integer, userId: Integer)
@@ -60,7 +60,6 @@ POST    /profile/photo/profile/upload           controllers.ProfileController.up
 
 # Admins
 POST    /admin/:id                              controllers.ProfileController.updateAdmin(request: Request, id: Integer)
-GET     /admin                                  controllers.AdminController.show(request: Request)
 GET     /admin/admins/:offset                   controllers.AdminController.showAdmins(request: Request, offset: Integer)
 GET     /admin/undo/                            controllers.AdminController.undoTopOfStack(request : Request)
 

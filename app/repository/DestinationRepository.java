@@ -637,4 +637,57 @@ public class DestinationRepository {
                 .findList());
     }
 
+    /**
+     * Method to get the number of destination requests
+     * Used for pagination
+     *
+     * @return int number of requests
+     */
+    public int getNumDestRequests() {
+        return ebeanServer.find(DestinationChange.class).findCount();
+    }
+
+    /**
+     * Method to find number of destinations
+     * Used for pagination
+     *
+     * @return int number of destinations found
+     */
+    public int getNumDestinations() {
+        return ebeanServer.find(Destination.class).where().eq("soft_delete", 0).findCount();
+    }
+
+    /**
+     * Get a page of destinations
+     *
+     * @param offset offset of destinations to get
+     * @param pageSize max number of destinations to get
+     * @return destinations found
+     */
+    public List<Destination> getDestinationPage(Integer offset, int pageSize) {
+        return new ArrayList<>(ebeanServer.find(Destination.class)
+                .setFirstRow(offset)
+                .setMaxRows(pageSize)
+                .where()
+                .eq("soft_delete", 0)
+                .findList());
+    }
+
+    /**
+     * Finds a page of destination changes
+     *
+     * @param offset offset to find
+     * @param pageSize limit of changes to find
+     * @return changes found
+     */
+    public List<DestinationChange> getDestRequestPage(Integer offset, int pageSize) {
+        List<DestinationChange> requests = ebeanServer.find(DestinationChange.class).setFirstRow(offset).setMaxRows(pageSize).findList();
+        for (DestinationChange destinationChange : requests) {
+            DestinationRequest destinationRequest = ebeanServer.find(DestinationRequest.class).setId(destinationChange.getRequestId()).findOne();
+            destinationChange.setEmail(ebeanServer.find(Profile.class).where().eq("profile_id", destinationRequest.getProfileId()).findOne().getEmail());
+            destinationChange.setDestination(ebeanServer.find(Destination.class).where().eq("destination_id", destinationRequest.getDestinationId()).findOne());
+            destinationChange.setTravellerType(ebeanServer.find(TravellerType.class).where().eq("traveller_type_id", destinationChange.getTravellerTypeId()).findOne());
+        }
+        return requests;
+    }
 }

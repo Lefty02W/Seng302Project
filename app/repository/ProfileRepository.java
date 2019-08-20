@@ -503,6 +503,16 @@ public class ProfileRepository {
         return Optional.of(destList);
     }
 
+    /**
+     * Function to get ten of the users destinations
+     *
+     * @param profileId users id
+     * @return destination list
+     */
+    public Optional<List<Destination>> getTenDestinations(int profileId) {
+        return Optional.of(ebeanServer.find(Destination.class).setMaxRows(10).where().eq("profile_id", profileId).eq("soft_delete", 0).findList());
+    }
+
 
     /**
      * Finds the number of profiles in the database
@@ -510,7 +520,7 @@ public class ProfileRepository {
      * @return int of number found
      */
     public int getNumProfiles() {
-        return ebeanServer.find(Profile.class).findCount();
+        return ebeanServer.find(Profile.class).where().eq("soft_delete", 0).findCount();
     }
 
     /**
@@ -534,4 +544,28 @@ public class ProfileRepository {
     }
 
 
+    /**
+     * Gets the number of admins
+     * @return int number of admins
+     */
+    public int getNumAdmins() {
+        return ebeanServer.find(ProfileRoles.class).setDistinct(true).findCount();
+    }
+
+    /**
+     * Method to get a page of profiles to display
+     *
+     * @param offset offset for profiles to find
+     * @param limit number of profiles to find
+     * @return List of found profiles
+     */
+    public List<Profile> getPage(Integer offset, Integer limit) {
+        String selectQuery = "SELECT * FROM profile WHERE soft_delete = 0 LIMIT ? OFFSET ?;";
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).setParameter(1, limit).setParameter(2, offset).findList();
+        List<Profile> profiles = new ArrayList<>();
+        for (SqlRow row : rows) {
+            profiles.add(profileFromRow(row));
+        }
+        return profiles;
+    }
 }

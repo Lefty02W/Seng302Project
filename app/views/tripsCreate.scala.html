@@ -35,7 +35,7 @@
                         Profile</a>
                     <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
-                    <a style="color: #ca6636" href="@routes.TripsController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a style="color: #ca6636" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
                     <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
@@ -151,7 +151,7 @@
                     </div>
                 </div>
                     <div class="row">
-                        <a href="@routes.TripsController.show()"> <button id="backButtonCreate" class="button-back btn btn-secondary" type="button">Back</button> </a>
+                        <a href="@routes.TripsController.show(0)"> <button id="backButtonCreate" class="button-back btn btn-secondary" type="button">Back</button> </a>
                     </div>
 
                 </div>
