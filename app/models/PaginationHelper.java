@@ -23,6 +23,24 @@ public class PaginationHelper {
         this.maxSize = maxSize;
     }
 
+    /**
+     * Constructor for pagination that doesn't need tabs
+     * @param offset start position of the returned list
+     * @param previous position the previous offset
+     * @param next position of the next offset
+     * @param nextEnabled boolean true if there is more items in the database to go to
+     * @param previousEnabled boolean true if the offset can shift back
+     * @param maxSize total size of the number of elements in the database table
+     */
+    public PaginationHelper(int offset, int previous, int next, Boolean nextEnabled, Boolean previousEnabled, int maxSize){
+        this.offset = offset;
+        this.previous = previous;
+        this.next = next;
+        this.nextEnabled = nextEnabled;
+        this.previousEnabled = previousEnabled;
+        this.maxSize = maxSize;
+    }
+
     public int getOffset() {
         return offset;
     }
