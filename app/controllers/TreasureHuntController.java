@@ -89,7 +89,7 @@ public class TreasureHuntController {
         TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
 
         if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
-            return supplyAsync(() -> redirect("/treasure").flashing("error", "Error: Start date cannot be after end date."));
+            return supplyAsync(() -> redirect(huntShowRoute).flashing("error", "Error: Start date cannot be after end date."));
         }
 
         return treasureHuntRepository.insert(treasureHunt).thenApplyAsync(x -> {
@@ -103,7 +103,7 @@ public class TreasureHuntController {
      */
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
         return treasureHuntRepository.deleteTreasureHunt(id)
-                .thenApplyAsync(x -> redirect("/treasure").flashing("success", "Hunt: " + id + " was deleted"));
+                .thenApplyAsync(x -> redirect(huntShowRoute).flashing("success", "Hunt: " + id + " was deleted"));
     }
 
     /**
@@ -149,7 +149,7 @@ public class TreasureHuntController {
         Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
         TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), treasureHuntForm);
         if (treasureHunt.getStartDate().after(treasureHunt.getEndDate())){
-            return supplyAsync(() -> redirect("/treasure").flashing("error", "Error: Start date cannot be after end date."));
+            return supplyAsync(() -> redirect(huntShowRoute).flashing("error", "Error: Start date cannot be after end date."));
         }
 
         return treasureHuntRepository.update(treasureHunt, id).thenApplyAsync(x -> {
