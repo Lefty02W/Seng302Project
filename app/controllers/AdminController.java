@@ -417,7 +417,6 @@ public class AdminController {
      */
     public CompletionStage<Result> deleteTrip(Http.Request request, Integer tripId) {
         undoStackRepository.addToStack(new UndoStack("trip", tripId, SessionController.getCurrentUserId(request)));
-        System.out.println("yeet");
         return tripRepository.setSoftDelete(tripId, 1).thenApplyAsync(x -> redirect("/admin/trips/0")
                 .flashing(
                         "info",
