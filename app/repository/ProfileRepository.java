@@ -481,9 +481,9 @@ public class ProfileRepository {
      * @param profileId users profile Id
      * @return destList arrayList of destinations registered by the user
      */
-    public Optional<ArrayList<Destination>> getDestinations(int profileId) {
-        String sql = ("SELECT * FROM destination WHERE profile_id = ? AND soft_delete = 0");
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
+    public Optional<ArrayList<Destination>> getDestinations(int profileId, int rowOffset) {
+        String sql = ("SELECT * FROM destination WHERE profile_id = ? AND soft_delete = 0 LIMIT 7 OFFSET ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).setParameter(2, rowOffset).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination dest;
         for (SqlRow aRowList : rowList) {

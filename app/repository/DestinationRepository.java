@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -306,7 +307,7 @@ public class DestinationRepository {
         query.setParameter(2, destId);
         query.execute();
         setOwnerAsAdmin(destId);
-        return getFollowedDestinationIds(profileId);
+        return getFollowedDestinationIds(profileId, 0);
     }
 
     /**
@@ -322,7 +323,7 @@ public class DestinationRepository {
         query.setParameter(1, profileId);
         query.setParameter(2, destId);
         query.execute();
-        return getFollowedDestinationIds(profileId);
+        return getFollowedDestinationIds(profileId, 0);
     }
 
     /**
@@ -385,9 +386,10 @@ public class DestinationRepository {
      * @param profileId User id for the user followed destinations
      * @return Optional array list of integers of the followed destination ids
      */
-    public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId) {
-        String updateQuery = "Select destination_id from follow_destination where profile_id = ?";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
+    public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId, int rowOffset) {
+        String updateQuery = "Select destination_id from follow_destination where profile_id = ? LIMIT 7 OFFSET ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
+                .setParameter(2, rowOffset).findList();
         ArrayList<Integer> destIdList = new ArrayList<>();
         for (SqlRow aRowList : rowList) {
             int id = aRowList.getInteger("destination_id");

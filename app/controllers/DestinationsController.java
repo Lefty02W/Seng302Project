@@ -111,10 +111,10 @@ public class DestinationsController extends Controller {
                         destinationsList = new ArrayList<>();
                     }
                 } else {
-                    profileRepository.getDestinations(userId).ifPresent(dests -> destinationsList.addAll(dests));
+                    profileRepository.getDestinations(userId, rowOffset).ifPresent(dests -> destinationsList.addAll(dests));
                     destinationRepository.getFollowedDestinations(userId, rowOffset).ifPresent(follows -> destinationsList.addAll(follows));
                 }
-                destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
+                destinationRepository.getFollowedDestinationIds(userId, rowOffset).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
@@ -215,7 +215,7 @@ public class DestinationsController extends Controller {
                     followedDestinationIds = new ArrayList<>();
                 }
                 if (!isPublic) {
-                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
+                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId, 0);
                     Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId, 0);
                     try {
                         destinationsList = destListTemp.get();
