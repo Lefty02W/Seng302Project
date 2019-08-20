@@ -173,97 +173,96 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div id="table-card" class="card-large">
-                                    <div id="destinationsMap"></div>
-                                    <div id="legend"><h4>Legend</h4></div>
+
+                            <div id="table-card" class="card-large">
+
+                                <div class="row">
+                                    <ul class="nav nav-tabs" id="destinationTabs">
+                                        <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">
+                                            Details</a></li>
+                                        <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
+                                        <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">
+                                            World Photos</a></li>
+                                    </ul>
                                 </div>
-                            </div>
+                                <div class="tab-content" id="destinationTabsContent">
 
-                        </div>
-                        <div id="table-card" class="card-large">
+                                    <div id="detailsTab" class="tab-pane fade in active show">
+                                        <div class="container">
 
-                            <div class="row">
-                                <ul class="nav nav-tabs" id="destinationTabs">
-                                    <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">
-                                        Details</a></li>
-                                    <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
-                                    <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">
-                                        World Photos</a></li>
-                                </ul>
-                            </div>
-                            <div class="tab-content" id="destinationTabsContent">
+                                            <div id="nameRow" class="row justify-content-center">
+                                                <div id="nameVal" class="col-md-2">
+                                                    <a></a>
+                                                </div>
 
-                                <div id="detailsTab" class="tab-pane fade in active show">
-                                    <div class="container">
-
-                                        <div id="nameRow" class="row justify-content-center">
-                                            <div id="nameVal" class="col-md-2">
-                                                <a></a>
                                             </div>
 
-                                        </div>
-
-                                        <div id="typeRow" class="row justify-content-center">
-                                            <div id="typeVal" class="col-md-2">
-                                                <a></a>
+                                            <div id="typeRow" class="row justify-content-center">
+                                                <div id="typeVal" class="col-md-2">
+                                                    <a></a>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div id="countryRow" class="row justify-content-center">
-                                            <div id="countryVal" class="col-md-2">
-                                                <a></a>
+                                            <div id="countryRow" class="row justify-content-center">
+                                                <div id="countryVal" class="col-md-2">
+                                                    <a></a>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div id="districtRow" class="row justify-content-center">
-                                            <div id="districtVal" class="col-md-2">
-                                                <a></a>
+                                            <div id="districtRow" class="row justify-content-center">
+                                                <div id="districtVal" class="col-md-2">
+                                                    <a></a>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div id="latRow" class="row justify-content-center">
-                                            <div id="latVal" class="col-md-2">
-                                                <a></a>
+                                            <div id="latRow" class="row justify-content-center">
+                                                <div id="latVal" class="col-md-2">
+                                                    <a></a>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div id="lngRow" class="row justify-content-center">
-                                            <div id="lngVal" class="col-md-2">
-                                                <a></a>
+                                            <div id="lngRow" class="row justify-content-center">
+                                                <div id="lngVal" class="col-md-2">
+                                                    <a></a>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div id="publicRow" class="row justify-content-center">
-                                            <div id="publicVal" class="col-md-2">
-                                                <a></a>
+                                            <div id="publicRow" class="row justify-content-center">
+                                                <div id="publicVal" class="col-md-2">
+                                                    <a></a>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div id="travellerTypes" class="row justify-content-center">
-                                            <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
-                                            data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">
-                                                Suggest Edit</button>
-                                            <div id="travellerTypesVal" class="col-md-4">
-                                                <a></a>
+                                            <div id="travellerTypes" class="row justify-content-center">
+                                                <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
+                                                data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">
+                                                    Suggest Edit</button>
+                                                <div id="travellerTypesVal" class="col-md-4">
+                                                    <a></a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div id="myPhotosTab" class="tab-pane fade">
-                                    <div class="container" id="userPhotos">
-                                        <a></a>
+                                    <div id="myPhotosTab" class="tab-pane fade">
+                                        <div class="container" id="userPhotos">
+                                            <a></a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div id="worldPhotosTab" class="tab-pane fade">
-                                    <div class="container" id="worldPhotos">
-                                        <a></a>
+                                    <div id="worldPhotosTab" class="tab-pane fade">
+                                        <div class="container" id="worldPhotos">
+                                            <a></a>
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
                         </div>
-
+                        <div class="col">
+                            <div id="table-card" class="card-large">
+                                <div id="destinationsMap"></div>
+                                <div id="legend"><h4>Legend</h4></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal fade" id="linkDestinationPhotoModal">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
