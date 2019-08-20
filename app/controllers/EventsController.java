@@ -122,6 +122,15 @@ public class EventsController extends Controller {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
                 EventFormData eventFormData = searchEventForm.get();
+                try{
+                    return ok(events.render(profile.get(),
+                            Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
+                            destinationRepository.getAllDestinations(), eventRepository.searchEvent(eventFormData), eventForm, eventFormDataForm,
+                            request, messagesApi.preferred(request)));
+                } catch (Exception e){
+                    System.out.println(e);
+                }
+
 
             }
             return redirect("/events");

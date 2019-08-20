@@ -174,74 +174,74 @@ public class EventRepository {
     private SqlQuery formSearchQuery(EventFormData eventFormData) {
         String query = "SELECT DISTINCT events.event_id, events.event_name, events.description, events.destination_id, " +
                 "events.start_date, events.end_date, events.age_restriction FROM events " +
-                "LEFT OUTER JOIN event_genre ON events.event_id = event_genres.event_id " +
+                "LEFT OUTER JOIN event_genres ON events.event_id = event_genres.event_id " +
                 "LEFT OUTER JOIN event_type ON events.event_id = event_type.event_id " +
                 "LEFT OUTER JOIN event_artists ON events.event_id = event_artists.event_id ";
         boolean whereAdded = false;
+        boolean likeAdded = false;
         List<String> args = new ArrayList<>();
         if (!eventFormData.getEventName().equals("")){
             query += "WHERE events.event_name LIKE ? ";
+            likeAdded = true;
             whereAdded = true;
             args.add(eventFormData.getEventName());
         }
-        if (!eventFormData.getArtistName().equals("")) {
-            if (whereAdded){
-                // TODO: 19/08/19 make sure artists is a dropdown that sends artist id back 
-                query += "AND event_artists.artist_id = ?";
-            } else {
-                query += "WHERE event_artists.artist_id = ?";
-                whereAdded = true;
-            }
-            args.add(eventFormData.getArtistName());
-        }
-        if (!eventFormData.getEventType().equals("")) {
-            if (whereAdded){
-                query += "AND event_type.event_id = ?";
-            } else {
-                query += "WHERE event_type.event_id = ?";
-                whereAdded = true;
-            }
-            args.add(eventFormData.getEventType());
-        }
-        // TODO: 19/08/19 Waiting on eventDestination linking table
-//        if (!eventFormData.getCountry().equals("")) {
+//        if (!eventFormData.getArtistName().equals("")) {
 //            if (whereAdded){
-//                query += "AND event_destination.destination_id = ?";
+//                // TODO: 19/08/19 make sure artists is a dropdown that sends artist id back
+//                query += "AND event_artists.artist_id = ?";
 //            } else {
-//                query += "WHERE event_destination.destination_id = ?";
+//                query += "WHERE event_artists.artist_id = ?";
 //                whereAdded = true;
 //            }
-//            args.add(eventFormData.getCountry());
+//            args.add(eventFormData.getArtistName());
 //        }
-        if (!eventFormData.getAgeRestriction().equals("")) {
-            if(whereAdded){
-                query += "AND events.age_restriction = ?";
-            } else {
-                query += "WHERE events.age_restriction = ?";
-                whereAdded = true;
-            }
-            args.add(eventFormData.getAgeRestriction());
-        }
-        if (!eventFormData.getGenre().equals("")) {
-            if (whereAdded){
-                query += "AND event_genres.genre_id = ?";
-            } else {
-                query += "WHERE event_genres.genre_id = ?";
-                whereAdded = true;
-            }
-            args.add(eventFormData.getGenre());
-        }
-        if (!eventFormData.getStartDate().equals("")) {
-            if (whereAdded){
-                query += "AND events.start_date <= ? And events.end_date >= ?";
-            } else {
-                query += "WHERE events.start_date <= ? And events.end_date >= ?";
-            }
-            args.add(eventFormData.getGenre());
-        }
-        SqlQuery sqlQuery = createSqlQuery(query, args);
-
-        return sqlQuery;
+//        if (!eventFormData.getEventType().equals("")) {
+//            if (whereAdded){
+//                query += "AND event_type.event_id = ?";
+//            } else {
+//                query += "WHERE event_type.event_id = ?";
+//                whereAdded = true;
+//            }
+//            args.add(eventFormData.getEventType());
+//        }
+//        // TODO: 19/08/19 Waiting on eventDestination linking table
+////        if (!eventFormData.getCountry().equals("")) {
+////            if (whereAdded){
+////                query += "AND event_destination.destination_id = ?";
+////            } else {
+////                query += "WHERE event_destination.destination_id = ?";
+////                whereAdded = true;
+////            }
+////            args.add(eventFormData.getCountry());
+////        }
+//        if (!eventFormData.getAgeRestriction().equals("")) {
+//            if(whereAdded){
+//                query += "AND events.age_restriction = ?";
+//            } else {
+//                query += "WHERE events.age_restriction = ?";
+//                whereAdded = true;
+//            }
+//            args.add(eventFormData.getAgeRestriction());
+//        }
+//        if (!eventFormData.getGenre().equals("")) {
+//            if (whereAdded){
+//                query += "AND event_genres.genre_id = ?";
+//            } else {
+//                query += "WHERE event_genres.genre_id = ?";
+//                whereAdded = true;
+//            }
+//            args.add(eventFormData.getGenre());
+//        }
+//        if (!eventFormData.getStartDate().equals("")) {
+//            if (whereAdded){
+//                query += "AND events.start_date <= ? And events.end_date >= ?";
+//            } else {
+//                query += "WHERE events.start_date <= ? And events.end_date >= ?";
+//            }
+//            args.add(eventFormData.getGenre());
+//        }
+        return createSqlQuery(query, args, likeAdded);
     }
 
     /**
@@ -250,11 +250,22 @@ public class EventRepository {
      * @param args parameters to be added to the wildcards
      * @return SqlQuery for searching events
      */
-    private SqlQuery createSqlQuery(String query, List<String> args){
+    private SqlQuery createSqlQuery(String query, List<String> args, Boolean likeAdded){
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(query);
         for (int i=0; i < args.size(); i++){
-            sqlQuery.setParameter(i + 1, args.get(i));
+            System.out.println(likeAdded);
+            if (likeAdded) {
+                System.out.println(args.get(i));
+                System.out.println(i+1);
+                System.out.println(i);
+                sqlQuery.setParameter(i + 1, "%" + args.get(i) + "%");
+                likeAdded = false;
+                System.out.println(sqlQuery);
+            } else {
+                sqlQuery.setParameter(i + 1, args.get(i));
+            }
         }
+        System.out.println(sqlQuery);
         return sqlQuery;
     }
 
