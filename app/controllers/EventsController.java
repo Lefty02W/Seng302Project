@@ -67,9 +67,6 @@ public class EventsController extends Controller {
                     if (optionalEventsList.isPresent()){
                         eventsList = optionalEventsList.get();
                     }
-                    System.out.println("SHOW EVENT LIST");
-                    System.out.println(eventsList);
-                    System.out.println("SHOW EVENT LIST");
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm,
@@ -126,27 +123,7 @@ public class EventsController extends Controller {
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
                 EventFormData eventFormData = searchEventForm.get();
                 List<Events> eventsList = eventRepository.searchEvent(eventFormData);
-                System.out.println("********************************************************");
-                System.out.println(eventsList);
                 if(!eventsList.isEmpty()){
-                    System.out.println(1);
-                    System.out.println(profile.get());
-                    System.out.println(2);
-                    System.out.println(genreRepository.getAllGenres());
-                    System.out.println(3);
-                    System.out.println(artistRepository.getAllArtists());
-                    System.out.println(4);
-                    System.out.println(destinationRepository.getAllDestinations());
-                    System.out.println(5);
-                    System.out.println(eventsList);
-                    System.out.println(6);
-                    System.out.println(eventForm);
-                    System.out.println(7);
-                    System.out.println(eventFormDataForm);
-                    System.out.println(8);
-                    System.out.println(request);
-                    System.out.println(9);
-                    System.out.println(messagesApi.preferred(request));
                     return ok(events.render(profile.get(),
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm,

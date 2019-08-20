@@ -88,7 +88,6 @@ public class EventRepository {
      */
     private CompletionStage<Integer> insertEvent(Events event){
             return supplyAsync(() -> {
-                System.out.println("insert");
                 try {
                     ebeanServer.insert(event);
                 } catch (Exception e) {
@@ -253,20 +252,13 @@ public class EventRepository {
     private SqlQuery createSqlQuery(String query, List<String> args, Boolean likeAdded){
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(query);
         for (int i=0; i < args.size(); i++){
-            System.out.println(likeAdded);
             if (likeAdded) {
-                System.out.println(args.get(i));
-                System.out.println(i+1);
-                System.out.println(i);
                 sqlQuery.setParameter(i + 1, "%" + args.get(i) + "%");
                 likeAdded = false;
-                System.out.println(sqlQuery);
             } else {
                 sqlQuery.setParameter(i + 1, args.get(i));
             }
         }
-        System.out.println(sqlQuery);
-        System.out.println("About to return");
         return sqlQuery;
     }
 
@@ -282,19 +274,14 @@ public class EventRepository {
         List<SqlRow> sqlRows = query.findList();
         List<Events> events = new ArrayList<>();
         if (!sqlRows.isEmpty()){
-            System.out.println(sqlRows);
             for (SqlRow foundEvent : sqlRows){
-                System.out.println("in for");
-                events.add(new Events(foundEvent.getInteger("event_id"), foundEvent.getString("event_name"),
+                Events event = populateEvent((new Events(foundEvent.getInteger("event_id"), foundEvent.getString("event_name"),
                         foundEvent.getString("description"), foundEvent.getInteger("destination_id"),
                         foundEvent.getDate("start_date"), foundEvent.getDate("end_date"),
-                        foundEvent.getInteger("age_restriction")));
-                System.out.println(events);
+                        foundEvent.getInteger("age_restriction"))));
+                events.add(event);
             }
-            System.out.println(events.get(0).getEventId());
-            System.out.println("oiut of for loop");
         }
-        System.out.println(events.get(0).getEventId());
         return events;
     }
 }
