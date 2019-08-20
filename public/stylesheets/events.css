@@ -11,3 +11,12 @@
 #eventStats{
     width: 50%;
 }
+
+#label{
+    padding-top: 0 !important;
+    margin-top: -20px;
+}
+
+.dateLabel{
+    margin-top: 0 !important;
+}

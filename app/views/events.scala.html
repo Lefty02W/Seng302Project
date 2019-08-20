@@ -112,11 +112,20 @@
                                 <div class="collapse eventFilters" id="eventFilters" aria-labelledby="searchHeader" data-parent="#filterAccordion">
                                     <div class="card-body">
                                         <div class="search">
-                                            <small id="label" for="artistName">Artist Name</small>
-                                            <input type="search" id="artistName" name="artistName" placeholder="Artist name..">
+                                            <small id="label" for="artistName">Artist</small>
+                                            <select class="selectpicker" id="artistName" name="artistName" title="Artist Name">
+                                                @for(artist <- artists) {
+                                                    <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                }
+                                            </select>
                                             <small id="label" for="eventType">Event type</small>
                                             <select class="selectpicker" id="eventType" name="eventType" title="Event Type">
-                                                @*populate picker with event types*@
+                                                <option value="Gig">Gig</option>
+                                                <option value="Meetup">Meetup</option>
+                                                <option value="Competition">Competition</option>
+                                                <option value="Party">Party</option>
+                                                <option value="Charity">Charity</option>
+                                                <option value="Festival">Festival</option>
                                             </select>
                                             <small id="label" for="country">Country</small>
                                             <select class="selectpicker" id="country" name="country" title="Countries">
@@ -138,12 +147,12 @@
                                             </select>
 
                                             <div class="form-group" id="holder">
-                                                <small id="label" for="startDate">Date</small>
+                                                <small id="label" class="dateLabel" for="startDate">Date</small>
                                                 <input type="datetime-local" id="startDate" name="startDate">
                                             }
 
                                                 <a href="@routes.EventsController.show()">
-                                                    <button class="btn btn-primary">Clear</button>
+                                                    <button class="btn btn-secondary">Clear</button>
                                                 </a>
                                             </div>
 
@@ -164,7 +173,7 @@
                                         <p id="eventStats">
                                             <ul>
                                                 @for(artist <- event.getEventArtists){
-                                                    <li>artist</li>
+                                                    <li>@artist.getArtistName</li>
                                                     }
                                             </ul>
                                         </p>
