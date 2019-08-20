@@ -479,6 +479,7 @@ public class ProfileRepository {
      * Function to get all the destinations created by the signed in user.
      *
      * @param profileId users profile Id
+     * @param rowOffset - The row to begin retrieving data from. Used for pagination
      * @return destList arrayList of destinations registered by the user
      */
     public Optional<ArrayList<Destination>> getDestinations(int profileId, int rowOffset) {

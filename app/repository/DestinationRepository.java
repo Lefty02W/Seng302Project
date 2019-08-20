@@ -384,6 +384,7 @@ public class DestinationRepository {
      * Method returns all followed destinations ids from a user
      *
      * @param profileId User id for the user followed destinations
+     * @param rowOffset - Row to begin getting data from. Used in pagination
      * @return Optional array list of integers of the followed destination ids
      */
     public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId, int rowOffset) {
