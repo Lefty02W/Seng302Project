@@ -266,6 +266,7 @@ public class EventRepository {
             }
         }
         System.out.println(sqlQuery);
+        System.out.println("About to return");
         return sqlQuery;
     }
 
@@ -281,13 +282,19 @@ public class EventRepository {
         List<SqlRow> sqlRows = query.findList();
         List<Events> events = new ArrayList<>();
         if (!sqlRows.isEmpty()){
+            System.out.println(sqlRows);
             for (SqlRow foundEvent : sqlRows){
+                System.out.println("in for");
                 events.add(new Events(foundEvent.getInteger("event_id"), foundEvent.getString("event_name"),
                         foundEvent.getString("description"), foundEvent.getInteger("destination_id"),
                         foundEvent.getDate("start_date"), foundEvent.getDate("end_date"),
                         foundEvent.getInteger("age_restriction")));
+                System.out.println(events);
             }
+            System.out.println(events.get(0).getEventId());
+            System.out.println("oiut of for loop");
         }
+        System.out.println(events.get(0).getEventId());
         return events;
     }
 }
