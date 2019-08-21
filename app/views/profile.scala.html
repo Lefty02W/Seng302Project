@@ -147,7 +147,7 @@
                         <li><a data-toggle="tab" href="#photosTab" id="photosTabLink">Photos</a></li>
                         <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
                         <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
-                        <li><a data-toggle="tab" href="#followedArtistsTab" id="followedArtistsLink">Following</a></li>
+                        <li><a data-toggle="tab" href="#followedArtistsTab" id="followedArtistsLink">Followed Artists</a></li>
                     </ul>
 
                 </div>
@@ -338,7 +338,6 @@
                                         <th>Delete</th>
                                     </tr>
                                 </thead>
-
                                 @for(destination <- destinationsList) {
                                     <tr>
                                         <td>@destination.getName() <input type="hidden" name="destinationName" value="@destination.getName()" /></td>
@@ -355,6 +354,7 @@
                                     </tr>
                                 }
                             </table>
+                            <a href="@routes.DestinationsController.show(false)"> <button class="btn btn-primary"> View More</button> </a>
                         </div>
                     </div>
                     <div id="followedArtistsTab" class="tab-pane fade">
@@ -444,6 +444,7 @@
                             </div>
                         </div>
                     }
+                    <a href="/trips/0"> <button class="btn btn-primary"> View More</button> </a>
                     </div>
                 </div>
             </div>

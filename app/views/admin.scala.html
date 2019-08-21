@@ -1,3 +1,5 @@
+@import java.util._
+
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles: List[Profile], adminProfiles: List[Profile], trips: List[Trip], destination: RoutedObject[Destination],
@@ -338,10 +340,10 @@
                             </li>
                             <li class="nav-item">
                                 @if(pagination.getActiveTab == 7) {
-                                    <a class="nav-link active" href="/admin/artist/requests/0">
+                                    <a class="nav-link active" href="/admin/artists/requests/0">
                                         Artist Requests</a>
                                 } else {
-                                    <a class="nav-link" href="/admin/artist/requests/0">
+                                    <a class="nav-link" href="/admin/artists/requests/0">
                                         Artist Requests</a>
                                 }
                             </li>
@@ -374,6 +376,22 @@
                                                 </tr>
                                             }
                                         </table>
+                                        <div class="col">
+                                            <a>@pagination.getInfoString</a>
+                                            <ul class="pagination">
+                                                <li class="page-item"><a class="page-link" href="/admin/admins/0">Start</a></li>
+                                                @if(pagination.isPreviousEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/admin/admins/@pagination.getPrevious">Previous</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link" href="/admin/admins/@pagination.getPrevious">Previous</a></li>
+                                                }
+                                                @if(pagination.isNextEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/admin/admins/@pagination.getNext">Next</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link" href="/admin/admins/@pagination.getNext">Next</a></li>
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -446,6 +464,22 @@
                                             </tr>
                                         }
                                     </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/profiles/0">Start</a></li>
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/profiles/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
 
@@ -553,6 +587,22 @@
 
                                         }
                                     </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/destinations/0">Start</a></li>
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/destinations/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/destinations/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/destinations/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/destinations/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         @if(pagination.getActiveTab == 4) {
@@ -588,6 +638,22 @@
                                             </tr>
                                         }
                                     </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/destinations/requests/0">Start</a></li>
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         @if(pagination.getActiveTab == 5) {
@@ -627,6 +693,22 @@
                                             </tr>
                                         }
                                     </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/hunts/0">Start</a></li>
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/hunts/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/hunts/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/hunts/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/hunts/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         @if(pagination.getActiveTab == 6) {
@@ -686,6 +768,22 @@
                                             </tr>
                                         }
                                     </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/artists/0">Start</a></li>
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/artists/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/artists/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         @if(pagination.getActiveTab == 7) {
@@ -714,6 +812,22 @@
                                             </tr>
                                         }
                                     </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            <li class="page-item"><a class="page-link" href="/admin/artists/requests/0">Start</a></li>
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/requests/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/artists/requests/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/requests/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link" href="/admin/artists/requests/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -781,8 +895,9 @@
             $(document).ready(function () {
                 $('#profileTable').DataTable({
                     "searching": false,
+                    "bPaginate": false,
                     "lengthChange": false,
-                    "bPaginate": false
+                    "bInfo": false
                 });
             });
 
@@ -798,56 +913,63 @@
             $(document).ready(function () {
                 $('#destinationsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
             $(document).ready(function () {
                 $('#adminsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
             $(document).ready(function () {
                 $('#tripDestTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
             $(document).ready(function () {
                 $('#huntsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
             $(document).ready(function () {
                 $('#requestsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
             $(document).ready(function () {
                 $('#artistRequestsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 
             $(document).ready(function () {
                 $('#artistsTable').DataTable({
                     "searching": false,
-                    "pageLength": 8,
-                    "lengthChange": false
+                    "bPaginate": false,
+                    "lengthChange": false,
+                    "bInfo": false
                 });
             });
 

@@ -165,18 +165,15 @@ public class TreasureHuntController {
      * @param id unique treasure hunt id
      * @return a redirect to the treasure hunt page
      */
-    public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id, Integer offset) {
+    public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id) {
         TreasureHunt hunt = treasureHuntRepository.lookup(id);
-        PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, treasureHuntRepository.getNumHunts());
-        paginationHelper.alterNext(9);
-        paginationHelper.alterPrevious(9);
         huntForm.fill(hunt);
         Integer profId = SessionController.getCurrentUserId(request);
-        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(offset);
+        List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(0);
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), paginationHelper, request, messagesApi.preferred(request)));
+                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), new PaginationHelper(0, 0, 0,true, true, 0), request, messagesApi.preferred(request)));
             }).orElseGet(() -> redirect("/login"));
         });
     }

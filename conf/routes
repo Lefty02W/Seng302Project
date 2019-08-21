@@ -60,7 +60,6 @@ POST    /profile/photo/profile/upload           controllers.ProfileController.up
 
 # Admins
 POST    /admin/:id                              controllers.ProfileController.updateAdmin(request: Request, id: Integer)
-GET     /admin                                  controllers.AdminController.show(request: Request)
 GET     /admin/admins/:offset                   controllers.AdminController.showAdmins(request: Request, offset: Integer)
 GET     /admin/undo/                            controllers.AdminController.undoTopOfStack(request : Request)
 
@@ -112,7 +111,7 @@ POST   /admin/artist/:id/edit                  controllers.AdminController.editA
 GET     /treasure/:offset                       controllers.TreasureHuntController.show(request: Request, offset : Integer)
 POST    /hunts/create                           controllers.TreasureHuntController.createHunt(request : Request)
 GET     /hunts/:id/delete                       controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
-GET     /hunts/:id/edit/show/:offset                    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer, offset : Integer)
+GET     /hunts/:id/edit/show                    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer)
 POST    /hunts/:id/edit                         controllers.TreasureHuntController.editTreasureHunt(request : Request, id: Integer)
 
 

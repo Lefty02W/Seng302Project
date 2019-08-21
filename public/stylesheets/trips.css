@@ -101,3 +101,7 @@ h1, h2, h3, h4, h5, h6 {
     max-width: unset;
     background: #205723 !important;
 }
+
+#tripsPane {
+    padding-bottom: 10vh;
+}
