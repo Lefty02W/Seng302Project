@@ -55,8 +55,8 @@ def execute_trips_queries(cursor, db, number_trips, number_destinations, number_
         return "Error"
     emails = read_profile_emails(number_profiles)
     for trip in trips_list:
-        profile_id = get_profile_id(emails, cursor, db)
         try:
+            profile_id = get_profile_id(emails, cursor, db)
             # see it trip already exists
             trip_exists = get_trip_id(trip[0], profile_id, cursor, db) != 0
             if trip_exists:

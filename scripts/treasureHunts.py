@@ -27,10 +27,10 @@ def get_profile_id(cursor, db, emails):
         print("failed to get random profile for treasure hunt " + e)
         return 0
 
-def get_hunt_id(riddle, destination, cursor, db):
+def get_hunt_id(riddle, cursor, db):
     """Is a helper function for insert_treasure_hunts()
     Gets hunt id by searching for the riddle"""
-    cursor.execute("SELECT riddle from treasure_hunt WHERE riddle = '{0}' and destination_id = (SELECT destination_id from destination WHERE name = '{1}')".format(riddle, destination))
+    cursor.execute("SELECT riddle from treasure_hunt WHERE riddle = '{0}'".format(riddle, destination))
     db.commit()
     id = cursor.fetchone()
     if id is not None:
@@ -53,7 +53,7 @@ def insert_treasure_hunts(cursor, db, num_hunts, number_profiles, number_destina
     emails = read_profile_emails(number_profiles)
     for hunt in hunt_list:
         try:
-            if get_hunt_id(hunt[0], hunt[3], cursor, db) != 0:
+            if get_hunt_id(hunt[0], cursor, db) != 0:
                 print("\nTreasure Hunt '"+hunt[0]+"' already exists")
             else:
                 cursor.execute("INSERT INTO treasure_hunt(riddle, start_date, end_date, destination_id, " \
