@@ -665,6 +665,36 @@ public class DestinationRepository {
         return ebeanServer.find(Destination.class).where().eq("soft_delete", 0).findCount();
     }
 
+
+    /**
+     * Method to get number of public destinations
+     * Used for pagination
+     *
+     * @return number of public destinations
+     */
+    public int getNumPublicDestinations() {
+        return ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("visible", 1).findCount();
+    }
+
+
+    /**
+     * Method to get count of all private and followed destinations
+     *
+     * @param profileId - The id of the profile to get its followed destinations
+     */
+    public int getNumPrivateDestinations(int profileId) {
+        String query = "SELECT DISTINCT destination.destination_id FROM follow_destination INNER JOIN destination ON destination.destination_id = follow_destination.destination_id " +
+                "WHERE follow_destination.profile_id = ? AND destination.soft_delete = 0";
+        List<SqlRow> countRow = ebeanServer.createSqlQuery(query).setParameter(1, profileId).findList();
+        Integer count = 0;
+        if (!countRow.isEmpty()) {
+            count = countRow.size();
+        }
+        int total = count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).findCount();
+        return total;
+    }
+
+
     /**
      * Get a page of destinations
      *

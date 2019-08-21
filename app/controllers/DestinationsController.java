@@ -74,9 +74,16 @@ public class DestinationsController extends Controller {
      * @param rowOffset - The first row from which data will be retrieved
      * @return paginationHelper - An instance of PaginationHelper model to ease pagination
      */
-    private PaginationHelper initialisePaginiation(Integer rowOffset) {
+    private PaginationHelper initialisePaginiation(Integer rowOffset, Integer profileId, boolean isPublic) {
+        int maxSize;
+        if (isPublic) {
+            maxSize = destinationRepository.getNumPublicDestinations();
+        } else {
+            maxSize = destinationRepository.getNumPrivateDestinations(profileId);
+        }
+
         PaginationHelper paginationHelper = new PaginationHelper(rowOffset, rowOffset, rowOffset, true,
-                true, destinationRepository.getNumDestinations());
+                true, maxSize);
         paginationHelper.alterNext(7);
         paginationHelper.alterPrevious(7);
         paginationHelper.checkButtonsEnabled();
@@ -101,7 +108,7 @@ public class DestinationsController extends Controller {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
 
-                PaginationHelper paginationHelper = initialisePaginiation(rowOffset);
+                PaginationHelper paginationHelper = initialisePaginiation(rowOffset, userId, isPublic);
 
                 if (isPublic) {
                     List<Destination> destListTemp = destinationRepository.getPublicDestinations(rowOffset);
@@ -159,7 +166,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0), followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -188,7 +195,7 @@ public class DestinationsController extends Controller {
 
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0),
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profId, isPublic),
                         followedDestinationIds, usersPhotos, form, toSend, requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
@@ -229,7 +236,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0),
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profileId, isPublic),
                         followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
