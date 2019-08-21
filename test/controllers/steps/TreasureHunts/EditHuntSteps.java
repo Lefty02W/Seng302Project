@@ -37,7 +37,7 @@ public class EditHuntSteps {
     public void iPressEditOnOneOfMyTreasureHunts() throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/hunts/1/edit/show")
+                .uri("/admin/hunts/1/edit/show/0")
                 .session("connected", "1");
         Result result = Helpers.route(TestApplication.getApplication(), request);
         TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
