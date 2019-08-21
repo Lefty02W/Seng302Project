@@ -203,4 +203,25 @@ public class RolesRepository {
         }
         return Optional.ofNullable(profileIds.get(0));
     }
+
+    /**
+     * Method to get a page of admins to display
+     *
+     * @param offset offset of admins to get
+     * @param limit limit of number of admins to get
+     * @return Admin ids found
+     */
+    public List<Integer> getAdminPage(int offset, int limit) {
+        Optional<Integer> roleId = getRoleFromName("admin");
+        List<Integer> profileIds = new ArrayList<>();
+        if (roleId.isPresent()) {
+            String query = "SELECT DISTINCT profile_id FROM profile_roles WHERE role_id = ? LIMIT ? OFFSET ?";
+            List<SqlRow> rows = ebeanServer.createSqlQuery(query).setParameter(1, roleId.get())
+                    .setParameter(2, limit).setParameter(3, offset).findList();
+            for (SqlRow row : rows) {
+                profileIds.add(row.getInteger("profile_id"));
+            }
+        }
+        return profileIds;
+    }
 }

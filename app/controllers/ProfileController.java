@@ -3,10 +3,7 @@ package controllers;
 
 import com.google.common.collect.TreeMultimap;
 import interfaces.TypesInterface;
-import models.Destination;
-import models.PersonalPhoto;
-import models.Photo;
-import models.Profile;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -60,6 +57,7 @@ public class ProfileController extends Controller implements TypesInterface {
     private final String profileEndpoint = "/profile";
     private Boolean countryFlag = true;
     private final UndoStackRepository undoStackRepository;
+    private final ArtistRepository artistRepository;
 
 
 
@@ -77,7 +75,8 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ProfileTravellerTypeRepository profileTravellerTypeRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository,
+                             ProfileTravellerTypeRepository profileTravellerTypeRepository, ArtistRepository artistRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -88,7 +87,8 @@ public class ProfileController extends Controller implements TypesInterface {
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
             this.undoStackRepository = undoStackRepository;
-            this.profileTravellerTypeRepository =profileTravellerTypeRepository;
+            this.profileTravellerTypeRepository = profileTravellerTypeRepository;
+            this.artistRepository = artistRepository;
         }
 
 
@@ -343,11 +343,12 @@ public class ProfileController extends Controller implements TypesInterface {
                 Optional<Photo> image = personalPhotoRepository.getProfilePicture(profId);
                 Photo profilePicture;
                 profilePicture = image.orElse(null);
-                Profile toSend = tripRepository.setUserTrips(profileRec.get());
+                Profile toSend = tripRepository.getTenTrips(profileRec.get());
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-                profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
+                profileRepository.getTenDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
 
+                List<Artist> followedArtistsList = artistRepository.getFollowedArtists(toSend.getProfileId());
                 List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
 
                 if (!outdatedCountries.isEmpty() && countryFlag) {
@@ -356,7 +357,7 @@ public class ProfileController extends Controller implements TypesInterface {
                 }
 
                 countryFlag = true;
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             }
             return redirect("/");
         });

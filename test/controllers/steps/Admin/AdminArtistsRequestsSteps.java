@@ -10,6 +10,7 @@ import play.test.Helpers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static junit.framework.TestCase.*;
 
@@ -51,8 +52,12 @@ public class AdminArtistsRequestsSteps {
 
     @And("^Artist with id (\\d+) is pending admin approval$")
     public void artistWithIdIsPendingAdminApproval(int arg0) throws Throwable {
-        Artist artist = TestApplication.getArtistRepository().getArtist(arg0);
-        assertEquals(0, artist.getVerified());
+        Optional<Artist> artist = TestApplication.getArtistRepository().getArtist(arg0);
+        if (artist.isPresent()) {
+            assertEquals(0, artist.get().getVerified());
+        } else {
+            fail("Artist not found");
+        }
     }
 
     @And("^The admin accepts the request for artist (\\d+)$")
@@ -67,8 +72,12 @@ public class AdminArtistsRequestsSteps {
 
     @Then("^Artist (\\d+) should no longer be pending approval$")
     public void artistShouldNoLongerBePendingApproval(int arg0) throws Throwable {
-        Artist artist = TestApplication.getArtistRepository().getArtist(arg0);
-        assertEquals(1, artist.getVerified());
+        Optional<Artist> artist = TestApplication.getArtistRepository().getArtist(arg0);
+        if (artist.isPresent()) {
+            assertEquals(1, artist.get().getVerified());
+        } else {
+            fail("Artist not found");
+        }
     }
 
     @And("^The admin declines the request for artist (\\d+)$")
@@ -83,6 +92,6 @@ public class AdminArtistsRequestsSteps {
 
     @Then("^Artist (\\d+) should no longer be in the database$")
     public void artistShouldNoLongerBeInTheDatabase(int arg0) throws Throwable {
-        assertNull( TestApplication.getArtistRepository().getArtist(arg0));
+        assertFalse(TestApplication.getArtistRepository().getArtist(arg0).isPresent());
     }
 }
