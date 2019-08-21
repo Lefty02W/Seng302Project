@@ -22,7 +22,7 @@ public class DestinationsControllerTest {
      */
     @Ignore
     public void showEditDestination() {
-        ArrayList<Destination> destinationList = TestApplication.getProfileRepository().getDestinations(1).get();
+        ArrayList<Destination> destinationList = TestApplication.getProfileRepository().getDestinations(1, 0).get();
         Map<String, String> formData = new HashMap<>();
         formData.put("email", "john@gmail.com");
         formData.put("password", "password");

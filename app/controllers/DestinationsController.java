@@ -68,37 +68,65 @@ public class DestinationsController extends Controller {
         this.undoStackRepository = undoStackRepository;
     }
 
+
+    /**
+     * Initialise a pagination helper
+     * @param rowOffset - The first row from which data will be retrieved
+     * @return paginationHelper - An instance of PaginationHelper model to ease pagination
+     */
+    private PaginationHelper initialisePaginiation(Integer rowOffset, Integer profileId, boolean isPublic) {
+        int maxSize;
+        if (isPublic) {
+            maxSize = destinationRepository.getNumPublicDestinations();
+        } else {
+            maxSize = destinationRepository.getNumPrivateDestinations(profileId);
+        }
+
+        PaginationHelper paginationHelper = new PaginationHelper(rowOffset, rowOffset, rowOffset, true,
+                true, maxSize);
+        paginationHelper.alterNext(7);
+        paginationHelper.alterPrevious(7);
+        paginationHelper.checkButtonsEnabled();
+
+        return paginationHelper;
+    }
+
+
     /**
      * Displays a page showing the destinations to the user
      *
      * @param request
+     * @param isPublic - Whether the target is public destinations
+     * @param rowOffset - The row/page offset to use for getting results back
      * @return the list of destinations
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> show(Http.Request request, boolean isPublic) {
+    public CompletionStage<Result> show(Http.Request request, boolean isPublic, Integer rowOffset) {
         destinationsList.clear();
         Integer userId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(userId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
 
+                PaginationHelper paginationHelper = initialisePaginiation(rowOffset, userId, isPublic);
+
                 if (isPublic) {
-                    List<Destination> destListTemp = destinationRepository.getPublicDestinations();
+                    List<Destination> destListTemp = destinationRepository.getPublicDestinations(rowOffset);
                     try {
                         destinationsList = destListTemp;
                     } catch (NoSuchElementException e) {
                         destinationsList = new ArrayList<>();
                     }
                 } else {
-                    profileRepository.getDestinations(userId).ifPresent(dests -> destinationsList.addAll(dests));
-                    destinationRepository.getFollowedDestinations(userId).ifPresent(follows -> destinationsList.addAll(follows));
+                    profileRepository.getDestinations(userId, rowOffset).ifPresent(dests -> destinationsList.addAll(dests));
+                    destinationRepository.getFollowedDestinations(userId, rowOffset).ifPresent(follows -> destinationsList.addAll(follows));
                 }
-                destinationRepository.getFollowedDestinationIds(userId).ifPresent(ids -> followedDestinationIds = ids);
+                destinationRepository.getFollowedDestinationIds(userId, rowOffset).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, paginationHelper, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -138,7 +166,7 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -167,7 +195,8 @@ public class DestinationsController extends Controller {
 
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, toSend, requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profId, isPublic),
+                        followedDestinationIds, usersPhotos, form, toSend, requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -193,8 +222,8 @@ public class DestinationsController extends Controller {
                     followedDestinationIds = new ArrayList<>();
                 }
                 if (!isPublic) {
-                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId);
-                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId);
+                    Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId, 0);
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId, 0);
                     try {
                         destinationsList = destListTemp.get();
                         destinationsList.addAll(followedListTemp.get());
@@ -207,7 +236,8 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profileId, isPublic),
+                        followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }

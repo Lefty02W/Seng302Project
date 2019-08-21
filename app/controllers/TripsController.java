@@ -121,7 +121,7 @@ public class TripsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList = new ArrayList<>();
             if (profile.isPresent()) {
-                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profile.get().getProfileId());
+                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profile.get().getProfileId(), 0);
                 List<Destination> publicListTemp = destinationRepository.getPublicDestinationsNotOwned(profile.get().getProfileId());
                 try {
                     if(destListTemp.isPresent()) {
@@ -153,7 +153,7 @@ public class TripsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList = new ArrayList<>();
             if (profile.isPresent()) {
-                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profile.get().getProfileId());
+                Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profile.get().getProfileId(), 0);
                 List<Destination> publicListTemp = destinationRepository.getPublicDestinationsNotOwned(profile.get().getProfileId());
                 try {
                     if(destListTemp.isPresent()) {
@@ -437,8 +437,8 @@ public class TripsController extends Controller {
     public CompletionStage<Result> createTripDestinationCreate(Http.Request request, Integer order, Integer profId) {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
-            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId, 0);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0);
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());
@@ -465,8 +465,8 @@ public class TripsController extends Controller {
     public CompletionStage<Result> editTripDestinationCreate(Http.Request request, Integer order, Integer id, Integer profId) {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
-            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId);
+            Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId, 0);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0);
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());

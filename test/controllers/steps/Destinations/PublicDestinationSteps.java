@@ -90,7 +90,7 @@ public class PublicDestinationSteps {
     @Then("user with id {string} is following the new public destination with name {string}, type {string}, and country {string}")
     public void steveMillerFollowingNewPublicDest(String profileId, String name, String type, String country) {
         int id = Integer.parseInt(profileId);
-        Optional<ArrayList<Integer>> optionalListDests = TestApplication.getDestinationRepository().getFollowedDestinationIds(id);
+        Optional<ArrayList<Integer>> optionalListDests = TestApplication.getDestinationRepository().getFollowedDestinationIds(id, 0);
         if (optionalListDests.isPresent()) {
             ArrayList<Integer> listDests = optionalListDests.get();
             boolean match = false;
