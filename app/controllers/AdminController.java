@@ -401,7 +401,7 @@ public class AdminController {
     public CompletionStage<Result> viewTrip(Http.Request request, Integer tripId) {
         return supplyAsync(() -> {
             Trip trip = tripRepository.getTrip(tripId);
-            return ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), tripRepository.getPaginateTrip(0, pageSize), new RoutedObject<Destination>(null, false, false),
+            return ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), tripRepository.getPaginateTrip(0, pageSize), new RoutedObject<Destination>(null, false, false),
                     new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm, trip,
                     profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                     new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
@@ -494,7 +494,7 @@ public class AdminController {
             Destination currentDestination = destinationRepository.lookup(destId);
             RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, isEdit, !isEdit);
             if (isEdit) destinationEditForm.fill(currentDestination);
-            return ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), new ArrayList<Trip>(), toSend,
+            return ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), new ArrayList<Trip>(), toSend,
                     destinationRepository.getDestinationPage(0, pageSize), new RoutedObject<Profile>(null, false, false), profileEditForm,
                     null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                     new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
@@ -659,7 +659,7 @@ public class AdminController {
     public CompletionStage<Result> showEditHunt(Http.Request request, Integer id) {
         return supplyAsync(() -> {
             TreasureHunt hunt = treasureHuntRepository.lookup(id);
-            return ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
+            return ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                     destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                     null, profileCreateForm, null, new ArrayList<DestinationChange>(), treasureHuntRepository.getPageHunts(0, pageSize),
                     new RoutedObject<TreasureHunt>(hunt, true, false), Country.getInstance().getAllCountries(),
@@ -808,7 +808,7 @@ public class AdminController {
             if (artist.getGenreList() == null) {
                 artist.setGenre(new ArrayList<>());
             }
-            return ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), new ArrayList<Trip>(),
+            return ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), new ArrayList<Trip>(),
                     new RoutedObject<Destination>(null, false, false), new ArrayList<Destination>(),
                     new RoutedObject<Profile>(null, true, false), profileEditForm, null,
                     profileCreateForm, destinationEditForm, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
