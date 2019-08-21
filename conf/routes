@@ -109,7 +109,7 @@ POST   /admin/artist/:id/edit                  controllers.AdminController.editA
 
 
 # Tresure Hunts
-GET     /treasure                               controllers.TreasureHuntController.show(request: Request)
+GET     /treasure/:offset                       controllers.TreasureHuntController.show(request: Request, offset : Integer)
 POST    /hunts/create                           controllers.TreasureHuntController.createHunt(request : Request)
 GET     /hunts/:id/delete                       controllers.TreasureHuntController.deleteHunt(request : Request, id : Integer)
 GET     /hunts/:id/edit/show                    controllers.TreasureHuntController.showEditTreasureHunt(request: Request, id : Integer)
