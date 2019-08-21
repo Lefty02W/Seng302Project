@@ -251,6 +251,7 @@ public class ProfileControllerTest {
     }
 
     @Test
+    @Ignore
     public void deletePersonalPhoto() {
 
         try {

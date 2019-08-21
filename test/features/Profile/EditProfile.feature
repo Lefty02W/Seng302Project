@@ -4,6 +4,9 @@ Feature: Edit User Profile
   I want to be able to edit my user profile
   So that my details are always up to date
 
+  Background:
+    Given Password hash setup has been done
+
  # Scenario: Edit profile modal is opened on click of Edit Profile
    # Given I am logged in
    # And I am on the profile page
