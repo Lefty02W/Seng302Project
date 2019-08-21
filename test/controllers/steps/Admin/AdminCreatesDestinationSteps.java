@@ -47,7 +47,7 @@ public class AdminCreatesDestinationSteps {
 
     @And("the new destination is added to the admins {int} destinations")
     public void theNewDestinationIsAddedToTheAdminsDestinations(Integer adminId) {
-        assertTrue(TestApplication.getProfileRepository().getDestinations(adminId).isPresent());
+        assertTrue(TestApplication.getProfileRepository().getDestinations(adminId, 0).isPresent());
 
     }
 
@@ -72,7 +72,7 @@ public class AdminCreatesDestinationSteps {
     @And("the new destination is added to user {int} destinations")
     public void theNewDestinationIsAddedToUserDestinations(Integer int1) {
         //user has 2 destinations on startup
-        assertTrue(TestApplication.getProfileRepository().getDestinations(int1).isPresent());
+        assertTrue(TestApplication.getProfileRepository().getDestinations(int1, 0).isPresent());
 
     }
 }

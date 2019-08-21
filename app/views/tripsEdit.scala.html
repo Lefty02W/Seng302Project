@@ -35,14 +35,14 @@
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                    <a style="color: #ca6636" href="@routes.TripsController.show()"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
+                    <a style="color: #ca6636" href="@routes.TripsController.show(0)"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
                 </div>
@@ -140,7 +140,7 @@
                                     </table>
                                 </div>
                                 <div class="row" id="btnRow">
-                                    <a href="@routes.TripsController.show()"><button class="btn btn-secondary" type="button">Back</button></a>
+                                    <a href="@routes.TripsController.show(0)"><button class="btn btn-secondary" type="button">Back</button></a>
                                 </div>
 
                                 </div>

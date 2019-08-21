@@ -20,13 +20,14 @@ public class EditHuntSteps {
 
     private Map<String, String> huntForm = new HashMap<>();
     private Result redirectDestination;
+    private String huntRoute = "/treasure/0";
 
 
     @Given("^I am on the treasure hunts page$")
     public void iAmOnTheTreasureHuntsPage() throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/treasure")
+                .uri(huntRoute)
                 .session("connected", "1");
         Result result = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(200, result.status());
@@ -36,7 +37,7 @@ public class EditHuntSteps {
     public void iPressEditOnOneOfMyTreasureHunts() throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/hunts/1/edit/show")
+                .uri("/admin/hunts/1/edit/show/0")
                 .session("connected", "1");
         Result result = Helpers.route(TestApplication.getApplication(), request);
         TreasureHunt hunt = TestApplication.getTreasureHuntRepository().lookup(1);
@@ -64,7 +65,7 @@ public class EditHuntSteps {
     @Then("^I am redirected to the treasure hunts page$")
     public void iAmRedirectedToTheTreasureHuntsPage() throws Throwable {
         if (redirectDestination.redirectLocation().isPresent()) {
-            assertEquals("/treasure", redirectDestination.redirectLocation().get());
+            assertEquals(huntRoute, redirectDestination.redirectLocation().get());
         } else {
             fail();
         }

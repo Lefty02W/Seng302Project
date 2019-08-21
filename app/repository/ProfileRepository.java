@@ -4,6 +4,7 @@ import io.ebean.*;
 import models.*;
 import org.mindrot.jbcrypt.BCrypt;
 import play.db.ebean.EbeanConfig;
+import scala.xml.Null;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
@@ -93,6 +94,47 @@ public class ProfileRepository {
 
 
     /**
+     * Ebeans method to get all profiles not filling linking tables
+     * @return List of all profiles
+     */
+    public List<Profile> getAllEbeans(){
+        return (new ArrayList<>(ebeanServer.find(Profile.class)
+                .where()
+                .eq("soft_delete", 0)
+                .findList()));
+    }
+
+    /**
+     * Method to get all profiles for the travellers page with pagination. Gets the first 9 initially and uses
+     * an offset to load the next set of profiles to display with each new page.
+     *
+     * All profiles roles will also be filled.
+     *
+     * @return List of all profiles
+     */
+    public List<Profile> getAllTravellersPaginate(Integer offset) {
+        String selectQuery = "SELECT * " +
+                "FROM profile " +
+                "WHERE soft_delete = 0 " +
+                "ORDER BY profile_id ASC " +
+                "LIMIT 10 OFFSET ?";
+
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery)
+                .setParameter(1, offset)
+                .findList();
+        List<Profile> allProfiles = new ArrayList<>();
+
+        for (SqlRow row : rows) {
+
+            allProfiles.add(profileFromRow(row));
+
+        }
+
+        return allProfiles;
+
+    }
+
+    /**
      * Method for getting a profile
      *
      * @param email String of the email to get
@@ -142,7 +184,78 @@ public class ProfileRepository {
      * @param nationality nationality of profile
      * @return List of profiles that match query parameters
      */
-    public List<Profile> searchProfiles(String travellerType, Date lowerAge, Date upperAge, String gender, String nationality) {
+    public List<Profile> searchProfiles(String travellerType, Date lowerAge, Date upperAge, String gender, String nationality, int offset) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String queryString = "SELECT profile_traveller_type.profile FROM profile_traveller_type " +
+                "JOIN profile_nationality ON profile_nationality.profile = profile_traveller_type.profile " +
+                "JOIN nationality ON profile_nationality.nationality = nationality_id " +
+                "JOIN traveller_type ON profile_traveller_type.traveller_type = traveller_type_id";
+        boolean whereAdded = false;
+        if (!travellerType.equals("")) {
+            queryString += " WHERE traveller_type_name = ?";
+            whereAdded = true;
+        }
+        if (!nationality.equals("")) {
+            if (!whereAdded) {
+                queryString += " WHERE nationality_name = ?";
+            } else {
+                queryString += " AND nationality_name = ?";
+            }
+
+        }
+        SqlQuery query = ebeanServer.createSqlQuery(queryString);
+
+        if (!travellerType.equals("")) {
+            query.setParameter(1, travellerType);
+        }
+        if (!nationality.equals("")) {
+            if (!whereAdded) {
+                query.setParameter(1, nationality);
+            } else {
+                query.setParameter(2, nationality);
+            }
+        }
+        List<SqlRow> foundRows = query.findList();
+        List<Integer> foundIds = new ArrayList<>();
+        List<Profile> foundProfiles = new ArrayList<>();
+        if (!foundRows.isEmpty()) {
+            for (SqlRow row : foundRows) {
+                foundIds.add(row.getInteger("profile"));
+            }
+            foundProfiles = ebeanServer.find(Profile.class).where()
+                    .idIn(foundIds)
+                    .contains("gender", gender)
+                    .gt("birth_date", dateFormat.format(upperAge))
+                    .lt("birth_date", dateFormat.format(lowerAge))
+                    .setMaxRows(50)
+                    .setFirstRow(offset)
+                    .findList();
+            for (Profile profile : foundProfiles) {
+                Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profile.getProfileId());
+                optionalIntegerPassportCountryMap.ifPresent(profile::setPassports);
+                Optional<Map<Integer, Nationality>> optionalNationalityMap = profileNationalityRepository.getList(profile.getProfileId());
+                optionalNationalityMap.ifPresent(profile::setNationalities);
+                Optional<Map<Integer, TravellerType>> optionalTravellerTypeMap = profileTravellerTypeRepository.getList(profile.getProfileId());
+                optionalTravellerTypeMap.ifPresent(profile::setTravellerTypes);
+
+            }
+        }
+
+        return foundProfiles;
+    }
+
+    /**
+     * Method to get the size of the profile search result
+     * Used for the max value in the travellers search pagination
+     *
+     * @param travellerType Traveller type to search for
+     * @param lowerAge Lower limit for age of profile
+     * @param upperAge Upper limit for age of profile
+     * @param gender Gender of profile
+     * @param nationality nationality of profile
+     * @return int containing the size of the found profiles based on the search
+     */
+    public int getNumSearchProfiles(String travellerType, Date lowerAge, Date upperAge, String gender, String nationality){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String queryString = "SELECT profile_traveller_type.profile FROM profile_traveller_type " +
                 "JOIN profile_nationality ON profile_nationality.profile = profile_traveller_type.profile " +
@@ -186,18 +299,8 @@ public class ProfileRepository {
                     .gt("birth_date", dateFormat.format(upperAge))
                     .lt("birth_date", dateFormat.format(lowerAge))
                     .findList();
-            for (Profile profile : foundProfiles) {
-                Optional<Map<Integer, PassportCountry>> optionalIntegerPassportCountryMap = profilePassportCountryRepository.getList(profile.getProfileId());
-                optionalIntegerPassportCountryMap.ifPresent(profile::setPassports);
-                Optional<Map<Integer, Nationality>> optionalNationalityMap = profileNationalityRepository.getList(profile.getProfileId());
-                optionalNationalityMap.ifPresent(profile::setNationalities);
-                Optional<Map<Integer, TravellerType>> optionalTravellerTypeMap = profileTravellerTypeRepository.getList(profile.getProfileId());
-                optionalTravellerTypeMap.ifPresent(profile::setTravellerTypes);
-
-            }
         }
-
-        return foundProfiles;
+        return foundProfiles.size();
     }
 
 
@@ -478,11 +581,12 @@ public class ProfileRepository {
      * Function to get all the destinations created by the signed in user.
      *
      * @param profileId users profile Id
+     * @param rowOffset - The row to begin retrieving data from. Used for pagination
      * @return destList arrayList of destinations registered by the user
      */
-    public Optional<ArrayList<Destination>> getDestinations(int profileId) {
-        String sql = ("SELECT * FROM destination WHERE profile_id = ? AND soft_delete = 0");
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).findList();
+    public Optional<ArrayList<Destination>> getDestinations(int profileId, int rowOffset) {
+        String sql = ("SELECT * FROM destination WHERE profile_id = ? AND soft_delete = 0 LIMIT 7 OFFSET ?");
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, profileId).setParameter(2, rowOffset).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination dest;
         for (SqlRow aRowList : rowList) {
@@ -501,6 +605,26 @@ public class ProfileRepository {
             }
         }
         return Optional.of(destList);
+    }
+
+    /**
+     * Function to get ten of the users destinations
+     *
+     * @param profileId users id
+     * @return destination list
+     */
+    public Optional<List<Destination>> getTenDestinations(int profileId) {
+        return Optional.of(ebeanServer.find(Destination.class).setMaxRows(10).where().eq("profile_id", profileId).eq("soft_delete", 0).findList());
+    }
+
+
+    /**
+     * Finds the number of profiles in the database
+     * Used for pagination purposes
+     * @return int of number found
+     */
+    public int getNumProfiles() {
+        return ebeanServer.find(Profile.class).where().eq("soft_delete", 0).findCount();
     }
 
     /**
@@ -524,4 +648,28 @@ public class ProfileRepository {
     }
 
 
+    /**
+     * Gets the number of admins
+     * @return int number of admins
+     */
+    public int getNumAdmins() {
+        return ebeanServer.find(ProfileRoles.class).setDistinct(true).findCount();
+    }
+
+    /**
+     * Method to get a page of profiles to display
+     *
+     * @param offset offset for profiles to find
+     * @param limit number of profiles to find
+     * @return List of found profiles
+     */
+    public List<Profile> getPage(Integer offset, Integer limit) {
+        String selectQuery = "SELECT * FROM profile WHERE soft_delete = 0 LIMIT ? OFFSET ?;";
+        List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery).setParameter(1, limit).setParameter(2, offset).findList();
+        List<Profile> profiles = new ArrayList<>();
+        for (SqlRow row : rows) {
+            profiles.add(profileFromRow(row));
+        }
+        return profiles;
+    }
 }

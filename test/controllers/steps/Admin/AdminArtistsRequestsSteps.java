@@ -10,6 +10,7 @@ import play.test.Helpers;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static junit.framework.TestCase.*;
 
@@ -51,15 +52,19 @@ public class AdminArtistsRequestsSteps {
 
     @And("^Artist with id (\\d+) is pending admin approval$")
     public void artistWithIdIsPendingAdminApproval(int arg0) throws Throwable {
-        Artist artist = TestApplication.getArtistRepository().getArtist(arg0);
-        assertEquals(0, artist.getVerified());
+        Optional<Artist> artist = TestApplication.getArtistRepository().getArtist(arg0);
+        if (artist.isPresent()) {
+            assertEquals(0, artist.get().getVerified());
+        } else {
+            fail("Artist not found");
+        }
     }
 
     @And("^The admin accepts the request for artist (\\d+)$")
     public void theAdminAcceptsTheRequestForArtist(int arg0) throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/artist/verify/" + arg0)
+                .uri("/admin/artists/verify/" + arg0)
                 .session("connected", "2");
 
         Helpers.route(TestApplication.getApplication(), request);
@@ -67,15 +72,19 @@ public class AdminArtistsRequestsSteps {
 
     @Then("^Artist (\\d+) should no longer be pending approval$")
     public void artistShouldNoLongerBePendingApproval(int arg0) throws Throwable {
-        Artist artist = TestApplication.getArtistRepository().getArtist(arg0);
-        assertEquals(1, artist.getVerified());
+        Optional<Artist> artist = TestApplication.getArtistRepository().getArtist(arg0);
+        if (artist.isPresent()) {
+            assertEquals(1, artist.get().getVerified());
+        } else {
+            fail("Artist not found");
+        }
     }
 
     @And("^The admin declines the request for artist (\\d+)$")
     public void theAdminDeclinesTheRequestForArtist(int arg0) throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/artist/decline/" + arg0)
+                .uri("/admin/artists/decline/" + arg0)
                 .session("connected", "2");
 
         Helpers.route(TestApplication.getApplication(), request);
@@ -83,6 +92,6 @@ public class AdminArtistsRequestsSteps {
 
     @Then("^Artist (\\d+) should no longer be in the database$")
     public void artistShouldNoLongerBeInTheDatabase(int arg0) throws Throwable {
-        assertNull( TestApplication.getArtistRepository().getArtist(arg0));
+        assertFalse(TestApplication.getArtistRepository().getArtist(arg0).isPresent());
     }
 }

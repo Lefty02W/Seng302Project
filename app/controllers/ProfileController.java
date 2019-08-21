@@ -343,10 +343,10 @@ public class ProfileController extends Controller implements TypesInterface {
                 Optional<Photo> image = personalPhotoRepository.getProfilePicture(profId);
                 Photo profilePicture;
                 profilePicture = image.orElse(null);
-                Profile toSend = tripRepository.setUserTrips(profileRec.get());
+                Profile toSend = tripRepository.getTenTrips(profileRec.get());
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-                profileRepository.getDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
+                profileRepository.getDestinations(toSend.getProfileId(), 0).ifPresent(dests -> destinationsList = dests);
 
                 List<Artist> followedArtistsList = artistRepository.getFollowedArtists(toSend.getProfileId());
                 List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());

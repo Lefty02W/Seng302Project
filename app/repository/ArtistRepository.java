@@ -2,12 +2,14 @@ package repository;
 
 import io.ebean.*;
 import models.*;
+import play.data.Form;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
@@ -20,12 +22,13 @@ public class ArtistRepository {
     private final DatabaseExecutionContext executionContext;
     private final PassportCountryRepository passportCountryRepository;
     private final GenreRepository genreRepository;
-
+    private static final int PAGE_SIZE = 10;
     /**
      * Ebeans injector constructor method for Artist repository.
      *
      * @param ebeanConfig The ebeans config which the ebean server will be supplied from
      * @param executionContext the database execution context object for this instance.
+     * @param passportCountryRepository passportCountryRepository required for initialisation
      */
     @Inject
     public ArtistRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext, PassportCountryRepository passportCountryRepository) {
@@ -50,7 +53,7 @@ public class ArtistRepository {
         List<Artist> outputList = new ArrayList<>();
         for( Artist artist : artistList) {
             artist.setGenre(new ArrayList<>());
-            outputList.add(populateArtist(artist));
+            outputList.add(populateArtistAdmin(artist));
         }
         return outputList;
     }
@@ -88,7 +91,8 @@ public class ArtistRepository {
     }
 
     /** Checks if the artist to add is a duplicate of an existing artist
-     *
+     * @param artistName Name of the artist the duplicate check is on
+     * @return Completion stage boolean that returns true if there is an artist with the given name in the database
      */
     public CompletionStage<Boolean> checkDuplicate(String artistName) {
         return supplyAsync(() -> {
@@ -113,6 +117,22 @@ public class ArtistRepository {
     }
 
 
+    /**
+     * Method to populate a artist to add admins into artists used for admin page
+     * @param artist Artist to be have added linking table data
+     * @return Artist that has had genre and country added
+     */
+    public Artist populateArtistAdmin(Artist artist) {
+
+        artist = populateArtist(artist);
+        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artist.getArtistId()).findSingleAttributeList();
+        if (!linkIds.isEmpty()) {
+            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
+        } else {
+            artist.setAdminsList(new ArrayList<>());
+        }
+        return artist;
+    }
 
     /**
      * Method to populate a artist with all linking table data eg genre and country
@@ -126,24 +146,16 @@ public class ArtistRepository {
        countries = countryMap.get();
      }
      artist.setCountry(countries);
-     //TODO fix below function
         Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
-        if(genreList.isPresent()) {
-            if(!genreList.get().isEmpty()) {
-                artist.setGenre(genreList.get());
-            }
-        }
-        List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).where().eq("artist_id", artist.getArtistId()).findIds();
-        if (!linkIds.isEmpty()) {
-            artist.setAdminsList(ebeanServer.find(Profile.class).where().idIn(linkIds).findList());
-        } else {
-            artist.setAdminsList(new ArrayList<>());
+        if(genreList.isPresent() && !genreList.get().isEmpty()) {
+            artist.setGenre(genreList.get());
         }
         return artist;
     }
     /**
      * Helper function to get country of an artist
      * @param artistId id of the artist to find country for
+     * @return country if one is present as an Optional
      */
     private Optional<Map<Integer, PassportCountry>> getCountryList(Integer artistId) {
         String qry = "Select * from artist_country where artist_id = ?";
@@ -152,9 +164,7 @@ public class ArtistRepository {
         Optional<PassportCountry> countryName;
         for (SqlRow aRowList : rowList) {
             countryName = passportCountryRepository.findById(aRowList.getInteger("country_id"));
-            if(countryName.isPresent()) {
-                country.put(aRowList.getInteger("country_id"), countryName.get());
-            }
+            countryName.ifPresent(passportCountry -> country.put(aRowList.getInteger("country_id"), passportCountry));
         }
         return Optional.of(country);
     }
@@ -203,16 +213,16 @@ public class ArtistRepository {
      * @return A list of artists.
      */
     public List<Artist> getPagedArtists(int page) {
-        int pageSize = 50;
+
         List <Artist> returnArtistList = new ArrayList<>();
         List<Artist> artistList = ebeanServer.find(Artist.class).where()
-                .setFirstRow(page * pageSize)
-                .setMaxRows(pageSize)
+                .setFirstRow(page * PAGE_SIZE)
+                .setMaxRows(PAGE_SIZE)
                 .findPagedList().getList();
         for(Artist artist : artistList) {
             returnArtistList.add(populateArtist(artist));
         }
-        return returnArtistList;
+        return artistList;
     }
 
 
@@ -358,13 +368,14 @@ public class ArtistRepository {
      * @param newArtist the artist object that will be edited
      * @return the same artist id of the artist object that got edited
      */
-    public CompletionStage<Integer> editArtistProfile(Integer artistId, Artist newArtist) {
+    public CompletionStage<Integer> editArtistProfile(Integer artistId, Artist newArtist, Form<Artist> artistForm, Integer currentUserId) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Artist targetArtist = ebeanServer.find(Artist.class).setId(artistId).findOne();
             if (targetArtist != null) {
                 targetArtist.setArtistName(newArtist.getArtistName());
                 targetArtist.setBiography(newArtist.getBiography());
+                targetArtist.setMembers(newArtist.getMembers());
                 targetArtist.setFacebookLink(newArtist.getFacebookLink());
                 targetArtist.setSpotifyLink(newArtist.getSpotifyLink());
                 targetArtist.setWebsiteLink(newArtist.getWebsiteLink());
@@ -372,7 +383,17 @@ public class ArtistRepository {
                 targetArtist.setTwitterLink(newArtist.getTwitterLink());
                 targetArtist.update();
                 txn.commit();
+
+                newArtist.setArtistId(artistId);
+                deleteAllSpecifiedEntriesForAnArtist(artistId, "artist_country");
+                deleteAllSpecifiedEntriesForAnArtist(artistId, "artist_genre");
+                deleteAllSpecifiedEntriesForAnArtist(artistId, "artist_profile");
+
+                saveAdminArtistCountries(newArtist);
+                saveAdminArtistGenres(newArtist, artistForm);
+                saveAdminArtistAdmins(newArtist, artistForm, currentUserId);
             }
+
             return artistId;
         });
     }
@@ -462,7 +483,7 @@ public class ArtistRepository {
             }
         }
 
-        // TODO: 8/08/19 turn into another function
+
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
         if (!foundRows.isEmpty()){
@@ -527,22 +548,136 @@ public class ArtistRepository {
      */
     public CompletionStage<Void> addCountrytoArtistCountryTable(ArtistCountry artistCountry){
         return supplyAsync(() -> {
+            ebeanServer.insert(artistCountry);
+            return null;
+        });
+    }
+
+    /**
+     * Helper method that takes in a specified artist table  and artist id and deletes all entries for that particular
+     * artist in the given artist table. Used for the admin update artist.
+     *
+     * @param id the id of the artist
+     * @param table the intended artist table that all artist entries are going to be removed from
+     * @return void CompletionStage
+     */
+    private CompletionStage<Void> deleteAllSpecifiedEntriesForAnArtist(int id, String table) {
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            String qry = "DELETE from " + table + " where artist_id = ?";
             try {
-                ebeanServer.insert(artistCountry);
-            } catch (Exception e) {
-                e.printStackTrace();
+                SqlUpdate query = Ebean.createSqlUpdate(qry);
+                query.setParameter(1, id);
+                query.execute();
+                txn.commit();
+            } finally {
+                txn.end();
             }
             return null;
         });
     }
 
     /**
+     * Method to save a new artist object with newly set attributes from the edit artist model
+     *
+     * @param newArtist the artist object to be edited
+     */
+    private void saveAdminArtistCountries(Artist newArtist) {
+        for (String countryName : newArtist.getCountryList()) {
+            Optional<Integer> countryObject = passportCountryRepository.getPassportCountryId(countryName);
+            if (countryObject.isPresent()) {
+                ArtistCountry artistCountry = new ArtistCountry(newArtist.getArtistId(), countryObject.get());
+                addCountrytoArtistCountryTable(artistCountry);
+            } else {
+                PassportCountry passportCountry = new PassportCountry(countryName);
+                passportCountryRepository.insert(passportCountry).thenApplyAsync(id -> {
+                    if (id.isPresent()) {
+                        ArtistCountry artistCountry = new ArtistCountry(newArtist.getArtistId(), id.get());
+                        addCountrytoArtistCountryTable(artistCountry);
+                    }
+                    return null;
+                });
+            }
+        }
+    }
+
+    /**
+     * Method used to extract selected genres from a form binding and insert it into the artist_genre linking table
+     * for the related artist.
+     * @param newArtist an artist object
+     * @param artistProfileForm the form containing all newly input the attributes of an artist
+     */
+    private void saveAdminArtistGenres(Artist newArtist, Form<Artist> artistProfileForm) {
+        Optional<String> optionalGenres = artistProfileForm.field("genreForm").value();
+        if (optionalGenres.isPresent() && !optionalGenres.get().isEmpty()) {
+            for (String genre : optionalGenres.get().split(",")) {
+                genreRepository.insertArtistGenre(newArtist.getArtistId(), parseInt(genre));
+            }
+        }
+    }
+
+    /**
+     * Method used to extract selected artist profiles (as admins) from a form binding and insert it into the artist_profile linking table
+     * for the related artist.
+     * @param newArtist an artist object
+     * @param artistProfileForm the form containing all newly input the attributes of an artist
+     */
+    private void saveAdminArtistAdmins(Artist newArtist, Form<Artist> artistProfileForm, Integer currentUserId) {
+        Optional<String> optionalProfiles = artistProfileForm.field("adminForm").value();
+        if (optionalProfiles.isPresent() && !optionalProfiles.get().isEmpty()) {
+            //Insert ArtistProfiles for new Artist.
+            for (String profileIdString : optionalProfiles.get().split(",")) {
+                Integer profileId = parseInt(profileIdString);
+                ArtistProfile artistProfile = new ArtistProfile(newArtist.getArtistId(), profileId);
+                insertProfileLink(artistProfile);
+            }
+        } else {
+            insertProfileLink(new ArtistProfile(newArtist.getArtistId(), currentUserId));
+        }
+    }
+
+
+    /**
      * Method to retrieve an artist from the database using a passed database id
      * @param artistId the id of the artist to retrieve
      * @return the found artist
      */
-    public Artist getArtist(int artistId) {
-        //TODO pass to populate artist method once merged with artist-profile branch
-        return ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
+    public Optional<Artist> getArtist(int artistId) {
+        Artist artist = ebeanServer.find(Artist.class).where().eq("artist_id", artistId).findOne();
+        if (artist == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(populateArtistAdmin(artist));
+        }
+    }
+
+    /**
+     * Method to get the number of invalid artists in the system
+     * Used for pagination
+     *
+     * @return int number of artists found
+     */
+    public int getNumArtistRequests() {
+        return ebeanServer.find(Artist.class).where().eq("verified", 0).eq("soft_delete", 0).findCount();
+    }
+
+    /**
+     * Method to get the number of valid artist in the system
+     * Used for pagination
+     *
+     * @return int number of artists
+     */
+    public int getNumArtists() {
+        return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).findCount();
+    }
+
+    public List<Artist> getPageArtists(Integer offset, int pageSize, int verified) {
+        List<Artist> artists = new ArrayList<>();
+        List<Artist> foundArtists = ebeanServer.find(Artist.class).setMaxRows(pageSize).setFirstRow(offset)
+                .where().eq("verified", verified).eq("soft_delete", 0).findList();
+        for (Artist artist : foundArtists) {
+            artists.add(populateArtistAdmin(artist));
+        }
+        return artists;
     }
 }

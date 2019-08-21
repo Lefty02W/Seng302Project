@@ -3,9 +3,6 @@ Feature: Delete personal photos
   I want to be able to delete any of my personal photos
   So that I can keep my photos up to date
 
-  Background:
-    Given Password hash setup has been done
-
   Scenario: Delete a photo
     Given John is on his profile page
     When he presses the delete button on photo with id 1

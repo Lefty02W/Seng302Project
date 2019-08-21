@@ -69,13 +69,14 @@ input[type=datetime-local] {
     background-color: #2e7d32;
 }
 
-#tripsPane{
-    padding-left: 18%;
+
+
+#addButton {
+    height: 6vh;
 }
 
 #addTripButton {
-    margin-top: 10px;
-    margin-left: 1%;
+    padding-left: 4vw;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -91,4 +92,16 @@ h1, h2, h3, h4, h5, h6 {
 
     height: 42vh;
     width: 100%;
+}
+
+#trip-footer {
+    position: fixed;
+    bottom: 0;
+    max-height: 10%;
+    max-width: unset;
+    background: #205723 !important;
+}
+
+#tripsPane {
+    padding-bottom: 10vh;
 }

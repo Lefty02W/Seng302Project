@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -73,11 +74,13 @@ public class DestinationRepository {
 
     /**
      * Get the all of the public destinations
-     *
+     * @param rowOffset - The row to being retrieving results from. Used for paginatino
      * @return destinations, list of all public destinations
      */
-    public List<Destination> getPublicDestinations() {
+    public List<Destination> getPublicDestinations(Integer rowOffset) {
         return new ArrayList<>(ebeanServer.find(Destination.class)
+                .setMaxRows(7)
+                .setFirstRow(rowOffset)
                 .where()
                 .eq("visible", 1)
                 .eq("soft_delete",0)
@@ -304,7 +307,7 @@ public class DestinationRepository {
         query.setParameter(2, destId);
         query.execute();
         setOwnerAsAdmin(destId);
-        return getFollowedDestinationIds(profileId);
+        return getFollowedDestinationIds(profileId, 0);
     }
 
     /**
@@ -320,7 +323,7 @@ public class DestinationRepository {
         query.setParameter(1, profileId);
         query.setParameter(2, destId);
         query.execute();
-        return getFollowedDestinationIds(profileId);
+        return getFollowedDestinationIds(profileId, 0);
     }
 
     /**
@@ -347,12 +350,15 @@ public class DestinationRepository {
      * Method returns all of the users followed destinations
      *
      * @param profileId User if of the followed destinations to return
+     * @param rowOffset The row to begin getting data from. This is for pagination
      * @return Optional array list of destinations followed by the user
      */
-    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId) {
+    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
-                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id where follow_destination.profile_id = ? and D.soft_delete = 0";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT 7 OFFSET ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
+                .setParameter(2, rowOffset).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
         for (SqlRow aRowList : rowList) {
@@ -378,11 +384,13 @@ public class DestinationRepository {
      * Method returns all followed destinations ids from a user
      *
      * @param profileId User id for the user followed destinations
+     * @param rowOffset - Row to begin getting data from. Used in pagination
      * @return Optional array list of integers of the followed destination ids
      */
-    public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId) {
-        String updateQuery = "Select destination_id from follow_destination where profile_id = ?";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
+    public Optional<ArrayList<Integer>> getFollowedDestinationIds(int profileId, int rowOffset) {
+        String updateQuery = "Select destination_id from follow_destination where profile_id = ? LIMIT 7 OFFSET ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
+                .setParameter(2, rowOffset).findList();
         ArrayList<Integer> destIdList = new ArrayList<>();
         for (SqlRow aRowList : rowList) {
             int id = aRowList.getInteger("destination_id");
@@ -637,4 +645,87 @@ public class DestinationRepository {
                 .findList());
     }
 
+    /**
+     * Method to get the number of destination requests
+     * Used for pagination
+     *
+     * @return int number of requests
+     */
+    public int getNumDestRequests() {
+        return ebeanServer.find(DestinationChange.class).findCount();
+    }
+
+    /**
+     * Method to find number of destinations
+     * Used for pagination
+     *
+     * @return int number of destinations found
+     */
+    public int getNumDestinations() {
+        return ebeanServer.find(Destination.class).where().eq("soft_delete", 0).findCount();
+    }
+
+
+    /**
+     * Method to get number of public destinations
+     * Used for pagination
+     *
+     * @return number of public destinations
+     */
+    public int getNumPublicDestinations() {
+        return ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("visible", 1).findCount();
+    }
+
+
+    /**
+     * Method to get count of all private and followed destinations
+     *
+     * @param profileId - The id of the profile to get its followed destinations
+     */
+    public int getNumPrivateDestinations(int profileId) {
+        String query = "SELECT DISTINCT destination.destination_id FROM follow_destination INNER JOIN destination ON destination.destination_id = follow_destination.destination_id " +
+                "WHERE follow_destination.profile_id = ? AND destination.soft_delete = 0";
+        List<SqlRow> countRow = ebeanServer.createSqlQuery(query).setParameter(1, profileId).findList();
+        Integer count = 0;
+        if (!countRow.isEmpty()) {
+            count = countRow.size();
+        }
+        int total = count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).eq("visible", 1).findCount();
+        return total;
+    }
+
+
+    /**
+     * Get a page of destinations
+     *
+     * @param offset offset of destinations to get
+     * @param pageSize max number of destinations to get
+     * @return destinations found
+     */
+    public List<Destination> getDestinationPage(Integer offset, int pageSize) {
+        return new ArrayList<>(ebeanServer.find(Destination.class)
+                .setFirstRow(offset)
+                .setMaxRows(pageSize)
+                .where()
+                .eq("soft_delete", 0)
+                .findList());
+    }
+
+    /**
+     * Finds a page of destination changes
+     *
+     * @param offset offset to find
+     * @param pageSize limit of changes to find
+     * @return changes found
+     */
+    public List<DestinationChange> getDestRequestPage(Integer offset, int pageSize) {
+        List<DestinationChange> requests = ebeanServer.find(DestinationChange.class).setFirstRow(offset).setMaxRows(pageSize).findList();
+        for (DestinationChange destinationChange : requests) {
+            DestinationRequest destinationRequest = ebeanServer.find(DestinationRequest.class).setId(destinationChange.getRequestId()).findOne();
+            destinationChange.setEmail(ebeanServer.find(Profile.class).where().eq("profile_id", destinationRequest.getProfileId()).findOne().getEmail());
+            destinationChange.setDestination(ebeanServer.find(Destination.class).where().eq("destination_id", destinationRequest.getDestinationId()).findOne());
+            destinationChange.setTravellerType(ebeanServer.find(TravellerType.class).where().eq("traveller_type_id", destinationChange.getTravellerTypeId()).findOne());
+        }
+        return requests;
+    }
 }

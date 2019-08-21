@@ -3,11 +3,8 @@ package repository;
 import controllers.TestApplication;
 import models.Artist;
 import org.junit.Test;
-import org.junit.runner.notification.RunListener;
-import play.mvc.Result;
 
 import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 import static org.junit.Assert.assertEquals;
 
@@ -25,13 +22,13 @@ public class ArtistRepositoryTest  {
     @Test
     public void getAllArtist(){
         List<Artist> artists = TestApplication.getArtistRepository().getAllArtists();
-        assertEquals(5, artists.size());
+        assertEquals(10, artists.size());
     }
 
     @Test
     public void searchArtistsEmptySearchFullResult(){
         List<Artist> artists = TestApplication.getArtistRepository().searchArtist("","","", 0, 1);
-        assertEquals(5, artists.size());
+        assertEquals(10, artists.size());
     }
 
     @Test

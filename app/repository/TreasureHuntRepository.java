@@ -59,8 +59,10 @@ public class TreasureHuntRepository {
      *
      * @return TreasureHunts, an arrayList of all currently active treasureHunts
      */
-    public List<TreasureHunt> getAllActiveTreasureHunts() {
+    public List<TreasureHunt> getAllActiveTreasureHunts(int offset) {
         return new ArrayList<> (ebeanServer.find(TreasureHunt.class)
+                .setMaxRows(9)
+                .setFirstRow(offset)
                 .where()
                 .eq("soft_delete", 0)
                 .gt("end_date", DateTime.now())
@@ -167,4 +169,29 @@ public class TreasureHuntRepository {
         }, executionContext);
     }
 
+    /**
+     * Method to get number of hunts in the system
+     * used for pagination
+     *
+     * @return int number of hunts found
+     */
+    public int getNumHunts() {
+        return ebeanServer.find(TreasureHunt.class).where().eq("soft_delete", 0).findCount();
+    }
+
+    /**
+     * Method to get one page worth of treasure hunts
+     *
+     * @param offset offset of hunts to find
+     * @param pageSize max amount to find
+     * @return List of found hunts
+     */
+    public List<TreasureHunt> getPageHunts(Integer offset, int pageSize) {
+        return ebeanServer.find(TreasureHunt.class)
+                .setMaxRows(pageSize)
+                .setFirstRow(offset)
+                .where()
+                .eq("soft_delete", 0)
+                .findList();
+    }
 }

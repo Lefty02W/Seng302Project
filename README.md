@@ -28,20 +28,19 @@ With the repository cloned, it can be imported using the following steps.
 2. All tests, including both Cucumber and JUnit tests, will be run and the output shown.
 
 
-### Admin & User Credentials
+### Log into the website
 
-Admin:
+Follow the instructions on this page
+https://eng-git.canterbury.ac.nz/seng302-2019/team-700/wikis/log-in-details
+* Master admin details:
+* Email: admin@travelea.com
+* Password: boeing700
 
-* Username: test.admin@gmail.com
 
-* Password: testAdmin
- 
-User:
+### Run the scripts
 
-* Username: test.user@gmail.com
-
-* Password: testUser
-
+Follow instructions on this page
+* https://eng-git.canterbury.ac.nz/seng302-2019/team-700/wikis/example-data-scripts
 
 ### Connect to a Dedicated server instance
 

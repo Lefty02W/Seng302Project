@@ -45,7 +45,7 @@ public class AdminEditDestinationSteps {
         // Write code here that turns the phrase above into concrete actions
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin")
+                .uri("/admin/admins/0")
                 .session("connected", "2");
         result = Helpers.route(TestApplication.getApplication(), request);
 
