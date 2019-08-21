@@ -44,6 +44,8 @@ def execute_trip_dest_queries(destinations, trip_id, cursor, db):
 def execute_trips_queries(cursor, db, number_trips, number_destinations, number_profiles):
     """Executes the rips query and calls helper functions to insert linking tables"""
     print("\n----------trips----------")
+    if number_trips == 0:
+        return "No trips are inserted"
     if number_destinations < 2:
         print("Number of destinations inserted must be more than 2 to create a trip : ERROR")
         return "Error"
@@ -53,8 +55,8 @@ def execute_trips_queries(cursor, db, number_trips, number_destinations, number_
         return "Error"
     emails = read_profile_emails(number_profiles)
     for trip in trips_list:
-        profile_id = get_profile_id(emails, cursor, db)
         try:
+            profile_id = get_profile_id(emails, cursor, db)
             # see it trip already exists
             trip_exists = get_trip_id(trip[0], profile_id, cursor, db) != 0
             if trip_exists:
