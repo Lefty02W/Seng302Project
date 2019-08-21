@@ -117,6 +117,17 @@ public class PaginationHelper {
     }
 
     /**
+     * Forms an info string to show to the user on the travellers page
+     * Has info on what entries are being showed and total number of entries
+     * @return
+     */
+    public String getInfoStringTravellers() {
+        if (maxSize <= 0) { return "No results found."; }
+        if (maxSize < 10) { return "Profiles: 1 - " + maxSize + " Total results: " + maxSize; }
+        return "Profiles: " + (1 + next - 10) + " - " + (next) + " Total results: " + maxSize;
+    }
+
+    /**
      * Sets the next and previous to be enabled or disabled dependent on the current next and previous values
      */
     public void checkButtonsEnabled() {
