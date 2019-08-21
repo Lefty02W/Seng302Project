@@ -302,7 +302,7 @@ public class TripsController extends Controller {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
             tripRepository.insert(trip, tripDestinations);
             if(userId != SessionController.getCurrentUserId(request)) {
-                return redirect("/admin");
+                return redirect(tripsEndPoint);
             }
             return redirect(tripsEndPoint);
         }
