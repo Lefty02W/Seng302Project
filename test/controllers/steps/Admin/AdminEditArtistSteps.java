@@ -29,7 +29,7 @@ public class AdminEditArtistSteps {
     public void iSelectArtistToEdit(int arg0) throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/artist/" + arg0 + "/edit/show");
+                .uri("/admin/artists/" + arg0 + "/edit/show");
         Helpers.route(TestApplication.getApplication(), request);
         Optional<Artist> artist = TestApplication.getArtistRepository().getArtist(arg0);
         if (artist.isPresent()) {
@@ -49,7 +49,7 @@ public class AdminEditArtistSteps {
     public void iSaveTheEditOfArtist(String arg0) throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/admin/artist/" + arg0 + "/edit")
+                .uri("/admin/artists/" + arg0 + "/edit")
                 .bodyForm(EDIT_FORM)
                 .session("connected", "2");
         Result result = Helpers.route(TestApplication.getApplication(), request);

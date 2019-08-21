@@ -99,13 +99,13 @@ POST    /admin/hunts/:id/edit                   controllers.AdminController.edit
 
 ## Admin Artists
 GET     /admin/artists/:offset                 controllers.AdminController.showArtists(request: Request, offset: Integer)
-GET     /admin/artist/requests/:offset        controllers.AdminController.showArtistRequests(request: Request, offset: Integer)
-GET    /admin/artist/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
-GET    /admin/artist/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
-POST   /admin/artist/create                    controllers.AdminController.createArtist(request : Request)
-GET    /admin/artist/:id/delete                controllers.AdminController.deleteArtist(request : Request, id : Integer)
-GET    /admin/artist/:id/edit/show             controllers.AdminController.showEditArtist(request : Request, id : Integer)
-POST   /admin/artist/:id/edit                  controllers.AdminController.editArtist(request : Request, id : Integer)
+GET     /admin/artists/requests/:offset        controllers.AdminController.showArtistRequests(request: Request, offset: Integer)
+GET    /admin/artists/verify/:artistId          controllers.AdminController.verifyArtist(request : Request, artistId : Integer)
+GET    /admin/artists/decline/:artistId         controllers.AdminController.declineArtist(request : Request, artistId : Integer)
+POST   /admin/artists/create                    controllers.AdminController.createArtist(request : Request)
+GET    /admin/artists/:id/delete                controllers.AdminController.deleteArtist(request : Request, id : Integer)
+GET    /admin/artists/:id/edit/show             controllers.AdminController.showEditArtist(request : Request, id : Integer)
+POST   /admin/artists/:id/edit                  controllers.AdminController.editArtist(request : Request, id : Integer)
 
 
 # Tresure Hunts

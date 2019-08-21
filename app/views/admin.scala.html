@@ -763,7 +763,7 @@
                                                     </ul>
                                                 </td>
                                                 <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
-                                                <td><a onclick="fillDeleteValues('/admin/artist/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
+                                                <td><a onclick="fillDeleteValues('/admin/artists/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
                                                 <td><a href="/artists/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
                                             </tr>
                                         }
@@ -807,8 +807,8 @@
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
                                                 <td>@artist.getMembers</td>
-                                                <td><a href="/admin/artist/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>
-                                                <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/artist/decline/@artist.getArtistId')">Decline</button></td>
+                                                <td><a href="/admin/artists/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>
+                                                <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/artists/decline/@artist.getArtistId')">Decline</button></td>
                                             </tr>
                                         }
                                     </table>

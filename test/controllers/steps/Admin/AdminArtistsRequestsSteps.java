@@ -64,7 +64,7 @@ public class AdminArtistsRequestsSteps {
     public void theAdminAcceptsTheRequestForArtist(int arg0) throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/artist/verify/" + arg0)
+                .uri("/admin/artists/verify/" + arg0)
                 .session("connected", "2");
 
         Helpers.route(TestApplication.getApplication(), request);
@@ -84,7 +84,7 @@ public class AdminArtistsRequestsSteps {
     public void theAdminDeclinesTheRequestForArtist(int arg0) throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/artist/decline/" + arg0)
+                .uri("/admin/artists/decline/" + arg0)
                 .session("connected", "2");
 
         Helpers.route(TestApplication.getApplication(), request);

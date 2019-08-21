@@ -92,6 +92,18 @@ public class ProfileRepository {
 
     }
 
+
+    /**
+     * Ebeans method to get all profiles not filling linking tables
+     * @return List of all profiles
+     */
+    public List<Profile> getAllEbeans(){
+        return (new ArrayList<>(ebeanServer.find(Profile.class)
+                .where()
+                .eq("soft_delete", 0)
+                .findList()));
+    }
+
     /**
      * Method to get all profiles for the travellers page with pagination. Gets the first 9 initially and uses
      * an offset to load the next set of profiles to display with each new page.
