@@ -690,7 +690,7 @@ public class DestinationRepository {
         if (!countRow.isEmpty()) {
             count = countRow.size();
         }
-        int total = count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).findCount();
+        int total = count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).eq("visible", 1).findCount();
         return total;
     }
 
