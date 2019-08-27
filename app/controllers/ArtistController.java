@@ -100,6 +100,12 @@ public class ArtistController extends Controller {
                         if(formData.followed.equals("on")) {
                             followed = 1;
                         }
+
+                        if(formData.name.equals("") && formData.country.equals("") && formData.genre.equals("")) {
+                            return redirect("/artists").flashing("error", "Please enter at least one search filter.");
+                        }
+
+
                         searchForm.fill(formData); //TODO Make form fill with previous search
                         return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, profId), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
