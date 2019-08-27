@@ -449,6 +449,8 @@ public class ArtistRepository {
                 queryString += "WHERE profile_id = ? ";
             }
         }
+        queryString += "LIMIT 100";
+
 
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
@@ -484,7 +486,7 @@ public class ArtistRepository {
         }
 
 
-        List<SqlRow> foundRows = sqlQuery.setMaxRows(100).findList();
+        List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
         if (!foundRows.isEmpty()){
             for (SqlRow sqlRow : foundRows){
