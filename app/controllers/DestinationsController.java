@@ -38,7 +38,7 @@ public class DestinationsController extends Controller {
     private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
     private final TravellerTypeRepository travellerTypeRepository;
     private final UndoStackRepository undoStackRepository;
-    private String destShowRoute = "/destinations/show/false";
+    private String destShowRoute = "/destinations/show/false/0";
 
     /**
      * Constructor for the destination controller class
@@ -542,7 +542,7 @@ public class DestinationsController extends Controller {
             List<Integer> toAdd = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToAddList());
             List<Integer> toRemove = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToRemoveList());
             createChangeRequest(profileId, changeForm.get().getDestinationId(), toAdd, toRemove);
-            return redirect(destShowRoute).flashing("success", "Request sent.");
+            return redirect("/destinations/show/true/0").flashing("success", "Request sent.");
         });
     }
 
