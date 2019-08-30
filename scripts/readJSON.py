@@ -44,7 +44,7 @@ def read_profiles(number_profiles):
             profile.append(data[i]['traveller_type'])
             emails.append(email)
             profiles.append(profile)
-            print(i, " out of " + )
+            #print(i, " out of " + range(number_profiles))
     return profiles
 
 
