@@ -203,6 +203,7 @@ public class ProfileRepository {
             }
 
         }
+
         SqlQuery query = ebeanServer.createSqlQuery(queryString);
 
         if (!travellerType.equals("")) {
@@ -215,6 +216,8 @@ public class ProfileRepository {
                 query.setParameter(2, nationality);
             }
         }
+
+
         List<SqlRow> foundRows = query.findList();
         List<Integer> foundIds = new ArrayList<>();
         List<Profile> foundProfiles = new ArrayList<>();
@@ -288,19 +291,19 @@ public class ProfileRepository {
         }
         List<SqlRow> foundRows = query.findList();
         List<Integer> foundIds = new ArrayList<>();
-        List<Profile> foundProfiles = new ArrayList<>();
+        int numProfiles = 0;
         if (!foundRows.isEmpty()) {
             for (SqlRow row : foundRows) {
                 foundIds.add(row.getInteger("profile"));
             }
-            foundProfiles = ebeanServer.find(Profile.class).where()
+            numProfiles = ebeanServer.find(Profile.class).where()
                     .idIn(foundIds)
                     .contains("gender", gender)
                     .gt("birth_date", dateFormat.format(upperAge))
                     .lt("birth_date", dateFormat.format(lowerAge))
-                    .findList();
+                    .findCount();
         }
-        return foundProfiles.size();
+        return numProfiles;
     }
 
 
