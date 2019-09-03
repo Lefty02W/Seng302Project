@@ -69,8 +69,8 @@ public class TravellersController extends Controller {
                 Date upperDate;
 
                 // Show error if no search filters are filled, prevent needless search operation
-                if (formData.searchAgeRange == null && formData.searchGender == null &&
-                        formData.searchNationality == null && formData.searchTravellerTypes == null) {
+                if (formData.searchAgeRange == null && formData.searchGender.equals("") &&
+                        formData.searchNationality.equals("") && formData.searchTravellerTypes.equals("")) {
                     return redirect("/travellers/0").flashing("error", "Please enter at least one search filter");
                 }
 
