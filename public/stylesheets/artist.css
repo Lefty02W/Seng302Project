@@ -10,7 +10,7 @@
 }
 
 .search {
-    height: 200px;
+    height: 4vh;
 }
 
 #show-more{
@@ -37,6 +37,8 @@
 
 #view {
     width: 72px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .artistFilters{
