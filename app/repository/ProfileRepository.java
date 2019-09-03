@@ -203,6 +203,7 @@ public class ProfileRepository {
             }
 
         }
+        queryString += " LIMIT 100";
 
         SqlQuery query = ebeanServer.createSqlQuery(queryString);
 
@@ -291,6 +292,7 @@ public class ProfileRepository {
         }
         List<SqlRow> foundRows = query.findList();
         List<Integer> foundIds = new ArrayList<>();
+
         int numProfiles = 0;
         if (!foundRows.isEmpty()) {
             for (SqlRow row : foundRows) {
