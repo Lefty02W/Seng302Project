@@ -45,5 +45,7 @@
 
 #createArtistButton {
     position: inherit;
-    margin-left: 50%;
+    margin-top: 1%;
+    float: right;
+    margin-right: 1%;
 }
