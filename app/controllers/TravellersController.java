@@ -67,6 +67,13 @@ public class TravellersController extends Controller {
                 PartnerFormData formData = searchForm.get();
                 Date lowerDate;
                 Date upperDate;
+
+                // Show error if no search filters are filled, prevent needless search operation
+                if (formData.searchAgeRange == null && formData.searchGender == null &&
+                        formData.searchNationality == null && formData.searchTravellerTypes == null) {
+                    return redirect("/travellers/0").flashing("error", "Please enter at least one search filter");
+                }
+
                 if (formData.searchAgeRange == null) {
                     formData.setSearchAgeRange(0);
                 }
