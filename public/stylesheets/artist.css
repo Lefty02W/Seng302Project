@@ -43,4 +43,7 @@
     overflow: auto;
 }
 
-
+#createArtistButton {
+    position: inherit;
+    margin-left: 50%;
+}
