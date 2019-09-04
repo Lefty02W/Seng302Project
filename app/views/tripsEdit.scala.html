@@ -227,10 +227,21 @@
                 $('#destsTable').DataTable().row().remove().draw();
             }
 
-            $("#menu-toggle").click(function(e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
+            // ------------- SIDEBAR TOGGLE JS -------------
+            $(function () {
+                $("#menu-toggle").on('click', function (e) {
+                    $("#wrapper").toggleClass('toggled');
+
+                    e.stopPropagation();
+                    return false;
+                });
+
+                $('*:not(#menu-toggle)').on('click', function () {
+                    $("#wrapper").addClass('toggled');
+                });
+
             });
+            // ---------------------------------------------
 
 
     </script>

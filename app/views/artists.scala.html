@@ -91,7 +91,6 @@
             </div>
 
 
-            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
 
 
         <div class="row justify-content-center" id="artist-container">
@@ -106,28 +105,30 @@
                                 <button type="submit" class="btn btn-primary">Search</button>
                                 <button class="btn btn-secondary" type="button" data-toggle="collapse"
                                         data-target="#collapseFilters" aria-expanded="false"
-                                        aria-controls="collapseFilters">Filters
+                                        aria-controls="collapseFilters">Advanced Search
                                 </button>
+                                <button class="btn btn-primary" id="createArtistButton" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
                             </div>
                             <div id="collapseFilters" class="collapse artistFilters" aria-labelledby="headingOne" data-parent="#filterAccordion">
                                 <div class="card-body">
                                     <div class="search">
                                         <div>
-                                            <select class="selectpicker" id="country" name="country" title="Countries">
+                                            <select class="selectpicker" data-size="3" id="country" name="country" title="Countries">
                                             @for(nation <- countries) {
                                                 <option value="@nation">@nation</option>
                                             }
                                             </select>
-                                            <select class="selectpicker" id="genre" name="genre" title="Genres">
+                                            <select class="selectpicker" data-size="3" id="genre" name="genre" title="Genres">
                                             @for(genre <- genres) {
                                                 <option value="@genre.getGenre">@genre.getGenre</option>
                                             }
+
                                             </select>
                                             <input type="checkbox" id="followed" name="followed">
                                             <label for="toggle">Followed Artists</label>
                                             }
                                             <a href="@routes.ArtistController.show()">
-                                                <button class="btn btn-primary">Clear</button>
+                                                <button id="clearButton" class="btn btn-outline-primary">Clear Search</button>
                                             </a>
 
                                         </div>
@@ -136,7 +137,6 @@
                             </div>
                         </div>
                     </div>
-
 
 
 
@@ -189,8 +189,6 @@
                 </div>
             </div>
         </div>
-
-
 
     </body>
 
@@ -313,13 +311,21 @@
             $('#countries').val($('#originDropdown').val());
         }
 
-        $("#menu-toggle").click(function (e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
+        // ------------- SIDEBAR TOGGLE JS -------------
+        $(function () {
+            $("#menu-toggle").on('click', function (e) {
+                $("#wrapper").toggleClass('toggled');
+
+                e.stopPropagation();
+                return false;
+            });
+
+            $('*:not(#menu-toggle)').on('click', function () {
+                $("#wrapper").addClass('toggled');
+            });
+
         });
-
-
-
+        // ---------------------------------------------
 
 //==============================================INFINITE SCROLLING======================================================
 
@@ -336,7 +342,6 @@
         }
 
         $(document).ready(function() {
-            console.log("e")
             page_count = 0;
             document.getElementById("show-more").addEventListener("click", load_infinite);
 
@@ -348,7 +353,6 @@
             @for(artist <- followedArtists){
                 followed_artists_ids.push(@artist.getArtistId);
             }
-            console.log(followed_artists_ids);
 
 
         });
@@ -418,7 +422,7 @@
                                     "<div class='col col-2'>" +
                                         "<div class='row'>" +
                                             "<a href='artists/"+id+"'>"+
-                                            "<button class='btn btn-primary' id='view' style='margin-bottom: 5px;'>View</button></a>" +
+                                            "<button class='btn btn-primary' id='view''>View</button></a>" +
                                         "</div>" +
                                         "<div class='row'>";
                                             if(followed_artists_ids.includes(id)) {
