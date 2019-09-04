@@ -89,9 +89,9 @@
                                         <!--a href="routes.DestinationsController.showCreate()"--> <button id="destButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
                                     Create Destination</button> </a>
                                     @if(!isPublic) {
-                                        <input type="checkbox" id="destToggle" checked="false" onchange="togglePublic()"><a>Show Public</a>
+                                        <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>Show Public</a>
                                     } else {
-                                        <input type="checkbox" id="destToggle" checked="true" onchange="togglePublic()"><a>Show Public</a>
+                                        <input type="checkbox" id="destToggle" checked onchange="togglePublic()"><a>Show Public</a>
                                     }
                                 </div>
                                 <div class="row">
