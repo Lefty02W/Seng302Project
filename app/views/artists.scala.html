@@ -66,7 +66,7 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")"/></h3>
                     <div id="pageTitle">
                         <h2> Artists</h2> <!-- TODO align this in the center -->
                     </div>
@@ -313,14 +313,14 @@
 
         // ------------- SIDEBAR TOGGLE JS -------------
         $(function () {
-            $("#menu-toggle").on('click', function (e) {
+            $(".toggleButton").on('click', function (e) {
                 $("#wrapper").toggleClass('toggled');
 
                 e.stopPropagation();
                 return false;
             });
 
-            $('*:not(#menu-toggle)').on('click', function () {
+            $('*:not(.toggleButton)').on('click', function () {
                 $("#wrapper").addClass('toggled');
             });
 
