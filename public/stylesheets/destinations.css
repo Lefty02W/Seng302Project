@@ -2,6 +2,10 @@
     height: 60vh;
 }
 
+#dest-table-card {
+    height: 50vh;
+}
+
 #map-table-card {
     height: 100vh;
 }
@@ -13,7 +17,7 @@
 
 #destTable {
     padding-top: 2vh;
-    height: 10vh;
+    height: 5vh;
 }
 
 #destTable span {
@@ -67,7 +71,7 @@ div.dataTables_filter {
 .dest-table tbody td {
     border: solid 1px #DDEEEE;
     color: #333;
-    padding: 10px;
+    padding: 5px;
     text-shadow: 1px 1px 1px #fff;
 }
 
