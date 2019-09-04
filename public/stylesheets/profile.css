@@ -275,11 +275,17 @@ img.thumbnail {
 
 #editProfileButton {
     position: absolute;
-    color: white;
+    color: #2e7d32;
     width: auto;
+    font-size: 24px;
     margin-left: 60%;
     margin-top: 8%;
     cursor: pointer;
+}
+
+#editProfileButtonText {
+    font-size: 14pt;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 #photosCard{
