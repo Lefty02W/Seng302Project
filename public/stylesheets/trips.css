@@ -33,13 +33,16 @@ label {
 }
 
 #backButtonCreate{
-    margin: 5vh;
+    heigh: 5vh;
+    margin: 7vh 2vh 2vh;
+    padding-top: 1vh;
 }
 
 .saveTripButton{
     height: 5vh;
-    margin-left: 5vh;
-    margin-top: 1vh;
+    margin-right: 5vh;
+    margin-top: 5vh;
+    padding-top: 1vh;
 }
 
 

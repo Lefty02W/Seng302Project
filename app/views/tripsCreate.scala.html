@@ -66,7 +66,7 @@
                         <div class="tripNameInput">
                             <input type="text" id="name" name="name" required placeholder="Trip Name">
                         </div>
-                        <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
+                        @*<button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>*@
                     </div>
 
                 }
@@ -150,8 +150,12 @@
                         </div>
                     </div>
                 </div>
-                    <div class="row">
-                        <a href="@routes.TripsController.show(0)"> <button id="backButtonCreate" class="button-back btn btn-secondary" type="button">Back</button> </a>
+                    <div class="row justify-content-end">
+                        <div>
+                            <a href="@routes.TripsController.show(0)"> <button id="backButtonCreate"
+                            class="button-back btn btn-secondary" type="button">Back</button> </a>
+                            <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
+                        </div>
                     </div>
 
                 </div>
