@@ -220,6 +220,7 @@ img.thumbnail {
     height:100vh; /* Temporary cropping display for consistent circle until croppie is working */
     width: 100vh;
     object-fit: none;
+    margin-bottom: -45px;
 }
 
 #profileTabs {
@@ -253,7 +254,7 @@ img.thumbnail {
 }
 
 #followedArtistsLink:hover, #informationTabLink:hover, #photosTabLink:hover, #destsTabLink:hover, #tripsTabLink:hover{
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 #selectPhotoModal {
@@ -262,6 +263,10 @@ img.thumbnail {
 
 #selectPhotoModal .row{
     max-height: 77vh;
+}
+
+#informationCard{
+    width: 80%;
 }
 
 #changeProfilePictureButton {
@@ -313,4 +318,8 @@ img.thumbnail {
 
 #addTitle, #\#deleteBody, #\#deleteTitle {
     color: black;
+}
+
+#profileContainer{
+    margin-top: -120px;
 }
