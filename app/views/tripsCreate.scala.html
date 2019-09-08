@@ -57,16 +57,16 @@
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")"/></h3>
                     <div id="pageTitle">
-                    <h2 id="topBarTitle">Create Trip</h2>
+                        <h2 class="text-center" id="topBarTitle">Create Trip</h2>
                     </div>
                 </nav>
                 @helper.form(routes.TripsController.save(userId)) {
                     @CSRF.formField
-                    <div class="row">
-                        <div class="tripNameInput">
+                    <div class="row justify-content-center">
+                        <div>
                             <input type="text" id="name" name="name" required placeholder="Trip Name">
                         </div>
-                        <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
+                        @*<button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>*@
                     </div>
 
                 }
@@ -150,8 +150,12 @@
                         </div>
                     </div>
                 </div>
-                    <div class="row">
-                        <a href="@routes.TripsController.show(0)"> <button id="backButtonCreate" class="button-back btn btn-secondary" type="button">Back</button> </a>
+                    <div class="row justify-content-end">
+                        <div>
+                            <a href="@routes.TripsController.show(0)"> <button id="backButtonCreate"
+                            class="button-back btn btn-secondary" type="button">Back</button> </a>
+                            <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
+                        </div>
                     </div>
 
                 </div>
