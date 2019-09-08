@@ -90,11 +90,13 @@
                                         <div class="row">
                                             <div class="col">
                                                 <h5>Destination</h5>
-                                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                                @for(destination <- destinationsList) {
-                                                    <option value="@destination.getDestinationId">@destination.getName</option>
-                                                }
-                                                </select>
+                                                <div class="container">
+                                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                                    @for(destination <- destinationsList) {
+                                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                                    }
+                                                    </select>
+                                                </div>
                                             </div>
 
                                             <div class="col">
