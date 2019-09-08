@@ -23,11 +23,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .changeLog {
-    position: fixed;
+    width: 20vw;
     z-index: 2;
     right:10px;
     padding: 1%;
     background: rgba(42,46,49,0.5);
+    float: right;
 }
 
 /* Popup container */
