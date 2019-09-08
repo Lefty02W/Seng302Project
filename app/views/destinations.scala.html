@@ -82,12 +82,18 @@
 
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="col d-flex justify-content-center">
+                            <button id="destButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
+                                Create Destination</button>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
                         <div class="col">
                             <div id="dest-table-card" class="card-large dest-table table-hover">
 
                                 <div id="btn-row" class="row">
-                                        <!--a href="routes.DestinationsController.showCreate()"--> <button id="destButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
-                                    Create Destination</button> </a>
                                     @if(!isPublic) {
                                         <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>Show Public</a>
                                     } else {
