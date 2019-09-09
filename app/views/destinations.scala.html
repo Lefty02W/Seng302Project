@@ -332,9 +332,9 @@
                                             </div>
                                             <div class="row">
                                                 <div class="hidden-div-edit">
-                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" >
                                                 </div>
-                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%">
+                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%" required oninvalid="this.setCustomValidity('Country required')" onchange="this.setCustomValidity('')">
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }
