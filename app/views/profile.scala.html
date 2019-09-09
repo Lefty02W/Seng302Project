@@ -236,16 +236,14 @@
 
                     <div id="photosTab" class="tab-pane fade">
                         <div class="col">
-                            <div id="photosCard" class="card-large lower-card">
 
-
-                                <div class="row">
-                                @for(photo <- photoList) {
-                                    <div class="card" id="imageCard">
-                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                        src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
-                                        name="@photo.getPhotoId">
-                                        <div clasas="card-body">
+                            <div class="row">
+                            @for(photo <- photoList) {
+                                <div class="card" id="imageCard">
+                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                    src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
+                                    name="@photo.getPhotoId">
+                                    <div id="photosCaption">
                                         @if(photo.getVisible == 1) {
                                             <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🌏</p>
                                             <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
@@ -256,21 +254,20 @@
                                                 <button class="btn btn-primary">Make Public</button></a>
                                         }
 
-                                            <button class="btn btn-outline-danger"
-                                            onclick="fillDeleteValues('@routes.ProfileController.deletePhoto(photo.getPhotoId)')">
+                                    <button class="btn btn-outline-danger"
+                                    onclick="fillDeleteValues('@routes.ProfileController.deletePhoto(photo.getPhotoId)')">
                                                 Delete</button>
 
-                                        </div>
-                                            <!-- The Expanded Photo Modal -->
-                                        <div id="expandImageModal" class="modal">
-                                            <span class="close">&times;</span>
-                                            <img class="modal-content" id="expandedImage">
-                                            <div id="caption"></div>
-                                            <div id="id"></div>
-                                        </div>
                                     </div>
-                                }
+                                        <!-- The Expanded Photo Modal -->
+                                    <div id="expandImageModal" class="modal">
+                                        <span class="close">&times;</span>
+                                        <img class="modal-content" id="expandedImage">
+                                        <div id="caption"></div>
+                                        <div id="id"></div>
+                                    </div>
                                 </div>
+                            }
                             </div>
                         </div>
                     </div>
@@ -398,38 +395,6 @@
                         </div>
                     }
                     <a href="/trips/0"> <button class="btn btn-primary"> View All</button> </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="container" id="profileFooter">
-            <div class="row justify-content-center">
-                <div class="row">
-                    <div class="col-sm">
-                        <button class="btn btn-primary" id='addPhotoButton' data-toggle="modal"
-                        data-target="#addPhotoModal">
-                            <i class="fa fa-camera"></i>
-                            Add Photo
-                        </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <button class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
-                            <i class="fa fa-user-circle"  id="editProfileButton"></i>
-                             Change Profile Picture
-                        </button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm">
-                        <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
-                            <i class="fa fa-edit" id="editProfileButton"></i>
-                            Edit Profile
-                        </button>
-
-
                     </div>
                 </div>
             </div>
@@ -803,6 +768,40 @@
                 </div>
             </div>
         </div>
+
+        <footer>
+            <div class="container" id="profileFooter">
+                <div class="row justify-content-center">
+                    <div class="row">
+                        <div class="col-sm">
+                            <button class="btn btn-primary" id='addPhotoButton' data-toggle="modal"
+                            data-target="#addPhotoModal">
+                                <i class="fa fa-camera"></i>
+                                Add Photo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <button class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                                <i class="fa fa-user-circle"  id="editProfileButton"></i>
+                                Change Profile Picture
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
+                                <i class="fa fa-edit" id="editProfileButton"></i>
+                                Edit Profile
+                            </button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
     </body>
 
