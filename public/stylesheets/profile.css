@@ -268,10 +268,13 @@ img.thumbnail {
 #informationCard{
     overflow-x:hidden !important;
     width: 80%;
+    padding-top: 10px;
+    padding-left: 10px;
 }
 
 #photosCard{
     height: 400px;
+    max-width:55vw;
 }
 
 #imageCard{
