@@ -73,9 +73,9 @@
         <div id="page-content-wrapper">
 
             <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")"/></h3>
                 <div id="pageTitle">
-                    <h2>Events</h2>
+                    <h2 class="text-center">Events</h2>
                 </div>
             </nav>
         </div>
@@ -93,7 +93,7 @@
             }
         </div>
 
-        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#createEventModal">Create Event</button>
+
 
         <div class="row justify-content-center" id="eventsContainer">
             <div class="col-lg-9 col-sm-11">
@@ -106,8 +106,9 @@
                                     <button type="submit" class="btn btn-primary">Search</button>
                                     <button class="btn btn-secondary" type="button" data-toggle="collapse"
                                             data-target="#eventFilters" aria-expanded="false"
-                                            aria-controls="eventFilters">Filters
+                                            aria-controls="eventFilters">Advanced Search
                                     </button>
+                                    <button class="btn btn-primary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">Create Event</button>
                                 </div>
                                 <div class="collapse eventFilters" id="eventFilters" aria-labelledby="searchHeader" data-parent="#filterAccordion">
                                     <div class="card-body">
@@ -152,7 +153,7 @@
                                             }
 
                                                 <a href="@routes.EventsController.show()">
-                                                    <button class="btn btn-secondary">Clear</button>
+                                                    <button class="btn btn-secondary">Clear Search</button>
                                                 </a>
                                             </div>
 
@@ -338,11 +339,22 @@
                 $('#genreForm').val($('#genreDropdown').val());
                 $('#artistForm').val($('#artistDropdown').val());
             }
-        // for JS scripts
-        $("#menu-toggle").click(function (e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
-        });
+
+            // ------------- SIDEBAR TOGGLE JS -------------
+            $(function () {
+                $(".toggleButton").on('click', function (e) {
+                    $("#wrapper").toggleClass('toggled');
+
+                    e.stopPropagation();
+                    return false;
+                });
+
+                $('*:not(.toggleButton)').on('click', function () {
+                    $("#wrapper").addClass('toggled');
+                });
+
+            });
+            // ---------------------------------------------
 
     </script>
 
