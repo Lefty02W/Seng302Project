@@ -65,27 +65,21 @@ body {
     width: 1.5vw;
 }
 
+#menuIcon{
+    height: 56.75px;
+}
+
 .expand-icon {
+    margin-top: 7px;
     display:inline-block;
     position:relative;
-    margin:0.2em;  padding:.2em;
     cursor:pointer;
-    background:#ca6636;  color:white;
     z-index:2;
-    border-radius: 20%;
+    border-radius: 50%;
 }
-.expand-icon:before {
-    content: "";
-    position: absolute;
-    z-index:-1;
-    top: 0;  left: 0;  right: 0;  bottom: 0;
+.expand-icon:hover {
     background: #2e7d32;
-    transform: scaleX(0);
-    transform-origin: 50%;
-    transition: transform .1s ease-out;
-    border-radius: 20%;
 }
-.expand-icon:hover:before{transform: scaleX(1);}
 
 
 

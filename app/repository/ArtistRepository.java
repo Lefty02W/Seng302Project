@@ -122,7 +122,7 @@ public class ArtistRepository {
      * @param artist Artist to be have added linking table data
      * @return Artist that has had genre and country added
      */
-    private Artist populateArtistAdmin(Artist artist) {
+    public Artist populateArtistAdmin(Artist artist) {
 
         artist = populateArtist(artist);
         List<Integer> linkIds = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artist.getArtistId()).findSingleAttributeList();
@@ -449,6 +449,8 @@ public class ArtistRepository {
                 queryString += "WHERE profile_id = ? ";
             }
         }
+        queryString += "LIMIT 100";
+
 
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
@@ -652,31 +654,32 @@ public class ArtistRepository {
     }
 
     /**
-     * Method to retrieve artistId using an artist name
+     * Method to get the number of invalid artists in the system
+     * Used for pagination
      *
-     * @param artistName the name of the artist
-     * @return the found id
+     * @return int number of artists found
      */
-    public Integer getArtistIdByName(String artistName){
-        return (ebeanServer.find(Artist.class).where().eq("artist_name", artistName).findOne().getArtistId());
+    public int getNumArtistRequests() {
+        return ebeanServer.find(Artist.class).where().eq("verified", 0).eq("soft_delete", 0).findCount();
     }
 
-
     /**
-     * Get all artists for an event
-     * @param eventId id of the event
-     * @return List of artists linked to the event
+     * Method to get the number of valid artist in the system
+     * Used for pagination
+     *
+     * @return int number of artists
      */
-    public List<Artist> getEventArtists(int eventId) {
-        List<EventArtists> eventArtists = ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).findList();
+    public int getNumArtists() {
+        return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).findCount();
+    }
+
+    public List<Artist> getPageArtists(Integer offset, int pageSize, int verified) {
         List<Artist> artists = new ArrayList<>();
-        Optional<Artist> artist;
-        for (EventArtists eventArtist : eventArtists) {
-            artist = Optional.ofNullable(ebeanServer.find(Artist.class).where().eq("artist_id", eventArtist.getArtistId()).findOne());
-            if(artist.isPresent()) {
-                artists.add(artist.get());
-            }
+        List<Artist> foundArtists = ebeanServer.find(Artist.class).setMaxRows(pageSize).setFirstRow(offset)
+                .where().eq("verified", verified).eq("soft_delete", 0).findList();
+        for (Artist artist : foundArtists) {
+            artists.add(populateArtistAdmin(artist));
         }
-        return (artists);
+        return artists;
     }
 }

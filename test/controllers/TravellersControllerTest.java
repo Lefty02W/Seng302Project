@@ -32,7 +32,7 @@ public class TravellersControllerTest {
 
         request = Helpers.fakeRequest()
                 .method(GET)
-                .uri("/travellers")
+                .uri("/travellers/0")
                 .session("connected", "1");
 
         result = Helpers.route(TestApplication.getApplication(), request);

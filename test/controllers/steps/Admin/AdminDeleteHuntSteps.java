@@ -27,7 +27,7 @@ public class AdminDeleteHuntSteps {
     @Then("^I am be redirected back to the admin page$")
     public void iAmBeRedirectedBackToTheAdminPage() throws Throwable {
         if (result.redirectLocation().isPresent()) {
-            assertEquals("/admin", result.redirectLocation().get());
+            assertEquals("/admin/hunts/0", result.redirectLocation().get());
         } else {
             fail();
         }

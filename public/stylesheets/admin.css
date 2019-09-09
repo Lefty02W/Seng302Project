@@ -100,5 +100,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .container, .adminCard {
-    max-width: 1300px;
+    max-width: 75vw;
+}
+
+.add-button {
+    height: 5vh;
+    align-self: center;
+}
+
+#helpLink {
+    color: white;
 }

@@ -115,14 +115,18 @@ public class TripRepository {
      * @return currentUser user after trips have been set
      */
     public Profile setUserTrips(Profile currentUser) {
-        TreeMultimap<Long, Integer> trips = TreeMultimap.create();
-        TreeMap <Integer, Trip> tripMap = new TreeMap<>();
         // Getting the trips out of the database
-        List<Trip> result = Trip.find.query().where()
+        List<Trip> result = Trip.find.query()
+                .where()
                 .eq("profile_id", currentUser.getProfileId())
                 .eq("soft_delete",0)
                 .findList();
+        return populateTrips(currentUser, result);
+    }
 
+    private Profile populateTrips(Profile profile, List<Trip> result) {
+        TreeMultimap<Long, Integer> trips = TreeMultimap.create();
+        TreeMap <Integer, Trip> tripMap = new TreeMap<>();
         for (Trip trip : result) {
             ArrayList<TripDestination> tripDestinations = new ArrayList<>();
             // Getting the tripDestinations out of the database for each trip returned
@@ -143,13 +147,10 @@ public class TripRepository {
             trips.put(trip.getFirstDate(), trip.getId());
             tripMap.put(trip.getId(), trip);
         }
-        // Returning the trips found
-        currentUser.setTrips(trips);
-        currentUser.setTripMaps(tripMap);
-        return currentUser;
+        profile.setTrips(trips);
+        profile.setTripMaps(tripMap);
+        return profile;
     }
-
-
 
     /**
      * code to return trip from id
@@ -200,4 +201,43 @@ public class TripRepository {
         return allTrips;
     }
 
+    /**
+     * Gets a subset of the trips from the database
+     * used for pagination on the admin page
+     *
+     * @param offset amount to offset query by
+     * @param amount amount of trips to get
+     * @return List of trips found
+     */
+    public List<Trip> getPaginateTrip(int offset, int amount) {
+        List<Trip> trips = new ArrayList<>();
+        List<Integer> tripIds = ebeanServer.find(Trip.class).setMaxRows(amount).setFirstRow(offset).where().eq("soft_delete", 0).findIds();
+        for (int id : tripIds) {
+            trips.add(getTrip(id));
+        }
+        return trips;
+    }
+
+    /**
+     * Get ten of the users trips
+     * @return trip list
+     */
+    public Profile getTenTrips(Profile currentUser) {
+        List<Trip> result = Trip.find.query()
+                .setMaxRows(10)
+                .where()
+                .eq("profile_id", currentUser.getProfileId())
+                .eq("soft_delete",0)
+                .findList();
+        return populateTrips(currentUser, result);
+    }
+
+    /**
+     * Finds the number of trips in the database
+     * Used for pagination purposes
+     * @return int of number found
+     */
+    public int getNumTrips() {
+        return ebeanServer.find(Trip.class).where().eq("soft_delete", 0).findCount();
+    }
 }

@@ -43,17 +43,17 @@
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
                         Profile</a>
-                    <a href="@routes.DestinationsController.show(false)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
                     <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
-                    <a href="@routes.TravellersController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
                     <a style="color: #ca6636" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
                             Admin</a>
                     }
                     <a href="@routes.EventsController.show()" class="list-group-item list-group-item-action bg-transparent">
@@ -70,9 +70,9 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")"/></h3>
                     <div id="pageTitle">
-                        <h2> Artists</h2> <!-- TODO align this in the center -->
+                        <h2 class="text-center">Artists</h2>
                     </div>
                 </nav>
             </div>
@@ -95,7 +95,6 @@
             </div>
 
 
-            <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
 
 
         <div class="row justify-content-center" id="artist-container">
@@ -110,28 +109,30 @@
                                 <button type="submit" class="btn btn-primary">Search</button>
                                 <button class="btn btn-secondary" type="button" data-toggle="collapse"
                                         data-target="#collapseFilters" aria-expanded="false"
-                                        aria-controls="collapseFilters">Filters
+                                        aria-controls="collapseFilters">Advanced Search
                                 </button>
+                                <button class="btn btn-primary" id="createArtistButton" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
                             </div>
                             <div id="collapseFilters" class="collapse artistFilters" aria-labelledby="headingOne" data-parent="#filterAccordion">
                                 <div class="card-body">
                                     <div class="search">
                                         <div>
-                                            <select class="selectpicker" id="country" name="country" title="Countries">
+                                            <select class="selectpicker" data-size="3" id="country" name="country" title="Countries">
                                             @for(nation <- countries) {
                                                 <option value="@nation">@nation</option>
                                             }
                                             </select>
-                                            <select class="selectpicker" id="genre" name="genre" title="Genres">
+                                            <select class="selectpicker" data-size="3" id="genre" name="genre" title="Genres">
                                             @for(genre <- genres) {
                                                 <option value="@genre.getGenre">@genre.getGenre</option>
                                             }
+
                                             </select>
                                             <input type="checkbox" id="followed" name="followed">
                                             <label for="toggle">Followed Artists</label>
                                             }
                                             <a href="@routes.ArtistController.show()">
-                                                <button class="btn btn-primary">Clear</button>
+                                                <button id="clearButton" class="btn btn-outline-primary">Clear Search</button>
                                             </a>
 
                                         </div>
@@ -140,7 +141,6 @@
                             </div>
                         </div>
                     </div>
-
 
 
 
@@ -188,13 +188,11 @@
 
                     </div>
                     <div class="row">
-                        <button class="btn btn-outline-primary"  id="show-more" onclick="load_infinite()">Load more...</button>
+                        <button class="btn btn-outline-primary" id="show-more">Load more...</button>
                     </div>
                 </div>
             </div>
         </div>
-
-
 
     </body>
 
@@ -310,24 +308,33 @@
         </div>
     </div>
 
-    <script>
-            function fillValsArtist() {
-                $('#genreForm').val($('#genreDropdown').val());
-                $('#adminForm').val($('#adminDropdown').val());
-                $('#countries').val($('#originDropdown').val());
-            }
+    <script type="text/javascript">
+        function fillValsArtist() {
+            $('#genreForm').val($('#genreDropdown').val());
+            $('#adminForm').val($('#adminDropdown').val());
+            $('#countries').val($('#originDropdown').val());
+        }
 
-            $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
+        // ------------- SIDEBAR TOGGLE JS -------------
+        $(function () {
+            $(".toggleButton").on('click', function (e) {
+                $("#wrapper").toggleClass('toggled');
+
+                e.stopPropagation();
+                return false;
             });
 
-//==============================================INFINITE SCROLLING======================================================
-        var page_count;
+            $('*:not(.toggleButton)').on('click', function () {
+                $("#wrapper").addClass('toggled');
+            });
 
-        $(function() {
-            page_count = 0;
         });
+        // ---------------------------------------------
+
+//==============================================INFINITE SCROLLING======================================================
+
+        var page_count;
+        var followed_artists_ids;
 
 
         function load_infinite() {
@@ -337,6 +344,22 @@
             $("#show-more").prop('disabled', true);
             setTimeout(fetch_artists, 500);
         }
+
+        $(document).ready(function() {
+            page_count = 0;
+            document.getElementById("show-more").addEventListener("click", load_infinite);
+
+            if ((window.location.href.split('/search?')).length > 1){
+                $("#show-more").hide();
+            }
+
+            followed_artists_ids = [];
+            @for(artist <- followedArtists){
+                followed_artists_ids.push(@artist.getArtistId);
+            }
+
+
+        });
 
         function fetch_artists(){
 
@@ -371,11 +394,15 @@
             
             var html = "";
             var i, c, g;
+
+
             for (i = 0; i < jsonData.length; i++) {
 
                 var artist = jsonData[i];
                 var id = parseInt(artist.artistId);
                 var countries = artist.countryListString.split(",");
+
+
 
                 html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
                             "<div class='card-header'>"+artist.artistName+"</div> " +
@@ -399,17 +426,24 @@
                                     "<div class='col col-2'>" +
                                         "<div class='row'>" +
                                             "<a href='artists/"+id+"'>"+
-                                            "<button class='btn btn-primary' id='view' style='margin-bottom: 5px;'>View</button></a>" +
+                                            "<button class='btn btn-primary' id='view''>View</button></a>" +
                                         "</div>" +
-                                        "<div class='row'>" +
-                                            "<button class='btn btn-primary'>Follow</button>" +
-                                        "</div>" +
+                                        "<div class='row'>";
+                                            if(followed_artists_ids.includes(id)) {
+                                                html +="<a href='artist/"+id+"/unfollow'>"+
+                                                    "<button class='btn btn-primary'>Unfollow</button>";
+                                            }else{
+                                                html +="<a href='artist/"+id+"/follow'>"+
+                                                "<button class='btn btn-primary'>Follow</button></a>";
+
+                                            }
+                                html += "</div>" +
                                     "</div>" +
                                 "</div>" +
                             "</div>" +
                         "</div>"
                 
-            };
+            }
             return html
 
         }

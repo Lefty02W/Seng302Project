@@ -33,13 +33,16 @@ label {
 }
 
 #backButtonCreate{
-    margin: 5vh;
+    heigh: 5vh;
+    margin: 7vh 2vh 2vh;
+    padding-top: 1vh;
 }
 
 .saveTripButton{
     height: 5vh;
-    margin-left: 5vh;
-    margin-top: 1vh;
+    margin-right: 5vh;
+    margin-top: 5vh;
+    padding-top: 1vh;
 }
 
 
@@ -79,7 +82,7 @@ input[type=datetime-local] {
     padding-left: 4vw;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h3, h4, h5, h6 {
     color: black;
 }
 
@@ -100,4 +103,8 @@ h1, h2, h3, h4, h5, h6 {
     max-height: 10%;
     max-width: unset;
     background: #205723 !important;
+}
+
+#tripsPane {
+    padding-bottom: 10vh;
 }

@@ -78,7 +78,7 @@ public class AdminControllerTest {
         List<Artist> artists = TestApplication.getArtistRepository().getAllArtists();
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/artist/" + artists.get(0).getArtistId() + "/delete")
+                .uri("/admin/artists/" + artists.get(0).getArtistId() + "/delete")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(TestApplication.getApplication(), request);
 
@@ -136,7 +136,7 @@ public class AdminControllerTest {
 
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/admin/artist/-1/delete")
+                .uri("/admin/artists/-1/delete")
                 .session("connected", profileId.toString());
         Result result = Helpers.route(TestApplication.getApplication(), request);
 

@@ -75,7 +75,7 @@ public class AdminCreateArtistSteps {
     public void adminPressesSaveArtist() throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("POST")
-                .uri("/admin/artist/create")
+                .uri("/admin/artists/create")
                 .bodyForm(artistForm)
                 .session("connected", "2");
         redirectDestination = Helpers.route(TestApplication.getApplication(), request);
