@@ -272,6 +272,7 @@ img.thumbnail {
 
 #photosCard{
     height: 400px;
+    max-width:55vw;
 }
 
 #imageCard{
