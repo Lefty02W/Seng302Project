@@ -148,14 +148,19 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     border-radius: 8px;
 }
 
-.btn-outline-secondary {
-    border-color: darkred;
-    color: darkred;
+.btn-outline-secondary, .btn-outline-danger {
+    border-color: #7d2f2e;
+    color: #7d2f2e;
 }
 
-.btn-outline-secondary:hover {
+.btn-outline-secondary:hover, .btn-outline-danger:hover {
     background-color: darkred;
     border-color: darkred;
+}
+
+.btn-danger {
+    background-color: #7d2f2e;
+    border-color: #7d2f2e;
 }
 
 .btn-primary, .btn-primary:hover {
@@ -216,7 +221,7 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 
 .page-link {
-    color: #ca6636 !important;
+    color: #7d2f2e !important;
 }
 
 
@@ -332,7 +337,7 @@ div.dataTables_filter {
 }
 
 .container-fluid{
-    border-color: red;
+    border-color: #7d2f2e;
 }
 
 #pageTitle {

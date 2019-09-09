@@ -8,7 +8,7 @@
     position: fixed;
     bottom: 25px;
     left: 1750px;
-    background-color: #ca6636;
+    background-color: #7d2f2e;
     padding: 10px 18px;
     margin: 8px 0;
     border: none;
@@ -114,8 +114,8 @@ img.thumbnail {
     display: block;
     width: auto;
     height: auto;
-    max-height: 150px;
-    max-width: 150px;
+    max-height: 220px;
+    max-width: 220px;
     margin: auto;
 
     border-radius: 5px;
@@ -133,7 +133,7 @@ img.thumbnail {
 }
 
 .card {
-    height: 360px;
+    height: 320px;
     width: 240px;
 }
 
@@ -233,14 +233,16 @@ img.thumbnail {
     padding: 15px;
 }
 
-#profileTabs, #photosCard, #photosTabCard, #followedArtistsCard {
+#profileTabs, #photosCaption, #photosTabCard, #followedArtistsCard {
     margin-left: auto;
     margin-right: auto;
+
 }
 
-#destsTab, #tripsTab, followedArtistsTab{
+#destsTab, #tripsTab, #followedArtistsTab, #photosTab{
     padding-left: 10%;
     padding-right: 10%;
+    padding-bottom: 5%;
 }
 
 #profileTabsContent {
@@ -273,13 +275,14 @@ img.thumbnail {
 }
 
 #photosCard{
-    height: 400px;
+    height: 40vh;
     max-width:55vw;
 }
 
 #imageCard{
     margin-top:10px;
-    margin-right:10px;
+    margin-right:1px;
+    margin-left:1px;
     padding-bottom: 2px;
 
 }
@@ -317,6 +320,7 @@ img.thumbnail {
     max-height: 10%;
     max-width: unset;
     background: #205723 !important;
+    padding: 15px;
 }
 
 #editProfileButton {
@@ -340,4 +344,8 @@ img.thumbnail {
     cursor: pointer;
     display: block;
 
+}
+
+#editProfileButton:hover, #changeProfilePictureButton:hover, #addPhotoButton:hover {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
