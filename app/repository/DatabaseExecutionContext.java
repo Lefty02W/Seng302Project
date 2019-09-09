@@ -14,6 +14,7 @@ import javax.inject.Inject;
  */
 public class DatabaseExecutionContext extends CustomExecutionContext {
 
+    //DO NOT REMOVE: Needed for the sbt dist command to build the project correctly
     private final EbeanDynamicEvolutions ebeanDynamicEvolutions;
 
     @Inject
