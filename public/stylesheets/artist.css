@@ -55,3 +55,7 @@
 #clearButton {
     float: right;
 }
+
+#collapseFilters{
+    overflow-y:hidden;
+}

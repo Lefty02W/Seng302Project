@@ -40,7 +40,7 @@
                     <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
-                    <a style="color: #ca6636" href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
@@ -170,12 +170,15 @@
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">Riddle</small>
-                                    <input type="text" name="riddle" id="riddle" required >
+                                    <br>
+                                    <textarea type="text" name="riddle" id="riddle" required ></textarea>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label for="destinationId"><small id="label">Destination</small></label>
+                                    <br>
+                                    <br>
                                     <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                     @for(destination <- destinations) {
                                         <option value="@destination.getDestinationId">@destination.getName</option>

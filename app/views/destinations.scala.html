@@ -38,7 +38,7 @@
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
                         Profile</a>
-                    <a style="color: #ca6636" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
                     <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
@@ -332,9 +332,9 @@
                                             </div>
                                             <div class="row">
                                                 <div class="hidden-div-edit">
-                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" >
                                                 </div>
-                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%">
+                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%" required oninvalid="this.setCustomValidity('Country required')" onchange="this.setCustomValidity('')">
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }

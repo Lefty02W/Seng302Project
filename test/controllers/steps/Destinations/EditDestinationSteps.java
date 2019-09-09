@@ -146,7 +146,7 @@ public class EditDestinationSteps {
     @Then("^I am redirected to the destinations page$")
     public void iAmRedirectedToTheDestinationsPage() throws Throwable {
         if (redirectDestinationEdit.redirectLocation().isPresent()) {
-            assertEquals("/destinations/show/false", redirectDestinationEdit.redirectLocation().get());
+            assertEquals("/destinations/show/false/0", redirectDestinationEdit.redirectLocation().get());
         } else {
             fail();
         }

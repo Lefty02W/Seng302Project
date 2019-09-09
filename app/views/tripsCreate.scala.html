@@ -35,7 +35,7 @@
                         Profile</a>
                     <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
-                    <a style="color: #ca6636" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
                     <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
@@ -90,11 +90,13 @@
                                         <div class="row">
                                             <div class="col">
                                                 <h5>Destination</h5>
-                                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                                @for(destination <- destinationsList) {
-                                                    <option value="@destination.getDestinationId">@destination.getName</option>
-                                                }
-                                                </select>
+                                                <div class="container">
+                                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                                    @for(destination <- destinationsList) {
+                                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                                    }
+                                                    </select>
+                                                </div>
                                             </div>
 
                                             <div class="col">
@@ -102,17 +104,16 @@
                                                 <input type="datetime-local" id="arrival" name="arrival">
                                             </div>
 
-                                            <div class="col">
-                                                <h5>Departure Time</h5>
-                                                <input type="datetime-local" id="departure" name="departure">
-                                            </div>
-                                            <div class="col">
-                                                <button type="submit" class="btn btn-primary" id="addDest">Add Destination</button>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <h5>Departure Time</h5>
+                                                    <input type="datetime-local" id="departure" name="departure">
+                                                </div>
+                                                <div class="col">
+                                                    <button type="submit" class="btn btn-primary" id="addDest">Add</button>
+                                                </div>
                                             </div>
                                         </div>
-
-
-
                                 </div>
 
                             }
