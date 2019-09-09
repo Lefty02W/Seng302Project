@@ -111,7 +111,7 @@
             }
 
             <div class="jumbotron text-center"  id="artistNameJumbo">
-                <h1>@currentUser.getFirstName() @currentUser.getLastName</h1>
+                <h1>@currentUser.getFirstName() @currentUser.getMiddleName @currentUser.getLastName</h1>
             </div>
 
 
@@ -145,15 +145,6 @@
                     <div id="informationTab" class="tab-pane fade in active show">
                         <div class="container">
                             <div class="card center-col overflow-auto" id="informationCard">
-                                <div id="firstNameRow" class="row">
-                                    <div class="col-md-2">
-                                        <b>Name:</b>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <a>@currentUser.getFirstName @currentUser.getMiddleName @currentUser.getLastName</a>
-                                    </div>
-
-                                </div>
 
                                 <div id="emailRow" class="row">
                                     <div class="col-md-2">
@@ -250,7 +241,7 @@
 
                                 <div class="row">
                                 @for(photo <- photoList) {
-                                    <div class="card">
+                                    <div class="card" id="imageCard">
                                         <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
                                         src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
                                         name="@photo.getPhotoId">
@@ -474,7 +465,7 @@
                         <div id="photosCard" class="card-large lower-card">
                             <div class="row">
                             @for(photo <- photoList) {
-                                <div class="card">
+                                <div class="card" id="imageCard">
                                     <img id="displayImage" class="thumbnail"
                                     src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
                                     name="@photo.getPhotoId">
