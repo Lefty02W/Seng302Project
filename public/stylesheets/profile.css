@@ -114,8 +114,8 @@ img.thumbnail {
     display: block;
     width: auto;
     height: auto;
-    max-height: 280px;
-    max-width: 280px;
+    max-height: 150px;
+    max-width: 150px;
     margin: auto;
 
     border-radius: 5px;
@@ -266,35 +266,12 @@ img.thumbnail {
 }
 
 #informationCard{
+    overflow-x:hidden !important;
     width: 80%;
 }
 
-#changeProfilePictureButton {
-    position: absolute;
-    color: white;
-    width: auto;
-    margin-left: 60%;
-    margin-top: 5%;
-    cursor: pointer;
-}
-
-#editProfileButton {
-    position: absolute;
-    color: #2e7d32;
-    width: auto;
-    font-size: 24px;
-    margin-left: 60%;
-    margin-top: 8%;
-    cursor: pointer;
-}
-
-#editProfileButtonText {
-    font-size: 14pt;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-
 #photosCard{
-    height: 500px;
+    height: 400px;
 }
 
 #photosTabCard {
@@ -322,4 +299,35 @@ img.thumbnail {
 
 #profileContainer{
     margin-top: -120px;
+}
+
+#profileFooter {
+    position: fixed;
+    bottom: 0;
+    max-height: 10%;
+    max-width: unset;
+    background: #205723 !important;
+}
+
+#editProfileButton {
+    display: inline;
+    color: white;
+    width: 250px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+#editProfileButtonText {
+    display: inline;
+    /*font-size: 14pt;*/
+    /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/
+}
+
+#changeProfilePictureButton, #addPhotoButton {
+    color: white;
+    width: 250px;
+    margin-left: 5px;
+    cursor: pointer;
+    display: block;
+
 }

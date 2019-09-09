@@ -118,14 +118,6 @@
             <div class="container-fluid" id="profileContainer">
 
                 <div id="profilePhotoContainer">
-                    <div class="col">
-                        <button type="button" class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
-                            Change Profile Picture
-                        </button>
-                        <i class="fa fa-edit" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
-                            <a id="editProfileButtonText" data-toggle="modal" data-target="#editProfileModal">Edit Profile</a>
-                        </i>
-                    </div>
                     <div class="container" id="profilePhoto">
                     @if(profilePicture != null) {
                         <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
@@ -254,10 +246,7 @@
                     <div id="photosTab" class="tab-pane fade">
                         <div class="col">
                             <div id="photosCard" class="card-large lower-card">
-                                <div id="photoHeading">
-                                    <button class="btn btn-primary" style="right" data-toggle="modal"
-                                    data-target="#addPhotoModal">Add Photo</button>
-                                </div>
+
 
                                 <div class="row">
                                 @for(photo <- photoList) {
@@ -327,7 +316,7 @@
                                     </tr>
                                 }
                             </table>
-                            <a href="@routes.DestinationsController.show(false, 0)"> <button class="btn btn-primary"> View More</button> </a>
+                            <a href="@routes.DestinationsController.show(false, 0)"> <button class="btn btn-primary"> View All</button> </a>
                         </div>
                     </div>
                     <div id="followedArtistsTab" class="tab-pane fade">
@@ -417,7 +406,37 @@
                             </div>
                         </div>
                     }
-                    <a href="/trips/0"> <button class="btn btn-primary"> View More</button> </a>
+                    <a href="/trips/0"> <button class="btn btn-primary"> View All</button> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" id="profileFooter">
+            <div class="row justify-content-center">
+                    <div class="row">
+                        <div class="col-sm">
+                            <button class="btn btn-primary" id='addPhotoButton' data-toggle="modal"
+                            data-target="#addPhotoModal">Add Photo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <button type="button" class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                            Change Profile Picture
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
+                                <i class="fa fa-edit" id="editProfileButton"></i>
+                                Edit Profile
+                            </button>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -746,7 +765,6 @@
         </div>
 
         <div class="modal fade" id="acceptChangeModal">
-
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
 
