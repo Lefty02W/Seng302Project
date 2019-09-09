@@ -20,3 +20,10 @@
 .dateLabel{
     margin-top: 0 !important;
 }
+
+#createEventButton {
+    position: inherit;
+    margin-top: 1%;
+    float: right;
+    margin-right: 1%;
+}
