@@ -69,7 +69,7 @@ public class EventsController extends Controller {
                     }
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm,
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm, artistRepository.isArtistAdmin(profId),
                             request, messagesApi.preferred(request)));
                 })
                         .orElseGet(() -> redirect("/")));
@@ -80,6 +80,7 @@ public class EventsController extends Controller {
     public CompletionStage<Result> createEvent(Http.Request request) {
         return supplyAsync( ()-> {
             Form<Events> form = eventForm.bindFromRequest(request);
+            int profId = SessionController.getCurrentUserId(request);
             Optional<Events> event = form.value();
             if (event.isPresent()) {
                 Optional<String> startDate = form.field("startDate").value();
@@ -106,10 +107,14 @@ public class EventsController extends Controller {
                 ageForm.ifPresent(s -> event.get().setAgeForm(s));
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
 
+                if(!artistRepository.isArtistAdmin(profId)){
+                    return redirect("/events").flashing("error", "Error creating event: You must be a verified artist admin.");
+                }
+
                 if(checkDates(event.get())){
                     eventRepository.insert(event.get());
                 } else {
-                    return redirect("/events").flashing("error", "Error creating event. Start Date must be before End date");
+                    return redirect("/events").flashing("error", "Error creating event: Start date must be before end date");
                 }
             }
             return redirect("/events").flashing("info", "Successfully added your new event");
@@ -126,7 +131,7 @@ public class EventsController extends Controller {
                 if(!eventsList.isEmpty()){
                     return ok(events.render(profile.get(),
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm,
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm, artistRepository.isArtistAdmin(profId),
                             request, messagesApi.preferred(request)));
                 }
             }
