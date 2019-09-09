@@ -168,17 +168,18 @@
                     <div class="modal-body">
                         <div class="col" align="center">
                             <div class="row">
-                                <div class="form-group">
-                                    <small id="label">Riddle</small>
-                                    <br>
-                                    <textarea type="text" name="riddle" id="riddle" required ></textarea>
-                                </div>
+                                <small id="label">Riddle</small>
+                                <br>
+                            </div>
+                            <div class="row">
+                                    <textarea class="riddleArea" type="text" name="riddle" id="riddle" required ></textarea>
+                            </div>
+                            <div class="row">
+                                <label for="destinationId"><small id="label">Destination</small></label>
+                                <br>
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="destinationId"><small id="label">Destination</small></label>
-                                    <br>
-                                    <br>
                                     <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                     @for(destination <- destinations) {
                                         <option value="@destination.getDestinationId">@destination.getName</option>
@@ -229,14 +230,18 @@
                     <div class="modal-body">
                         <div class="col" align="center">
                             <div class="row">
-                                <div class="form-group">
-                                    <small id="label">Riddle</small>
-                                    <input type="text" name="riddle" id="riddle" value="@editHunt.getObject.getRiddle" required >
-                                </div>
+                                <small id="label">Riddle</small>
+                                <br>
+                            </div>
+                            <div class="row">
+                                <textarea class="riddleArea" type="text" name="riddle" id="riddle" required >@editHunt.getObject.getRiddle</textarea>
+                            </div>
+                            <div class="row">
+                                <label for="destinationId"><small id="label">Destination</small></label>
+                                <br>
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="destinationId"><small id="label">Destination</small></label>
                                     <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                     @for(destination <- destinations) {
                                         @if(destination.getDestinationId == editHunt.getObject.getTreasureHuntDestinationId) {
