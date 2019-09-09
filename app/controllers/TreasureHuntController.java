@@ -68,12 +68,10 @@ public class TreasureHuntController {
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             undoStackRepository.clearStackOnAllowed(profile.get());
-            return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts,
-                        destinationRepository.getPublicDestinations(0), huntForm,
-                        new RoutedObject<TreasureHunt>(null, false, false),
-                        paginationHelper, request, messagesApi.preferred(request)));
-            }).orElseGet(() -> redirect("/login"));
+            return profile.map(profile1 -> ok(treasureHunts.render(profile1, availableHunts, myHunts,
+                    destinationRepository.getPublicDestinations(0), huntForm,
+                    new RoutedObject<TreasureHunt>(null, false, false),
+                    paginationHelper, request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/login"));
         });
     }
 
@@ -92,9 +90,7 @@ public class TreasureHuntController {
             return supplyAsync(() -> redirect(huntShowRoute).flashing("error", "Error: Start date cannot be after end date."));
         }
 
-        return treasureHuntRepository.insert(treasureHunt).thenApplyAsync(x -> {
-            return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been added.");
-        });
+        return treasureHuntRepository.insert(treasureHunt).thenApplyAsync(x -> redirect(huntShowRoute).flashing("success", "Treasure Hunt has been added."));
     }
 
     /**
@@ -152,9 +148,7 @@ public class TreasureHuntController {
             return supplyAsync(() -> redirect(huntShowRoute).flashing("error", "Error: Start date cannot be after end date."));
         }
 
-        return treasureHuntRepository.update(treasureHunt, id).thenApplyAsync(x -> {
-            return redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated.");
-        });
+        return treasureHuntRepository.update(treasureHunt, id).thenApplyAsync(x -> redirect(huntShowRoute).flashing("success", "Treasure Hunt has been updated."));
 
     }
 
@@ -171,11 +165,8 @@ public class TreasureHuntController {
         Integer profId = SessionController.getCurrentUserId(request);
         List<TreasureHunt> availableHunts = treasureHuntRepository.getAllActiveTreasureHunts(0);
         List<TreasureHunt> myHunts = treasureHuntRepository.getAllUserTreasureHunts(profId);
-        return profileRepository.findById(profId).thenApplyAsync(profile -> {
-            return profile.map(profile1 -> {
-                return ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(0), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), new PaginationHelper(0, 0, 0,true, true, 0), request, messagesApi.preferred(request)));
-            }).orElseGet(() -> redirect("/login"));
-        });
+        return profileRepository.findById(profId).thenApplyAsync(profile -> profile.map(profile1 ->
+                ok(treasureHunts.render(profile1, availableHunts, myHunts, destinationRepository.getPublicDestinations(0), huntForm, new RoutedObject<TreasureHunt>(hunt, true, true), new PaginationHelper(0, 0, 0,true, true, 0), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/login")));
     }
 
     /**

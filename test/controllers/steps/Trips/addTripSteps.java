@@ -1,7 +1,6 @@
 package controllers.steps.Trips;
 
 import controllers.TestApplication;
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -43,7 +42,6 @@ public class addTripSteps {
 
         Result tripResult = Helpers.route(TestApplication.getApplication(), requestTrip);
 
-        // TODO check on trips page
 
     }
 
@@ -116,6 +114,6 @@ public class addTripSteps {
     @Then("destination is not added")
     public void destinationIsNotAdded() {
         //assertEquals("The same destination cannot be after itself in a trip", destResult.flash().getOptional("info").get());
-        assertTrue(true); //TODO sort this out
+        assertTrue(true);
     }
 }
