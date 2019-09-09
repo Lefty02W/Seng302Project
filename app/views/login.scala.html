@@ -110,7 +110,8 @@
                                     <div class="hidden-div-edit">
                                         <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
                                     </div>
-                                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                    <label>Traveller Types*</label>
+                                    <select class="selectpicker" multiple title="Traveller Types" id="typeDropdown" data-width="100%" required>
                                         <option value="ThrillSeeker">ThrillSeeker</option>
                                         <option value="Backpacker">Backpacker</option>
                                         <option value="Gap Year">Gap Year</option>
@@ -121,6 +122,7 @@
                                     </select>
                                 </div>
                                 <div class="row">
+                                    <label>Gender*</label>
                                     <select class="selectpicker" id="gender" name="gender" data-width="100%" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
                                         <option>Male</option>
                                         <option>Female</option>
