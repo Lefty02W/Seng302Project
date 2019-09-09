@@ -44,10 +44,10 @@ def main():
     # artists = 600
     # trips = 500
     # treasure hunts = 500
-    number_profiles = 1000
-    number_destinations = 4000
-    number_artists = True
-    number_trips = True
+    number_profiles = 2
+    number_destinations = 2
+    number_artists = 0
+    number_trips = 2
     number_treasure_hunts = 0
 
     db_profiles = pymysql.connect("mysql2.csse.canterbury.ac.nz", "seng302-team700", password, "seng302-2019-team700-test")

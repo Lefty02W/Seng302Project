@@ -60,7 +60,9 @@
                         <h2 class="text-center">Artist</h2>
                     </div>
                 </nav>
-
+                <div class="backButtonArtist">
+                    <button class="btn btn-primary" onclick="goBack()">Back</button>
+                </div>
                 <div class="jumbotron text-center"  id="artistNameJumbo">
                     <h1>@artist.getArtistName</h1>
                 </div>
@@ -142,5 +144,9 @@
 
             });
             // ---------------------------------------------
+
+            function goBack() {
+                window.history.back();
+            }
     </script>
 </html>

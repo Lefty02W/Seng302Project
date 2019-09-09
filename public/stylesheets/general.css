@@ -15,6 +15,12 @@
     padding-left: 40px;
 }
 
+.backButtonArtist {
+    background-color: #e9ecef;
+    padding-top: 10px;
+    padding-left: 10px;
+}
+
 body {
     background-color: #f5f5f5;
 }
