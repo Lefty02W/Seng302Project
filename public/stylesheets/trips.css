@@ -18,7 +18,10 @@ label {
 }
 
 #addDest {
-    width: 15vw;
+    width: 5vw;
+    margin-top: 7vh;
+    margin-left: 1vw;
+    height: 5vh;
 }
 
 #destsTable {
