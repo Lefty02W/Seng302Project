@@ -46,6 +46,7 @@ public class AdminController {
     private final UndoStackRepository undoStackRepository;
     private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
+    private final EventRepository eventRepository;
     private final Form<Artist> artistForm;
     private final int pageSize = 8;
     private String adminEndpoint = "/admin";
@@ -58,7 +59,7 @@ public class AdminController {
                            RolesRepository rolesRepository,
                            TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController,
                            ArtistController artistController, UndoStackRepository undoStackRepository, ArtistRepository artistRepository,
-                           FormFactory artistProfileFormFactory, GenreRepository genreRepository) {
+                           FormFactory artistProfileFormFactory, GenreRepository genreRepository, EventRepository eventRepository) {
         this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
@@ -76,6 +77,7 @@ public class AdminController {
         this.artistRepository = artistRepository;
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.genreRepository = genreRepository;
+        this.eventRepository = eventRepository;
     }
 
 
@@ -109,6 +111,23 @@ public class AdminController {
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
                 undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, tripRepository.getNumTrips(), 2), request, messagesApi.preferred(request))));
+    }
+
+    /**
+     * Endpoint for admin to view all user trips
+     *
+     * @apiNote GET /admin/trips/:offset
+     * @param request client http request
+     * @param offset pagination offset
+     * @return CompletionStage result of admin page
+     */
+    public CompletionStage<Result> showEvents(Http.Request request, Integer offset) {
+        return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
+                new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
+                null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
+                new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, eventRepository.getNumEvents(), 8), request, messagesApi.preferred(request))));
     }
 
     /**

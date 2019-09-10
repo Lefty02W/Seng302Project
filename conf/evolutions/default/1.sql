@@ -430,24 +430,29 @@ create table undo_stack
 ;
 
 
-create table if not exists events
+create table events
 (
 	event_id int auto_increment,
 	event_name varchar(255) not null,
 	description varchar(255) null,
 	destination_id int not null,
-	start_date date null,
-	end_date date null,
+	start_date datetime null,
+	end_date datetime null,
 	age_restriction int null,
+	soft_delete int default '0' null,
 	constraint events_event_id_uindex
 		unique (event_id),
 	constraint destination_id_____destination_fk
 		foreign key (destination_id) references destination (destination_id)
 			on update cascade on delete cascade
-);
+)
+;
 
 alter table events
-	add primary key (event_id);
+	add primary key (event_id)
+;
+
+
 
 create table if not exists type_of_events
 (

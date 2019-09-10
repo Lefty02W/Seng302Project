@@ -42,7 +42,7 @@
                     @if( currentProfile.hasRole("global_admin") || currentProfile.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
                     }
-                    <a href="@routes.EventsController.show()" class="list-group-item list-group-item-action bg-transparent">
+                    <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
                     </a>
