@@ -7,6 +7,9 @@ import play.data.validation.Constraints;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,8 @@ public class Events extends Model {
     private int destinationId;
 
     private Date startDate;
+
+    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
 
     private Date endDate;
 

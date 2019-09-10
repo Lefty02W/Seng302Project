@@ -131,4 +131,5 @@ GET     /artists/:id                            controllers.ArtistController.sho
 #Events
 GET     /events                                 controllers.EventsController.show(request : Request)
 POST    /events/create                          controllers.EventsController.createEvent(request : Request)
+POST    /events/:id/edit                        controllers.EventsController.editEvent(request : Request, id : Integer)
 GET     /events/search                          controllers.EventsController.search(request : Request)

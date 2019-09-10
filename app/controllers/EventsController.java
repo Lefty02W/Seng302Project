@@ -2,6 +2,7 @@ package controllers;
 
 import models.EventFormData;
 import models.Events;
+import models.RoutedObject;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class EventsController extends Controller {
@@ -69,14 +71,71 @@ public class EventsController extends Controller {
                     }
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm, artistRepository.isArtistAdmin(profId),
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),  eventFormDataForm, artistRepository.isArtistAdmin(profId),
                             request, messagesApi.preferred(request)));
-                })
-                        .orElseGet(() -> redirect("/")));
+                }).orElseGet(() -> redirect("/")));
     }
 
 
+    /**
+     * Helper function to extract into an event object
+     * @param userId User id of the creator of this event
+     * @param values form of the incoming data to be put into a event object
+     * @return event object with all values inside
+     */
+    Events setValues(Integer userId, Form<Events> values){
+        Events event = values.get();
+        Integer destinationId = null;
+        String startDate = null;
+        String endDate = null;
+
+        Optional<String> endDateString = values.field("endDate").value();
+        if (endDateString.isPresent()) {
+            endDate = endDateString.get();
+        }
+        Optional<String> startDateString = values.field("startDate").value();
+        if (startDateString.isPresent()) {
+            startDate = startDateString.get();
+        }
+        Optional<String> destinationIdString = values.field("destinationId").value();
+        if (destinationIdString.isPresent()) {
+            destinationId = parseInt(destinationIdString.get());
+        }
+
+        event.setDestinationId(destinationId);
+        try {
+            event.setStartDate(dateTimeEntry.parse(startDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        try {
+            event.setEndDate(dateTimeEntry.parse(endDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return event;
+    }
+
+    /**
+     * Function to edit a event.
+     * @param request
+     * @param id The id of the event to edit.
+     * @return redirect back to the event page
+     */
     @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> editEvent(Http.Request request, Integer id) {
+        Form<Events> form = eventForm.bindFromRequest(request);
+        Events event = setValues(SessionController.getCurrentUserId(request), form);
+        if (event.getStartDate().after(event.getEndDate())){
+            return supplyAsync(() -> redirect("/events").flashing("error", "Error: Start date cannot be after end date."));
+        }
+        return eventRepository.update(id, event).thenApplyAsync(x -> {
+            return redirect("/events").flashing("success", "Event has been updated.");
+        });
+
+    }
+
+
     public CompletionStage<Result> createEvent(Http.Request request) {
         return supplyAsync( ()-> {
             Form<Events> form = eventForm.bindFromRequest(request);
@@ -131,7 +190,7 @@ public class EventsController extends Controller {
                 if(!eventsList.isEmpty()){
                     return ok(events.render(profile.get(),
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, eventFormDataForm, artistRepository.isArtistAdmin(profId),
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false), eventFormDataForm, artistRepository.isArtistAdmin(profId),
                             request, messagesApi.preferred(request)));
                 }
             }
