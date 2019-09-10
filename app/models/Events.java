@@ -1,16 +1,12 @@
 package models;
 
 import io.ebean.Model;
-import play.data.format.Formats;
-import play.data.validation.Constraints;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -87,6 +83,30 @@ public class Events extends Model {
         } else {
             return Integer.toString(ageRestriction) + "+";
         }
+    }
+
+    /**
+     * Gets a formatted start date string
+     *
+     * @return date string
+     */
+    public String getStartDateString() {
+        if (startDate != null) {
+            return dateFormatEntry.format(startDate);
+        }
+        return "";
+    }
+
+    /**
+     * Gets a formatted end date string
+     *
+     * @return date string
+     */
+    public String getEndDateString() {
+        if (endDate != null) {
+            return dateFormatEntry.format(endDate);
+        }
+        return "";
     }
 
     public int getEventId() {

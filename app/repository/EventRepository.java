@@ -65,13 +65,13 @@ public class EventRepository {
      * @param offset offset of events to get
      * @return Optional List of events found
      */
-    public Optional<List<Events>> getPage(int offset) {
+    public List<Events> getPage(int offset) {
         List<Events> toReturn = new ArrayList<>();
         List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).findList();
         for (Events event : events) {
             toReturn.add(populateEvent(event));
         }
-        return Optional.of(toReturn);
+        return toReturn;
     }
 
 

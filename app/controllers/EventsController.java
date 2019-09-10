@@ -18,7 +18,6 @@ import views.html.events;
 import javax.inject.Inject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -65,11 +64,7 @@ public class EventsController extends Controller {
 
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> {
-                    Optional<List<Events>> optionalEventsList = eventRepository.getPage(offset);
-                    List<Events> eventsList = new ArrayList<>();
-                    if (optionalEventsList.isPresent()){
-                        eventsList = optionalEventsList.get();
-                    }
+                    List<Events> eventsList = eventRepository.getPage(offset);
                     PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
                     paginationHelper.alterNext(8);
                     paginationHelper.alterPrevious(8);

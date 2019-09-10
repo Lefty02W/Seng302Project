@@ -1,14 +1,12 @@
-@import java.util._
-
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles: List[Profile], adminProfiles: List[Profile], trips: List[Trip], destination: RoutedObject[Destination],
         destinations: List[Destination], profile: RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
-        countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
+        countries: List[String], adminUndoStack: List[UndoStack],
         artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre],
-        pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
+        pagination : PaginationHelper, events : List[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -815,7 +813,7 @@
                                                 <th>Decline</th>
                                             </tr>
                                         </thead>
-                                        @for(artist <- artistList) {
+                                        @for(artist <- artists) {
                                             <tr>
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
@@ -861,6 +859,17 @@
                                         <th>Age Restriction</th>
                                     </tr>
                                 </thead>
+                                @for(event <- events) {
+                                    <tr>
+                                        <td>@event.getEventId</td>
+                                        <td>@event.getEventName</td>
+                                        <td>@event.getDescription</td>
+                                        <td>@event.getDestinationId</td>
+                                        <td>@event.getStartDateString</td>
+                                        <td>@event.getEndDateString</td>
+                                        <td>@event.getAgeRestrictionString</td>
+                                    </tr>
+                                }
                             </table>
                             <div class="col">
                                 <a>@pagination.getInfoString</a>

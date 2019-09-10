@@ -97,7 +97,7 @@ public class AdminController {
     }
 
     /**
-     * Endpoint for admin to view all user trips
+     * Endpoint for admin to view all user tripsage  - Added boilerplate to allow for a paginated table  - Added routes to access the tab - Updated test db script so test should now pass #implement #test #commits[]
      *
      * @apiNote GET /admin/trips/:offset
      * @param request client http request
@@ -109,8 +109,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, tripRepository.getNumTrips(), 2), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, tripRepository.getNumTrips(), 2), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -126,8 +126,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, eventRepository.getNumEvents(), 8), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, eventRepository.getNumEvents(), 8), eventRepository.getPage(offset), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -143,8 +143,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, profileRepository.getNumProfiles(), 1), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, profileRepository.getNumProfiles(), 1), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -160,8 +160,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, profileRepository.getNumAdmins(), 0), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, profileRepository.getNumAdmins(), 0), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -177,8 +177,8 @@ public class AdminController {
                 destinationRepository.getDestinationPage(offset, pageSize), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, destinationRepository.getNumDestinations(), 3), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, destinationRepository.getNumDestinations(), 3), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -194,8 +194,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, destinationRepository.getDestRequestPage(offset, pageSize), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, destinationRepository.getNumDestRequests(), 4), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, destinationRepository.getNumDestRequests(), 4), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -211,8 +211,8 @@ public class AdminController {
                 destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), treasureHuntRepository.getPageHunts(offset, pageSize),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, treasureHuntRepository.getNumHunts(), 5), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, treasureHuntRepository.getNumHunts(), 5), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -228,8 +228,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), artistRepository.getPageArtists(offset, pageSize, 1),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, artistRepository.getNumArtists(), 6), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getPageArtists(offset, pageSize, 1),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, artistRepository.getNumArtists(), 6), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -245,8 +245,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getPageArtists(offset, pageSize, 0), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, artistRepository.getNumArtistRequests(), 7), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getPageArtists(offset, pageSize, 0),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, artistRepository.getNumArtistRequests(), 7), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
 
@@ -299,8 +299,8 @@ public class AdminController {
                         new ArrayList<Destination>(), new RoutedObject<Profile>(profOpt.get(), false, true), profileEditForm,
                         null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                         new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                        undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                        new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, profileRepository.getNumProfiles(), 1), request, messagesApi.preferred(request)));
+                        undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                        new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, profileRepository.getNumProfiles(), 1), new ArrayList<Events>(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin/profiles/0");
             }
@@ -324,8 +324,8 @@ public class AdminController {
                         new ArrayList<Destination>(), new RoutedObject<Profile>(profileOpt.get(), true, false), profileForm,
                         null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                         new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                        undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                        new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, profileRepository.getNumProfiles(), 1), request, messagesApi.preferred(request)));
+                        undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                        new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, profileRepository.getNumProfiles(), 1), new ArrayList<Events>(), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/admin/profiles/0").flashing("info", "User profile not found");
             }
@@ -424,8 +424,8 @@ public class AdminController {
                     new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm, trip,
                     profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                     new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                    new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, tripRepository.getNumTrips(), 2), request, messagesApi.preferred(request)));
+                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                    new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, tripRepository.getNumTrips(), 2), new ArrayList<Events>(), request, messagesApi.preferred(request)));
         });
     }
 
@@ -516,8 +516,8 @@ public class AdminController {
                     destinationRepository.getDestinationPage(0, pageSize), new RoutedObject<Profile>(null, false, false), profileEditForm,
                     null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                     new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                    new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, destinationRepository.getNumDestinations(), 3), request, messagesApi.preferred(request)));
+                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                    new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, destinationRepository.getNumDestinations(), 3), new ArrayList<Events>(), request, messagesApi.preferred(request)));
         });
     }
 
@@ -681,8 +681,8 @@ public class AdminController {
                     destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                     null, profileCreateForm, null, new ArrayList<DestinationChange>(), treasureHuntRepository.getPageHunts(0, pageSize),
                     new RoutedObject<TreasureHunt>(hunt, true, false), Country.getInstance().getAllCountries(),
-                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(), new ArrayList<Artist>(),
-                    new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, treasureHuntRepository.getNumHunts(), 5), request, messagesApi.preferred(request)));
+                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
+                    new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, treasureHuntRepository.getNumHunts(), 5), new ArrayList<Events>(), request, messagesApi.preferred(request)));
         });
     }
 
@@ -831,10 +831,9 @@ public class AdminController {
                     new RoutedObject<Profile>(null, true, false), profileEditForm, null,
                     profileCreateForm, destinationEditForm, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                     new RoutedObject<TreasureHunt>(null, true, false), Country.getInstance().getAllCountries(),
-                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
-                    new ArrayList<Artist>(), artistRepository.getAllArtists(),
+                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getAllArtists(),
                     new RoutedObject<Artist>(artist, true, true), genreRepository.getAllGenres(),
-                    initialisePaginatior(0, artistRepository.getNumArtists(), 6), request, messagesApi.preferred(request)));
+                    initialisePaginatior(0, artistRepository.getNumArtists(), 6), new ArrayList<Events>(), request, messagesApi.preferred(request)));
         });
     }
 
