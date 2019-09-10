@@ -4,7 +4,6 @@ import io.ebean.*;
 import models.*;
 import org.mindrot.jbcrypt.BCrypt;
 import play.db.ebean.EbeanConfig;
-import scala.xml.Null;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
@@ -57,7 +56,7 @@ public class ProfileRepository {
      * @return
      */
     public boolean validate(String email, String password) {
-        String selectQuery = "SELECT * FROM profile WHERE email = ?";// and password = ?";
+        String selectQuery = "SELECT * FROM profile WHERE email = ?";
         List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery)
                 .setParameter(1, email)
                 .findList();
@@ -67,7 +66,6 @@ public class ProfileRepository {
             }
         }
         return false;
-//        return row != null;
     }
 
 

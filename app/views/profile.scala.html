@@ -26,6 +26,7 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/profile.css")">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     </head>
 
@@ -37,22 +38,22 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">TravelEA </h2>
                 <div class="list-group list-group-flush">
-                    <a style="color: #ca6636" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
                         Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
                         Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
                         Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/> Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
                         Logout</a>
                 </div>
             </div>
@@ -63,9 +64,9 @@
         <div id="page-content-wrapper">
 
             <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                 <div id="pageTitle">
-                    <h2> Profile</h2>
+                    <h2 class="text-center">Profile</h2>
                 </div>
             </nav>
 
@@ -109,21 +110,14 @@
                 </script>
             }
 
+            <div class="jumbotron text-center"  id="artistNameJumbo">
+                <h1>@currentUser.getFirstName() @currentUser.getMiddleName @currentUser.getLastName</h1>
+            </div>
 
 
-
-
-            <div class="container-fluid">
+            <div class="container-fluid" id="profileContainer">
 
                 <div id="profilePhotoContainer">
-                    <div class="col">
-                        <button type="button" class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
-                            Change Profile Picture
-                        </button>
-
-                        <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
-                            Edit Profile</button>
-                    </div>
                     <div class="container" id="profilePhoto">
                     @if(profilePicture != null) {
                         <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
@@ -132,10 +126,6 @@
                         <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/profile-icon.png")"
                         alt="Profile picture">
                         }
-                    </div>
-
-                    <div class="container" id="greeting">
-                        <h2 style="text-align: center;">Welcome, @currentUser.getFirstName()!</h2>
                     </div>
                 </div>
 
@@ -154,124 +144,91 @@
                 <div class="tab-content" id="profileTabsContent">
                     <div id="informationTab" class="tab-pane fade in active show">
                         <div class="container">
-                            <div id="firstNameRow" class="row justify-content-center">
-                                <div class="col-md-2">
-                                    <b>First Name:</b>
-                                </div>
-                                <div class="col-md-2">
-                                    <a>@currentUser.getFirstName</a>
-                                </div>
+                            <div class="card center-col overflow-auto" id="informationCard">
 
-                            </div>
-
-                            <div id="middleNameRow" class="row justify-content-center">
-                                <div class="col-md-2">
-                                    <b>Middle Name:</b>
-                                </div>
-                                <div class="col-md-2">
-                                    <a>@currentUser.getMiddleName</a>
-                                </div>
-                            </div>
-
-                            <div id="lastNameRow" class="row justify-content-center">
-                                <div class="col-md-2">
-                                    <b>Last Name:</b>
-                                </div>
-                                <div class="col-md-2">
-                                    <a>@currentUser.getLastName</a>
-                                </div>
-                            </div>
-
-                            <div id="emailRow" class="row justify-content-center">
-                                <div class="col-md-2">
-                                    <b>Email:</b>
-                                </div>
-                                <div class="col-md-2">
-                                    <a>@currentUser.getEmail</a>
-                                </div>
-                            </div>
-
-                            <div id="dobRow" class="row justify-content-center">
-                                <div class="col-md-2">
-                                    <b>Date Of Birth:</b>
-                                </div>
-                                <div class="col-md-2">
-                                    <a>@currentUser.getBirthString</a>
-                                </div>
-                            </div>
-
-                            <hr/>
-
-                            <div id="typesRow" class="row justify-content-center">
-                            @if(currentUser.getTravellerTypesList.isEmpty) {
-                                <div class="alert alert-info" role="alert">
-                                    You have no traveller types associated with your profile
-                                </div>
-                            } else {
-                                <div class="row justify-content-center">
-                                    <div class="col">
-                                        <a>Traveller Types:
-                                            @for(index <- 0 until currentUser.getTravellerTypesList.size) {
-                                                <li style="padding: 0px;
-                                                    margin-left: 20px;">
-                                                @currentUser.getTravellerTypesList.get(index)
-                                                </li>
-                                            }
-                                        </a>
+                                <div id="emailRow" class="row">
+                                    <div class="col-md-2">
+                                        <b>Email:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a>@currentUser.getEmail</a>
                                     </div>
                                 </div>
-                            }
-                            </div>
 
-                            <hr/>
-
-                            <div id="nationalities" class="row justify-content-center">
-                            @if(currentUser.getNationalityList.isEmpty) {
-                                <div class="alert alert-info" role="alert">
-                                    You have no nationalities associated with your profile
-                                </div>
-                            } else {
-                                <div class="row justify-content-center">
-                                    <div class="col">
-                                        <a>Nationalities:
-                                            @for(index <- 0 until currentUser.getNationalityList.size) {
-                                                <li style="padding: 0px;
-                                                    margin-left: 20px;">
-                                                @currentUser.getNationalityList.get(index)
-                                                </li>
-                                            }
-                                        </a>
+                                <div id="dobRow" class="row">
+                                    <div class="col-md-2">
+                                        <b>DOB:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a>@currentUser.getBirthString</a>
                                     </div>
                                 </div>
-                            }
-                            </div>
 
-                            <hr/>
-
-                            <div id="passports" class="row justify-content-center">
-
-                            @if(currentUser.getPassportsList.isEmpty) {
-                                <div class="alert alert-info" role="alert">
-                                    You have no passports associated with your profile
-                                </div>
-                            } else {
-                                <div class="row justify-content-center">
-                                    <div class="col">
-                                        <a>Passports:
-                                            @for(index <- 0 until currentUser.getPassportsList.size) {
-                                                <li style="padding: 0px;
-                                                    margin-left: 20px;">
-                                                @currentUser.getPassportsList.get(index)
-                                                </li>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col align-items-start">
+                                            @if(currentUser.getTravellerTypesList.isEmpty) {
+                                                <div class="alert alert-info" role="alert">
+                                                    You have no traveller types associated with your profile
+                                                </div>
+                                            } else {
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <a><b>Traveller Types:</b>
+                                                            @for(index <- 0 until currentUser.getTravellerTypesList.size) {
+                                                                <li style="padding: 0px;
+                                                                    margin-left: 20px;">
+                                                                @currentUser.getTravellerTypesList.get(index)
+                                                                </li>
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             }
-                                        </a>
+                                        </div>
+                                        <div class="col align-items-center">
+                                            @if(currentUser.getNationalityList.isEmpty) {
+                                                <div class="alert alert-info" role="alert">
+                                                    You have no nationalities associated with your profile
+                                                </div>
+                                            } else {
+                                                <div class="row justify-content-center">
+                                                    <div class="col">
+                                                        <a><b>Nationalities:</b>
+                                                            @for(index <- 0 until currentUser.getNationalityList.size) {
+                                                                <li style="padding: 0px;
+                                                                    margin-left: 20px;">
+                                                                @currentUser.getNationalityList.get(index)
+                                                                </li>
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        <div class="col align-items-end">
+                                            @if(currentUser.getPassportsList.isEmpty) {
+                                                <div class="alert alert-info" role="alert">
+                                                    You have no passports associated with your profile
+                                                </div>
+                                            } else {
+                                                <div class="row justify-content-center">
+                                                    <div class="col">
+                                                        <a><b>Passports:</b>
+                                                            @for(index <- 0 until currentUser.getPassportsList.size) {
+                                                                <li style="padding: 0px;
+                                                                    margin-left: 20px;">
+                                                                @currentUser.getPassportsList.get(index)
+                                                                </li>
+                                                            }
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            }
+                                    </div>
                                     </div>
                                 </div>
-                            }
                             </div>
-
-                            <hr/>
-
                         </div>
 
                     </div>
@@ -279,20 +236,14 @@
 
                     <div id="photosTab" class="tab-pane fade">
                         <div class="col">
-                            <div id="photosCard" class="card-large lower-card">
-                                <div id="photoHeading">
-                                    <h3 class="primaryText">Personal Photos</h3>
-                                    <button class="btn btn-primary" style="right" data-toggle="modal"
-                                    data-target="#addPhotoModal">Add Photo</button>
-                                </div>
 
-                                <div class="row">
-                                @for(photo <- photoList) {
-                                    <div class="card">
-                                        <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
-                                        src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
-                                        name="@photo.getPhotoId">
-                                        <div clasas="card-body">
+                            <div class="row">
+                            @for(photo <- photoList) {
+                                <div class="card" id="imageCard">
+                                    <img onclick="expand(src, alt, name)" id="displayImage" class="thumbnail"
+                                    src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
+                                    name="@photo.getPhotoId">
+                                    <div id="photosCaption">
                                         @if(photo.getVisible == 1) {
                                             <p class="card-text"> @photo.displayVisibility(photo.getVisible) 🌏</p>
                                             <a href="@routes.ProfileController.updatePrivacy(photo.getPhotoId)">
@@ -303,21 +254,20 @@
                                                 <button class="btn btn-primary">Make Public</button></a>
                                         }
 
-                                            <button class="btn btn-outline-danger"
-                                            onclick="fillDeleteValues('@routes.ProfileController.deletePhoto(photo.getPhotoId)')">
+                                    <button class="btn btn-outline-danger"
+                                    onclick="fillDeleteValues('@routes.ProfileController.deletePhoto(photo.getPhotoId)')">
                                                 Delete</button>
 
-                                        </div>
-                                            <!-- The Expanded Photo Modal -->
-                                        <div id="expandImageModal" class="modal">
-                                            <span class="close">&times;</span>
-                                            <img class="modal-content" id="expandedImage">
-                                            <div id="caption"></div>
-                                            <div id="id"></div>
-                                        </div>
                                     </div>
-                                }
+                                        <!-- The Expanded Photo Modal -->
+                                    <div id="expandImageModal" class="modal">
+                                        <span class="close">&times;</span>
+                                        <img class="modal-content" id="expandedImage">
+                                        <div id="caption"></div>
+                                        <div id="id"></div>
+                                    </div>
                                 </div>
+                            }
                             </div>
                         </div>
                     </div>
@@ -326,6 +276,7 @@
                     <div id="destsTab" class="tab-pane fade">
                         <div id="table-card" class="dest-table table-hover">
                                 <!-- Table of users -->
+                            <a href="@routes.DestinationsController.show(false, 0)"> <button class="btn btn-primary"> View All</button> </a>
                             <table id="destTable">
                                 <thead>
                                     <tr><th>Destination</th>
@@ -354,7 +305,6 @@
                                     </tr>
                                 }
                             </table>
-                            <a href="@routes.DestinationsController.show(false, 0)"> <button class="btn btn-primary"> View More</button> </a>
                         </div>
                     </div>
                     <div id="followedArtistsTab" class="tab-pane fade">
@@ -366,7 +316,7 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Artist Page</th>
-                                            <th>Unfollow</th>
+                                            <th>Un-follow</th>
                                         </tr>
                                     </thead>
                                     @for(artist <- followedArtistList) {
@@ -391,6 +341,7 @@
                     </div>
 
                     <div id="tripsTab" class="tab-pane fade">
+                    <a href="/trips/0"> <button class="btn btn-primary"> View All</button> </a>
                     @for(tripId <- trips) {
                         <div class="row">
                             <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
@@ -444,7 +395,6 @@
                             </div>
                         </div>
                     }
-                    <a href="/trips/0"> <button class="btn btn-primary"> View More</button> </a>
                     </div>
                 </div>
             </div>
@@ -482,7 +432,7 @@
                         <div id="photosCard" class="card-large lower-card">
                             <div class="row">
                             @for(photo <- photoList) {
-                                <div class="card">
+                                <div class="card" id="imageCard">
                                     <img id="displayImage" class="thumbnail"
                                     src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
                                     name="@photo.getPhotoId">
@@ -773,7 +723,6 @@
         </div>
 
         <div class="modal fade" id="acceptChangeModal">
-
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
 
@@ -819,6 +768,40 @@
                 </div>
             </div>
         </div>
+
+        <footer>
+            <div class="container" id="profileFooter">
+                <div class="row justify-content-center">
+                    <div class="row">
+                        <div class="col-sm">
+                            <button class="btn btn-primary" id='addPhotoButton' data-toggle="modal"
+                            data-target="#addPhotoModal">
+                                <i class="fa fa-camera"></i>
+                                Add Photo
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <button class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                                <i class="fa fa-user-circle"  id="editProfileButton"></i>
+                                Change Profile Picture
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm">
+                            <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
+                                <i class="fa fa-edit" id="editProfileButton"></i>
+                                Edit Profile
+                            </button>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
 
     </body>
 
@@ -869,10 +852,22 @@
                     this.parentElement.style.display = 'none';
                 });
             }
-            $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
+
+            // ------------- SIDEBAR TOGGLE JS -------------
+            $(function () {
+                $(".toggleButton").on('click', function (e) {
+                    $("#wrapper").toggleClass('toggled');
+
+                    e.stopPropagation();
+                    return false;
+                });
+
+                $('*:not(.toggleButton)').on('click', function () {
+                    $("#wrapper").addClass('toggled');
+                });
+
             });
+            // ---------------------------------------------
 
             // Method that gets the photo data from on the photo clicked and displays
             // it in its original resolution in a new modal

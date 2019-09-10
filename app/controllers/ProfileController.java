@@ -53,7 +53,6 @@ public class ProfileController extends Controller implements TypesInterface {
     private Boolean showPhotoModal = false;
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
-    private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
     private Boolean countryFlag = true;
     private final UndoStackRepository undoStackRepository;
@@ -75,8 +74,7 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, UndoStackRepository undoStackRepository,
-                             ProfileTravellerTypeRepository profileTravellerTypeRepository, ArtistRepository artistRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ArtistRepository artistRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -87,7 +85,6 @@ public class ProfileController extends Controller implements TypesInterface {
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
             this.undoStackRepository = undoStackRepository;
-            this.profileTravellerTypeRepository = profileTravellerTypeRepository;
             this.artistRepository = artistRepository;
         }
 
@@ -106,11 +103,9 @@ public class ProfileController extends Controller implements TypesInterface {
         profileNew.initProfile();
 
         try {
-            return profileRepository.update(profileNew, profId).thenApplyAsync(x -> {
-                return redirect(routes.ProfileController.show())
-                        .flashing("success", profileNew.getFirstName() + "'s profile edited successfully.")
-                        .addingToSession(request, "connected", profId.toString());
-            });
+            return profileRepository.update(profileNew, profId).thenApplyAsync(x -> redirect(routes.ProfileController.show())
+                    .flashing("success", profileNew.getFirstName() + "'s profile edited successfully.")
+                    .addingToSession(request, "connected", profId.toString()));
 
         } catch (IllegalArgumentException e) {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "email is already taken"));
@@ -402,9 +397,7 @@ public class ProfileController extends Controller implements TypesInterface {
                 personalPhotoRepository.removeProfilePic(SessionController.getCurrentUserId(request));
                 createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
                 return personalPhotoRepository.insert(new PersonalPhoto(SessionController.getCurrentUserId(request), photoId, 1));
-            }).thenApply(id -> {
-                return redirect("/profile");
-            });
+            }).thenApply(id -> redirect("/profile"));
     }
 
 

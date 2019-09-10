@@ -410,7 +410,7 @@ public class ArtistRepository {
         if(name.equals("") && genre.equals("") && country.equals("") && followed == 0) {
             return getAllArtists();
         }
-        String queryString = "SELECT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
+        String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
                 "LEFT OUTER JOIN artist_genre ON artist_genre.artist_id = artist.artist_id " +
                 "LEFT OUTER JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
                 "LEFT OUTER JOIN artist_country ON artist_country.artist_id = artist.artist_id " +

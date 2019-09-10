@@ -53,7 +53,7 @@ Feature: Edit a destination
 #    And the destination is displayed with the updated fields
 
   Scenario: Editing traveller types of a destination
-    Given I am on the "/destinations/show/false" page
+    Given I am on the "/destinations/show/false/0" page
     When I press the edit button on destination "1"
     And I select "Backpacker" and "ThrillSeeker" from the traveller type dropdown
     And I press the Save button to save the destination

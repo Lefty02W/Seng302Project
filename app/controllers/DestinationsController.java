@@ -38,7 +38,7 @@ public class DestinationsController extends Controller {
     private final DestinationTravellerTypeRepository destinationTravellerTypeRepository;
     private final TravellerTypeRepository travellerTypeRepository;
     private final UndoStackRepository undoStackRepository;
-    private String destShowRoute = "/destinations/show/false";
+    private String destShowRoute = "/destinations/show/false/0";
 
     /**
      * Constructor for the destination controller class
