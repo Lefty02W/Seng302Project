@@ -315,19 +315,6 @@ public class DestinationsController extends Controller {
         return destinationsList;
     }
 
-    /**
-     * Gets all of the users photos
-     *
-     * @param id the id of the user profile
-     * @return destinations, list of all user destinations
-     */
-    public ArrayList<Destination> getUserDestinations(int id) {
-        return new ArrayList<>(Destination.find.query()
-                .where()
-                .eq("profile_id", id)
-                .findList());
-    }
-
 
     /**
      * Gets a list of all of a users photos

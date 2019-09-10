@@ -59,6 +59,16 @@
                     <h2 class="text-center">Travellers</h2>
                     </div>
                 </nav>
+
+
+                <div class="container">
+                    @if(request.flash.getOptional("error").isPresent) {
+                        <div class="alert alert-danger">
+                        @request.flash.getOptional("error").get()
+                        </div>
+                    }
+                </div>
+
                 <div class="container-fluid">
                     <div id="table-card" class="card-large table-hover">
                         <div class="col">
