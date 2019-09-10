@@ -112,24 +112,34 @@
                             <div id="collapseFilters" class="collapse artistFilters" aria-labelledby="headingOne" data-parent="#filterAccordion">
                                 <div class="card-body">
                                     <div class="search">
-                                        <div>
-                                            <select class="selectpicker" data-size="3" id="country" name="country" title="Countries">
-                                            @for(nation <- countries) {
-                                                <option value="@nation">@nation</option>
-                                            }
-                                            </select>
-                                            <select class="selectpicker" data-size="3" id="genre" name="genre" title="Genres">
-                                            @for(genre <- genres) {
-                                                <option value="@genre.getGenre">@genre.getGenre</option>
-                                            }
+                                        <div class="row">
+                                            <div class="col">
+                                                <select class="selectpicker overlay-dropdown genre-drop" data-size="3" id="genre" name="genre" title="Genres">
+                                                @for(genre <- genres) {
+                                                    <option value="@genre.getGenre">@genre.getGenre</option>
+                                                }
 
-                                            </select>
-                                            <input type="checkbox" id="followed" name="followed">
-                                            <label for="toggle">Followed Artists</label>
+                                                </select>
+                                            </div>
+                                            <div class="col">
+                                                <select class="selectpicker overlay-dropdown country-drop" data-size="3" id="country" name="country" title="Countries">
+                                                @for(nation <- countries) {
+                                                    <option value="@nation">@nation</option>
+                                                }
+                                                </select>
+                                            </div>
+                                            <div class="col">
+                                                <input type="checkbox" id="followed" name="followed">
+                                                <label for="toggle">Followed Artists</label>
+                                            </div>
                                             }
-                                            <a href="@routes.ArtistController.show()">
-                                                <button id="clearButton" class="btn btn-secondary">Clear Search</button>
-                                            </a>
+                                            <div class="col">
+                                                <a href="@routes.ArtistController.show()">
+                                                    <button id="clearButton" class="btn btn-secondary">Clear Search</button>
+                                                </a>
+                                            </div>
+
+
 
                                         </div>
                                     </div>
