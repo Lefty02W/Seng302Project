@@ -142,7 +142,7 @@ public class TripsController extends Controller {
                     destinationsList = new ArrayList<>();
                 }
                 return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), null, userId, tripName, request, messagesApi.preferred(request)));            }
-            return redirect("/trips/0");
+            return redirect(tripsEndPoint);
         });
     }
 
@@ -202,7 +202,7 @@ public class TripsController extends Controller {
             return redirect("/trips/" + userId + "/create").flashing("info", dateFlashingMessage);
         }
         if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
-            return redirect("/trips/" + userId + "/create").flashing("info", "The same destination cannot be after itself in a trip");
+            return redirect("/trips/" + userId + "/create").flashing("info", dupDestFlashing);
         }
         insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
         return redirect("/trips/" + userId + "/create");
