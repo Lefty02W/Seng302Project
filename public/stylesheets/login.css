@@ -1,5 +1,5 @@
 html {
-    background: url("../images/loginBackground.png") no-repeat center center fixed;
+    background: url("https://images.unsplash.com/photo-1421217336522-861978fdf33a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80") no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -12,9 +12,13 @@ html {
     left: 10vw;
     height: 70vh;
     width: 25vw;
-    background-color: white;
+    background-color: #0C071F;
     opacity: 0.9;
     border-radius: 5%;
+}
+
+.welcome {
+    color: #009779;
 }
 
 #logo-login {
