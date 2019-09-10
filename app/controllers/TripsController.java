@@ -43,6 +43,7 @@ public class TripsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final UndoStackRepository undoStackRepository;
     private boolean showEmptyEdit = false;
+    private String tripName;
 
     private static final String dateFlashingMessage = "The arrival date must be before the departure date";
     private static final String tripsEndPoint = "/trips/0";
@@ -97,6 +98,15 @@ public class TripsController extends Controller {
         });
     }
 
+
+    /**
+     * Set the current trip name. This is to prevent it being cleared every page redirect/refresh
+     * @param name -  The user entered trip's name
+     */
+    private void setTripName(String name) {
+        this.tripName = name;
+    }
+
     /**
      * This method get all of the tripDestinations out of the orderedCurrentDestinations map
      * @return an ArrayList of the current tripDestinations
@@ -131,7 +141,7 @@ public class TripsController extends Controller {
                 } catch (NoSuchElementException e) {
                     destinationsList = new ArrayList<>();
                 }
-                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), null, userId, request, messagesApi.preferred(request)));            }
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), null, userId, tripName, request, messagesApi.preferred(request)));            }
             return redirect("/trips/0");
         });
     }
@@ -293,10 +303,10 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result save(Http.Request request, Integer userId) {
-        System.out.println("heyyyyyy!!");
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
         trip.setProfileId(userId);
+        setTripName(trip.getName());
         if (orderedCurrentDestinations.size() < 2) {
             return redirect("/trips/" + userId + "/create").flashing("info", "A trip must have at least two destinations");
         } else {
@@ -448,7 +458,7 @@ public class TripsController extends Controller {
             }
             if (profile.isPresent()) {
                 TripDestination dest = orderedCurrentDestinations.get(order);
-                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), dest, profId, request, messagesApi.preferred(request)));
+                return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), dest, profId, tripName, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/trips/0");
             }
@@ -487,7 +497,6 @@ public class TripsController extends Controller {
     /**
      * Delete destinations in the editDestinations page
      *
-     * @param request Http request
      * @param order The integer of the positioning of the destinations
      * @param tripId Integer primary key of a trip
      * @return redirection to the editDestinations page
@@ -561,7 +570,6 @@ public class TripsController extends Controller {
     /**
      * Deletes a tripDestination from the current destinations list and changes the order of indirectly affected tripDestinations
      *
-     * @param request Http request
      * @param order the integer positioning of the destinations
      * @return redirect to the show create page
      */
