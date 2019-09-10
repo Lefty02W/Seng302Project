@@ -5,6 +5,11 @@ import play.Mode;
 import play.inject.guice.GuiceApplicationBuilder;
 import repository.*;
 
+/**
+ * Utility class used to run tests
+ *  - provides an instance of the application in test mode to use
+ *  - provides an instance of each of the repositories to use
+ */
 public class TestApplication {
 
     private static Application application = null;

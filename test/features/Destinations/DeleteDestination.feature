@@ -26,5 +26,4 @@ Feature: Delete a destination
   Scenario: Delete a destination
     Given I am on the destinations page
     When I select destination 12 to delete
-    Then A flashing is shown
-    And Destination 12 has been deleted
+    Then Destination 12 has been deleted

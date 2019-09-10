@@ -98,6 +98,9 @@ INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_o
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (2, 4, CURRENT_DATE, CURRENT_DATE, 1);
 
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (2, 10, CURRENT_DATE, CURRENT_DATE, 1);
+
 INSERT INTO trip(trip_id, name, profile_id) VALUES (3, 'Johnny Trip', 3);
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
@@ -135,6 +138,9 @@ INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle,
 
 INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
   (5, 2, 1, 'A third riddle', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (6, 2, 11, 'A fourth riddle', CURRENT_DATE, CURRENT_DATE);
 
 INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
   (1, 'destination', 5, 2, CURRENT_DATE - 5);
@@ -235,3 +241,6 @@ INSERT INTO passport_country (passport_country_id, passport_name) VALUES
 
 INSERT INTO artist_country (artist_id, country_id) VALUES
   (3,1);
+
+INSERT INTO events (event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  ('Event', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
