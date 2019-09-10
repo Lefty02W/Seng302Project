@@ -3,8 +3,6 @@ Feature: view destinations
   I want to sign up to public destinations
   So that I can use them
 
-  Background:
-    Given Password hash setup has been done
 
 
   Scenario: sign up to destination

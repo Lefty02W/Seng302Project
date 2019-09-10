@@ -68,7 +68,17 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (8, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (9, 2, 'Kentucky', 'City', 'America', 'state', 0.0, 0.0, 1);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (10, 2, 'Texas', 'City', 'America', 'state', 0.0, 0.0, 1);
+
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (11, 2, 'New Orleans', 'City', 'America', 'state', 0.0, 0.0, 1);
+
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (12, 2, 'New Jersey', 'City', 'America', 'state', 0.0, 0.0, 1);
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
