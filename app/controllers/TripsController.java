@@ -293,6 +293,7 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result save(Http.Request request, Integer userId) {
+        System.out.println("heyyyyyy!!");
         Form<Trip> tripForm = form.bindFromRequest(request);
         Trip trip = tripForm.get();
         trip.setProfileId(userId);
