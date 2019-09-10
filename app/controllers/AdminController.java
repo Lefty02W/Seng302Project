@@ -459,14 +459,13 @@ public class AdminController {
                 .checkDestinationExists(destId)
                 .thenApplyAsync(
                         result -> {
-                            if (result.isPresent()) {
+                            if (result) {
                                 return redirect("/admin/destinations/0")
                                         .flashing(
                                                 "error",
                                                 "Destination: "
                                                         + destId
-                                                        + " is used within the following "
-                                                        + result.get());
+                                                        + " is used within the following trips, events or treasure hunts");
                             }
                             undoStackRepository.addToStack(new UndoStack("destination", destId, SessionController.getCurrentUserId(request)));
                             destinationRepository.setSoftDelete(destId, 1);

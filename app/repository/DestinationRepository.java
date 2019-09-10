@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
-import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -121,48 +120,25 @@ public class DestinationRepository {
     }
 
     /**
-     * Method to check if a passed destination to be delete is within a treasure hunt or trip
+     * Method to check if a passed destination to be delete is within a treasure hunt or trip or event
      *
      * @param destinationId the id of the destination to check
      * @return the result of the check with and optional id of the treasure hunt or trip which contains the destination within a completion stage
      */
-    public CompletionStage<Optional<String>> checkDestinationExists(int destinationId) {
+    public CompletionStage<Boolean> checkDestinationExists(int destinationId) {
         return supplyAsync(
                 () -> {
-                    List<Integer> foundIds =
-                            ebeanServer
-                                    .find(TripDestination.class)
-                                    .where()
+                    boolean inTrips =
+                            ebeanServer.find(TripDestination.class).where()
+                                    .eq("destination_id", destinationId).exists();
+                    boolean inHunts =
+                            ebeanServer.find(TreasureHunt.class).where()
                                     .eq("destination_id", destinationId)
-                                    .select("tripId")
-                                    .findSingleAttributeList();
-
-                    Boolean usedInTrip = false;
-                    for (Integer Id: foundIds) {
-                        Trip trip = Trip.find.query().where()
-                                .eq("trip_id", Id)
-                                .findOne();
-                        if (trip.getSoftDelete() == 0) {
-                            usedInTrip = true;
-                            break;
-                        }
-                    }
-
-                    if (!usedInTrip) {
-                        List<Integer> foundIds2 =
-                                    ebeanServer
-                                            .find(TreasureHunt.class)
-                                            .where()
-                                            .eq("destination_id", destinationId)
-                                            .eq("soft_delete", 0)
-                                            .select("treasureHuntId")
-                                            .findSingleAttributeList();
-
-                        if (foundIds2.isEmpty()) return Optional.empty();
-                        else return Optional.of("treasure hunts: " + foundIds2);
-                    } else {
-                        return Optional.of("trips: " + foundIds);
-                    }
+                                    .eq("soft_delete", 0).exists();
+                   boolean inEvents = ebeanServer.find(Events.class).where()
+                           .eq("destination_id", destinationId)
+                           .eq("soft_delete", 0).exists();
+                   return inEvents || inTrips || inHunts;
                 },
                 executionContext);
     }
