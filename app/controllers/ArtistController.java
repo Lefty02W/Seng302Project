@@ -106,7 +106,7 @@ public class ArtistController extends Controller {
                         }
 
 
-                        searchForm.fill(formData); //TODO Make form fill with previous search
+                        searchForm.fill(formData);
                         return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, profId), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
