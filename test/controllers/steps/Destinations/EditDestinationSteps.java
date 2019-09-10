@@ -82,7 +82,7 @@ public class EditDestinationSteps {
     public void iAmRedirectedToMyProfilePage() {
         assertEquals(303, redirectDestinationEdit.status());
         if (redirectDestinationEdit.redirectLocation().isPresent()) {
-            assertEquals("/destinations/show/false", redirectDestinationEdit.redirectLocation().get());
+            assertEquals("/destinations/show/false/0", redirectDestinationEdit.redirectLocation().get());
         } else {
             fail();
         }
