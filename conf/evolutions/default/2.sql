@@ -176,8 +176,8 @@ INSERT INTO music_genre (genre_Id, genre) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (1, 'Mr Walsh', 'Mr Walsh', 'walsh');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (2, 'James', 'James', 'james');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (2, 'James', 'James', 'james', 1);
 
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (3, 'Jerry', 'Jerry', 'jerry');
