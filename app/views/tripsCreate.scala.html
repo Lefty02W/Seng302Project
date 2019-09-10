@@ -35,15 +35,18 @@
                         Profile</a>
                     <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
-                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a style="color: #7d2f2e;
+                        background-color: #ede1d1 !important" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
                         Trips</a>
                     <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
                         Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
-                    @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
+                        Treasure Hunt</a>
+                    @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                            Admin</a>
                     }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
@@ -66,57 +69,59 @@
                         <div>
                             <input type="text" id="name" name="name" required placeholder="Trip Name">
                         </div>
-                        <button type="submit" class="saveTripButton btn btn-primary" id="save saveAndBackButton">Save Trip</button>
+                        <button type="submit" class="saveTripButton btn btn-primary" id="save saveAndBackButton">
+                            Save Trip</button>
                     </div>
                 }
 
                 <div class="container-fluid">
                     <div class="col">
-                            <div id = "viewCard" class="card-large upper-card">
-                                @if(request.flash.getOptional("info").isPresent) {
-                                    <div class="alert alert-info">
-                                    @request.flash.getOptional("info").get()
+                        <div id = "viewCard" class="card-large upper-card">
+                            @if(request.flash.getOptional("info").isPresent) {
+                                <div class="alert alert-info">
+                                @request.flash.getOptional("info").get()
+                                </div>
+                            }
+                            @helper.form(routes.TripsController.addDestination(userId)) {
+                                @CSRF.formField
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3>Select Destination</h3>
+                                        </div>
                                     </div>
-                                }
-                                @helper.form(routes.TripsController.addDestination(userId)) {
-                                    @CSRF.formField
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h4>Select Destination</h4>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5>Destination</h5>
+                                            <div class="container">
+                                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                                @for(destination <- destinationsList) {
+                                                    <option value="@destination.getDestinationId">@destination.getName</option>
+                                                }
+                                                </select>
                                             </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <h5>Arrival Time</h5>
+                                            <input type="datetime-local" id="arrival" name="arrival">
                                         </div>
 
                                         <div class="row">
                                             <div class="col">
-                                                <h5>Destination</h5>
-                                                <div class="container">
-                                                    <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                                    @for(destination <- destinationsList) {
-                                                        <option value="@destination.getDestinationId">@destination.getName</option>
-                                                    }
-                                                    </select>
-                                                </div>
+                                                <h5>Departure Time</h5>
+                                                <input type="datetime-local" id="departure" name="departure">
                                             </div>
-
                                             <div class="col">
-                                                <h5>Arrival Time</h5>
-                                                <input type="datetime-local" id="arrival" name="arrival">
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h5>Departure Time</h5>
-                                                    <input type="datetime-local" id="departure" name="departure">
-                                                </div>
-                                                <div class="col">
-                                                    <button type="submit" class="btn btn-primary" id="addDest">Add</button>
-                                                </div>
+                                                <button type="submit" class="btn btn-primary" id="addDest">Add</button>
                                             </div>
                                         </div>
+                                    </div>
                                 </div>
 
-                                }
+                            }
+                        </div>
                     </div>
                     <div class="col">
                         <div id = "viewCard" class="card-large upper-card">
@@ -151,12 +156,12 @@
                         </div>
                     </div>
                 </div>
-                    <div class="row justify-content-end">
-                        <div>
-                            <a href="@routes.TripsController.show(0)"> <button id="backButtonCreate"
-                            class="button-back btn btn-secondary backButton" type="button">Back</button> </a>
-                            @*<button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>*@
-                        </div>
+                <div class="row justify-content-end">
+                    <div>
+                        <a href="@routes.TripsController.show(0)">
+                            <button id="backButtonCreate" class="button-back btn btn-secondary backButton" type="button">
+                                Back</button>
+                        </a>
                     </div>
                 </div>
             </div>
