@@ -100,7 +100,13 @@ public class ArtistController extends Controller {
                         if(formData.followed.equals("on")) {
                             followed = 1;
                         }
-                        searchForm.fill(formData); //TODO Make form fill with previous search
+
+                        if(formData.name.equals("") && formData.country.equals("") && formData.genre.equals("") && followed == 0 ) {
+                            return redirect("/artists").flashing("error", "Please enter at least one search filter.");
+                        }
+
+
+                        searchForm.fill(formData);
                         return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, profId), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
@@ -233,14 +239,14 @@ public class ArtistController extends Controller {
     }
 
     /**
-     * Allows a memeber of an artist to leave an artist
+     * Allows a member of an artist to leave an artist
      *
      * @param request client request to leave artist
-     * @return CompletionStage holding redirect to TODO set page when my artist page is there
+     * @return CompletionStage holding redirect to artist page
      */
     public CompletionStage<Result> leaveArtist(Http.Request request, int artistId) {
         return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artist")); //TODO update redirect when my artist page is present
+                .thenApplyAsync(x -> redirect("/artist"));
     }
 
     /**

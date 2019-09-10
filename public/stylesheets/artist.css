@@ -10,7 +10,7 @@
 }
 
 .search {
-    height: 200px;
+    height: 4vh;
 }
 
 #show-more{
@@ -37,10 +37,25 @@
 
 #view {
     width: 72px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .artistFilters{
     overflow: auto;
 }
 
+#createArtistButton {
+    position: inherit;
+    margin-top: 1%;
+    float: right;
+    margin-right: 1%;
+}
 
+#clearButton {
+    float: right;
+}
+
+#collapseFilters{
+    overflow-y:hidden;
+}

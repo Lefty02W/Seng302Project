@@ -36,23 +36,23 @@
             <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
-                    <a style="color: #ca6636" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
                         Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
                         Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
                         Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
                         Treasure Hunt</a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
                         Logout</a>
                 </div>
             </div>
@@ -62,9 +62,9 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                     <div id="pageTitle">
-                        <h2> Destinations</h2> <!-- TODO align this in the center -->
+                        <h2 class="text-center">Destinations</h2>
                     </div>
                 </nav>
 
@@ -82,22 +82,22 @@
 
                 <div class="container-fluid">
                     <div class="row">
+                        <div class="col d-flex justify-content-center">
+                            <button id="destButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
+                                Create Destination</button>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
                         <div class="col">
-                            <div id="table-card" class="card-large dest-table table-hover">
+                            <div id="dest-table-card" class="card-large dest-table table-hover">
 
                                 <div id="btn-row" class="row">
-                                        <!--a href="routes.DestinationsController.showCreate()"--> <button id="destButton" type="button" class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
-                                    Create Destination</button> </a>
                                     @if(!isPublic) {
-                                        @helper.form(routes.DestinationsController.show(true, 0)) {
-                                            @CSRF.formField
-                                            <button type="submit" id="destButton" class="btn btn-primary">Show Public</button>
-                                        }
+                                        <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>Show Public</a>
                                     } else {
-                                        @helper.form(routes.DestinationsController.show(false, 0)) {
-                                            @CSRF.formField
-                                            <button type="submit" id="destButton" class="btn btn-primary">Show Private</button>
-                                        }
+                                        <input type="checkbox" id="destToggle" checked onchange="togglePublic()"><a>Show Public</a>
                                     }
                                 </div>
                                 <div class="row">
@@ -186,98 +186,98 @@
                                 </div>
                             </div>
 
+                            <div id="table-card" class="card-large">
 
+                                <div class="row">
+                                    <ul class="nav nav-tabs" id="destinationTabs">
+                                        <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">
+                                            Details</a></li>
+                                        <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
+                                        <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">
+                                            World Photos</a></li>
+                                    </ul>
+                                </div>
+                                <div class="tab-content" id="destinationTabsContent">
+
+                                    <div id="detailsTab" class="tab-pane fade in active show">
+                                        <div class="container">
+
+                                            <div id="nameRow" class="row justify-content-center">
+                                                <div id="nameVal" class="col">
+                                                    <a></a>
+                                                </div>
+
+                                            </div>
+
+                                            <div id="typeRow" class="row justify-content-center">
+                                                <div id="typeVal" class="col">
+                                                    <a></a>
+                                                </div>
+                                            </div>
+
+                                            <div id="countryRow" class="row justify-content-center">
+                                                <div id="countryVal" class="col">
+                                                    <a></a>
+                                                </div>
+                                            </div>
+
+                                            <div id="districtRow" class="row justify-content-center">
+                                                <div id="districtVal" class="col">
+                                                    <a></a>
+                                                </div>
+                                            </div>
+
+                                            <div id="latRow" class="row justify-content-center">
+                                                <div id="latVal" class="col">
+                                                    <a></a>
+                                                </div>
+                                            </div>
+
+                                            <div id="lngRow" class="row justify-content-center">
+                                                <div id="lngVal" class="col">
+                                                    <a></a>
+                                                </div>
+                                            </div>
+
+                                            <div id="publicRow" class="row justify-content-center">
+                                                <div id="publicVal" class="col">
+                                                    <a></a>
+                                                </div>
+                                            </div>
+
+                                            <div id="travellerTypes" class="row justify-content-center">
+                                                <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
+                                                data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">
+                                                    Suggest Edit</button>
+                                                <div id="travellerTypesVal" class="col-md-4">
+                                                    <a></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="myPhotosTab" class="tab-pane fade">
+                                        <div class="container" id="userPhotos">
+                                            <a></a>
+                                        </div>
+                                    </div>
+                                    <div id="worldPhotosTab" class="tab-pane fade">
+                                        <div class="container" id="worldPhotos">
+                                            <a></a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
                         <div class="col">
-                            <div id="table-card" class="card-large">
+                            <div id="map-table-card" class="card-large">
                                 <div id="destinationsMap"></div>
                                 <div id="legend"><h4>Legend</h4></div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="table-card" class="card-large">
 
-                        <div class="row">
-                            <ul class="nav nav-tabs" id="destinationTabs">
-                                <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">
-                                    Details</a></li>
-                                <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
-                                <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">
-                                    World Photos</a></li>
-                            </ul>
-                        </div>
-                        <div class="tab-content" id="destinationTabsContent">
-
-                            <div id="detailsTab" class="tab-pane fade in active show">
-                                <div class="container">
-
-                                    <div id="nameRow" class="row justify-content-center">
-                                        <div id="nameVal" class="col-md-2">
-                                            <a></a>
-                                        </div>
-
-                                    </div>
-
-                                    <div id="typeRow" class="row justify-content-center">
-                                        <div id="typeVal" class="col-md-2">
-                                            <a></a>
-                                        </div>
-                                    </div>
-
-                                    <div id="countryRow" class="row justify-content-center">
-                                        <div id="countryVal" class="col-md-2">
-                                            <a></a>
-                                        </div>
-                                    </div>
-
-                                    <div id="districtRow" class="row justify-content-center">
-                                        <div id="districtVal" class="col-md-2">
-                                            <a></a>
-                                        </div>
-                                    </div>
-
-                                    <div id="latRow" class="row justify-content-center">
-                                        <div id="latVal" class="col-md-2">
-                                            <a></a>
-                                        </div>
-                                    </div>
-
-                                    <div id="lngRow" class="row justify-content-center">
-                                        <div id="lngVal" class="col-md-2">
-                                            <a></a>
-                                        </div>
-                                    </div>
-
-                                    <div id="publicRow" class="row justify-content-center">
-                                        <div id="publicVal" class="col-md-2">
-                                            <a></a>
-                                        </div>
-                                    </div>
-
-                                    <div id="travellerTypes" class="row justify-content-center">
-                                        <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
-                                        data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">
-                                            Suggest Edit</button>
-                                        <div id="travellerTypesVal" class="col-md-4">
-                                            <a></a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="myPhotosTab" class="tab-pane fade">
-                                <div class="container" id="userPhotos">
-                                    <a></a>
-                                </div>
-                            </div>
-                            <div id="worldPhotosTab" class="tab-pane fade">
-                                <div class="container" id="worldPhotos">
-                                    <a></a>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
                     <div class="modal fade" id="linkDestinationPhotoModal">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
@@ -332,9 +332,9 @@
                                             </div>
                                             <div class="row">
                                                 <div class="hidden-div-edit">
-                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" >
                                                 </div>
-                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%">
+                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%" required oninvalid="this.setCustomValidity('Country required')" onchange="this.setCustomValidity('')">
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }
@@ -561,7 +561,6 @@
                                 <div class="modal-header">
                                     <h2 class="modal-title ">Suggest An Edit</h2>
                                 </div>
-                                @*TODO: Set up for form*@
                                 <div class="modal-body">
                                     <div class="col">
                                         <div class="row justify-content-center">
@@ -1311,10 +1310,21 @@
             }
 
 
-            $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
+            // ------------- SIDEBAR TOGGLE JS -------------
+            $(function () {
+                $(".toggleButton").on('click', function (e) {
+                    $("#wrapper").toggleClass('toggled');
+
+                    e.stopPropagation();
+                    return false;
+                });
+
+                $('*:not(.toggleButton)').on('click', function () {
+                    $("#wrapper").addClass('toggled');
+                });
+
             });
+            // ---------------------------------------------
 
 
             function resetTypesDropdowns() {
@@ -1336,9 +1346,17 @@
                 selectAdd.add(new Option("Functional/business Traveller", "Functional/business Traveller"));
             }
 
+            function togglePublic() {
+                if (document.getElementById('destToggle').checked==false) {
+                    location.replace("@routes.DestinationsController.show(false, 0)");
+                }
+                else {
+                    location.replace("@routes.DestinationsController.show(true, 0)");
+                }
+            }
     </script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"
     async defer></script>
 
 </html>

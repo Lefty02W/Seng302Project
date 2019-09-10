@@ -4,7 +4,7 @@ from readJSON import *
 def get_trip_id(name, profile_id, cursor, db):
     """Is a helper function for execute_trips_query()
     Gets unique trip id for the trip name and profile_id"""
-    cursor.execute("SELECT trip_id from trip WHERE name = '{}' AND profile_id = '{}'".format(name, profile_id))
+    cursor.execute("SELECT trip_id from trip WHERE name = '{0}' AND profile_id = '{1}'".format(name, profile_id))
     db.commit()
     id = cursor.fetchone()
     if id is not None:
@@ -40,6 +40,19 @@ def execute_trip_dest_queries(destinations, trip_id, cursor, db):
             db.rollback()
             print("Failed to insert tripDestination " + "ERROR: ", e)
 
+def get_trip_name(destinations, id, cursor, db):
+    try:
+        cursor.execute("SELECT first_name from profile WHERE profile_id = '{0}'".format(id))
+        db.commit()
+        firstName = cursor.fetchone()[0]
+        cursor.execute("SELECT name from destination WHERE destination_id = (SELECT destination_id from destination WHERE name = '{0}' AND visible = 1)".format(destinations[0]))
+        db.commit()
+        destName = cursor.fetchone()[0]
+        return firstName + "s trip to " + destName
+    except Exception as e:
+        db.rollback()
+        print("failed to get name profile" + e)
+        return 0
 
 def execute_trips_queries(cursor, db, number_trips, number_destinations, number_profiles):
     """Executes the rips query and calls helper functions to insert linking tables"""
@@ -57,15 +70,16 @@ def execute_trips_queries(cursor, db, number_trips, number_destinations, number_
     for trip in trips_list:
         try:
             profile_id = get_profile_id(emails, cursor, db)
+            tripName = get_trip_name(trip[1], profile_id, cursor, db);
             # see it trip already exists
             trip_exists = get_trip_id(trip[0], profile_id, cursor, db) != 0
             if trip_exists:
                 print("\ntrip already exists")
             else:
-                cursor.execute("INSERT INTO trip (name, profile_id) VALUES ('{}', '{}')".format(trip[0], profile_id))
+                cursor.execute("INSERT INTO trip (name, profile_id) VALUES ('{}', '{}')".format(tripName, profile_id))
                 db.commit()
-                trip_id = get_trip_id(trip[0], profile_id, cursor, db)
-                print("\nTrip inserted successfully")
+                trip_id = get_trip_id(tripName, profile_id, cursor, db)
+                print("\nTrip '"+tripName+"' inserted successfully")
                 execute_trip_dest_queries(trip[1], trip_id, cursor, db)
         except Exception as e:
             # Rollback in case there is any error

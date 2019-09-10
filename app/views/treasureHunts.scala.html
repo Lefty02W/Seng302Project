@@ -34,17 +34,17 @@
             <div id="sidebar-wrapper">
                 <h1 class="sidebar-heading">TravelEA </h1>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/> Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/> Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/> Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/> Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/> Profile</a>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/> Destinations</a>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/> Trips</a>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/> Travellers</a>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a style="color: #ca6636" href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/> Treasure Hunt</a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/> Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/> Logout</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/> Logout</a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -53,9 +53,9 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon" id="menu-toggle" >Menu</h3>
+                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                     <div id="pageTitle">
-                        <h2>Treasure Hunts</h2> <!-- TODO align this in the center -->
+                        <h2 class="text-center">Treasure Hunts</h2>
                     </div>
                 </nav>
 
@@ -170,12 +170,15 @@
                             <div class="row">
                                 <div class="form-group">
                                     <small id="label">Riddle</small>
-                                    <input type="text" name="riddle" id="riddle" required >
+                                    <br>
+                                    <textarea type="text" name="riddle" id="riddle" required ></textarea>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="form-group">
                                     <label for="destinationId"><small id="label">Destination</small></label>
+                                    <br>
+                                    <br>
                                     <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                     @for(destination <- destinations) {
                                         <option value="@destination.getDestinationId">@destination.getName</option>
@@ -293,10 +296,21 @@
     </div>
 
     <script>
-            $("#menu-toggle").click(function (e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
+        // ------------- SIDEBAR TOGGLE JS -------------
+        $(function () {
+            $(".toggleButton").on('click', function (e) {
+                $("#wrapper").toggleClass('toggled');
+
+                e.stopPropagation();
+                return false;
             });
+
+            $('*:not(.toggleButton)').on('click', function () {
+                $("#wrapper").addClass('toggled');
+            });
+
+        });
+        // ---------------------------------------------
 
             $(document).ready(function() {
                 $('#huntsTable').DataTable({
