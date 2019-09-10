@@ -2,8 +2,6 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
-import io.ebean.SqlQuery;
-import io.ebean.SqlUpdate;
 import models.Profile;
 import models.UndoStack;
 import org.joda.time.DateTime;
@@ -29,12 +27,13 @@ public class UndoStackRepository {
     private final DestinationRepository destinationRepository;
     private final TreasureHuntRepository treasureHuntRepository;
     private final ArtistRepository artistRepository;
+    private final EventRepository eventRepository;
 
     @Inject
     public UndoStackRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                                ProfileRepository profileRepository, TripRepository tripRepository,
                                DestinationRepository destinationRepository, TreasureHuntRepository treasureHuntRepository,
-                               ArtistRepository artistRepository) {
+                               ArtistRepository artistRepository, EventRepository eventRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.profileRepository = profileRepository;
@@ -42,6 +41,7 @@ public class UndoStackRepository {
         this.destinationRepository = destinationRepository;
         this.treasureHuntRepository = treasureHuntRepository;
         this.artistRepository = artistRepository;
+        this.eventRepository = eventRepository;
     }
 
     /**
@@ -148,6 +148,9 @@ public class UndoStackRepository {
                     break;
                 case "artist":
                     artistRepository.setSoftDelete(topOfStack.getObjectId(), 0);
+                    break;
+                case "event":
+                    eventRepository.setSoftDeleteId(topOfStack.getObjectId(), 0);
                     break;
                 default:
                     break;

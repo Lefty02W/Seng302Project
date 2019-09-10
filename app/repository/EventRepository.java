@@ -80,7 +80,7 @@ public class EventRepository {
      * @return int of number found
      */
     public int getNumEvents() {
-        return ebeanServer.find(Events.class).findCount();
+        return ebeanServer.find(Events.class).where().eq("soft_delete", 0).findCount();
     }
 
     /**
@@ -307,5 +307,37 @@ public class EventRepository {
             }
         }
         return events;
+    }
+
+    /**
+     * Method to get one event
+     *
+     * @param id id of event to get
+     * @return Optional event found
+     */
+    public CompletionStage<Optional<Events>> getEvent(int id) {
+        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Events.class).where().eq("event_id", id).findOne()));
+    }
+
+    /**
+     * Soft deletes an event
+     * @param event the event to soft delete
+     */
+    public void setSoftDelete(Events event, int delete) {
+        event.setSoftDelete(delete);
+        event.update();
+    }
+
+
+    /**
+     * Soft deletes an event
+     * @param event the id of the event to soft delete
+     */
+    public void setSoftDeleteId(int event, int delete) {
+        Events events = ebeanServer.find(Events.class).where().eq("event_id", event).findOne();
+        if (events != null) {
+            events.setSoftDelete(delete);
+            events.update();
+        }
     }
 }

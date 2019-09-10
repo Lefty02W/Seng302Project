@@ -857,6 +857,7 @@
                                         <th>Start Date</th>
                                         <th>End Date</th>
                                         <th>Age Restriction</th>
+                                        <th>Delete</th>
                                     </tr>
                                 </thead>
                                 @for(event <- events) {
@@ -868,6 +869,7 @@
                                         <td>@event.getStartDateString</td>
                                         <td>@event.getEndDateString</td>
                                         <td>@event.getAgeRestrictionString</td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/events/@pagination.getOffset/delete/@event.getEventId')">Delete</button></td>
                                     </tr>
                                 }
                             </table>

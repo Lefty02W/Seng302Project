@@ -31,6 +31,8 @@ public class Events extends Model {
 
     private int ageRestriction;
 
+    private int softDelete;
+
     @Transient
     private List<MusicGenre> eventGenres;
 
@@ -127,6 +129,10 @@ public class Events extends Model {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setSoftDelete(int softDelete) {
+        this.softDelete = softDelete;
     }
 
     public void setDescription(String description) {

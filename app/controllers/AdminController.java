@@ -860,4 +860,22 @@ public class AdminController {
             return redirect("/admin/artists/0").flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
         });
     }
+
+    /**
+     * Endpoint method for an admin to delete an event
+     *
+     * @param request http request
+     * @param id id of event to delete
+     * @param offset current pagination offset
+     * @return redirect to the events tab on the admin page
+     */
+    public CompletionStage<Result> deleteEvent(Http.Request request, Integer id, Integer offset) {
+        return eventRepository.getEvent(id).thenApplyAsync(eventOpt -> {
+            eventOpt.ifPresent(event -> {
+                undoStackRepository.addToStack(new UndoStack("event", event.getEventId(), SessionController.getCurrentUserId(request)));
+                eventRepository.setSoftDelete(event, 1);
+            });
+            return redirect("/admin/events/" + offset);
+        });
+    }
 }
