@@ -129,7 +129,7 @@ GET     /artists/page/:page_number              controllers.ArtistController.pag
 GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
 
 #Events
-GET     /events                                 controllers.EventsController.show(request : Request)
+GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)
 POST    /events/create                          controllers.EventsController.createEvent(request : Request)
 POST    /events/:id/edit                        controllers.EventsController.editEvent(request : Request, id : Integer)
 GET     /events/search                          controllers.EventsController.search(request : Request)

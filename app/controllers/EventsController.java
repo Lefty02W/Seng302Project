@@ -2,6 +2,7 @@ package controllers;
 
 import models.EventFormData;
 import models.Events;
+import models.PaginationHelper;
 import models.RoutedObject;
 import play.data.Form;
 import play.data.FormFactory;
@@ -59,19 +60,24 @@ public class EventsController extends Controller {
      * @param request client request
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> show(Http.Request request){
+    public CompletionStage<Result> show(Http.Request request, Integer offset){
         Integer profId = SessionController.getCurrentUserId(request);
 
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> {
-                    Optional<List<Events>> optionalEventsList = eventRepository.getAll();
+                    Optional<List<Events>> optionalEventsList = eventRepository.getPage(offset);
                     List<Events> eventsList = new ArrayList<>();
                     if (optionalEventsList.isPresent()){
                         eventsList = optionalEventsList.get();
                     }
+                    PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
+                    paginationHelper.alterNext(8);
+                    paginationHelper.alterPrevious(8);
+                    paginationHelper.checkButtonsEnabled();
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),  eventFormDataForm, artistRepository.isArtistAdmin(profId),
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
+                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
@@ -136,6 +142,12 @@ public class EventsController extends Controller {
     }
 
 
+    /**
+     * Endpoint method to allow a user to create an event
+     *
+     * @param request request to create event
+     * @return redirect to the events page with newly created event
+     */
     public CompletionStage<Result> createEvent(Http.Request request) {
         return supplyAsync( ()-> {
             Form<Events> form = eventForm.bindFromRequest(request);
@@ -188,9 +200,14 @@ public class EventsController extends Controller {
                 EventFormData eventFormData = searchEventForm.get();
                 List<Events> eventsList = eventRepository.searchEvent(eventFormData);
                 if(!eventsList.isEmpty()){
+                    PaginationHelper paginationHelper = new PaginationHelper(0, 0, 0, 0, true, true, eventsList.size());
+                    paginationHelper.alterNext(8);
+                    paginationHelper.alterPrevious(8);
+                    paginationHelper.checkButtonsEnabled();
                     return ok(events.render(profile.get(),
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false), eventFormDataForm, artistRepository.isArtistAdmin(profId),
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
+                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
                             request, messagesApi.preferred(request)));
                 }
             }

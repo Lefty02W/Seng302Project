@@ -48,14 +48,14 @@
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
                         Treasure Hunt</a>
+                    <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
+                        Events
+                    </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
                             Admin</a>
                     }
-                    <a href="@routes.EventsController.show()" class="list-group-item list-group-item-action bg-transparent">
-                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
-                        Events
-                    </a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
                         Logout</a>
                 </div>

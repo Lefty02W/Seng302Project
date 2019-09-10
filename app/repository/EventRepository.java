@@ -51,11 +51,36 @@ public class EventRepository {
      */
     public Optional<List<Events>> getAll() {
         List<Events> eventsList = new ArrayList<>();
-        List<Events> events = ebeanServer.find(Events.class).findList();
+        List<Events> events = ebeanServer.find(Events.class).where().eq("soft_delete", 0).findList();
         for (Events event : events){
             eventsList.add(populateEvent(event));
         }
         return Optional.of(eventsList);
+    }
+
+
+    /**
+     * Method to get one page of events to display
+     *
+     * @param offset offset of events to get
+     * @return Optional List of events found
+     */
+    public Optional<List<Events>> getPage(int offset) {
+        List<Events> toReturn = new ArrayList<>();
+        List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).findList();
+        for (Events event : events) {
+            toReturn.add(populateEvent(event));
+        }
+        return Optional.of(toReturn);
+    }
+
+
+    /**
+     * Pagination helper method to get the total number of events in teh system
+     * @return int of number found
+     */
+    public int getNumEvents() {
+        return ebeanServer.find(Events.class).findCount();
     }
 
     /**
