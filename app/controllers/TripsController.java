@@ -74,6 +74,7 @@ public class TripsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
+        tripName = "";
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
