@@ -51,6 +51,7 @@ public class AdminController {
     private final int pageSize = 8;
     private String adminEndpoint = "/admin";
     private RolesRepository rolesRepository;
+    private final Form<EventFormData> eventCreateForm;
 
     @Inject
     public AdminController(FormFactory formFactory, HttpExecutionContext httpExecutionContext,
@@ -59,7 +60,7 @@ public class AdminController {
                            RolesRepository rolesRepository,
                            TreasureHuntRepository treasureHuntRepository, TreasureHuntController treasureHuntController,
                            ArtistController artistController, UndoStackRepository undoStackRepository, ArtistRepository artistRepository,
-                           FormFactory artistProfileFormFactory, GenreRepository genreRepository, EventRepository eventRepository) {
+                           FormFactory artistProfileFormFactory, GenreRepository genreRepository, EventRepository eventRepository, FormFactory eventFormFactory) {
         this.profileEditForm = formFactory.form(Profile.class);
         this.profileRepository = profileRepository;
         this.destinationRepository = destinationRepository;
@@ -78,6 +79,7 @@ public class AdminController {
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.genreRepository = genreRepository;
         this.eventRepository = eventRepository;
+        this.eventCreateForm = eventFormFactory.form(EventFormData.class);
     }
 
 
@@ -123,11 +125,12 @@ public class AdminController {
      */
     public CompletionStage<Result> showEvents(Http.Request request, Integer offset) {
         return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
-                new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
+                destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, eventRepository.getNumEvents(), 8), eventRepository.getPage(offset), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getAllArtists(),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(),
+                initialisePaginatior(offset, eventRepository.getNumEvents(), 8), eventRepository.getPage(offset), request, messagesApi.preferred(request))));
     }
 
     /**
