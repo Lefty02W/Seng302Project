@@ -94,8 +94,8 @@ div.dataTables_filter {
     margin-right: auto;
 }
 
-#destinationTabs, li {
-    padding: 15px;
+#table-card li {
+    padding: 5px 15px 5px 15px;
 }
 
 #destinationTabs, #photosCard {
