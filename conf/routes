@@ -129,7 +129,7 @@ GET     /artist/:id/unfollow                      controllers.ArtistController.u
 GET     /artists/page/:page_number              controllers.ArtistController.pageArtist(page_number : Integer)
 
 # Detailed Artist's page
-GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
+GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id : Integer)
 
 #Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)
@@ -137,3 +137,4 @@ GET     /events/:id/showEdit/:offset            controllers.EventsController.sho
 POST    /events/create                          controllers.EventsController.createEvent(request : Request)
 POST    /events/:id/edit                        controllers.EventsController.editEvent(request : Request, id : Integer)
 GET     /events/search                          controllers.EventsController.search(request : Request)
+GET     /events/:id/edit                        controllers.EventsController.showEventEdit(request : Request, id : Integer)

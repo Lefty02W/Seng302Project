@@ -6,7 +6,7 @@
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
         countries: List[String], adminUndoStack: List[UndoStack],
         artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre],
-        pagination : PaginationHelper, events : List[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
+        pagination : PaginationHelper, events : List[Events], editEventForm: Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
