@@ -13,9 +13,6 @@
     padding-bottom: 10px;
 }
 
-label {
-    color: #ca6636;
-}
 
 #addDest {
     width: 5vw;
@@ -41,6 +38,7 @@ label {
 
 #backButtonCreate, #backButtonEdit{
     height: 5vh;
+    bottom: 5vh;
     margin-right: 5vh;
     margin-top: 5vh;
     padding-top: 1vh;
@@ -52,8 +50,9 @@ label {
     margin-top: 5vh;
     padding-top: 1vh;
     position: absolute;
+    z-index: 1;
     right: 30px;
-    bottom: 100px;
+    bottom: 5vh;
 }
 
 .backButton {
@@ -90,16 +89,23 @@ label {
 input[type=datetime-local] {
 }
 
+.trip-col {
+    padding-bottom: 10vh;
+}
+
 #trip-card {
     height: 50vh;
     min-width: 40vh;
     background-color: #e8f5e9;
 }
 
-.card-border {
-    background-color: #2e7d32;
+.card-border, .card-footer {
+    background-color: #ede1d1;
 }
 
+.card-body {
+    background-color: white;
+}
 
 
 #addButton {
@@ -111,7 +117,7 @@ input[type=datetime-local] {
 }
 
 h1, h3, h4, h5, h6 {
-    color: black;
+    color: #d74961;
 }
 
 #topBarTitle {
@@ -130,7 +136,7 @@ h1, h3, h4, h5, h6 {
     bottom: 0;
     max-height: 10%;
     max-width: unset;
-    background: #205723 !important;
+    background: #009779 !important;
 }
 
 #tripsPane {

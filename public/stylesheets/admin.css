@@ -21,11 +21,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.btn-primary, .btn-primary:hover {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
 .changeLog {
     width: 20vw;
     z-index: 2;
@@ -100,7 +95,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .adminCard a {
-    color: #2e7d32;
+    color: #d74961;
     font-size: large;
 }
 
