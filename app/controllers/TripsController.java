@@ -195,6 +195,9 @@ public class TripsController extends Controller {
     public Result addDestination(Http.Request request, Integer userId) {
         Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
         TripDestination tripDestination = tripDestForm.get();
+        if (tripName == null || tripName.equals("")) {
+            setTripName(tripDestForm.rawData().get("name"));
+        }
         setDates(tripDestination, tripDestForm);
         tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
         tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
