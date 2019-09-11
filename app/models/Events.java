@@ -155,6 +155,10 @@ public class Events extends Model {
         this.startDate = startDate;
     }
 
+    public int getSoftDelete() {
+        return softDelete;
+    }
+
     public Date getEndDate() {
         return endDate;
     }
