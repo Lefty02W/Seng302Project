@@ -76,12 +76,12 @@
                 } <!-- close tag for editDestinations form-->
                 <div class="container-fluid">
                     <div class="col">
+                        @if(request.flash.getOptional("info").isPresent) {
+                            <div class="alert alert-info">
+                            @request.flash.getOptional("info").get()
+                            </div>
+                        }
                         <div id = "viewCard" class="card-large upper-card">
-                            @if(request.flash.getOptional("info").isPresent) {
-                                <div class="alert alert-info">
-                                @request.flash.getOptional("info").get()
-                                </div>
-                            }
                             @helper.form(routes.TripsController.addDestinationEditTrip(id, userId)) {
                                 @CSRF.formField
                                 <div class="container">

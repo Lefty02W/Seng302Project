@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], destinationsList: List[Destination], currentUser: Profile, toEdit: TripDestination, userId: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], destinationsList: List[Destination], currentUser: Profile, toEdit: TripDestination, userId: Integer, tripName: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <html>
@@ -67,7 +67,7 @@
                     @CSRF.formField
                     <div class="row justify-content-center">
                         <div>
-                            <input type="text" id="name" name="name" required placeholder="Trip Name">
+                            <input type="text" id="tripNameEntry" name="name" required placeholder="Trip Name">
                         </div>
                         <button type="submit" class="saveTripButton btn btn-primary" id="save saveAndBackButton">
                             Save Trip</button>
@@ -76,18 +76,19 @@
 
                 <div class="container-fluid">
                     <div class="col">
+                        @if(request.flash.getOptional("info").isPresent) {
+                            <div class="alert alert-info">
+                            @request.flash.getOptional("info").get()
+                            </div>
+                        }
                         <div id = "viewCard" class="card-large upper-card">
-                            @if(request.flash.getOptional("info").isPresent) {
-                                <div class="alert alert-info">
-                                @request.flash.getOptional("info").get()
-                                </div>
-                            }
                             @helper.form(routes.TripsController.addDestination(userId)) {
                                 @CSRF.formField
                                 <div class="container">
                                     <div class="row">
                                         <div class="col">
                                             <h3>Select Destination</h3>
+                                            <input type="text" id="imposterTripNameEntry" name="name" hidden>
                                         </div>
                                     </div>
 
@@ -239,15 +240,9 @@
                     "ordering": false
                 });
 
-
-                /**
-                 $('#tripsTable tbody').on( 'click', 'button', function () {
-                    var data = tripsTable.row( $(this).parents('tr') ).data();
-                    $('select[name=destinationId]').val(data[0]);
-                    $('.selectpicker').selectpicker('refresh');
-                    //TODO What does this do
-                } );*/
-
+                @if(tripName != "") {
+                    document.getElementById('tripNameEntry').value = "@tripName";
+                }
 
             });
 
@@ -261,6 +256,7 @@
                 var table = $('#addDest').DataTable();
                 var tripName = $('#tripNameEntry').val();
 
+
                 if (table.rows().data().length < 2) {
                     alert("Please enter at least 2 destinations");
                 } else if (tripName.length === 0) {
@@ -272,6 +268,10 @@
                             .clear()
                             .draw();
                 }
+            });
+
+            $('#addDest').on('click', function () {
+                document.getElementById('imposterTripNameEntry').value = document.getElementById('tripNameEntry').value;
             });
 
             $('#closeIcon, #closeButton').on('click', function () {
