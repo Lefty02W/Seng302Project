@@ -12,6 +12,7 @@ import repository.*;
 import roles.RestrictAnnotation;
 import utility.Country;
 import views.html.admin;
+import views.html.adminTwo;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -115,6 +116,15 @@ public class AdminController {
                 new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, tripRepository.getNumTrips(), 2), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
+    public CompletionStage<Result> showEvents(Http.Request request, Integer offset){
+        return supplyAsync(() -> ok(adminTwo.render(destinationRepository.getAllDestinations(),
+                Country.getInstance().getAllCountries(),
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
+                artistRepository.getAllArtists(), genreRepository.getAllGenres(), eventCreateForm,
+                initialisePaginatior(offset, eventRepository.getNumEvents(), 8),
+                    eventRepository.getPage(offset), request, messagesApi.preferred(request))));
+    }
+
     /**
      * Endpoint for admin to view all user trips
      *
@@ -123,15 +133,16 @@ public class AdminController {
      * @param offset pagination offset
      * @return CompletionStage result of admin page
      */
-    public CompletionStage<Result> showEvents(Http.Request request, Integer offset) {
-        return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
-                destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
-                null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
-                new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getAllArtists(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(),
-                initialisePaginatior(offset, eventRepository.getNumEvents(), 8), eventRepository.getPage(offset), request, messagesApi.preferred(request))));
-    }
+    // TODO: 11/09/19 remove when new events is fully working
+//    public CompletionStage<Result> showEventsOld(Http.Request request, Integer offset) {
+//        return supplyAsync(() -> ok(admin.render(new ArrayList<Profile>(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
+//                destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
+//                null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
+//                new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
+//                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getAllArtists(),
+//                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(),
+//                initialisePaginatior(offset, eventRepository.getNumEvents(), 8), eventRepository.getPage(offset), request, messagesApi.preferred(request))));
+//    }
 
     /**
      * Endpoint for admin to view all user profiles
