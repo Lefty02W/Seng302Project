@@ -38,6 +38,7 @@
 
 #backButtonCreate, #backButtonEdit{
     height: 5vh;
+    bottom: 5vh;
     margin-right: 5vh;
     margin-top: 5vh;
     padding-top: 1vh;
@@ -49,8 +50,9 @@
     margin-top: 5vh;
     padding-top: 1vh;
     position: absolute;
+    z-index: 1;
     right: 30px;
-    bottom: 100px;
+    bottom: 5vh;
 }
 
 .backButton {
