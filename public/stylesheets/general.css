@@ -124,7 +124,7 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     margin: 8px 0;
     display: inline-block;
     box-sizing: border-box;
-    border-color: #205723;
+    border-color: #d74961;
     border-width: 0 0 2px;
     outline: 0;
 }
@@ -164,8 +164,8 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 }
 
 .btn-primary, .btn-primary:hover {
-    background-color: #37623B;
-    border-color: #37623B;
+    background-color: #d74961;
+    border-color: #d74961;
 }
 
 
@@ -333,7 +333,7 @@ div.dataTables_filter {
 .topbar-dark{
     z-index: 1;
     color: #ede1d1;
-    background-color: #205723;
+    background-color: #009779;
 }
 
 .container-fluid{
