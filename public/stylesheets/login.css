@@ -22,7 +22,7 @@ html {
 }
 
 #logo-login {
-    width: 15vw;
+    width: 20vw;
     height: 15vw;
 }
 
@@ -49,8 +49,8 @@ html {
 
 
 .btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active  {
-    background-color: #009779;
-    border-color: #009779;
+    background-color: #d74961;
+    border-color: #d74961;
 }
 
 .alert{
