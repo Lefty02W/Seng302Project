@@ -88,6 +88,7 @@
                                     <div class="row">
                                         <div class="col">
                                             <h3>Select Destination</h3>
+                                            <input type="text" id="imposterTripNameEntry" name="name" hidden>
                                         </div>
                                     </div>
 
@@ -267,6 +268,10 @@
                             .clear()
                             .draw();
                 }
+            });
+
+            $('#addDest').on('click', function () {
+                document.getElementById('imposterTripNameEntry').value = document.getElementById('tripNameEntry').value;
             });
 
             $('#closeIcon, #closeButton').on('click', function () {
