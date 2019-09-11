@@ -38,7 +38,7 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">TravelEA </h2>
                 <div class="list-group list-group-flush">
-                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
                         Profile</a>
                     <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
                         Destinations</a>
@@ -329,7 +329,7 @@
                                             </td>
                                             <td>
                                                 <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
-                                                    <button type="button" class="btn btn-primary">Unfollow</button>
+                                                    <button type="button" class="btn btn-outline-secondary">Unfollow</button>
                                                 </a>
                                                 </td>
                                         </tr>
@@ -341,12 +341,12 @@
                     </div>
 
                     <div id="tripsTab" class="tab-pane fade">
-                    <a href="/trips/0"> <button class="btn btn-primary"> View All</button> </a>
+                    <a href="/trips/0"> <button class="btn btn-primary">View All</button> </a>
                     @for(tripId <- trips) {
                         <div class="row">
                             <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
                                 <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
-                                <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
+                                <img class="trip-icon" src="@routes.Assets.at("images/burger-menu.png")"/>
                             </div>
                         </div>
                         <div class="row">

@@ -1,15 +1,4 @@
-/* Title Style */
-.title {
-    text-align: center;
-    background: #ede1d1;
-    color: #604f3f;
-    font-size: 20px;
-    height: 75px;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-}
+
 /* Side Bar logo style*/
 #logo {
     padding-left: 40px;
@@ -78,15 +67,6 @@ table {
     background-color: #e8f5e9;
 }
 
-.table-general th, td {
-    padding: 1vh;
-    background-color: rgba(255,255,255,0.2);
-    color: #376238;
-}
-
-.table-general th {
-    border: 3px solid #205723;
-}
 
 
 .trip-table, user-table {
@@ -110,13 +90,6 @@ table {
     text-shadow: 1px 1px 1px #fff;
 }
 
-.button-hover {
-    opacity: 0.8;
-}
-
-.button-hover:hover{
-    opacity: 1;
-}
 
 /* Text input style */
 input[type=text], input[type=date], input[type=search], input[type=datetime-local], input[type=number], input[type=password], input[type=url] {
@@ -130,32 +103,20 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 }
 
 
-
-
 .btn {
     /*width: 5vw;*/
     width: auto;
 }
 
-.button-edit {
-    background-color: #37623B;
-    color: white;
-    padding: 10px 18px;
-    margin: 8px 0;
-    border: none;
-    cursor: pointer;
-    width: 5vw;
-    border-radius: 8px;
-}
 
 .btn-outline-secondary, .btn-outline-danger {
-    border-color: #7d2f2e;
-    color: #7d2f2e;
+    border-color: #009779;
+    color: #009779;
 }
 
 .btn-outline-secondary:hover, .btn-outline-danger:hover {
-    background-color: darkred;
-    border-color: darkred;
+    background-color: #009779;
+    border-color: #009779;
 }
 
 .btn-danger {
@@ -168,17 +129,14 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     border-color: #d74961;
 }
 
-
-.button-add {
-    background-color: #205723;
-    color: white;
+.btn-secondary, .btn-secondary:hover, .btn-danger, .btn-danger:hover {
+    background-color: #009779;
+    border-color: #009779;
 }
 
 
-
-
 .primaryText {
-    color: #205723;
+    color: #d74961;
 }
 
 .dataTables_wrapper {
@@ -221,44 +179,13 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 
 
 .page-link {
-    color: #7d2f2e !important;
+    color: #d74961 !important;
 }
 
 
 .sidebar-icon {
     height: 3vh;
     width: 1.5vw;
-}
-
-
-.sidebar {
-    margin: 0;
-    padding: 0;
-    width: 12vw;
-    background-color: #f1f1f1;
-    position: fixed;
-    height: 100%;
-    overflow: hidden;
-}
-
-/* Sidebar links */
-.sidebar a {
-    display: block;
-    color: black;
-    padding: 16px;
-    text-decoration: none;
-}
-
-/* Active/current link */
-.sidebar a.active {
-    background-color: #37623B;
-    color: white;
-}
-
-/* Links on mouse-over */
-.sidebar a:hover:not(.active) {
-    background-color: #555;
-    color: white;
 }
 
 
@@ -337,7 +264,7 @@ div.dataTables_filter {
 }
 
 .container-fluid{
-    border-color: #7d2f2e;
+    border-color: #d74961;
 }
 
 #pageTitle {
@@ -349,7 +276,7 @@ div.dataTables_filter {
     padding-left: 5px;
     padding-top: 8px;
     position: absolute;
-    color: #37623B;
+    color: #d74961;
 }
 #holder {
     height: 50px;
@@ -358,4 +285,8 @@ div.dataTables_filter {
 #biography {
     width: 60%;
     margin-top: 10px;
+}
+
+a, a:hover {
+    color: #d74961;
 }

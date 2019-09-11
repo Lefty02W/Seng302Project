@@ -1,7 +1,11 @@
 #addTitle, #\#deleteBody, #\#deleteTitle {
-    color: black;
+    color: #d74961;
 }
 
 .dropdown-menu {
     max-width: 10vw;
+}
+
+.title {
+    color: #d74961;
 }
