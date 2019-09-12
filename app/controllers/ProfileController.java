@@ -361,7 +361,7 @@ public class ProfileController extends Controller implements TypesInterface {
                 }
 
                 countryFlag = true;
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), getProfilePhoto(profId), request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
             }
             return redirect("/");
         });
