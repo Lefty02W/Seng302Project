@@ -74,6 +74,20 @@ public class EventRepository {
         return toReturn;
     }
 
+    /**
+     * Method to retrieve all events for a given artist
+     *
+     * @param artistId id of artist
+     * @return List of events found
+     */
+    public List<Events> getArtistEvents(int artistId) {
+        List<Integer> ids = ebeanServer.find(EventArtists.class).where().eq("artist_id", artistId).findIds();
+        if (ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return ebeanServer.find(Events.class).where().idIn(ids).findList();
+    }
+
 
     /**
      * Pagination helper method to get the total number of events in teh system
@@ -333,7 +347,7 @@ public class EventRepository {
      * Soft deletes an event
      * @param event the id of the event to soft delete
      */
-    public void setSoftDeleteId(int event, int delete) {
+    void setSoftDeleteId(int event, int delete) {
         Events events = ebeanServer.find(Events.class).where().eq("event_id", event).findOne();
         if (events != null) {
             events.setSoftDelete(delete);

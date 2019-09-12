@@ -10,10 +10,7 @@ import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
-import repository.ArtistRepository;
-import repository.GenreRepository;
-import repository.PassportCountryRepository;
-import repository.ProfileRepository;
+import repository.*;
 import utility.Country;
 import views.html.artists;
 import views.html.viewArtist;
@@ -37,6 +34,7 @@ public class ArtistController extends Controller {
     private final ProfileRepository profileRepository;
     private final PassportCountryRepository passportCountryRepository;
     private final GenreRepository genreRepository;
+    private final EventRepository eventRepository;
     private final Form<ArtistFormData> searchForm;
 
 
@@ -44,7 +42,7 @@ public class ArtistController extends Controller {
     public ArtistController(FormFactory artistProfileFormFactory, MessagesApi messagesApi,
                             ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
-                            GenreRepository genreRepository){
+                            GenreRepository genreRepository, EventRepository eventRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -52,6 +50,7 @@ public class ArtistController extends Controller {
         this.passportCountryRepository = passportCountryRepository;
         this.genreRepository = genreRepository;
         this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
+        this.eventRepository = eventRepository;
     }
 
 
@@ -120,9 +119,9 @@ public class ArtistController extends Controller {
      * @param request client request
      * @return CompletionStage rendering artist page
      */
-    public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistID) {
+    public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistId) {
         Integer profId = SessionController.getCurrentUserId(request);
-        Artist artist = artistRepository.getArtistById(artistID);
+        Artist artist = artistRepository.getArtistById(artistId);
         if (artist == null) {
             return profileRepository.findById (profId).thenApplyAsync(profile -> redirect("/artists"));
         }
