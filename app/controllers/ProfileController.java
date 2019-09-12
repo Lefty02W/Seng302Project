@@ -22,9 +22,11 @@ import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -224,7 +226,10 @@ public class ProfileController extends Controller implements TypesInterface {
         try {
             File imageFilePath = new File(Objects.requireNonNull(image).getPath());
             if (imageFilePath.exists()) {
-                return ok(new FileInputStream(imageFilePath)).as(image.getType());
+                BufferedImage buffImage = ImageIO.read(new FileInputStream(imageFilePath));
+                byte[] imageBytes = ((DataBufferByte) buffImage.getSubimage(0,0,300,300).getData().getDataBuffer()).getData();
+
+                return ok(imageBytes);
             }
             return notFound(imageFilePath.getAbsoluteFile());
         } catch(NullPointerException | IOException e) {
@@ -237,7 +242,7 @@ public class ProfileController extends Controller implements TypesInterface {
      * Call to PhotoRepository to be insert an photo in the database
      *
      * @param photo Photo object containing email, id, byte array of photo and visible info
-     * @return a redirect to the profile page
+     * @return a redirect to the profile paghttps://www.linuxmint.com/start/tessa/e
      */
     @Security.Authenticated(SecureSession.class)
     private CompletionStage<Result> savePhoto(Photo photo, int profileId){
