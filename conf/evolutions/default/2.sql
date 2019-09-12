@@ -242,5 +242,17 @@ INSERT INTO passport_country (passport_country_id, passport_name) VALUES
 INSERT INTO artist_country (artist_id, country_id) VALUES
   (3,1);
 
-INSERT INTO events (event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  ('Event', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (1, 'Event', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (2, 'Woodstock', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (3, 'Burning Man', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 2);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 3);
