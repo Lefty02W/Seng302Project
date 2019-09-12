@@ -49,6 +49,7 @@ public class TripsController extends Controller {
     private static final String tripsEndPoint = "/trips/0";
     private static final String editUrl = "/edit";
     private static final String dupDestFlashing = "The same destination cannot be after itself in a trip";
+    private final int DEFAULT_FOLLOWED_DESTINATION_LIMIT = 7;
 
     @Inject
     public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi,
@@ -453,7 +454,7 @@ public class TripsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId, 0);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0, DEFAULT_FOLLOWED_DESTINATION_LIMIT);
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());
@@ -481,7 +482,7 @@ public class TripsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             ArrayList<Destination> destinationsList;
             Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profId, 0);
-            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0);
+            Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profId, 0, DEFAULT_FOLLOWED_DESTINATION_LIMIT);
             try {
                 destinationsList = destListTemp.get();
                 destinationsList.addAll(followedListTemp.get());
