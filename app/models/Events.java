@@ -25,7 +25,7 @@ public class Events extends Model {
 
     private Date startDate;
 
-    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
+    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
     private Date endDate;
 

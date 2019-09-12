@@ -116,6 +116,11 @@
                             <div id="eventsTab" class="tab-pane fade">
                         }
                             <div class="col">
+                                <div class="row justify-content-center">
+                                @if(artist.getAdminsList.contains(currentUser)) {
+                                    <button class="btn btn-primary">Create Event</button>
+                                }
+                                </div>
                             @for(event <- events) {
                                 <div class="card">
                                     <div class="card-body">
@@ -150,6 +155,17 @@
                                                 <h4 class="primary-color">Type</h4>
                                                 <p>@event.getEventTypes.get(0)</p>
                                             </div>
+                                            @if(artist.getAdminsList.contains(currentUser)) {
+                                                <div class="col">
+                                                    <h4 class="primary-color">Actions</h4>
+                                                    <a href="#">
+                                                        <button class="btn btn-primary">Edit</button>
+                                                    </a>
+                                                    <a href="#">
+                                                        <button class="btn btn-outline-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
+                                                    </a>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -210,6 +226,32 @@
 
     </body>
 
+
+    <div class="modal" id="confirmationDeleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- body -->
+                <div class="modal-body">
+                    <h5>Are you sure you want to delete</h5>
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmDeleteHrf">
+                        <button type="submit" id="confirmDeleteBtn" class="btn btn-danger" onclick="runDelete()">
+                            Delete</button>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
             // ------------- SIDEBAR TOGGLE JS -------------
             $(function () {
@@ -230,5 +272,12 @@
             function goBack() {
                 window.history.back();
             }
+
+            function fillDeleteValues(route) {
+                var a = document.getElementById("confirmDeleteHrf");
+                a.href = route;
+                $('#confirmationDeleteModal').modal('show');
+            }
+
     </script>
 </html>
