@@ -241,7 +241,7 @@ public class ProfileController extends Controller implements TypesInterface {
      * @param id image id that is to be rendered
      * @return rendered image file to be displayed
      */
-    public Image getProfilePhoto(Integer userid){
+    public String getProfilePhoto(Integer userid){
         Optional<Photo> profilePicture = personalPhotoRepository.getProfilePicture(userid);
         Photo image;
         image = profilePicture.orElse(null);
@@ -256,12 +256,11 @@ public class ProfileController extends Controller implements TypesInterface {
                     String file = Base64.getEncoder().encodeToString(imageBytesOriginal);
                     ImageIcon imageIcon = new ImageIcon(imageBytesOriginal);
                     Image image1 = imageIcon.getImage();
-
                     //ByteArrayInputStream bis = new ByteArrayInputStream(imageBytesOriginal);
                     //BufferedImage bimage = ImageIO.read(bis);
                     //ImageIO.write(bimage, image.getType(), new File(image.getPath() + "primary"));
-                    String str = "data:image/png;base64," + file;
-                    return image1;
+                    String str = "data:"+image.getType()+";base64, " + file;
+                    return str;
                 }
             } catch (NullPointerException | IOException e) {
                 System.out.println(e);

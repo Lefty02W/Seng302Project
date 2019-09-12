@@ -1,7 +1,8 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist], countries: List[String], primaryPhoto: ImageData)(implicit request: Http.Request, messages: play.i18n.Messages)
+@import java.util.Base64
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist], countries: List[String], primaryPhoto: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
