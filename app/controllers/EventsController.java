@@ -164,24 +164,6 @@ public class EventsController extends Controller {
 
     }
 
-    public CompletionStage<Result> showEventEdit(Http.Request request, Integer eventId) {
-        Integer profId = SessionController.getCurrentUserId(request);
-        return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> {
-                    List<Events> eventsList = eventRepository.getPage(0);
-                    PaginationHelper paginationHelper = new PaginationHelper(0, 0, 0, 0, true, true, eventRepository.getNumEvents());
-                    paginationHelper.alterNext(8);
-                    paginationHelper.alterPrevious(8);
-                    paginationHelper.checkButtonsEnabled();
-                    Events currentEvent = eventRepository.lookup(eventId);
-                    return ok(events.render(profile,
-                            Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(currentEvent, true, false),
-                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
-                            request, messagesApi.preferred(request)));
-                }).orElseGet(() -> redirect("/")));
-    }
-
 
     /**
      * Endpoint method to allow a user to create an event
