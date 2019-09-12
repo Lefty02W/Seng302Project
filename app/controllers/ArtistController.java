@@ -127,7 +127,7 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), 0, null, request, messagesApi.preferred(request))))
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), Integer.valueOf(0), new PaginationHelper(), request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -151,7 +151,7 @@ public class ArtistController extends Controller {
         paginationHelper.checkButtonsEnabled();
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), 1,
+                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), Integer.valueOf(0),
                                 paginationHelper, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
@@ -171,7 +171,7 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), 2, null, request, messagesApi.preferred(request))))
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), Integer.valueOf(0), new PaginationHelper(), request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -291,6 +291,29 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> leaveArtist(Http.Request request, int artistId) {
         return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artist"));
+    }
+
+    /**
+     * Method to edit an artists information
+     *
+     * @param request https request containing the artist form
+     * @param id artist id that is going to be edited
+     * @return redirect to the artist page
+     */
+    public CompletionStage<Result> editArtist(Http.Request request, Integer id) {
+        Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
+        Integer artistId = SessionController.getCurrentUserId(request);
+        Integer currentUserId = SessionController.getCurrentUserId(request);
+        Optional<String> artistFormString = artistProfileForm.field("artistId").value();
+        if (artistFormString.isPresent()) {
+            artistId = Integer.parseInt(artistFormString.get());
+        }
+
+        Artist artist = setValues(artistId, artistProfileForm);
+        return supplyAsync(() -> {
+            artistRepository.editArtistProfile(id, artist, artistProfileForm, currentUserId);
+            return redirect("/artists/" + id).flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
+        });
     }
 
     /**

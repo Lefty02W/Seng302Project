@@ -1,5 +1,6 @@
 @import play.mvc.Http
-@(currentUser: Profile, artist: Artist, events : List[Events], activeTab : Integer, pagination: PaginationHelper
+@import views.html.helper.{CSRF, form}
+@(currentUser: Profile, artist: Artist, events : List[Events], countries: List[String], genres: List[MusicGenre], activeTab : Integer, pagination: PaginationHelper
     )(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -239,9 +240,9 @@
                         <h4 class="modal-title">Edit Artist</h4>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
-                    @* TODO: Controller method for editing an artist
-                    @* @form(routes.ArtistController.editArtist) {*@
-                    @* @CSRF.formField *@
+
+                    @form(routes.ArtistController.editArtist(artist.getArtistId)) {
+                        @CSRF.formField
                         <!-- body -->
                     <div class="modal-body">
                         <div class="container-fluid">
@@ -271,9 +272,9 @@
                                             <input type="text" id="countries" name="countries" class="hidden-field">
                                         </div>
                                         <select class="selectpicker" data-live-search="true" multiple title="Countries of Origin" id="originDropdown" data-width="50%">
-                                            @* @for(nation <- countries) { *@
-                                            @*<option value="@nation">@nation</option>*@
-                                            @*}*@
+                                             @for(nation <- countries) {
+                                                <option value="@nation">@nation</option>
+                                             }
                                         </select>
                                     </div>
                                     <div class="row justify-content-center">
@@ -284,9 +285,9 @@
                                             <input type="text" id="genreForm" name="genreForm" class="hidden-field">
                                         </div>
                                         <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
-                                            @* @for(genre <- genres) {*@
-                                            @*<option value="@genre.getGenreId">@genre.getGenre</option>*@
-                                            @*}*@
+                                            @for(genre <- genres) {
+                                                <option value="@genre.getGenreId">@genre.getGenre</option>
+                                            }
                                         </select>
                                     </div>
                                     <div class="row justify-content-center">
@@ -362,7 +363,7 @@
                         <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary" onclick="fillValsArtist()">Save</button>
                     </div>
-                    @*}*@
+                    }
                 </div>
             </div>
         </div>
