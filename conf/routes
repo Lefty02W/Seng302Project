@@ -133,6 +133,7 @@ GET     /artists/:id                            controllers.ArtistController.sho
 
 #Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)
+GET     /events/:id/showEdit/:offset            controllers.EventsController.showEventEdit(request : Request, offset : Integer, id : Integer)
 POST    /events/create                          controllers.EventsController.createEvent(request : Request)
 POST    /events/:id/edit                        controllers.EventsController.editEvent(request : Request, id : Integer)
 GET     /events/search                          controllers.EventsController.search(request : Request)

@@ -1,9 +1,6 @@
 package controllers;
 
-import models.EventFormData;
-import models.Events;
-import models.PaginationHelper;
-import models.RoutedObject;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -51,6 +48,37 @@ public class EventsController extends Controller {
         this.eventForm = formFactory.form(Events.class);
         this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
+    }
+
+    /**
+     * Endpoint landing page for editing an event
+     *
+     * @param request client request
+     * @param eventId The ID of the event to edit
+     * @return
+     */
+    public CompletionStage<Result> showEventEdit(Http.Request request, Integer eventId, Integer offset) {
+        Integer profId = SessionController.getCurrentUserId(request);
+
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> {
+                    List<Events> eventsList = eventRepository.getPage(offset);
+                    PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
+                    paginationHelper.alterNext(8);
+                    paginationHelper.alterPrevious(8);
+                    paginationHelper.checkButtonsEnabled();
+
+                    Events editEvent = eventRepository.lookup(eventId);
+
+                    RoutedObject<Events> toSend = new RoutedObject<>(editEvent, true, false);
+
+
+                    return ok(events.render(profile,
+                            Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
+                            destinationRepository.getAllDestinations(), eventsList, eventForm, toSend,
+                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
+                            request, messagesApi.preferred(request)));
+                }).orElseGet(() -> redirect("/")));
     }
 
     /**
@@ -128,10 +156,10 @@ public class EventsController extends Controller {
         Form<Events> form = eventForm.bindFromRequest(request);
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())){
-            return supplyAsync(() -> redirect("/events").flashing("error", "Error: Start date cannot be after end date."));
+            return supplyAsync(() -> redirect("/events/0").flashing("error", "Error: Start date cannot be after end date."));
         }
         return eventRepository.update(id, event).thenApplyAsync(x -> {
-            return redirect("/events").flashing("success", "Event has been updated.");
+            return redirect("/events/0").flashing("success", "Event has been updated.");
         });
 
     }
@@ -174,16 +202,16 @@ public class EventsController extends Controller {
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
 
                 if(!artistRepository.isArtistAdmin(profId)){
-                    return redirect("/events").flashing("error", "Error creating event: You must be a verified artist admin.");
+                    return redirect("/events/0").flashing("error", "Error creating event: You must be a verified artist admin.");
                 }
 
                 if(checkDates(event.get())){
                     eventRepository.insert(event.get());
                 } else {
-                    return redirect("/events").flashing("error", "Error creating event: Start date must be before end date");
+                    return redirect("/events/0").flashing("error", "Error creating event: Start date must be before end date");
                 }
             }
-            return redirect("/events").flashing("info", "Successfully added your new event");
+            return redirect("/events/0").flashing("info", "Successfully added your new event");
         });
     }
 
