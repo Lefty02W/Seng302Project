@@ -25,6 +25,7 @@ public class ProfileRepository {
     private final ProfilePassportCountryRepository profilePassportCountryRepository;
     private final ProfileNationalityRepository profileNationalityRepository;
     private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
+    private final ArtistRepository artistRepository;
     private final RolesRepository rolesRepository;
 
     @Inject
@@ -35,6 +36,7 @@ public class ProfileRepository {
         this.profileNationalityRepository = new ProfileNationalityRepository(ebeanConfig, executionContext);
         this.profileTravellerTypeRepository = new ProfileTravellerTypeRepository(ebeanConfig, executionContext);
         this.rolesRepository = new RolesRepository(ebeanConfig, executionContext);
+        this.artistRepository = new ArtistRepository(ebeanConfig, executionContext, new PassportCountryRepository(ebeanConfig, executionContext));
     }
 
     /**
@@ -92,6 +94,19 @@ public class ProfileRepository {
 
     }
 
+    public List<Artist> getProfileArtists(Integer profId) {
+        List<Artist> artistList = new ArrayList<>(ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("artist_profile.profile_id", profId)
+                .findList());
+        List<Artist> outputList = new ArrayList<>();
+        for( Artist artist : artistList) {
+            artist.setGenre(new ArrayList<>());
+            outputList.add(artistRepository.populateArtistAdmin(artist));
+        }
+        return outputList;
+    }
 
     /**
      * Ebeans method to get all profiles not filling linking tables

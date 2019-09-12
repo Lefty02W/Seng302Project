@@ -215,7 +215,28 @@ def read_artists(number_artists):
             artist.append(genres)            
 
             artists.append(artist)
-    return artists    
+    return artists
+
+
+def read_events(number_events):
+    """Reads a JSON file holding events and converts it to a list of events"""
+    events = []
+    with open('events.JSON') as json_file:
+        data = json.load(json_file)
+        if number_events is True:
+            number_events = len(data)
+        elif number_events > len(data):
+            number_events = len(data)
+        for i in range(number_events):
+            event = []
+            event.append(data[i]['event_name'])
+            event.append(data[i]['description'])
+            event.append(data[i]['start_date'])
+            event.append(data[i]['end_date'])
+            event.append(data[i]['age_restriction'])
+            event.append(data[i]['soft_delete'])
+            events.append(event)
+    return events
 
 
 def create_artist_queries(artists):
