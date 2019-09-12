@@ -350,9 +350,8 @@ public class ProfileController extends Controller implements TypesInterface {
                     countryFlag = false;
                     return redirect("/profile").flashing("changeCountry", profileRec.get().getFirstName() + " you have an outdated country");
                 }
-
                 countryFlag = true;
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
             }
             return redirect("/");
         });

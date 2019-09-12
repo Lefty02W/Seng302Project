@@ -180,6 +180,9 @@ public class ArtistRepository {
                 .where()
                 .eq("profile_id", userId)
                 .findIds());
+        if (artistIds.size() == 0) {
+            return new ArrayList<Artist>();
+        }
         return ebeanServer.find(Artist.class)
                 .where()
                 .eq("soft_delete", 0)

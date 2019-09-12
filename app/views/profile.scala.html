@@ -1,7 +1,9 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer],
+        profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist],
+        countries: List[String], userArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -138,6 +140,9 @@
                         <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
                         <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
                         <li><a data-toggle="tab" href="#followedArtistsTab" id="followedArtistsLink">Followed Artists</a></li>
+                        @if(userArtists.length > 0) {
+                            <li><a data-toggle="tab" href="#yourArtistsTab" id="yourArtistsLink">Your Artists</a></li>
+                        }
                     </ul>
 
                 </div>
@@ -339,6 +344,34 @@
                             </div>
                         </div>
                     </div>
+                    @if(userArtists.length > 0) {
+                        <div id="yourArtistsTab" class="tab-pane fade">
+                            <div class="col">
+                                <div id="card-large lower-card">
+                                    <div class="card center-col overflow-auto" id="yourArtistsCard">
+                                        <table id="followedArtistsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Artist Page</th>
+                                                </tr>
+                                            </thead>
+                                            @for(artist <- userArtists) {
+                                                <tr>
+                                                    <td>@artist.getArtistName</td>
+                                                    <td>
+                                                        <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
+                                                            <button type="button" class="btn btn-primary">View</button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
 
                     <div id="tripsTab" class="tab-pane fade">
                     <a href="/trips/0"> <button class="btn btn-primary"> View All</button> </a>
