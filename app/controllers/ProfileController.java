@@ -25,6 +25,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -240,24 +241,33 @@ public class ProfileController extends Controller implements TypesInterface {
      * @param id image id that is to be rendered
      * @return rendered image file to be displayed
      */
-    @Security.Authenticated(SecureSession.class)
-    public Result photoAtProfile(Integer id){
-        Photo image = Photo.find.byId(id);
-        try {
-            File imageFilePath = new File(Objects.requireNonNull(image).getPath());
-            if (imageFilePath.exists()) {
-                BufferedImage buffImage = ImageIO.read(new FileInputStream(imageFilePath));
-              //  byte[] imageBytes = ((DataBufferByte) buffImage.getSubimage(0,0,300,300).getData().getDataBuffer()).getData();
-                byte[] imageBytesOriginal = ((DataBufferByte) buffImage.getData().getDataBuffer()).getData();
-                String file = Base64.getEncoder().encodeToString(imageBytesOriginal);
-                //ImageIcon imageIcon = new ImageIcon(imageBytesOriginal);
-                //Image image1 = imageIcon.getImage();
-                return ok(file);
+    public Image getProfilePhoto(Integer userid){
+        Optional<Photo> profilePicture = personalPhotoRepository.getProfilePicture(userid);
+        Photo image;
+        image = profilePicture.orElse(null);
+        if(image != null) {
+            try {
+                File imageFilePath = new File(Objects.requireNonNull(image).getPath());
+                if (imageFilePath.exists()) {
+                    BufferedImage buffImage = ImageIO.read(new FileInputStream(imageFilePath));
+                    //  byte[] imageBytes = ((DataBufferByte) buffImage.getSubimage(0,0,300,300).getData().getDataBuffer()).getData();
+                    byte[] imageBytesOriginal = ((DataBufferByte) buffImage.getData().getDataBuffer()).getData();
+
+                    String file = Base64.getEncoder().encodeToString(imageBytesOriginal);
+                    ImageIcon imageIcon = new ImageIcon(imageBytesOriginal);
+                    Image image1 = imageIcon.getImage();
+
+                    //ByteArrayInputStream bis = new ByteArrayInputStream(imageBytesOriginal);
+                    //BufferedImage bimage = ImageIO.read(bis);
+                    //ImageIO.write(bimage, image.getType(), new File(image.getPath() + "primary"));
+                    String str = "data:image/png;base64," + file;
+                    return image1;
+                }
+            } catch (NullPointerException | IOException e) {
+                System.out.println(e);
             }
-            return notFound(imageFilePath.getAbsoluteFile());
-        } catch(NullPointerException | IOException e) {
-            return redirect(profileEndpoint); //  When there an id of a photo does not exist
         }
+        return null;
     }
 
     /**
@@ -384,7 +394,7 @@ public class ProfileController extends Controller implements TypesInterface {
                 }
 
                 countryFlag = true;
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), getProfilePhoto(profId), request, messagesApi.preferred(request)));
             }
             return redirect("/");
         });
