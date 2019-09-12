@@ -707,8 +707,13 @@ public class ArtistRepository {
      * @return True if the artist is an admin of a currently verified artist, else false.
      */
     public boolean isArtistAdmin(int profileId){
-        int artistID = ebeanServer.find(ArtistProfile.class).select("artistId").where().eq("profile_id", profileId).findSingleAttribute();
-        return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).eq("artist_id", artistID).exists();
+        int artistID = 0;
+        System.out.println(profileId);
+        if(ebeanServer.find(ArtistProfile.class).select("artistId").where().eq("profile_id", profileId).findSingleAttribute() != null){
+
+            return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).eq("artist_id", artistID).exists();
+        };
+            return false;
     }
 
 }
