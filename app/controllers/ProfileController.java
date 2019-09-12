@@ -2,6 +2,7 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
+
 import interfaces.TypesInterface;
 import models.*;
 import play.data.Form;
@@ -20,6 +21,7 @@ import views.html.profile;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -28,10 +30,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -226,10 +226,7 @@ public class ProfileController extends Controller implements TypesInterface {
         try {
             File imageFilePath = new File(Objects.requireNonNull(image).getPath());
             if (imageFilePath.exists()) {
-                BufferedImage buffImage = ImageIO.read(new FileInputStream(imageFilePath));
-                byte[] imageBytes = ((DataBufferByte) buffImage.getSubimage(0,0,300,300).getData().getDataBuffer()).getData();
-
-                return ok(imageBytes);
+                return ok(new FileInputStream(imageFilePath)).as(image.getType());
             }
             return notFound(imageFilePath.getAbsoluteFile());
         } catch(NullPointerException | IOException e) {
@@ -237,6 +234,31 @@ public class ProfileController extends Controller implements TypesInterface {
         }
     }
 
+
+    /**
+     * Method to serve an image to the frontend. Uses the image path url for the profile picture
+     * @param id image id that is to be rendered
+     * @return rendered image file to be displayed
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result photoAtProfile(Integer id){
+        Photo image = Photo.find.byId(id);
+        try {
+            File imageFilePath = new File(Objects.requireNonNull(image).getPath());
+            if (imageFilePath.exists()) {
+                BufferedImage buffImage = ImageIO.read(new FileInputStream(imageFilePath));
+              //  byte[] imageBytes = ((DataBufferByte) buffImage.getSubimage(0,0,300,300).getData().getDataBuffer()).getData();
+                byte[] imageBytesOriginal = ((DataBufferByte) buffImage.getData().getDataBuffer()).getData();
+                String file = Base64.getEncoder().encodeToString(imageBytesOriginal);
+                //ImageIcon imageIcon = new ImageIcon(imageBytesOriginal);
+                //Image image1 = imageIcon.getImage();
+                return ok(file);
+            }
+            return notFound(imageFilePath.getAbsoluteFile());
+        } catch(NullPointerException | IOException e) {
+            return redirect(profileEndpoint); //  When there an id of a photo does not exist
+        }
+    }
 
     /**
      * Call to PhotoRepository to be insert an photo in the database

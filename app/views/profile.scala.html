@@ -120,7 +120,7 @@
                 <div id="profilePhotoContainer">
                     <div class="container" id="profilePhoto">
                     @if(profilePicture != null) {
-                        <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
+                        <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAtProfile(profilePicture.getPhotoId)"
                         alt="Profile picture">
                     } else {
                         <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/profile-icon.png")"
