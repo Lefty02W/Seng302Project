@@ -65,7 +65,7 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(),  artistRepository.getPagedArtists(0), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile, genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(),  artistRepository.getPagedArtists(0), artistRepository.getFollowedArtists(profId), profileRepository.getProfileArtists(profId), messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
     }
 
@@ -107,7 +107,7 @@ public class ArtistController extends Controller {
 
 
                         searchForm.fill(formData); //TODO Make form fill with previous search
-                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, profId), artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, profId), artistRepository.getFollowedArtists(profId), profileRepository.getProfileArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
                     }
