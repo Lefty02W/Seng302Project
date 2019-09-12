@@ -213,32 +213,8 @@
     </body>
     <script>
             function fillVals() {
-                $('#travellerTypesForm').val($('#typeDropdown').val());
-                $('#nationalitiesForm').val($('#nationDropdown').val());
-                $('#passportsForm').val($('#passportDropdown').val());
-                $('#travellerTypesFormCreate').val($('#typeDropdownCreate').val());
-                $('#nationalitiesFormCreate').val($('#nationDropdownCreate').val());
-                $('#passportsFormCreate').val($('#passportDropdownCreate').val());
-
-                $('#travellerTypesStringDestCreate').val($('#typeDropdown').val());
-                $('#travellerTypesStringDest').val($('#typeDropdownEdit').val());
-                $('#country').val($('#countriesDropdown').val());
-                $('#countryEdit').val($('#countriesDropdownEdit').val());
-                $('#travellerTypesForm').val($('#typeDropdownEdit').val());
                 $('#genreForm').val($('#genreDropdown').val());
                 $('#artistForm').val($('#artistDropdown').val());
-            }
-
-            function fillValsArtist() {
-                $('#genreForm').val($('#genreDropdown').val());
-                $('#adminForm').val($('#adminDropdown').val());
-                $('#countries').val($('#originDropdown').val());
-            }
-
-            function fillValsEditArtist() {
-                $('#genreEditForm').val($('#genreEditDropdown').val());
-                $('#adminEditForm').val($('#adminEditDropdown').val());
-                $('#countriesEdit').val($('#originEditDropdown').val());
             }
 
             // ------------- SIDEBAR TOGGLE JS -------------
@@ -401,7 +377,7 @@
                     <h4 class="modal-title">Create Event</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
-                @form(routes.EventsController.createEvent()) {
+                @form(routes.EventsController.createAdminEvent()) {
                     @CSRF.formField
                         <!-- body -->
                     <div class="modal-body">

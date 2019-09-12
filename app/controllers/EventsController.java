@@ -9,6 +9,7 @@ import play.mvc.Http;
 import play.mvc.Result;
 import play.mvc.Security;
 import repository.*;
+import roles.RestrictAnnotation;
 import utility.Country;
 import views.html.events;
 
@@ -163,6 +164,58 @@ public class EventsController extends Controller {
         });
 
     }
+    @RestrictAnnotation()
+    public CompletionStage<Result> createAdminEvent(Http.Request request) {
+        return supplyAsync(() -> {
+            int profId = SessionController.getCurrentUserId(request);
+
+            Optional<Events> optEvent = createEvent(request);
+
+            if (!optEvent.isPresent()) {
+                return redirect("/admin/events/0").flashing("error", "Error creating event: Unknown error");
+            }
+
+            if (!artistRepository.isArtistAdmin(profId)) {
+                return redirect("/admin/events/0").flashing("error", "Error creating event: You must be a verified artist admin.");
+            }
+
+            if (checkDates(optEvent.get())) {
+                eventRepository.insert(optEvent.get());
+            } else {
+                return redirect("/admin/events/0").flashing("error", "Error creating event: Start date must be before end date");
+            }
+
+            return redirect("/admin/events/0").flashing("info", "Successfully added your new event");
+        });
+    }
+
+    @RestrictAnnotation()
+    public CompletionStage<Result> createUserEvent(Http.Request request) {
+        return supplyAsync(() -> {
+            int profId = SessionController.getCurrentUserId(request);
+
+            Optional<Events> optEvent = createEvent(request);
+
+            if (!optEvent.isPresent()) {
+                return redirect("/events/0").flashing("error", "Error creating event: Unknown error");
+            }
+
+            if (!artistRepository.isArtistAdmin(profId)) {
+                return redirect("/events/0").flashing("error", "Error creating event: You must be a verified artist admin.");
+            }
+
+            if (checkDates(optEvent.get())) {
+                eventRepository.insert(optEvent.get());
+            } else {
+                return redirect("/events/0").flashing("error", "Error creating event: Start date must be before end date");
+            }
+
+        return redirect("/events/0").flashing("info", "Successfully added your new event");
+        });
+
+
+
+    }
 
 
     /**
@@ -171,8 +224,7 @@ public class EventsController extends Controller {
      * @param request request to create event
      * @return redirect to the events page with newly created event
      */
-    public CompletionStage<Result> createEvent(Http.Request request) {
-        return supplyAsync( ()-> {
+    public Optional<Events> createEvent(Http.Request request) {
             Form<Events> form = eventForm.bindFromRequest(request);
             int profId = SessionController.getCurrentUserId(request);
             Optional<Events> event = form.value();
@@ -201,19 +253,11 @@ public class EventsController extends Controller {
                 ageForm.ifPresent(s -> event.get().setAgeForm(s));
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
 
-                if(!artistRepository.isArtistAdmin(profId)){
-                    return redirect("/events/0").flashing("error", "Error creating event: You must be a verified artist admin.");
-                }
-
-                if(checkDates(event.get())){
-                    eventRepository.insert(event.get());
-                } else {
-                    return redirect("/events/0").flashing("error", "Error creating event: Start date must be before end date");
-                }
             }
-            return redirect("/events/0").flashing("info", "Successfully added your new event");
-        });
+            return event;
     }
+
+
 
     public CompletionStage<Result> search(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
