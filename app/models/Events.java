@@ -54,6 +54,9 @@ public class Events extends Model {
     @Transient
     private String ageForm;
 
+    @Transient
+    private Destination destination;
+
     /**
      * Traditional constructor for events used when retrieving an Event from the data base
      * @param eventId id of the event (Primary Key)
@@ -109,6 +112,14 @@ public class Events extends Model {
             return dateFormatEntry.format(endDate);
         }
         return "";
+    }
+
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
     }
 
     public int getEventId() {

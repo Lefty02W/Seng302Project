@@ -130,6 +130,8 @@ GET     /artists/page/:page_number              controllers.ArtistController.pag
 
 # Detailed Artist's page
 GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
+GET     /artists/:id/events/:offset             controllers.ArtistController.showArtistEvents(request : Request, id: Integer, offset : Integer)
+GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
 
 #Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)

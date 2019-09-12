@@ -16,6 +16,7 @@ import views.html.artists;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -52,7 +53,6 @@ public class ArtistController extends Controller {
         this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
         this.eventRepository = eventRepository;
     }
-
 
     /**
      * Endpoint for landing page for artists
@@ -127,9 +127,54 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, request, messagesApi.preferred(request))))
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), 0, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
+
+    /**
+     * Endpoint to view an artists events
+     *
+     * @param request request
+     * @param id id of artist to view
+     * @param offset offset of page of events to view
+     * @return rendered artist page
+     */
+    public CompletionStage<Result> showArtistEvents(Http.Request request, Integer id, Integer offset) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        Artist artist = artistRepository.getArtistById(id);
+        if (artist == null) {
+            return supplyAsync(() -> redirect("/artists"));
+        }
+        PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 1, true, true, eventRepository.getNumArtistEvents(id));
+        paginationHelper.alterNext(8);
+        paginationHelper.alterPrevious(8);
+        paginationHelper.checkButtonsEnabled();
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
+                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), 1,
+                                paginationHelper, request, messagesApi.preferred(request))))
+                        .orElseGet(() -> redirect("/profile")));
+    }
+
+    /**
+     * Endpoint to view an artists members
+     *
+     * @param request request
+     * @param id id of artist to view
+     * @return rendered artist page
+     */
+    public CompletionStage<Result> showArtistMembers(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        Artist artist = artistRepository.getArtistById(id);
+        if (artist == null) {
+            return supplyAsync(() -> redirect("/artists"));
+        }
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), 2, null, request, messagesApi.preferred(request))))
+                        .orElseGet(() -> redirect("/profile")));
+    }
+
 
     /**
      * Method to call repository method to save an Artist profile to the database

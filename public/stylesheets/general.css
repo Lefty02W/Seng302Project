@@ -359,3 +359,7 @@ div.dataTables_filter {
     width: 60%;
     margin-top: 10px;
 }
+
+.primary-color {
+    color: #d74961;
+}

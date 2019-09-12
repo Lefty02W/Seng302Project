@@ -1,6 +1,4 @@
 
-@import java.util._
-
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist],
@@ -238,7 +236,6 @@
                     <h4 class="modal-title">Create Event</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
-                    <!-- TODO Uncomment when create event controller method is set up. -->
                     @form(routes.EventsController.createEvent()) {
                     @CSRF.formField
                     <!-- body -->
@@ -252,7 +249,7 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-center">
-                                    <label>Event Type</label>
+                                    <label>Event Type*</label>
                                 </div>
                                 <div class="row justify-content-center">
                                     <select class="selectpicker" title="Type" id="typeForm" name="typeForm" data-width="50%" required>
@@ -266,7 +263,7 @@
                                 </div>
 
                                 <div class="row justify-content-center">
-                                    <label>Age Restriction</label>
+                                    <label>Age Restriction*</label>
                                 </div>
                                 <div class="row justify-content-center">
                                     <select class="selectpicker" title="Age Restriction" id="ageForm" name ="ageForm" data-width="50%" required>
@@ -301,7 +298,7 @@
                                     </select>
                                 </div>
                                 <div class="row justify-content-center">
-                                    <label>Event Artists</label>
+                                    <label>Event Artists*</label>
                                 </div>
                                 <div class="row justify-content-center">
                                     <div class="hidden-div-edit">

@@ -16,13 +16,13 @@ public class EventRepositoryTest {
 
     @Test
     public void getArtistEventsArtistHasEvents() {
-        List<Events> events = TestApplication.getEventRepository().getArtistEvents(ARTIST_WITH_EVENTS);
+        List<Events> events = TestApplication.getEventRepository().getArtistEventsPage(ARTIST_WITH_EVENTS, 0);
         assertEquals(2, events.size());
     }
 
     @Test
     public void getArtistEventsArtistHasNoEvents() {
-        List<Events> events = TestApplication.getEventRepository().getArtistEvents(ARTIST_WITHOUT_EVENTS);
+        List<Events> events = TestApplication.getEventRepository().getArtistEventsPage(ARTIST_WITHOUT_EVENTS, 0);
         assertTrue(events.isEmpty());
     }
 

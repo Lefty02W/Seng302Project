@@ -24,6 +24,7 @@ public class EventRepository {
     private final EventGenreRepository eventGenreRepository;
     private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
+    private final DestinationRepository destinationRepository;
 
     /**
      * Constructor for the events repository class
@@ -32,7 +33,7 @@ public class EventRepository {
     public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                            EventTypeRepository eventTypeRepository, EventArtistRepository eventArtistRepository,
                            EventGenreRepository eventGenreRepository, ArtistRepository artistRepository,
-                           GenreRepository genreRepository) {
+                           GenreRepository genreRepository, DestinationRepository destinationRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.eventTypeRepository = eventTypeRepository;
@@ -40,6 +41,7 @@ public class EventRepository {
         this.eventGenreRepository = eventGenreRepository;
         this.artistRepository = artistRepository;
         this.genreRepository = genreRepository;
+        this.destinationRepository = destinationRepository;
 
     }
 
@@ -80,12 +82,25 @@ public class EventRepository {
      * @param artistId id of artist
      * @return List of events found
      */
-    public List<Events> getArtistEvents(int artistId) {
-        List<Integer> ids = ebeanServer.find(EventArtists.class).where().eq("artist_id", artistId).findIds();
-        if (ids.isEmpty()) {
-            return new ArrayList<>();
+    public List<Events> getArtistEventsPage(int artistId, int offset) {
+        List<Integer> ids = ebeanServer.find(EventArtists.class).setMaxRows(8).setFirstRow(offset).where().eq("artist_id", artistId).findIds();
+        List<Events> events = new ArrayList<>();
+        if (!ids.isEmpty()) {
+            for (Events event : ebeanServer.find(Events.class).where().idIn(ids).findList()) {
+                events.add(populateEvent(event));
+            }
         }
-        return ebeanServer.find(Events.class).where().idIn(ids).findList();
+        return events;
+    }
+
+    /**
+     * Method to get the number of events for a given artist
+     *
+     * @param artistId id of artist
+     * @return amount found
+     */
+    public int getNumArtistEvents(int artistId) {
+        return ebeanServer.find(EventArtists.class).where().eq("artist_id", artistId).findCount();
     }
 
 
@@ -116,6 +131,7 @@ public class EventRepository {
         event.setEventGenres(genreRepository.getEventGenres(event.getEventId()));
         event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
+        event.setDestination(destinationRepository.lookup(event.getDestinationId()));
         return event;
     }
 

@@ -49,3 +49,7 @@
 .nav .nav-tabs, #aboutTabLink, #eventsTabLink, #membersTabLink {
     font-size: 18pt;
 }
+
+#wrapper {
+    padding-bottom: 10%;
+}
