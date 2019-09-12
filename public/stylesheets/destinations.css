@@ -117,10 +117,9 @@ img.thumbnail {
     display: block;
     width: auto;
     height: auto;
-    max-height: 240px;
-    max-width: 240px;
+    max-height: 220px;
+    max-width: 220px;
     margin: auto;
-
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
@@ -129,6 +128,24 @@ img.thumbnail {
 #photosCard {
     margin-left: auto;
     margin-right: auto;
+}
+
+.card {
+    height: 320px;
+    width: 240px;
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: none;
+    padding: 1.25rem;
+}
+
+#imageCard{
+    margin-top:10px;
+    margin-right:1px;
+    margin-left:1px;
+    padding-bottom: 2px;
 }
 
 #addTitle, #\#deleteBody, #\#deleteTitle {

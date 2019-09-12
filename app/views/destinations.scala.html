@@ -287,17 +287,16 @@
                                 <div class="modal-header">
                                     <h2 class="modal-title">Link a Picture to this destination</h2>
                                 </div>
-                                <div class="col">
+                                <div class="modal-body">
                                     <div id="photosCard" class="card-large lower-card">
                                         <div class="row" id="photoUpdate">
-                                            <a></a>
+                                            <div></div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="btn btn-danger" data-dismiss="modal" style="width: 10vw;
-                                            float: right" class="changeProfilePictureButton"
-                                        data-toggle="modal" data-target="#changeProfilePicture">Close</button>
-                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="changeProfilePictureButton btn btn-danger" data-dismiss="modal" style="width: 10vw;
+                                        float: right" data-toggle="modal" data-target="#changeProfilePicture">Close</button>
                                 </div>
                             </div>
 
@@ -1159,12 +1158,12 @@
                             "                            <div id=\"id\"></div>\n" +
                             "                            </div>\n" +
                             "                            </div>";
+                        }
                     }
-                    }
-                    @for(photo <- usersPhotos){
+                    @for(photo <- usersPhotos) {
                     @if(!destination.getUsersPhotos.contains(photo)) {
                     document.getElementById("photoUpdate").innerHTML +=
-                            "                            <div class=\"card\">\n" +
+                            "                            <div class=\"card\" id=\"imageCard\">\n" +
                             "                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
                             "                            src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
                             "                            name=\"@photo.getPhotoId\">\n" +
@@ -1182,7 +1181,7 @@
                             "                            <div id=\"id\"></div>\n" +
                             "                            </div>\n" +
                             "                            </div>";
-                    }
+                        }
                     }
                     @for(photo <- destination.getWorldPhotos){
                     @if(photo.getVisible == 1) {
