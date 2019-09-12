@@ -176,21 +176,15 @@ public class ArtistRepository {
      * @return Artists, an ArrayList of all artists that user is a part of.
      */
     public List<Artist> getAllUserArtists(int userId) {
-        List<ArtistProfile> artistProfiles = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
+        List<Integer> artistIds = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
                 .where()
-                //.eq("soft_delete", 0)
                 .eq("profile_id", userId)
-                .findList());
-
-        List<Artist> artists = new ArrayList<>();
-        for(ArtistProfile artistProfile : artistProfiles) {
-            artists.add(ebeanServer.find(Artist.class)
-                    .where()
-                    .eq("soft_delete", 0)
-                    .eq("artist_id", artistProfile.getAPArtistId())
-                    .findOne());
-        }
-        return artists;
+                .findIds());
+        return ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .idIn(artistIds)
+                .findList();
     }
 
 
