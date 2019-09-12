@@ -351,14 +351,17 @@ public class DestinationRepository {
      *
      * @param profileId User if of the followed destinations to return
      * @param rowOffset The row to begin getting data from. This is for pagination
+     * @param limit The page limit for the query. This is used to prevent collation of private
+     *              and followed destinations causing incorrect page size.
      * @return Optional array list of destinations followed by the user
      */
-    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset) {
+    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset, Integer limit) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT 7 OFFSET ?";
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT ? OFFSET ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
-                .setParameter(2, rowOffset).findList();
+                .setParameter(2, limit)
+                .setParameter(3, rowOffset).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
         for (SqlRow aRowList : rowList) {
