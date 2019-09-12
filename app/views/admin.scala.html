@@ -1,14 +1,12 @@
-@import java.util._
-
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @(profiles: List[Profile], adminProfiles: List[Profile], trips: List[Trip], destination: RoutedObject[Destination],
         destinations: List[Destination], profile: RoutedObject[Profile], profileForm: Form[Profile],
         tripToView: Trip, createProfileForm: Form[Profile], editDestinationForm: Form[Destination],
         destinationChangeList: List[DestinationChange], hunts: List[TreasureHunt], editHunt: RoutedObject[TreasureHunt],
-        countries: List[String], adminUndoStack: List[UndoStack], artistList: List[Artist],
+        countries: List[String], adminUndoStack: List[UndoStack],
         artists : List[Artist], editArtist: RoutedObject[Artist], genres: List[MusicGenre],
-        pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
+        pagination : PaginationHelper, events : List[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -55,6 +53,10 @@
                         Treasure Hunt</a>
                     <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                         Admin</a>
+                    <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
+                        Events
+                    </a>
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
                         Logout</a>
                 </div>
@@ -346,6 +348,15 @@
                                     <a class="nav-link" href="/admin/artists/requests/0">
                                         Artist Requests</a>
                                 }
+                            </li>
+                            <li class="nav-item">
+                            @if(pagination.getActiveTab == 8) {
+                                <a class="nav-link active" href="/admin/events/0">
+                                    Events</a>
+                            } else {
+                                <a class="nav-link" href="/admin/events/0">
+                                    Events</a>
+                            }
                             </li>
                         </ul>
                     </div>
@@ -802,7 +813,7 @@
                                                 <th>Decline</th>
                                             </tr>
                                         </thead>
-                                        @for(artist <- artistList) {
+                                        @for(artist <- artists) {
                                             <tr>
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
@@ -830,6 +841,61 @@
                                     </div>
                                 </div>
                             </div>
+                            @if(pagination.getActiveTab == 8) {
+                                <div class="tab-pane active" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                                }else {
+                                <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                                }
+                        <div class="row">
+                            <div class="col text-center">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#createEventModal">
+                                    Create Event
+                                </button>
+                            </div>
+                            <table id="artistRequestsTable" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>EventId</th>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Destination</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Age Restriction</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                @for(event <- events) {
+                                    <tr>
+                                        <td>@event.getEventId</td>
+                                        <td>@event.getEventName</td>
+                                        <td>@event.getDescription</td>
+                                        <td>@event.getDestinationId</td>
+                                        <td>@event.getStartDateString</td>
+                                        <td>@event.getEndDateString</td>
+                                        <td>@event.getAgeRestrictionString</td>
+                                        <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/events/@pagination.getOffset/delete/@event.getEventId')">Delete</button></td>
+                                    </tr>
+                                }
+                            </table>
+                            <div class="col">
+                                <a>@pagination.getInfoString</a>
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" href="/admin/events/0">Start</a></li>
+                                    @if(pagination.isPreviousEnabled) {
+                                        <li class="page-item"><a class="page-link" href="/admin/events/@pagination.getPrevious">Previous</a></li>
+                                    } else {
+                                        <li class="page-item disabled"><a class="page-link" href="/admin/events/@pagination.getPrevious">Previous</a></li>
+                                    }
+                                    @if(pagination.isNextEnabled) {
+                                        <li class="page-item"><a class="page-link" href="/admin/events/@pagination.getNext">Next</a></li>
+                                    } else {
+                                        <li class="page-item disabled"><a class="page-link" href="/admin/events/@pagination.getNext">Next</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -1503,6 +1569,125 @@
                     </div>
                 </div>
             }
+        </div>
+    </div>
+
+    <div class="modal" id="createEventModal">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Create Event</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                @form(routes.EventsController.createEvent()) {
+                    @CSRF.formField
+                    <!-- body -->
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col">
+                                <div class="row justify-content-center">
+                                    <div class="form-group" id="holder"> <small id="label">Event Name*</small>
+                                        <input type="text" id="eventName" placeholder="Event Name" name="eventName" class="inputField" required oninvalid="this.setCustomValidity('Event name is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <label>Event Type</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <select class="selectpicker" title="Type" id="typeForm" name="typeForm" data-width="50%" required>
+                                        <option value="Gig">Gig</option>
+                                        <option value="Meetup">Meetup</option>
+                                        <option value="Competition">Competition</option>
+                                        <option value="Party">Party</option>
+                                        <option value="Charity">Charity</option>
+                                        <option value="Festival">Festival</option>
+                                    </select>
+                                </div>
+
+                                <div class="row justify-content-center">
+                                    <label>Age Restriction</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <select class="selectpicker" title="Age Restriction" id="ageForm" name ="ageForm" data-width="50%" required>
+                                        <option value=16>16+</option>
+                                        <option value=18>18+</option>
+                                        <option value=21>21+</option>
+                                        <option value=0>All Ages</option>
+                                    </select>
+                                </div>
+
+                                <div class="row justify-content-center">
+                                    <label>Event Destination</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <select class="selectpicker" data-live-search="true" title="Destination"  name="destinationId" id="destinationId" data-width="50%">
+                                    @for(destination <- destinations) {
+                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                    }
+                                    </select>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <label>Genres</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="genreForm" name="genreForm" class="hidden-field">
+                                    </div>
+                                    <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
+                                    @for(genre <- genres) {
+                                        <option value="@genre.getGenreId">@genre.getGenre</option>
+                                    }
+                                    </select>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <label>Event Artists</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="hidden-div-edit">
+                                        <input type="text" id="artistForm" name="artistForm" class="hidden-field" required>
+                                    </div>
+                                    <select class="selectpicker" data-live-search="true" multiple title="Event Artists" id="artistDropdown" data-width="50%">
+                                    @for(artist <- artists) {
+                                        <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                    }
+                                    </select>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <label>Start Date*</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="form-group" id="holder">
+                                        <input type="datetime-local" id="startDate"  name="startDate" class="inputField" required oninvalid="this.setCustomValidity('Event start date is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <label>End Date*</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="form-group" id="holder">
+                                        <input type="datetime-local" id="endDate"  name="endDate" class="inputField" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row justify-content-center">
+                            <input type="text" id="description" placeholder="Description*" name="description">
+                        </div>
+                        <div class="row justify-content-center">
+                            <small>Fields with a * are required</small>
+                        </div>
+                    </div>
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
+                </div>
+            }
+            </div>
         </div>
     </div>
 

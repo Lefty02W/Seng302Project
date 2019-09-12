@@ -107,6 +107,9 @@ GET    /admin/artists/:id/delete                controllers.AdminController.dele
 GET    /admin/artists/:id/edit/show             controllers.AdminController.showEditArtist(request : Request, id : Integer)
 POST   /admin/artists/:id/edit                  controllers.AdminController.editArtist(request : Request, id : Integer)
 
+## Admin Events
+GET     /admin/events/:offset                   controllers.AdminController.showEvents(request: Request, offset: Integer)
+GET     /admin/events/:offset/delete/:id        controllers.AdminController.deleteEvent(request: Request, id: Integer, offset: Integer)
 
 # Tresure Hunts
 GET     /treasure/:offset                       controllers.TreasureHuntController.show(request: Request, offset : Integer)
@@ -128,3 +131,8 @@ GET     /artists/page/:page_number              controllers.ArtistController.pag
 # Detailed Artist's page
 GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
 
+#Events
+GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)
+POST    /events/create                          controllers.EventsController.createEvent(request : Request)
+POST    /events/:id/edit                        controllers.EventsController.editEvent(request : Request, id : Integer)
+GET     /events/search                          controllers.EventsController.search(request : Request)

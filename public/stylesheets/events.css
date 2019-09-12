@@ -1,0 +1,33 @@
+.viewEvents {
+    width: 100%;
+    height: 70%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #b3b7bb;
+}
+
+#eventStats{
+    width: 50%;
+}
+
+#label{
+    padding-top: 0 !important;
+    margin-top: -20px;
+}
+
+.dateLabel{
+    margin-top: 0 !important;
+}
+
+#createEventButton {
+    position: inherit;
+    margin-top: 1%;
+    float: right;
+    margin-right: 1%;
+}
+
+#clearButton {
+    float: right;
+}

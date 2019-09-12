@@ -72,6 +72,23 @@ public class ArtistRepository {
                 .findOne());
     }
 
+    /**
+     * Get all artists for an event
+     * @param eventId id of the event
+     * @return List of artists linked to the event
+     */
+    public List<Artist> getEventArtists(int eventId) {
+        List<EventArtists> eventArtists = ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).findList();
+        List<Artist> artists = new ArrayList<>();
+        Optional<Artist> artist;
+        for (EventArtists eventArtist : eventArtists) {
+            artist = Optional.ofNullable(ebeanServer.find(Artist.class).where().eq("artist_id", eventArtist.getArtistId()).findOne());
+            if(artist.isPresent()) {
+                artists.add(artist.get());
+            }
+        }
+        return (artists);
+    }
 
 
     /**
@@ -679,4 +696,16 @@ public class ArtistRepository {
         }
         return artists;
     }
+
+    /**
+     * Checks if the given user's id is an admin of a currently verified artist.
+     * This allows them to be able to make events.
+     * @param profileId The id of the profile being checked.
+     * @return True if the artist is an admin of a currently verified artist, else false.
+     */
+    public boolean isArtistAdmin(int profileId){
+        int artistID = ebeanServer.find(ArtistProfile.class).select("artistId").where().eq("profile_id", profileId).findSingleAttribute();
+        return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).eq("artist_id", artistID).exists();
+    }
+
 }

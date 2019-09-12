@@ -68,7 +68,17 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (8, 1, 'New York', 'City', 'America', 'state', 0.0, 0.0, 1);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (9, 2, 'Kentucky', 'City', 'America', 'state', 0.0, 0.0, 1);
 
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (10, 2, 'Texas', 'City', 'America', 'state', 0.0, 0.0, 1);
+
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (11, 2, 'New Orleans', 'City', 'America', 'state', 0.0, 0.0, 1);
+
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (12, 2, 'New Jersey', 'City', 'America', 'state', 0.0, 0.0, 1);
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
@@ -87,6 +97,9 @@ INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_o
 
 INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
   (2, 4, CURRENT_DATE, CURRENT_DATE, 1);
+
+INSERT INTO trip_destination(trip_id, destination_id, arrival, departure, dest_order) values
+  (2, 10, CURRENT_DATE, CURRENT_DATE, 1);
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (3, 'Johnny Trip', 3);
 
@@ -125,6 +138,9 @@ INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle,
 
 INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
   (5, 2, 1, 'A third riddle', CURRENT_DATE, CURRENT_DATE);
+
+INSERT INTO treasure_hunt (treasure_hunt_id, profile_id, destination_id, riddle, start_date, end_date) VALUES
+  (6, 2, 11, 'A fourth riddle', CURRENT_DATE, CURRENT_DATE);
 
 INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
   (1, 'destination', 5, 2, CURRENT_DATE - 5);
@@ -176,8 +192,8 @@ INSERT INTO music_genre (genre_Id, genre) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (1, 'Mr Walsh', 'Mr Walsh', 'walsh');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (2, 'James', 'James', 'james');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (2, 'James', 'James', 'james', 1);
 
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (3, 'Jerry', 'Jerry', 'jerry');
@@ -225,3 +241,6 @@ INSERT INTO passport_country (passport_country_id, passport_name) VALUES
 
 INSERT INTO artist_country (artist_id, country_id) VALUES
   (3,1);
+
+INSERT INTO events (event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  ('Event', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);

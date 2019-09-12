@@ -21,6 +21,10 @@
     padding-left: 10px;
 }
 
+#label {
+    z-index: 2;
+}
+
 body {
     background-color: #f5f5f5;
 }

@@ -41,7 +41,11 @@
                         Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/> Treasure Hunt</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
+                        Events
+                    </a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/> Admin</a>
                     }

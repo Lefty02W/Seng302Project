@@ -3,9 +3,6 @@ Feature: Edit a destination from admin page
   I want to be able to enter all users destinations
   So I can keep all destination consistent and up to date
 
-  Background:
-    Given Password hash setup has been done
-
 
   Scenario: Admin edits a destination
     Given Admin is logged in to the application
