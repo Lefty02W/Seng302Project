@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Math.abs;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
@@ -119,7 +120,8 @@ public class DestinationsController extends Controller {
                     }
                 } else {
                     profileRepository.getDestinations(userId, rowOffset).ifPresent(dests -> destinationsList.addAll(dests));
-                    destinationRepository.getFollowedDestinations(userId, rowOffset).ifPresent(follows -> destinationsList.addAll(follows));
+                    int limit = abs(7 - destinationsList.size());
+                    destinationRepository.getFollowedDestinations(userId, rowOffset, limit).ifPresent(follows -> destinationsList.addAll(follows));
                 }
                 destinationRepository.getFollowedDestinationIds(userId, rowOffset).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
@@ -223,7 +225,8 @@ public class DestinationsController extends Controller {
                 }
                 if (!isPublic) {
                     Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId, 0);
-                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId, 0);
+                    int limit = abs(7 - destinationsList.size());
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId, 0, limit);
                     try {
                         destinationsList = destListTemp.get();
                         destinationsList.addAll(followedListTemp.get());
