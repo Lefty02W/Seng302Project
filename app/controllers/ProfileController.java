@@ -236,38 +236,6 @@ public class ProfileController extends Controller implements TypesInterface {
     }
 
 
-    /**
-     * Method to serve an image to the frontend. Uses the image path url for the profile picture
-     * @param id image id that is to be rendered
-     * @return rendered image file to be displayed
-     */
-    public String getProfilePhoto(Integer userid){
-        Optional<Photo> profilePicture = personalPhotoRepository.getProfilePicture(userid);
-        Photo image;
-        image = profilePicture.orElse(null);
-        if(image != null) {
-            try {
-                File imageFilePath = new File(Objects.requireNonNull(image).getPath());
-                if (imageFilePath.exists()) {
-                    BufferedImage buffImage = ImageIO.read(new FileInputStream(imageFilePath));
-                    //  byte[] imageBytes = ((DataBufferByte) buffImage.getSubimage(0,0,300,300).getData().getDataBuffer()).getData();
-                    byte[] imageBytesOriginal = ((DataBufferByte) buffImage.getData().getDataBuffer()).getData();
-
-                    String file = Base64.getEncoder().encodeToString(imageBytesOriginal);
-                    ImageIcon imageIcon = new ImageIcon(imageBytesOriginal);
-                    Image image1 = imageIcon.getImage();
-                    //ByteArrayInputStream bis = new ByteArrayInputStream(imageBytesOriginal);
-                    //BufferedImage bimage = ImageIO.read(bis);
-                    //ImageIO.write(bimage, image.getType(), new File(image.getPath() + "primary"));
-                    String str = "data:"+image.getType()+";base64, " + file;
-                    return str;
-                }
-            } catch (NullPointerException | IOException e) {
-                System.out.println(e);
-            }
-        }
-        return null;
-    }
 
     /**
      * Call to PhotoRepository to be insert an photo in the database
