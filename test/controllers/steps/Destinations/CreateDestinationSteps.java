@@ -38,7 +38,7 @@ public class CreateDestinationSteps {
     public void userIsAtTheDestinationsPage() {
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/destinations/show/false")
+                .uri("/destinations/show/false/0")
                 .session("connected", "1");
         Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         assertEquals(200, destinationResult.status());
