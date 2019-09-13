@@ -143,11 +143,7 @@ public class EventRepository {
      */
     private CompletionStage<Integer> insertEvent(Events event){
             return supplyAsync(() -> {
-                try {
-                    ebeanServer.insert(event);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                ebeanServer.insert(event);
                 return event.getEventId();
             }, executionContext);
     }
@@ -369,5 +365,19 @@ public class EventRepository {
             events.setSoftDelete(delete);
             events.update();
         }
+    }
+
+
+    /**
+     * Repository method to delete an event from the database
+     *
+     * @param eventId id of event to delete
+     * @return Void CompletionStage
+     */
+    public CompletionStage<Void> deleteEvent(int eventId) {
+        return supplyAsync(() -> {
+            ebeanServer.find(Events.class).where().eq("event_id", Integer.toString(eventId)).delete();
+            return null;
+        });
     }
 }
