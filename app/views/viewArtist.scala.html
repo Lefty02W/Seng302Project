@@ -76,6 +76,7 @@
                         </button>
                     }
                 </div>
+                @artist.getAdminsList.size()
                 <div class="jumbotron text-center" id="artistNameJumbo">
                     <h1>@artist.getArtistName</h1>
                 </div>
@@ -420,6 +421,37 @@
                     <!-- body -->
                 <div class="modal-body">
                     <h5>Are you sure? This cannot be undone</h5>
+                    @if(artist.getAdminsList.size() == 1) {
+                        <div class="alert alert-danger">
+                            You are the last admin of this artist. Confirmation will delete the artist
+                        </div>
+                    }
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmDeleteHrf">
+                        <button type="submit" id="confirmDeleteBtn" class="btn btn-danger" onclick="runDelete()">
+                            Confirm</button>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="confirmationLeaveModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Leave Artist Confirmation</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- body -->
+                <div class="modal-body">
+                    <h5>Are you sure you want to leave? This cannot be undone</h5>
+
                 </div>
                     <!-- footer -->
                 <div class="modal-footer">
@@ -466,6 +498,12 @@
                 var a = document.getElementById("confirmDeleteHrf");
                 a.href = route;
                 $('#confirmationDeleteModal').modal('show');
+            }
+
+            function fillLeaveValues(route) {
+                var a = document.getElementById("confirmLeaveHrf");
+                a.href = route;
+                $('#confirmationLeaveModal').modal('show');
             }
 
     </script>
