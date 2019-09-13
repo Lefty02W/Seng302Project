@@ -127,7 +127,7 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), Integer.valueOf(0), new PaginationHelper(), request, messagesApi.preferred(request))))
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0, new PaginationHelper(), request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -151,7 +151,7 @@ public class ArtistController extends Controller {
         paginationHelper.checkButtonsEnabled();
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), Integer.valueOf(0),
+                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 paginationHelper, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
@@ -171,7 +171,7 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), Integer.valueOf(0), new PaginationHelper(), request, messagesApi.preferred(request))))
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2, new PaginationHelper(), request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 

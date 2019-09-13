@@ -53,3 +53,11 @@
 #wrapper {
     padding-bottom: 10%;
 }
+
+.button-col {
+    max-width: 15vw;
+}
+
+.social-col {
+    padding-left: 25vw;
+}
