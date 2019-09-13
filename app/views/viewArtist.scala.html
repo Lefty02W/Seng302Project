@@ -67,16 +67,6 @@
                         <h2 class="text-center">Artist</h2>
                     </div>
                 </nav>
-                <div class="backButtonArtist">
-                    <button class="btn btn-primary" onclick="goBack()">Back</button>
-                    @if(artist.getAdminsList.contains(currentUser)) {
-                        <button type="button" class="btn btn-primary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
-                            <i class="fa fa-edit" id="editProfileButton"></i>
-                            Edit Artist
-                        </button>
-                    }
-                </div>
-                @artist.getAdminsList.size()
                 <div class="jumbotron text-center" id="artistNameJumbo">
                     <h1>@artist.getArtistName</h1>
                 </div>
