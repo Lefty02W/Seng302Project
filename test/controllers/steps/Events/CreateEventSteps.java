@@ -43,6 +43,7 @@ public class CreateEventSteps {
 
     @And("^The user is redirected with an \"([^\"]*)\" flash$")
     public void theUserIsRedirectedWithAnFlash(String arg0) throws Throwable {
+
         assertTrue(eventCreateResult.flash().getOptional(arg0).isPresent());
     }
 
