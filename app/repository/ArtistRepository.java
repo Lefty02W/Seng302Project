@@ -495,7 +495,6 @@ public class ArtistRepository {
         if (created == 1){
             sqlQuery.setParameter(numberAdd + 1,userId);
         }
-        System.out.println(sqlQuery);
 
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
@@ -509,7 +508,6 @@ public class ArtistRepository {
                         , new ArrayList<>())));
             }
         }
-        System.out.println("Hi: "+sqlQuery);
         return foundArtists;
     }
 
