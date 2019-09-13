@@ -111,63 +111,66 @@
                                 </div>
                                 <div class="collapse eventFilters" id="eventFilters" aria-labelledby="searchHeader" data-parent="#filterAccordion">
                                     <div class="card-body">
-                                        <div class="search row">
-                                            <div class="col padded">
-                                                <small id="label" for="artistName">Artist</small>
-                                                <select class="selectpicker overlay-dropdown" id="artistName" name="artistName" title="Artist Name">
-                                                @for(artist <- artists) {
-                                                    <option value="@artist.getArtistId">@artist.getArtistName</option>
-                                                }
-                                                </select>
+                                        <div class="search">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <small id="label" for="artistName">Artist</small>
+                                                    <select class="selectpicker overlay-dropdown" id="artistName" name="artistName" title="Artist Name">
+                                                    @for(artist <- artists) {
+                                                        <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                    }
+                                                    </select>
+                                                </div>
+                                                <div class="col type-drop">
+                                                    <small id="label" for="eventType">Event type</small>
+                                                    <select class="selectpicker overlay-dropdown" id="eventType" name="eventType" title="Event Type">
+                                                        <option value="1">Gig</option>
+                                                        <option value="2">Meetup</option>
+                                                        <option value="3">Competition</option>
+                                                        <option value="4">Party</option>
+                                                        <option value="5">Charity</option>
+                                                        <option value="6">Festival</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col dest-drop">
+                                                    <small id="label" for="country">Destination</small>
+                                                    <select class="selectpicker overlay-dropdown" title="Destination"  name="destinationId" id="destinationId">
+                                                    @for(destination <- destinations) {
+                                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                                    }
+                                                    </select>
+                                                </div>
+                                                <div class="col age-drop">
+                                                    <small id="label" for="ageRestriction">Age Restriction</small>
+                                                    <select class="selectpicker overlay-dropdown" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                                        <option value="0">All ages</option>
+                                                        <option value="18">18+</option>
+                                                        <option value="21">21+</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="col padded">
-                                                <small id="label" for="eventType">Event type</small>
-                                                <select class="selectpicker overlay-dropdown" id="eventType" name="eventType" title="Event Type">
-                                                    <option value="1">Gig</option>
-                                                    <option value="2">Meetup</option>
-                                                    <option value="3">Competition</option>
-                                                    <option value="4">Party</option>
-                                                    <option value="5">Charity</option>
-                                                    <option value="6">Festival</option>
-                                                </select>
-                                            </div>
-                                            <div class="col padded">
-                                                <small id="label" for="country">Destination</small>
-                                                <select class="selectpicker overlay-dropdown" title="Destination"  name="destinationId" id="destinationId">
-                                                @for(destination <- destinations) {
-                                                    <option value="@destination.getDestinationId">@destination.getName</option>
-                                                }
-                                                </select>
-                                            </div>
-                                            <div class="col padded">
-                                                <small id="label" for="ageRestriction">Age Restriction</small>
-                                                <select class="selectpicker overlay-dropdown" id="ageRestriction" name="ageRestriction" title="Age Restriction">
-                                                    <option value="0">All ages</option>
-                                                    <option value="18">18+</option>
-                                                    <option value="21">21+</option>
-                                                </select>
-                                            </div>
-                                            <div class="col padded">
-                                                <small id="label" for="genre">Genre</small>
-                                                <select class="selectpicker overlay-dropdown" id="genre" name="genre" title="Genres">
-                                                @for(genre <- genres) {
-                                                    <option value="@genre.getGenreId">@genre.getGenre</option>
-                                                }
-                                                </select>
-                                            </div>
-                                            <div class="col padded">
-                                                <div class="form-group" id="holder">
-                                                    <small id="label" class="dateLabel" for="startDate">Date</small>
+
+                                            <div class="row">
+                                                <div class="col padded">
+                                                    <small id="label" for="genre">Genre</small>
+                                                    <select class="selectpicker overlay-dropdown" id="genre" name="genre" title="Genres">
+                                                    @for(genre <- genres) {
+                                                        <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                    }
+                                                    </select>
+                                                </div>
+                                                <div class="col padded">
+                                                    <small id="label" class="dateLabel overlay-dropdown" for="startDate">Date</small>
                                                     <input type="datetime-local" id="startDate" name="startDate">
                                                     }
 
-                <a href="@routes.EventsController.show(0)">
-                    <button class="btn btn-secondary" id="clearButton">Clear Search</button>
-                </a>
-            </div>
+                                                </div>
+                                                <div class="col padded">
+                                                    <a href="@routes.EventsController.show(0)">
+                                                        <button class="btn btn-secondary overlay-dropdown" id="clearButton">Clear Search</button>
+                                                    </a>
+                                                </div>
                                             </div>
-
-
 
                                         </div>
                                     </div>
