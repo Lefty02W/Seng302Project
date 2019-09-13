@@ -72,6 +72,8 @@ def get_artist_id(artists, cursor, db):
             return id
         else:
             return 0
+    except Exception as e:
+        return 0
 
 
 def execute_event_queries(cursor, db, number_events, number_artists, number_destinations):
@@ -96,7 +98,7 @@ def execute_event_queries(cursor, db, number_events, number_artists, number_dest
                 event_id = get_event_id(event[0], cursor, db)
                 execute_event_type_queries(event_id, cursor, db)
                 execute_event_genres_queries(event_id, cursor, db)
-                execute_event_artists_queries(event_id, artist_ids, cursor, db)
+                execute_event_artists_queries(event_id, get_artist_id(artists, cursor, db), cursor, db)
         except Exception as e:
             db.rollback()
             print("\nFailed to insert, rolling back")
