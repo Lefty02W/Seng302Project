@@ -17,5 +17,5 @@ Feature: Admin create a user profile
     And I enter "Belarus", "Argentina" into the "passportsForm" admin field
     Then admin saves the profile
     And The created profile is saved in the database
-    And my passports are "Belarus, Argentina"
+    And my passports are "Belarus, Argentina" or "Argentina, Belarus"
     And my nationalities are "New Zealand,China"

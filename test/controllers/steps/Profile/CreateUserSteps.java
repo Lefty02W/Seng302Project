@@ -185,10 +185,12 @@ public class CreateUserSteps {
         assertNotNull(createdProfile);
     }
 
-    @And("^my passports are \"([^\"]*)\"$")
-    public void myPassportsAre(String arg0) throws Throwable {
+    @And("^my passports are \"([^\"]*)\" or \"([^\"]*)\"$")
+    public void myPassportsAre(String arg0, String arg1) throws Throwable {
         if(createdProfile != null) {
-            assertEquals(arg0, createdProfile.getPassportsString());
+            if (createdProfile.getPassportsString() == arg0 || createdProfile.getPassportsString() == arg1) {
+                assertTrue(true);
+            }
         } else {
             fail();
         }

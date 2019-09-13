@@ -16,6 +16,7 @@ Feature: Create an event
     And I put "1" into the "artistDropdown" form field
     And I put "2018-08-22T19:00" into the "startDate" form field
     And I put "2020-08-22T19:00" into the "endDate" form field
+    And I put "a description" into the "description" form field
     And I submit the event form
     Then The user is redirected with an "error" flash
 
@@ -29,6 +30,7 @@ Feature: Create an event
     And I put "1" into the "artistDropdown" form field
     And I put "2020-08-22T21:00" into the "startDate" form field
     And I put "2020-08-22T19:00" into the "endDate" form field
+    And I put "a description" into the "description" form field
     And I submit the event form
     Then The user is redirected with an "error" flash
 
@@ -42,5 +44,6 @@ Feature: Create an event
     And I put "1" into the "artistDropdown" form field
     And I put "2020-08-22T19:00" into the "startDate" form field
     And I put "2020-08-22T21:00" into the "endDate" form field
+    And I put "a description" into the "description" form field
     And I submit the event form
     Then The user is redirected with an "info" flash

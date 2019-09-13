@@ -90,7 +90,6 @@ public class ProfileRepository {
 
     }
 
-
     /**
      * Ebeans method to get all profiles not filling linking tables
      * @return List of all profiles

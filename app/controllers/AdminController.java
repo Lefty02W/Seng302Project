@@ -119,7 +119,7 @@ public class AdminController {
         return supplyAsync(() -> ok(adminTwo.render(destinationRepository.getAllDestinations(),
                 Country.getInstance().getAllCountries(),
                 undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
-                artistRepository.getAllArtists(), genreRepository.getAllGenres(), eventCreateForm,
+                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), eventCreateForm,
                 initialisePaginatior(offset, eventRepository.getNumEvents(), 8),
                     eventRepository.getPage(offset), request, messagesApi.preferred(request))));
     }
@@ -138,7 +138,7 @@ public class AdminController {
 //                destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
 //                null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
 //                new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-//                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getAllArtists(),
+//                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getAllVerfiedArtists(),
 //                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(),
 //                initialisePaginatior(offset, eventRepository.getNumEvents(), 8), eventRepository.getPage(offset), request, messagesApi.preferred(request))));
 //    }

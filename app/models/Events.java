@@ -25,7 +25,8 @@ public class Events extends Model {
 
     private Date startDate;
 
-    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
     private Date endDate;
 
@@ -100,6 +101,18 @@ public class Events extends Model {
             return dateFormatEntry.format(startDate);
         }
         return "";
+    }
+
+    /**
+     * Formats a passed date into the correct format for input type datetime-local
+     * @param toFormat The date t format
+     * @return the formatted date string
+     */
+    public String formatLocalDate(Date toFormat) {
+        if (toFormat == null) {
+            return "";
+        }
+        return dateTimeEntry.format(toFormat);
     }
 
     /**

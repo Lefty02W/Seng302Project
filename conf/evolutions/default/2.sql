@@ -195,9 +195,11 @@ INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
   (2, 'James', 'James', 'james', 1);
 
+INSERT INTO artist_profile(artist_id, profile_id) VALUES
+  (2, 2);
+
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (3, 'Jerry', 'Jerry', 'jerry');
-
 
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (4, 'Yes', 'Jerry', 'jerry');
