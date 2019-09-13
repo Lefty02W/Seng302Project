@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, artist: Artist, events: List[Events], countries: List[String], genres: List[MusicGenre], activeTab: Integer, pagination: PaginationHelper
-)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, artist: Artist, events: List[Events], countries: List[String], genres: List[MusicGenre],
+        activeTab: Integer, pagination: PaginationHelper, profiles : List[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -319,14 +319,14 @@
                                                         </div>
                                                         <select class="selectpicker" data-live-search="true" multiple title="Artist Admins"
                                                         id="adminDropdown" data-width="50%">
-                                                            @if(artist.getAdminsList != null) {
-                                                                @for(admins <- artist.getAdminsList) {
-                                                                    <option value="@admins.getProfileId" selected>@admins.getFirstName @admins.getLastName</option>
+                                                            @for(profile <- profiles) {
+                                                                @if(artist.getAdminsList != null && artist.getAdminsList.contains(profile)) {
+                                                                    <option value="@profile.getProfileId" selected>@profile.getFirstName @profile.getLastName</option>
+                                                                } else {
+                                                                    <option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>
+
                                                                 }
                                                             }
-                                                            @* @for(profile <- profiles) {*@
-                                                            @*<option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>*@
-                                                            @*}*@
                                                         </select>
                                                     </div>
                                                 </div>
