@@ -58,6 +58,18 @@ public class ArtistRepository {
         return outputList;
     }
 
+    /**
+     * Get the all of the artists currently registered and verfied does not fill with linking tables
+     *
+     * @return Artist, list of all Artist
+     */
+    public List<Artist> getAllVerfiedArtists() {
+        return new ArrayList<>(ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("verified", 1)
+                .findList());
+    }
 
     /**
      * Get a single registered artist
