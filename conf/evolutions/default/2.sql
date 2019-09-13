@@ -205,6 +205,9 @@ INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (5, 'Steve', 'Big boi steve', 'jerry');
 
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (6, 'STIFI', 'Big boi steve', 'jerry');
+
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
 
@@ -223,8 +226,14 @@ INSERT INTO artist_genre (artist_id, genre_id) VALUES
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (3, 1);
 
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (6, 1);
+
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (2, 2);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (6, 2);
 
 INSERT INTO follow_artist (artist_follow_id, profile_id, artist_id) VALUES
   (1, 1, 2);
