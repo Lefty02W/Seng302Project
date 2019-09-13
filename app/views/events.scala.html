@@ -107,6 +107,10 @@
                                     @if(isVerifiedArtist) {
                                         <button class="btn btn-primary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
                                             Create Event</button>
+                                    } else{
+
+                                        <button class="btn btn-primary" id="createEventButton" disabled type="button" data-toggle="tooltip" data-placement="bottom" title="Only verified Artist Admins can create events.">
+                                            Create Event</button>
                                     }
                                 </div>
                                 <div class="collapse eventFilters" id="eventFilters" aria-labelledby="searchHeader" data-parent="#filterAccordion">
@@ -553,6 +557,16 @@
 
 
     <script>
+
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+
+            // Initialize popover component
+            $(function () {
+                $('[data-toggle="popover"]').popover()
+            });
+
             function fillVals() {
                 $('#genreForm').val($('#genreDropdown').val());
                 $('#artistForm').val($('#artistDropdown').val());

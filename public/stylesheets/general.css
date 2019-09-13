@@ -157,6 +157,10 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     border-color: #37623B;
 }
 
+.btn-primary:disabled{
+    pointer-events: auto;
+    background-color: #46774A;
+}
 
 .button-add {
     background-color: #205723;
