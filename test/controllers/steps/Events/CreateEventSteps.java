@@ -1,8 +1,11 @@
 package controllers.steps.Events;
 
 import controllers.TestApplication;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
+import cucumber.api.java.en.Then;
+import cucumber.api.java.en.When;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -46,5 +49,6 @@ public class CreateEventSteps {
 
         assertTrue(eventCreateResult.flash().getOptional(arg0).isPresent());
     }
+
 
 }
