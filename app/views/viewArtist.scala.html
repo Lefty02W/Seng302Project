@@ -474,7 +474,7 @@
                     <h4 class="modal-title">Create Event</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
-                @form(routes.EventsController.createEvent()) {
+                @form(routes.EventsController.createArtistEvent(artist.getArtistId)) {
                     @CSRF.formField
                         <!-- body -->
                     <div class="modal-body">

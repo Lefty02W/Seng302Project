@@ -190,6 +190,32 @@ public class EventsController extends Controller {
     }
 
     @RestrictAnnotation()
+    public CompletionStage<Result> createArtistEvent(Http.Request request, int id){
+        return supplyAsync(() -> {
+            int profId = SessionController.getCurrentUserId(request);
+            String url = "/artists/" + Integer.toString(id) + "/events/0";
+
+            Optional<Events> optEvent = createEvent(request);
+
+            if (!optEvent.isPresent()) {
+                return redirect(url).flashing("error", "Error creating event: Unknown error");
+            }
+
+            if (!artistRepository.isArtistAdmin(profId)) {
+                return redirect(url).flashing("error", "Error creating event: You must be a verified artist admin.");
+            }
+
+            if (checkDates(optEvent.get())) {
+                eventRepository.insert(optEvent.get());
+            } else {
+                return redirect(url).flashing("error", "Error creating event: Start date must be before end date");
+            }
+
+            return redirect(url).flashing("info", "Successfully added your new event");
+        });
+    }
+
+    @RestrictAnnotation()
     public CompletionStage<Result> createUserEvent(Http.Request request) {
 
         return supplyAsync(() -> {

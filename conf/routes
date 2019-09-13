@@ -126,13 +126,15 @@ GET     /artists                                controllers.ArtistController.sho
 GET     /artists/:id/delete                     controllers.ArtistController.deleteArtist(request : Request, id : Integer)
 GET     /artists/search                         controllers.ArtistController.search(request : Request)
 GET     /artist/:id/follow                      controllers.ArtistController.followArtist(request : Request, id : Integer)
-GET     /artist/:id/unfollow                      controllers.ArtistController.unfollowArtist(request : Request, id : Integer)
+GET     /artist/:id/unfollow                    controllers.ArtistController.unfollowArtist(request : Request, id : Integer)
 GET     /artists/page/:page_number              controllers.ArtistController.pageArtist(page_number : Integer)
 
 # Detailed Artist's page
 GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)
 POST     /artists/:id/edit                      controllers.ArtistController.editArtist(request : Request, id: Integer)
 GET     /artists/:id/events/:offset             controllers.ArtistController.showArtistEvents(request : Request, id: Integer, offset : Integer)
+POST    /artists/:id/events/create                  controllers.EventsController.createArtistEvent(request : Request, id: Integer)
+
 GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
 GET     /artists/:id/leave                      controllers.ArtistController.leaveArtist(request : Request, id : Integer)
 
