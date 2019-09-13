@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, artist: Artist, events : List[Events], countries: List[String], genres: List[MusicGenre], activeTab : Integer, pagination: PaginationHelper
-    )(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, artist: Artist, events: List[Events], countries: List[String], genres: List[MusicGenre], activeTab: Integer, pagination: PaginationHelper
+)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -67,6 +67,15 @@
                         <h2 class="text-center">Artist</h2>
                     </div>
                 </nav>
+                <div class="backButtonArtist">
+                    <button class="btn btn-primary" onclick="goBack()">Back</button>
+                    @if(artist.getAdminsList.contains(currentUser)) {
+                        <button type="button" class="btn btn-primary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
+                            <i class="fa fa-edit" id="editProfileButton"></i>
+                            Edit Artist
+                        </button>
+                    }
+                </div>
                 <div class="jumbotron text-center" id="artistNameJumbo">
                     <h1>@artist.getArtistName</h1>
                 </div>
@@ -79,12 +88,14 @@
                                 <li><a href="/artists/@artist.getArtistId" id="aboutTabLink">About</a></li>
                             }
                             @if(activeTab == 1) {
-                                <li class="active"><a href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">Events</a></li>
+                                <li class="active"><a href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">
+                                    Events</a></li>
                             } else {
-                                <li><a  href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">Events</a></li>
+                                <li><a href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">Events</a></li>
                             }
                             @if(activeTab == 2) {
-                                <li class="active" ><a href="/artists/@artist.getArtistId/members" id="membersTabLink">Members</a></li>
+                                <li class="active" ><a href="/artists/@artist.getArtistId/members" id="membersTabLink">
+                                    Members</a></li>
                             } else {
                                 <li><a href="/artists/@artist.getArtistId/members" id="membersTabLink">Members</a></li>
                             }
@@ -96,29 +107,28 @@
                         @if(activeTab == 0) {
                             <div id="aboutTab" class="tab-pane fade in active show">
 
-                        } else {
+                            } else {
                             <div id="aboutTab" class="tab-pane fade in">
 
-                        }
-                            <div class="container">
-                                <div id="about" class="row justify-content-center">
-                                    <a>@artist.getBiography</a>
-                                </div>
+                            }
+                        <div class="container">
+                            <div id="about" class="row justify-content-center">
+                                <a>@artist.getBiography</a>
                             </div>
                         </div>
+                    </div>
 
                         @if(activeTab == 1) {
                             <div id="eventsTab" class="tab-pane fade active show">
-
-                        } else {
+                            } else {
                             <div id="eventsTab" class="tab-pane fade">
-                        }
-                            <div class="col">
-                                <div class="row justify-content-center">
-                                @if(artist.getAdminsList.contains(currentUser)) {
-                                    <button class="btn btn-primary">Create Event</button>
-                                }
-                                </div>
+                            }
+                        <div class="col">
+                            <div class="row justify-content-center">
+                            @if(artist.getAdminsList.contains(currentUser)) {
+                                <button class="btn btn-primary">Create Event</button>
+                            }
+                            </div>
                             @for(event <- events) {
                                 <div class="card">
                                     <div class="card-body">
@@ -160,7 +170,7 @@
                                                         <button class="btn btn-primary">Edit</button>
                                                     </a>
                                                     <a href="#">
-                                                        <button class="btn btn-outline-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
+                                                        <button class="btn btn-outline-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')"</button>
                                                     </a>
                                                 </div>
                                             }
@@ -168,29 +178,34 @@
                                     </div>
                                 </div>
                             }
-                                @if(activeTab == 1) {
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">Previous</a></li>
-                                        }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
-                                }
-                            </div>
+                            @if(activeTab == 1) {
+                                <a>@pagination.getInfoString</a>
+                                <ul class="pagination">
+                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
+                                        Start</a></li>
+                                    @if(pagination.isPreviousEnabled) {
+                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                            Previous</a></li>
+                                    } else {
+                                        <li class="page-item disabled"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                            Previous</a></li>
+                                    }
+                                    @if(pagination.isNextEnabled) {
+                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                            Next</a></li>
+                                    } else {
+                                        <li class="page-item disabled"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                            Next</a></li>
+                                    }
+                                </ul>
+                            }
                         </div>
+                    </div>
                         @if(activeTab == 2) {
                             <div id="membersTab" class="tab-pane fade active show">
-                        } else {
+                            } else {
                             <div id="membersTab" class="tab-pane fade">
-                        }
+                            }
                         @for(member <- artist.getMembers().split(",")) {
                             <div class="card">
                                 <div class="card-body">
@@ -198,179 +213,184 @@
                                 </div>
                             </div>
                         }
-                        </div>
                     </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="container" id="artistsFooter">
-            <div class="row justify-content-center">
-                <div class="col button-col">
-                    <button class="btn btn-primary" onclick="goBack()">Back</button>
-
-                    @if(artist.getAdminsList.contains(currentUser)) {
-                        <button type="button" class="btn btn-primary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
-                            <i class="fa fa-edit" id="editProfileButton"></i>
-                            Edit Profile
-                        </button>
-                    }
-                </div>
-                <div class="col social-col">
-                    <div class="mb-5 flex-center" id="socialMediaIcons">
-                            <!-- Facebook -->
-                        <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
-                            <!-- Twitter -->
-                        <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
-                            <!--Instagram-->
-                        <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
-                            <!--Spotify-->
-                        <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
-                            <!--Website link-->
-                        <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
                     </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="modal" id="editArtistModal">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                        <!-- header -->
-                    <div class="modal-header">
-                        <h4 class="modal-title">Edit Artist</h4>
-                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    </div>
                     </div>
 
-                    @form(routes.ArtistController.editArtist(artist.getArtistId)) {
-                        @CSRF.formField
-                        <!-- body -->
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="row justify-content-center">
-                                        <div class="form-group" id="holder"> <small id="label">Artist Name*</small>
-                                            <input type="text" id="artistName" placeholder="Artist Name"
-                                            value='@artist.getArtistName' name="artistName" class="inputField"
-                                            required oninvalid="this.setCustomValidity('Artist name is required')"
-                                            oninput="setCustomValidity('')">
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="form-group" id="holder"> <small id="label">Members*</small>
-                                            <input type="text" id="members" placeholder="member 1, member 2"
-                                            value="@artist.getMembers"
-                                            name="members" class="inputField" required oninvalid="this.setCustomValidity('Members is required')"
-                                            oninput="setCustomValidity('')">
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <label>Countries of Origin</label>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="hidden-div-edit">
-                                            <input type="text" id="countries" name="countries" class="hidden-field">
-                                        </div>
-                                        <select class="selectpicker" data-live-search="true" multiple title="Countries of Origin" id="originDropdown" data-width="50%">
-                                             @for(nation <- countries) {
-                                                <option value="@nation">@nation</option>
-                                             }
-                                        </select>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <label>Genres</label>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="hidden-div-edit">
-                                            <input type="text" id="genreForm" name="genreForm" class="hidden-field">
-                                        </div>
-                                        <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
-                                            @for(genre <- genres) {
-                                                <option value="@genre.getGenreId">@genre.getGenre</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <label>Artist Admins</label>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="hidden-div-edit">
-                                            <input type="text" id="adminForm" name="adminForm" class="hidden-field">
-                                        </div>
-                                        <select class="selectpicker" data-live-search="true" multiple title="Artist Admins"
-                                        id="adminDropdown" data-width="50%">
-                                            @if(artist.getAdminsList != null) {
-                                                 @for(admins <- artist.getAdminsList) {
-                                                    <option value="@admins.getProfileId" selected>@admins.getFirstName @admins.getLastName</option>
-                                                }
-                                            }
-                                            @* @for(profile <- profiles) {*@
-                                            @*<option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>*@
-                                            @*}*@
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row justify-content-center">
-                                        <div class="form-group" id="holder"> <small id="label">Facebook Link</small>
-                                            <input type="url" id="facebookLink" placeholder="Facebook Link"
-                                            value="@artist.getFacebookLink"
-                                            name="facebookLink" class="inputField">
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="form-group" id="holder"> <small id="label">Instagram Link</small>
-                                            <input type="url" id="instagramLink" placeholder="Instagram Link"
-                                            value="@artist.getInstagramLink"
-                                            name="instagramLink" class="inputField">
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="form-group" id="holder"> <small id="label">Spotify Link</small>
-                                            <input type="url" id="spotifyLink" placeholder="Spotify Link"
-                                            value="@artist.getSpotifyLink"
-                                            name="spotifyLink" class="inputField">
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="form-group" id="holder"> <small id="label">Twitter Link</small>
-                                            <input type="url" id="twitterLink" placeholder="Twitter Link"
-                                            value="@artist.getTwitterLink"
-                                            name="twitterLink" class="inputField">
-                                        </div>
-                                    </div>
-                                    <div class="row justify-content-center">
-                                        <div class="form-group" id="holder"> <small id="label">Website Link</small>
-                                            <input type="url" id="websiteLink" placeholder="Website Link"
-                                            value="@artist.getWebsiteLink"
-                                            name="websiteLink" class="inputField">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row justify-content-center">
-                                <textarea id="biography" rows="4" placeholder="Biography*" name="biography"
-                                value="@artist.getBiography" required oninvalid="this.setCustomValidity('Biography is required')"
-                                oninput="setCustomValidity('')"></textarea>
-                            </div>
-                            <div class="row justify-content-center">
-                                <small>Fields with a * are required</small>
+                    <div class="container" id="artistsFooter">
+                        <div class="row justify-content-center">
+                            <div class="mb-5 flex-center" id="socialMediaIcons">
+                                    <!-- Facebook -->
+                                <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
+                                    <!-- Twitter -->
+                                <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
+                                    <!--Instagram-->
+                                <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
+                                    <!--Spotify-->
+                                <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
+                                    <!--Website link-->
+                                <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
                             </div>
                         </div>
                     </div>
-                        <!-- footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" onclick="fillValsArtist()">Save</button>
+
+
+                    <div class="modal" id="editArtistModal">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                    <!-- header -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Edit Artist</h4>
+                                    <button type="button" class="close" data-dismiss="modal"></button>
+                                </div>
+
+                                @form(routes.ArtistController.editArtist(artist.getArtistId)) {
+                                    @CSRF.formField
+                                        <!-- body -->
+                                    <div class="modal-body">
+                                        <div class="container-fluid">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="row justify-content-center">
+                                                        <div class="form-group" id="holder"> <small id="label">
+                                                            Artist Name*</small>
+                                                            <input type="text" id="artistName" placeholder="Artist Name"
+                                                            value='@artist.getArtistName' name="artistName" class="inputField"
+                                                            required oninvalid="this.setCustomValidity('Artist name is required')"
+                                                            oninput="setCustomValidity('')">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="form-group" id="holder"> <small id="label">
+                                                            Members*</small>
+                                                            <input type="text" id="members" placeholder="member 1, member 2"
+                                                            value="@artist.getMembers"
+                                                            name="members" class="inputField" required oninvalid="this.setCustomValidity('Members is required')"
+                                                            oninput="setCustomValidity('')">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <label>Countries of Origin</label>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="hidden-div-edit">
+                                                            <input type="text" id="countries" name="countries" class="hidden-field">
+                                                        </div>
+                                                        <select class="selectpicker" data-live-search="true" multiple title="Countries of Origin" id="originDropdown" data-width="50%">
+                                                        @for(nation <- countries) {
+                                                            @if(artist.getCountryList.contains(nation)) {
+                                                                <option value="@nation" selected>@nation</option>
+                                                            } else {
+                                                                <option value="@nation">@nation</option>
+                                                            }
+                                                        }
+                                                        </select>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <label>Genres</label>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="hidden-div-edit">
+                                                            <input type="text" id="genreForm" name="genreForm" class="hidden-field">
+                                                        </div>
+                                                        <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
+                                                        @for(genre <- genres) {
+                                                            @if(artist.getGenreList.contains(genre)) {
+                                                                <option value="@genre.getGenreId" selected>@genre.getGenre</option>
+                                                            } else {
+                                                                <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                            }
+                                                        }
+                                                        </select>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <label>Artist Admins</label>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="hidden-div-edit">
+                                                            <input type="text" id="adminForm" name="adminForm" class="hidden-field">
+                                                        </div>
+                                                        <select class="selectpicker" data-live-search="true" multiple title="Artist Admins"
+                                                        id="adminDropdown" data-width="50%">
+                                                            @if(artist.getAdminsList != null) {
+                                                                @for(admins <- artist.getAdminsList) {
+                                                                    <option value="@admins.getProfileId" selected>@admins.getFirstName @admins.getLastName</option>
+                                                                }
+                                                            }
+                                                            @* @for(profile <- profiles) {*@
+                                                            @*<option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>*@
+                                                            @*}*@
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="row justify-content-center">
+                                                        <div class="form-group" id="holder"> <small id="label">
+                                                            Facebook Link</small>
+                                                            <input type="url" id="facebookLink" placeholder="Facebook Link"
+                                                            value="@artist.getFacebookLink"
+                                                            name="facebookLink" class="inputField">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="form-group" id="holder"> <small id="label">
+                                                            Instagram Link</small>
+                                                            <input type="url" id="instagramLink" placeholder="Instagram Link"
+                                                            value="@artist.getInstagramLink"
+                                                            name="instagramLink" class="inputField">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="form-group" id="holder"> <small id="label">
+                                                            Spotify Link</small>
+                                                            <input type="url" id="spotifyLink" placeholder="Spotify Link"
+                                                            value="@artist.getSpotifyLink"
+                                                            name="spotifyLink" class="inputField">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="form-group" id="holder"> <small id="label">
+                                                            Twitter Link</small>
+                                                            <input type="url" id="twitterLink" placeholder="Twitter Link"
+                                                            value="@artist.getTwitterLink"
+                                                            name="twitterLink" class="inputField">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row justify-content-center">
+                                                        <div class="form-group" id="holder"> <small id="label">
+                                                            Website Link</small>
+                                                            <input type="url" id="websiteLink" placeholder="Website Link"
+                                                            value="@artist.getWebsiteLink"
+                                                            name="websiteLink" class="inputField">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <textarea id="biography" rows="4" placeholder="Biography*" name="biography"
+                                                value="@artist.getBiography" required oninvalid="this.setCustomValidity('Biography is required')"
+                                                oninput="setCustomValidity('')">@artist.getBiography</textarea>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <small>Fields with a * are required</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                        <!-- footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-danger" data-dismiss="modal">
+                                            Cancel</button>
+                                        <button type="submit" class="btn btn-primary" onclick="fillValsArtist()">Save</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
                     </div>
-                    }
                 </div>
             </div>
         </div>
-
 
     </body>
 
