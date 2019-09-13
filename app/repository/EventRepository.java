@@ -374,7 +374,7 @@ public class EventRepository {
      * @param eventId id of event to delete
      * @return Void CompletionStage
      */
-    public CompletionStage<Void> deleteEvent(int eventId) {
+    public CompletionStage<Integer> deleteEvent(int eventId) {
         return supplyAsync(() -> {
             ebeanServer.find(Events.class).where().eq("event_id", Integer.toString(eventId)).delete();
             return null;

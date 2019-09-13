@@ -53,6 +53,7 @@ public class EventsController extends Controller {
         this.eventRepository = eventRepository;
     }
 
+
     /**
      * Endpoint for landing page for Events
      *
@@ -130,9 +131,7 @@ public class EventsController extends Controller {
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect("/events").flashing("error", "Error: Start date cannot be after end date."));
         }
-        return eventRepository.update(id, event).thenApplyAsync(x -> {
-            return redirect("/events").flashing("success", "Event has been updated.");
-        });
+        return eventRepository.update(id, event).thenApplyAsync(x -> redirect("/events").flashing("success", "Event has been updated."));
 
     }
 
@@ -226,4 +225,17 @@ public class EventsController extends Controller {
         }
         return false;
     }
+
+    /**
+     * Endpoint method to delete an event
+     *
+     * @param request request
+     * @param artistId id of artist who owns event
+     * @param eventId id of event to delete
+     * @return redirect back to artist page
+     */
+    public CompletionStage<Result> deleteEvent(Http.Request request, Integer artistId, Integer eventId) {
+        return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + "/events/0"));
+    }
+
 }

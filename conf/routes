@@ -139,3 +139,4 @@ GET     /events/:offset                         controllers.EventsController.sho
 POST    /events/create                          controllers.EventsController.createEvent(request : Request)
 POST    /events/:id/edit                        controllers.EventsController.editEvent(request : Request, id : Integer)
 GET     /events/search                          controllers.EventsController.search(request : Request)
+GET     /artists/:artistId/events/:eventId/delete   controllers.EventsController.deleteEvent(request : Request, artistId : Integer, eventId : Integer)
