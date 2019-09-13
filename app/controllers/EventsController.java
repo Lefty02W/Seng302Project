@@ -1,6 +1,9 @@
 package controllers;
 
-import models.*;
+import models.EventFormData;
+import models.Events;
+import models.PaginationHelper;
+import models.RoutedObject;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -81,6 +84,11 @@ public class EventsController extends Controller {
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
+
+    public CompletionStage<Result> editArtistEvent(Http.Request request, Integer artistId, Integer eventId) {
+        return supplyAsync(() -> redirect("/artists/" + artistId));
+    }
+
 
     /**
      * Endpoint for landing page for Events
