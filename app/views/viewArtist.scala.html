@@ -215,6 +215,8 @@
                             <i class="fa fa-edit" id="editProfileButton"></i>
                             Edit Profile
                         </button>
+
+                        <button class="btn btn-secondary" onclick="fillDeleteValues('/artists/@artist.getArtistId/leave')">Leave Artist</button>
                     }
                 </div>
                 <div class="col social-col">
@@ -385,14 +387,14 @@
                 </div>
                     <!-- body -->
                 <div class="modal-body">
-                    <h5>Are you sure you want to delete</h5>
+                    <h5>Are you sure? This cannot be undone</h5>
                 </div>
                     <!-- footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
                     <a href="#" id="confirmDeleteHrf">
                         <button type="submit" id="confirmDeleteBtn" class="btn btn-danger" onclick="runDelete()">
-                            Delete</button>
+                            Confirm</button>
                     </a>
 
                 </div>

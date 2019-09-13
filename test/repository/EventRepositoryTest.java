@@ -12,7 +12,7 @@ import static junit.framework.TestCase.assertTrue;
 public class EventRepositoryTest {
 
     private final int ARTIST_WITH_EVENTS = 1;
-    private final int ARTIST_WITHOUT_EVENTS = 2;
+    private final int ARTIST_WITHOUT_EVENTS = 4;
 
     @Test
     public void getArtistEventsArtistHasEvents() {

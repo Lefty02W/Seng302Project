@@ -133,6 +133,7 @@ GET     /artists/:id                            controllers.ArtistController.sho
 POST     /artists/:id/edit                      controllers.ArtistController.editArtist(request : Request, id: Integer)
 GET     /artists/:id/events/:offset             controllers.ArtistController.showArtistEvents(request : Request, id: Integer, offset : Integer)
 GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
+GET     /artists/:id/leave                      controllers.ArtistController.leaveArtist(request : Request, id : Integer)
 
 #Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)

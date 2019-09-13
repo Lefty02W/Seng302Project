@@ -251,8 +251,26 @@ INSERT INTO events (event_id, event_name, description, destination_id, start_dat
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
   (3, 'Burning Man', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
 
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (4, 'Burning Yeet', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (1, 2);
 
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (1, 3);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 3);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (2, 4);
+
+INSERT INTO type_of_events (type_id, type_name) VALUES
+  (1, 'Gig');
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (4, 1);
+
+INSERT INTO event_genres (event_id, genre_id) VALUES
+  (4, 1);

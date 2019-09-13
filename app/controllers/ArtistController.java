@@ -290,7 +290,7 @@ public class ArtistController extends Controller {
      */
     public CompletionStage<Result> leaveArtist(Http.Request request, int artistId) {
         return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artist"));
+                .thenApplyAsync(x -> redirect("/artists"));
     }
 
     /**
