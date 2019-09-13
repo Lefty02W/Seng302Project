@@ -85,7 +85,7 @@ public class EventsController extends Controller {
     /**
      * Endpoint for landing page for Events
      *
-     * @param request client request
+     * @param request client requests
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request, Integer offset){
