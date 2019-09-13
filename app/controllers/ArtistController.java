@@ -37,13 +37,15 @@ public class ArtistController extends Controller {
     private final GenreRepository genreRepository;
     private final EventRepository eventRepository;
     private final Form<ArtistFormData> searchForm;
+    private final DestinationRepository destinationRepository;
 
 
     @Inject
     public ArtistController(FormFactory artistProfileFormFactory, MessagesApi messagesApi,
                             ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
-                            GenreRepository genreRepository, EventRepository eventRepository){
+                            GenreRepository genreRepository, EventRepository eventRepository,
+                            DestinationRepository destinationRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -52,6 +54,7 @@ public class ArtistController extends Controller {
         this.genreRepository = genreRepository;
         this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
         this.eventRepository = eventRepository;
+        this.destinationRepository = destinationRepository;
     }
 
     /**
@@ -131,7 +134,10 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0, new PaginationHelper(), profileRepository.getAllEbeans(), request, messagesApi.preferred(request))))
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllArtists(), request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -156,7 +162,8 @@ public class ArtistController extends Controller {
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
-                                paginationHelper, profileRepository.getAllEbeans(), request, messagesApi.preferred(request))))
+                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllArtists(), request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -175,7 +182,10 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2, new PaginationHelper(), profileRepository.getAllEbeans(), request, messagesApi.preferred(request))))
+                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllArtists(), request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
