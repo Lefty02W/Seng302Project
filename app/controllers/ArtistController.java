@@ -90,23 +90,27 @@ public class ArtistController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
                     if (profile.isPresent()) {
                         int followed = 0;
+                        int created = 0;
                         Form<ArtistFormData> searchArtistForm = searchForm.bindFromRequest(request);
                         ArtistFormData formData = searchArtistForm.get();
                         searchArtistForm.field("name").value().ifPresent(formData::setName);
                         searchArtistForm.field("genre").value().ifPresent(formData::setGenre);
                         searchArtistForm.field("country").value().ifPresent(formData::setCountry);
                         searchArtistForm.field("followed").value().ifPresent(formData::setFollowed);
+                        searchArtistForm.field("created").value().ifPresent(formData::setCreatedArtist);
                         if(formData.followed.equals("on")) {
                             followed = 1;
                         }
 
-                        if(formData.name.equals("") && formData.country.equals("") && formData.genre.equals("") && followed == 0 ) {
+                        if(formData.createdArtist.equals("on")) {
+                            created = 1;
+                        }
+                        if(formData.name.equals("") && formData.country.equals("") && formData.genre.equals("") && followed == 0 && created == 0) {
                             return redirect("/artists").flashing("error", "Please enter at least one search filter.");
                         }
 
-
                         searchForm.fill(formData);
-                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, created, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
                     }

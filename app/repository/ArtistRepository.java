@@ -417,8 +417,8 @@ public class ArtistRepository {
      * @param followed 1 or 0 if followed or not
      * @return List of artists
      */
-    public List<Artist> searchArtist(String name, String genre, String country, int followed, int userId){
-        if(name.equals("") && genre.equals("") && country.equals("") && followed == 0) {
+    public List<Artist> searchArtist(String name, String genre, String country, int followed, int created, int userId){
+        if(name.equals("") && genre.equals("") && country.equals("") && followed == 0 && created == 0) {
             return getAllArtists();
         }
         String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
@@ -426,6 +426,7 @@ public class ArtistRepository {
                 "LEFT OUTER JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
                 "LEFT OUTER JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
                 "LEFT OUTER JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id " +
+                "LEFT OUTER JOIN artist_profile ON artist.artist_id = artist_profile.artist_id " +
                 "LEFT OUTER JOIN follow_artist ON artist.artist_id = follow_artist.artist_id ";
         boolean namePresent = false;
         boolean genrePresent = false;
@@ -455,47 +456,46 @@ public class ArtistRepository {
 
         if (followed == 1){
             if(namePresent || genrePresent || countryPresent){
-                queryString += "AND profile_id = ? ";
+                queryString += "AND follow_artist.profile_id = ? ";
             } else {
-                queryString += "WHERE profile_id = ? ";
+                queryString += "WHERE follow_artist.profile_id = ? ";
+            }
+        }
+
+        if (created == 1){
+            if(namePresent || genrePresent || countryPresent || followed == 1){
+                queryString += "AND artist_profile.profile_id = ? ";
+            } else {
+                queryString += "WHERE artist_profile.profile_id = ? ";
             }
         }
         queryString += "LIMIT 100";
 
+        int numberAdd = 0;
 
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
-            sqlQuery.setParameter(1, "%" + name + "%");
+            sqlQuery.setParameter(numberAdd + 1, "%" + name + "%");
+            numberAdd++;
         }
         if (!genre.equals("")){
-            if (namePresent){
-                sqlQuery.setParameter(2,genre);
-            } else{
-                sqlQuery.setParameter(1, genre);
-            }
+            sqlQuery.setParameter(numberAdd + 1,genre);
+            numberAdd++;
         }
         if (!country.equals("")){
-            if (namePresent && genrePresent){
-                sqlQuery.setParameter(3,country);
-            } else if (namePresent || genrePresent){
-                sqlQuery.setParameter(2,country);
-            } else {
-                sqlQuery.setParameter(1,country);
-            }
+            sqlQuery.setParameter(numberAdd + 1,country);
+            numberAdd++;
         }
 
         if (followed == 1){
-            if (namePresent && genrePresent && countryPresent){
-                sqlQuery.setParameter(4,userId);
-            } else if ((namePresent && genrePresent && !countryPresent) || (namePresent && !genrePresent && countryPresent) || (!namePresent && genrePresent && countryPresent)){
-                sqlQuery.setParameter(3,userId);
-            } else if(namePresent || genrePresent || countryPresent) {
-                sqlQuery.setParameter(2,userId);
-            } else {
-                sqlQuery.setParameter(1,userId);
-            }
+            sqlQuery.setParameter(numberAdd + 1,userId);
+            numberAdd++;
         }
 
+        if (created == 1){
+            sqlQuery.setParameter(numberAdd + 1,userId);
+        }
+        System.out.println(sqlQuery);
 
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
@@ -509,6 +509,7 @@ public class ArtistRepository {
                         , new ArrayList<>())));
             }
         }
+        System.out.println("Hi: "+sqlQuery);
         return foundArtists;
     }
 
