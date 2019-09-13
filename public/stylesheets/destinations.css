@@ -7,6 +7,10 @@
     height: 50vh;
 }
 
+#headerRow {
+    padding: 1%;
+}
+
 #map-table-card {
     height: 100vh;
 }
@@ -98,7 +102,7 @@ div.dataTables_filter {
     padding: 5px 15px 5px 15px;
 }
 
-#destinationTabs, #photosCard {
+#destinationTabs, #photosCard, #photosCaption, #myPhotosTab {
     margin-left: auto;
     margin-right: auto;
 }
@@ -150,4 +154,74 @@ img.thumbnail {
 
 #addTitle, #\#deleteBody, #\#deleteTitle {
     color: black;
+}
+#photosTab{
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-bottom: 5%;
+}
+
+/* The Modal (background) */
+#expandImageModal.modal {
+    display: none;
+    position: fixed;
+    /*z-index: 0;*/
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.9);
+}
+
+/* Modal Content (Photo) */
+#expandedImage.modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 900px;
+}
+
+/* The Close Button */
+.close {
+    position: absolute;
+    top: 15px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 80px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Caption of Modal Photo (Photo Text) */
+#caption {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+    text-align: center;
+    color: #ccc;
+    padding: 10px 0;
+    height: 50px;
+}
+
+/* Add Animation - Zoom in the Modal */
+#expandedImage.modal-content, #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+}
+
+@keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
 }

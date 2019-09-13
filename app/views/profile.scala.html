@@ -121,9 +121,8 @@
                 <div id="profilePhotoContainer">
                     <div class="container" id="profilePhoto">
                     @if(profilePicture != null) {
-
-                        <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
-                        alt="Profile picture">
+                        <img onclick="expand(src, alt, name)" id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
+                        alt="@profilePicture.getName" name="@profilePicture.getPhotoId">
                     } else {
                         <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/profile-icon.png")"
                         alt="Profile picture">
@@ -232,7 +231,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
 

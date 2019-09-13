@@ -92,7 +92,6 @@
                     <div class="row">
                         <div class="col">
                             <div id="dest-table-card" class="card-large dest-table table-hover">
-
                                 <div id="btn-row" class="row justify-content-center">
                                     @if(!isPublic) {
                                         <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>View Public Destinations</a>
@@ -120,7 +119,7 @@
 
                                                     <td>
                                                         <a href="@routes.DestinationsController.showDestinationEdit(destination.getDestinationId, isPublic)">
-                                                            <button class="button-editDestinations btn btn-primary" style="height: 4vh">
+                                                            <button class="button-editDestinations btn btn-outline-primary" style="height: 4vh">
                                                                 Edit</button>
                                                         </a>
                                                     </td>
@@ -187,8 +186,7 @@
                             </div>
 
                             <div id="table-card" class="card-large">
-
-                                <div class="row">
+                                <div class="row" id="headerRow">
                                     <ul class="nav nav-tabs" id="destinationTabs">
                                         <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">
                                             Details</a></li>
@@ -260,8 +258,11 @@
                                         </div>
                                     </div>
                                     <div id="myPhotosTab" class="tab-pane fade">
-                                        <div class="container" id="userPhotos">
-                                            <a></a>
+                                        <button class="btn btn-primary" style="right" data-toggle="modal"
+                                        data-target="#linkDestinationPhotoModal">Link Photo</button>
+
+                                        <div class="col">
+                                            <div class="row" id="userPhotos"></div>
                                         </div>
                                     </div>
                                     <div id="worldPhotosTab" class="tab-pane fade">
@@ -1126,30 +1127,27 @@
                     document.getElementById("photoUpdate").innerHTML = " ";
                     document.getElementById("worldPhotos").innerHTML = " ";
 
-                    document.getElementById("userPhotos").innerHTML = " <button class=\"btn btn-primary\" style=\"right\" data-toggle=\"modal\"\n" +
-                            "                            data-target=\"#linkDestinationPhotoModal\">Link Photo</button>";
+                    // document.getElementById("userPhotos").innerHTML = "";
                     @for(photo <- usersPhotos){
                     @if(destination.getUsersPhotos.contains(photo)){
                     document.getElementById("userPhotos").innerHTML +=
-                            "                            <div class=\"card\">\n" +
+                            "                            <div class=\"card\" id=\"imageCard\">\n" +
                             "                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
                             "                            src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
                             "                            name=\"@photo.getPhotoId\">\n" +
-                            "                            <div>@if(photo.getVisible == 1) {\n" +
+                            "                            <div id=\"photosCaption\">@if(photo.getVisible == 1) {\n" +
                             "                                            <p class=\"card-text\"> @photo.displayVisibility(photo.getVisible) 🌏</p>\n" +
                             "                                            <a href=\"@routes.DestinationsController.updatePhotoPrivacy(photo.getPhotoId)\">\n" +
-                            "                                                <button class=\"btn btn-primary\">Make Private</button></a>\n" +
+                            "                                                <button class=\"btn btn-outline-primary\">Make Private</button></a>\n" +
                             "                                        } else {\n" +
                             "                                            <p class=\"card-text\"> @photo.displayVisibility(photo.getVisible) 🔒</p>\n" +
                             "                                            <a href=\"@routes.DestinationsController.updatePhotoPrivacy(photo.getPhotoId)\">\n" +
-                            "                                                <button class=\"btn btn-primary\">Make Public</button></a>\n" +
-                            "                                        }</div>" +
-                            "                            <div class=\"card-body\">\n" +
+                            "                                                <button class=\"btn btn-outline-primary\">Make Public</button></a>\n" +
+                            "                                        }\n" +
                             "                            <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\"@photo.getPhotoId\">\n" +
                             "                            <a id=\"addPhoto\" href=\"@routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, destination.getDestinationId)\">\n" +
-                            "                            <button class=\"btn btn-danger\" type=\"submit\">unLink</button>\n" +
-                            "                            </a>\n" +
-                            "                            </div>\n" +
+                            "                            <button class=\"btn btn-outline-secondary\" type=\"submit\">Unlink</button>\n" +
+                            "                            </a>\ </div>" +
                             "                            <!-- The Expanded Photo Modal -->\n" +
                             "                            <div id=\"expandImageModal\" class=\"modal\">\n" +
                             "                            <span class=\"close\">&times;</span>\n" +
@@ -1164,7 +1162,7 @@
                     @if(!destination.getUsersPhotos.contains(photo)) {
                     document.getElementById("photoUpdate").innerHTML +=
                             "                            <div class=\"card\" id=\"imageCard\">\n" +
-                            "                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                            "                            <img id=\"displayImage\" class=\"thumbnail\"\n" +
                             "                            src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
                             "                            name=\"@photo.getPhotoId\">\n" +
                             "                            <div class=\"card-body\" id=\"photoUpdate\">\n" +
@@ -1172,14 +1170,6 @@
                             "                            <a id=\"addPhoto\" href=\"@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, destination.getDestinationId)\">\n" +
                             "                            <button class=\"btn btn-primary\" type=\"submit\">Link</button>\n" +
                             "                            </a>\n" +
-                            "                            </div>\n" +
-                            "                            <!-- The Expanded Photo Modal -->\n" +
-                            "                            <div id=\"expandImageModal\" class=\"modal\">\n" +
-                            "                            <span class=\"close\">&times;</span>\n" +
-                            "                            <img class=\"modal-content\" id=\"expandedImage\">\n" +
-                            "                            <div id=\"caption\"></div>\n" +
-                            "                            <div id=\"id\"></div>\n" +
-                            "                            </div>\n" +
                             "                            </div>";
                         }
                     }
@@ -1302,6 +1292,27 @@
                     }
                     document.getElementById("destinationId").value = @destination.getDestinationId();
                 }
+                }
+            }
+
+            // Method that gets the photo data from on the photo clicked and displays
+            // it in its original resolution in a new modal
+            function expand(photo, text, id) {
+                // Get the modal
+                var modal = document.getElementById('expandImageModal');
+                var modalImg = document.getElementById('expandedImage');
+                var captionText = document.getElementById("caption");
+
+                modal.style.display = "block";
+                modalImg.src = photo;
+                captionText.innerHTML = text;
+
+                // Get the <span> element that closes the modal
+                var span = document.getElementsByClassName("close")[0];
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function () {
+                    modal.style.display = "none";
                 }
             }
 

@@ -124,9 +124,14 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     border-color: #7d2f2e;
 }
 
-.btn-primary, .btn-primary:hover {
+.btn-primary, .btn-primary:hover, .btn-outline-primary:hover {
     background-color: #d74961;
     border-color: #d74961;
+}
+
+.btn-outline-primary {
+    border-color: #d74961;
+    color: #d74961;
 }
 
 .btn-secondary, .btn-secondary:hover, .btn-danger, .btn-danger:hover {
