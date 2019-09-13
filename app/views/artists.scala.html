@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 
-@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist], adminArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
