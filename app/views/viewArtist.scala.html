@@ -2,7 +2,7 @@
 @import views.html.helper.{CSRF, form}
 @(currentUser: Profile, artist: Artist, events: List[Events], countries: List[String], genres: List[MusicGenre],
         activeTab: Integer, pagination: PaginationHelper, profiles : List[Profile], destinations : List[Destination],
-        verifiedArtists : List[Artist], editEvent: RoutedObject[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
+        verifiedArtists : List[Artist], editEvent: RoutedObject[Events], editEventForm : Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -71,6 +71,17 @@
                 <div class="jumbotron text-center" id="artistNameJumbo">
                     <h1>@artist.getArtistName</h1>
                 </div>
+                @if(request.flash.getOptional("success").isPresent) {
+                    <div class="alert alert-success" id="successAlert">
+                    @request.flash.getOptional("success").get()
+                    </div>
+                }
+
+                @if(request.flash.getOptional("error").isPresent) {
+                    <div class="alert alert-danger" id="failureAlert">
+                    @request.flash.getOptional("error").get()
+                    </div>
+                }
                 <div class="container-fluid">
                     <div class="row">
                         <ul class="nav nav-tabs" id="viewArtistTabs">
@@ -588,7 +599,7 @@
                         <h4 class="modal-title">Edit Event</h4>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
-                    @form(routes.EventsController.editEvent(editEvent.getObject.getEventId)) {
+                    @form(routes.EventsController.editEventFromArtist(artist.getArtistId, editEvent.getObject.getEventId)) {
                         @CSRF.formField
                             <!-- body -->
                         <div class="modal-body">

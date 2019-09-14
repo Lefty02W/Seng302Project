@@ -34,6 +34,7 @@ public class EventsController extends Controller {
     private final DestinationRepository destinationRepository;
     private final EventRepository eventRepository;
     private final Form<Events> eventForm;
+    private final Form<Events> eventEditForm;
     private final Form<EventFormData> eventFormDataForm;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
@@ -48,6 +49,7 @@ public class EventsController extends Controller {
         this.artistRepository = artistRepository;
         this.destinationRepository = destinationRepository;
         this.eventForm = formFactory.form(Events.class);
+        this.eventEditForm = formFactory.form(Events.class);
         this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
     }
@@ -75,6 +77,7 @@ public class EventsController extends Controller {
      * @param eventId The ID of the event to edit
      * @return
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showEventEdit(Http.Request request, Integer eventId, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId)
@@ -90,6 +93,15 @@ public class EventsController extends Controller {
                 }).orElseGet(() -> redirect("/")));
     }
 
+    /**
+     * Endpoint to show the edit dialog for an event from the artists page
+     *
+     * @param request http request
+     * @param artistId id of the artist who owns the event
+     * @param eventId id of the event to edit
+     * @return render of the artist page with the event to edit
+     */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editArtistEvent(Http.Request request, Integer artistId, Integer eventId) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(artistId);
@@ -100,7 +112,7 @@ public class EventsController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/artists/" + artistId + "/events/0")));
     }
 
@@ -141,6 +153,7 @@ public class EventsController extends Controller {
         Integer destinationId = null;
         String startDate = null;
         String endDate = null;
+        int ageRestriction = 0;
 
         Optional<String> endDateString = values.field("endDate").value();
         if (endDateString.isPresent()) {
@@ -154,8 +167,12 @@ public class EventsController extends Controller {
         if (destinationIdString.isPresent()) {
             destinationId = parseInt(destinationIdString.get());
         }
-
+        Optional<String> ageSring = values.field("ageForm").value();
+        if (ageSring.isPresent()) {
+            ageRestriction = Integer.parseInt(ageSring.get());
+        }
         event.setDestinationId(destinationId);
+        event.setAgeRestriction(ageRestriction);
         try {
             event.setStartDate(dateTimeEntry.parse(startDate));
         } catch (ParseException e) {
@@ -182,11 +199,31 @@ public class EventsController extends Controller {
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect("/events/0").flashing("error", "Error: Start date cannot be after end date."));
         }
-        return eventRepository.update(id, event).thenApplyAsync(x -> {
-            return redirect("/events/0").flashing("success", "Event has been updated.");
-        });
-
+        return eventRepository.update(id, event).thenApplyAsync(x -> redirect("/events/0").flashing("success", "Event has been updated."));
     }
+
+
+    /**
+     * Endpoint to allow and artist to edit their events
+     *
+     * @param request http request
+     * @param eventId id of event to edit
+     * @param artistId id of artist that is editing event
+     * @return redirect to the artists page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> editEventFromArtist(Http.Request request, Integer artistId, Integer eventId) {
+        Form<Events> form = eventEditForm.bindFromRequest(request);
+        System.out.println(form);
+        Events event = setValues(SessionController.getCurrentUserId(request), form);
+        if (event.getStartDate().after(event.getEndDate())){
+            return supplyAsync(() -> redirect("/artists/" + artistId +"/events/0").flashing("error", "Error: Start date cannot be after end date."));
+        }
+        return eventRepository.update(eventId, event).thenApplyAsync(x -> redirect("/artists/" + artistId +"/events/0").flashing("success", "Event has been updated."));
+    }
+
+
+
     @RestrictAnnotation()
     public CompletionStage<Result> createAdminEvent(Http.Request request) {
         return supplyAsync(() -> {

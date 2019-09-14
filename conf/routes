@@ -146,3 +146,4 @@ POST    /events/:id/edit                        controllers.EventsController.edi
 GET     /events/search                          controllers.EventsController.search(request : Request)
 GET     /artists/:artistId/events/:eventId/delete   controllers.EventsController.deleteEvent(request : Request, artistId : Integer, eventId : Integer)
 GET     /artists/:artistId/events/edit/:eventId     controllers.EventsController.editArtistEvent(request : Request, artistId : Integer, eventId : Integer)
+POST    /artists/:artistId/events/edit/:eventId     controllers.EventsController.editEventFromArtist(request : Request, artistId : Integer, eventId : Integer)
