@@ -529,7 +529,7 @@ public class DestinationsController extends Controller {
             List<Integer> toAdd = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToAddList());
             List<Integer> toRemove = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToRemoveList());
             createChangeRequest(profileId, changeForm.get().getDestinationId(), toAdd, toRemove);
-            return redirect(destShowRoute).flashing("success", "Request sent.");
+            return redirect("/destinations/show/true/0").flashing("success", "Request sent.");
         });
     }
 
