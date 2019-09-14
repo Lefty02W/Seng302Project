@@ -1,9 +1,6 @@
 package controllers;
 
-import models.EventFormData;
-import models.Events;
-import models.PaginationHelper;
-import models.RoutedObject;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -15,6 +12,7 @@ import repository.*;
 import roles.RestrictAnnotation;
 import utility.Country;
 import views.html.events;
+import views.html.viewArtist;
 
 import javax.inject.Inject;
 import java.text.ParseException;
@@ -55,6 +53,22 @@ public class EventsController extends Controller {
     }
 
     /**
+     * Helper function to set up pagination object
+     *
+     * @param offset current offset
+     * @param maxSize max number of items to paginate
+     * @param pageSize page size
+     * @return PaginationHelper object
+     */
+    private PaginationHelper initPagination(int offset, int maxSize, int pageSize) {
+        PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, maxSize);
+        paginationHelper.alterNext(pageSize);
+        paginationHelper.alterPrevious(pageSize);
+        paginationHelper.checkButtonsEnabled();
+        return paginationHelper;
+    }
+
+    /**
      * Endpoint landing page for editing an event
      *
      * @param request client request
@@ -63,30 +77,31 @@ public class EventsController extends Controller {
      */
     public CompletionStage<Result> showEventEdit(Http.Request request, Integer eventId, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
-
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> {
                     List<Events> eventsList = eventRepository.getPage(offset);
-                    PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
-                    paginationHelper.alterNext(8);
-                    paginationHelper.alterPrevious(8);
-                    paginationHelper.checkButtonsEnabled();
-
                     Events editEvent = eventRepository.lookup(eventId);
-
                     RoutedObject<Events> toSend = new RoutedObject<>(editEvent, true, false);
-
-
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, toSend,
-                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
+                            eventFormDataForm, artistRepository.isArtistAdmin(profId), initPagination(offset, eventRepository.getNumEvents(), 8),
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
 
     public CompletionStage<Result> editArtistEvent(Http.Request request, Integer artistId, Integer eventId) {
-        return supplyAsync(() -> redirect("/artists/" + artistId));
+        Integer profId = SessionController.getCurrentUserId(request);
+        Artist artist = artistRepository.getArtistById(artistId);
+        if (artist == null) {
+            return supplyAsync(() -> redirect("/artists"));
+        }
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
+                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
+                                initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), request, messagesApi.preferred(request))))
+                        .orElseGet(() -> redirect("/artists/" + artistId + "/events/0")));
     }
 
 
