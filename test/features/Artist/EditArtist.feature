@@ -13,3 +13,4 @@ Feature: Edit an artist page that I own
     And user changes biography to "Brand new band from the Amazon Rainforest"
     And user saves the edit of artist wih id "7"
     Then the artist changes are saved in the database
+

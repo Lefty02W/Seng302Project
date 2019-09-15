@@ -592,7 +592,7 @@ public class ArtistRepository {
     private CompletionStage<Void> deleteAllSpecifiedEntriesForAnArtist(int id, String table) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            String qry = "DELETE from " + table + " where artist_id = ?";
+            String qry = "DELETE FROM " + table + " WHERE artist_id = ?";
             try {
                 SqlUpdate query = Ebean.createSqlUpdate(qry);
                 query.setParameter(1, id);

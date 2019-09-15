@@ -329,10 +329,7 @@ public class ArtistController extends Controller {
         }
 
         Artist artist = setValues(artistId, artistProfileForm);
-        return supplyAsync(() -> {
-            artistRepository.editArtistProfile(id, artist, artistProfileForm, currentUserId);
-            return redirect("/artists/" + id).flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
-        });
+        return artistRepository.editArtistProfile(id, artist, artistProfileForm, currentUserId).thenApplyAsync(artId -> redirect("/artists/" + artId).flashing("info", "Artist " + artist.getArtistName() + " has been updated."));
     }
 
     /**
