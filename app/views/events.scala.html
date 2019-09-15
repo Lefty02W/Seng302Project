@@ -104,12 +104,8 @@
                                             data-target="#eventFilters" aria-expanded="false"
                                             aria-controls="eventFilters">Advanced Search
                                     </button>
-                                    @if(isVerifiedArtist) {
+                                    @if(isVerifiedArtist || currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                                         <button class="btn btn-primary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
-                                            Create Event</button>
-                                    } else{
-
-                                        <button class="btn btn-primary" id="createEventButton" disabled type="button" data-toggle="tooltip" data-placement="bottom" title="Only verified Artist Admins can create events.">
                                             Create Event</button>
                                     }
                                 </div>
@@ -224,9 +220,11 @@
                                 </div>
                                 <div class="row">
                                     <div class="col col-10">
-                                        <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
-                                            <button class="btn btn-primary">Edit</button>
-                                        </a>
+                                        @if(isVerifiedArtist || currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                                            <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a>
+                                        }
                                     </div>
                                 </div>
                             </div>
