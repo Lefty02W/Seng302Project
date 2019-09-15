@@ -122,7 +122,7 @@ public class AdminController {
                 undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
                 artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), eventCreateForm,
                 initialisePaginatior(offset, eventRepository.getNumEvents(), 8),
-                    eventRepository.getPage(offset), request, messagesApi.preferred(request))));
+                    eventRepository.getPage(offset), new RoutedObject<>(null, false, false), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -697,6 +697,19 @@ public class AdminController {
                     new RoutedObject<TreasureHunt>(hunt, true, false), Country.getInstance().getAllCountries(),
                     undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
                     new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, treasureHuntRepository.getNumHunts(), 5), new ArrayList<Events>(), request, messagesApi.preferred(request)));
+        });
+    }
+
+
+    public CompletionStage<Result> showEditEvent(Http.Request request, Integer id){
+        return supplyAsync(() ->  {
+                Events event = eventRepository.lookup(id);
+                return ok(adminTwo.render(destinationRepository.getAllDestinations(),
+                Country.getInstance().getAllCountries(),
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
+                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), eventCreateForm,
+                initialisePaginatior(0, eventRepository.getNumEvents(), 8),
+                eventRepository.getPage(0), new RoutedObject<>(event, true, false), request, messagesApi.preferred(request)));
         });
     }
 
