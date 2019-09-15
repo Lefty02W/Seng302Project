@@ -129,7 +129,7 @@ def execute_profile_queries(cursor, db, number_profiles):
                 print(execute_passports_queries(profile[8], profile[3], cursor, db))
                 print(execute_traveller_type_queries(profile[9], profile[3], cursor, db))
             else:
-                print("Profile already exists")
+                print("\nProfile already exists")
         except Exception as e:
             # Rollback in case there is any error
             db.rollback()
