@@ -151,7 +151,7 @@
                     <div class="row" id="all-artist-cards">
                 @for(artist <- artists) {
                     <div class="card-body col col-md-12 col-xl-6" id="artist-card">
-                        <div class="card-header"> @artist.getArtistName &nbsp;&nbsp;&nbsp;&nbsp; @artist.getFollowerCount
+                        <div class="card-header"> @artist.getArtistName &nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="row">
@@ -409,7 +409,7 @@
                 console.log(jsonData);
 
                 html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
-                            "<div class='card-header'>" + artist.artistName + "&nbsp;&nbsp;&nbsp;&nbsp;" + artist.followerCount
+                            "<div class='card-header'>" + artist.artistName + "&nbsp;&nbsp;&nbsp;&nbsp; Followers: " + artist.followerCount
                                 + "<i class='fa fa-user'></i>" +
                             "</div> " +
                                 "<div class='row'>" +
