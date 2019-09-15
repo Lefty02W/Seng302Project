@@ -46,41 +46,29 @@ def main():
     # trips = 500
     # treasure hunts = 500
     number_profiles = 1
-    number_destinations = 4
+    number_destinations = 1
     number_artists = 1
     number_trips = 0
     number_treasure_hunts = 0
     number_events = 1
 
     # profiles
-    db_profiles = pymysql.connect("mysql2.csse.canterbury.ac.nz", "seng302-team700", password, "seng302-2019-team700-test")
-    cursor_profiles = db.cursor()
-    execute_profile_queries(cursor_profiles, db_profiles, number_profiles)
-    # destinations
-    db_destinations = pymysql.connect("mysql2.csse.canterbury.ac.nz", "seng302-team700", password, "seng302-2019-team700-test")
-    cursor_destinations = db.cursor()
-    execute_destination_queries(cursor_destinations, db_destinations, number_destinations, number_profiles)
-    # artists
-    db_artists = pymysql.connect("mysql2.csse.canterbury.ac.nz", "seng302-team700", password,
-                                      "seng302-2019-team700-test")
-    cursor_artists = db.cursor()
-    execute_artist_queries(cursor_artists, db_artists, number_artists, number_profiles)
-    # trips
-    db_trips = pymysql.connect("mysql2.csse.canterbury.ac.nz", "seng302-team700", password,
-                                      "seng302-2019-team700-test")
-    cursor_trips = db.cursor()
-    execute_trips_queries(cursor_trips, db_trips, number_trips, number_destinations, number_profiles)
-    # Treasure hunts
-    db_treasure_hunts = pymysql.connect("mysql2.csse.canterbury.ac.nz", "seng302-team700", password,
-                                      "seng302-2019-team700-test")
-    cursor_treasure_hunts = db.cursor()
-    insert_treasure_hunts(cursor_treasure_hunts, db_treasure_hunts, number_treasure_hunts, number_profiles, number_destinations)
-    # Events
-    db_events = pymysql.connect("mysql2.csse.canterbury.ac.nz", "seng302-team700", password,
-                                  "seng302-2019-team700-test")
-    cursor_events = db.cursor()
-    execute_event_queries(cursor_events, db_events, number_events, number_artists, number_destinations)
+    execute_profile_queries(cursor, db, number_profiles)
 
+    # destinations
+    execute_destination_queries(cursor, db, number_destinations, number_profiles)
+
+    # artists
+    execute_artist_queries(cursor, db, number_artists, number_profiles)
+
+    # trips
+    execute_trips_queries(cursor, db, number_trips, number_destinations, number_profiles)
+
+    # Treasure hunts
+    insert_treasure_hunts(cursor, db, number_treasure_hunts, number_profiles, number_destinations)
+
+    # Events
+    execute_event_queries(cursor, db, number_events, number_artists, number_destinations)
 
     # disconnect from server
     cursor.close()
