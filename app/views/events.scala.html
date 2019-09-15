@@ -104,7 +104,7 @@
                                             data-target="#eventFilters" aria-expanded="false"
                                             aria-controls="eventFilters">Advanced Search
                                     </button>
-                                    @if(isVerifiedArtist || currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                                    @if(isVerifiedArtist) {
                                         <button class="btn btn-primary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
                                             Create Event</button>
                                     }
@@ -220,7 +220,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col col-10">
-                                        @if(isVerifiedArtist || currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                                        @if(isVerifiedArtist) {
                                             <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
                                                 <button class="btn btn-primary">Edit</button>
                                             </a>
