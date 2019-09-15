@@ -12,6 +12,7 @@ Feature: Create an artist page
     And user selects an artist with id "3"
     And user presses follow artist
     Then link is updated flashing is shown
+    And the artist's follower count has increased by 1
 
 
   Scenario: Un follow an artist
@@ -21,4 +22,5 @@ Feature: Create an artist page
     And the user has followed this artist
     And user presses un follow artist
     Then link is updated flashing is shown
+    And the artist's follower count has decreased by 1
 
