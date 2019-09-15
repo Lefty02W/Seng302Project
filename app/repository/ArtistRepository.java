@@ -174,11 +174,15 @@ public class ArtistRepository {
      if (countryMap.isPresent()) {
        countries = countryMap.get();
      }
+
      artist.setCountry(countries);
         Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
         if(genreList.isPresent() && !genreList.get().isEmpty()) {
             artist.setGenre(genreList.get());
         }
+
+        artist.setFollowerCount(getNumFollowers(artist.getArtistId()));
+
         return artist;
     }
     /**
@@ -719,6 +723,21 @@ public class ArtistRepository {
             return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).eq("artist_id", artistID).exists();
         };
             return false;
+    }
+
+
+    /**
+     * Get count of followers for an artist
+     * @param artistId - ID of the artists to get follower count for
+     * @return The number of followers for the given artist
+     */
+    public int getNumFollowers(int artistId) {
+        return ebeanServer.find(FollowArtist.class)
+                .select("artistId")
+                .where()
+                .eq("artistId", artistId)
+                .findCount();
+
     }
 
 }
