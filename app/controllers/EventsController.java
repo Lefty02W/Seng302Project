@@ -214,7 +214,6 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEventFromArtist(Http.Request request, Integer artistId, Integer eventId) {
         Form<Events> form = eventEditForm.bindFromRequest(request);
-        System.out.println(form);
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect("/artists/" + artistId +"/events/0").flashing("error", "Error: Start date cannot be after end date."));
@@ -261,10 +260,13 @@ public class EventsController extends Controller {
                 return redirect(url).flashing("error", "Error creating event: Unknown error");
             }
 
-            if (!artistRepository.isArtistAdmin(profId)) {
+            if (!artistRepository.isAdminOfGivenArtist(profId, id)) {
                 return redirect(url).flashing("error", "Error creating event: You must be a verified artist admin.");
             }
 
+            if (!artistRepository.isVerifiedArtist(id)) {
+                return redirect(url).flashing("error", "Error creating event: Your artist must be verified before creating events.");
+            }
             if (checkDates(optEvent.get())) {
                 eventRepository.insert(optEvent.get());
             } else {
@@ -299,7 +301,6 @@ public class EventsController extends Controller {
 
                 return redirect("/events/0").flashing("error", "Error creating event: Start date must be before end date");
             }
-
 
             return redirect("/events/0").flashing("info", "Successfully added your new event");
         });

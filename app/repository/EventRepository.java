@@ -169,8 +169,6 @@ public class EventRepository {
      * @return Completion stage integer holding event id
      */
     public CompletionStage<Integer> update(Integer eventId, Events event){
-        System.out.println(event.getAgeRestriction());
-        System.out.println(event.getGenreForm());
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();

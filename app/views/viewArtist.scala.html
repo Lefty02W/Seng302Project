@@ -513,10 +513,10 @@
                                     </div>
 
                                     <div class="row justify-content-center">
-                                        <label>Event Destination</label>
+                                        <label>Event Destination*</label>
                                     </div>
                                     <div class="row justify-content-center">
-                                        <select class="selectpicker" data-live-search="true" title="Destination"  name="destinationId" id="destinationId" data-width="50%">
+                                        <select class="selectpicker" data-live-search="true" title="Destination"  name="destinationId" id="destinationId" data-width="50%" required>
                                         @for(destination <- destinations) {
                                             <option value="@destination.getDestinationId">@destination.getName</option>
                                         }
