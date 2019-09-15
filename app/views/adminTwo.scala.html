@@ -338,6 +338,10 @@
                 });
             });
 
+            function fillValsEdit() {
+                $('#genreFormEdit').val($('#genreDropdownEdit').val());
+                $('#artistFormEdit').val($('#artistDropdownEdit').val());
+            }
 
             function fillDeleteValues(route) {
                 var a = document.getElementById("confirmDeleteHrf");
@@ -385,7 +389,7 @@
                         <h4 class="modal-title">Edit Event</h4>
                         <button type="button" class="close" data-dismiss="modal"></button>
                     </div>
-                    @form(routes.EventsController.editEvent(editEvent.getObject.getEventId)) {
+                    @form(routes.AdminController.editEvent(editEvent.getObject.getEventId)) {
                         @CSRF.formField
                             <!-- body -->
                         <div class="modal-body">

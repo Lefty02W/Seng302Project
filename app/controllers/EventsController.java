@@ -113,7 +113,7 @@ public class EventsController extends Controller {
      * @param values form of the incoming data to be put into a event object
      * @return event object with all values inside
      */
-    Events setValues(Integer userId, Form<Events> values){
+    protected static Events setValues(Integer userId, Form<Events> values){
         Events event = values.get();
         Integer destinationId = null;
         String startDate = null;
@@ -164,6 +164,7 @@ public class EventsController extends Controller {
         });
 
     }
+
     @RestrictAnnotation()
     public CompletionStage<Result> createAdminEvent(Http.Request request) {
         return supplyAsync(() -> {
