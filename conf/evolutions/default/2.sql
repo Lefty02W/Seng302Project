@@ -210,6 +210,9 @@ INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (6, 'STIFI', 'Big boi steve', 'jerry');
 
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (7, 'There are no Trees', 'Indie Rock band from the Amazon Rainforest', 'Buck, Cherry, River');
+
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
 
@@ -231,11 +234,17 @@ INSERT INTO artist_genre (artist_id, genre_id) VALUES
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (6, 1);
 
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (7, 1);
+
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (2, 2);
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (6, 2);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (7, 1);
 
 INSERT INTO follow_artist (artist_follow_id, profile_id, artist_id) VALUES
   (1, 1, 2);
