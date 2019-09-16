@@ -96,11 +96,11 @@ input[type=datetime-local] {
 #trip-card {
     height: 50vh;
     min-width: 40vh;
-    background-color: #e8f5e9;
+    background-color: #e9ecef;
 }
 
 .card-border, .card-footer {
-    background-color: #ede1d1;
+    background-color: #e9ecef;
 }
 
 .card-body {

@@ -146,7 +146,7 @@ public class DestinationsController extends Controller {
     public CompletionStage<Result> updatePhotoPrivacy(Integer id) {
         return supplyAsync(() -> {
             photoRepository.updateVisibility(id);
-            return redirect("/destinations/show/false").flashing("success", "Visibility updated.");
+            return redirect("/destinations/show/false/0").flashing("success", "Visibility updated.");
         });
     }
 

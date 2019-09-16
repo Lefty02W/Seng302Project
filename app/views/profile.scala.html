@@ -276,7 +276,6 @@
                     <div id="destsTab" class="tab-pane fade">
                         <div id="table-card" class="dest-table table-hover">
                                 <!-- Table of users -->
-                            <a href="@routes.DestinationsController.show(false, 0)"> <button class="btn btn-primary"> View All</button> </a>
                             <table id="destTable">
                                 <thead>
                                     <tr><th>Destination</th>
@@ -341,7 +340,6 @@
                     </div>
 
                     <div id="tripsTab" class="tab-pane fade">
-                    <a href="/trips/0"> <button class="btn btn-primary">View All</button> </a>
                     @for(tripId <- trips) {
                         <div class="row">
                             <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
@@ -774,7 +772,7 @@
                 <div class="row justify-content-center">
                     <div class="row">
                         <div class="col-sm">
-                            <button class="btn btn-primary" id='addPhotoButton' data-toggle="modal"
+                            <button class="btn btn-secondary" id='addPhotoButton' data-toggle="modal"
                             data-target="#addPhotoModal">
                                 <i class="fa fa-camera"></i>
                                 Add Photo
@@ -783,7 +781,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm">
-                            <button class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                            <button class="btn btn-secondary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
                                 <i class="fa fa-user-circle"  id="editProfileButton"></i>
                                 Change Profile Picture
                             </button>
@@ -791,7 +789,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm">
-                            <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
+                            <button type="button" class="btn btn-secondary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
                                 <i class="fa fa-edit" id="editProfileButton"></i>
                                 Edit Profile
                             </button>

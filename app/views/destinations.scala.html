@@ -92,13 +92,6 @@
                     <div class="row">
                         <div class="col">
                             <div id="dest-table-card" class="card-large dest-table table-hover">
-                                <div id="btn-row" class="row justify-content-center">
-                                    @if(!isPublic) {
-                                        <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>View Public Destinations</a>
-                                    } else {
-                                        <input type="checkbox" id="destToggle" checked onchange="togglePublic()"><a>View Public Destinations</a>
-                                    }
-                                </div>
                                 <div class="row">
                                     <table id="destTable">
                                         <thead>
@@ -125,7 +118,7 @@
                                                     </td>
 
                                                     <td>
-                                                        <button type="submit" class="btn btn-outline-secondary" style="height: 4vh"
+                                                        <button type="submit" class="btn btn-danger" style="height: 4vh"
                                                         onclick="fillDeleteValues('@routes.DestinationsController.delete(destination.getDestinationId())')">
                                                             Delete
                                                         </button>
@@ -183,6 +176,13 @@
 
                                     </ul>
                                 </div>
+                                <div id="btn-row" class="row justify-content-center">
+                                @if(!isPublic) {
+                                    <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>View Public Destinations</a>
+                                } else {
+                                    <input type="checkbox" id="destToggle" checked onchange="togglePublic()"><a>View Public Destinations</a>
+                                }
+                                </div>
                             </div>
 
                             <div id="table-card" class="card-large">
@@ -192,7 +192,7 @@
                                             Details</a></li>
                                         <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
                                         <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">
-                                            World Photos</a></li>
+                                            Public Photos</a></li>
                                     </ul>
                                 </div>
                                 <div class="tab-content" id="destinationTabsContent">
@@ -541,7 +541,7 @@
                                         </div>
                                             <!-- footer -->
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
                                         </div>
                                     }

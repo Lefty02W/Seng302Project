@@ -107,7 +107,7 @@
                                         data-target="#collapseFilters" aria-expanded="false"
                                         aria-controls="collapseFilters">Advanced Search
                                 </button>
-                                <button class="btn btn-primary" id="createArtistButton" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
+                                <button class="btn btn-outline-primary" id="createArtistButton" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
                             </div>
                             <div id="collapseFilters" class="collapse artistFilters" aria-labelledby="headingOne" data-parent="#filterAccordion">
                                 <div class="card-body">
@@ -171,14 +171,14 @@
                             <div class="col col-2">
                                 <div class="row">
                                     <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)">
-                                        <button class="btn btn-primary" id="view" style="margin-bottom: 5px;">View</button>
+                                        <button class="btn btn-outline-primary" id="view" style="margin-bottom: 5px;">View</button>
                                     </a>
                                 </div>
                                 <div class="row">
                                     @if(followedArtists contains artist) {
                                         @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
                                             @CSRF.formField
-                                            <button type="submit" class="btn btn-primary">Unfollow</button>
+                                            <button type="submit" class="btn btn-secondary">Unfollow</button>
                                         }
                                     } else {
                                         @helper.form(routes.ArtistController.followArtist(artist.getArtistId)) {

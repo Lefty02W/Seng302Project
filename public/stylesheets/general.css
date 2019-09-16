@@ -109,34 +109,35 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 }
 
 
-.btn-outline-secondary, .btn-outline-danger {
+.btn-outline-primary {
     border-color: #009779;
     color: #009779;
 }
 
-.btn-outline-secondary:hover, .btn-outline-danger:hover {
+.btn-primary, .btn-outline-primary:hover {
     background-color: #009779;
     border-color: #009779;
 }
 
-.btn-danger {
+.btn-primary:hover {
+    background-color: #41b49d;
+    border-color: #41b49d;
+}
+
+.btn-danger:hover {
     background-color: #7d2f2e;
     border-color: #7d2f2e;
 }
 
-.btn-primary, .btn-primary:hover, .btn-outline-primary:hover {
+.btn-outline-secondary, .btn-secondary:hover, .btn-outline-secondary:hover, .btn-outline-danger:hover, .btn-danger {
     background-color: #d74961;
     border-color: #d74961;
+    color:white;
 }
 
-.btn-outline-primary {
+.btn-secondary, .btn-secondary:hover {
+    background-color: #d74961;
     border-color: #d74961;
-    color: #d74961;
-}
-
-.btn-secondary, .btn-secondary:hover, .btn-danger, .btn-danger:hover {
-    background-color: #009779;
-    border-color: #009779;
 }
 
 
@@ -294,4 +295,8 @@ div.dataTables_filter {
 
 a, a:hover {
     color: #d74961;
+}
+
+#profileFooter{
+    z-index: 1;
 }

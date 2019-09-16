@@ -38,7 +38,7 @@
     width: 100%;
     padding: 1%;
     cursor: copy;
-    background: #009779;
+    background-color: #009779;
 }
 
 .center-col {
@@ -80,7 +80,8 @@
 
 #tripName {
     float: left;
-    color: #d74961;
+    color: white;
+
 }
 
 #followedArtistsCard{
@@ -334,4 +335,9 @@ img.thumbnail {
 
 .tabLink, .tabLink:hover {
     color: #d74961;
+}
+
+.paginate_button {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
 }

@@ -40,17 +40,10 @@ html {
     width: 6.5vw;
 }
 
-
 #errorMessage{
     color: #ca6636;
     visibility: visible;
     border-width: 0px;
-}
-
-
-.btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active  {
-    background-color: #d74961;
-    border-color: #d74961;
 }
 
 .alert{

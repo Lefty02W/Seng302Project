@@ -16,7 +16,8 @@ body {
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
-    background-color: #08735D;
+    /*background-color: #08735D;*/
+    background-color: #41B49D;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -24,7 +25,7 @@ body {
     padding-top: 6rem;
     padding-left: 1.25rem;
     /*padding: 0.875rem 1.25rem;*/
-    background-color: #08735D;
+    background-color: #41B49D;
     color: #ede1d1;
 }
 
