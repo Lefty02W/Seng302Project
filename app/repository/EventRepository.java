@@ -144,9 +144,11 @@ public class EventRepository {
      * @return Completion stage integer holding event id
      */
     public CompletionStage<Integer> update(Integer eventId, Events event){
+
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();
+
             if (targetEvent != null) {
                 targetEvent.setAgeRestriction(event.getAgeRestriction());
                 targetEvent.setDescription(event.getDescription());
@@ -180,7 +182,9 @@ public class EventRepository {
      */
     private void saveLinkingTables(Events event) {
         for (String genreId : event.getGenreForm().split(",")) {
-            eventGenreRepository.insert(new EventGenres(event.getEventId(), Integer.parseInt(genreId)));
+            if(!genreId.equals("")) {  //Genre is not required, so could pass empty string here.
+                eventGenreRepository.insert(new EventGenres(event.getEventId(), Integer.parseInt(genreId)));
+            }
         }
         for (String type : event.getTypeForm().split(",")) {
             eventTypeRepository.insert(new EventType(event.getEventId(),eventTypeRepository.getTypeOfEventsIdByName(type)));
