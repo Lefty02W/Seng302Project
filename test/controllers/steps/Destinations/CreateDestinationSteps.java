@@ -22,7 +22,6 @@ public class CreateDestinationSteps {
 
     @Given("User is logged in to the application")
     public void userIsLoggedInToTheApplication() {
-        // TODO: finish implement and check it passes
         loginForm.put("email", "john@gmail.com");
         loginForm.put("password", "password");
 

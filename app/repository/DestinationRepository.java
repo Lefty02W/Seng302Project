@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
-import static java.util.concurrent.CompletableFuture.allOf;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -617,10 +616,8 @@ public class DestinationRepository {
      */
     private CompletionStage<Optional<DestinationChange>> getDestinationChange(int changeId) {
         return supplyAsync(
-            () -> {
-              return Optional.ofNullable(
-                  ebeanServer.find(DestinationChange.class).where().eq("id", changeId).findOne());
-            },
+            () -> Optional.ofNullable(
+                ebeanServer.find(DestinationChange.class).where().eq("id", changeId).findOne()),
             executionContext);
         }
 
@@ -629,10 +626,8 @@ public class DestinationRepository {
      */
     private CompletionStage<Optional<DestinationRequest>> getDestinationRequest(int requestId){
         return supplyAsync(
-            () -> {
-                return Optional.ofNullable(
-                        ebeanServer.find(DestinationRequest.class).where().eq("id", requestId).findOne());
-            },
+            () -> Optional.ofNullable(
+                    ebeanServer.find(DestinationRequest.class).where().eq("id", requestId).findOne()),
             executionContext);
     }
 
@@ -689,12 +684,11 @@ public class DestinationRepository {
         String query = "SELECT DISTINCT destination.destination_id FROM follow_destination INNER JOIN destination ON destination.destination_id = follow_destination.destination_id " +
                 "WHERE follow_destination.profile_id = ? AND destination.soft_delete = 0";
         List<SqlRow> countRow = ebeanServer.createSqlQuery(query).setParameter(1, profileId).findList();
-        Integer count = 0;
+        int count = 0;
         if (!countRow.isEmpty()) {
             count = countRow.size();
         }
-        int total = count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).eq("visible", 1).findCount();
-        return total;
+        return count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).eq("visible", 1).findCount();
     }
 
 

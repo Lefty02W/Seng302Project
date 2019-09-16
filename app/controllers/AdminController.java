@@ -47,8 +47,7 @@ public class AdminController {
     private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
     private final Form<Artist> artistForm;
-    private final int pageSize = 8;
-    private String adminEndpoint = "/admin";
+    private static final int pageSize = 8;
     private RolesRepository rolesRepository;
 
     @Inject
@@ -103,7 +102,7 @@ public class AdminController {
      * @return CompletionStage result of admin page
      */
     public CompletionStage<Result> showTrips(Http.Request request, Integer offset) {
-        return supplyAsync(() -> ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), tripRepository.getPaginateTrip(offset, pageSize), new RoutedObject<Destination>(null, false, false),
+        return supplyAsync(() -> ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), tripRepository.getPaginateTrip(offset, pageSize), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
@@ -154,7 +153,7 @@ public class AdminController {
      * @return CompletionStage result of admin page
      */
     public CompletionStage<Result> showDestinations(Http.Request request, Integer offset) {
-        return supplyAsync(() -> ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
+        return supplyAsync(() -> ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 destinationRepository.getDestinationPage(offset, pageSize), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
@@ -188,7 +187,7 @@ public class AdminController {
      * @return CompletionStage result of admin page
      */
     public CompletionStage<Result> showHunts(Http.Request request, Integer offset) {
-        return supplyAsync(() -> ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
+        return supplyAsync(() -> ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 destinationRepository.getAllDestinations(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), treasureHuntRepository.getPageHunts(offset, pageSize),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
@@ -205,7 +204,7 @@ public class AdminController {
      * @return CompletionStage result of admin page
      */
     public CompletionStage<Result> showArtists(Http.Request request, Integer offset) {
-        return supplyAsync(() -> ok(admin.render(profileRepository.getAll(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
+        return supplyAsync(() -> ok(admin.render(profileRepository.getAllEbeans(), new ArrayList<Profile>(), new ArrayList<Trip>(), new RoutedObject<Destination>(null, false, false),
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
@@ -535,14 +534,21 @@ public class AdminController {
      */
     public CompletionStage<Result> addDestination(Http.Request request) {
         Form<Destination> destForm = destinationEditForm.bindFromRequest(request);
-        String visible = destForm.field("visible").value().get();
+        String visible = "";
+        Optional<String> visOpt = destForm.field("visible").value();
+        if(visOpt.isPresent()) {
+            visible = visOpt.get();
+        }
         int visibility = (visible.equals("Public")) ? 1 : 0;
-        Destination destination = destForm.value().get();
-        destination.initTravellerType();
-        destination.setVisible(visibility);
-
-        return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin/destinations/0").flashing("info", "Destination " + destination.getName() + " added successfully"));
-    }
+        Optional<Destination> destOpt = destForm.value();
+        if (destOpt.isPresent()) {
+            Destination destination = destOpt.get();
+            destination.initTravellerType();
+            destination.setVisible(visibility);
+            return destinationRepository.insert(destination).thenApplyAsync(string -> redirect("/admin/destinations/0").flashing("info", "Destination " + destination.getName() + " added successfully"));
+        }
+        return supplyAsync(() -> redirect("/admin/destinations/0") .flashing("error", "Destination add failed"));
+        }
 
 
     /**
