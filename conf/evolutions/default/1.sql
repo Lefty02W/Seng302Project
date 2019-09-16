@@ -489,7 +489,7 @@ create table if not exists event_genres
 			on update cascade on delete cascade
 );
 
-create table if not exists artist_events
+create table if not exists event_artists
 (
 	artist_id int not null,
 	event_id int not null,

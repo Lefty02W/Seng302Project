@@ -90,6 +90,7 @@ public class ArtistRepository {
      * @return List of artists linked to the event
      */
     public List<Artist> getEventArtists(int eventId) {
+        System.out.println(eventId);
         List<EventArtists> eventArtists = ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).findList();
         List<Artist> artists = new ArrayList<>();
         Optional<Artist> artist;
