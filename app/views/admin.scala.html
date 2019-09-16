@@ -81,7 +81,7 @@
                         <button class="btn btn-primary">Undo Action</button>
                     </a>
 
-                    <div class="helpPopup" onclick="helpPopup()"><a href="" id="helpLink">(What's this?)</a>
+                    <div class="helpPopup" onclick="helpPopup()">(What's this?)
                         <span class="popuptext" id="helpPopup">
                             Shows the last action you executed on this page. <br><br>
                             Click the 'Undo Action' button to undo the latest action. <br>
@@ -980,6 +980,11 @@
                     "lengthChange": false,
                     "bInfo": false
                 });
+            });
+
+            $("#helpPopup").click(function(ev){
+                if(ev.target != this) return;
+                $('#helpPopup').span('hide');
             });
 
 
