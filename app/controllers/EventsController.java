@@ -73,7 +73,6 @@ public class EventsController extends Controller {
 
                     RoutedObject<Events> toSend = new RoutedObject<>(editEvent, true, false);
 
-
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, toSend,
