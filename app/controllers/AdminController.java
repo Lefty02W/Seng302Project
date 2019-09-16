@@ -820,7 +820,7 @@ public class AdminController {
                     profileCreateForm, destinationEditForm, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                     new RoutedObject<TreasureHunt>(null, true, false), Country.getInstance().getAllCountries(),
                     undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
-                    new ArrayList<Artist>(), artistRepository.getAllArtists(),
+                    new ArrayList<Artist>(), artistRepository.getPageArtists(0, pageSize, 1),
                     new RoutedObject<Artist>(artist, true, true), genreRepository.getAllGenres(),
                     initialisePaginatior(0, artistRepository.getNumArtists(), 6), request, messagesApi.preferred(request)));
         });

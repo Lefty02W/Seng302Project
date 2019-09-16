@@ -673,6 +673,16 @@ public class ArtistRepository {
         return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).findCount();
     }
 
+    /**
+     * Method to get one page worth of artists
+     *
+     * @param offset offset of artists to find
+     * @param pageSize max amount to find
+     * @param  verified the value specifying if the artist has been verified or not
+     *                  affects what type of artists are returned. In this case, should always be
+     *                  '1' (verified)
+     * @return List of found artists
+     */
     public List<Artist> getPageArtists(Integer offset, int pageSize, int verified) {
         List<Artist> artists = new ArrayList<>();
         List<Artist> foundArtists = ebeanServer.find(Artist.class).setMaxRows(pageSize).setFirstRow(offset)
