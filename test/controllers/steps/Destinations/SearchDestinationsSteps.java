@@ -31,4 +31,14 @@ public class SearchDestinationsSteps {
         throw new cucumber.api.PendingException();
     }
 
+    @When("user submits empty search")
+    public void userSubmitsEmptySearch() {
+        throw new cucumber.api.PendingException();
+    }
+
+
+    @Then("an error message should be shown telling the user to enter a name")
+    public void anErrorMessageShouldBeShownTellingTheUserToEnterAName() {
+        throw new cucumber.api.PendingException();
+    }
 }

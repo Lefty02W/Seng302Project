@@ -29,4 +29,10 @@ Feature: Search for a destination
     Then the destination "Thisisanotherlongstringtotestthedestinationssearchfunctionality" is not displayed in the search result
     And the search result is empty
 
+  Scenario: Empty search
+    Given User is logged in to the application
+    And user is at the destinations page
+    When user submits empty search
+    Then an error message should be shown telling the user to enter a name
+
 
