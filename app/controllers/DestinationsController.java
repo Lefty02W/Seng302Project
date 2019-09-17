@@ -40,6 +40,9 @@ public class DestinationsController extends Controller {
     private final TravellerTypeRepository travellerTypeRepository;
     private final UndoStackRepository undoStackRepository;
     private String destShowRoute = "/destinations/show/false/0";
+    private final Form<DestinationSearchFormData> searchForm;
+
+    private final Integer DESTINATION_PAGE_SIZE = 7;
 
     /**
      * Constructor for the destination controller class
@@ -67,12 +70,71 @@ public class DestinationsController extends Controller {
         this.travellerTypeRepository = travellerTypeRepository;
         this.requestForm = formFactory.form(DestinationRequest.class);
         this.undoStackRepository = undoStackRepository;
+        this.searchForm = formFactory.form(DestinationSearchFormData.class);
+    }
+
+
+    /**
+     * Function to search for a destination
+     * @param request HTTP request
+     * @return result rendering the destination page with searched destinations results
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> search(Http.Request request, Integer rowOffset){
+        Integer profId = SessionController.getCurrentUserId(request);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if (profile.isPresent()) {
+                Form<DestinationSearchFormData> searchDestinationForm = searchForm.bindFromRequest(request);
+                DestinationSearchFormData searchData = searchDestinationForm.get();
+                if (searchData.name.equals("")) {
+                    return redirect("/destinations/0").flashing("error",
+                            "Please enter a destination name to search");
+                }
+
+                destinationsList = destinationRepository.searchDestinations(searchData.name, rowOffset,
+                        searchData.isPublic, profId);
+                destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
+                destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
+                destinationsList = loadTravellerTypes(destinationsList);
+                int sizeOfSearchResults = destinationRepository.getNumSearchDestinations(searchData.name,
+                        searchData.isPublic, profId);
+                PaginationHelper paginationHelper = makePagination(rowOffset, sizeOfSearchResults);
+                List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
+
+                return ok(destinations.render(destinationsList, profile.get(), false, paginationHelper,
+                        followedDestinationIds, usersPhotos, form,
+                        new RoutedObject<Destination>(null, false, false), requestForm,
+                        Country.getInstance().getAllCountries(),
+                        searchDestinationForm,
+                        request, messagesApi.preferred(request)));
+            } else {
+                return redirect(destShowRoute);
+            }
+        });
+    }
+
+
+    /**
+     * Initialise a pagination helper for searching
+     * @param rowOffset - The first row from which data will be retrievevd
+     * @param size - The maximum size of the data
+     * @return paginationHelper - Instance of PaginationHelper model to help paginate data
+     */
+    private PaginationHelper makePagination(Integer rowOffset, Integer size) {
+        PaginationHelper paginationHelper = new PaginationHelper(rowOffset, rowOffset, rowOffset,
+                true, true, size);
+        paginationHelper.alterNext(DESTINATION_PAGE_SIZE);
+        paginationHelper.alterPrevious(DESTINATION_PAGE_SIZE);
+        paginationHelper.checkButtonsEnabled();
+
+        return paginationHelper;
     }
 
 
     /**
      * Initialise a pagination helper
      * @param rowOffset - The first row from which data will be retrieved
+     * @param isPublic - If the destination data set is public or private
      * @return paginationHelper - An instance of PaginationHelper model to ease pagination
      */
     private PaginationHelper initialisePaginiation(Integer rowOffset, Integer profileId, boolean isPublic) {
@@ -83,20 +145,14 @@ public class DestinationsController extends Controller {
             maxSize = destinationRepository.getNumPrivateDestinations(profileId);
         }
 
-        PaginationHelper paginationHelper = new PaginationHelper(rowOffset, rowOffset, rowOffset, true,
-                true, maxSize);
-        paginationHelper.alterNext(7);
-        paginationHelper.alterPrevious(7);
-        paginationHelper.checkButtonsEnabled();
-
-        return paginationHelper;
+        return makePagination(rowOffset, maxSize);
     }
 
 
     /**
      * Displays a page showing the destinations to the user
      *
-     * @param request
+     * @param request - HTTP Request
      * @param isPublic - Whether the target is public destinations
      * @param rowOffset - The row/page offset to use for getting results back
      * @return the list of destinations
@@ -128,7 +184,10 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profile.get().getProfileId(), destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, paginationHelper, followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic, paginationHelper,
+                        followedDestinationIds, usersPhotos, form,
+                        new RoutedObject<Destination>(null, false, false), requestForm,
+                        Country.getInstance().getAllCountries(), searchForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -168,7 +227,10 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic,
+                        initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos,
+                        form, new RoutedObject<Destination>(null, false, false), requestForm,
+                        Country.getInstance().getAllCountries(), searchForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -197,8 +259,10 @@ public class DestinationsController extends Controller {
 
                 RoutedObject<Destination> toSend = new RoutedObject<>(currentDestination, true, false);
                 form.fill(currentDestination);
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profId, isPublic),
-                        followedDestinationIds, usersPhotos, form, toSend, requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic,
+                        initialisePaginiation(0, profId, isPublic), followedDestinationIds, usersPhotos, form,
+                        toSend, requestForm, Country.getInstance().getAllCountries(), searchForm, request,
+                        messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -239,8 +303,10 @@ public class DestinationsController extends Controller {
                 destinationsList = loadWorldDestPhotos(profileId, destinationsList);
                 destinationsList = loadTravellerTypes(destinationsList);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
-                return ok(destinations.render(destinationsList, profile.get(), isPublic, initialisePaginiation(0, profileId, isPublic),
-                        followedDestinationIds, usersPhotos, form, new RoutedObject<Destination>(null, false, false), requestForm, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(destinations.render(destinationsList, profile.get(), isPublic,
+                        initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos,
+                        form, new RoutedObject<Destination>(null, false, false), requestForm,
+                        Country.getInstance().getAllCountries(), searchForm, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -418,7 +484,7 @@ public class DestinationsController extends Controller {
 
     /**
      * Deletes a destination in the database
-     *
+     * @param request HTTP Request
      * @param id ID of the destination to delete
      * @return a redirect to the destinations page
      */
