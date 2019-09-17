@@ -1,6 +1,7 @@
 package controllers.steps.Destinations;
 
 import controllers.TestApplication;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.junit.Assert;
@@ -31,6 +32,18 @@ public class SearchDestinationsSteps {
         throw new cucumber.api.PendingException();
     }
 
+    @Then("the destination {string} is not displayed in the search result")
+    public void theDestinationIsNotDisplayedInTheSearchResult(String arg0) {
+        throw new cucumber.api.PendingException();
+
+    }
+
+    @And("the search result is empty")
+    public void theSearchResultIsEmpty() {
+        throw new cucumber.api.PendingException();
+
+    }
+
     @When("user submits empty search")
     public void userSubmitsEmptySearch() {
         throw new cucumber.api.PendingException();
@@ -41,4 +54,6 @@ public class SearchDestinationsSteps {
     public void anErrorMessageShouldBeShownTellingTheUserToEnterAName() {
         throw new cucumber.api.PendingException();
     }
+
+
 }
