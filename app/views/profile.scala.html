@@ -817,29 +817,32 @@
 
             }
 
-            $(document).ready(function () {
-                $('#destsTable').DataTable({
-                    "lengthChange": false,
-                    "pagingType": "full",
-                    "pageLength": 13,
-                    dom: '<l<"toolbar">f>rtip',
-                    language: {
-                        search: "_INPUT_", //To remove Search Label
-                        searchPlaceholder: "Search..."
-                    },
-                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
-                    "autoWidth": false
-                });
-
+            $(document).onload(function() {
                 $('#tripTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
                     "pageLength": 13,
                     dom: '<l<"toolbar">f>rtip',
-                    language: {
-                        search: "_INPUT_", //To remove Search Label
-                        searchPlaceholder: "Search..."
-                    },
+                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
+                    "autoWidth": false
+                });
+            });
+
+            $(document).ready(function () {
+                $('#tripTable').DataTable({
+                    "lengthChange": false,
+                    "pagingType": "full",
+                    "pageLength": 13,
+                    dom: '<l<"toolbar">f>rtip',
+                    "sDom": '<"top"pfl>rt<"bottom"><"clear">',
+                    "autoWidth": false
+                });
+
+                $('#destsTable').DataTable({
+                    "lengthChange": false,
+                    "pagingType": "full",
+                    "pageLength": 13,
+                    dom: '<l<"toolbar">f>rtip',
                     "sDom": '<"top"pfl>rt<"bottom"><"clear">',
                     "autoWidth": false
                 });
