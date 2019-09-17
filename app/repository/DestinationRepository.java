@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Math.abs;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -50,7 +51,7 @@ public class DestinationRepository {
     public Destination lookup(int destID) {
         Destination destination = ebeanServer.find(Destination.class).setId(destID).findOne();
         Map<Integer, TravellerType> types = new HashMap<>();
-        for(TravellerType type : getDestinationsTravellerTypes(destination.getDestinationId())) {
+        for (TravellerType type : getDestinationsTravellerTypes(destination.getDestinationId())) {
             types.put(type.getTravellerTypeId(), type);
         }
         destination.setTravellerTypes(types);
@@ -67,12 +68,13 @@ public class DestinationRepository {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("profile_id", id)
-                .eq("soft_delete",0)
+                .eq("soft_delete", 0)
                 .findList());
     }
 
     /**
      * Get the all of the public destinations
+     *
      * @param rowOffset - The row to being retrieving results from. Used for paginatino
      * @return destinations, list of all public destinations
      */
@@ -82,7 +84,7 @@ public class DestinationRepository {
                 .setFirstRow(rowOffset)
                 .where()
                 .eq("visible", 1)
-                .eq("soft_delete",0)
+                .eq("soft_delete", 0)
                 .findList());
     }
 
@@ -95,7 +97,7 @@ public class DestinationRepository {
         return new ArrayList<>(ebeanServer.find(Destination.class)
                 .where()
                 .eq("visible", 1)
-                .eq("soft_delete",0)
+                .eq("soft_delete", 0)
                 .ne("profile_id", userId)
                 .findList());
     }
@@ -137,7 +139,7 @@ public class DestinationRepository {
                                     .findSingleAttributeList();
 
                     Boolean usedInTrip = false;
-                    for (Integer Id: foundIds) {
+                    for (Integer Id : foundIds) {
                         Trip trip = Trip.find.query().where()
                                 .eq("trip_id", Id)
                                 .findOne();
@@ -149,13 +151,13 @@ public class DestinationRepository {
 
                     if (!usedInTrip) {
                         List<Integer> foundIds2 =
-                                    ebeanServer
-                                            .find(TreasureHunt.class)
-                                            .where()
-                                            .eq("destination_id", destinationId)
-                                            .eq("soft_delete", 0)
-                                            .select("treasureHuntId")
-                                            .findSingleAttributeList();
+                                ebeanServer
+                                        .find(TreasureHunt.class)
+                                        .where()
+                                        .eq("destination_id", destinationId)
+                                        .eq("soft_delete", 0)
+                                        .select("treasureHuntId")
+                                        .findSingleAttributeList();
 
                         if (foundIds2.isEmpty()) return Optional.empty();
                         else return Optional.of("treasure hunts: " + foundIds2);
@@ -188,7 +190,8 @@ public class DestinationRepository {
     /**
      * sets soft delete for a destination which eather deletes it or
      * undoes the delete
-     * @param destId The ID of the destination to soft delete
+     *
+     * @param destId     The ID of the destination to soft delete
      * @param softDelete Boolean, true if is to be deleted, false if cancel a delete
      * @return
      */
@@ -203,7 +206,7 @@ public class DestinationRepository {
                 } else {
                     return 0;
                 }
-            } catch(Exception e) {
+            } catch (Exception e) {
                 return 0;
             }
         }, executionContext);
@@ -273,7 +276,6 @@ public class DestinationRepository {
     }
 
 
-
     /**
      * Checks to see if a user has any destinations that are the same as the destination1 passed in
      *
@@ -287,7 +289,7 @@ public class DestinationRepository {
                 .eq("name", destination1.getName())
                 .eq("type", destination1.getType())
                 .eq("country", destination1.getCountry())
-                .eq("soft_delete",0)
+                .eq("soft_delete", 0)
                 .findList());
         return Optional.of(destinations);
     }
@@ -350,8 +352,8 @@ public class DestinationRepository {
      *
      * @param profileId User if of the followed destinations to return
      * @param rowOffset The row to begin getting data from. This is for pagination
-     * @param limit The page limit for the query. This is used to prevent collation of private
-     *              and followed destinations causing incorrect page size.
+     * @param limit     The page limit for the query. This is used to prevent collation of private
+     *                  and followed destinations causing incorrect page size.
      * @return Optional array list of destinations followed by the user
      */
     public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset, Integer limit) {
@@ -361,25 +363,10 @@ public class DestinationRepository {
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
                 .setParameter(2, limit)
                 .setParameter(3, rowOffset).findList();
-        ArrayList<Destination> destList = new ArrayList<>();
-        Destination destToAdd;
-        for (SqlRow aRowList : rowList) {
-            destToAdd = new Destination();
-            destToAdd.setDestinationId(aRowList.getInteger("destination_id"));
-            destToAdd.setProfileId(aRowList.getInteger("profile_id"));
-            destToAdd.setName(aRowList.getString("name"));
-            destToAdd.setType(aRowList.getString("type"));
-            destToAdd.setCountry(aRowList.getString("country"));
-            destToAdd.setDistrict(aRowList.getString("district"));
-            destToAdd.setLatitude(aRowList.getDouble("latitude"));
-            destToAdd.setLongitude(aRowList.getDouble("longitude"));
-            destToAdd.setVisible(aRowList.getBoolean("visible") ? 1 : 0);
-            destList.add(destToAdd);
-        }
+        ArrayList<Destination> destList = new ArrayList<>(getDestinationsFromSqlRow(rowList));
+
         return Optional.of(destList);
     }
-
-
 
 
     /**
@@ -434,14 +421,15 @@ public class DestinationRepository {
 
     /**
      * Method called from addRequest method to add the changes made in a request to the actions table
+     *
      * @param destinationChange Object that holds the following attributes to be inserted into the database:
-     *   travellerTypeId: Id of the traveller type the user wants to add or remove.
-     *   action: tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
-     *   requestId: Integer id of the request the user is making, links the changes to a request.
+     *                          travellerTypeId: Id of the traveller type the user wants to add or remove.
+     *                          action: tinyInt 1 if the user wants to add traveller type, 0 if user wants to remove traveller type.
+     *                          requestId: Integer id of the request the user is making, links the changes to a request.
      * @return Integer CompletionStage of the id from the new change after the change is inserted into the
-     *  destination_change table
+     * destination_change table
      */
-    private CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange){
+    private CompletionStage<Integer> addDestinationChange(DestinationChange destinationChange) {
         return supplyAsync(() -> {
             ebeanServer.insert(destinationChange);
             return destinationChange.getId();
@@ -451,21 +439,23 @@ public class DestinationRepository {
 
     /**
      * Method to remove the traveller type destination request from the destination changes database table
+     *
      * @param changeId the database id of the change to delete
      * @return completion stage
      */
     public CompletionStage<Integer> deleteDestinationChange(int changeId) {
         return supplyAsync(
-            () -> {
-                ebeanServer.find(DestinationChange.class).where().eq("id", changeId).delete();
-              return 1;
-            });
+                () -> {
+                    ebeanServer.find(DestinationChange.class).where().eq("id", changeId).delete();
+                    return 1;
+                });
     }
 
     /**
      * Accept destination change request
      * calls add traveller type method if the request is to add or calls remove traveller type method if the request is
      * to remove traveller type
+     *
      * @param changeId the destination change to be performed
      */
     public CompletionStage<Integer> acceptDestinationChange(int changeId) {
@@ -474,7 +464,7 @@ public class DestinationRepository {
                     if (changeOpt.isPresent()) {
                         return getDestinationRequest(changeOpt.get().getRequestId())
                                 .thenApplyAsync(requestOpt -> {
-                                    if (changeOpt.get().getAction() == 1){
+                                    if (changeOpt.get().getAction() == 1) {
                                         addDestinationTravellerType(changeOpt.get().getTravellerTypeId(), requestOpt.get().getDestinationId());
                                     } else {
                                         removeDestinationTravellerType(changeOpt.get().getTravellerTypeId(), requestOpt.get().getDestinationId());
@@ -495,13 +485,14 @@ public class DestinationRepository {
 
     /**
      * Helper function to wrap Destination changes in a transaction
+     *
      * @param requestId
-     * @param toAdd Boolean true if the traveller type is to be added
-     *              False if traveller type is to be removed
-     * @param changes List of changes to be wrapped in a transaction
+     * @param toAdd     Boolean true if the traveller type is to be added
+     *                  False if traveller type is to be removed
+     * @param changes   List of changes to be wrapped in a transaction
      */
     @Transactional
-    public void travellerTypeChangesTransaction(Integer requestId, Integer toAdd, List<Integer> changes){
+    public void travellerTypeChangesTransaction(Integer requestId, Integer toAdd, List<Integer> changes) {
         try (Transaction transaction = ebeanServer.beginTransaction()) {
             for (Integer travellerTypeId : changes) {
                 DestinationChange destinationChange = new DestinationChange(travellerTypeId, toAdd, requestId);
@@ -515,10 +506,10 @@ public class DestinationRepository {
      * Method to lodge a traveller type change request
      * Inserts request into the destination_request Table
      *
-     * @param  destinationRequest object holding destinationId and profileId required for inserting the change into the
-     *                            changes table
+     * @param destinationRequest object holding destinationId and profileId required for inserting the change into the
+     *                           changes table
      */
-    public CompletionStage<Integer> createDestinationTravellerTypeChangeRequest(DestinationRequest destinationRequest){
+    public CompletionStage<Integer> createDestinationTravellerTypeChangeRequest(DestinationRequest destinationRequest) {
         return supplyAsync(() -> {
             ebeanServer.insert(destinationRequest);
             return destinationRequest.getId();
@@ -530,9 +521,9 @@ public class DestinationRepository {
      * Update method to add traveller types to a destination
      *
      * @param travellerTypeId id of the traveller type that will be added to the destination
-     * @param destinationId id of the destination that the traveller type will be added to
+     * @param destinationId   id of the destination that the traveller type will be added to
      */
-    private CompletionStage<Void> addDestinationTravellerType(int travellerTypeId, int destinationId){
+    private CompletionStage<Void> addDestinationTravellerType(int travellerTypeId, int destinationId) {
         DestinationTravellerType destinationTravellerType = new DestinationTravellerType(destinationId, travellerTypeId);
         return supplyAsync(() -> {
             ebeanServer.insert(destinationTravellerType);
@@ -544,9 +535,9 @@ public class DestinationRepository {
      * Update method to remove traveller type on a destination
      *
      * @param travellerTypeId id of the traveller type that will be added to the destination
-     * @param destinationId id of the destination that the traveller type will be added to
+     * @param destinationId   id of the destination that the traveller type will be added to
      */
-    private CompletionStage<Void> removeDestinationTravellerType(int travellerTypeId, int destinationId){
+    private CompletionStage<Void> removeDestinationTravellerType(int travellerTypeId, int destinationId) {
         return supplyAsync(() -> {
             ebeanServer
                     .find(DestinationTravellerType.class)
@@ -561,33 +552,34 @@ public class DestinationRepository {
 
     /**
      * Method to get all destinationChanges with content such as profileId, destination and travellerTypes
+     *
      * @return result, a list of destinationChanges
      */
     public List<DestinationChange> getAllDestinationChanges() {
 
-                //Getting Destinationchanges out of the database
-                List<DestinationChange> result = DestinationChange.find.query().where()
-                        .findList();
+        //Getting Destinationchanges out of the database
+        List<DestinationChange> result = DestinationChange.find.query().where()
+                .findList();
 
-            for (DestinationChange destinationChange : result) {
-                DestinationRequest destinationRequest = DestinationRequest.find.query().where()
-                        .eq("id", destinationChange.getRequestId())
-                        .findOne();
+        for (DestinationChange destinationChange : result) {
+            DestinationRequest destinationRequest = DestinationRequest.find.query().where()
+                    .eq("id", destinationChange.getRequestId())
+                    .findOne();
 
-                Profile profile = Profile.find.query().where()
-                        .eq("profile_id", destinationRequest.getProfileId())
-                        .findOne();
-                destinationChange.setEmail(profile.getEmail());
+            Profile profile = Profile.find.query().where()
+                    .eq("profile_id", destinationRequest.getProfileId())
+                    .findOne();
+            destinationChange.setEmail(profile.getEmail());
 
-                Destination destination = lookup(destinationRequest.getDestinationId());
-                destinationChange.setDestination(destination);
+            Destination destination = lookup(destinationRequest.getDestinationId());
+            destinationChange.setDestination(destination);
 
-                TravellerType travellerType = TravellerType.find.query().where()
-                        .eq("traveller_type_id", destinationChange.getTravellerTypeId())
-                        .findOne();
-                destinationChange.setTravellerType(travellerType);
-            }
-            return result;
+            TravellerType travellerType = TravellerType.find.query().where()
+                    .eq("traveller_type_id", destinationChange.getTravellerTypeId())
+                    .findOne();
+            destinationChange.setTravellerType(travellerType);
+        }
+        return result;
     }
 
     public List<TravellerType> getDestinationsTravellerTypes(int destinationId) {
@@ -616,19 +608,19 @@ public class DestinationRepository {
      */
     private CompletionStage<Optional<DestinationChange>> getDestinationChange(int changeId) {
         return supplyAsync(
-            () -> Optional.ofNullable(
-                ebeanServer.find(DestinationChange.class).where().eq("id", changeId).findOne()),
-            executionContext);
-        }
+                () -> Optional.ofNullable(
+                        ebeanServer.find(DestinationChange.class).where().eq("id", changeId).findOne()),
+                executionContext);
+    }
 
     /**
      * Method to get a destination request object using a request id
      */
-    private CompletionStage<Optional<DestinationRequest>> getDestinationRequest(int requestId){
+    private CompletionStage<Optional<DestinationRequest>> getDestinationRequest(int requestId) {
         return supplyAsync(
-            () -> Optional.ofNullable(
-                    ebeanServer.find(DestinationRequest.class).where().eq("id", requestId).findOne()),
-            executionContext);
+                () -> Optional.ofNullable(
+                        ebeanServer.find(DestinationRequest.class).where().eq("id", requestId).findOne()),
+                executionContext);
     }
 
     /**
@@ -695,7 +687,7 @@ public class DestinationRepository {
     /**
      * Get a page of destinations
      *
-     * @param offset offset of destinations to get
+     * @param offset   offset of destinations to get
      * @param pageSize max number of destinations to get
      * @return destinations found
      */
@@ -711,7 +703,7 @@ public class DestinationRepository {
     /**
      * Finds a page of destination changes
      *
-     * @param offset offset to find
+     * @param offset   offset to find
      * @param pageSize limit of changes to find
      * @return changes found
      */
@@ -725,4 +717,110 @@ public class DestinationRepository {
         }
         return requests;
     }
+
+
+    /**
+     *
+     */
+    private List<Destination> getDestinationsFromSqlRow(List<SqlRow> rowList) {
+        List<Destination> destinations = new ArrayList<>();
+
+        for (SqlRow row : rowList) {
+            Destination destination = new Destination();
+            destination.setDestinationId(row.getInteger("destination_id"));
+            destination.setProfileId(row.getInteger("profile_id"));
+            destination.setName(row.getString("name"));
+            destination.setType(row.getString("type"));
+            destination.setCountry(row.getString("country"));
+            destination.setDistrict(row.getString("district"));
+            destination.setLatitude(row.getDouble("latitude"));
+            destination.setLongitude(row.getDouble("longitude"));
+            destination.setVisible(row.getBoolean("visible") ? 1 : 0);
+            destinations.add(destination);
+        }
+
+        return destinations;
+    }
+
+    /**
+     * Database method to serch for a destination of a given name
+     *
+     * @param name   - The destination name
+     * @param offset - The offset from which to start returning results
+     * @return The destinations found by the search query
+     */
+    public List<Destination> searchDestinations(String name, Integer offset, Boolean isPublic, Integer profileId) {
+        if (isPublic) {
+            return new ArrayList<>(ebeanServer.find(Destination.class)
+                    .setFirstRow(offset)
+                    .setMaxRows(7)
+                    .where()
+                    .like("name", name)
+                    .eq("visible", 1)
+                    .findList());
+        }
+
+
+        List<Destination> privateList = new ArrayList<>(ebeanServer.find(Destination.class)
+                .setFirstRow(offset)
+                .setMaxRows(7)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("profile_id", profileId)
+                .like("name", name)
+                .eq("visible", 0)
+                .findList());
+
+        Integer limit = abs(7 - privateList.size());
+        String query = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT ? OFFSET ?";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(query)
+                .setParameter(1, profileId)
+                .setParameter(2, limit)
+                .setParameter(3, offset)
+                .findList();
+
+        privateList.addAll(getDestinationsFromSqlRow(rowList));
+
+        return privateList;
+    }
+
+
+    /**
+     * Database method to get the destination search result size
+     * This is for the size value in the destination search pagination
+     *
+     * @param name - Name of the destination the user is searching for
+     * @return The count of destinations matching/containing the query name in their name
+     */
+    public Integer getNumSearchDestinations(String name, Boolean isPublic, Integer profileId) {
+        if (isPublic) {
+            return ebeanServer.find(Destination.class)
+                    .setMaxRows(100)
+                    .where()
+                    .eq("visible", 1)
+                    .like("name", name)
+                    .findCount();
+        }
+
+        Integer privateCount = ebeanServer.find(Destination.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("profile_id", profileId)
+                .like("name", name)
+                .eq("visible", 0)
+                .findCount();
+
+        String query = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
+                "where follow_destination.profile_id = ? and D.soft_delete = 0";
+        privateCount += ebeanServer.createSqlQuery(query)
+                .setParameter(1, profileId)
+                .findList().size();
+
+        return privateCount;
+
+    }
 }
+
