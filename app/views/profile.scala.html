@@ -817,8 +817,10 @@
 
             }
 
-            $(document).onload(function() {
-                $('#tripTable').DataTable({
+
+            $(document).ready(function () {
+                var table = document.getElementById('tripTable');
+                table.DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
                     "pageLength": 13,
@@ -826,9 +828,7 @@
                     "sDom": '<"top"pfl>rt<"bottom"><"clear">',
                     "autoWidth": false
                 });
-            });
 
-            $(document).ready(function () {
                 $('#tripTable').DataTable({
                     "lengthChange": false,
                     "pagingType": "full",
