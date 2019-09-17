@@ -2,7 +2,7 @@
 @import views.html.helper.CSRF
 @(destinationsList: List[Destination], currentUser: Profile, isPublic: Boolean, pagination: PaginationHelper, followedDestinationIds: List[Integer],
         usersPhotos: List[Photo], destinationForm: Form[Destination], destination: RoutedObject[Destination],
-        requestForm: Form[DestinationRequest], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+        requestForm: Form[DestinationRequest], countries: List[String], searchForm: Form[DestinationSearchFormData])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import models.Destination; var toViewDest = new Destination()
 
