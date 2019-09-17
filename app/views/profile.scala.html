@@ -307,23 +307,25 @@
                         </div>
                     </div>
                     <div id="followedArtistsTab" class="tab-pane fade">
-                        <div class="col">
+                        <div class="col text-center">
+                            @if(followedArtistList.isEmpty) {
+                                <div>Follow an <a href="/artists"> artist</a> for them to appear here!</div>
+                            } else {
                             <div id="card-large lower-card">
                                 <div class="card center-col overflow-auto" id="followedArtistsCard">
-                                <table id="followedArtistsTable">
+
+                                    <table id="followedArtistsTable" class="table">
                                     <thead>
                                         <tr>
                                             <th>Name</th>
-                                            <th>Artist Page</th>
                                             <th>Un-follow</th>
                                         </tr>
                                     </thead>
                                     @for(artist <- followedArtistList) {
                                         <tr>
-                                            <td>@artist.getArtistName</td>
                                             <td>
-                                                <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
-                                                    <button type="button" class="btn btn-primary">View</button>
+                                                <a id="artistNameLink" href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
+                                                    @artist.getArtistName
                                                 </a>
                                             </td>
                                             <td>
@@ -336,6 +338,8 @@
                                 </table>
                             </div>
                             </div>
+                            }
+
                         </div>
                     </div>
 
