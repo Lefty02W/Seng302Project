@@ -128,7 +128,3 @@ img.thumbnail {
     height: 50px;
     overflow-y: auto;
 }
-
-.pagination>li.disabled>a {
-    background-color: #E0E0E0 !important;
-}

@@ -1,10 +1,7 @@
 package controllers;
 
 import com.google.inject.Inject;
-import models.Destination;
-import models.Profile;
-import models.Trip;
-import models.TripDestination;
+import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
@@ -79,6 +76,10 @@ public class TripsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
+                PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, tripRepository.getNumTrips());
+                paginationHelper.alterNext(9);
+                paginationHelper.alterPrevious(9);
+                paginationHelper.checkButtonsEnabled();
 
                 Profile toSend = profile.get();
                 toSend = tripRepository.setUserTrips(toSend);
@@ -93,7 +94,7 @@ public class TripsController extends Controller {
                 if (nextOffset > toSend.getTrips().size()) {
                     nextOffset = offset;
                 }
-                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, toSend, nextOffset, Math.max(0, offset - 9), request, messagesApi.preferred(request)));
+                return ok(tripsCard.render(form, formTrip, destinationsList, tripValues, toSend, nextOffset, Math.max(0, offset - 9), paginationHelper, request, messagesApi.preferred(request)));
         } else {
                 return redirect("/profile");
             }

@@ -300,3 +300,7 @@ a, a:hover {
 #profileFooter{
     z-index: 1;
 }
+
+.pagination>li.disabled>a {
+    background-color: #E0E0E0 !important;
+}
