@@ -38,7 +38,7 @@ public class EventsController extends Controller {
     private final Form<EventFormData> eventFormDataForm;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
-    private String errorEventDate = "Error creating event: Start date must be before end date";
+    private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
     private String errorEventAdmin = "Error creating event: You must be a verified artist admin.";
     private String errorEventUnknown = "Error creating event: Unknown error";
     private String adminEventURL = "/admin/events/0";
