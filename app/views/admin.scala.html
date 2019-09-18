@@ -37,7 +37,7 @@
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h1 class="sidebar-heading">TravelEA </h1>
+                <h2 class="sidebar-heading">Soundbound </h2>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
@@ -51,7 +51,7 @@
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
                         Treasure Hunt</a>
-                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                         Admin</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
@@ -85,7 +85,7 @@
                         <button class="btn btn-primary">Undo Action</button>
                     </a>
 
-                    <div class="helpPopup" onclick="helpPopup()"><a href="" id="helpLink">(What's this?)</a>
+                    <div class="helpPopup" onclick="helpPopup()">(What's this?)
                         <span class="popuptext" id="helpPopup">
                             Shows the last action you executed on this page. <br><br>
                             Click the 'Undo Action' button to undo the latest action. <br>
@@ -1050,6 +1050,11 @@
                 });
             });
 
+            $("#helpPopup").click(function(ev){
+                if(ev.target != this) return;
+                $('#helpPopup').span('hide');
+            });
+
 
             function fillDeleteValues(route) {
                 var a = document.getElementById("confirmDeleteHrf");
@@ -1860,7 +1865,7 @@
                             <div class="row">
                                 <div class="hidden-div-edit">
                                     <input type="text" id="travellerTypesStringDest" name="travellerTypesStringDestCreate" class="hidden-field typesField">
-                                </div>fill
+                                </div>
                                 <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownDest" data-width="100%">
                                     <option value="ThrillSeeker">ThrillSeeker</option>
                                     <option value="Backpacker">Backpacker</option>

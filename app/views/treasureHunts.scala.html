@@ -32,7 +32,7 @@
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h1 class="sidebar-heading">TravelEA </h1>
+                <h2 class="sidebar-heading">Soundbound </h2>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/> Profile</a>
                     <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/> Destinations</a>
@@ -40,7 +40,7 @@
                     <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/> Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a style="color: #ca6636" href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/> Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
                         Events
@@ -78,7 +78,7 @@
 
                     <div class="row">
                         <div class="col">
-                            <h2 align="center">Available Treasure Hunts</h2>
+                            <h2 align="center" class="title">Available Treasure Hunts</h2>
                         </div>
                     </div>
                     <div class="row">
@@ -117,7 +117,7 @@
 
                     <div class="row">
                         <div class="col text-center">
-                            <h2 align="center">My Hunts</h2>
+                            <h2 align="center" class="title">My Hunts</h2>
                             <button class="btn btn-primary" id="addBtn" data-toggle="modal" data-target="#createHuntModal">Add Hunt</button>
                         </div>
                     </div>
@@ -172,17 +172,18 @@
                     <div class="modal-body">
                         <div class="col" align="center">
                             <div class="row">
-                                <div class="form-group">
-                                    <small id="label">Riddle</small>
-                                    <br>
-                                    <textarea type="text" name="riddle" id="riddle" required ></textarea>
-                                </div>
+                                <small id="label">Riddle</small>
+                                <br>
+                            </div>
+                            <div class="row">
+                                    <textarea class="riddleArea" type="text" name="riddle" id="riddle" required ></textarea>
+                            </div>
+                            <div class="row">
+                                <label for="destinationId"><small id="label">Destination</small></label>
+                                <br>
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="destinationId"><small id="label">Destination</small></label>
-                                    <br>
-                                    <br>
                                     <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                     @for(destination <- destinations) {
                                         <option value="@destination.getDestinationId">@destination.getName</option>
@@ -233,14 +234,18 @@
                     <div class="modal-body">
                         <div class="col" align="center">
                             <div class="row">
-                                <div class="form-group">
-                                    <small id="label">Riddle</small>
-                                    <input type="text" name="riddle" id="riddle" value="@editHunt.getObject.getRiddle" required >
-                                </div>
+                                <small id="label">Riddle</small>
+                                <br>
+                            </div>
+                            <div class="row">
+                                <textarea class="riddleArea" type="text" name="riddle" id="riddle" required >@editHunt.getObject.getRiddle</textarea>
+                            </div>
+                            <div class="row">
+                                <label for="destinationId"><small id="label">Destination</small></label>
+                                <br>
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <label for="destinationId"><small id="label">Destination</small></label>
                                     <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                     @for(destination <- destinations) {
                                         @if(destination.getDestinationId == editHunt.getObject.getTreasureHuntDestinationId) {

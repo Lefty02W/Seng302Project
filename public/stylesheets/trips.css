@@ -13,9 +13,6 @@
     padding-bottom: 10px;
 }
 
-label {
-    color: #ca6636;
-}
 
 #addDest {
     width: 5vw;
@@ -25,7 +22,7 @@ label {
 }
 
 #destsTable {
-    max-height: 10vh;
+    max-height: 45vh;
     overflow: auto;
     width: 100%;
 }
@@ -35,9 +32,15 @@ label {
     height: 35vh;
 }
 
-#backButtonCreate{
-    heigh: 5vh;
-    margin: 7vh 2vh 2vh;
+#backSaveButtonsRow {
+    margin-top: 10vh;
+}
+
+#backButtonCreate, #backButtonEdit{
+    height: 5vh;
+    bottom: 5vh;
+    margin-right: 5vh;
+    margin-top: 5vh;
     padding-top: 1vh;
 }
 
@@ -46,14 +49,35 @@ label {
     margin-right: 5vh;
     margin-top: 5vh;
     padding-top: 1vh;
+    position: absolute;
+    z-index: 1;
+    right: 30px;
+    bottom: 5vh;
+}
+
+.backButton {
+    position: absolute;
+    right: 170px;
+    bottom: 100px;
+}
+
+@media only screen and (max-height: 700px) {
+    .saveTripButton {
+        bottom: 0px;
+        margin-bottom: 30px;
+    }
+    .backButton {
+        bottom: 0px;
+        margin-bottom: 30px;
+    }
 }
 
 
 .tripNameInput{
-    display: block;
+    display: flex;
     text-align: center;
     margin-left: 40vw;
-    margin-bottom: 50px;
+
 }
 
 .delete-icon{
@@ -65,16 +89,23 @@ label {
 input[type=datetime-local] {
 }
 
+.trip-col {
+    padding-bottom: 10vh;
+}
+
 #trip-card {
     height: 50vh;
     min-width: 40vh;
-    background-color: #e8f5e9;
+    background-color: #e9ecef;
 }
 
-.card-border {
-    background-color: #2e7d32;
+.card-border, .card-footer {
+    background-color: #e9ecef;
 }
 
+.card-body {
+    background-color: white;
+}
 
 
 #addButton {
@@ -86,7 +117,7 @@ input[type=datetime-local] {
 }
 
 h1, h3, h4, h5, h6 {
-    color: black;
+    color: #d74961;
 }
 
 #topBarTitle {
@@ -105,7 +136,7 @@ h1, h3, h4, h5, h6 {
     bottom: 0;
     max-height: 10%;
     max-width: unset;
-    background: #205723 !important;
+    background: #009779 !important;
 }
 
 #tripsPane {

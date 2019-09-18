@@ -2,6 +2,7 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
+
 import interfaces.TypesInterface;
 import models.*;
 import play.data.Form;
@@ -20,16 +21,18 @@ import views.html.profile;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -228,11 +231,12 @@ public class ProfileController extends Controller implements TypesInterface {
     }
 
 
+
     /**
      * Call to PhotoRepository to be insert an photo in the database
      *
      * @param photo Photo object containing email, id, byte array of photo and visible info
-     * @return a redirect to the profile page
+     * @return a redirect to the profile paghttps://www.linuxmint.com/start/tessa/e
      */
     @Security.Authenticated(SecureSession.class)
     private CompletionStage<Result> savePhoto(Photo photo, int profileId){

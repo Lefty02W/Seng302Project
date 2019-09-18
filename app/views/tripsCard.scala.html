@@ -34,13 +34,13 @@
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h1 class="sidebar-heading">TravelEA </h1>
+                <h2 class="sidebar-heading">Soundbound </h2>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
                     <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
                         Destinations</a>
-                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
                         Trips</a>
                     <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
                         Travellers</a>
@@ -72,7 +72,7 @@
                 <div id="tripsPane" class="container-fluid">
                     <div class="row pt-2">
                            @for(trip <- trips) {
-                               <div class="col-lg-4 col-md-6 col-sm-10 justify-content-center">
+                               <div class="col-lg-4 col-md-6 col-sm-10 justify-content-center trip-col">
                                    <div class="card" id="trip-card">
 
                                        <div class="card-header card-border"> <!-- Change to the dark green -->
@@ -81,7 +81,7 @@
 
                                        <div class="card-body overflow-auto">  <!-- Sort out min/max height and width for resizing -->
 
-                                           <h4 class="dark-header">Destinations Visited</h4>
+                                           <h4>Destinations Visited</h4>
                                            <table id="destinationsTable" class="trip-table">
                                                <thead>
                                                    <tr>
@@ -103,7 +103,7 @@
 
                                        <div class="card-footer"> <!-- Maybe look into padding to make the footer smaller, might be on the buttons -->
                                            <a href="@routes.TripsController.showEdit(trip, currentUser.getProfileId)"><button type="submit" class="btn btn-primary">Edit</button></a>  <!-- Need to change to the correct style of button -->
-                                           <button type="submit" class="btn btn-outline-secondary"
+                                           <button type="submit" class="btn btn-danger"
                                            onclick="fillDeleteValues('@routes.TripsController.delete(trip)')">Delete
                                            </button>
                                        </div>
@@ -122,7 +122,7 @@
                     <li class="page-item"><a class="page-link" href="/trips/@previous">Previous</a></li>
                     <li class="page-item"><a class="page-link" href="/trips/@next">Next</a></li>
                 </ul>
-                <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" id="addButton" class="btn btn-primary">
+                <a id="addTripButton" href="@routes.TripsController.showCreate(currentUser.getProfileId)"><button type="button" id="addButton" class="btn btn-secondary">
                             Add New Trip
                 </button> </a>
             </div>

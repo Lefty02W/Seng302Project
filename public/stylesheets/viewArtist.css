@@ -37,7 +37,8 @@
     bottom: 0;
     max-height: 10%;
     max-width: unset;
-    background: #205723 !important;
+    background: #009779;
+    z-index: 1;
 }
 
 

@@ -21,11 +21,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-.btn-primary, .btn-primary:hover {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
 .changeLog {
     width: 20vw;
     z-index: 2;
@@ -72,7 +67,10 @@ h1, h2, h3, h4, h5, h6 {
 .helpPopup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s
+    animation: fadeIn 1s;
+    margin-left: 31%;
+    margin-top: 5%;
+    padding: 1%;
 }
 
 /* Add animation (fade in the popup) */
@@ -100,7 +98,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .adminCard a {
-    color: #2e7d32;
+    color: #d74961;
     font-size: large;
 }
 
