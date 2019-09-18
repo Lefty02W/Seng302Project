@@ -167,7 +167,7 @@
                                                         <button class="btn btn-primary">Edit</button>
                                                     </a>
                                                     <a href="#">
-                                                        <button class="btn btn-outline-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')"> Delete</button>
+                                                        <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
                                                     </a>
                                                 </div>
                                             }
@@ -219,18 +219,18 @@
         <div class="container" id="artistsFooter">
             <div class="row justify-content-center">
                 <div class="col button-col">
-                    <button class="btn btn-primary" onclick="goBack()">Back</button>
+                    <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
                     @if(artist.getAdminsList.contains(currentUser)) {
-                        <button type="button" class="btn btn-primary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
+                        <button type="button" class="btn btn-secondary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
                             <i class="fa fa-edit" id="editProfileButton"></i>
                             Edit Profile
                         </button>
-                        <button class="btn btn-primary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
+                        <button class="btn btn-secondary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
                             Create Event
                         </button>
 
-                        <button class="btn btn-secondary" onclick="fillDeleteValues('/artists/@artist.getArtistId/leave')">Leave Artist</button>
+                        <button class="btn btn-primary" id="leaveArtistButton" onclick="fillDeleteValues('/artists/@artist.getArtistId/leave')">Leave Artist</button>
                     }
                 </div>
                 <div class="col social-col">

@@ -251,7 +251,6 @@ public class EventsController extends Controller {
         });
     }
 
-    @RestrictAnnotation()
     public CompletionStage<Result> createArtistEvent(Http.Request request, int id){
         return supplyAsync(() -> {
             Integer profId = SessionController.getCurrentUserId(request);

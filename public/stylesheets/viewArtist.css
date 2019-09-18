@@ -4,7 +4,7 @@
     margin-right: auto;
 }
 
-#viewArtistTabs, li {
+#viewArtistTabs, #aboutTabLink, #eventsTabLink, #membersTabLink{
     padding: 10px;
 }
 
@@ -61,4 +61,11 @@
 
 .social-col {
     padding-left: 20vw;
+}
+
+#leaveArtistButton {
+    position: fixed;
+    left: 92.5vw;
+    background-color: #41B49D;
+    z-index: 2;
 }
