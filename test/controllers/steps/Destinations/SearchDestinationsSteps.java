@@ -1,6 +1,7 @@
 package controllers.steps.Destinations;
 
 import controllers.TestApplication;
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -20,36 +21,6 @@ public class SearchDestinationsSteps {
     private Map<String, String> searchForm = new HashMap<>();
     private Result redirectDestination;
 
-
-    @When("user searches for a public destination with name {string}")
-    public void userSearchesForAPublicDestinationWithName(String name) {
-        searchForm.put("isPublic", "true");
-        searchForm.put("name", name);
-    }
-
-    @When("uer searches for a private destination with name {string}")
-    public void uerSearchesForAPrivateDestinationWithName(String name) {
-        searchForm.put("isPublic", "false");
-        searchForm.put("name", name);
-
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("POST")
-                .uri("/destinations/search/0")
-                .bodyForm(searchForm)
-                .session("connected", "1");
-        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
-        assertEquals(303, redirectDestination.status());
-    }
-
-    @Then("the destination {string} is displayed in the search result")
-    public void theDestinationIsDisplayedInTheSearchResult(String name) {
-        throw new cucumber.api.PendingException();
-    }
-
-    @Then("the destination {string} is not displayed in the search result")
-    public void theDestinationIsNotDisplayedInTheSearchResult(String arg0) {
-        throw new cucumber.api.PendingException();
-    }
 
     @And("the search result is empty")
     public void theSearchResultIsEmpty() {
@@ -75,4 +46,45 @@ public class SearchDestinationsSteps {
     }
 
 
+    @When("^user searches for a private destination with name \"([^\"]*)\"$")
+    public void userSearchesForAPrivateDestinationWithName(String name) throws Throwable {
+        searchForm.put("isPublic", "false");
+        searchForm.put("name", name);
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/destinations/search/0")
+                .bodyForm(searchForm)
+                .session("connected", "1");
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
+
+        assertEquals(303, redirectDestination.status());
+    }
+
+    @Then("^the destination \"([^\"]*)\" is displayed in the search result$")
+    public void theDestinationIsDisplayedInTheSearchResult(String arg0) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^user searches for a public destination with name \"([^\"]*)\"$")
+    public void userSearchesForAPublicDestinationWithName(String name) throws Throwable {
+        searchForm.put("isPublic", "true");
+        searchForm.put("name", name);
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("POST")
+                .uri("/destinations/search/0")
+                .bodyForm(searchForm)
+                .session("connected", "1");
+        redirectDestination = Helpers.route(TestApplication.getApplication(), request);
+
+        assertEquals(303, redirectDestination.status());
+    }
+
+    @Then("^the destination \"([^\"]*)\" is not displayed in the search result$")
+    public void theDestinationIsNotDisplayedInTheSearchResult(String arg0) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 }

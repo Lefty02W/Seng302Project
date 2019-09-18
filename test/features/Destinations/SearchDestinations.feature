@@ -12,7 +12,7 @@ Feature: Search for a destination
   Scenario: Search for a private destination
     Given User is logged in to the application
     And user is at the destinations page
-    When uer searches for a private destination with name "Home"
+    When user searches for a private destination with name "Home"
     Then the destination "Home" is displayed in the search result
 
   Scenario: Search for a non-existent public destination
