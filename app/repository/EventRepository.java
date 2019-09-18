@@ -130,7 +130,6 @@ public class EventRepository {
     private Events populateEvent(Events event) {
         event.setEventGenres(genreRepository.getEventGenres(event.getEventId()));
         event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
-        System.out.println("Event id =" + event.getEventId());
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
         event.setDestination(destinationRepository.lookup(event.getDestinationId()));
         return event;

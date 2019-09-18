@@ -357,9 +357,16 @@ public class EventsController extends Controller {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
                 EventFormData eventFormData = searchEventForm.get();
+
+                if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
+                eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
+                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("")) {
+                    return redirect("/events/0").flashing("error", "Please enter at least one search filter.");
+                }
+
                 List<Events> eventsList = eventRepository.searchEvent(eventFormData);
                 if(!eventsList.isEmpty()){
-                    PaginationHelper paginationHelper = new PaginationHelper(0, 0, 0, 0, true, true, eventsList.size());
+                    PaginationHelper paginationHelper = new PaginationHelper(0, 0, 0, 0, true, true, 8);
                     paginationHelper.alterNext(8);
                     paginationHelper.alterPrevious(8);
                     paginationHelper.checkButtonsEnabled();
@@ -368,9 +375,11 @@ public class EventsController extends Controller {
                             destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
                             request, messagesApi.preferred(request)));
+                } else {
+                    return redirect("/events/0").flashing("error", "No results found.");
                 }
             }
-            return redirect("/events").flashing("error", "No events match your search");
+            return redirect("/events/0").flashing("error", "No events match your search");
         });
     }
 
