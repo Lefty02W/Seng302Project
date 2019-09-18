@@ -804,7 +804,10 @@
                                             <tr>
                                                 <th>ArtistId</th>
                                                 <th>Name</th>
+                                                <th>Countries</th>
                                                 <th>Members</th>
+                                                <th>Genres</th>
+                                                <th>Artist Admins</th>
                                                 <th>Verify</th>
                                                 <th>Decline</th>
                                             </tr>
@@ -813,7 +816,28 @@
                                             <tr>
                                                 <td>@artist.getArtistId</td>
                                                 <td>@artist.getArtistName</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(country <- artist.getCountryList) {
+                                                        <li>@country</li>
+                                                    }
+                                                    </ul>
+                                                </td>
                                                 <td>@artist.getMembers</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(genre <- artist.getGenreList) {
+                                                        <li>@genre.getGenre</li>
+                                                    }
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul>
+                                                    @for(profile <- artist.getAdminsList) {
+                                                        <li>@profile.getProfileId: @profile.getFirstName @profile.getLastName</li>
+                                                    }
+                                                    </ul>
+                                                </td>
                                                 <td><a href="/admin/artists/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>
                                                 <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/artists/decline/@artist.getArtistId')">Decline</button></td>
                                             </tr>
