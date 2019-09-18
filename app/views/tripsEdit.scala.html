@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
 
-@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], destinationList: List[Destination], currentUser: Profile, id: Integer, toEdit: TripDestination, userId: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], destinationList: List[Destination], currentUser: Profile, id: Integer, toEdit: TripDestination, userId: Integer, tripName: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -62,7 +62,7 @@
                     @CSRF.formField
                     <div class="row">
                         <div class="tripNameInput">
-                            <input type="text" id="name" name="name" required placeholder="Trip Name">
+                            <input type="text" id="tripNameEntry" name="name" required placeholder="Trip Name">
                         </div>
                         <button type="submit" class="saveTripButton btn btn-primary" id="save saveAndBackButton">
                             Save Trip</button>
@@ -190,6 +190,10 @@
                     "scrollY": "20vh",
                     "scrollCollapse": true
                 });
+
+                @* @if(tripName != "") {*@
+                    document.getElementById('tripNameEntry').value = "@tripName";
+                @*}*@
             });
 
 

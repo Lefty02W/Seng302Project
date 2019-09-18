@@ -181,7 +181,8 @@ public class TripsController extends Controller {
                 if (orderedCurrentDestinations.isEmpty() && !showEmptyEdit) {
                     orderedCurrentDestinations.putAll(trip.getOrderedDestinations());
                 }
-                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, null, userId, request, messagesApi.preferred(request)));
+                tripName = trip.getName();
+                return ok(tripsEdit.render(tripForm, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, null, userId, tripName, request, messagesApi.preferred(request)));
             }
             return redirect("/trips/0");
         });
@@ -492,7 +493,7 @@ public class TripsController extends Controller {
             }
             if (profile.isPresent()) {
                 TripDestination dest = orderedCurrentDestinations.get(order);
-                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, dest, profId, request, messagesApi.preferred(request)));
+                return ok(tripsEdit.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), id, dest, profId, tripName, request, messagesApi.preferred(request)));
             } else {
                 return redirect("/profile");
             }
