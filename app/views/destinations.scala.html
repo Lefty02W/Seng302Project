@@ -146,34 +146,25 @@
 
                                 <div class="col" id="pagination-links">
                                     <ul class="pagination">
-                                        <li class="page-item">
-                                            <a class="page-link" href="/destinations/show/@isPublic/0">Start</a>
-                                        </li>
-
                                         @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item">
-                                                <a class="page-link" href="/destinations/show/@isPublic/@pagination.getPrevious">
-                                                    Previous</a>
-                                            </li>
+                                            <li class="page-item"><a class="page-link" href="/destinations/show/@isPublic/0">Start</a></li>
+                                            <li class="page-item"><a class="page-link" href="/destinations/show/@isPublic/@pagination.getPrevious">
+                                                    Previous</a></li>
                                         } else {
-                                            <li class="page-item disabled">
-                                                <a class="page-link" href="/destinations/show/@isPublic/@pagination.getPrevious">
-                                                    Previous</a>
-                                            </li>
+                                            <li class="page-item disabled"><a class="page-link disabled" href="/destinations/show/@isPublic/0">Start</a></li>
+                                            <li class="page-item disabled"><a class="page-link disabled" href="/destinations/show/@isPublic/@pagination.getPrevious">
+                                                    Previous</a></li>
                                         }
 
-
+                                        <li class="page-item">
                                         @if(pagination.isNextEnabled) {
-                                            <li class="page-item">
-                                                <a class="page-link" href="/destinations/show/@isPublic/@pagination.getNext">Next</a>
-                                            </li>
+                                            <a class="page-link" href="/destinations/show/@isPublic/@pagination.getNext">
+                                                        Next</a>
                                         } else {
-                                            <li class="page-item disabled">
-                                                <a class="page-link" href="/destinations/show/@isPublic/@pagination.getNext">
-                                                    Next</a>
-                                            </li>
+                                            <a class="page-link disabled" href="/destinations/show/@isPublic/@pagination.getNext">
+                                                        Next</a>
                                         }
-
+                                        </li>
                                     </ul>
                                 </div>
                                 <div id="btn-row" class="row justify-content-center">
