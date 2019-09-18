@@ -33,6 +33,9 @@ INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,ge
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
   (11, 'Bort', 'Cort', 'BortCort@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (12, 'Has', 'Artist', 'hasAnArtist@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
+
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
@@ -219,6 +222,12 @@ INSERT INTO artist (artist_id, artist_name, biography, members,
   'https://www.facebook.com/', 'https://www.instagram.com/', 'https://www.spotify.com/', 'https://www.twitter.com/',
   'https://www.amazon.com/kingsofamazon');
 
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (8, 'Daddy Sloth', 'Alpha Sloth', 'SlothBoi420', 1);
+
+INSERT INTO artist_profile(artist_id, profile_id) VALUES
+  (8, 12);
+
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
 
@@ -251,6 +260,9 @@ INSERT INTO artist_profile (artist_id, profile_id) VALUES
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (7, 1);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (8, 1);
 
 INSERT INTO follow_artist (artist_follow_id, profile_id, artist_id) VALUES
   (1, 1, 2);
