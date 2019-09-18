@@ -224,7 +224,7 @@
                     @if(artist.getAdminsList.contains(currentUser)) {
                         <button type="button" class="btn btn-secondary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
                             <i class="fa fa-edit" id="editProfileButton"></i>
-                            Edit Profile
+                            Edit Artist
                         </button>
                         <button class="btn btn-secondary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
                             Create Event
@@ -526,9 +526,9 @@
                                     </div>
                                     <div class="row justify-content-center">
                                         <div class="hidden-div-edit">
-                                            <input type="text" id="genreForm" name="genreForm" class="hidden-field">
+                                            <input type="text" id="genreFormEvent" name="genreFormEvent" class="hidden-field">
                                         </div>
-                                        <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
+                                        <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreEventDropdown" data-width="50%">
                                         @for(genre <- genres) {
                                             <option value="@genre.getGenreId">@genre.getGenre</option>
                                         }
@@ -781,7 +781,7 @@
             });
 
             function fillVals(){
-                $('#genreForm').val($('#genreDropdown').val());
+                $('#genreFormEvent').val($('#genreEventDropdown').val());
                 $('#artistForm').val($('#artistDropdown').val());
             }
 
