@@ -295,6 +295,8 @@ public class EventRepository {
             args.add(eventFormData.getStartDate());
             args.add(eventFormData.getStartDate());
         }
+        query += " Limit 8";
+        System.out.println(query);
         return createSqlQuery(query, args, likeAdded);
     }
 
