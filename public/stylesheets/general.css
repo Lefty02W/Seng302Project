@@ -128,6 +128,11 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     border-color: #41b49d;
 }
 
+.btn-primary:disabled{
+    pointer-events: auto;
+    background-color: #41b49d;
+}
+
 .btn-danger:hover {
     background-color: #7d2f2e;
     border-color: #7d2f2e;

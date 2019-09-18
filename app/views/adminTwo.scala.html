@@ -3,7 +3,7 @@
 
 @(destinations: List[Destination], countries: List[String], adminUndoStack: List[UndoStack], artists : List[Artist],
         genres: List[MusicGenre], eventFormDataForm : Form[EventFormData], pagination : PaginationHelper,
-        events : List[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
+        events : List[Events], editEvent: RoutedObject[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -170,6 +170,7 @@
                                             <th>Start Date</th>
                                             <th>End Date</th>
                                             <th>Age Restriction</th>
+                                            <th>Edit</th>
                                             <th>Delete</th>
                                         </tr>
                                     </thead>
@@ -182,6 +183,7 @@
                                             <td>@event.getStartDateString</td>
                                             <td>@event.getEndDateString</td>
                                             <td>@event.getAgeRestrictionString</td>
+                                            <td><a href="@routes.AdminController.showEditEvent(event.getEventId)"><button class="btn btn-primary">Edit</button></a></td>
                                             <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/events/@pagination.getOffset/delete/@event.getEventId')">Delete</button></td>
                                         </tr>
                                     }
@@ -336,6 +338,10 @@
                 });
             });
 
+            function fillValsEdit() {
+                $('#genreFormEdit').val($('#genreDropdownEdit').val());
+                $('#artistFormEdit').val($('#artistDropdownEdit').val());
+            }
 
             function fillDeleteValues(route) {
                 var a = document.getElementById("confirmDeleteHrf");
@@ -368,6 +374,185 @@
 
 
     </script>
+
+    @if(editEvent.isEdit && editEvent.getObject != null) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#editEventModal').modal('show');
+                });
+        </script>
+        <div class="modal" id="editEventModal">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Event</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    @form(routes.AdminController.editEvent(editEvent.getObject.getEventId)) {
+                        @CSRF.formField
+                            <!-- body -->
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Event Name*</small>
+                                                <input type="text" id="eventName" placeholder="Event Name" value="@editEvent.getObject.getEventName" name="eventName" class="inputField" required oninvalid="this.setCustomValidity('Event name is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Event Type</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <select class="selectpicker" title="Type" id="typeForm" name="typeForm" data-width="50%" required>
+                                                @if(editEvent.getObject.getEventTypes.contains("Gig")) {
+                                                    <option value="Gig" selected>Gig</option>
+                                                } else {
+                                                    <option value="Gig">Gig</option>
+                                                }
+                                                @if(editEvent.getObject.getEventTypes.contains("Meetup")) {
+                                                    <option value="Meetup" selected>Meetup</option>
+                                                } else {
+                                                    <option value="Meetup">Meetup</option>
+                                                }
+                                                @if(editEvent.getObject.getEventTypes.contains("Competition")) {
+                                                    <option value="Competition" selected>Competition</option>
+                                                } else {
+                                                    <option value="Competition">Competition</option>
+                                                }
+                                                @if(editEvent.getObject.getEventTypes.contains("Party")) {
+                                                    <option value="Party" selected>Party</option>
+                                                } else {
+                                                    <option value="Party">Party</option>
+                                                }
+                                                @if(editEvent.getObject.getEventTypes.contains("Charity")) {
+                                                    <option value="Charity" selected>Charity</option>
+                                                } else {
+                                                    <option value="Charity">Charity</option>
+                                                }
+                                                @if(editEvent.getObject.getEventTypes.contains("Festival")) {
+                                                    <option value="Festival" selected>Festival</option>
+                                                } else {
+                                                    <option value="Festival">Festival</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div class="row justify-content-center">
+                                            <label>Age Restriction</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <select class="selectpicker" title="Age Restriction" id="ageForm" name ="ageForm" data-width="50%" required>
+                                                @if(editEvent.getObject.getAgeRestriction.equals(16)) {
+                                                    <option value=16 selected>16+</option>
+                                                } else {
+                                                    <option value=16>16+</option>
+                                                }
+                                                @if(editEvent.getObject.getAgeRestriction.equals(18)) {
+                                                    <option value=18 selected>18+</option>
+                                                } else {
+                                                    <option value=18>18+</option>
+                                                }
+                                                @if(editEvent.getObject.getAgeRestriction.equals(21)) {
+                                                    <option value=21 selected>21+</option>
+                                                } else {
+                                                    <option value=21>21+</option>
+                                                }
+                                                @if(editEvent.getObject.getAgeRestriction.equals(0)) {
+                                                    <option value=0 selected>All Ages</option>
+                                                } else {
+                                                    <option value=0>All Ages</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div class="row justify-content-center">
+                                            <label>Event Destination</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <select class="selectpicker" data-live-search="true" title="Destination"  name="destinationId" id="destinationId" data-width="50%">
+                                            @for(destination <- destinations) {
+                                                @if(editEvent.getObject.getDestinationId.equals(destination.getDestinationId)) {
+                                                    <option value="@destination.getDestinationId" selected>@destination.getName</option>
+                                                } else {
+                                                    <option value="@destination.getDestinationId">@destination.getName</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Genres</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="genreFormEdit" name="genreForm" class="hidden-field">
+                                            </div>
+                                            <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdownEdit" data-width="50%">
+                                            @for(genre <- genres) {
+                                                @if(editEvent.getObject.getEventGenres.contains(genre)) {
+                                                    <option value="@genre.getGenreId" selected>@genre.getGenre</option>
+                                                } else {
+                                                    <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Event Artists</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="artistFormEdit" name="artistForm" class="hidden-field" required>
+                                            </div>
+                                            <select class="selectpicker" data-live-search="true" multiple title="Event Artists" id="artistDropdownEdit" data-width="50%">
+                                            @for(artist <- artists) {
+                                                @if(editEvent.getObject.getEventArtists.contains(artist)) {
+                                                    <option value="@artist.getArtistId" selected>@artist.getArtistName</option>
+                                                } else {
+                                                    <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Start Date*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="datetime-local" id="startDate"  name="startDate" class="inputField" value="@editEvent.getObject.formatLocalDate(editEvent.getObject.getStartDate)" required oninvalid="this.setCustomValidity('Event start date is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>End Date*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="datetime-local" id="endDate"  name="endDate" class="inputField" value="@editEvent.getObject.formatLocalDate(editEvent.getObject.getEndDate)" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row justify-content-center">
+                                    <input type="text" id="description" value="@editEvent.getObject.getDescription" placeholder="Description*" name="description">
+                                </div>
+                                <div class="row justify-content-center">
+                                    <small>Fields with a * are required</small>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- footer  -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillValsEdit()">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+    }
 
     <div class="modal" id="createEventModal">
         <div class="modal-dialog modal-xl">

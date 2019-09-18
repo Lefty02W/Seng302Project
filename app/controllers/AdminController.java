@@ -8,6 +8,7 @@ import play.i18n.MessagesApi;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Security;
 import repository.*;
 import roles.RestrictAnnotation;
 import utility.Country;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import static controllers.EventsController.setValues;
 import static java.lang.Integer.parseInt;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static play.mvc.Results.ok;
@@ -49,9 +51,12 @@ public class AdminController {
     private final GenreRepository genreRepository;
     private final EventRepository eventRepository;
     private final Form<Artist> artistForm;
+    private final Form<Events> eventForm;
+    private String adminEndpoint = "/admin";
     private static final int pageSize = 8;
     private RolesRepository rolesRepository;
     private final Form<EventFormData> eventCreateForm;
+    private final Form<EventFormData> eventFormDataForm;
 
     @Inject
     public AdminController(FormFactory formFactory, HttpExecutionContext httpExecutionContext,
@@ -80,6 +85,8 @@ public class AdminController {
         this.genreRepository = genreRepository;
         this.eventRepository = eventRepository;
         this.eventCreateForm = eventFormFactory.form(EventFormData.class);
+        this.eventForm = formFactory.form(Events.class);
+        this.eventFormDataForm = formFactory.form(EventFormData.class);
     }
 
 
@@ -121,7 +128,7 @@ public class AdminController {
                 undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
                 artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), eventCreateForm,
                 initialisePaginatior(offset, eventRepository.getNumEvents(), 8),
-                    eventRepository.getPage(offset), request, messagesApi.preferred(request))));
+                    eventRepository.getPage(offset), new RoutedObject<>(null, false, false), request, messagesApi.preferred(request))));
     }
 
     /**
@@ -685,6 +692,24 @@ public class AdminController {
         });
     }
 
+    /**
+     * Function to edit a event.
+     * @param request
+     * @param id The id of the event to edit.
+     * @return redirect back to the event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> editEvent(Http.Request request, Integer id) {
+        Form<Events> form = eventForm.bindFromRequest(request);
+        Events event = setValues(SessionController.getCurrentUserId(request), form);
+        if (event.getStartDate().after(event.getEndDate())){
+            return supplyAsync(() -> redirect("/admin/events/0").flashing("error", "Error: Start date cannot be after end date."));
+        }
+        return eventRepository.update(id, event).thenApplyAsync(x -> {
+            return redirect("/admin/events/0").flashing("success", "Event has been updated.");
+        });
+
+    }
 
     /**
      * Endpoint method to get a hunt object to the view to edit
@@ -703,6 +728,19 @@ public class AdminController {
                     new RoutedObject<TreasureHunt>(hunt, true, false), Country.getInstance().getAllCountries(),
                     undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), new ArrayList<Artist>(),
                     new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(0, treasureHuntRepository.getNumHunts(), 5), new ArrayList<Events>(), request, messagesApi.preferred(request)));
+        });
+    }
+
+
+    public CompletionStage<Result> showEditEvent(Http.Request request, Integer id){
+        return supplyAsync(() ->  {
+                Events event = eventRepository.lookup(id);
+                return ok(adminTwo.render(destinationRepository.getAllDestinations(),
+                Country.getInstance().getAllCountries(),
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)),
+                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), eventCreateForm,
+                initialisePaginatior(0, eventRepository.getNumEvents(), 8),
+                eventRepository.getPage(0), new RoutedObject<>(event, true, false), request, messagesApi.preferred(request)));
         });
     }
 

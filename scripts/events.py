@@ -1,5 +1,6 @@
 from readJSON import *
 import random
+import datetime
 
 
 def get_event_id(event_name, cursor, db):
@@ -7,14 +8,13 @@ def get_event_id(event_name, cursor, db):
     try:
         cursor.execute("SELECT event_id from events WHERE event_name = '{}'".format(event_name))
         db.commit()
-        id = cursor.fetchone()[0]
+        id = cursor.fetchone()
         if id is not None:
-            return id
+            return id[0]
         else:
             return 0
     except Exception as e:
-        print("Error checking if event with name exists")
-        return True
+        return 0
 
 
 def execute_event_type_queries(event_id, cursor, db):
@@ -22,13 +22,15 @@ def execute_event_type_queries(event_id, cursor, db):
     try:
         cursor.execute("SELECT event_id from event_type WHERE event_id = '{}'".format(event_id))
         db.commit()
-        id = cursor.fetchone()[0]
-        if id is not None:
+        id = cursor.fetchone()
+        if id is None:
             cursor.execute("INSERT INTO event_type (event_id, type_id) VALUES ('{}', '{}')".format(event_id, random.randint(1, 4)))
             db.commit()
+            return "Successfully inserted event type"
+        else:
+            return "Event type already exists"
     except Exception as e:
-        db.rollback()
-        print("\nError inserting event types")
+        return "\nError inserting event types : Error", e
 
 
 def execute_event_genres_queries(event_id, cursor, db):
@@ -36,13 +38,15 @@ def execute_event_genres_queries(event_id, cursor, db):
     try:
         cursor.execute("SELECT event_id from event_genres WHERE event_id = '{}'".format(event_id))
         db.commit()
-        id = cursor.fetchone()[0]
-        if id is not None:
-            cursor.execute("INSERT INTO event_genre (event_id, genre_id) VALUES ('{}', '{}')".format(event_id, random.randint(1, 20)))
+        id = cursor.fetchone()
+        if id is None:
+            cursor.execute("INSERT INTO event_genres (event_id, genre_id) VALUES ('{}', '{}')".format(event_id, random.randint(1, 20)))
             db.commit()
+            return "Successfully inserted event genres"
+        else:
+            return "Event genre already exists"
     except Exception as e:
-        db.rollback()
-        print("\nError inserting event genres")
+        return "\nError inserting event genres : Error ", e
 
 
 def execute_event_artists_queries(event_id, artist_id, cursor, db):
@@ -51,14 +55,17 @@ def execute_event_artists_queries(event_id, artist_id, cursor, db):
         try:
             cursor.execute("SELECT event_id from event_artists WHERE event_id = '{}'".format(event_id))
             db.commit()
-            id = cursor.fetchone()[0]
-            cursor.execute("INSERT INTO event_artists (artist_id, event_id) VALUES ('{}', '{}')".format(artist_id, event_id))
-            db.commt()
+            id = cursor.fetchone()
+            if id is None:
+                cursor.execute("INSERT INTO event_artists (artist_id, event_id) VALUES ('{}', '{}')".format(artist_id, event_id))
+                db.commit()
+                return "Successfully inserted event queries"
+            else:
+                return "Event artist already exists"
         except Exception as e:
-            db.rollback()
-            print("\nError inserting event artists")
+            return "\nError inserting event artists : Error", e
     else:
-        print("\nError inserting event artists: Cannot get artist id")
+        return "\nError inserting event artists: Cannot get artist id"
 
 
 def get_artist_id(artists, cursor, db):
@@ -66,6 +73,21 @@ def get_artist_id(artists, cursor, db):
     artist = artists[random.randint(0, len(artists) -1 )]
     try:
         cursor.execute("SELECT artist_id from artist WHERE artist_name = '{}'".format(artist[0]))
+        db.commit()
+        id = cursor.fetchone()
+        if id is not None:
+            return id[0]
+        else:
+            return 0
+    except Exception as e:
+        return 0
+
+
+def get_destination_id(destinations, cursor, db):
+    """Gets an id of a random destinations which has been inserted"""
+    destination = destinations[random.randint(0, len(destinations) - 1)]
+    try:
+        cursor.execute("SELECT destination_id from destination WHERE name = '{}'".format(destination[0]))
         db.commit()
         id = cursor.fetchone()[0]
         if id is not None:
@@ -90,15 +112,22 @@ def execute_event_queries(cursor, db, number_events, number_artists, number_dest
         print("Number of destinations inserted must be at least 1 to create an event : ERROR")
         return "Error"
     artists = read_artists(number_artists)
+    destinations = read_destinations(number_destinations)
     for event in events_list:
         try:
-            if get_event_id(event[0], cursor, db) == 0:
-                cursor.execute("INSERT INTO events (event_name, description, destination_id, start_date, end_date, age_restriction) VALUES ('{}', '{}')".format(event[0], event[1], event[2], event[3], event[4]))
+            destination_id = get_destination_id(destinations, cursor, db)
+            if get_event_id(event[0], cursor, db) == 0 and destination_id != 0:
+                cursor.execute("INSERT INTO events (event_name, description, destination_id, start_date, end_date, age_restriction, soft_delete) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(event[0], event[1], 142, datetime.datetime(2020, 5, 17), datetime.datetime(2020, 5, 11), event[4], 0))
                 db.commit()
                 event_id = get_event_id(event[0], cursor, db)
-                execute_event_type_queries(event_id, cursor, db)
-                execute_event_genres_queries(event_id, cursor, db)
-                execute_event_artists_queries(event_id, get_artist_id(artists, cursor, db), cursor, db)
+                if event_id:
+                    print("\nEvent inserted Successfully")
+            else:
+                print("\nEvent already exists")
+            event_id = get_event_id(event[0], cursor, db)
+            print(execute_event_type_queries(event_id, cursor, db))
+            print(execute_event_genres_queries(event_id, cursor, db))
+            print(execute_event_artists_queries(event_id, get_artist_id(artists, cursor, db), cursor, db))
         except Exception as e:
             db.rollback()
             print("\nFailed to insert, rolling back")
