@@ -33,6 +33,6 @@ Feature: Search for a destination
     Given User is logged in to the application
     And user is at the destinations page
     #When user submits empty search
-    Then an error message should be shown telling the user to enter a name
+    #Then an error message should be shown telling the user to enter a name
 
 
