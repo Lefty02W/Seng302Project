@@ -628,7 +628,8 @@
                                             <tr>
 
                                                 <td>@destinationChange.getEmail</td>
-                                                <td>@destinationChange.getDestination.getName</td>
+                                                <td>
+                                                    <a href='/destinations/@destinationChange.getDestination.getDestinationId/edit/show/@destinationChange.getDestination.getVisible'>@destinationChange.getDestination.getName</a></td>
                                                 <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
                                                 @if(destinationChange.getAction == 1) {
                                                     <td>Add</td>
