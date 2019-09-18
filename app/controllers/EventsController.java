@@ -37,6 +37,12 @@ public class EventsController extends Controller {
     private final Form<Events> eventEditForm;
     private final Form<EventFormData> eventFormDataForm;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+    private String successEvent = "Successfully added your new event";
+    private String errorEventDate = "Error creating event: Start date must be before end date";
+    private String errorEventAdmin = "Error creating event: You must be a verified artist admin.";
+    private String errorEventUnknown = "Error creating event: Unknown error";
+    private String adminEventURL = "/admin/events/0";
+    private String eventURL = "/events/0";
 
 
     @Inject
@@ -113,7 +119,7 @@ public class EventsController extends Controller {
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
                                 artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, request, messagesApi.preferred(request))))
-                        .orElseGet(() -> redirect("/artists/" + artistId + "/events/0")));
+                        .orElseGet(() -> redirect("/artists/" + artistId + eventURL)));
     }
 
 
@@ -188,7 +194,7 @@ public class EventsController extends Controller {
 
     /**
      * Function to edit a event.
-     * @param request
+     * @param request request containing the edit object
      * @param id The id of the event to edit.
      * @return redirect back to the event page
      */
@@ -197,9 +203,9 @@ public class EventsController extends Controller {
         Form<Events> form = eventForm.bindFromRequest(request);
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())){
-            return supplyAsync(() -> redirect("/events/0").flashing("error", "Error: Start date cannot be after end date."));
+            return supplyAsync(() -> redirect(eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
-        return eventRepository.update(id, event).thenApplyAsync(x -> redirect("/events/0").flashing("success", "Event has been updated."));
+        return eventRepository.update(id, event).thenApplyAsync(x -> redirect(eventURL).flashing("success", "Event has been updated."));
     }
 
 
@@ -216,9 +222,9 @@ public class EventsController extends Controller {
         Form<Events> form = eventEditForm.bindFromRequest(request);
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())){
-            return supplyAsync(() -> redirect("/artists/" + artistId +"/events/0").flashing("error", "Error: Start date cannot be after end date."));
+            return supplyAsync(() -> redirect("/artists/" + artistId + eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
-        return eventRepository.update(eventId, event).thenApplyAsync(x -> redirect("/artists/" + artistId +"/events/0").flashing("success", "Event has been updated."));
+        return eventRepository.update(eventId, event).thenApplyAsync(x -> redirect("/artists/" + artistId +eventURL).flashing("success", "Event has been updated."));
     }
 
 
@@ -227,41 +233,38 @@ public class EventsController extends Controller {
     public CompletionStage<Result> createAdminEvent(Http.Request request) {
         return supplyAsync(() -> {
             int profId = SessionController.getCurrentUserId(request);
-
             Optional<Events> optEvent = createEvent(request);
 
             if (!optEvent.isPresent()) {
-                return redirect("/admin/events/0").flashing("error", "Error creating event: Unknown error");
+                return redirect(adminEventURL).flashing("error", errorEventUnknown);
             }
-
             if (!artistRepository.isArtistAdmin(profId)) {
-                return redirect("/admin/events/0").flashing("error", "Error creating event: You must be a verified artist admin.");
+                return redirect(adminEventURL).flashing("error", errorEventAdmin);
             }
-
             if (checkDates(optEvent.get())) {
                 eventRepository.insert(optEvent.get());
             } else {
-                return redirect("/admin/events/0").flashing("error", "Error creating event: Start date must be before end date");
+                return redirect(adminEventURL).flashing("error", errorEventDate);
             }
 
-            return redirect("/admin/events/0").flashing("info", "Successfully added your new event");
+            return redirect(adminEventURL).flashing("info", successEvent);
         });
     }
 
     @RestrictAnnotation()
     public CompletionStage<Result> createArtistEvent(Http.Request request, int id){
         return supplyAsync(() -> {
-            int profId = SessionController.getCurrentUserId(request);
-            String url = "/artists/" + Integer.toString(id) + "/events/0";
+            Integer profId = SessionController.getCurrentUserId(request);
+            String url = "/artists/" + Integer.toString(id) + eventURL;
 
             Optional<Events> optEvent = createEvent(request);
 
             if (!optEvent.isPresent()) {
-                return redirect(url).flashing("error", "Error creating event: Unknown error");
+                return redirect(url).flashing("error", errorEventUnknown);
             }
 
             if (!artistRepository.isAdminOfGivenArtist(profId, id)) {
-                return redirect(url).flashing("error", "Error creating event: You must be a verified artist admin.");
+                return redirect(url).flashing("error", errorEventAdmin);
             }
 
             if (!artistRepository.isVerifiedArtist(id)) {
@@ -270,10 +273,10 @@ public class EventsController extends Controller {
             if (checkDates(optEvent.get())) {
                 eventRepository.insert(optEvent.get());
             } else {
-                return redirect(url).flashing("error", "Error creating event: Start date must be before end date");
+                return redirect(url).flashing("error", errorEventDate);
             }
 
-            return redirect(url).flashing("info", "Successfully added your new event");
+            return redirect(url).flashing("info", successEvent);
         });
     }
 
@@ -281,28 +284,23 @@ public class EventsController extends Controller {
     public CompletionStage<Result> createUserEvent(Http.Request request) {
 
         return supplyAsync(() -> {
-            int profId = SessionController.getCurrentUserId(request);
-
+            Integer profId = SessionController.getCurrentUserId(request);
             Optional<Events> optEvent = createEvent(request);
 
             if (!optEvent.isPresent()) {
-
-                return redirect("/events/0").flashing("error", "Error creating event: Unknown error");
+                return redirect(eventURL).flashing("error", errorEventUnknown);
             }
 
             if (!artistRepository.isArtistAdmin(profId)) {
-
-                return redirect("/events/0").flashing("error", "Error creating event: You must be a verified artist admin.");
+                return redirect(eventURL).flashing("error", errorEventAdmin);
             }
 
             if (checkDates(optEvent.get())) {
                 eventRepository.insert(optEvent.get());
             } else {
-
-                return redirect("/events/0").flashing("error", "Error creating event: Start date must be before end date");
+                return redirect(eventURL).flashing("error", errorEventDate);
             }
-
-            return redirect("/events/0").flashing("info", "Successfully added your new event");
+            return redirect(eventURL).flashing("info", successEvent);
         });
 
 
@@ -318,7 +316,6 @@ public class EventsController extends Controller {
      */
     public Optional<Events> createEvent(Http.Request request) {
             Form<Events> form = eventForm.bindFromRequest(request);
-            int profId = SessionController.getCurrentUserId(request);
             Optional<Events> event = form.value();
             if (event.isPresent()) {
                 Optional<String> startDate = form.field("startDate").value();
@@ -350,7 +347,13 @@ public class EventsController extends Controller {
     }
 
 
-
+    /**
+     * Method that takes in search values defined from the user and passes them into an sql search function to get
+     * a refined list of artists
+     *
+     * @param request request to search that contains SearchFormData
+     * @return a redirect to the events page, displaying the refined list of events
+     */
     public CompletionStage<Result> search(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
@@ -361,7 +364,7 @@ public class EventsController extends Controller {
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
                 eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("")) {
-                    return redirect("/events/0").flashing("error", "Please enter at least one search filter.");
+                    return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
                 }
 
                 List<Events> eventsList = eventRepository.searchEvent(eventFormData);
@@ -376,10 +379,10 @@ public class EventsController extends Controller {
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
                             request, messagesApi.preferred(request)));
                 } else {
-                    return redirect("/events/0").flashing("error", "No results found.");
+                    return redirect(eventURL).flashing("error", "No results found.");
                 }
             }
-            return redirect("/events/0").flashing("error", "No events match your search");
+            return redirect(eventURL).flashing("error", "No events match your search");
         });
     }
 
@@ -409,7 +412,7 @@ public class EventsController extends Controller {
      * @return redirect back to artist page
      */
     public CompletionStage<Result> deleteEvent(Http.Request request, Integer artistId, Integer eventId) {
-        return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + "/events/0"));
+        return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + eventURL));
     }
 
 }
