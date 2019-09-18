@@ -2,7 +2,9 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 @import java.util.Base64
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer],
+        profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist],
+        countries: List[String], userArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -49,7 +51,11 @@
                         Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/> Treasure Hunt</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
+                        Events
+                    </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
@@ -139,6 +145,9 @@
                         <li><a data-toggle="tab" href="#destsTab" class="tabLink" id="destsTabLink">Destinations</a></li>
                         <li><a data-toggle="tab" href="#tripsTab" class="tabLink" id="tripsTabLink">Trips</a></li>
                         <li><a data-toggle="tab" href="#followedArtistsTab" class="tabLink" id="followedArtistsLink">Followed Artists</a></li>
+                        @if(userArtists.length > 0) {
+                            <li><a data-toggle="tab" href="#yourArtistsTab" class="tabLink" id="yourArtistsLink">Your Artists</a></li>
+                        }
                     </ul>
 
                 </div>
@@ -342,6 +351,34 @@
 
                         </div>
                     </div>
+                    @if(userArtists.length > 0) {
+                        <div id="yourArtistsTab" class="tab-pane fade">
+                            <div class="col">
+                                <div id="card-large lower-card">
+                                    <div class="card center-col overflow-auto" id="yourArtistsCard">
+                                        <table id="followedArtistsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Artist Page</th>
+                                                </tr>
+                                            </thead>
+                                            @for(artist <- userArtists) {
+                                                <tr>
+                                                    <td>@artist.getArtistName</td>
+                                                    <td>
+                                                        <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
+                                                            <button type="button" class="btn btn-primary">View</button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
 
                     <div id="tripsTab" class="tab-pane fade">
                     @for(tripId <- trips) {

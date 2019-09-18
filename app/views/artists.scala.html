@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 
-@(searchForm: Form[ArtistFormData], currentUser: Profile, genres: List[MusicGenre], profiles: List[Profile], countries: List[String], artists: List[Artist], followedArtists: List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist], ownedArtists: List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -28,7 +28,7 @@
 
         <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     </head>
 
@@ -51,8 +51,11 @@
                     <a style="color: #d74961;
                         background-color: #ede1d1 !important" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
-                        Treasure Hunt</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
+                        Events
+                    </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
@@ -146,40 +149,39 @@
 
                 <div class="viewArtists">
                     <div class="row" id="all-artist-cards">
-                    @for(artist <- artists) {
-                        <div class="card-body col col-md-12 col-xl-6" id="artist-card">
-                            <div class="card-header"> @artist.getArtistName</div>
-                            <div class="row">
-                                <div class="col col-10">
-                                    <p id="artist-stats">
-                                <h6> Countries:</h6>
-
-                                    <ul>
-                                    @for(country <- artist.getCountryList) {
-                                        <li>@country</li>
-                                    }
-                                    </ul> <br>
-                                    <h6> About: </h6>
-                                    <ul>
-                                    @artist.getBiography
-                                    </ul><br>
-                                    <h6>
-                                        Genres:
-                                    </h6>
-                                        <ul>
-                                    @for(genre <- artist.getGenreList) {
-                                        <li>@genre.getGenre</li>
-                                    }
-
-                                    </ul>
+                @for(artist <- artists) {
+                    <div class="card-body col col-md-12 col-xl-6" id="artist-card">
+                        <div class="card-header"> @artist.getArtistName &nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <div class="row">
+                            <div class="col col-10">
+                            <p id="artist-stats">
+                            <h6> Countries:</h6>
+                            <ul>
+                                @for(country <- artist.getCountryList) {
+                                    <li>@country</li>
+                                }
+                            </ul> <br>
+                                <h6>About: </h6>
+                                <ul>@artist.getBiography</ul>
+                                <br>
+                                <h6>
+                                    Genres:
+                                </h6>
+                                <ul>
+                            @for(genre <- artist.getGenreList) {
+                                <li>@genre.getGenre</li>
+                            }
+                            </ul>
+                            </div>
+                            <div class="col col-2">
+                                <div class="row">
+                                    <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)">
+                                        <button class="btn btn-outline-primary" id="view" style="margin-bottom: 5px;">View</button>
+                                    </a>
                                 </div>
-                                <div class="col col-2">
-                                    <div class="row">
-                                        <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)">
-                                            <button class="btn btn-outline-primary" id="view" style="margin-bottom: 5px;">View</button>
-                                        </a>
-                                    </div>
-                                    <div class="row">
+                                <div class="row">
                                     @if(followedArtists contains artist) {
                                         @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
                                             @CSRF.formField
@@ -466,20 +468,22 @@
 
                 for (i = 0; i < jsonData.length; i++) {
 
-                    var artist = jsonData[i];
-                    var id = parseInt(artist.artistId);
-                    var countries = artist.countryListString.split(",");
+                var artist = jsonData[i];
+                var id = parseInt(artist.artistId);
+                var countries = artist.countryListString.split(",");
+                console.log(jsonData);
 
-
-                    html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
-                            "<div class='card-header'>" + artist.artistName + "</div> " +
-                            "<div class='row'>" +
-                            "<div class='col col-10'>" +
-                            "<p id='artist-stats'>" +
-                            "<ul>";
-                    for (c = 0; c < countries.length - 1; c++) {
-                        html += "<li>" + countries[c] + "</li>";
-                    }
+                html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
+                            "<div class='card-header'>" + artist.artistName + "&nbsp;&nbsp;&nbsp;&nbsp; Followers: " + artist.followerCount
+                                + "<i class='fa fa-user'></i>" +
+                            "</div> " +
+                                "<div class='row'>" +
+                                    "<div class='col col-10'>" +
+                                    "<p id='artist-stats'>" +
+                                    "<ul>";
+                                        for(c = 0; c < countries.length -1; c++) {
+                                            html += "<li>"+countries[c]+"</li>";
+                                        }
 
                     html += "</ul><br>" + artist.biography + "<br><ul>";
 

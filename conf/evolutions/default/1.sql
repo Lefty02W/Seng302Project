@@ -430,6 +430,77 @@ create table undo_stack
 ;
 
 
+create table events
+(
+	event_id int auto_increment,
+	event_name varchar(255) not null,
+	description varchar(255) null,
+	destination_id int not null,
+	start_date datetime null,
+	end_date datetime null,
+	age_restriction int null,
+	soft_delete int default '0' null,
+	constraint events_event_id_uindex
+		unique (event_id),
+	constraint destination_id_____destination_fk
+		foreign key (destination_id) references destination (destination_id)
+			on update cascade on delete cascade
+)
+;
+
+alter table events
+	add primary key (event_id)
+;
+
+
+
+create table if not exists type_of_events
+(
+	type_id int auto_increment,
+	type_name varchar(50) not null,
+	constraint type_of_events_type_id_uindex
+		unique (type_id)
+);
+
+alter table type_of_events
+	add primary key (type_id);
+
+create table if not exists event_type
+(
+	event_id int not null,
+	type_id int not null,
+	constraint event_id_____events_fk
+		foreign key (event_id) references events (event_id)
+			on update cascade on delete cascade,
+	constraint type_id_____type_of_events_fk
+		foreign key (type_id) references type_of_events (type_id)
+			on update cascade on delete cascade
+);
+
+create table if not exists event_genres
+(
+	event_id int not null,
+	genre_id int not null,
+	constraint event_id_genres_____events_fk
+		foreign key (event_id) references events (event_id)
+			on update cascade on delete cascade,
+	constraint genre_id_____music_genre_fk
+		foreign key (genre_id) references music_genre (genre_Id)
+			on update cascade on delete cascade
+);
+
+create table if not exists event_artists
+(
+	artist_id int not null,
+	event_id int not null,
+	constraint artist_id_events_____artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint event_id_events_____events_fk
+		foreign key (event_id) references events (event_id)
+			on update cascade on delete cascade
+)
+;
 
 
 
@@ -495,3 +566,12 @@ drop table if exists artist_profile;
 
 drop table if exists follow_artist;
 
+drop table if exists event;
+
+drop table if exists type_of_events;
+
+drop table if exists event_artists;
+
+drop table if exists event_genres;
+
+drop table if exists event_type;

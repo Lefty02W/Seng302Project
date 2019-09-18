@@ -3,9 +3,6 @@ Feature: Create a destination
   I want to create a destination
   So that I can then view my created destination
 
-  Background:
-    Given Password hash setup has been done
-
   Scenario: Create a destination
     Given User is logged in to the application
     And user is at the destinations page

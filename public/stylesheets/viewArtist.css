@@ -4,7 +4,7 @@
     margin-right: auto;
 }
 
-#viewArtistTabs, li {
+#viewArtistTabs, #aboutTabLink, #eventsTabLink, #membersTabLink{
     padding: 10px;
 }
 
@@ -49,4 +49,23 @@
 
 .nav .nav-tabs, #aboutTabLink, #eventsTabLink, #membersTabLink {
     font-size: 18pt;
+}
+
+#wrapper {
+    padding-bottom: 10%;
+}
+
+.button-col {
+    max-width: 30vw;
+}
+
+.social-col {
+    padding-left: 8vw;
+}
+
+#leaveArtistButton {
+    position: fixed;
+    left: 92.5vw;
+    background-color: #41B49D;
+    z-index: 2;
 }

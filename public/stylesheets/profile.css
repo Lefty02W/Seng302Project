@@ -228,7 +228,7 @@ img.thumbnail {
 
 }
 
-#destsTab, #tripsTab, #followedArtistsTab, #photosTab {
+#destsTab, #tripsTab, #followedArtistsTab, #photosTab, #yourArtistsTab {
     padding-left: 10%;
     padding-right: 10%;
     padding-bottom: 5%;
@@ -240,7 +240,7 @@ img.thumbnail {
     /*width: 50%;*/
 }
 
-.nav .nav-tabs, #followedArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
+.nav .nav-tabs, #followedArtistsLink, #yourArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
     font-size: 18pt;
 }
 

@@ -3,8 +3,6 @@ Feature: Create a destination from admin page
   I want to be able to create users destinations
   So I can add new destinations for the users to use
 
-  Background:
-    Given Password hash setup has been done
 
   Scenario: Admin creates a public destination for their user
     Given Admin is logged in to the application

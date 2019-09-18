@@ -490,9 +490,9 @@ public class DestinationsController extends Controller {
      */
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
         return destinationRepository.checkDestinationExists(id).thenApplyAsync(result -> {
-            if (result.isPresent()) {
+            if (result) {
                 return redirect(destShowRoute).flashing("failure", "Destination: " + id +
-                        " is used within the following trips: " + result.get());
+                        " is used within trips, treasure hunts or events");
             }
             destinationRepository.delete(id);
             return redirect(destShowRoute).flashing("success", "Destination: " + id + " deleted");

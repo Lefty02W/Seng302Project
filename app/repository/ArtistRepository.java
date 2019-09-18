@@ -58,6 +58,18 @@ public class ArtistRepository {
         return outputList;
     }
 
+    /**
+     * Get the all of the artists currently registered and verfied does not fill with linking tables
+     *
+     * @return Artist, list of all Artist
+     */
+    public List<Artist> getAllVerfiedArtists() {
+        return new ArrayList<>(ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("verified", 1)
+                .findList());
+    }
 
     /**
      * Get a single registered artist
@@ -65,13 +77,30 @@ public class ArtistRepository {
      * @return Artist, list of all Artist
      */
     public Artist getArtistById(Integer artistID) {
-        return (ebeanServer.find(Artist.class)
+        return populateArtistAdmin(ebeanServer.find(Artist.class)
                 .where()
                 .eq("soft_delete", 0)
                 .eq("artist_id", artistID)
                 .findOne());
     }
 
+    /**
+     * Get all artists for an event
+     * @param eventId id of the event
+     * @return List of artists linked to the event
+     */
+    public List<Artist> getEventArtists(int eventId) {
+        List<EventArtists> eventArtists = ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).findList();
+        List<Artist> artists = new ArrayList<>();
+        Optional<Artist> artist;
+        for (EventArtists eventArtist : eventArtists) {
+            artist = Optional.ofNullable(ebeanServer.find(Artist.class).where().eq("artist_id", eventArtist.getArtistId()).findOne());
+            if(artist.isPresent()) {
+                artists.add(artist.get());
+            }
+        }
+        return (artists);
+    }
 
 
     /**
@@ -145,11 +174,15 @@ public class ArtistRepository {
      if (countryMap.isPresent()) {
        countries = countryMap.get();
      }
+
      artist.setCountry(countries);
         Optional<List<MusicGenre>> genreList = genreRepository.getArtistGenres(artist.getArtistId());
         if(genreList.isPresent() && !genreList.get().isEmpty()) {
             artist.setGenre(genreList.get());
         }
+
+        artist.setFollowerCount(getNumFollowers(artist.getArtistId()));
+
         return artist;
     }
     /**
@@ -176,21 +209,18 @@ public class ArtistRepository {
      * @return Artists, an ArrayList of all artists that user is a part of.
      */
     public List<Artist> getAllUserArtists(int userId) {
-        List<ArtistProfile> artistProfiles = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
+        List<Integer> artistIds = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
                 .where()
-                //.eq("soft_delete", 0)
                 .eq("profile_id", userId)
-                .findList());
-
-        List<Artist> artists = new ArrayList<>();
-        for(ArtistProfile artistProfile : artistProfiles) {
-            artists.add(ebeanServer.find(Artist.class)
-                    .where()
-                    .eq("soft_delete", 0)
-                    .eq("artist_id", artistProfile.getAPArtistId())
-                    .findOne());
+                .findIds());
+        if (artistIds.size() == 0) {
+            return new ArrayList<Artist>();
         }
-        return artists;
+        return ebeanServer.find(Artist.class)
+                .where()
+                .eq("soft_delete", 0)
+                .idIn(artistIds)
+                .findList();
     }
 
 
@@ -238,9 +268,6 @@ public class ArtistRepository {
     public CompletionStage<Void> deleteArtist(int artistId) {
         return supplyAsync(() -> {
             ebeanServer.find(Artist.class).where().eq("artist_id", Integer.toString(artistId)).delete();
-            ebeanServer.find(ArtistCountry.class).where().eq("artist_id", Integer.toString(artistId)).delete();
-            ebeanServer.find(ArtistGenre.class).where().eq("artist_id", Integer.toString(artistId)).delete();
-            ebeanServer.find(ArtistProfile.class).where().eq("artist_id", Integer.toString(artistId)).delete();
             return null;
         });
     }
@@ -407,8 +434,8 @@ public class ArtistRepository {
      * @param followed 1 or 0 if followed or not
      * @return List of artists
      */
-    public List<Artist> searchArtist(String name, String genre, String country, int followed, int userId){
-        if(name.equals("") && genre.equals("") && country.equals("") && followed == 0) {
+    public List<Artist> searchArtist(String name, String genre, String country, int followed, int created, int userId){
+        if(name.equals("") && genre.equals("") && country.equals("") && followed == 0 && created == 0) {
             return getAllArtists();
         }
         String queryString = "SELECT DISTINCT artist.artist_id, artist.artist_name, artist.biography, artist.facebook_link, artist.instagram_link, artist.spotify_link, artist.twitter_link, artist.website_link, artist.soft_delete FROM artist " +
@@ -416,6 +443,7 @@ public class ArtistRepository {
                 "LEFT OUTER JOIN music_genre ON music_genre.genre_id = artist_genre.genre_id " +
                 "LEFT OUTER JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
                 "LEFT OUTER JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id " +
+                "LEFT OUTER JOIN artist_profile ON artist.artist_id = artist_profile.artist_id " +
                 "LEFT OUTER JOIN follow_artist ON artist.artist_id = follow_artist.artist_id ";
         boolean namePresent = false;
         boolean genrePresent = false;
@@ -445,47 +473,45 @@ public class ArtistRepository {
 
         if (followed == 1){
             if(namePresent || genrePresent || countryPresent){
-                queryString += "AND profile_id = ? ";
+                queryString += "AND follow_artist.profile_id = ? ";
             } else {
-                queryString += "WHERE profile_id = ? ";
+                queryString += "WHERE follow_artist.profile_id = ? ";
+            }
+        }
+
+        if (created == 1){
+            if(namePresent || genrePresent || countryPresent || followed == 1){
+                queryString += "AND artist_profile.profile_id = ? ";
+            } else {
+                queryString += "WHERE artist_profile.profile_id = ? ";
             }
         }
         queryString += "LIMIT 100";
 
+        int numberAdd = 0;
 
         SqlQuery sqlQuery = ebeanServer.createSqlQuery(queryString);
         if (!name.equals("")){
-            sqlQuery.setParameter(1, "%" + name + "%");
+            sqlQuery.setParameter(numberAdd + 1, "%" + name + "%");
+            numberAdd++;
         }
         if (!genre.equals("")){
-            if (namePresent){
-                sqlQuery.setParameter(2,genre);
-            } else{
-                sqlQuery.setParameter(1, genre);
-            }
+            sqlQuery.setParameter(numberAdd + 1,genre);
+            numberAdd++;
         }
         if (!country.equals("")){
-            if (namePresent && genrePresent){
-                sqlQuery.setParameter(3,country);
-            } else if (namePresent || genrePresent){
-                sqlQuery.setParameter(2,country);
-            } else {
-                sqlQuery.setParameter(1,country);
-            }
+            sqlQuery.setParameter(numberAdd + 1,country);
+            numberAdd++;
         }
 
         if (followed == 1){
-            if (namePresent && genrePresent && countryPresent){
-                sqlQuery.setParameter(4,userId);
-            } else if ((namePresent && genrePresent && !countryPresent) || (namePresent && !genrePresent && countryPresent) || (!namePresent && genrePresent && countryPresent)){
-                sqlQuery.setParameter(3,userId);
-            } else if(namePresent || genrePresent || countryPresent) {
-                sqlQuery.setParameter(2,userId);
-            } else {
-                sqlQuery.setParameter(1,userId);
-            }
+            sqlQuery.setParameter(numberAdd + 1,userId);
+            numberAdd++;
         }
 
+        if (created == 1){
+            sqlQuery.setParameter(numberAdd + 1,userId);
+        }
 
         List<SqlRow> foundRows = sqlQuery.findList();
         List<Artist> foundArtists = new ArrayList<>();
@@ -567,7 +593,7 @@ public class ArtistRepository {
     private CompletionStage<Void> deleteAllSpecifiedEntriesForAnArtist(int id, String table) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
-            String qry = "DELETE from " + table + " where artist_id = ?";
+            String qry = "DELETE FROM " + table + " WHERE artist_id = ?";
             try {
                 SqlUpdate query = Ebean.createSqlUpdate(qry);
                 query.setParameter(1, id);
@@ -693,4 +719,60 @@ public class ArtistRepository {
         }
         return artists;
     }
+
+    /**
+     * DB check to see if a given profile is an artist admin of a given artist
+     * @param profileId id of the given profile
+     * @param artistId id of the given artist
+     * @return True if the profile is an admin of the given artist
+     */
+    public boolean isAdminOfGivenArtist(int profileId, int artistId){
+        return ebeanServer.find(ArtistProfile.class)
+                .where()
+                .eq("profile_id", profileId)
+                .eq("artist_id", artistId).exists();
+    }
+
+    /**
+     * Db check to see if the given artist has be verified by an admin
+     * @param artistId id of the artist used to check verification status
+     * @return True if artist is verified
+     */
+    public boolean isVerifiedArtist(int artistId){
+        return ebeanServer.find(Artist.class)
+                .where()
+                .eq("artist_id", artistId)
+                .eq("verified", 1)
+                .exists();
+    }
+
+    /**
+     * Checks if the given user's id is an admin of a currently verified artist.
+     * This allows them to be able to make events.
+     * @param profileId The id of the profile being checked.
+     * @return True if the artist is an admin of a currently verified artist, else false.
+     */
+    public boolean isArtistAdmin(int profileId){
+        if(ebeanServer.find(ArtistProfile.class).where().eq("profile_id", profileId).exists()){
+            int artistID = ebeanServer.find(ArtistProfile.class).select("artistId").where().eq("profile_id", profileId).findSingleAttribute();
+            return ebeanServer.find(Artist.class).where().eq("verified", 1).eq("soft_delete", 0).eq("artist_id", artistID).exists();
+        };
+            return false;
+    }
+
+
+    /**
+     * Get count of followers for an artist
+     * @param artistId - ID of the artists to get follower count for
+     * @return The number of followers for the given artist
+     */
+    public int getNumFollowers(int artistId) {
+        return ebeanServer.find(FollowArtist.class)
+                .select("artistId")
+                .where()
+                .eq("artistId", artistId)
+                .findCount();
+
+    }
+
 }
