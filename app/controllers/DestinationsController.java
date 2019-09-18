@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
+import static java.lang.Math.abs;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 /**
@@ -119,7 +120,8 @@ public class DestinationsController extends Controller {
                     }
                 } else {
                     profileRepository.getDestinations(userId, rowOffset).ifPresent(dests -> destinationsList.addAll(dests));
-                    destinationRepository.getFollowedDestinations(userId, rowOffset).ifPresent(follows -> destinationsList.addAll(follows));
+                    int limit = abs(7 - destinationsList.size());
+                    destinationRepository.getFollowedDestinations(userId, rowOffset, limit).ifPresent(follows -> destinationsList.addAll(follows));
                 }
                 destinationRepository.getFollowedDestinationIds(userId, rowOffset).ifPresent(ids -> followedDestinationIds = ids);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
@@ -144,7 +146,7 @@ public class DestinationsController extends Controller {
     public CompletionStage<Result> updatePhotoPrivacy(Integer id) {
         return supplyAsync(() -> {
             photoRepository.updateVisibility(id);
-            return redirect("/destinations/show/false").flashing("success", "Visibility updated.");
+            return redirect("/destinations/show/false/0").flashing("success", "Visibility updated.");
         });
     }
 
@@ -223,7 +225,8 @@ public class DestinationsController extends Controller {
                 }
                 if (!isPublic) {
                     Optional<ArrayList<Destination>> destListTemp = profileRepository.getDestinations(profileId, 0);
-                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId, 0);
+                    int limit = abs(7 - destinationsList.size());
+                    Optional<ArrayList<Destination>> followedListTemp = destinationRepository.getFollowedDestinations(profileId, 0, limit);
                     try {
                         destinationsList = destListTemp.get();
                         destinationsList.addAll(followedListTemp.get());
@@ -421,9 +424,9 @@ public class DestinationsController extends Controller {
      */
     public CompletionStage<Result> delete(Http.Request request, Integer id) {
         return destinationRepository.checkDestinationExists(id).thenApplyAsync(result -> {
-            if (result.isPresent()) {
+            if (result) {
                 return redirect(destShowRoute).flashing("failure", "Destination: " + id +
-                        " is used within the following trips: " + result.get());
+                        " is used within trips, treasure hunts or events");
             }
             destinationRepository.delete(id);
             return redirect(destShowRoute).flashing("success", "Destination: " + id + " deleted");
@@ -529,7 +532,7 @@ public class DestinationsController extends Controller {
             List<Integer> toAdd = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToAddList());
             List<Integer> toRemove = listOfTravellerTypesToTravellerTypeId(changeForm.get().getToRemoveList());
             createChangeRequest(profileId, changeForm.get().getDestinationId(), toAdd, toRemove);
-            return redirect(destShowRoute).flashing("success", "Request sent.");
+            return redirect("/destinations/show/true/0").flashing("success", "Request sent.");
         });
     }
 

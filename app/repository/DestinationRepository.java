@@ -120,48 +120,25 @@ public class DestinationRepository {
     }
 
     /**
-     * Method to check if a passed destination to be delete is within a treasure hunt or trip
+     * Method to check if a passed destination to be delete is within a treasure hunt or trip or event
      *
      * @param destinationId the id of the destination to check
      * @return the result of the check with and optional id of the treasure hunt or trip which contains the destination within a completion stage
      */
-    public CompletionStage<Optional<String>> checkDestinationExists(int destinationId) {
+    public CompletionStage<Boolean> checkDestinationExists(int destinationId) {
         return supplyAsync(
                 () -> {
-                    List<Integer> foundIds =
-                            ebeanServer
-                                    .find(TripDestination.class)
-                                    .where()
+                    boolean inTrips =
+                            ebeanServer.find(TripDestination.class).where()
+                                    .eq("destination_id", destinationId).exists();
+                    boolean inHunts =
+                            ebeanServer.find(TreasureHunt.class).where()
                                     .eq("destination_id", destinationId)
-                                    .select("tripId")
-                                    .findSingleAttributeList();
-
-                    Boolean usedInTrip = false;
-                    for (Integer Id: foundIds) {
-                        Trip trip = Trip.find.query().where()
-                                .eq("trip_id", Id)
-                                .findOne();
-                        if (trip.getSoftDelete() == 0) {
-                            usedInTrip = true;
-                            break;
-                        }
-                    }
-
-                    if (!usedInTrip) {
-                        List<Integer> foundIds2 =
-                                    ebeanServer
-                                            .find(TreasureHunt.class)
-                                            .where()
-                                            .eq("destination_id", destinationId)
-                                            .eq("soft_delete", 0)
-                                            .select("treasureHuntId")
-                                            .findSingleAttributeList();
-
-                        if (foundIds2.isEmpty()) return Optional.empty();
-                        else return Optional.of("treasure hunts: " + foundIds2);
-                    } else {
-                        return Optional.of("trips: " + foundIds);
-                    }
+                                    .eq("soft_delete", 0).exists();
+                   boolean inEvents = ebeanServer.find(Events.class).where()
+                           .eq("destination_id", destinationId)
+                           .eq("soft_delete", 0).exists();
+                   return inEvents || inTrips || inHunts;
                 },
                 executionContext);
     }
@@ -350,14 +327,17 @@ public class DestinationRepository {
      *
      * @param profileId User if of the followed destinations to return
      * @param rowOffset The row to begin getting data from. This is for pagination
+     * @param limit The page limit for the query. This is used to prevent collation of private
+     *              and followed destinations causing incorrect page size.
      * @return Optional array list of destinations followed by the user
      */
-    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset) {
+    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset, Integer limit) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT 7 OFFSET ?";
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT ? OFFSET ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
-                .setParameter(2, rowOffset).findList();
+                .setParameter(2, limit)
+                .setParameter(3, rowOffset).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
         for (SqlRow aRowList : rowList) {

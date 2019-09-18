@@ -41,7 +41,7 @@ public class AdminCreatesDestinationSteps {
                 .bodyForm(destForm)
                 .session("connected", "2");
         redirectDestination = Helpers.route(TestApplication.getApplication(), request);
-        assertEquals("/admin", redirectDestination.redirectLocation().get());
+        assertEquals("/admin/destinations/0", redirectDestination.redirectLocation().get());
         assertNotNull(request.session());
     }
 

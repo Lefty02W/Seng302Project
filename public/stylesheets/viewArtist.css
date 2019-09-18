@@ -37,7 +37,8 @@
     bottom: 0;
     max-height: 10%;
     max-width: unset;
-    background: #205723 !important;
+    background: #009779;
+    z-index: 1;
 }
 
 
@@ -48,4 +49,16 @@
 
 .nav .nav-tabs, #aboutTabLink, #eventsTabLink, #membersTabLink {
     font-size: 18pt;
+}
+
+#wrapper {
+    padding-bottom: 10%;
+}
+
+.button-col {
+    max-width: 20vw;
+}
+
+.social-col {
+    padding-left: 20vw;
 }

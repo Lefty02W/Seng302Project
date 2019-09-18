@@ -21,7 +21,7 @@ public class ViewDestinationsSteps {
     public void userClicksOnPublicDestinations() {
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/destinations/show/true")
+                .uri("/destinations/show/true/0")
                 .session("connected", "1");
         Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         Assert.assertEquals(200, destinationResult.status());
@@ -37,7 +37,7 @@ public class ViewDestinationsSteps {
     public void userClicksOnPrivateDestinations() {
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/destinations/show/false")
+                .uri("/destinations/show/false/0")
                 .session("connected", "1");
         Result destinationResult = Helpers.route(TestApplication.getApplication(), requestDest);
         Assert.assertEquals(200, destinationResult.status());

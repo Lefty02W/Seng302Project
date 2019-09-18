@@ -8,6 +8,7 @@ public class ArtistFormData {
     public String genre = "";
     public String country = "";
     public String followed = "";
+    public String createdArtist = "";
 
     public void setName(String name) {
         this.name = name;
@@ -24,5 +25,7 @@ public class ArtistFormData {
     public void setFollowed(String followed) {
         this.followed = followed;
     }
+
+    public void setCreatedArtist(String createdArtist) { this.createdArtist = createdArtist; }
 
 }

@@ -1,7 +1,10 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer], profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist], countries: List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+@import java.util.Base64
+@(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer],
+        profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist],
+        countries: List[String], userArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -36,9 +39,9 @@
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h2 class="sidebar-heading">TravelEA </h2>
+                <h2 class="sidebar-heading">Soundbound </h2>
                 <div class="list-group list-group-flush">
-                    <a style="color: #7d2f2e; background-color: #ede1d1 !important" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
                     <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
                         Destinations</a>
@@ -48,7 +51,11 @@
                         Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/> Treasure Hunt</a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
+                    <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
+                        Events
+                    </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
@@ -120,8 +127,8 @@
                 <div id="profilePhotoContainer">
                     <div class="container" id="profilePhoto">
                     @if(profilePicture != null) {
-                        <img id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
-                        alt="Profile picture">
+                        <img onclick="expand(src, alt, name)" id="profileImage" class="thumbnail" src="@routes.ProfileController.photoAt(profilePicture.getPhotoId)"
+                        alt="@profilePicture.getName" name="@profilePicture.getPhotoId">
                     } else {
                         <img id="profileImage" class="thumbnail" src="@routes.Assets.at("images/profile-icon.png")"
                         alt="Profile picture">
@@ -132,12 +139,15 @@
 
                 <div class="row">
                     <ul class="nav nav-tabs" id="profileTabs">
-                        <li class="active"><a data-toggle="tab" href="#informationTab" id="informationTabLink">
+                        <li class="active"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
                             Information</a></li>
-                        <li><a data-toggle="tab" href="#photosTab" id="photosTabLink">Photos</a></li>
-                        <li><a data-toggle="tab" href="#destsTab" id="destsTabLink">Destinations</a></li>
-                        <li><a data-toggle="tab" href="#tripsTab" id="tripsTabLink">Trips</a></li>
-                        <li><a data-toggle="tab" href="#followedArtistsTab" id="followedArtistsLink">Followed Artists</a></li>
+                        <li><a data-toggle="tab" href="#photosTab" class="tabLink" id="photosTabLink">Photos</a></li>
+                        <li><a data-toggle="tab" href="#destsTab" class="tabLink" id="destsTabLink">Destinations</a></li>
+                        <li><a data-toggle="tab" href="#tripsTab" class="tabLink" id="tripsTabLink">Trips</a></li>
+                        <li><a data-toggle="tab" href="#followedArtistsTab" class="tabLink" id="followedArtistsLink">Followed Artists</a></li>
+                        @if(userArtists.length > 0) {
+                            <li><a data-toggle="tab" href="#yourArtistsTab" class="tabLink" id="yourArtistsLink">Your Artists</a></li>
+                        }
                     </ul>
 
                 </div>
@@ -230,7 +240,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
 
@@ -276,7 +285,6 @@
                     <div id="destsTab" class="tab-pane fade">
                         <div id="table-card" class="dest-table table-hover">
                                 <!-- Table of users -->
-                            <a href="@routes.DestinationsController.show(false, 0)"> <button class="btn btn-primary"> View All</button> </a>
                             <table id="destTable">
                                 <thead>
                                     <tr><th>Destination</th>
@@ -329,7 +337,7 @@
                                             </td>
                                             <td>
                                                 <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
-                                                    <button type="button" class="btn btn-primary">Unfollow</button>
+                                                    <button type="button" class="btn btn-outline-secondary">Unfollow</button>
                                                 </a>
                                                 </td>
                                         </tr>
@@ -339,14 +347,41 @@
                             </div>
                         </div>
                     </div>
+                    @if(userArtists.length > 0) {
+                        <div id="yourArtistsTab" class="tab-pane fade">
+                            <div class="col">
+                                <div id="card-large lower-card">
+                                    <div class="card center-col overflow-auto" id="yourArtistsCard">
+                                        <table id="followedArtistsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Artist Page</th>
+                                                </tr>
+                                            </thead>
+                                            @for(artist <- userArtists) {
+                                                <tr>
+                                                    <td>@artist.getArtistName</td>
+                                                    <td>
+                                                        <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
+                                                            <button type="button" class="btn btn-primary">View</button>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
 
                     <div id="tripsTab" class="tab-pane fade">
-                    <a href="/trips/0"> <button class="btn btn-primary"> View All</button> </a>
                     @for(tripId <- trips) {
                         <div class="row">
                             <div class="card-small trip-card" data-toggle="collapse" data-target="#tripInfo@tripId">
                                 <h5 id="tripName">@currentUser.getTripById(tripId).getName</h5>
-                                <img class="trip-icon" src="@routes.Assets.at("images/plus-icon.png")"/>
+                                <img class="trip-icon" src="@routes.Assets.at("images/burger-menu.png")"/>
                             </div>
                         </div>
                         <div class="row">
@@ -774,7 +809,7 @@
                 <div class="row justify-content-center">
                     <div class="row">
                         <div class="col-sm">
-                            <button class="btn btn-primary" id='addPhotoButton' data-toggle="modal"
+                            <button class="btn btn-secondary" id='addPhotoButton' data-toggle="modal"
                             data-target="#addPhotoModal">
                                 <i class="fa fa-camera"></i>
                                 Add Photo
@@ -783,7 +818,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm">
-                            <button class="btn btn-primary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
+                            <button class="btn btn-secondary" id="changeProfilePictureButton" data-toggle="modal" data-target="#changeProfilePicture">
                                 <i class="fa fa-user-circle"  id="editProfileButton"></i>
                                 Change Profile Picture
                             </button>
@@ -791,7 +826,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm">
-                            <button type="button" class="btn btn-primary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
+                            <button type="button" class="btn btn-secondary" id="editProfileButton" data-toggle="modal" data-target="#editProfileModal">
                                 <i class="fa fa-edit" id="editProfileButton"></i>
                                 Edit Profile
                             </button>

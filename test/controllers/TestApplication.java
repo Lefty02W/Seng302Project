@@ -5,6 +5,11 @@ import play.Mode;
 import play.inject.guice.GuiceApplicationBuilder;
 import repository.*;
 
+/**
+ * Utility class used to run tests
+ *  - provides an instance of the application in test mode to use
+ *  - provides an instance of each of the repositories to use
+ */
 public class TestApplication {
 
     private static Application application = null;
@@ -19,6 +24,7 @@ public class TestApplication {
     private static UndoStackRepository undoStackRepository;
     private static ArtistRepository artistRepository;
     private static GenreRepository genreRepository;
+    private static EventRepository eventRepository;
 
     /**
      * Static method to get an instance of the test application
@@ -114,7 +120,7 @@ public class TestApplication {
         return profileRepository;
     }
 
-    /**
+    /**ther successful Engineering
      * Creates an instance of the TripRepository
      * @return TripRepository instance
      */
@@ -172,6 +178,18 @@ public class TestApplication {
             genreRepository = application.injector().instanceOf(GenreRepository.class);
         }
         return genreRepository;
+    }
+
+    /**
+     * Creates an instance of the EventRepository
+     * @return EventRepository instance
+     */
+    public static EventRepository getEventRepository() {
+        checkApplication();
+        if (eventRepository == null) {
+            eventRepository = application.injector().instanceOf(EventRepository.class);
+        }
+        return eventRepository;
     }
 
 }

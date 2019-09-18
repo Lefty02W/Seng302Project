@@ -16,7 +16,8 @@ body {
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
-    background-color: #2e7d32;
+    /*background-color: #08735D;*/
+    background-color: #41B49D;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -24,7 +25,7 @@ body {
     padding-top: 6rem;
     padding-left: 1.25rem;
     /*padding: 0.875rem 1.25rem;*/
-    background-color: #2e7d32;
+    background-color: #41B49D;
     color: #ede1d1;
 }
 
@@ -59,10 +60,14 @@ body {
     }
 }
 
+.list-group-flush .list-group-item {
+    font-weight: 600;
+}
 
 .sidebar-icon {
-    height: 3vh;
-    width: 1.5vw;
+    height: 1.5em;
+    width: 1.5em;
+    margin-right: 18px;
 }
 
 #menuIcon{
@@ -78,7 +83,7 @@ body {
     border-radius: 50%;
 }
 .expand-icon:hover {
-    background: #2e7d32;
+    background: #d74961;
 }
 
 

@@ -13,6 +13,9 @@ public class PaginationHelper {
     private boolean previousEnabled ;
     private int maxSize;
 
+    public PaginationHelper(){
+    }
+
     public PaginationHelper(int offset, int previous, int next, int activeTab, boolean nextEnabled, boolean previousEnabled, int maxSize) {
         this.offset = offset;
         this.previous = previous;
