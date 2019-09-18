@@ -92,6 +92,14 @@
                     <div class="row">
                         <div class="col">
                             <div id="dest-table-card" class="card-large dest-table table-hover">
+
+                                @helper.form(routes.DestinationsController.search(0)) {
+                                    @CSRF.formField
+                                    <input type="hidden" id="isPublic" value="isPublic">
+                                    <input type="search" id="name" placeholder="Search" name="name" value="name">
+                                    <button class="btn btn-primary">Search</button>
+                                }
+
                                 <div class="row">
                                     <table id="destTable">
                                         <thead>
