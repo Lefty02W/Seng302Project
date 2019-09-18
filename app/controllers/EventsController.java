@@ -251,7 +251,6 @@ public class EventsController extends Controller {
         });
     }
 
-    @RestrictAnnotation()
     public CompletionStage<Result> createArtistEvent(Http.Request request, int id){
         return supplyAsync(() -> {
             Integer profId = SessionController.getCurrentUserId(request);
@@ -321,6 +320,7 @@ public class EventsController extends Controller {
                 Optional<String> startDate = form.field("startDate").value();
                 Optional<String> endDate = form.field("endDate").value();
                 Optional<String> genreForm = form.field("genreForm").value();
+                Optional<String> genreFormEvent = form.field("genreFormEvent").value();
                 Optional<String> ageForm = form.field("ageForm").value();
                 Optional<String> artistForm = form.field("artistForm").value();
 
@@ -339,6 +339,7 @@ public class EventsController extends Controller {
                     }
                 }
                 genreForm.ifPresent(s -> event.get().setGenreForm(s));
+                genreFormEvent.ifPresent(s -> event.get().setGenreForm(s));
                 ageForm.ifPresent(s -> event.get().setAgeForm(s));
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
 

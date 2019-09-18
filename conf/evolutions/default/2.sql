@@ -223,10 +223,8 @@ INSERT INTO artist (artist_id, artist_name, biography, members,
   'https://www.amazon.com/kingsofamazon');
 
 INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
-  (8, 'Daddy Sloth', 'Alpha Sloth', 'SlothBoi420', 1);
+  (9, 'The Sloths', 'Sloths', 'SlothBoi', 1);
 
-INSERT INTO artist_profile(artist_id, profile_id) VALUES
-  (8, 12);
 
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
@@ -261,8 +259,8 @@ INSERT INTO artist_profile (artist_id, profile_id) VALUES
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (7, 1);
 
-INSERT INTO artist_profile (artist_id, profile_id) VALUES
-  (8, 1);
+INSERT INTO artist_profile(artist_id, profile_id) VALUES
+  (9, 12);
 
 INSERT INTO follow_artist (artist_follow_id, profile_id, artist_id) VALUES
   (1, 1, 2);
