@@ -258,8 +258,8 @@ public class AdminController {
                 new ArrayList<Destination>(), new RoutedObject<Profile>(null, false, false), profileEditForm,
                 null, profileCreateForm, null, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
                 new RoutedObject<TreasureHunt>(null, false, false), Country.getInstance().getAllCountries(),
-                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getPageArtists(offset, pageSize, 0), new ArrayList<Artist>(),
-                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, artistRepository.getNumArtistRequests(), 7), request, messagesApi.preferred(request))));
+                undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getPageArtists(offset, pageSize, 0),
+                new RoutedObject<Artist>(null, true, false), genreRepository.getAllGenres(), initialisePaginatior(offset, artistRepository.getNumArtistRequests(), 7), new ArrayList<Events>(), request, messagesApi.preferred(request))));
     }
 
 
@@ -850,8 +850,8 @@ public class AdminController {
                     new RoutedObject<Destination>(null, false, false), new ArrayList<Destination>(),
                     new RoutedObject<Profile>(null, true, false), profileEditForm, null,
                     profileCreateForm, destinationEditForm, new ArrayList<DestinationChange>(), new ArrayList<TreasureHunt>(),
-                    new RoutedObject<TreasureHunt>(null, true, false), Country.getInstance().getAllCountries(), new ArrayList<Artist>(), artistRepository.getPageArtists(0, pageSize, 1),
-                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getAllArtists(),
+                    new RoutedObject<TreasureHunt>(null, true, false), Country.getInstance().getAllCountries(),
+                    undoStackRepository.getUsersStack(SessionController.getCurrentUserId(request)), artistRepository.getPageArtists(0, pageSize, 1),
                     new RoutedObject<Artist>(artist, true, true), genreRepository.getAllGenres(),
                     initialisePaginatior(0, artistRepository.getNumArtists(), 6), new ArrayList<Events>(), request, messagesApi.preferred(request)));
         });
