@@ -76,7 +76,7 @@
         </div>
 
 
-        <div class="container">
+        <div class="container" id="flashContainer">
             @if(request.flash.getOptional("info").isPresent) {
                 <div class="alert alert-info">
                 @request.flash.getOptional("info").get()
@@ -221,6 +221,9 @@
                         <!-- body -->
                     <div class="modal-body">
                         <div class="container-fluid">
+                            <div class="alert alert-danger" hidden id="linkErrorContainer">
+
+                            </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="row justify-content-center">
@@ -312,7 +315,7 @@
                         <!-- footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" onclick="fillValsArtist()">Save</button>
+                        <button type="submit" id="saveArtistButton" class="btn btn-primary" onclick="return fillValsArtist();">Save</button>
                     </div>
                 }
             </div>
@@ -320,10 +323,64 @@
     </div>
 
     <script type="text/javascript">
+
+            function verifyLinks() {
+                var fbLink = document.getElementById('facebookLink');
+                var spotifyLink = document.getElementById('spotifyLink');
+                var instagramLink = document.getElementById('instagramLink');
+                var twitterLink = document.getElementById('twitterLink');
+                var webLink = document.getElementById('websiteLink');
+                var flashText = "";
+                var first  = true;
+                if (fbLink.value != "" && fbLink.value.indexOf("facebook.com") == -1) {
+                    flashText += "Invalid facebook link";
+                    first = false;
+                }
+                if (spotifyLink.value != "" && spotifyLink.value.indexOf("spotify.com") == -1) {
+                    var text = "nvalid spotify link";
+                    if (first) {
+                        flashText += "Invalid spotify link ";
+                        first = false;
+                    } else {
+                        flashText += ", invalid spotify link ";
+                    }
+                }
+                if (instagramLink.value != "" && instagramLink.value.indexOf("instagram.com") == -1) {
+                    if (first) {
+                        flashText += "Invalid instagram link ";
+                        first = false;
+                    } else {
+                        flashText += ", invalid instagram link";
+                    }
+                }
+                if (twitterLink.value != "" && twitterLink.value.indexOf("twitter.com") == -1) {
+                    if (first) {
+                        flashText += "Invalid twitter link ";
+                        first = false;
+                    } else {
+                        flashText += ", invalid twitter link";
+
+                    }
+                }
+
+                var flashContainer = document.getElementById('linkErrorContainer');
+                if (flashText != "") {
+                    flashContainer.innerText = flashText;
+                    flashContainer.hidden = false;
+                    flashContainer.style.zIndex = "1";
+                    return false;
+                }
+
+                flashContainer.hidden = true;
+                return true;
+            }
+
             function fillValsArtist() {
+                if (!verifyLinks()) {return false;}
                 $('#genreForm').val($('#genreDropdown').val());
                 $('#adminForm').val($('#adminDropdown').val());
                 $('#countries').val($('#originDropdown').val());
+                return true;
             }
 
             // ------------- SIDEBAR TOGGLE JS -------------
