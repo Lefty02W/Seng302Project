@@ -43,7 +43,7 @@
 
             <div class="row" id="greeting">
                 <div class="col" align="center">
-                    <h2>Welcome to Tralephant</h2>
+                    <h1 class="welcome">Sound-Bound</h1>
                 </div>
             </div>
 
@@ -110,7 +110,8 @@
                                     <div class="hidden-div-edit">
                                         <input type="text" id="travellerTypesForm" name="travellerTypesForm" class="hidden-field typesField" required>
                                     </div>
-                                    <select class="selectpicker" multiple title="Traveller Type" id="typeDropdown" data-width="100%" required>
+                                    <label>Traveller Types*</label>
+                                    <select class="selectpicker" multiple title="Traveller Types" id="typeDropdown" data-width="100%" required>
                                         <option value="ThrillSeeker">ThrillSeeker</option>
                                         <option value="Backpacker">Backpacker</option>
                                         <option value="Gap Year">Gap Year</option>
@@ -121,6 +122,7 @@
                                     </select>
                                 </div>
                                 <div class="row">
+                                    <label>Gender*</label>
                                     <select class="selectpicker" id="gender" name="gender" data-width="100%" required oninvalid="this.setCustomValidity('Gender is required')" oninput="setCustomValidity('')">
                                         <option>Male</option>
                                         <option>Female</option>
@@ -146,7 +148,7 @@
                                     <div class="hidden-div-edit">
                                         <input type="text" id="nationalitiesForm" name="nationalitiesForm" class="hidden-field" required>
                                     </div>
-                                    <label>Nationalities</label>
+                                    <label>Nationalities*</label>
                                     <select class="selectpicker" data-live-search="true" multiple title="Nationalities" id="nationDropdown" data-width="100%">
                                         @for(nation <- countries) {
                                             <option value="@nation">@nation</option>
@@ -166,7 +168,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary"  data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-secondary"  data-dismiss="modal">Cancel</button>
                                 <button type="submit"  id="createButton" class="btn btn-primary" onclick="fillVals()">Save</button>
                             </div>
                             }

@@ -1,8 +1,10 @@
 #table-card {
+    padding-top: 10px;
     height: 80vh;
 }
 
 #userTable {
+    padding-top: 30px;
     height: 10vh;
     width: 100%;
 }
@@ -30,6 +32,8 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
 .card {
     height: 240px;
     width: 240px;
+    margin-top: 10px;
+    margin-right: 10px;
 }
 
 img.thumbnail {

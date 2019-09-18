@@ -34,29 +34,29 @@
         <div class="d-flex toggled" id="wrapper">
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h1 class="sidebar-heading">TravelEA </h1>
-                <div class="list-group list-group-flfush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                <h2 class="sidebar-heading">Soundbound </h2>
+                <div class="list-group list-group-flush">
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
-                    <a style="color: #ca6636" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
                         Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
                         Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
                         Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
                         Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
                     </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
                         Logout</a>
                 </div>
             </div>
@@ -66,7 +66,7 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")"/></h3>
+                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                     <div id="pageTitle">
                         <h2 class="text-center">Destinations</h2>
                     </div>
@@ -96,14 +96,6 @@
                     <div class="row">
                         <div class="col">
                             <div id="dest-table-card" class="card-large dest-table table-hover">
-
-                                <div id="btn-row" class="row">
-                                    @if(!isPublic) {
-                                        <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>Show Public</a>
-                                    } else {
-                                        <input type="checkbox" id="destToggle" checked onchange="togglePublic()"><a>Show Public</a>
-                                    }
-                                </div>
                                 <div class="row">
                                     <table id="destTable">
                                         <thead>
@@ -124,13 +116,13 @@
 
                                                     <td>
                                                         <a href="@routes.DestinationsController.showDestinationEdit(destination.getDestinationId, isPublic)">
-                                                            <button class="button-editDestinations btn btn-primary" style="height: 4vh">
+                                                            <button class="button-editDestinations btn btn-outline-primary" style="height: 4vh">
                                                                 Edit</button>
                                                         </a>
                                                     </td>
 
                                                     <td>
-                                                        <button type="submit" class="btn btn-outline-secondary" style="height: 4vh"
+                                                        <button type="submit" class="btn btn-danger" style="height: 4vh"
                                                         onclick="fillDeleteValues('@routes.DestinationsController.delete(destination.getDestinationId())')">
                                                             Delete
                                                         </button>
@@ -188,17 +180,23 @@
 
                                     </ul>
                                 </div>
+                                <div id="btn-row" class="row justify-content-center">
+                                @if(!isPublic) {
+                                    <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>View Public Destinations</a>
+                                } else {
+                                    <input type="checkbox" id="destToggle" checked onchange="togglePublic()"><a>View Public Destinations</a>
+                                }
+                                </div>
                             </div>
 
                             <div id="table-card" class="card-large">
-
-                                <div class="row">
+                                <div class="row" id="headerRow">
                                     <ul class="nav nav-tabs" id="destinationTabs">
                                         <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">
                                             Details</a></li>
                                         <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
                                         <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">
-                                            World Photos</a></li>
+                                            Public Photos</a></li>
                                     </ul>
                                 </div>
                                 <div class="tab-content" id="destinationTabsContent">
@@ -250,18 +248,25 @@
                                             </div>
 
                                             <div id="travellerTypes" class="row justify-content-center">
-                                                <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
-                                                data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">
-                                                    Suggest Edit</button>
                                                 <div id="travellerTypesVal" class="col-md-4">
                                                     <a></a>
                                                 </div>
                                             </div>
+
+                                            <div>
+                                                <button class="btn btn-primary" id="suggestEditButton" data-toggle="modal" hidden
+                                                data-target="#suggestEditModal" onclick="setTravellerTypesToRemove()">
+                                                    Suggest Edit</button>
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div id="myPhotosTab" class="tab-pane fade">
-                                        <div class="container" id="userPhotos">
-                                            <a></a>
+                                        <button class="btn btn-primary" style="right" data-toggle="modal"
+                                        data-target="#linkDestinationPhotoModal">Link Photo</button>
+
+                                        <div class="col">
+                                            <div class="row" id="userPhotos"></div>
                                         </div>
                                     </div>
                                     <div id="worldPhotosTab" class="tab-pane fade">
@@ -269,7 +274,6 @@
                                             <a></a>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -288,17 +292,16 @@
                                 <div class="modal-header">
                                     <h2 class="modal-title">Link a Picture to this destination</h2>
                                 </div>
-                                <div class="col">
+                                <div class="modal-body">
                                     <div id="photosCard" class="card-large lower-card">
                                         <div class="row" id="photoUpdate">
-                                            <a></a>
+                                            <div></div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="btn btn-danger" data-dismiss="modal" style="width: 10vw;
-                                            float: right" class="changeProfilePictureButton"
-                                        data-toggle="modal" data-target="#changeProfilePicture">Close</button>
-                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="changeProfilePictureButton btn btn-danger" data-dismiss="modal" style="width: 10vw;
+                                        float: right" data-toggle="modal" data-target="#changeProfilePicture">Close</button>
                                 </div>
                             </div>
 
@@ -336,9 +339,9 @@
                                             </div>
                                             <div class="row">
                                                 <div class="hidden-div-edit">
-                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                    <input type="text" id="country" name="country" placeholder="Country" class="hidden-field" >
                                                 </div>
-                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%">
+                                                <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdown" data-width="100%" required oninvalid="this.setCustomValidity('Country required')" onchange="this.setCustomValidity('')">
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }
@@ -542,7 +545,7 @@
                                         </div>
                                             <!-- footer -->
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
                                         </div>
                                     }
@@ -565,7 +568,6 @@
                                 <div class="modal-header">
                                     <h2 class="modal-title ">Suggest An Edit</h2>
                                 </div>
-                                @*TODO: Set up for form*@
                                 <div class="modal-body">
                                     <div class="col">
                                         <div class="row justify-content-center">
@@ -1128,30 +1130,27 @@
                     document.getElementById("photoUpdate").innerHTML = " ";
                     document.getElementById("worldPhotos").innerHTML = " ";
 
-                    document.getElementById("userPhotos").innerHTML = " <button class=\"btn btn-primary\" style=\"right\" data-toggle=\"modal\"\n" +
-                            "                            data-target=\"#linkDestinationPhotoModal\">Link Photo</button>";
+                    // document.getElementById("userPhotos").innerHTML = "";
                     @for(photo <- usersPhotos){
                     @if(destination.getUsersPhotos.contains(photo)){
                     document.getElementById("userPhotos").innerHTML +=
-                            "                            <div class=\"card\">\n" +
+                            "                            <div class=\"card\" id=\"imageCard\">\n" +
                             "                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
                             "                            src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
                             "                            name=\"@photo.getPhotoId\">\n" +
-                            "                            <div>@if(photo.getVisible == 1) {\n" +
+                            "                            <div id=\"photosCaption\">@if(photo.getVisible == 1) {\n" +
                             "                                            <p class=\"card-text\"> @photo.displayVisibility(photo.getVisible) 🌏</p>\n" +
                             "                                            <a href=\"@routes.DestinationsController.updatePhotoPrivacy(photo.getPhotoId)\">\n" +
-                            "                                                <button class=\"btn btn-primary\">Make Private</button></a>\n" +
+                            "                                                <button class=\"btn btn-outline-primary\">Make Private</button></a>\n" +
                             "                                        } else {\n" +
                             "                                            <p class=\"card-text\"> @photo.displayVisibility(photo.getVisible) 🔒</p>\n" +
                             "                                            <a href=\"@routes.DestinationsController.updatePhotoPrivacy(photo.getPhotoId)\">\n" +
-                            "                                                <button class=\"btn btn-primary\">Make Public</button></a>\n" +
-                            "                                        }</div>" +
-                            "                            <div class=\"card-body\">\n" +
+                            "                                                <button class=\"btn btn-outline-primary\">Make Public</button></a>\n" +
+                            "                                        }\n" +
                             "                            <input type=\"hidden\" id=\"photoId\" name=\"photoId\" value=\"@photo.getPhotoId\">\n" +
                             "                            <a id=\"addPhoto\" href=\"@routes.DestinationsController.unlinkPhotoFromDestination(photo.getPhotoId, destination.getDestinationId)\">\n" +
-                            "                            <button class=\"btn btn-danger\" type=\"submit\">unLink</button>\n" +
-                            "                            </a>\n" +
-                            "                            </div>\n" +
+                            "                            <button class=\"btn btn-outline-secondary\" type=\"submit\">Unlink</button>\n" +
+                            "                            </a>\ </div>" +
                             "                            <!-- The Expanded Photo Modal -->\n" +
                             "                            <div id=\"expandImageModal\" class=\"modal\">\n" +
                             "                            <span class=\"close\">&times;</span>\n" +
@@ -1160,13 +1159,13 @@
                             "                            <div id=\"id\"></div>\n" +
                             "                            </div>\n" +
                             "                            </div>";
+                        }
                     }
-                    }
-                    @for(photo <- usersPhotos){
+                    @for(photo <- usersPhotos) {
                     @if(!destination.getUsersPhotos.contains(photo)) {
                     document.getElementById("photoUpdate").innerHTML +=
-                            "                            <div class=\"card\">\n" +
-                            "                            <img onclick=\"expand(src, alt, name)\" id=\"displayImage\" class=\"thumbnail\"\n" +
+                            "                            <div class=\"card\" id=\"imageCard\">\n" +
+                            "                            <img id=\"displayImage\" class=\"thumbnail\"\n" +
                             "                            src=\"@routes.ProfileController.photoAt(photo.getPhotoId)\" alt=\"@photo.getName\"\n" +
                             "                            name=\"@photo.getPhotoId\">\n" +
                             "                            <div class=\"card-body\" id=\"photoUpdate\">\n" +
@@ -1174,16 +1173,8 @@
                             "                            <a id=\"addPhoto\" href=\"@routes.DestinationsController.linkPhotoToDestination(photo.getPhotoId, destination.getDestinationId)\">\n" +
                             "                            <button class=\"btn btn-primary\" type=\"submit\">Link</button>\n" +
                             "                            </a>\n" +
-                            "                            </div>\n" +
-                            "                            <!-- The Expanded Photo Modal -->\n" +
-                            "                            <div id=\"expandImageModal\" class=\"modal\">\n" +
-                            "                            <span class=\"close\">&times;</span>\n" +
-                            "                            <img class=\"modal-content\" id=\"expandedImage\">\n" +
-                            "                            <div id=\"caption\"></div>\n" +
-                            "                            <div id=\"id\"></div>\n" +
-                            "                            </div>\n" +
                             "                            </div>";
-                    }
+                        }
                     }
                     @for(photo <- destination.getWorldPhotos){
                     @if(photo.getVisible == 1) {
@@ -1304,6 +1295,27 @@
                     }
                     document.getElementById("destinationId").value = @destination.getDestinationId();
                 }
+                }
+            }
+
+            // Method that gets the photo data from on the photo clicked and displays
+            // it in its original resolution in a new modal
+            function expand(photo, text, id) {
+                // Get the modal
+                var modal = document.getElementById('expandImageModal');
+                var modalImg = document.getElementById('expandedImage');
+                var captionText = document.getElementById("caption");
+
+                modal.style.display = "block";
+                modalImg.src = photo;
+                captionText.innerHTML = text;
+
+                // Get the <span> element that closes the modal
+                var span = document.getElementsByClassName("close")[0];
+
+                // When the user clicks on <span> (x), close the modal
+                span.onclick = function () {
+                    modal.style.display = "none";
                 }
             }
 

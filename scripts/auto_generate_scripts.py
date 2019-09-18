@@ -45,10 +45,10 @@ def main():
     # artists = 600
     # trips = 500
     # treasure hunts = 500
-    number_profiles = 200
-    number_destinations = 200
-    number_artists = 200
-    number_trips = 0
+    number_profiles = 2
+    number_destinations = 2
+    number_artists = 0
+    number_trips = 2
     number_treasure_hunts = 0
     number_events = True
 

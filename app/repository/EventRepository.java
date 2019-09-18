@@ -24,6 +24,7 @@ public class EventRepository {
     private final EventGenreRepository eventGenreRepository;
     private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
+    private final DestinationRepository destinationRepository;
 
     /**
      * Constructor for the events repository class
@@ -32,7 +33,7 @@ public class EventRepository {
     public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                            EventTypeRepository eventTypeRepository, EventArtistRepository eventArtistRepository,
                            EventGenreRepository eventGenreRepository, ArtistRepository artistRepository,
-                           GenreRepository genreRepository) {
+                           GenreRepository genreRepository, DestinationRepository destinationRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.eventTypeRepository = eventTypeRepository;
@@ -40,6 +41,7 @@ public class EventRepository {
         this.eventGenreRepository = eventGenreRepository;
         this.artistRepository = artistRepository;
         this.genreRepository = genreRepository;
+        this.destinationRepository = destinationRepository;
 
     }
 
@@ -74,6 +76,33 @@ public class EventRepository {
         return toReturn;
     }
 
+    /**
+     * Method to retrieve all events for a given artist
+     *
+     * @param artistId id of artist
+     * @return List of events found
+     */
+    public List<Events> getArtistEventsPage(int artistId, int offset) {
+        List<Integer> ids = ebeanServer.find(EventArtists.class).setMaxRows(8).setFirstRow(offset).where().eq("artist_id", artistId).findIds();
+        List<Events> events = new ArrayList<>();
+        if (!ids.isEmpty()) {
+            for (Events event : ebeanServer.find(Events.class).where().idIn(ids).findList()) {
+                events.add(populateEvent(event));
+            }
+        }
+        return events;
+    }
+
+    /**
+     * Method to get the number of events for a given artist
+     *
+     * @param artistId id of artist
+     * @return amount found
+     */
+    public int getNumArtistEvents(int artistId) {
+        return ebeanServer.find(EventArtists.class).where().eq("artist_id", artistId).findCount();
+    }
+
 
     /**
      * Pagination helper method to get the total number of events in teh system
@@ -103,6 +132,7 @@ public class EventRepository {
         event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
         System.out.println("Event id =" + event.getEventId());
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
+        event.setDestination(destinationRepository.lookup(event.getDestinationId()));
         return event;
     }
 
@@ -114,11 +144,7 @@ public class EventRepository {
      */
     private CompletionStage<Integer> insertEvent(Events event){
             return supplyAsync(() -> {
-                try {
-                    ebeanServer.insert(event);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                ebeanServer.insert(event);
                 return event.getEventId();
             }, executionContext);
     }
@@ -155,6 +181,7 @@ public class EventRepository {
                 targetEvent.setDestinationId(event.getDestinationId());
                 targetEvent.setEndDate(event.getEndDate());
                 targetEvent.setStartDate(event.getStartDate());
+                targetEvent.setEventName(event.getEventName());
                 targetEvent.update();
                 txn.commit();
                 event.setEventId(targetEvent.getEventId());
@@ -338,11 +365,25 @@ public class EventRepository {
      * Soft deletes an event
      * @param event the id of the event to soft delete
      */
-    public void setSoftDeleteId(int event, int delete) {
+    void setSoftDeleteId(int event, int delete) {
         Events events = ebeanServer.find(Events.class).where().eq("event_id", event).findOne();
         if (events != null) {
             events.setSoftDelete(delete);
             events.update();
         }
+    }
+
+
+    /**
+     * Repository method to delete an event from the database
+     *
+     * @param eventId id of event to delete
+     * @return Void CompletionStage
+     */
+    public CompletionStage<Integer> deleteEvent(int eventId) {
+        return supplyAsync(() -> {
+            ebeanServer.find(Events.class).where().eq("event_id", Integer.toString(eventId)).delete();
+            return null;
+        });
     }
 }

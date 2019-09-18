@@ -33,6 +33,9 @@ INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,ge
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
   (11, 'Bort', 'Cort', 'BortCort@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (12, 'Has', 'Artist', 'hasAnArtist@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
+
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
@@ -79,6 +82,9 @@ INSERT INTO destination (destination_id, profile_id, name, type, country, distri
 
 INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
   (12, 2, 'New Jersey', 'City', 'America', 'state', 0.0, 0.0, 1);
+
+INSERT INTO destination (destination_id, profile_id, name, type, country, district, latitude, longitude, visible) values
+  (13, 2, 'Old Jersey', 'City', 'America', 'state', 0.0, 0.0, 1);
 
 INSERT INTO trip(trip_id, name, profile_id) VALUES (1, 'Johnny Trip', 3);
 
@@ -207,6 +213,21 @@ INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
 INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
   (5, 'Steve', 'Big boi steve', 'jerry');
 
+INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
+  (6, 'STIFI', 'Big boi steve', 'jerry');
+
+INSERT INTO artist (artist_id, artist_name, biography, members,
+  facebook_link, instagram_link, spotify_link, twitter_link, website_link) VALUES
+  (7, 'There are no Trees', 'Indie Rock band from the Amazon Rainforest', 'Buck, Cherry, River',
+  'https://www.facebook.com/', 'https://www.instagram.com/', 'https://www.spotify.com/', 'https://www.twitter.com/',
+  'https://www.amazon.com/kingsofamazon');
+
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (8, 'Daddy Sloth', 'Alpha Sloth', 'SlothBoi420', 1);
+
+INSERT INTO artist_profile(artist_id, profile_id) VALUES
+  (8, 12);
+
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (1, 4);
 
@@ -225,8 +246,23 @@ INSERT INTO artist_genre (artist_id, genre_id) VALUES
 INSERT INTO artist_genre (artist_id, genre_id) VALUES
   (3, 1);
 
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (6, 1);
+
+INSERT INTO artist_genre (artist_id, genre_id) VALUES
+  (7, 4);
+
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (2, 2);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (6, 2);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (7, 1);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (8, 1);
 
 INSERT INTO follow_artist (artist_follow_id, profile_id, artist_id) VALUES
   (1, 1, 2);
@@ -244,5 +280,47 @@ INSERT INTO passport_country (passport_country_id, passport_name) VALUES
 INSERT INTO artist_country (artist_id, country_id) VALUES
   (3,1);
 
-INSERT INTO events (event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  ('Event', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (1, 'Event', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (2, 'Woodstock', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (3, 'Burning Man', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (4, 'Burning Person', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (5, 'Burning Yes', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 2);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 5);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 3);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 3);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (2, 4);
+
+INSERT INTO type_of_events (type_id, type_name) VALUES
+  (1, 'Gig');
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (4, 1);
+
+INSERT INTO event_genres (event_id, genre_id) VALUES
+  (4, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (5, 1);
+
+INSERT INTO event_genres (event_id, genre_id) VALUES
+  (5, 1);

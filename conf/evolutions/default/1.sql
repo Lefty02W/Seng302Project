@@ -499,7 +499,8 @@ create table if not exists event_artists
 	constraint event_id_events_____events_fk
 		foreign key (event_id) references events (event_id)
 			on update cascade on delete cascade
-);
+)
+;
 
 
 
@@ -569,7 +570,7 @@ drop table if exists event;
 
 drop table if exists type_of_events;
 
-drop table if exists artist_events;
+drop table if exists event_artists;
 
 drop table if exists event_genres;
 

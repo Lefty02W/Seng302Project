@@ -2,6 +2,7 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
+
 import interfaces.TypesInterface;
 import models.*;
 import play.data.Form;
@@ -20,16 +21,18 @@ import views.html.profile;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -53,7 +56,6 @@ public class ProfileController extends Controller implements TypesInterface {
     private Boolean showPhotoModal = false;
     private PersonalPhotoRepository personalPhotoRepository;
     private final TripRepository tripRepository;
-    private final ProfileTravellerTypeRepository profileTravellerTypeRepository;
     private final String profileEndpoint = "/profile";
     private Boolean countryFlag = true;
     private final UndoStackRepository undoStackRepository;
@@ -75,8 +77,7 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, UndoStackRepository undoStackRepository,
-                             ProfileTravellerTypeRepository profileTravellerTypeRepository, ArtistRepository artistRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ArtistRepository artistRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -87,7 +88,6 @@ public class ProfileController extends Controller implements TypesInterface {
             this.personalPhotoRepository = personalPhotoRepository;
             this.tripRepository = tripRepository;
             this.undoStackRepository = undoStackRepository;
-            this.profileTravellerTypeRepository = profileTravellerTypeRepository;
             this.artistRepository = artistRepository;
         }
 
@@ -106,11 +106,9 @@ public class ProfileController extends Controller implements TypesInterface {
         profileNew.initProfile();
 
         try {
-            return profileRepository.update(profileNew, profId).thenApplyAsync(x -> {
-                return redirect(routes.ProfileController.show())
-                        .flashing("success", profileNew.getFirstName() + "'s profile edited successfully.")
-                        .addingToSession(request, "connected", profId.toString());
-            });
+            return profileRepository.update(profileNew, profId).thenApplyAsync(x -> redirect(routes.ProfileController.show())
+                    .flashing("success", profileNew.getFirstName() + "'s profile edited successfully.")
+                    .addingToSession(request, "connected", profId.toString()));
 
         } catch (IllegalArgumentException e) {
             return supplyAsync(() -> redirect(profileEndpoint).flashing("invalid", "email is already taken"));
@@ -233,11 +231,12 @@ public class ProfileController extends Controller implements TypesInterface {
     }
 
 
+
     /**
      * Call to PhotoRepository to be insert an photo in the database
      *
      * @param photo Photo object containing email, id, byte array of photo and visible info
-     * @return a redirect to the profile page
+     * @return a redirect to the profile paghttps://www.linuxmint.com/start/tessa/e
      */
     @Security.Authenticated(SecureSession.class)
     private CompletionStage<Result> savePhoto(Photo photo, int profileId){
@@ -346,7 +345,7 @@ public class ProfileController extends Controller implements TypesInterface {
                 Profile toSend = tripRepository.getTenTrips(profileRec.get());
                 TreeMultimap<Long, Integer> tripsMap = toSend.getTrips();
                 List<Integer> tripValues= new ArrayList<>(tripsMap.values());
-                profileRepository.getDestinations(toSend.getProfileId(), 0).ifPresent(dests -> destinationsList = dests);
+                profileRepository.getTenDestinations(toSend.getProfileId()).ifPresent(dests -> destinationsList = dests);
 
                 List<Artist> followedArtistsList = artistRepository.getFollowedArtists(toSend.getProfileId());
                 List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
@@ -355,9 +354,8 @@ public class ProfileController extends Controller implements TypesInterface {
                     countryFlag = false;
                     return redirect("/profile").flashing("changeCountry", profileRec.get().getFirstName() + " you have an outdated country");
                 }
-
                 countryFlag = true;
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
             }
             return redirect("/");
         });
@@ -402,9 +400,7 @@ public class ProfileController extends Controller implements TypesInterface {
                 personalPhotoRepository.removeProfilePic(SessionController.getCurrentUserId(request));
                 createNewThumbnail(photoId, SessionController.getCurrentUserId(request));
                 return personalPhotoRepository.insert(new PersonalPhoto(SessionController.getCurrentUserId(request), photoId, 1));
-            }).thenApply(id -> {
-                return redirect("/profile");
-            });
+            }).thenApply(id -> redirect("/profile"));
     }
 
 

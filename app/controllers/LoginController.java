@@ -1,7 +1,5 @@
 package controllers;
 
-
-import models.PassportCountry;
 import models.Profile;
 import play.data.Form;
 import play.data.FormFactory;
@@ -15,8 +13,6 @@ import utility.Country;
 import views.html.login;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 

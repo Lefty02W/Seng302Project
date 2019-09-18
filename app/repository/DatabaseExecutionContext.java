@@ -1,6 +1,7 @@
 package repository;
 
 import akka.actor.ActorSystem;
+import play.db.ebean.EbeanDynamicEvolutions;
 import play.libs.concurrent.CustomExecutionContext;
 
 import javax.inject.Inject;
@@ -13,8 +14,12 @@ import javax.inject.Inject;
  */
 public class DatabaseExecutionContext extends CustomExecutionContext {
 
+    //DO NOT REMOVE: Needed for the sbt dist command to build the project correctly
+    private final EbeanDynamicEvolutions ebeanDynamicEvolutions;
+
     @Inject
-    public DatabaseExecutionContext(ActorSystem actorSystem) {
+    public DatabaseExecutionContext(ActorSystem actorSystem, EbeanDynamicEvolutions ebeanDynamicEvolutions) {
         super(actorSystem, "database.dispatcher");
+        this.ebeanDynamicEvolutions = ebeanDynamicEvolutions;
     }
 }

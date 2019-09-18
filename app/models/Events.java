@@ -25,7 +25,7 @@ public class Events extends Model {
 
     private Date startDate;
 
-    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd");
+    private static DateFormat dateFormatEntry = new SimpleDateFormat("yyyy-MM-dd hh:mm");
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
     private Date endDate;
@@ -54,6 +54,9 @@ public class Events extends Model {
 
     @Transient
     private String ageForm;
+
+    @Transient
+    private Destination destination;
 
     /**
      * Traditional constructor for events used when retrieving an Event from the data base
@@ -122,6 +125,14 @@ public class Events extends Model {
             return dateFormatEntry.format(endDate);
         }
         return "";
+    }
+
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
     }
 
     public int getEventId() {

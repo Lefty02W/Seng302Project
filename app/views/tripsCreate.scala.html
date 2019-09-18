@@ -1,8 +1,8 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], destinationsList: List[Destination], currentUser: Profile, toEdit: TripDestination, userId: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentDestinationsList: List[TripDestination], destinationsList: List[Destination], currentUser: Profile, toEdit: TripDestination, userId: Integer, tripName: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
-
+<!DOCTYPE html>
 <html>
 
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
@@ -29,27 +29,27 @@
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h1 class="sidebar-heading">TravelEA </h1>
+                <h2 class="sidebar-heading">Soundbound </h2>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
                         Destinations</a>
-                    <a style="color: #ca6636" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
                         Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
                         Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
-                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
                         Events
                     </a>
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/> Admin</a>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/> Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
                         Logout</a>
                 </div>
             </div>
@@ -59,7 +59,7 @@
             <div id="page-content-wrapper">
 
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")"/></h3>
+                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                     <div id="pageTitle">
                         <h2 class="text-center" id="topBarTitle">Create Trip</h2>
                     </div>
@@ -68,58 +68,62 @@
                     @CSRF.formField
                     <div class="row justify-content-center">
                         <div>
-                            <input type="text" id="name" name="name" required placeholder="Trip Name">
+                            <input type="text" id="tripNameEntry" name="name" required placeholder="Trip Name">
                         </div>
-                        @*<button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>*@
+                        <button type="submit" class="saveTripButton btn btn-primary" id="save saveAndBackButton">
+                            Save Trip</button>
                     </div>
-
                 }
+
                 <div class="container-fluid">
                     <div class="col">
-                            <div id = "viewCard" class="card-large upper-card">
-                                @if(request.flash.getOptional("info").isPresent) {
-                                    <div class="alert alert-info">
-                                    @request.flash.getOptional("info").get()
-                                    </div>
-                                }
-                                @helper.form(routes.TripsController.addDestination(userId)) {
-                                    @CSRF.formField
-                                    <div class="container">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h4>Select Destination</h4>
-                                            </div>
+                        @if(request.flash.getOptional("info").isPresent) {
+                            <div class="alert alert-info">
+                            @request.flash.getOptional("info").get()
+                            </div>
+                        }
+                        <div id = "viewCard" class="card-large upper-card">
+                            @helper.form(routes.TripsController.addDestination(userId)) {
+                                @CSRF.formField
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3>Select Destination</h3>
+                                            <input type="text" id="imposterTripNameEntry" name="name" hidden>
                                         </div>
+                                    </div>
 
-                                        <div class="row">
-                                            <div class="col">
-                                                <h5>Destination</h5>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h5>Destination</h5>
+                                            <div class="container">
                                                 <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
                                                 @for(destination <- destinationsList) {
                                                     <option value="@destination.getDestinationId">@destination.getName</option>
                                                 }
                                                 </select>
                                             </div>
+                                        </div>
 
-                                            <div class="col">
-                                                <h5>Arrival Time</h5>
-                                                <input type="datetime-local" id="arrival" name="arrival">
-                                            </div>
+                                        <div class="col">
+                                            <h5>Arrival Time</h5>
+                                            <input type="datetime-local" id="arrival" name="arrival">
+                                        </div>
 
+                                        <div class="row">
                                             <div class="col">
                                                 <h5>Departure Time</h5>
                                                 <input type="datetime-local" id="departure" name="departure">
                                             </div>
                                             <div class="col">
-                                                <button type="submit" class="btn btn-primary" id="addDest">Add Destination</button>
+                                                <button type="submit" class="btn btn-primary" id="addDest">Add</button>
                                             </div>
                                         </div>
-
-
-
+                                    </div>
                                 </div>
 
                             }
+                        </div>
                     </div>
                     <div class="col">
                         <div id = "viewCard" class="card-large upper-card">
@@ -154,14 +158,13 @@
                         </div>
                     </div>
                 </div>
-                    <div class="row justify-content-end">
-                        <div>
-                            <a href="@routes.TripsController.show(0)"> <button id="backButtonCreate"
-                            class="button-back btn btn-secondary" type="button">Back</button> </a>
-                            <button type="submit" class="saveTripButton btn btn-primary" id="save">Save Trip</button>
-                        </div>
+                <div class="row justify-content-end">
+                    <div>
+                        <a href="@routes.TripsController.show(0)">
+                            <button id="backButtonCreate" class="button-back btn btn-secondary backButton" type="button">
+                                Back</button>
+                        </a>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -238,20 +241,13 @@
                     "ordering": false
                 });
 
-
-                /**
-                 $('#tripsTable tbody').on( 'click', 'button', function () {
-                    var data = tripsTable.row( $(this).parents('tr') ).data();
-                    $('select[name=destinationId]').val(data[0]);
-                    $('.selectpicker').selectpicker('refresh');
-                    //TODO What does this do
-                } );*/
-
+                @if(tripName != "") {
+                    document.getElementById('tripNameEntry').value = "@tripName";
+                }
 
             });
 
 
-            //TODO Cry test this stuff
             $('#tripsTable tbody').on('click', 'button', function () {
                 var data = table.row($(this).parents('tr')).data();
                 alert(data[0]);
@@ -259,6 +255,7 @@
             $('#saveButton').on('click', function () {
                 var table = $('#addDest').DataTable();
                 var tripName = $('#tripNameEntry').val();
+
 
                 if (table.rows().data().length < 2) {
                     alert("Please enter at least 2 destinations");
@@ -271,6 +268,10 @@
                             .clear()
                             .draw();
                 }
+            });
+
+            $('#addDest').on('click', function () {
+                document.getElementById('imposterTripNameEntry').value = document.getElementById('tripNameEntry').value;
             });
 
             $('#closeIcon, #closeButton').on('click', function () {

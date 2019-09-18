@@ -16,18 +16,18 @@ h1, h2, h3, h4, h5, h6 {
     color: black;
 }
 
-
-.btn-primary, .btn-primary:hover {
-    background-color: #007bff;
-    border-color: #007bff;
+#title {
+    color: #ede1d1;
 }
 
+
 .changeLog {
-    position: fixed;
+    width: 20vw;
     z-index: 2;
     right:10px;
     padding: 1%;
     background: rgba(42,46,49,0.5);
+    float: right;
 }
 
 /* Popup container */
@@ -67,7 +67,10 @@ h1, h2, h3, h4, h5, h6 {
 .helpPopup .show {
     visibility: visible;
     -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s
+    animation: fadeIn 1s;
+    margin-left: 31%;
+    margin-top: 5%;
+    padding: 1%;
 }
 
 /* Add animation (fade in the popup) */
@@ -95,7 +98,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .adminCard a {
-    color: #2e7d32;
+    color: #d74961;
     font-size: large;
 }
 

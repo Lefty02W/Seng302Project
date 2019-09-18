@@ -327,14 +327,17 @@ public class DestinationRepository {
      *
      * @param profileId User if of the followed destinations to return
      * @param rowOffset The row to begin getting data from. This is for pagination
+     * @param limit The page limit for the query. This is used to prevent collation of private
+     *              and followed destinations causing incorrect page size.
      * @return Optional array list of destinations followed by the user
      */
-    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset) {
+    public Optional<ArrayList<Destination>> getFollowedDestinations(int profileId, Integer rowOffset, Integer limit) {
         String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT 7 OFFSET ?";
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT ? OFFSET ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId)
-                .setParameter(2, rowOffset).findList();
+                .setParameter(2, limit)
+                .setParameter(3, rowOffset).findList();
         ArrayList<Destination> destList = new ArrayList<>();
         Destination destToAdd;
         for (SqlRow aRowList : rowList) {
@@ -590,10 +593,8 @@ public class DestinationRepository {
      */
     private CompletionStage<Optional<DestinationChange>> getDestinationChange(int changeId) {
         return supplyAsync(
-            () -> {
-              return Optional.ofNullable(
-                  ebeanServer.find(DestinationChange.class).where().eq("id", changeId).findOne());
-            },
+            () -> Optional.ofNullable(
+                ebeanServer.find(DestinationChange.class).where().eq("id", changeId).findOne()),
             executionContext);
         }
 
@@ -602,10 +603,8 @@ public class DestinationRepository {
      */
     private CompletionStage<Optional<DestinationRequest>> getDestinationRequest(int requestId){
         return supplyAsync(
-            () -> {
-                return Optional.ofNullable(
-                        ebeanServer.find(DestinationRequest.class).where().eq("id", requestId).findOne());
-            },
+            () -> Optional.ofNullable(
+                    ebeanServer.find(DestinationRequest.class).where().eq("id", requestId).findOne()),
             executionContext);
     }
 
@@ -662,12 +661,11 @@ public class DestinationRepository {
         String query = "SELECT DISTINCT destination.destination_id FROM follow_destination INNER JOIN destination ON destination.destination_id = follow_destination.destination_id " +
                 "WHERE follow_destination.profile_id = ? AND destination.soft_delete = 0";
         List<SqlRow> countRow = ebeanServer.createSqlQuery(query).setParameter(1, profileId).findList();
-        Integer count = 0;
+        int count = 0;
         if (!countRow.isEmpty()) {
             count = countRow.size();
         }
-        int total = count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).eq("visible", 1).findCount();
-        return total;
+        return count + ebeanServer.find(Destination.class).where().eq("soft_delete", 0).eq("profile_id", profileId).eq("visible", 1).findCount();
     }
 
 

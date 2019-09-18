@@ -57,6 +57,9 @@ public class Artist extends Model {
     @Transient
     private String countries;
 
+    @Transient
+    private int followerCount;
+
 
     public Artist() {
 
@@ -64,6 +67,7 @@ public class Artist extends Model {
 
     /**
      * Traditional constructor used for retrieving object from DB
+     *
      * @param artistId
      * @param artistName
      * @param biography
@@ -90,6 +94,7 @@ public class Artist extends Model {
 
     /**
      * Traditional constructor used for retrieving object from DB
+     *
      * @param artistId
      * @param artistName
      * @param biography
@@ -116,6 +121,7 @@ public class Artist extends Model {
         this.country = new HashMap<>();
         this.softDelete = softDelete;
     }
+
     /**
      * A function to turn the destination class created by the create destination form. It is required to turn the
      * , separated strings into maps.
@@ -170,7 +176,9 @@ public class Artist extends Model {
 
     //Getters and setters
 
-    public void setGenre(List<MusicGenre> genre) { this.genreList = genre;}
+    public void setGenre(List<MusicGenre> genre) {
+        this.genreList = genre;
+    }
 
     public List<MusicGenre> getGenreList() {
         return genreList;
@@ -192,9 +200,13 @@ public class Artist extends Model {
         return artistId;
     }
 
-    public String getCountrys() {return countries;}
+    public String getCountrys() {
+        return countries;
+    }
 
-    public String getGenre() {return genreFrom;}
+    public String getGenre() {
+        return genreFrom;
+    }
 
     public void setArtistId(Integer artistId) {
         this.artistId = artistId;
@@ -282,5 +294,13 @@ public class Artist extends Model {
 
     public void setCountries(String countries) {
         this.countries = countries;
+    }
+
+    public void setFollowerCount(int numFollower) {
+        this.followerCount = numFollower;
+    }
+
+    public int getFollowerCount() {
+        return this.followerCount;
     }
 }

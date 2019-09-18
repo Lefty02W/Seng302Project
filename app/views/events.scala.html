@@ -262,7 +262,6 @@
                     <h4 class="modal-title">Create Event</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
-                    <!-- TODO Uncomment when create event controller method is set up. -->
                     @form(routes.EventsController.createUserEvent()) {
                     @CSRF.formField
                     <!-- body -->
@@ -276,7 +275,7 @@
                                     </div>
                                 </div>
                                 <div class="row justify-content-center">
-                                    <label>Event Type</label>
+                                    <label>Event Type*</label>
                                 </div>
                                 <div class="row justify-content-center">
                                     <select class="selectpicker" title="Type" id="typeForm" name="typeForm" data-width="50%" required>
@@ -290,7 +289,7 @@
                                 </div>
 
                                 <div class="row justify-content-center">
-                                    <label>Age Restriction</label>
+                                    <label>Age Restriction*</label>
                                 </div>
                                 <div class="row justify-content-center">
                                     <select class="selectpicker" title="Age Restriction" id="ageForm" name ="ageForm" data-width="50%" required>
@@ -302,10 +301,10 @@
                                 </div>
 
                                 <div class="row justify-content-center">
-                                    <label>Event Destination</label>
+                                    <label>Event Destination*</label>
                                 </div>
                                 <div class="row justify-content-center">
-                                    <select class="selectpicker" data-live-search="true" title="Destination"  name="destinationId" id="destinationId" data-width="50%">
+                                    <select class="selectpicker" data-live-search="true" title="Destination"  name="destinationId" id="destinationId" data-width="50%" required>
                                     @for(destination <- destinations) {
                                         <option value="@destination.getDestinationId">@destination.getName</option>
                                     }
@@ -325,7 +324,7 @@
                                     </select>
                                 </div>
                                 <div class="row justify-content-center">
-                                    <label>Event Artists</label>
+                                    <label>Event Artists*</label>
                                 </div>
                                 <div class="row justify-content-center">
                                     <div class="hidden-div-edit">
