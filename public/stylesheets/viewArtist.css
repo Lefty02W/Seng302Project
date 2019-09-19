@@ -81,3 +81,14 @@
     margin-top: 0;
     padding: 0;
 }
+
+.event-link {
+    color: #d74961;
+    text-decoration: underline;
+}
+
+.event-link:hover {
+    color: #009779;
+    text-decoration: underline;
+    cursor: pointer;
+}
