@@ -375,7 +375,7 @@ public class EventsController extends Controller {
                     paginationHelper.alterPrevious(8);
                     paginationHelper.checkButtonsEnabled();
                     return ok(events.render(profile.get(),
-                            Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllArtists(),
+                            Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
                             request, messagesApi.preferred(request)));
