@@ -818,6 +818,26 @@ public class AdminController {
         if (artistOpt.isPresent()) {
             Artist artist = artistOpt.get();
             artist.initCountry();
+            if (artist.getFacebookLink() != null && !artist.getFacebookLink().isEmpty()) {
+                if (!artist.getFacebookLink().contains("www.facebook.com/")) {
+                    return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Facebook Link provided"));
+                }
+            }
+            if (artist.getInstagramLink() != null && !artist.getInstagramLink().isEmpty()) {
+                if (!artist.getFacebookLink().contains("www.instagram.com/")) {
+                    return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Instagram Link provided"));
+                }
+            }
+            if (artist.getSpotifyLink() != null && !artist.getSpotifyLink().isEmpty()) {
+                if (!artist.getFacebookLink().contains(".spotify.com/")) {
+                    return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Spotify Link provided"));
+                }
+            }
+            if (artist.getTwitterLink() != null && !artist.getTwitterLink().isEmpty()) {
+                if (!artist.getFacebookLink().contains("twitter.com/")) {
+                    return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Twitter Link provided"));
+                }
+            }
             return artistRepository.checkDuplicate(artist.getArtistName()).thenApplyAsync(duplicate -> {
                 if (!duplicate) {
                     artistRepository.insert(artist).thenApplyAsync(artistId -> {
@@ -913,6 +933,26 @@ public class AdminController {
         }
 
         Artist artist = artistController.setValues(artistId, artistProfileForm);
+        if (artist.getFacebookLink() != null && !artist.getFacebookLink().isEmpty()) {
+            if (!artist.getFacebookLink().contains("www.facebook.com/")) {
+                return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Facebook Link provided"));
+            }
+        }
+        if (artist.getInstagramLink() != null && !artist.getInstagramLink().isEmpty()) {
+            if (!artist.getFacebookLink().contains("www.instagram.com/")) {
+                return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Instagram Link provided"));
+            }
+        }
+        if (artist.getSpotifyLink() != null && !artist.getSpotifyLink().isEmpty()) {
+            if (!artist.getFacebookLink().contains(".spotify.com/")) {
+                return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Spotify Link provided"));
+            }
+        }
+        if (artist.getTwitterLink() != null && !artist.getTwitterLink().isEmpty()) {
+            if (!artist.getFacebookLink().contains("twitter.com/")) {
+                return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Twitter Link provided"));
+            }
+        }
         return supplyAsync(() -> {
             artistRepository.editArtistProfile(id, artist, artistProfileForm, currentUserId);
             return redirect("/admin/artists/0").flashing("info", "Artist " + artist.getArtistName() + " has been updated.");
