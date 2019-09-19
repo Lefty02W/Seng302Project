@@ -92,3 +92,18 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+
+#eventName {
+    left:50%;
+    text-align: center;
+    display: inline-block;
+}
+
+#eventsCard {
+    margin-bottom: 10px;
+}
+
+#eventCardBody {
+    padding-left: 30px;
+}

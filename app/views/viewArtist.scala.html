@@ -128,28 +128,38 @@
                         <div class="row">
                             <div class="col display-events">
                                 @for(event <- events) {
-                                    <div class="card">
-                                        <div class="card-body">
+                                    <div class="card" id="eventsCard">
+                                        <div class="card-header">
+                                            <h4 class="primary-color eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                        </div>
+                                        <div class="card-body" id="eventCardBody">
+                                            <div class="row">
+                                                @for(artist <- event.getEventArtists) {
+                                                    <i class="fa fa-user">&nbsp;</i>
+                                                    <p>@artist.getArtistName</p>&nbsp;
+                                                }
+                                            </div>
+                                            <div class="row">
+                                                <i class="fa fa-calendar">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
+                                            </div>
+                                            <div class="row">
+                                                <i class="fa fa-map-marker">&nbsp;</i>
+                                                <p>@event.getDestination.getName</p>
+                                            </div>
+                                            <div class="row">
+                                                <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
+                                            </div>
+                                            <div class="row">
+                                                <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
+                                            </div>
+                                            <div class="row">
+                                                <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                                <p>@event.getAgeRestrictionString</p>
+                                            </div>
                                             <div class="row">
                                                 <div class="col">
-                                                    <h4 class="primary-color event-link" id='eventTitle' onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                                    <h4 class="primary-color">Description</h4>
                                                     <p>@event.getDescription</p>
-                                                    <p>@event.getAgeRestrictionString</p>
-                                                </div>
-                                                <div class="col">
-                                                    <h4 class="primary-color">When</h4>
-                                                    <p>@event.getStartDateString</p>
-                                                    <p>@event.getEndDateString</p>
-                                                </div>
-                                                <div class="col">
-                                                    <h4 class="primary-color">Who</h4>
-                                                    @for(artist <- event.getEventArtists) {
-                                                        <p>@artist.getArtistName</p>
-                                                    }
-                                                </div>
-                                                <div class="col">
-                                                    <h4 class="primary-color">Where</h4>
-                                                    <p>@event.getDestination.getName</p>
                                                 </div>
                                                 <div class="col">
                                                     <h4 class="primary-color">Genres</h4>
@@ -157,22 +167,15 @@
                                                         <p>@genre.getGenre</p>
                                                     }
                                                 </div>
-                                                <div class="col">
-                                                    <h4 class="primary-color">Type</h4>
-                                                    <p>@event.getEventTypes.get(0)</p>
-                                                </div>
-                                                @if(artist.getAdminsList.contains(currentUser)) {
-                                                    <div class="col">
-                                                        <h4 class="primary-color">Actions</h4>
-                                                        <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
-                                                            <button class="btn btn-primary">Edit</button>
-                                                        </a>
-                                                        <a href="#">
-                                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
-                                                        </a>
-                                                    </div>
-                                                }
                                             </div>
+                                        </div>
+                                        <div class="card-footer">
+                                        @if(artist.getAdminsList.contains(currentUser)) {
+                                            <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a>
+                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
+                                        }
                                         </div>
                                     </div>
                                 }
@@ -1252,6 +1255,8 @@
                         infoWindow.setContent(this.content);
                         infoWindow.open(this.getMap(), this);
                         map.setCenter(marker.getPosition());
+                        clearSelected();
+                        document.getElementById("eventName@event.getEventId").style.color = '#009779';
                     });
 
                     markers.push(marker);
@@ -1261,7 +1266,7 @@
             }
 
             function clearSelected() {
-                elements = document.querySelectorAll('[id=eventTitle]');
+                var elements = document.getElementsByClassName("eventTitle");
                 for (var i = 0; i < elements.length; i++) {
                     elements[i].style.color = "#d74961";
                 }
