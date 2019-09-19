@@ -236,7 +236,6 @@
                         </div></div>
                         <div id="map-table-card" class="card-large">
                             <div id="eventsMap"></div>
-                            <div id="legend"><h4>Legend</h4></div>
                         </div>
                     </div>
                 <ul class="pagination" id="pagination-section">
@@ -252,6 +251,7 @@
                         <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
                     }
                 </ul>
+                <div id="legend"><h4>Legend</h4></div>
                 </div>
 
             </div>
@@ -1013,18 +1013,69 @@
             function addMarkers() {
                 @for(event <- events) {
                     var icon;
-                    if (@event.getEventTypes.get(0).equals("Gig")) {
-                        icon = 'http://maps.google.com/mapfiles/ms/micons/plane.png';
-                    } else if (@event.getEventTypes.get(0).equals("Meetup")) {
-                        icon = 'http://maps.google.com/mapfiles/ms/micons/man.png';
-                    } else if (@event.getEventTypes.get(0).equals("Charity")) {
-                        icon = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png';
-                    } else if (@event.getEventTypes.get(0).equals("Competition")) {
-                        icon = 'http://maps.google.com/mapfiles/ms/micons/sportvenue.png';
-                    } else if (@event.getEventTypes.get(0).equals("Party")) {
-                        icon = 'http://maps.google.com/mapfiles/ms/micons/bar.png';
-                    } else if (@event.getEventTypes.get(0).equals("Festival")) {
-                        icon = 'http://maps.google.com/mapfiles/ms/micons/campfire.png';
+
+                    if(@event.getAgeRestriction == 0) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Meetup/users-solid-all.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solidall.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Competition/bolt-solidall.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Party/glass-cheers-solidall.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Festival/music-solid-all.png")';
+                        }
+                    }
+
+                    if(@event.getAgeRestriction == 16) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Gig/guitar-solid-16.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Meetup/users-solid-16.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid16.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Competition/bolt-solid16.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid16.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Festival/music-solid-16.png")';
+                        }
+                    }
+
+                    if(@event.getAgeRestriction == 18) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Gig/guitar-solid-18.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Meetup/users-solid-18.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid18.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Competition/bolt-solid18.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid18.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Festival/music-solid-18.png")';
+                        }
+                    }
+
+                    if(@event.getAgeRestriction == 21) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Gig/guitar-solid-21.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Meetup/users-solid-21.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid21.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Competition/bolt-solid21.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid21.png")';
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = '@routes.Assets.at("images/eventIcons/Festival/music-solid-21.png")';
+                        }
                     }
 
                     var marker = new google.maps.Marker({
@@ -1048,8 +1099,17 @@
                         document.getElementById("eventName@event.getEventId").style.color = '#009779';
                     });
 
+                    var legend = document.getElementById('legend');
                     markers.push(marker);
                     markersMap.set(@event.getEventId, marker);
+
+                    // var publicDiv = document.createElement('div');
+                    // publicDiv.innerHTML = '<img src="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png"> Public Destination';
+                    // var privateDiv = document.createElement('div');
+                    // privateDiv.innerHTML = '<img src="http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_red.png"> Private Destination';
+                    // legend.appendChild(publicDiv);
+                    // legend.appendChild(privateDiv);
+                    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
 
                 }
             }
