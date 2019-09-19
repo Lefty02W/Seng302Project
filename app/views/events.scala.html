@@ -1017,14 +1017,25 @@
                         animation: google.maps.Animation.DROP,
                         map: map
                     });
+                    marker.content = "Name:  @event.getEventName" +
+                            "<br> Type: @event.getEventTypeString" +
+                            "<br> Destination: @event.getDestination.getName";
+                    var infoWindow = new google.maps.InfoWindow();
+                    google.maps.event.addListener(marker, 'click', function() {
+                        infoWindow.setContent(this.content);
+                        infoWindow.open(this.getMap(), this);
+                        map.setCenter(marker.getPosition());
+                    });
+
                     markers.push(marker);
                     markersMap.set(@event.getEventId, marker);
+
                 }
             }
 
             function showEvent(eventId, div) {
                 var marker = markersMap.get(eventId);
-                new google.maps.event.trigger(marker, 'clcik');
+                new google.maps.event.trigger(marker, 'click');
                 map.setCenter(marker.getPosition());
             }
             // ---------------------------------------------
