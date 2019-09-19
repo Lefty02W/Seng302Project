@@ -215,15 +215,14 @@
                                                 <li class="page-item disabled"><a class="page-link disabled" id="prevLink" href="/destinations/show/@isPublic/@pagination.getPrevious">
                                                     Previous</a></li>
                                             }
-                                            <li class="page-item">
+
                                             @if(pagination.isNextEnabled) {
-                                                <a class="page-link" id="nextLink" href="/destinations/show/@isPublic/@pagination.getNext">
-                                                    Next</a>
+                                                <li class="page-item"><a class="page-link" id="nextLink" href="/destinations/show/@isPublic/@pagination.getNext">
+                                                    Next</a></li>
                                             } else {
-                                                <a class="page-link disabled" id="nextLink" href="/destinations/show/@isPublic/@pagination.getNext">
-                                                    Next</a>
+                                                <li class="page-item disabled"><a class="page-link disabled" id="nextLink" href="/destinations/show/@isPublic/@pagination.getNext">
+                                                    Next</a></li>
                                             }
-                                            </li>
                                         }
 
                                     </ul>
