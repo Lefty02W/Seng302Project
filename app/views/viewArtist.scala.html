@@ -243,15 +243,25 @@
                 <div class="col social-col">
                     <div class="mb-5 flex-center" id="socialMediaIcons">
                             <!-- Facebook -->
-                        <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
+                        @if(artist.getFacebookLink != null && !artist.getFacebookLink.isEmpty) {
+                            <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
+                        }
                             <!-- Twitter -->
-                        <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
+                        @if(artist.getTwitterLink != null && !artist.getTwitterLink.isEmpty) {
+                            <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
+                        }
                             <!--Instagram-->
-                        <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
+                        @if(artist.getInstagramLink != null && !artist.getInstagramLink.isEmpty) {
+                            <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
+                        }
                             <!--Spotify-->
-                        <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
+                        @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
+                            <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
+                        }
                             <!--Website link-->
-                        <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
+                        @if(artist.getWebsiteLink != null && !artist.getWebsiteLink.isEmpty) {
+                            <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
+                        }
                     </div>
                 </div>
             </div>
