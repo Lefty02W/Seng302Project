@@ -54,7 +54,7 @@
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
                             Admin</a>
                     }
-                    <a style="color: #ca6636" href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
+                    <a style="color: #d74961" href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
                     </a>
@@ -183,7 +183,7 @@
                         <div class="col" id="allEventCards">
                             @for(event <- events){
                                 <div class="card-body col col-md-12" id="eventCard">
-                                    <div class="card-header event-link" onclick="showEvent(@event.getEventId, this)">@event.getEventName</div>
+                                    <div class="card-header event-link toggled" id='eventTitle' onclick="showEvent(@event.getEventId, this)">@event.getEventName</div>
                                     <div class="row">
                                         <div class="col col-10">
                                             <p id="eventStats">
@@ -1033,10 +1033,16 @@
                 }
             }
 
-            function showEvent(eventId, div) {
+            function clearSelected(){
+                document.getElementById("eventTitle").style.color = "#d74961";
+            }
+
+            function showEvent(eventId, event) {
                 var marker = markersMap.get(eventId);
                 new google.maps.event.trigger(marker, 'click');
                 map.setCenter(marker.getPosition());
+                clearSelected();
+                event.style.color = '#009779';
             }
             // ---------------------------------------------
 
