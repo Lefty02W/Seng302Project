@@ -117,7 +117,7 @@
                             <div id="about" class="row justify-content-center">
                                 <a>@artist.getBiography</a>
                             </div>
-                            @if(!artist.getSpotifyLink.isEmpty) {
+                            @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
                                 @if(artist.getSpotifyLink.contains("embed")) {
                                     <iframe src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                                 } else if(artist.getSpotifyLink.contains("spotify.com/")) {
