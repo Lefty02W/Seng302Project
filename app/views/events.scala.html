@@ -178,76 +178,84 @@
                             </div>
                         </div>
 
-                <div class="viewEvents">
-                    <div class="row" id="allEventCards">
-                        @for(event <- events){
-                            <div class="card-body col col-md-12 col-xl-6" id="eventCard">
-                                <div class="card-header">@event.getEventName</div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        <p id="eventStats">
-                                            <ul>
-                                                @for(artist <- event.getEventArtists){
-                                                    <li>@artist.getArtistName</li>
-                                                    }
-                                            </ul>
-                                        </p>
+                <div class="row" id="EventRow">
+                    <div class="viewEvents">
+                        <div class="col" id="allEventCards">
+                            @for(event <- events){
+                                <div class="card-body col col-md-12" id="eventCard">
+                                    <div class="card-header">@event.getEventName</div>
+                                    <div class="row">
+                                        <div class="col col-10">
+                                            <p id="eventStats">
+                                                <ul>
+                                                    @for(artist <- event.getEventArtists){
+                                                        <li>@artist.getArtistName</li>
+                                                        }
+                                                </ul>
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        Date & Time: @event.getStartDate -> @event.getEndDate
+                                    <div class="row">
+                                        <div class="col col-10">
+                                            Date & Time: @event.getStartDate -> @event.getEndDate
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        @*todo change this to destination name*@
-                                        Destination: @event.getDestinationId
+                                    <div class="row">
+                                        <div class="col col-10">
+                                            @*todo change this to destination name*@
+                                            Destination: @event.getDestinationId
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        @if(!event.getEventTypes.isEmpty) {
-                                            <p id="eventType">Event Type: @event.getEventTypes.get(0)</p>
-                                        }
+                                    <div class="row">
+                                        <div class="col col-10">
+                                            @if(!event.getEventTypes.isEmpty) {
+                                                <p id="eventType">Event Type: @event.getEventTypes.get(0)</p>
+                                            }
 
-                                        <p id="eventRestriction">Age Restriction: @event.getAgeRestrictionString</p>
+                                            <p id="eventRestriction">Age Restriction: @event.getAgeRestrictionString</p>
 
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col col-10">
+                                            <p id="eventDescription">Description: @event.getDescription</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col col-10">
+                                            @if(isVerifiedArtist) {
+                                                <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
+                                                    <button class="btn btn-primary">Edit</button>
+                                                </a>
+                                            }
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        <p id="eventDescription">Description: @event.getDescription</p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        @if(isVerifiedArtist) {
-                                            <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
-                                                <button class="btn btn-primary">Edit</button>
-                                            </a>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                            }
+                        </div>
+                        <div class="col" id="EventMap">
+
+                        </div>
+
+
                     </div>
                 </div>
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
-                @if(paginationHelper.isPreviousEnabled) {
-                    <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
-                } else {
-                    <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
-                }
-                @if(paginationHelper.isNextEnabled) {
-                    <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
-                } else {
-                    <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
-                }
-            </ul>
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
+                    @if(paginationHelper.isPreviousEnabled) {
+                        <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
+                    } else {
+                        <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
+                    }
+                    @if(paginationHelper.isNextEnabled) {
+                        <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
+                    } else {
+                        <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
+                    }
+                </ul>
             </div>
         </div>
+
 
 
 
