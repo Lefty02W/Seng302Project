@@ -165,29 +165,56 @@
 
                                 <div class="col" id="pagination-links">
                                     <ul class="pagination">
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" id="startLink" href="/destinations/show/@isPublic/0">
-                                                Start</a></li>
-                                            <li class="page-item"><a class="page-link" id="prevLink" href="/destinations/show/@isPublic/@pagination.getPrevious">
-                                                Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabled" id="prevLink" href="/destinations/show/@isPublic/0">
-                                                Start</a></li>
-                                            <li class="page-item disabled"><a class="page-link disabled" id="prevLink" href="/destinations/show/@isPublic/@pagination.getPrevious">
-                                                Previous</a></li>
-                                        }
-
                                         @if(searchVal != "") {
-                                            @helper.form(routes.DestinationsController.search(pagination.getNext)) {
-                                                @CSRF.formField
-                                                <input type="hidden" id="isPublic" value="isPublic">
-                                                <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
-                                                <button type="hidden" class="btn btn-primary" id="searchHidden">Search</button>
-                                                <a class="page-link" id="nextLink">
-                                                    Next</a>
+                                            @if(pagination.isPreviousEnabled) {
+                                                @helper.form(routes.DestinationsController.search(0)) {
+                                                    <input type="hidden" id="isPublic" value="isPublic">
+                                                    <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
+                                                    <button type="hidden" id="startSearchHidden">Search</button>
+                                                        <li class="page-item"><a class="page-link" id="startLinkSearch">
+                                                            Start</a></li>
+                                                }
+                                                @helper.form(routes.DestinationsController.search(0)) {
+                                                    <input type="hidden" id="isPublic" value="isPublic">
+                                                    <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
+                                                    <button type="hidden" id="prevSearchHidden">Search</button>
+                                                    <li class="page-item"><a class="page-link" id="prevLinkSearch">
+                                                        Previous</a></li>
+                                                }
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" id="prevLink">
+                                                    Start</a></li>
+                                                <li class="page-item disbaled"><a class="page-link disabled" id="prevLink">
+                                                    Previous</a></li>
                                             }
 
+                                            @helper.form(routes.DestinationsController.search(pagination.getNext)) {
+                                                <input type="hidden" id="isPublic" value="isPublic">
+                                                <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
+                                                <button type="hidden" id="nextSearchHidden">Search</button>
+                                                <li class="page-item">
+                                                @if(pagination.isNextEnabled) {
+                                                    <a class="page-link" id="nextLinkSearch">
+                                                        Next</a>
+                                                } else {
+                                                    <a class="page-link disabled" id="nextLink">
+                                                        Next</a>
+                                                }
+                                                </li>
+                                            }
                                         } else {
+
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" id="startLink" href="/destinations/show/@isPublic/0">
+                                                    Start</a></li>
+                                                <li class="page-item"><a class="page-link" id="prevLink" href="/destinations/show/@isPublic/@pagination.getPrevious">
+                                                    Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" id="prevLink" href="/destinations/show/@isPublic/0">
+                                                    Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled" id="prevLink" href="/destinations/show/@isPublic/@pagination.getPrevious">
+                                                    Previous</a></li>
+                                            }
                                             <li class="page-item">
                                             @if(pagination.isNextEnabled) {
                                                 <a class="page-link" id="nextLink" href="/destinations/show/@isPublic/@pagination.getNext">
@@ -198,6 +225,7 @@
                                             }
                                             </li>
                                         }
+
                                     </ul>
                                 </div>
                                 <div id="btn-row" class="row justify-content-center">
@@ -672,30 +700,29 @@
     </body>
     <script type="text/javascript">
 
-            $('#nextLink').on('click', function() {
-                console.log("Hey");
-               document.getElementById('searchHidden').click()
+            $('#startLinkSearch').on('click', function() {
+               document.getElementById('startSearchHidden').click()
+            })
+            $('#prevLinkSearch').on('click', function() {
+                document.getElementById('prevSearchHidden').click()
+            })
+            $('#nextLinkSearch').on('click', function() {
+                document.getElementById('nextSearchHidden').click()
             })
 
             $(document).ready(function () {
                         $('#destTable').DataTable({
                             "sDom": 't',
                         });
+
+                $('#startSearchHidden').hide();
+                $('#prevSearchHidden').hide();
+                $('#nextSearchHidden').hide();
                 var next = document.getElementById('nextLink');
                 var prev = document.getElementById('prevLink');
                 var start = document.getElementById('startLink');
 
-                if (window.location.href.indexOf('search') !== -1) {
-                     if (start != null) {
-                        start.href = '/destinations/search/0';
-                    }
-                     if (next != null) {
-                    next.href = '/destinations/search/'+'@pagination.getNext';
-                     }
-                     if (prev != null) {
-                    prev.href = '/destinations/search/'+'@pagination.getPrevious';
-                     }
-                } else {
+                if (window.location.href.indexOf('search') == -1) {
                      if (next != null) {
                     next.href = '/destinations/show/@isPublic/@pagination.getNext';
                      }
