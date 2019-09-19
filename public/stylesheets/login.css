@@ -51,3 +51,12 @@ html {
     width: inherit;
 }
 
+#cookieUseNotice {
+    position: fixed;
+    opacity: 0.6;
+    border-radius: 5%;
+    color: #FFFFFF;
+    bottom: 1vh; !important;
+    left: 60vw;
+    width: 50vw;
+}
