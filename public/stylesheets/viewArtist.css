@@ -69,3 +69,15 @@
     background-color: #41B49D;
     z-index: 2;
 }
+
+tr {
+    color: #d74961 !important;
+}
+
+.ae {
+    background-color: purple;
+}
+
+.spotify {
+    width: 35vw;
+}
