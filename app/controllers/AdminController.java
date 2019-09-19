@@ -824,17 +824,17 @@ public class AdminController {
                 }
             }
             if (artist.getInstagramLink() != null && !artist.getInstagramLink().isEmpty()) {
-                if (!artist.getFacebookLink().contains("www.instagram.com/")) {
+                if (!artist.getInstagramLink().contains("www.instagram.com/")) {
                     return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Instagram Link provided"));
                 }
             }
             if (artist.getSpotifyLink() != null && !artist.getSpotifyLink().isEmpty()) {
-                if (!artist.getFacebookLink().contains(".spotify.com/")) {
+                if (!artist.getSpotifyLink().contains(".spotify.com/")) {
                     return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Spotify Link provided"));
                 }
             }
             if (artist.getTwitterLink() != null && !artist.getTwitterLink().isEmpty()) {
-                if (!artist.getFacebookLink().contains("twitter.com/")) {
+                if (!artist.getTwitterLink().contains("twitter.com/")) {
                     return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Twitter Link provided"));
                 }
             }
@@ -939,17 +939,17 @@ public class AdminController {
             }
         }
         if (artist.getInstagramLink() != null && !artist.getInstagramLink().isEmpty()) {
-            if (!artist.getFacebookLink().contains("www.instagram.com/")) {
+            if (!artist.getInstagramLink().contains("www.instagram.com/")) {
                 return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Instagram Link provided"));
             }
         }
         if (artist.getSpotifyLink() != null && !artist.getSpotifyLink().isEmpty()) {
-            if (!artist.getFacebookLink().contains(".spotify.com/")) {
+            if (!artist.getSpotifyLink().contains(".spotify.com/")) {
                 return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Spotify Link provided"));
             }
         }
         if (artist.getTwitterLink() != null && !artist.getTwitterLink().isEmpty()) {
-            if (!artist.getFacebookLink().contains("twitter.com/")) {
+            if (!artist.getTwitterLink().contains("twitter.com/")) {
                 return supplyAsync(() -> redirect("/admin/artists/0").flashing("error", "Invalid Twitter Link provided"));
             }
         }
