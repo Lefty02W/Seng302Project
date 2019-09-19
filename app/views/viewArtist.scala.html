@@ -117,10 +117,12 @@
                             <div id="about" class="row justify-content-center">
                                 <a>@artist.getBiography</a>
                             </div>
-                            @if(artist.getSpotifyLink.contains("embed")) {
-                                <iframe src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                            } else if(artist.getSpotifyLink.contains("spotify.com/")) {
+                            @if(!artist.getSpotifyLink.isEmpty) {
+                                @if(artist.getSpotifyLink.contains("embed")) {
+                                    <iframe src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                } else if(artist.getSpotifyLink.contains("spotify.com/")) {
                                 <iframe src="@artist.getSpotifyLink.replace("spotify.com/", "spotify.com/embed/")" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                }
                             }
                         </div>
                     </div>
