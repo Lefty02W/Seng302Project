@@ -202,8 +202,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col col-10">
-                                            @*todo change this to destination name*@
-                                            Destination: @event.getDestinationId
+                                            Destination: @event.getDestination.getName
                                         </div>
                                     </div>
                                     <div class="row">
@@ -1001,13 +1000,29 @@
                     center: center,
                     streetViewControl: false,
                     fullscreenControl: false,
-                    zoom: 8,
+                    zoom: 8
                 });
+                addMarkers();
+            }
+
+            function addMarkers() {
+                @for(event <- events) {
+                    var marker = new google.maps.Marker({
+                        position: {
+                            lat: @event.getDestination.getLatitude,
+                            lng: @event.getDestination.getLongitude
+                        },
+                        animation: google.maps.Animation.DROP,
+                        map: map
+                    });
+                }
             }
             // ---------------------------------------------
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"
+    @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"*@
+    @*async defer></script>*@
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
     async defer></script>
 
 </html>
