@@ -28,6 +28,8 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/events.css")">
 
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
     </head>
 
@@ -234,6 +236,7 @@
                         </div></div>
                         <div id="map-table-card" class="card-large">
                             <div id="eventsMap"></div>
+                            <div id="legend"><h4>Legend</h4></div>
                         </div>
                     </div>
                 <ul class="pagination" id="pagination-section">
@@ -1009,13 +1012,29 @@
             var markers = [];
             function addMarkers() {
                 @for(event <- events) {
+                    var icon;
+                    if (@event.getEventTypes.get(0).equals("Gig")) {
+                        icon = 'http://maps.google.com/mapfiles/ms/micons/plane.png';
+                    } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                        icon = 'http://maps.google.com/mapfiles/ms/micons/man.png';
+                    } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                        icon = 'http://maps.google.com/mapfiles/ms/micons/hospitals.png';
+                    } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                        icon = 'http://maps.google.com/mapfiles/ms/micons/sportvenue.png';
+                    } else if (@event.getEventTypes.get(0).equals("Party")) {
+                        icon = 'http://maps.google.com/mapfiles/ms/micons/bar.png';
+                    } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                        icon = 'http://maps.google.com/mapfiles/ms/micons/campfire.png';
+                    }
+
                     var marker = new google.maps.Marker({
                         position: {
                             lat: @event.getDestination.getLatitude,
                             lng: @event.getDestination.getLongitude
                         },
                         animation: google.maps.Animation.DROP,
-                        map: map
+                        map: map,
+                        icon: icon
                     });
                     marker.content = "Name:  @event.getEventName" +
                             "<br> Type: @event.getEventTypeString" +

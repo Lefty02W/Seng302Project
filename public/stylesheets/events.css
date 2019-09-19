@@ -58,6 +58,14 @@
     height:100%;
 }
 
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+}
+
+#legend h4 {
+    color: black;
+}
 
 .event-link {
     color: #d74961;
