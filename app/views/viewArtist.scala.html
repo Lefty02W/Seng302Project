@@ -132,7 +132,11 @@
                                         <div class="card-body">
                                             <div class="row">
                                                 <div class="col">
-                                                    <h4 class="primary-color event-link" id='eventTitle' onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                                    <h4 class="primary-color" id="eventName" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col">
                                                     <p>@event.getDescription</p>
                                                     <p>@event.getAgeRestrictionString</p>
                                                 </div>
