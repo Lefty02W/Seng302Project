@@ -69,3 +69,15 @@
     background-color: #41B49D;
     z-index: 2;
 }
+
+#eventsMap {
+    width:100%;
+    height:100%;
+}
+
+.map-events {
+    height: 70vh;
+    width: 70%;
+    margin-top: 0;
+    padding: 0;
+}
