@@ -41,6 +41,7 @@ public class DestinationsController extends Controller {
     private final UndoStackRepository undoStackRepository;
     private String destShowRoute = "/destinations/show/false/0";
     private final Form<DestinationSearchFormData> searchForm;
+    private String searchVal;
 
     private final Integer DESTINATION_PAGE_SIZE = 7;
 
@@ -87,8 +88,11 @@ public class DestinationsController extends Controller {
                 Form<DestinationSearchFormData> searchDestinationForm = searchForm.bindFromRequest(request);
                 DestinationSearchFormData searchData = searchDestinationForm.get();
                 if (searchData.name.equals("")) {
-                    return redirect("/destinations/0").flashing("error",
+                    return redirect(destShowRoute).flashing("error",
                             "Please enter a destination name to search");
+                }
+                if (searchVal == null || searchVal.equals("")) {
+                    searchVal = searchData.name;
                 }
 
                 destinationsList = destinationRepository.searchDestinations(searchData.name, rowOffset,
@@ -105,7 +109,7 @@ public class DestinationsController extends Controller {
                         followedDestinationIds, usersPhotos, form,
                         new RoutedObject<Destination>(null, false, false), requestForm,
                         Country.getInstance().getAllCountries(),
-                        searchDestinationForm,
+                        searchDestinationForm, searchVal,
                         request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
@@ -161,6 +165,7 @@ public class DestinationsController extends Controller {
     public CompletionStage<Result> show(Http.Request request, boolean isPublic, Integer rowOffset) {
         destinationsList.clear();
         Integer userId = SessionController.getCurrentUserId(request);
+        searchVal ="";
         return profileRepository.findById(userId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
@@ -187,7 +192,7 @@ public class DestinationsController extends Controller {
                 return ok(destinations.render(destinationsList, profile.get(), isPublic, paginationHelper,
                         followedDestinationIds, usersPhotos, form,
                         new RoutedObject<Destination>(null, false, false), requestForm,
-                        Country.getInstance().getAllCountries(), searchForm, request, messagesApi.preferred(request)));
+                        Country.getInstance().getAllCountries(), searchForm, searchVal, request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -230,7 +235,7 @@ public class DestinationsController extends Controller {
                 return ok(destinations.render(destinationsList, profile.get(), isPublic,
                         initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos,
                         form, new RoutedObject<Destination>(null, false, false), requestForm,
-                        Country.getInstance().getAllCountries(), searchForm, request, messagesApi.preferred(request)));
+                        Country.getInstance().getAllCountries(), searchForm, searchVal,  request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -261,7 +266,7 @@ public class DestinationsController extends Controller {
                 form.fill(currentDestination);
                 return ok(destinations.render(destinationsList, profile.get(), isPublic,
                         initialisePaginiation(0, profId, isPublic), followedDestinationIds, usersPhotos, form,
-                        toSend, requestForm, Country.getInstance().getAllCountries(), searchForm, request,
+                        toSend, requestForm, Country.getInstance().getAllCountries(), searchForm, searchVal,  request,
                         messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
@@ -306,7 +311,7 @@ public class DestinationsController extends Controller {
                 return ok(destinations.render(destinationsList, profile.get(), isPublic,
                         initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos,
                         form, new RoutedObject<Destination>(null, false, false), requestForm,
-                        Country.getInstance().getAllCountries(), searchForm, request, messagesApi.preferred(request)));
+                        Country.getInstance().getAllCountries(), searchForm, searchVal, request,  messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }

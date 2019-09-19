@@ -2,7 +2,7 @@
 @import views.html.helper.CSRF
 @(destinationsList: List[Destination], currentUser: Profile, isPublic: Boolean, pagination: PaginationHelper, followedDestinationIds: List[Integer],
         usersPhotos: List[Photo], destinationForm: Form[Destination], destination: RoutedObject[Destination],
-        requestForm: Form[DestinationRequest], countries: List[String], searchForm: Form[DestinationSearchFormData])(implicit request: Http.Request, messages: play.i18n.Messages)
+        requestForm: Form[DestinationRequest], countries: List[String], searchForm: Form[DestinationSearchFormData],searchVal: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 @import models.Destination; var toViewDest = new Destination()
 
@@ -38,7 +38,8 @@
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
-                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
+                    <a style="color: #d74961;
+                        background-color: #ede1d1 !important" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
                         Destinations</a>
                     <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
                         Trips</a>
@@ -84,6 +85,12 @@
                     </div>
                 }
 
+                @if(request.flash.getOptional("error").isPresent) {
+                    <div class="alert alert-warning">
+                    @request.flash.getOptional("error").get()
+                    </div>
+                }
+
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col d-flex justify-content-center">
@@ -100,8 +107,8 @@
                                 @helper.form(routes.DestinationsController.search(0)) {
                                     @CSRF.formField
                                     <input type="hidden" id="isPublic" value="isPublic">
-                                    <input type="search" id="name" placeholder="Search" name="name" value="name">
-                                    <button class="btn btn-primary">Search</button>
+                                    <input type="search" id="searchName" placeholder="Search" name="name" value="@searchVal">
+                                    <button class="btn btn-primary" id="searchButton">Search</button>
                                 }
 
                                 <div class="row">
@@ -159,31 +166,47 @@
                                 <div class="col" id="pagination-links">
                                     <ul class="pagination">
                                         @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/destinations/show/@isPublic/0">Start</a></li>
-                                            <li class="page-item"><a class="page-link" href="/destinations/show/@isPublic/@pagination.getPrevious">
-                                                    Previous</a></li>
+                                            <li class="page-item"><a class="page-link" id="startLink" href="/destinations/show/@isPublic/0">
+                                                Start</a></li>
+                                            <li class="page-item"><a class="page-link" id="prevLink" href="/destinations/show/@isPublic/@pagination.getPrevious">
+                                                Previous</a></li>
                                         } else {
-                                            <li class="page-item disabled"><a class="page-link disabled" href="/destinations/show/@isPublic/0">Start</a></li>
-                                            <li class="page-item disabled"><a class="page-link disabled" href="/destinations/show/@isPublic/@pagination.getPrevious">
-                                                    Previous</a></li>
+                                            <li class="page-item disabled"><a class="page-link disabled" id="prevLink" href="/destinations/show/@isPublic/0">
+                                                Start</a></li>
+                                            <li class="page-item disabled"><a class="page-link disabled" id="prevLink" href="/destinations/show/@isPublic/@pagination.getPrevious">
+                                                Previous</a></li>
                                         }
 
-                                        <li class="page-item">
-                                        @if(pagination.isNextEnabled) {
-                                            <a class="page-link" href="/destinations/show/@isPublic/@pagination.getNext">
-                                                        Next</a>
+                                        @if(searchVal != "") {
+                                            @helper.form(routes.DestinationsController.search(pagination.getNext)) {
+                                                @CSRF.formField
+                                                <input type="hidden" id="isPublic" value="isPublic">
+                                                <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
+                                                <button type="hidden" class="btn btn-primary" id="searchHidden">Search</button>
+                                                <a class="page-link" id="nextLink">
+                                                    Next</a>
+                                            }
+
                                         } else {
-                                            <a class="page-link disabled" href="/destinations/show/@isPublic/@pagination.getNext">
-                                                        Next</a>
+                                            <li class="page-item">
+                                            @if(pagination.isNextEnabled) {
+                                                <a class="page-link" id="nextLink" href="/destinations/show/@isPublic/@pagination.getNext">
+                                                    Next</a>
+                                            } else {
+                                                <a class="page-link disabled" id="nextLink" href="/destinations/show/@isPublic/@pagination.getNext">
+                                                    Next</a>
+                                            }
+                                            </li>
                                         }
-                                        </li>
                                     </ul>
                                 </div>
                                 <div id="btn-row" class="row justify-content-center">
                                 @if(!isPublic) {
-                                    <input type="checkbox" id="destToggle" onchange="togglePublic()"><a>View Public Destinations</a>
+                                    <input type="checkbox" id="destToggle" onchange="togglePublic()">
+                                    <a>View Public Destinations</a>
                                 } else {
-                                    <input type="checkbox" id="destToggle" checked onchange="togglePublic()"><a>View Public Destinations</a>
+                                    <input type="checkbox" id="destToggle" checked onchange="togglePublic()">
+                                    <a>View Public Destinations</a>
                                 }
                                 </div>
                             </div>
@@ -193,7 +216,8 @@
                                     <ul class="nav nav-tabs" id="destinationTabs">
                                         <li class="active"><a data-toggle="tab" href="#detailsTab" id="detailsTabLink">
                                             Details</a></li>
-                                        <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">My Photos</a></li>
+                                        <li><a data-toggle="tab" href="#myPhotosTab" id="myPhotosTabLink">
+                                            My Photos</a></li>
                                         <li><a data-toggle="tab" href="#worldPhotosTab" id="worldPhotosTabLink">
                                             Public Photos</a></li>
                                     </ul>
@@ -648,13 +672,48 @@
     </body>
     <script type="text/javascript">
 
+            $('#nextLink').on('click', function() {
+                console.log("Hey");
+               document.getElementById('searchHidden').click()
+            })
+
             $(document).ready(function () {
-                $('#destTable').DataTable({
-                    "sDom": 't',
-                });
+                        $('#destTable').DataTable({
+                            "sDom": 't',
+                        });
+                var next = document.getElementById('nextLink');
+                var prev = document.getElementById('prevLink');
+                var start = document.getElementById('startLink');
+
+                if (window.location.href.indexOf('search') !== -1) {
+                     if (start != null) {
+                        start.href = '/destinations/search/0';
+                    }
+                     if (next != null) {
+                    next.href = '/destinations/search/'+'@pagination.getNext';
+                     }
+                     if (prev != null) {
+                    prev.href = '/destinations/search/'+'@pagination.getPrevious';
+                     }
+                } else {
+                     if (next != null) {
+                    next.href = '/destinations/show/@isPublic/@pagination.getNext';
+                     }
+                     if (prev != null) {
+                    prev.href = '/destinations/show/@isPublic/@pagination.getPrevious';
+                   }
+                     if (start != null) {
+                    start.href = '/destinations/show/@isPublic/0';
+
+                     }
 
 
-            });
+                }
+                @if(searchVal != "") {
+                document.getElementById('searchName').value = "@searchVal";
+                }
+
+                    });
 
             var map;
             var markers = [];
@@ -1158,7 +1217,7 @@
                             "                            <div id=\"id\"></div>\n" +
                             "                            </div>\n" +
                             "                            </div>";
-                        }
+                    }
                     }
                     @for(photo <- usersPhotos) {
                     @if(!destination.getUsersPhotos.contains(photo)) {
@@ -1173,7 +1232,7 @@
                             "                            <button class=\"btn btn-primary\" type=\"submit\">Link</button>\n" +
                             "                            </a>\n" +
                             "                            </div>";
-                        }
+                    }
                     }
                     @for(photo <- destination.getWorldPhotos){
                     @if(photo.getVisible == 1) {
@@ -1340,6 +1399,7 @@
                 });
 
             });
+
             // ---------------------------------------------
 
 
@@ -1363,7 +1423,7 @@
             }
 
             function togglePublic() {
-                if (document.getElementById('destToggle').checked==false) {
+                if (document.getElementById('destToggle').checked == false) {
                     location.replace("@routes.DestinationsController.show(false, 0)");
                 }
                 else {
