@@ -46,6 +46,17 @@
     padding-right: 15px;
 }
 
+#map-table-card {
+    height: 70vh;
+    width: 70%;
+    margin-top: 0;
+    padding: 0;
+}
+
+#eventsMap {
+    width:100%;
+    height:100%;
+}
 
 
 
