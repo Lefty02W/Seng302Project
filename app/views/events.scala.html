@@ -183,7 +183,7 @@
                         <div class="col" id="allEventCards">
                             @for(event <- events){
                                 <div class="card-body col col-md-12" id="eventCard">
-                                    <div class="card-header">@event.getEventName</div>
+                                    <div class="card-header event-link" onclick="showEvent(@event.getEventId, this)">@event.getEventName</div>
                                     <div class="row">
                                         <div class="col col-10">
                                             <p id="eventStats">
@@ -1005,6 +1005,8 @@
                 addMarkers();
             }
 
+            var markersMap = new Map();
+            var markers = [];
             function addMarkers() {
                 @for(event <- events) {
                     var marker = new google.maps.Marker({
@@ -1015,7 +1017,15 @@
                         animation: google.maps.Animation.DROP,
                         map: map
                     });
+                    markers.push(marker);
+                    markersMap.set(@event.getEventId, marker);
                 }
+            }
+
+            function showEvent(eventId, div) {
+                var marker = markersMap.get(eventId);
+                new google.maps.event.trigger(marker, 'clcik');
+                map.setCenter(marker.getPosition());
             }
             // ---------------------------------------------
 

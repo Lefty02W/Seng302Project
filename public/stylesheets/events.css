@@ -59,4 +59,17 @@
 }
 
 
+.event-link {
+    color: #d74961;
+    text-decoration: underline;
+}
 
+.event-link:hover {
+    color: #009779;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.selected-event {
+    color: #009779;
+}
