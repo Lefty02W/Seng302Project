@@ -71,28 +71,28 @@ public class CreateArtistSteps {
         artistForm.put("countries", arg0);
     }
 
-    @And("^user changes facebook link to \"([^\"]*)\"$")
-    public void userChangesFacebookLinkTo(String arg0) throws Throwable {
+    @And("^user enters facebook link as \"([^\"]*)\"$")
+    public void userEntersFacebookLinkAs(String arg0) throws Throwable {
         artistForm.put("facebookLink", arg0);
     }
 
-    @And("^user changes instagram link to \"([^\"]*)\"$")
-    public void userChangesInstagramLinkTo(String arg0) throws Throwable {
+    @And("^user enters instagram link as \"([^\"]*)\"$")
+    public void userEntersInstagramLinkAs(String arg0) throws Throwable {
         artistForm.put("instagramLink", arg0);
     }
 
-    @And("^user changes spotify link to \"([^\"]*)\"$")
-    public void userChangesSpotifyLinkTo(String arg0) throws Throwable {
+    @And("^user enters spotify link as \"([^\"]*)\"$")
+    public void userEntersSpotifyLinkAs(String arg0) throws Throwable {
         artistForm.put("spotifyLink", arg0);
     }
 
-    @And("^user changes twitter link to \"([^\"]*)\"$")
-    public void userChangesTwitterLinkTo(String arg0) throws Throwable {
+    @And("^user enters twitter link as \"([^\"]*)\"$")
+    public void userEntersTwitterLinkAs(String arg0) throws Throwable {
         artistForm.put("twitterLink", arg0);
     }
 
-    @And("^user changes website link to \"([^\"]*)\"$")
-    public void userChangesWebsiteLinkTo(String arg0) throws Throwable {
+    @And("^user enters website link as \"([^\"]*)\"$")
+    public void userEntersWebsiteLinkAs(String arg0) throws Throwable {
         artistForm.put("websiteLink", arg0);
     }
 
@@ -111,7 +111,6 @@ public class CreateArtistSteps {
     public void theArtistIsSavedInTheDatabase() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
-        artistForm = new HashMap<>();
         if (userArtists.size() > 0) {
 
             Artist newArtist = userArtists.get(userArtists.size() - 1);
@@ -127,6 +126,7 @@ public class CreateArtistSteps {
     public void theArtistIsNotSavedInTheDatabase() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
+        artistForm = new HashMap<>();
         if (userArtists.size() > 0) {
             Artist newArtist = userArtists.get(userArtists.size() - 1);
             assertThat(newArtist.getArtistName(), not(equalTo("Autechre")));
