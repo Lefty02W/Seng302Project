@@ -276,52 +276,55 @@
                         <div class="col" id="allEventCards">
                             @for(event <- events){
                                 <div class="card-body col col-md-12" id="eventCard">
-                                    <div class="card-header event-link toggled eventTitle" id='eventName@event.getEventId' onclick="showEvent(@event.getEventId, this)">@event.getEventName</div>
-                                    <div class="row">
-                                        <div class="col col-10">
-                                            <p id="eventStats">
-                                                <ul>
-                                                    @for(artist <- event.getEventArtists){
-                                                        <li>@artist.getArtistName</li>
-                                                        }
-                                                </ul>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col col-10">
-                                            Date & Time: @event.getStartDate -> @event.getEndDate
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col col-10">
-                                            Destination: @event.getDestination.getName
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col col-10">
-                                            @if(!event.getEventTypes.isEmpty) {
-                                                <p id="eventType">Event Type: @event.getEventTypes.get(0)</p>
-                                            }
+                                    <div class="card-header event-link toggled eventTitle" id='eventName@event.getEventId' onclick="showEvent(@event.getEventId, this)">
+                                        @event.getEventName
 
-                                            <p id="eventRestriction">Age Restriction: @event.getAgeRestrictionString</p>
-
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col col-10">
-                                            <p id="eventDescription">Description: @event.getDescription</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col col-10">
+                                        <div id="editEventLink">
                                             @if(isVerifiedArtist) {
                                                 <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
-                                                    <button class="btn btn-primary">Edit</button>
+                                                    <i class="fa fa-edit">Edit</i>
                                                 </a>
                                             }
                                         </div>
+
                                     </div>
+                                    <div class="row">
+                                    @for(artist <- event.getEventArtists) {
+                                        <i class="fa fa-user">&nbsp;</i>
+                                        <p>@artist.getArtistName</p>&nbsp;
+
+                                    }
+                                    </div>
+                                    <div class="row">
+                                        <i class="fa fa-music">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
+                                    </div>
+                                    <div class="row">
+                                        <i class="fa fa-globe">&nbsp;</i>
+                                        <p>@event.getDestination.getName</p>
+                                    </div>
+                                    <div class="row">
+                                        <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
+                                    </div>
+                                    <div class="row">
+                                        <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
+                                    </div>
+                                    <div class="row">
+                                        <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                        <p>@event.getAgeRestrictionString</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="primary-color">Description</h4>
+                                            <p>@event.getDescription</p>
+                                        </div>
+                                        <div class="col">
+                                            <h4 class="primary-color">Genres</h4>
+                                            @for(genre <- event.getEventGenres) {
+                                                <p>@genre.getGenre</p>
+                                            }
+                                        </div>
+                                    </div>
+
                                 </div>
                             }
                         </div></div>

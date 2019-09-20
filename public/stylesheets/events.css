@@ -58,6 +58,15 @@
     height:100%;
 }
 
+#eventCard {
+    padding: 0;
+}
+
+#allEventCards {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 #legend {
     background: #fff;
     border: 0.1rem solid #000;
@@ -82,4 +91,8 @@
     color: #009779;
     text-decoration: underline;
     cursor: pointer;
+}
+
+#editEventLink {
+    float: right;
 }
