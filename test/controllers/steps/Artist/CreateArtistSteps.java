@@ -129,7 +129,7 @@ public class CreateArtistSteps {
         List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
         if (userArtists.size() > 0) {
             Artist newArtist = userArtists.get(userArtists.size() - 1);
-            assertThat(newArtist.getArtistName(), not(equalTo("Autechre"));
+            assertThat(newArtist.getArtistName(), not(equalTo("Autechre")));
         } else {
             assertTrue(true);
         }
