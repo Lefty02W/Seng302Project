@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Destination;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
@@ -18,12 +19,11 @@ import static org.junit.Assert.assertEquals;
  */
 public class DestinationsControllerTest {
 
-    /**
-     * Testing trying to editDestinations a destination that does not exists
-     */
-    @Test
-    public void showEditDestination() {
-        ArrayList<Destination> destinationList = TestApplication.getProfileRepository().getDestinations(1, 0).get();
+    private ArrayList<Destination> destinationList = TestApplication.getProfileRepository().getDestinations(1, 0).get();
+
+    @Before
+    public void setUp() throws Exception {
+
         Map<String, String> formData = new HashMap<>();
         formData.put("email", "john@gmail.com");
         formData.put("password", "password");
@@ -35,15 +35,30 @@ public class DestinationsControllerTest {
 
         Result result = Helpers.route(TestApplication.getApplication(), request);
 
-
         request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/admin")
+                .session("connected", "2");
+    }
+
+    /**
+     * Testing edit destination modal page loads fine
+     */
+    @Test
+    public void showEditDestination() {
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/destinations/" + destinationList.get(0).getDestinationId() + "/edit/show/" + destinationList.get(0).getVisible())
                 .session("connected", "1");
 
-        result = Helpers.route(TestApplication.getApplication(), request);
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
 
         assertEquals(200, result.status());
     }
+
+
+
+
 }
