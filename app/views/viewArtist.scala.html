@@ -85,18 +85,18 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="viewArtistTabs">
                             @if(activeTab == 0) {
-                                <li class="active"><a href="/artists/@artist.getArtistId" id="aboutTabLink">About</a></li>
+                                <li class="active"><a class="selectedTab" href="/artists/@artist.getArtistId" id="aboutTabLink">About</a></li>
                             } else {
                                 <li><a href="/artists/@artist.getArtistId" id="aboutTabLink">About</a></li>
                             }
                             @if(activeTab == 1) {
-                                <li class="active"><a href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">
+                                <li class="active"><a class="selectedTab" href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">
                                     Events</a></li>
                             } else {
                                 <li><a href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">Events</a></li>
                             }
                             @if(activeTab == 2) {
-                                <li class="active" ><a href="/artists/@artist.getArtistId/members" id="membersTabLink">
+                                <li class="active" ><a class="selectedTab" href="/artists/@artist.getArtistId/members" id="membersTabLink">
                                     Members</a></li>
                             } else {
                                 <li><a href="/artists/@artist.getArtistId/members" id="membersTabLink">Members</a></li>
@@ -117,7 +117,8 @@
                             <div id="about" class="row justify-content-center">
                                 <a>@artist.getBiography</a>
                             </div>
-                            <div class="row justify-content-center">
+                            <hr class="divider">
+                            <div class="row justify-content-center spotify-row">
                             @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
                                 @if(artist.getSpotifyLink.contains("embed")) {
                                     <iframe class="spotify" src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>

@@ -70,14 +70,16 @@
     z-index: 2;
 }
 
-tr {
-    color: #d74961 !important;
+.selectedTab {
+    color: #41B49D;
 }
 
-.ae {
-    background-color: purple;
+.divider {
+    width: 40vw;
 }
+
 
 .spotify {
-    width: 35vw;
+    width: 40vw;
+    height: 40vh;
 }
