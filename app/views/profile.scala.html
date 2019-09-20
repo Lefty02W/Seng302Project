@@ -349,29 +349,17 @@
                     </div>
                     @if(userArtists.length > 0) {
                         <div id="yourArtistsTab" class="tab-pane fade">
-                            <div class="col">
-                                <div id="card-large lower-card">
-                                    <div class="card center-col overflow-auto" id="yourArtistsCard">
-                                        <table id="followedArtistsTable">
-                                            <thead>
-                                                <tr>
-                                                    <th>Name</th>
-                                                    <th>Artist Page</th>
-                                                </tr>
-                                            </thead>
-                                            @for(artist <- userArtists) {
-                                                <tr>
-                                                    <td>@artist.getArtistName</td>
-                                                    <td>
-                                                        <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
-                                                            <button type="button" class="btn btn-primary">View</button>
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </table>
-                                    </div>
-                                </div>
+                            <div class="card" id="yourArtistsCard">
+                                <ul class="list-group list-group-flush" id="yourArtistsList">
+                                    @for(artist <- userArtists) {
+                                        <li class="list-group-item ">
+                                            <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId())">
+                                                <p>@artist.getArtistName</p>
+                                            </a>
+                                        </li>
+
+                                    }
+                                </ul>
                             </div>
                         </div>
                     }
