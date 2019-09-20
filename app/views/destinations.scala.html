@@ -524,7 +524,7 @@
                                                             <label>Latitude</label>
                                                         </div>
                                                         <div class="row">
-                                                            <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
+                                                            <input type="number" step="0.01" id="latitude" name="latitude" class="editLat" value="@destination.getObject.getLatitude" onkeyup="moveEditMarker()">
                                                         </div>
                                                     </div>
                                                     <div class="col">
@@ -532,7 +532,7 @@
                                                             <label>Longitude</label>
                                                         </div>
                                                         <div class="row">
-                                                            <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
+                                                            <input type="number" step="0.01" id="longitude" name="longitude" class="editLng" value="@destination.getObject.getLongitude" onkeyup="moveEditMarker()">
                                                         </div>
 
                                                     </div>
@@ -1198,6 +1198,9 @@
                 createMap.addListener('click', function(e) {
                     addCreateMarker(e.latLng);
                 });
+                editMap.addListener('click', function(e) {
+                    addEditMarker(e.latLng);
+                });
 
                 addMarkers();
             }
@@ -1245,6 +1248,51 @@
             function fillLatLng(lat, lng) {
                 $('.createLat').val(lat);
                 $('.createLng').val(lng);
+            }
+
+            /**
+            * Function to add a marker to the edit destination map onclick
+            */
+            function addEditMarker(pos) {
+                if (editMarker) {
+                    editMarker.setMap(null);
+                }
+                 editMarker = new google.maps.Marker({
+                    map: editMap,
+                    position: pos,
+                    draggable: true
+                });
+                google.maps.event.addListener(editMarker, 'dragend', function(e) {
+                    fillLatLngEdit(e.latLng.lat(), e.latLng.lng());
+                });
+                fillLatLngEdit(pos.lat(), pos.lng());
+
+            }
+
+            /**
+            * Function to move marker when user changes lat/lng value from entry dialogs during edit
+            */
+            function moveEditMarker() {
+                var pos = new google.maps.LatLng($('.editLat').val(), $('.editLng').val());
+                if (editMarker) {
+                    editMarker.setPosition(pos);
+                } else {
+                    editMarker = new google.maps.Marker({
+                        map: editMap,
+                        position: pos,
+                        draggable: true
+                    });
+                }
+                editMap.setCenter(pos);
+            }
+
+
+            /**
+            * Function to fill fields with lat lng details from map dureing edit
+            */
+            function fillLatLngEdit(lat, lng) {
+                $('.editLat').val(lat);
+                $('.editLng').val(lng);
             }
 
 
