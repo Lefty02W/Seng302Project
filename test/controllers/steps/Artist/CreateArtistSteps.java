@@ -111,11 +111,11 @@ public class CreateArtistSteps {
     public void theArtistIsSavedInTheDatabase() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
+        artistForm = new HashMap<>();
         if (userArtists.size() > 0) {
 
             Artist newArtist = userArtists.get(userArtists.size() - 1);
             assertEquals(newArtist.getArtistName(), "King Crimson");
-            artistForm = new HashMap<>();
         } else {
             fail();
         }
