@@ -103,16 +103,20 @@
                     <div class="row">
                         <div class="col">
                             <div id="dest-table-card" class="card-large dest-table table-hover">
-                                @if(searchVal != "") {
-                                    <a href="@routes.DestinationsController.show(isPublic, 0)">
-                                        <button class="btn btn-secondary" onclick="">Clear</button></a>
-                                }
-                                @helper.form(routes.DestinationsController.search(0)) {
-                                    @CSRF.formField
-                                    <input type="hidden" id="is1Public" name="isPublic" value="@isPublic">
-                                    <input type="search" id="searchName" placeholder="Search" name="name" value="@searchVal">
-                                    <button class="btn btn-primary" id="searchButton">Search</button>
-                                }
+                                <div class="row justify-content-center">
+                                    @if(searchVal != "") {
+                                        <a style="margin-top: 10px;" href="@routes.DestinationsController.show(isPublic, 0)">
+                                            <button class="btn btn-secondary" onclick="">Clear</button></a>
+                                    }
+                                    <div class="col">
+                                        @helper.form(routes.DestinationsController.search(0)) {
+                                            @CSRF.formField
+                                            <input type="hidden" id="is1Public" name="isPublic" value="@isPublic">
+                                            <input type="search" id="searchName" placeholder="Search" name="name" value="@searchVal">
+                                            <button class="btn btn-primary" id="searchButton">Search</button>
+                                        }
+                                    </div>
+                                </div>
 
                                 <div class="row">
                                     <table id="destTable">
@@ -171,14 +175,14 @@
                                         @if(searchVal != "") {
                                             @if(pagination.isPreviousEnabled) {
                                                 @helper.form(routes.DestinationsController.search(0)) {
-                                                    <input type="hidden" id="isPublic" value="isPublic">
+                                                    <input type="hidden" id="is2Public" value="@isPublic">
                                                     <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
                                                     <button type="hidden" id="startSearchHidden">Search</button>
                                                         <li class="page-item"><a class="page-link" id="startLinkSearch">
                                                             Start</a></li>
                                                 }
                                                 @helper.form(routes.DestinationsController.search(0)) {
-                                                    <input type="hidden" id="isPublic" value="isPublic">
+                                                    <input type="hidden" id="is3Public" value="@isPublic">
                                                     <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
                                                     <button type="hidden" id="prevSearchHidden">Search</button>
                                                     <li class="page-item"><a class="page-link" id="prevLinkSearch">
@@ -192,7 +196,7 @@
                                             }
 
                                             @helper.form(routes.DestinationsController.search(pagination.getNext)) {
-                                                <input type="hidden" id="isPublic" value="isPublic">
+                                                <input type="hidden" id="is4Public" value="@isPublic">
                                                 <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
                                                 <button type="hidden" id="nextSearchHidden">Search</button>
                                                 <li class="page-item">
@@ -1457,10 +1461,11 @@
                     if (document.getElementById('destToggle').checked == false) {
                         document.getElementById('is1Public').checked = false;
                         document.getElementById('is1Public').value = false;
+                        document.getElementById('searchButton').click()
                     } else {
                         document.getElementById('is1Public').checked = true;
                         document.getElementById('is1Public').value = true;
-
+                        document.getElementById('searchButton').click()
                     }
                 } else {
                     if (document.getElementById('destToggle').checked == false) {
