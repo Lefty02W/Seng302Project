@@ -64,6 +64,11 @@
     width: 10%;
 }
 
+#legend img {
+    height: 24px;
+    width: 24px;
+}
+
 #legend h4 {
     color: black;
 }
