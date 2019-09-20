@@ -2,6 +2,7 @@ package controllers;
 
 import models.Destination;
 import org.junit.Ignore;
+import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
@@ -20,7 +21,7 @@ public class DestinationsControllerTest {
     /**
      * Testing trying to editDestinations a destination that does not exists
      */
-    @Ignore
+    @Test
     public void showEditDestination() {
         ArrayList<Destination> destinationList = TestApplication.getProfileRepository().getDestinations(1, 0).get();
         Map<String, String> formData = new HashMap<>();
@@ -37,7 +38,7 @@ public class DestinationsControllerTest {
 
         request = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/destinations/" + destinationList.get(0).getDestinationId() + "/edit")
+                .uri("/destinations/" + destinationList.get(0).getDestinationId() + "/edit/show/" + destinationList.get(0).getVisible())
                 .session("connected", "1");
 
         result = Helpers.route(TestApplication.getApplication(), request);
