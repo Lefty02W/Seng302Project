@@ -115,7 +115,7 @@ public class CreateArtistSteps {
 
             Artist newArtist = userArtists.get(userArtists.size() - 1);
             assertEquals(newArtist.getArtistName(), "King Crimson");
-
+            artistForm = new HashMap<>();
         } else {
             fail();
         }
