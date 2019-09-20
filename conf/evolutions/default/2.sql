@@ -223,7 +223,7 @@ INSERT INTO artist (artist_id, artist_name, biography, members,
   'https://www.amazon.com/kingsofamazon');
 
 INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
-  (9, 'Daddy Sloth', 'Alpha Sloth', 'SlothBoi420', 1);
+  (9, 'The Sloths', 'Sloths', 'SlothBoi', 1);
 
 
 INSERT INTO artist_genre (artist_id, genre_id) VALUES

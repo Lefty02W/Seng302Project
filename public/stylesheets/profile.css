@@ -244,10 +244,6 @@ img.thumbnail {
     font-size: 18pt;
 }
 
-#followedArtistsLink:hover, #informationTabLink:hover, #photosTabLink:hover, #destsTabLink:hover, #tripsTabLink:hover {
-    /*font-weight: bold;*/
-}
-
 #selectPhotoModal {
     /*height: 80vh;*/
 }
@@ -350,4 +346,13 @@ img.thumbnail {
 .paginate_button {
     padding-left: 0px !important;
     padding-right: 0px !important;
+}
+
+#yourArtistsCard {
+    margin-left: 15vw;
+}
+
+#yourArtistsList {
+    width: 50vw;
+    text-align: center;
 }
