@@ -106,7 +106,7 @@
 
                                 @helper.form(routes.DestinationsController.search(0)) {
                                     @CSRF.formField
-                                    <input type="hidden" id="isPublic" value="isPublic">
+                                    <input type="hidden" id="is1Public" name="isPublic" value="@isPublic">
                                     <input type="search" id="searchName" placeholder="Search" name="name" value="@searchVal">
                                     <button class="btn btn-primary" id="searchButton">Search</button>
                                 }
@@ -720,6 +720,7 @@
                 var next = document.getElementById('nextLink');
                 var prev = document.getElementById('prevLink');
                 var start = document.getElementById('startLink');
+                document.getElementById('isPublic').value = "@isPublic";
 
                 if (window.location.href.indexOf('search') == -1) {
                      if (next != null) {
@@ -1449,11 +1450,22 @@
             }
 
             function togglePublic() {
-                if (document.getElementById('destToggle').checked == false) {
-                    location.replace("@routes.DestinationsController.show(false, 0)");
-                }
-                else {
-                    location.replace("@routes.DestinationsController.show(true, 0)");
+                @if(searchVal != "") {
+                    if (document.getElementById('destToggle').checked == false) {
+                        document.getElementById('is1Public').checked = false;
+                        document.getElementById('is1Public').value = false;
+                    } else {
+                        document.getElementById('is1Public').checked = true;
+                        document.getElementById('is1Public').value = true;
+
+                    }
+                } else {
+                    if (document.getElementById('destToggle').checked == false) {
+                        location.replace("@routes.DestinationsController.show(false, 0)");
+                    }
+                    else {
+                        location.replace("@routes.DestinationsController.show(true, 0)");
+                    }
                 }
             }
     </script>

@@ -94,7 +94,6 @@ public class DestinationsController extends Controller {
                 if (searchVal == null || searchVal.equals("")) {
                     searchVal = searchData.name;
                 }
-
                 destinationsList = destinationRepository.searchDestinations(searchData.name, rowOffset,
                         searchData.isPublic, profId);
                 destinationsList = loadCurrentUserDestinationPhotos(profile.get().getProfileId(), destinationsList);
@@ -105,7 +104,7 @@ public class DestinationsController extends Controller {
                 PaginationHelper paginationHelper = makePagination(rowOffset, sizeOfSearchResults);
                 List<Photo> usersPhotos = getUsersPhotos(profile.get().getProfileId());
 
-                return ok(destinations.render(destinationsList, profile.get(), false, paginationHelper,
+                return ok(destinations.render(destinationsList, profile.get(), searchData.isPublic, paginationHelper,
                         followedDestinationIds, usersPhotos, form,
                         new RoutedObject<Destination>(null, false, false), requestForm,
                         Country.getInstance().getAllCountries(),
@@ -165,7 +164,7 @@ public class DestinationsController extends Controller {
     public CompletionStage<Result> show(Http.Request request, boolean isPublic, Integer rowOffset) {
         destinationsList.clear();
         Integer userId = SessionController.getCurrentUserId(request);
-        searchVal ="";
+        searchVal = "";
         return profileRepository.findById(userId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 undoStackRepository.clearStackOnAllowed(profile.get());
@@ -235,7 +234,7 @@ public class DestinationsController extends Controller {
                 return ok(destinations.render(destinationsList, profile.get(), isPublic,
                         initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos,
                         form, new RoutedObject<Destination>(null, false, false), requestForm,
-                        Country.getInstance().getAllCountries(), searchForm, searchVal,  request, messagesApi.preferred(request)));
+                        Country.getInstance().getAllCountries(), searchForm, searchVal,   request, messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
@@ -311,7 +310,7 @@ public class DestinationsController extends Controller {
                 return ok(destinations.render(destinationsList, profile.get(), isPublic,
                         initialisePaginiation(0, profileId, isPublic), followedDestinationIds, usersPhotos,
                         form, new RoutedObject<Destination>(null, false, false), requestForm,
-                        Country.getInstance().getAllCountries(), searchForm, searchVal, request,  messagesApi.preferred(request)));
+                        Country.getInstance().getAllCountries(), searchForm, searchVal,  request,  messagesApi.preferred(request)));
             } else {
                 return redirect(destShowRoute);
             }
