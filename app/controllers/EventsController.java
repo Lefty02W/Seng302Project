@@ -94,7 +94,7 @@ public class EventsController extends Controller {
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, toSend,
-                            eventFormDataForm, artistRepository.isArtistAdmin(profId), initPagination(offset, eventRepository.getNumEvents(), 8),
+                            eventFormDataForm, artistRepository.isArtistAdmin(profId), initPagination(offset, eventRepository.getNumEvents(), 8), null,
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
@@ -142,7 +142,7 @@ public class EventsController extends Controller {
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
-                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
+                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, null,
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
@@ -355,29 +355,29 @@ public class EventsController extends Controller {
      * @param request request to search that contains SearchFormData
      * @return a redirect to the events page, displaying the refined list of events
      */
-    public CompletionStage<Result> search(Http.Request request){
+    public CompletionStage<Result> search(Http.Request request, Integer offset){
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
                 EventFormData eventFormData = searchEventForm.get();
-
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
                 eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("")) {
                     return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
                 }
 
-                List<Events> eventsList = eventRepository.searchEvent(eventFormData);
+                List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset);
                 if(!eventsList.isEmpty()){
-                    PaginationHelper paginationHelper = new PaginationHelper(0, 0, 0, 0, true, true, 8);
+                    PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
                     paginationHelper.alterNext(8);
                     paginationHelper.alterPrevious(8);
                     paginationHelper.checkButtonsEnabled();
+
                     return ok(events.render(profile.get(),
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
-                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper,
+                            eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormData,
                             request, messagesApi.preferred(request)));
                 } else {
                     return redirect(eventURL).flashing("error", "No results found.");

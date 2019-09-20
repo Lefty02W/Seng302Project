@@ -226,7 +226,7 @@ public class EventRepository {
      * @param eventFormData eventForm data required to generate the search query
      * @return query string for the events search
      */
-    private SqlQuery formSearchQuery(EventFormData eventFormData) {
+    private SqlQuery formSearchQuery(EventFormData eventFormData, int offset) {
         String query = "SELECT DISTINCT events.event_id, events.event_name, events.description, events.destination_id, " +
                 "events.start_date, events.end_date, events.age_restriction FROM events " +
                 "LEFT OUTER JOIN event_genres ON events.event_id = event_genres.event_id " +
@@ -295,7 +295,7 @@ public class EventRepository {
             args.add(eventFormData.getStartDate());
             args.add(eventFormData.getStartDate());
         }
-        query += " Limit 8";
+        query += " LIMIT 8 OFFSET "+offset;
         return createSqlQuery(query, args, likeAdded);
     }
 
@@ -325,8 +325,8 @@ public class EventRepository {
      * @param eventFormData data used in search
      * @return List holding resulting events from search
      */
-    public List<Events> searchEvent(EventFormData eventFormData) {
-        SqlQuery query = formSearchQuery(eventFormData);
+    public List<Events> searchEvent(EventFormData eventFormData, int offset) {
+        SqlQuery query = formSearchQuery(eventFormData, offset);
         List<SqlRow> sqlRows = query.findList();
         List<Events> events = new ArrayList<>();
         if (!sqlRows.isEmpty()){

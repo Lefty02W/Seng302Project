@@ -3,7 +3,7 @@
 @import views.html.helper.{CSRF, form}
 @(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist],
         destinations: List[Destination], events: List[Events], eventForm : Form[Events], editEvent: RoutedObject[Events],
-        eventFormDataForm : Form[EventFormData], isVerifiedArtist: Boolean, paginationHelper : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
+        eventFormDataForm : Form[EventFormData], isVerifiedArtist: Boolean, paginationHelper : PaginationHelper, searchData : EventFormData)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -95,7 +95,7 @@
 
         <div class="row justify-content-center" id="eventsContainer">
             <div class="col-lg-9 col-sm-11">
-                @form(routes.EventsController.search()){
+                @form(routes.EventsController.search(0)){
                         @CSRF.formField
                         <div class="accordion" id="filterAccordion">
                             <div class="card">
@@ -118,37 +118,114 @@
                                                 <div class="col">
                                                     <small id="label" for="artistName">Artist</small>
                                                     <select class="selectpicker overlay-dropdown" id="artistName" name="artistName" title="Artist Name">
-                                                    @for(artist <- artists) {
-                                                        <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                    @if(searchData != null) {
+                                                        @for(artist <- artists) {
+                                                            @if(artist.getArtistId.equals(searchData.getArtistID)) {
+                                                                <option selected value="@artist.getArtistId">@artist.getArtistName</option>
+                                                            } else {
+                                                                <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                            }
+                                                        }
+                                                    } else {
+                                                        @for(artist <- artists) {
+                                                            <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                        }
                                                     }
                                                     </select>
                                                 </div>
                                                 <div class="col type-drop">
                                                     <small id="label" for="eventType">Event type</small>
                                                     <select class="selectpicker overlay-dropdown" id="eventType" name="eventType" title="Event Type">
-                                                        <option value="1">Gig</option>
-                                                        <option value="2">Meetup</option>
-                                                        <option value="3">Competition</option>
-                                                        <option value="4">Party</option>
-                                                        <option value="5">Charity</option>
-                                                        <option value="6">Festival</option>
+                                                        @if(searchData != null) {
+
+                                                            @if(searchData.getEventTypeId.equals(1)) {
+                                                                <option selected value="1">Gig</option>
+                                                            } else {
+                                                                <option value="1">Gig</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(2)) {
+                                                                <option selected value="2">Meetup</option>
+                                                            } else {
+                                                                <option value="2">Meetup</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(3)) {
+                                                                <option selected value="3">Competition</option>
+                                                            } else {
+                                                                <option value="3">Competition</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(4)) {
+                                                                <option selected value="4">Party</option>
+                                                            } else {
+                                                                <option value="4">Party</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(5)) {
+                                                                <option selected value="5">Charity</option>
+                                                            } else {
+                                                                <option value="5">Charity</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(6)) {
+                                                                <option selected value="6">Festival</option>
+                                                            } else {
+                                                                <option value="6">Festival</option>
+                                                            }
+                                                        } else {
+                                                            <option value="1">Gig</option>
+                                                            <option value="2">Meetup</option>
+                                                            <option value="3">Competition</option>
+                                                            <option value="4">Party</option>
+                                                            <option value="5">Charity</option>
+                                                            <option value="6">Festival</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col dest-drop">
                                                     <small id="label" for="country">Destination</small>
                                                     <select class="selectpicker overlay-dropdown" title="Destination"  name="destinationId" id="destinationId">
-                                                    @for(destination <- destinations) {
-                                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                                    @if(searchData != null) {
+                                                        @for(destination <- destinations) {
+                                                            @if(destination.getDestinationId.equals(searchData.getIntegerDestinationId)) {
+                                                                <option selected value="@destination.getDestinationId">@destination.getName</option>
+                                                            } else {
+                                                                <option value="@destination.getDestinationId">@destination.getName</option>
+                                                            }
+                                                        }
+                                                    } else {
+                                                        @for(destination <- destinations) {
+                                                            <option value="@destination.getDestinationId">@destination.getName</option>
+                                                        }
                                                     }
                                                     </select>
                                                 </div>
                                                 <div class="col age-drop">
                                                     <small id="label" for="ageRestriction">Age Restriction</small>
                                                     <select class="selectpicker overlay-dropdown" id="ageRestriction" name="ageRestriction" title="Age Restriction">
-                                                        <option value="0">All ages</option>
-                                                        <option value="16">16+</option>
-                                                        <option value="18">18+</option>
-                                                        <option value="21">21+</option>
+                                                        @if(searchData != null) {
+                                                            @if(searchData.getAgeRestriction.equals("0")) {
+                                                                <option selected value="0">All ages</option>
+                                                            } else {
+                                                                <option value="0">All ages</option>
+                                                            }
+                                                            @if(searchData.getAgeRestriction.equals("16")) {
+                                                                <option selected value="16">16+</option>
+                                                            } else {
+                                                                <option value="16">16+</option>
+                                                            }
+                                                            @if(searchData.getAgeRestriction.equals("18")) {
+                                                                <option selected value="18">18+</option>
+                                                            } else {
+                                                                <option value="18">18+</option>
+                                                            }
+                                                            @if(searchData.getAgeRestriction.equals("21")) {
+                                                                <option selected value="21">21+</option>
+                                                            } else {
+                                                                <option value="21">21+</option>
+                                                            }
+                                                        } else {
+                                                            <option value="0">All ages</option>
+                                                            <option value="16">16+</option>
+                                                            <option value="18">18+</option>
+                                                            <option value="21">21+</option>
+                                                        }
                                                     </select>
                                                 </div>
                                             </div>
@@ -157,16 +234,29 @@
                                                 <div class="col padded">
                                                     <small id="label" for="genre">Genre</small>
                                                     <select class="selectpicker overlay-dropdown" id="genre" name="genre" title="Genres">
-                                                    @for(genre <- genres) {
-                                                        <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                    @if(searchData != null) {
+                                                        @for(genre <- genres) {
+                                                            @if(genre.getGenreId.equals(searchData.getGenreId)) {
+                                                                <option selected value="@genre.getGenreId">@genre.getGenre</option>
+                                                            } else {
+                                                                <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                            }
+                                                        }
+                                                    } else {
+                                                        @for(genre <- genres) {
+                                                            <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                        }
                                                     }
                                                     </select>
                                                 </div>
                                                 <div class="col padded">
                                                     <small id="label" class="dateLabel overlay-dropdown" for="startDate">Date</small>
-                                                    <input type="datetime-local" id="startDate" name="startDate">
+                                                    @if(searchData != null) {
+                                                        <input value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                                    } else {
+                                                        <input type="datetime-local" id="startDate" name="startDate">
                                                     }
-
+                                                    }
                                                 </div>
                                                 <div class="col padded">
                                                     <a href="@routes.EventsController.show(0)">
@@ -244,12 +334,37 @@
                 <ul class="pagination" id="pagination-section">
                     <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
                     @if(paginationHelper.isPreviousEnabled) {
-                        <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
+                        @if(searchData != null) {
+                            @helper.form(routes.EventsController.search(paginationHelper.getPrevious)) {
+                                <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
+                                <input type="hidden" value="@searchData.getEventName" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
+                                <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <button type="hidden" id="nextSearchHidden">Search</button>
+                                <li class="page-item"><a class="page-link" href="/events/all/search/@paginationHelper.getPrevious">Previous</a></li>
+                            }
+                        } else {
+                            <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
+                        }
                     } else {
                         <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
                     }
                     @if(paginationHelper.isNextEnabled) {
-                        <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
+                        @if(searchData != null) {
+                            @helper.form(routes.EventsController.search(paginationHelper.getNext)) {
+                                <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
+                                <input type="hidden" value="@searchData.getEventName" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
+                                <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <li class="page-item"><a class="page-link" id="nextLinkSearch">Next</a></li>
+                            }
+                        } else {
+                            <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
+                        }
                     } else {
                         <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
                     }
