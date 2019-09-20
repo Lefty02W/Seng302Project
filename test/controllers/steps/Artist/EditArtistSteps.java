@@ -173,4 +173,14 @@ public class EditArtistSteps {
         assertEquals("https://www.twitter.com/kingsofamazon", artist.getTwitterLink());
         assertEquals("https://www.amazon.com/kingsofamazon", artist.getWebsiteLink());
     }
+
+    @Then("^the artist link changes are not saved in the database$")
+    public void theArtistLinkChangesAreNotSavedInTheDatabase() throws Throwable {
+        Artist artist = TestApplication.getArtistRepository().getArtistById(7);
+        assertEquals("https://www.facebook.com/kingsofamazon", artist.getFacebookLink());
+        assertEquals("https://www.instagram.com/kingsofamazon", artist.getInstagramLink());
+        assertEquals("https://www.spotify.com/kingsofamazon", artist.getSpotifyLink());
+        assertEquals("https://www.twitter.com/kingsofamazon", artist.getTwitterLink());
+        assertEquals("https://www.amazon.com/kingsofamazon", artist.getWebsiteLink());
+    }
 }

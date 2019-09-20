@@ -25,6 +25,17 @@ Feature: Edit an artist page that I own
     And user saves the edit of artist wih id "7"
     Then the artist link changes are saved in the database
 
+  Scenario: Edit an artists external links with incorrect websites.
+    Given User is logged in to the application
+    When user is at their detailed artist page with id "7"
+    And user changes facebook link to "https://www.google.com/"
+    And user changes instagram link to "https://www.google.com/"
+    And user changes spotify link to "https://www.google.com/"
+    And user changes twitter link to "https://www.google.com/"
+    And user changes website link to "https://www.amazon.com/kingsofamazon"
+    And user saves the edit of artist wih id "7"
+    Then the artist link changes are not saved in the database
+
   Scenario: Edit an artists country
     Given User is logged in to the application
     When user is at their detailed artist page with id "7"
