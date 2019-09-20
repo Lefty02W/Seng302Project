@@ -229,3 +229,9 @@ img.thumbnail {
 .entry-row {
     padding-left: 5vw;
 }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
