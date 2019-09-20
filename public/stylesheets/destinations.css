@@ -82,7 +82,7 @@ div.dataTables_filter {
 }
 
 
-#destinationsMap, #createMap {
+#destinationsMap, #createMap, #editMap {
     height: 100%;
     width: 100%;
     padding-top: 5vh;

@@ -464,7 +464,7 @@
                                 });
                         </script>
                         <div class="modal" id="editModal">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
                                         <!-- header -->
                                     <div class="modal-header">
@@ -474,140 +474,147 @@
                                     @helper.form(routes.DestinationsController.update(destination.getObject.getDestinationId)) {
                                         @CSRF.formField
                                         <div class="modal-body">
-                                            <div class="col">
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label>Name</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <input type="text" id="name" placeholder="Name" name="name" value="@destination.getObject.getName" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label for="type">Type</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <input type="text" id="type" placeholder="Type" name="type" value="@destination.getObject.getType" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')">
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label>District</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <input type="text" id="district" placeholder="District" name="district" value="@destination.getObject.getDistrict">
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label>Country</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="hidden-div-edit">
-                                                            <input type="text" id="countryEdit" name="country" placeholder="Country" value="@destination.getObject.getCountry" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                        <div class="row">
+                                                <div class="col-4">
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label>Name</label>
                                                         </div>
-                                                        <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdownEdit" data-width="100%">
-                                                        @for(nation <- countries) {
-                                                            @if(destination.getObject.getCountry.equals(nation)) {
-                                                                <option value="@nation" selected>@nation</option>
-                                                            } else {
-                                                                <option value="@nation">@nation</option>
-                                                            }
-                                                        }
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label>Latitude</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label>Longitude</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
-                                                    </div>
-
-                                                </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label>Traveller Types</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="hidden-div-edit">
-                                                            <input type="text" id="travellerTypesForm" name="travellerTypesStringDestEdit" class="hidden-field typesField" value="@destination.getObject.getTravellerTypesString">
+                                                        <div class="row">
+                                                            <input type="text" id="name" placeholder="Name" name="name" value="@destination.getObject.getName" required oninvalid="this.setCustomValidity('Name required')" oninput="setCustomValidity('')">
                                                         </div>
-                                                        <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownEdit" data-width="100%">
-                                                            @if(destination.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
-                                                                <option value="ThrillSeeker" selected>ThrillSeeker</option>
-                                                            } else {
-                                                                <option value="ThrillSeeker">ThrillSeeker</option>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label for="type">Type</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <input type="text" id="type" placeholder="Type" name="type" value="@destination.getObject.getType" required oninvalid="this.setCustomValidity('Type required')" oninput="setCustomValidity('')">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label>District</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <input type="text" id="district" placeholder="District" name="district" value="@destination.getObject.getDistrict">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label>Country</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="hidden-div-edit">
+                                                                <input type="text" id="countryEdit" name="country" placeholder="Country" value="@destination.getObject.getCountry" class="hidden-field" required oninvalid="this.setCustomValidity('Country required')" oninput="setCustomValidity('')">
+                                                            </div>
+                                                            <select class="selectpicker" data-live-search="true" title="Country" id="countriesDropdownEdit" data-width="75%">
+                                                            @for(nation <- countries) {
+                                                                @if(destination.getObject.getCountry.equals(nation)) {
+                                                                    <option value="@nation" selected>@nation</option>
+                                                                } else {
+                                                                    <option value="@nation">@nation</option>
+                                                                }
                                                             }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label>Latitude</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <input type="number" step="0.01" id="latitude" name="latitude" value="@destination.getObject.getLatitude">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label>Longitude</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <input type="number" step="0.01" id="longitude" name="longitude" value="@destination.getObject.getLongitude">
+                                                        </div>
 
-                                                            @if(destination.getObject.getTravellerTypesList.contains("Backpacker")) {
-                                                                <option value="Backpacker" selected>Backpacker</option>
-                                                            } else {
-                                                                <option value="Backpacker">Backpacker</option>
-                                                            }
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label>Traveller Types</label>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="hidden-div-edit">
+                                                                <input type="text" id="travellerTypesForm" name="travellerTypesStringDestEdit" class="hidden-field typesField" value="@destination.getObject.getTravellerTypesString">
+                                                            </div>
+                                                            <select class="selectpicker" multiple title="Traveller Type" id="typeDropdownEdit" data-width="75%">
+                                                                @if(destination.getObject.getTravellerTypesList.contains("ThrillSeeker")) {
+                                                                    <option value="ThrillSeeker" selected>ThrillSeeker</option>
+                                                                } else {
+                                                                    <option value="ThrillSeeker">ThrillSeeker</option>
+                                                                }
 
-                                                            @if(destination.getObject.getTravellerTypesList.contains("Gap Year")) {
-                                                                <option value="Gap Year" selected>Gap Year</option>
-                                                            } else {
-                                                                <option value="Gap Year">Gap Year</option>
-                                                            }
+                                                                @if(destination.getObject.getTravellerTypesList.contains("Backpacker")) {
+                                                                    <option value="Backpacker" selected>Backpacker</option>
+                                                                } else {
+                                                                    <option value="Backpacker">Backpacker</option>
+                                                                }
 
-                                                            @if(destination.getObject.getTravellerTypesList.contains("Groupie")) {
-                                                                <option value="Groupie" selected>Groupie</option>
-                                                            } else {
-                                                                <option value="Groupie">Groupie</option>
-                                                            }
+                                                                @if(destination.getObject.getTravellerTypesList.contains("Gap Year")) {
+                                                                    <option value="Gap Year" selected>Gap Year</option>
+                                                                } else {
+                                                                    <option value="Gap Year">Gap Year</option>
+                                                                }
 
-                                                            @if(destination.getObject.getTravellerTypesList.contains("Frequent Weekender")) {
-                                                                <option value="Frequent Weekender" selected>
-                                                                    Frequent Weekender</option>
-                                                            } else {
-                                                                <option value="Frequent Weekender">Frequent Weekender</option>
-                                                            }
+                                                                @if(destination.getObject.getTravellerTypesList.contains("Groupie")) {
+                                                                    <option value="Groupie" selected>Groupie</option>
+                                                                } else {
+                                                                    <option value="Groupie">Groupie</option>
+                                                                }
 
-                                                            @if(destination.getObject.getTravellerTypesList.contains("Functional/business Traveller")) {
-                                                                <option value="Functional/business Traveller" selected>
-                                                                    Functional/business Traveller</option>
-                                                            } else {
-                                                                <option value="Functional/business Traveller">
-                                                                    Functional/business Traveller</option>
-                                                            }
+                                                                @if(destination.getObject.getTravellerTypesList.contains("Frequent Weekender")) {
+                                                                    <option value="Frequent Weekender" selected>
+                                                                        Frequent Weekender</option>
+                                                                } else {
+                                                                    <option value="Frequent Weekender">Frequent Weekender</option>
+                                                                }
 
-                                                            @if(destination.getObject.getTravellerTypesList.contains("Holidaymaker")) {
-                                                                <option value="Holidaymaker" selected>Holidaymaker</option>
-                                                            } else {
-                                                                <option value="Holidaymaker">Holidaymaker</option>
+                                                                @if(destination.getObject.getTravellerTypesList.contains("Functional/business Traveller")) {
+                                                                    <option value="Functional/business Traveller" selected>
+                                                                        Functional/business Traveller</option>
+                                                                } else {
+                                                                    <option value="Functional/business Traveller">
+                                                                        Functional/business Traveller</option>
+                                                                }
+
+                                                                @if(destination.getObject.getTravellerTypesList.contains("Holidaymaker")) {
+                                                                    <option value="Holidaymaker" selected>Holidaymaker</option>
+                                                                } else {
+                                                                    <option value="Holidaymaker">Holidaymaker</option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            <label>Make Public</label>
+                                                        </div>
+                                                        <div class="row">
+                                                        @if(destination.getObject.getVisible == 1) {
+                                                            <input type="checkbox" id="visible" name="visible" value="1" class="check-box" checked>
+                                                        } else {
+                                                            <input type="checkbox" id="visible" name="visible" value="1" class="check-box">
                                                             }
-                                                        </select>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col">
-                                                    <div class="row">
-                                                        <label>Make Public</label>
-                                                    </div>
-                                                    <div class="row">
-                                                    @if(destination.getObject.getVisible == 1) {
-                                                        <input type="checkbox" id="visible" name="visible" value="1" class="check-box" checked>
-                                                    } else {
-                                                        <input type="checkbox" id="visible" name="visible" value="1" class="check-box">
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="col">
+                                        <div id="editMap"></div>
+                                        </div>
+                                        </div>
                                         </div>
                                             <!-- footer -->
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <a href="/destinations/show/@isPublic/@pagination.getOffset">
+                                            <button type="button" class="btn btn-secondary">Close</button>
+</a>
                                             <button type="submit" class="btn btn-primary" onclick="fillVals()">Save</button>
                                         </div>
                                     }
@@ -757,6 +764,8 @@
 
             var map;
             var createMap;
+            var editMap;
+            var editMarker;
             var createMarker;
             var markers = [];
             var markersMap = new Map();
@@ -1173,6 +1182,13 @@
                     styles: styles
                 });
                 createMap = new google.maps.Map(document.getElementById('createMap'), {
+                    center: center,
+                    streetViewControl: false,
+                    fullscreenControl: false,
+                    zoom: 8,
+                    styles: styles
+                });
+                editMap = new google.maps.Map(document.getElementById('editMap'), {
                     center: center,
                     streetViewControl: false,
                     fullscreenControl: false,
