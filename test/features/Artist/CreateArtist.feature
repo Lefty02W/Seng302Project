@@ -17,6 +17,22 @@ Feature: Create an artist page
     And user presses save artist
     Then the artist is saved in the database
 
+  Scenario: Create an artist with invalid links and ensure it won't save.
+    Given User is logged in to the application
+    When user is at the artist page
+    And user enters "Autechre" for artist name
+    And user enters "IDM/Experimental" for artist genres
+    And user enters "Rob Brown, Sean Booth" for artist members
+    And user enters "Autechre are an English electronic music duo consisting of Rob Brown and Sean Booth, both from Rochdale, Greater Manchester. " for artist bio
+    And user enters "United Kingdom of Great Britain and Northern Ireland" for artist country
+    And user changes facebook link to "https://www.google.com/"
+    And user changes instagram link to "https://www.google.com/"
+    And user changes spotify link to "https://www.google.com/"
+    And user changes twitter link to "https://www.google.com/"
+    And user changes website link to "https://www.amazon.com/kingsofamazon"
+    And user presses save artist
+    Then the artist is not saved in the database
+
 
   Scenario: Artist genre links are saved after create
     Given I am on the artist create page

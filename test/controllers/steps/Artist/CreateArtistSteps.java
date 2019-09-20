@@ -13,6 +13,8 @@ import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.*;
 
@@ -69,6 +71,31 @@ public class CreateArtistSteps {
         artistForm.put("countries", arg0);
     }
 
+    @And("^user changes facebook link to \"([^\"]*)\"$")
+    public void userChangesFacebookLinkTo(String arg0) throws Throwable {
+        artistForm.put("facebookLink", arg0);
+    }
+
+    @And("^user changes instagram link to \"([^\"]*)\"$")
+    public void userChangesInstagramLinkTo(String arg0) throws Throwable {
+        artistForm.put("instagramLink", arg0);
+    }
+
+    @And("^user changes spotify link to \"([^\"]*)\"$")
+    public void userChangesSpotifyLinkTo(String arg0) throws Throwable {
+        artistForm.put("spotifyLink", arg0);
+    }
+
+    @And("^user changes twitter link to \"([^\"]*)\"$")
+    public void userChangesTwitterLinkTo(String arg0) throws Throwable {
+        artistForm.put("twitterLink", arg0);
+    }
+
+    @And("^user changes website link to \"([^\"]*)\"$")
+    public void userChangesWebsiteLinkTo(String arg0) throws Throwable {
+        artistForm.put("websiteLink", arg0);
+    }
+
     @And("^user presses save artist$")
     public void userPressesSaveArtist() throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -91,6 +118,20 @@ public class CreateArtistSteps {
 
         } else {
             fail();
+        }
+
+
+    }
+
+    @Then("^the artist is not saved in the database$")
+    public void theArtistIsNotSavedInTheDatabase() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
+        if (userArtists.size() > 0) {
+            Artist newArtist = userArtists.get(userArtists.size() - 1);
+            assertThat(newArtist.getArtistName(), not(equalTo("Autechre"));
+        } else {
+            assertTrue(true);
         }
 
 
