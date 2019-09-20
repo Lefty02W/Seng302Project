@@ -756,6 +756,7 @@
 
             var map;
             var createMap;
+            var createMarker;
             var markers = [];
             var markersMap = new Map();
             var destinationID;
@@ -1177,7 +1178,39 @@
                     zoom: 8,
                     styles: styles
                 });
+                createMap.addListener('click', function(e) {
+                    addCreateMarker(e.latLng);
+                });
+
                 addMarkers();
+            }
+
+            /**
+            * Function to add a marker to the create destination map onclick
+            */
+            function addCreateMarker(pos) {
+                if (createMarker) {
+                    createMarker.setMap(null);
+                }
+                 createMarker = new google.maps.Marker({
+                    map: createMap,
+                    position: pos,
+                    draggable: true
+                });
+                google.maps.event.addListener(createMarker, 'dragend', function(e) {
+                    fillLatLng(e.latLng.lat(), e.latLng.lng());
+                });
+                fillLatLng(pos.lat(), pos.lng());
+
+            }
+
+
+            /**
+            * Function to fill fields with lat lng details from map
+            */
+            function fillLatLng(lat, lng) {
+                console.log("Lat: " + lat);
+                console.log("Lng: " + lng);
             }
 
 
