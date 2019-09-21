@@ -25,6 +25,7 @@ public class EventRepository {
     private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
     private final DestinationRepository destinationRepository;
+    private final AttendEventRepository attendEventRepository;
 
     /**
      * Constructor for the events repository class
@@ -33,7 +34,8 @@ public class EventRepository {
     public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                            EventTypeRepository eventTypeRepository, EventArtistRepository eventArtistRepository,
                            EventGenreRepository eventGenreRepository, ArtistRepository artistRepository,
-                           GenreRepository genreRepository, DestinationRepository destinationRepository) {
+                           GenreRepository genreRepository, DestinationRepository destinationRepository,
+                           AttendEventRepository attendEventRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.eventTypeRepository = eventTypeRepository;
@@ -42,7 +44,7 @@ public class EventRepository {
         this.artistRepository = artistRepository;
         this.genreRepository = genreRepository;
         this.destinationRepository = destinationRepository;
-
+        this.attendEventRepository = attendEventRepository;
     }
 
     /**
@@ -132,6 +134,7 @@ public class EventRepository {
         event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
         event.setDestination(destinationRepository.lookup(event.getDestinationId()));
+        event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
         return event;
     }
 

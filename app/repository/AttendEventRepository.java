@@ -7,7 +7,9 @@ import models.AttendEvent;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
+
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 
@@ -47,5 +49,16 @@ public class AttendEventRepository {
             ebeanServer.find(AttendEvent.class).where().eq("attend_event_id", Integer.toString(attendEventId)).delete();
             return null;
         });
+    }
+
+
+    /**
+     * Method to get the profile ids of all the profiles attending an event
+     *
+     * @param eventId id of event
+     * @return List if ids found
+     */
+    public List<Integer> getAttendingUsers(int eventId) {
+        return ebeanServer.find(AttendEvent.class).select("profileId").where().eq("event_id", eventId).findSingleAttributeList();
     }
 }
