@@ -172,6 +172,7 @@
                                                     }
                                                 </div>
                                             </div>
+
                                         </div>
                                         <div class="card-footer">
                                         @if(artist.getAdminsList.contains(currentUser)) {
@@ -179,6 +180,18 @@
                                                 <button class="btn btn-primary">Edit</button>
                                             </a>
                                             <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
+                                        }
+                                        @if(true) { @* todo: change to add logic to display if not currently attending *@
+                                            @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
+                                                    || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
+                                                    || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
+                                                <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>Attend</button>
+                                            } else {
+                                                <button class="btn btn-primary">Attend</button>
+                                            }
+
+                                        } else {
+                                            <button class="btn btn-secondary">Don't attend</button>
                                         }
                                         </div>
                                     </div>
