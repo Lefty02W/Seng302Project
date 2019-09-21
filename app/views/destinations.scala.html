@@ -1233,6 +1233,11 @@
                     position: editPos,
                     draggable: true
                 });
+
+                google.maps.event.addListener(editMarker, 'dragend', function(e) {
+                    fillLatLngEdit(e.latLng.lat(), e.latLng.lng());
+                });
+
                 editMap.addListener('click', function(e) {
                     addEditMarker(e.latLng);
                 });
