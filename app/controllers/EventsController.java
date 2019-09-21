@@ -361,6 +361,7 @@ public class EventsController extends Controller {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
                 EventFormData eventFormData = searchEventForm.get();
+                System.out.println("Search Here: " + searchEventForm);
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
                 eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("")) {
@@ -368,7 +369,7 @@ public class EventsController extends Controller {
                 }
 
                 List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset);
-                if(!eventsList.isEmpty()){
+                if(!eventsList.isEmpty() || offset > 0){
                     PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
                     paginationHelper.alterNext(8);
                     paginationHelper.alterPrevious(8);

@@ -274,6 +274,9 @@
                     <div class="row" id="EventRow">
                         <div class="viewEvents">
                         <div class="col" id="allEventCards">
+                            @if(events.isEmpty) {
+                                <label>There are no more events in this search</label>
+                            }
                             @for(event <- events){
                                 <div class="card-body col col-md-12" id="eventCard">
                                     <div class="card-header event-link toggled eventTitle" id='eventName@event.getEventId' onclick="showEvent(@event.getEventId, this)">
@@ -335,41 +338,62 @@
                         </div>
                     </div>
                 <ul class="pagination" id="pagination-section">
-                    <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
+                    @if(searchData != null) {
+                        @helper.form(routes.EventsController.search(0)) {
+                            @CSRF.formField
+                            <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
+                            <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
+                            <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
+                            <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
+                            <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                            <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                            <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                            <li class="page-item"><button class="page-link" href="/events/all/search/0">Start</button></li>
+                        }
+                    } else {
+                        <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
+                    }
                     @if(paginationHelper.isPreviousEnabled) {
                         @if(searchData != null) {
                             @helper.form(routes.EventsController.search(paginationHelper.getPrevious)) {
+                                @CSRF.formField
                                 <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
-                                <input type="hidden" value="@searchData.getEventName" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
+                                <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
                                 <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
                                 <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
                                 <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
                                 <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
-                                <button type="hidden" id="nextSearchHidden">Search</button>
-                                <li class="page-item"><a class="page-link" href="/events/all/search/@paginationHelper.getPrevious">Previous</a></li>
+                                <li class="page-item"><button class="page-link" href="/events/all/search/@paginationHelper.getPrevious">Previous</button></li>
                             }
                         } else {
                             <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
                         }
                     } else {
-                        <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
+                        <li class="page-item disabled"><a class="page-link disabledPagination" href="/events/@paginationHelper.getPrevious">Previous</a></li>
                     }
                     @if(paginationHelper.isNextEnabled) {
                         @if(searchData != null) {
                             @helper.form(routes.EventsController.search(paginationHelper.getNext)) {
+                                @CSRF.formField
                                 <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
-                                <input type="hidden" value="@searchData.getEventName" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
+                                <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
                                 <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
                                 <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
                                 <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
                                 <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
-                                <li class="page-item"><a class="page-link" id="nextLinkSearch">Next</a></li>
+                                @if(events.isEmpty) {
+                                    <li class="page-item disabled"><button class="page-link disabledPagination" id="nextLinkSearch">Next</button></li>
+                                } else {
+                                    <li class="page-item"><button class="page-link" id="nextLinkSearch">Next</button></li>
+                                }
                             }
                         } else {
                             <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
                         }
                     } else {
-                        <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
+                        <li class="page-item disabled"><a class="page-link disabledPagination" href="/events/@paginationHelper.getNext">Next</a></li>
                     }
                 </ul>
 
