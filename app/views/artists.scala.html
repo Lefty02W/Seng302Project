@@ -9,7 +9,7 @@
 
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | Artists</title>
+        <title>SoundBound | Artists</title>
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
@@ -30,7 +30,6 @@
         <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-
     </head>
 
     <body>
@@ -39,7 +38,7 @@
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h2 class="sidebar-heading">Soundbound </h2>
+                <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
@@ -49,7 +48,8 @@
                         Trips</a>
                     <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
                         Travellers</a>
-                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
+                    <a style="color: #d74961;
+                        background-color: #ede1d1 !important" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
@@ -64,7 +64,7 @@
                         Logout</a>
                 </div>
             </div>
-            <!-- /#sidebar-wrapper -->
+                <!-- /#sidebar-wrapper -->
 
                 <!-- Page Content -->
             <div id="page-content-wrapper">
@@ -79,27 +79,23 @@
         </div>
 
 
-
-
-            <div class="container">
-                @if(request.flash.getOptional("info").isPresent) {
-                    <div class="alert alert-info">
-                    @request.flash.getOptional("info").get()
-                    </div>
-                }
-                @if(request.flash.getOptional("error").isPresent) {
-                    <div class="alert alert-danger">
-                    @request.flash.getOptional("error").get()
-                    </div>
-                }
-            </div>
-
-
+        <div class="container" id="flashContainer">
+            @if(request.flash.getOptional("info").isPresent) {
+                <div class="alert alert-info">
+                @request.flash.getOptional("info").get()
+                </div>
+            }
+            @if(request.flash.getOptional("error").isPresent) {
+                <div class="alert alert-danger">
+                @request.flash.getOptional("error").get()
+                </div>
+            }
+        </div>
 
 
         <div class="row justify-content-center" id="artist-container">
             <div class="col-lg-9 col-sm-11">
-                @form(routes.ArtistController.search()){
+                @form(routes.ArtistController.search()) {
                     @CSRF.formField
 
                     <div class="accordion" id="filterAccordion">
@@ -108,10 +104,11 @@
                                 <input type="search" id="name" name="name" placeholder="Search..">
                                 <button type="submit" class="btn btn-primary">Search</button>
                                 <button class="btn btn-secondary" type="button" data-toggle="collapse"
-                                        data-target="#collapseFilters" aria-expanded="false"
-                                        aria-controls="collapseFilters">Advanced Search
+                                data-target="#collapseFilters" aria-expanded="false"
+                                aria-controls="collapseFilters">Advanced Search
                                 </button>
-                                <button class="btn btn-outline-primary" id="createArtistButton" type="button" data-toggle="modal" data-target="#createArtistModal">Create Artist</button>
+                                <button class="btn btn-outline-primary" id="createArtistButton" type="button" data-toggle="modal" data-target="#createArtistModal">
+                                    Create Artist</button>
                             </div>
                             <div id="collapseFilters" class="collapse artistFilters" aria-labelledby="headingOne" data-parent="#filterAccordion">
                                 <div class="card-body">
@@ -137,22 +134,18 @@
                                                 <label for="toggle">Followed Artists</label>
                                             </div>
                                             }
-                                            <div class="col">
-                                                <a href="@routes.ArtistController.show()">
-                                                    <button id="clearButton" class="btn btn-secondary">Clear Search</button>
-                                                </a>
-                                            </div>
+                <div class="col">
+                    <a href="@routes.ArtistController.show()">
+                        <button id="clearButton" class="btn btn-secondary">Clear Search</button>
+                    </a>
+                </div>
 
-
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
 
                 <div class="viewArtists">
                     <div class="row" id="all-artist-cards">
@@ -163,16 +156,24 @@
                         </div>
                         <div class="row">
                             <div class="col col-10">
-                            <p id="artist-stats"> <ul>
+                            <p id="artist-stats">
+                            <h6> Countries:</h6>
+                            <ul>
                                 @for(country <- artist.getCountryList) {
                                     <li>@country</li>
                                 }
-                            </ul> <br> @artist.getBiography <br> <ul>
+                            </ul> <br>
+                                <h6>About: </h6>
+                                <ul>@artist.getBiography</ul>
+                                <br>
+                                <h6>
+                                    Genres:
+                                </h6>
+                                <ul>
                             @for(genre <- artist.getGenreList) {
                                 <li>@genre.getGenre</li>
                             }
                             </ul>
-                                 </p>
                             </div>
                             <div class="col col-2">
                                 <div class="row">
@@ -192,11 +193,11 @@
                                             <button type="submit" class="btn btn-primary">Follow</button>
                                         }
                                     }
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
 
                     </div>
                     <div class="row">
@@ -222,6 +223,9 @@
                         <!-- body -->
                     <div class="modal-body">
                         <div class="container-fluid">
+                            <div class="alert alert-danger" hidden id="linkErrorContainer">
+
+                            </div>
                             <div class="row">
                                 <div class="col">
                                     <div class="row justify-content-center">
@@ -255,9 +259,9 @@
                                             <input type="text" id="genreForm" name="genreForm" class="hidden-field">
                                         </div>
                                         <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdown" data-width="50%">
-                                            @for(genre <- genres) {
-                                                <option value="@genre.getGenreId">@genre.getGenre</option>
-                                            }
+                                        @for(genre <- genres) {
+                                            <option value="@genre.getGenreId">@genre.getGenre</option>
+                                        }
                                         </select>
                                     </div>
                                     <div class="row justify-content-center">
@@ -268,9 +272,9 @@
                                             <input type="text" id="adminForm" name="adminForm" class="hidden-field">
                                         </div>
                                         <select class="selectpicker" data-live-search="true" multiple title="Artist Admins" id="adminDropdown" data-width="50%">
-                                            @for(profile <- profiles) {
-                                                <option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>
-                                            }
+                                        @for(profile <- profiles) {
+                                            <option value="@profile.getProfileId">@profile.getFirstName @profile.getLastName</option>
+                                        }
                                         </select>
                                     </div>
                                 </div>
@@ -313,7 +317,7 @@
                         <!-- footer -->
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" onclick="fillValsArtist()">Save</button>
+                        <button type="submit" id="saveArtistButton" class="btn btn-primary" onclick="return fillValsArtist();">Save</button>
                     </div>
                 }
             </div>
@@ -321,94 +325,148 @@
     </div>
 
     <script type="text/javascript">
-        function fillValsArtist() {
-            $('#genreForm').val($('#genreDropdown').val());
-            $('#adminForm').val($('#adminDropdown').val());
-            $('#countries').val($('#originDropdown').val());
-        }
 
-        // ------------- SIDEBAR TOGGLE JS -------------
-        $(function () {
-            $(".toggleButton").on('click', function (e) {
-                $("#wrapper").toggleClass('toggled');
+            function verifyLinks() {
+                var fbLink = document.getElementById('facebookLink');
+                var spotifyLink = document.getElementById('spotifyLink');
+                var instagramLink = document.getElementById('instagramLink');
+                var twitterLink = document.getElementById('twitterLink');
+                var webLink = document.getElementById('websiteLink');
+                var flashText = "";
+                var first  = true;
+                if (fbLink.value != "" && fbLink.value.indexOf("facebook.com") == -1) {
+                    flashText += "Invalid facebook link";
+                    first = false;
+                }
+                if (spotifyLink.value != "" && spotifyLink.value.indexOf("spotify.com") == -1) {
+                    var text = "nvalid spotify link";
+                    if (first) {
+                        flashText += "Invalid spotify link ";
+                        first = false;
+                    } else {
+                        flashText += ", invalid spotify link ";
+                    }
+                }
+                if (instagramLink.value != "" && instagramLink.value.indexOf("instagram.com") == -1) {
+                    if (first) {
+                        flashText += "Invalid instagram link ";
+                        first = false;
+                    } else {
+                        flashText += ", invalid instagram link";
+                    }
+                }
+                if (twitterLink.value != "" && twitterLink.value.indexOf("twitter.com") == -1) {
+                    if (first) {
+                        flashText += "Invalid twitter link ";
+                        first = false;
+                    } else {
+                        flashText += ", invalid twitter link";
 
-                e.stopPropagation();
-                return false;
-            });
+                    }
+                }
 
-            $('*:not(.toggleButton)').on('click', function () {
-                $("#wrapper").addClass('toggled');
-            });
+                var flashContainer = document.getElementById('linkErrorContainer');
+                if (flashText != "") {
+                    flashContainer.innerText = flashText;
+                    flashContainer.hidden = false;
+                    flashContainer.style.zIndex = "1";
+                    return false;
+                }
 
-        });
-        // ---------------------------------------------
-
-//==============================================INFINITE SCROLLING======================================================
-
-        var page_count;
-        var followed_artists_ids;
-
-
-        function load_infinite() {
-            page_count++;
-
-            $("#show-more").text("Loading...");
-            $("#show-more").prop('disabled', true);
-            setTimeout(fetch_artists, 500);
-        }
-
-        $(document).ready(function() {
-            page_count = 0;
-            document.getElementById("show-more").addEventListener("click", load_infinite);
-
-            if ((window.location.href.split('/search?')).length > 1){
-                $("#show-more").hide();
+                flashContainer.hidden = true;
+                return true;
             }
 
-            followed_artists_ids = [];
-            @for(artist <- followedArtists){
+            function fillValsArtist() {
+                if (!verifyLinks()) {return false;}
+                $('#genreForm').val($('#genreDropdown').val());
+                $('#adminForm').val($('#adminDropdown').val());
+                $('#countries').val($('#originDropdown').val());
+                return true;
+            }
+
+            // ------------- SIDEBAR TOGGLE JS -------------
+            $(function () {
+                $(".toggleButton").on('click', function (e) {
+                    $("#wrapper").toggleClass('toggled');
+
+                    e.stopPropagation();
+                    return false;
+                });
+
+                $('*:not(.toggleButton)').on('click', function () {
+                    $("#wrapper").addClass('toggled');
+                });
+
+            });
+            // ---------------------------------------------
+
+            //==============================================INFINITE SCROLLING======================================================
+
+            var page_count;
+            var followed_artists_ids;
+
+
+            function load_infinite() {
+                page_count++;
+
+                $("#show-more").text("Loading...");
+                $("#show-more").prop('disabled', true);
+                setTimeout(fetch_artists, 500);
+            }
+
+            $(document).ready(function () {
+                page_count = 0;
+                document.getElementById("show-more").addEventListener("click", load_infinite);
+
+                if ((window.location.href.split('/search?')).length > 1) {
+                    $("#show-more").hide();
+                }
+
+                followed_artists_ids = [];
+                @for(artist <- followedArtists){
                 followed_artists_ids.push(@artist.getArtistId);
-            }
+                }
 
 
-        });
+            });
 
-        function fetch_artists(){
+            function fetch_artists() {
 
-            fetch('/artists/page/'+page_count)
-                    .then(
-                            function(response) {
-                                if (response.status !== 200) {
-                                    console.log('Looks like there was a problem. Status Code: ' +
-                                            response.status);
-                                    return;
+                fetch('/artists/page/' + page_count)
+                        .then(
+                                function (response) {
+                                    if (response.status !== 200) {
+                                        console.log('Looks like there was a problem. Status Code: ' +
+                                                response.status);
+                                        return;
+                                    }
+                                    //
+                                    $("#show-more").text("Load more");
+                                    $("#show-more").prop('disabled', false);
+
+                                    // Examine the text in the response
+                                    response.json().then(function (data) {
+
+                                        $("#all-artist-cards").append(artistJSONtoHTML(data))
+
+
+                                    });
                                 }
-                                //
-                                $("#show-more").text("Load more");
-                                $("#show-more").prop('disabled', false);
+                        )
+                        .catch(function (err) {
+                            console.log('Fetch Error :-S', err);
+                        });
 
-                                // Examine the text in the response
-                                response.json().then(function(data) {
+            };
 
-                                    $("#all-artist-cards").append(artistJSONtoHTML(data))
+            function artistJSONtoHTML(jsonData) {
 
-
-                                });
-                            }
-                    )
-                    .catch(function(err) {
-                        console.log('Fetch Error :-S', err);
-                    });
-
-        };
-
-        function artistJSONtoHTML(jsonData){
-            
-            var html = "";
-            var i, c, g;
+                var html = "";
+                var i, c, g;
 
 
-            for (i = 0; i < jsonData.length; i++) {
+                for (i = 0; i < jsonData.length; i++) {
 
                 var artist = jsonData[i];
                 var id = parseInt(artist.artistId);
@@ -427,38 +485,38 @@
                                             html += "<li>"+countries[c]+"</li>";
                                         }
 
-                                        html += "</ul><br>" +artist.biography+"<br><ul>";
+                    html += "</ul><br>" + artist.biography + "<br><ul>";
 
-                                        for(g = 0; g < artist.genreList.length; g++) {
-                                            html += "<li>"+artist.genreList[g].genre+"</li>"
-                                        }
+                    for (g = 0; g < artist.genreList.length; g++) {
+                        html += "<li>" + artist.genreList[g].genre + "</li>"
+                    }
 
-                                    html+=
-                                    "</ul>"+
-                                    " </div>" +
-                                    "<div class='col col-2'>" +
-                                        "<div class='row'>" +
-                                            "<a href='artists/"+id+"'>"+
-                                            "<button class='btn btn-primary' id='view''>View</button></a>" +
-                                        "</div>" +
-                                        "<div class='row'>";
-                                            if(followed_artists_ids.includes(id)) {
-                                                html +="<a href='artist/"+id+"/unfollow'>"+
-                                                    "<button class='btn btn-primary'>Unfollow</button>";
-                                            }else{
-                                                html +="<a href='artist/"+id+"/follow'>"+
-                                                "<button class='btn btn-primary'>Follow</button></a>";
-
-                                            }
-                                html += "</div>" +
-                                    "</div>" +
-                                "</div>" +
+                    html +=
+                            "</ul>" +
+                            " </div>" +
+                            "<div class='col col-2'>" +
+                            "<div class='row'>" +
+                            "<a href='artists/" + id + "'>" +
+                            "<button class='btn btn-primary' id='view''>View</button></a>" +
                             "</div>" +
-                        "</div>"
-                
-            }
-            return html
+                            "<div class='row'>";
+                    if (followed_artists_ids.includes(id)) {
+                        html += "<a href='artist/" + id + "/unfollow'>" +
+                                "<button class='btn btn-primary'>Unfollow</button>";
+                    } else {
+                        html += "<a href='artist/" + id + "/follow'>" +
+                                "<button class='btn btn-primary'>Follow</button></a>";
 
-        }
+                    }
+                    html += "</div>" +
+                            "</div>" +
+                            "</div>" +
+                            "</div>" +
+                            "</div>"
+
+                }
+                return html
+
+            }
     </script>
 </html>

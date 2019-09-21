@@ -4,7 +4,7 @@
 }
 
 #dest-table-card {
-    height: 50vh;
+    height: 55vh;
 }
 
 #headerRow {
@@ -12,7 +12,7 @@
 }
 
 #map-table-card {
-    height: 100vh;
+    height: 105vh;
 }
 
 #btn-card {
@@ -82,7 +82,7 @@ div.dataTables_filter {
 }
 
 
-#destinationsMap {
+#destinationsMap, #createMap, #editMap {
     height: 100%;
     width: 100%;
     padding-top: 5vh;
@@ -225,3 +225,10 @@ img.thumbnail {
     from {transform:scale(0)}
     to {transform:scale(1)}
 }
+
+.entry-row {
+    padding-left: 5vw;
+}
+
+
+

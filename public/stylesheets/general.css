@@ -197,6 +197,10 @@ input[type=text], input[type=date], input[type=search], input[type=datetime-loca
     color: #d74961 !important;
 }
 
+.disabledPagination {
+    color: #7f8fa4 !important;
+}
+
 
 .sidebar-icon {
     height: 3vh;
@@ -312,4 +316,8 @@ a, a:hover {
 
 #profileFooter{
     z-index: 1;
+}
+
+.pagination>li.disabled>a {
+    background-color: #E0E0E0 !important;
 }

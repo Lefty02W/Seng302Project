@@ -8,7 +8,7 @@
 <html lang="en">
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | @artist.getArtistName</title>
+        <title>SoundBound | @artist.getArtistName</title>
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
@@ -32,7 +32,7 @@
         <div class="d-flex toggled" id="wrapper">
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h2 class="sidebar-heading">Soundbound </h2>
+                <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
@@ -135,77 +135,85 @@
                             } else {
                             <div id="eventsTab" class="tab-pane fade">
                             }
-                        <div class="col">
-                            @for(event <- events) {
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col">
-                                                <h4 class="primary-color">@event.getEventName</h4>
-                                                <p>@event.getDescription</p>
-                                                <p>@event.getAgeRestrictionString</p>
-                                            </div>
-                                            <div class="col">
-                                                <h4 class="primary-color">When</h4>
-                                                <p>@event.getStartDateString</p>
-                                                <p>@event.getEndDateString</p>
-                                            </div>
-                                            <div class="col">
-                                                <h4 class="primary-color">Who</h4>
+                        <div class="row">
+                            <div class="col display-events">
+                                @for(event <- events) {
+                                    <div class="card" id="eventsCard">
+                                        <div class="card-header">
+                                            <h4 class="primary-color eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                        </div>
+                                        <div class="card-body" id="eventCardBody">
+                                            <div class="row">
                                                 @for(artist <- event.getEventArtists) {
-                                                    <p>@artist.getArtistName</p>
+                                                    <i class="fa fa-user">&nbsp;</i>
+                                                    <p>@artist.getArtistName</p>&nbsp;
                                                 }
                                             </div>
-                                            <div class="col">
-                                                <h4 class="primary-color">Where</h4>
+                                            <div class="row">
+                                                <i class="fa fa-calendar">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
+                                            </div>
+                                            <div class="row">
+                                                <i class="fa fa-map-marker">&nbsp;</i>
                                                 <p>@event.getDestination.getName</p>
                                             </div>
-                                            <div class="col">
-                                                <h4 class="primary-color">Genres</h4>
-                                                @for(genre <- event.getEventGenres) {
-                                                    <p>@genre.getGenre</p>
-                                                }
+                                            <div class="row">
+                                                <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
                                             </div>
-                                            <div class="col">
-                                                <h4 class="primary-color">Type</h4>
-                                                <p>@event.getEventTypes.get(0)</p>
+                                            <div class="row">
+                                                <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
                                             </div>
-                                            @if(artist.getAdminsList.contains(currentUser)) {
+                                            <div class="row">
+                                                <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                                <p>@event.getAgeRestrictionString</p>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col">
-                                                    <h4 class="primary-color">Actions</h4>
-                                                    <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
-                                                        <button class="btn btn-primary">Edit</button>
-                                                    </a>
-                                                    <a href="#">
-                                                        <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
-                                                    </a>
+                                                    <h4 class="primary-color">Description</h4>
+                                                    <p>@event.getDescription</p>
                                                 </div>
-                                            }
+                                                <div class="col">
+                                                    <h4 class="primary-color">Genres</h4>
+                                                    @for(genre <- event.getEventGenres) {
+                                                        <p>@genre.getGenre</p>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                        @if(artist.getAdminsList.contains(currentUser)) {
+                                            <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
+                                                <button class="btn btn-primary">Edit</button>
+                                            </a>
+                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
+                                        }
                                         </div>
                                     </div>
-                                </div>
-                            }
-                            @if(activeTab == 1) {
-                                <a>@pagination.getInfoString</a>
-                                <ul class="pagination">
-                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
-                                        Start</a></li>
-                                    @if(pagination.isPreviousEnabled) {
-                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
-                                            Previous</a></li>
-                                    } else {
-                                        <li class="page-item disabled"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
-                                            Previous</a></li>
-                                    }
-                                    @if(pagination.isNextEnabled) {
-                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
-                                            Next</a></li>
-                                    } else {
-                                        <li class="page-item disabled"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
-                                            Next</a></li>
-                                    }
-                                </ul>
-                            }
+                                }
+                                @if(activeTab == 1) {
+                                    <a>@pagination.getInfoString</a>
+                                    <ul class="pagination">
+                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
+                                            Start</a></li>
+                                        @if(pagination.isPreviousEnabled) {
+                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                                Previous</a></li>
+                                        } else {
+                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                                Previous</a></li>
+                                        }
+                                        @if(pagination.isNextEnabled) {
+                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                                Next</a></li>
+                                        } else {
+                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                                Next</a></li>
+                                        }
+                                    </ul>
+                                }
+                            </div>
+                            <div class="card-large map-events">
+                                <div id="eventsMap"></div>
+                            </div>
                         </div>
                     </div>
                         @if(activeTab == 2) {
@@ -838,5 +846,471 @@
                 $('#confirmationLeaveModal').modal('show');
             }
 
+            var map;
+            var nightStyle = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#242f3e"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#746855"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#242f3e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.locality",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#263c3f"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#6b9a76"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#38414e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#212a37"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9ca5b3"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#746855"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#1f2835"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#f3d19c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#2f3948"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#17263c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "saturation": -10
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#515c6d"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#17263c"
+                        }
+                    ]
+                }
+            ];
+
+            var dayStyle = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#ebe3cd"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#523735"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#f5f1e6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#c9b2a6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#dcd2be"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#ae9e90"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.natural",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#93817c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#a5b076"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#447530"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f5f1e6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#fdfcf8"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f8c967"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#e9bc62"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway.controlled_access",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#e98d58"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway.controlled_access",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#db8555"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#806b63"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#8f7d77"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#ebe3cd"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#b9d3c2"
+                        },
+                        {
+                            "saturation": -10
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#92998d"
+                        }
+                    ]
+                }
+            ];
+
+            /**
+             * Initialises the map view
+             */
+            function initMap() {
+                var styles;
+                var today = new Date();
+                var hours = today.getHours();
+                if (hours <= 6 || hours >= 21) {
+                    styles = nightStyle;
+                } else {
+                    styles = dayStyle;
+                }
+                var center = {lat: -43.5321, lng: 172.6362};
+                map = new google.maps.Map(document.getElementById('eventsMap'), {
+                    center: center,
+                    streetViewControl: false,
+                    fullscreenControl: false,
+                    zoom: 8
+                });
+                addMarkers();
+            }
+
+            var markersMap = new Map();
+            var markers = [];
+            function addMarkers() {
+                @for(event <- events) {
+                    var marker = new google.maps.Marker({
+                        position: {
+                            lat: @event.getDestination.getLatitude,
+                            lng: @event.getDestination.getLongitude
+                        },
+                        animation: google.maps.Animation.DROP,
+                        map: map
+                    });
+                    marker.content = "Name:  @event.getEventName" +
+                            "<br> Type: @event.getEventTypeString" +
+                            "<br> Destination: @event.getDestination.getName";
+                    var infoWindow = new google.maps.InfoWindow();
+                    google.maps.event.addListener(marker, 'click', function() {
+                        infoWindow.setContent(this.content);
+                        infoWindow.open(this.getMap(), this);
+                        map.setCenter(marker.getPosition());
+                        clearSelected();
+                        document.getElementById("eventName@event.getEventId").style.color = '#009779';
+                    });
+
+                    markers.push(marker);
+                    markersMap.set(@event.getEventId, marker);
+
+                }
+            }
+
+            function clearSelected() {
+                var elements = document.getElementsByClassName("eventTitle");
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].style.color = "#d74961";
+                }
+            }
+
+            function showEvent(eventId, event) {
+                var marker = markersMap.get(eventId);
+                new google.maps.event.trigger(marker, 'click');
+                map.setCenter(marker.getPosition());
+                clearSelected();
+                event.style.color = '#009779';
+            }
+
+
     </script>
+
+    @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"*@
+    @*async defer></script>*@
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    async defer></script>
+
+
 </html>
