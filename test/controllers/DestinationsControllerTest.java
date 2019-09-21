@@ -59,6 +59,73 @@ public class DestinationsControllerTest {
     }
 
 
+    /**
+     * Testing  page loads fine
+     */
+    @Test
+    public void showPrivateDestinations() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/destinations/show/false/0")
+                .session("connected", "1");
 
+        Result result = Helpers.route(TestApplication.getApplication(), request);
 
+        assertEquals(200, result.status());
+    }
+
+    /**
+     * Testing edit destination modal page loads fine
+     */
+    @Test
+    public void showPublicDestinations() {
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/destinations/show/true/0")
+                .session("connected", "1");
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        assertEquals(200, result.status());
+    }
+
+    /**
+     * Testing searching private destinations page loads fine
+     */
+    @Test
+    public void SearchPrivateDestinations() {
+        Map<String, String> formData = new HashMap<>();
+        formData.put("isPublic", "false");
+        formData.put("name", "yeet");
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/destinations/search/0")
+                .bodyForm(formData)
+                .session("connected", "1");
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        assertEquals(200, result.status());
+    }
+
+    /**
+     * Testing searching public destinations page loads fine
+     */
+    @Test
+    @Ignore
+    public void searchPublicDestinations() {
+        Map<String, String> formData = new HashMap<>();
+        formData.put("isPublic", "true");
+        formData.put("name", "yeet");
+
+        Http.RequestBuilder request = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/destinations/search/0")
+                .session("connected", "1");
+
+        Result result = Helpers.route(TestApplication.getApplication(), request);
+
+        assertEquals(200, result.status());
+    }
 }
