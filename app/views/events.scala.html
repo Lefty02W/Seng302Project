@@ -273,8 +273,10 @@
                                                     }
                                                 </div>
                                                 <div class="col padded">
+
+
                                                     <a href="@routes.EventsController.show(0)">
-                                                        <button class="btn btn-secondary overlay-dropdown" id="clearButton">Clear Search</button>
+                                                        <p class="btn btn-secondary overlay-dropdown" id="clearButton">Clear Search</p>
                                                     </a>
                                                 </div>
                                             </div>
@@ -351,7 +353,7 @@
                                             || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
                                                 <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>Attend</button>
                                             } else {
-                                                <button class="btn btn-primary">Attend</button>
+                                                <a href="@routes.EventsController.attendEvent(event.getEventId)"><button class="btn btn-primary">Attend</button> </a>
                                             }
 
                                         } else {

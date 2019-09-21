@@ -36,6 +36,7 @@ public class EventsController extends Controller {
     private final Form<Events> eventForm;
     private final Form<Events> eventEditForm;
     private final Form<EventFormData> eventFormDataForm;
+    private final AttendEventRepository attendEventRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
     private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
@@ -48,7 +49,7 @@ public class EventsController extends Controller {
     @Inject
     public EventsController(ProfileRepository profileRepository, MessagesApi messagesApi, GenreRepository genreRepository,
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
-                            FormFactory formFactory, EventRepository eventRepository) {
+                            FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -58,7 +59,9 @@ public class EventsController extends Controller {
         this.eventEditForm = formFactory.form(Events.class);
         this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
+        this.attendEventRepository = attendEventRepository;
     }
+
 
     /**
      * Helper function to set up pagination object
@@ -429,6 +432,11 @@ public class EventsController extends Controller {
      */
     public CompletionStage<Result> deleteEvent(Http.Request request, Integer artistId, Integer eventId) {
         return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + eventURL));
+    }
+
+    public Result attendEvent(Http.Request request, Integer eventId) {
+        attendEventRepository.insert(new AttendEvent(eventId, SessionController.getCurrentUserId(request)));
+        return redirect(eventURL).flashing("info", "Attending event");
     }
 
 }
