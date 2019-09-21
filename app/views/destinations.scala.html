@@ -726,12 +726,15 @@
             })
             $('#nextLinkSearch').on('click', function() {
                 document.getElementById('nextSearchHidden').click()
-            })
+            });
+
+
 
             $(document).ready(function () {
                         $('#destTable').DataTable({
-                            "sDom": 't',
+                            "sDom": 't'
                         });
+
 
                 $('#startSearchHidden').hide();
                 $('#prevSearchHidden').hide();
@@ -1188,22 +1191,38 @@
                     zoom: 8,
                     styles: styles
                 });
-                editMap = new google.maps.Map(document.getElementById('editMap'), {
-                    center: center,
+
+
+                @if(destination.isEdit && destination.getObject != null) {
+
+                    var editCenter = {lat: @destination.getObject.getLatitude, lng:  @destination.getObject.getLongitude};
+                    editMap = new google.maps.Map(document.getElementById('editMap'), {
+                    center: editCenter,
                     streetViewControl: false,
                     fullscreenControl: false,
                     zoom: 8,
                     styles: styles
                 });
-                createMap.addListener('click', function(e) {
-                    addCreateMarker(e.latLng);
+                    editPos = new google.maps.LatLng(editCenter.lat, editCenter.lng);
+                editMarker = new google.maps.Marker({
+                    map: editMap,
+                    position: editPos,
+                    draggable: true
                 });
                 editMap.addListener('click', function(e) {
                     addEditMarker(e.latLng);
                 });
 
+            }
+
+
+                createMap.addListener('click', function(e) {
+                    addCreateMarker(e.latLng);
+                });
+
                 addMarkers();
             }
+
 
             /**
             * Function to add a marker to the create destination map onclick
@@ -1301,6 +1320,7 @@
              */
             function addMarkers() {
                 var centerSet = false;
+
                 @for(destination <- destinationsList) {
                 var icon;
                 if (@destination.getVisible ===
@@ -1415,6 +1435,7 @@
                     }
                 });
 
+
                 markers.push(marker);
                 markersMap.set(@destination.getDestinationId, marker);
                 if (!centerSet) {
@@ -1446,6 +1467,7 @@
             function setSelectedDestination(destinationId, row) {
                 selectedDestID = destinationId;
                 var markerToSet = markersMap.get(destinationId);
+
                 new google.maps.event.trigger(markerToSet, 'click');
                 map.setCenter(markerToSet.getPosition());
                 clearAnimations();
