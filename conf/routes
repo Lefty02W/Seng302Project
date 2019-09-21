@@ -23,6 +23,8 @@ GET     /destinations/:photoId/:destId/linkphoto    controllers.DestinationsCont
 GET     /destinations/:photoId/:destId/unlinkPhoto  controllers.DestinationsController.unlinkPhotoFromDestination(request: Request, photoId: Integer, destId: Integer)
 GET     /destinations/photo/:id/update/privacy  controllers.DestinationsController.updatePhotoPrivacy(id: Integer)
 POST    /destinations/type/request              controllers.DestinationsController.createEditRequest(request : Request)
+GET    /destinations/search/:page             controllers.DestinationsController.search(request: Request, page: Integer)
+#POST    /destinations/search/:page             controllers.DestinationsController.search(request: Request, page: Integer)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                           controllers.Assets.at(path="/public", file)
