@@ -337,23 +337,19 @@
                         </div>
                     </div>
                 <ul class="pagination" id="pagination-section">
-                    @if(searchData != null) {
-                        @helper.form(routes.EventsController.search(0)) {
-                            @CSRF.formField
-                            <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
-                            <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
-                            <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
-                            <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
-                            <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
-                            <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
-                            <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
-                            <li class="page-item"><button class="page-link" href="/events/all/search/0">Start</button></li>
-                        }
-                    } else {
-                        <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
-                    }
                     @if(paginationHelper.isPreviousEnabled) {
                         @if(searchData != null) {
+                            @helper.form(routes.EventsController.search(0)) {
+                                @CSRF.formField
+                                <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
+                                <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
+                                <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
+                                <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <li class="page-item"><button class="page-link" href="/events/all/search/0">Start</button></li>
+                            }
                             @helper.form(routes.EventsController.search(paginationHelper.getPrevious)) {
                                 @CSRF.formField
                                 <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
@@ -366,9 +362,11 @@
                                 <li class="page-item"><button class="page-link" href="/events/all/search/@paginationHelper.getPrevious">Previous</button></li>
                             }
                         } else {
+                            <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
                             <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
                         }
                     } else {
+                        <li class="page-item disabled"><a class="page-link disabledPagination" href="/events/0">Start</a></li>
                         <li class="page-item disabled"><a class="page-link disabledPagination" href="/events/@paginationHelper.getPrevious">Previous</a></li>
                     }
                     @if(paginationHelper.isNextEnabled) {
