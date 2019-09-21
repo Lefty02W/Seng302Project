@@ -127,6 +127,13 @@ public class Events extends Model {
         return "";
     }
 
+    public String getEventTypeString() {
+        if (!eventTypes.isEmpty()) {
+            return eventTypes.get(0);
+        }
+        return "";
+    }
+
     public Destination getDestination() {
         return destination;
     }

@@ -69,3 +69,55 @@
     background-color: #41B49D;
     z-index: 2;
 }
+
+#eventsMap {
+    width:100%;
+    height:100%;
+}
+
+.map-events {
+    height: 70vh;
+    width: 70%;
+    margin-top: 0;
+    padding: 0;
+}
+
+.event-link {
+    color: #d74961;
+    text-decoration: underline;
+}
+
+.event-link:hover {
+    color: #009779;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+#eventName {
+    left:50%;
+    text-align: center;
+    display: inline-block;
+}
+
+#eventsCard {
+    margin-bottom: 10px;
+}
+
+#eventCardBody {
+    padding-left: 30px;
+}
+
+.selectedTab {
+    color: #41B49D;
+}
+
+.divider {
+    width: 40vw;
+}
+
+
+.spotify {
+    width: 40vw;
+    height: 40vh;
+}

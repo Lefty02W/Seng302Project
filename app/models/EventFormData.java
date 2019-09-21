@@ -1,5 +1,7 @@
 package models;
 
+import static java.lang.Integer.parseInt;
+
 /**
  * Class for getting inputs for searching functionality to find events
  */
@@ -49,12 +51,36 @@ public class EventFormData {
         return artistName;
     }
 
+    public Integer getArtistID() {
+        if (!artistName.isEmpty()) {
+            return parseInt(artistName);
+        } else {
+            return 0;
+        }
+    }
+
     public String getEventType() {
         return eventType;
     }
 
+    public Integer getEventTypeId() {
+        if (!eventType.isEmpty()) {
+            return parseInt(eventType);
+        } else {
+            return 0;
+        }
+    }
+
     public String getDestinationId() {
         return destinationId;
+    }
+
+    public Integer getIntegerDestinationId() {
+        if (!destinationId.isEmpty()) {
+            return parseInt(destinationId);
+        } else {
+            return 0;
+        }
     }
 
     public String getAgeRestriction() {
@@ -63,6 +89,14 @@ public class EventFormData {
 
     public String getGenre() {
         return genre;
+    }
+
+    public Integer getGenreId() {
+        if (!genre.isEmpty()) {
+            return parseInt(genre);
+        } else {
+            return 0;
+        }
     }
 
     public String getStartDate() {

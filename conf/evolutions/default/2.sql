@@ -312,6 +312,15 @@ INSERT INTO type_of_events (type_id, type_name) VALUES
   (1, 'Gig');
 
 INSERT INTO event_type (event_id, type_id) VALUES
+  (1, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (2, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (3, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
   (4, 1);
 
 INSERT INTO event_genres (event_id, genre_id) VALUES

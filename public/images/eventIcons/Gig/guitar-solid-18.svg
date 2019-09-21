@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   aria-hidden="true"
+   focusable="false"
+   data-prefix="fas"
+   data-icon="guitar"
+   class="svg-inline--fa fa-guitar fa-w-16"
+   role="img"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="guitar-solid-18.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata10">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="778"
+     inkscape:window-height="480"
+     id="namedview6"
+     showgrid="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="263.06913"
+     inkscape:cy="256"
+     inkscape:window-x="597"
+     inkscape:window-y="247"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg4" />
+  <path
+     fill="currentColor"
+     d="M502.6 54.6L457.4 9.4c-12.5-12.5-32.8-12.5-45.3 0l-67.9 67.9c-12.5 12.5-12.5 32.8 0 45.3L290 176.7c-45.4-29-100.4-28.9-133.5 4.2-9.7 9.7-16.4 21.2-20.5 33.9-6.1 18.8-23.5 33.1-42.7 34.9-24 2.3-46.3 11.6-63.4 28.8C-16.3 324.6-8 407.6 48.2 463.8c56.2 56.2 139.2 64.4 185.3 18.3 17.2-17.1 26.5-39.4 28.8-63.5 1.8-19.1 16.1-36.6 34.9-42.7 12.7-4.1 24.2-10.8 33.9-20.5 33.1-33.1 33.1-88.1 4.2-133.5l54.2-54.2c12.5 12.5 32.8 12.5 45.3 0l67.9-67.9c12.4-12.4 12.4-32.7-.1-45.2zM208 352c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48z"
+     id="path2"
+     style="fill:#ff8f3e;fill-opacity:1" />
+</svg>
