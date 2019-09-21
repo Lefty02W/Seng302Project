@@ -1297,8 +1297,8 @@
             * Function to fill fields with lat lng details from map
             */
             function fillLatLng(lat, lng) {
-                $('.createLat').val(lat);
-                $('.createLng').val(lng);
+                $('.createLat').val(Number(Math.round(lat+'e'+10)+'e-'+10));
+                $('.createLng').val(Number(Math.round(lng+'e'+10)+'e-'+10));
             }
 
             /**
@@ -1342,8 +1342,10 @@
             * Function to fill fields with lat lng details from map dureing edit
             */
             function fillLatLngEdit(lat, lng) {
-                $('.editLat').val(lat);
-                $('.editLng').val(lng);
+                //-43.5221018792
+                //  0.0000000000
+                $('.editLat').val(Number(Math.round(lat+'e'+10)+'e-'+10));
+                $('.editLng').val(Number(Math.round(lng+'e'+10)+'e-'+10));
             }
 
 
