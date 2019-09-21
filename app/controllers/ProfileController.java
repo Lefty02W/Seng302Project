@@ -2,7 +2,6 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
-
 import interfaces.TypesInterface;
 import models.*;
 import play.data.Form;
@@ -21,18 +20,16 @@ import views.html.profile;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -60,6 +57,7 @@ public class ProfileController extends Controller implements TypesInterface {
     private Boolean countryFlag = true;
     private final UndoStackRepository undoStackRepository;
     private final ArtistRepository artistRepository;
+    private final EventRepository eventRepository;
 
 
 
@@ -77,7 +75,8 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ArtistRepository artistRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ArtistRepository artistRepository,
+                             EventRepository eventRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -89,6 +88,7 @@ public class ProfileController extends Controller implements TypesInterface {
             this.tripRepository = tripRepository;
             this.undoStackRepository = undoStackRepository;
             this.artistRepository = artistRepository;
+            this.eventRepository = eventRepository;
         }
 
 
@@ -331,6 +331,8 @@ public class ProfileController extends Controller implements TypesInterface {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
+        System.out.println(eventRepository.getNextTenUpComingEvents(profId));
+
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
 
             if (profileRec.isPresent()) {

@@ -61,4 +61,16 @@ public class AttendEventRepository {
     public List<Integer> getAttendingUsers(int eventId) {
         return ebeanServer.find(AttendEvent.class).select("profileId").where().eq("event_id", eventId).findSingleAttributeList();
     }
+
+
+    /**
+     * Method to get the ids of all the events a user is attending
+     *
+     * @param profileId id of profile
+     * @return List of event ids
+     */
+    public List<Integer> getAttendingEvents(int profileId) {
+        return ebeanServer.find(AttendEvent.class).select("eventId").where().eq("profile_id", profileId).findSingleAttributeList();
+
+    }
 }

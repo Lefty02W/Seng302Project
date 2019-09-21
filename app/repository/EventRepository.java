@@ -5,7 +5,9 @@ import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -392,5 +394,26 @@ public class EventRepository {
             ebeanServer.find(Events.class).where().eq("event_id", Integer.toString(eventId)).delete();
             return null;
         });
+    }
+
+    /**
+     * Method to get the next 10 upcoming events that a user is attending
+     *
+     * @param profileId id of the profile
+     * @return List of events found
+     */
+    public List<Events> getNextTenUpComingEvents(int profileId) {
+        List<Integer> eventIds = attendEventRepository.getAttendingEvents(profileId);
+        if (eventIds.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            List<Events> events = ebeanServer.find(Events.class).order("startDate").setMaxRows(10).where().gt("start_date", dateFormat.format(new Date())).idIn(eventIds).findList();
+            List<Events> toReturn = new ArrayList<>();
+            for (Events event : events) {
+                toReturn.add(populateEvent(event));
+            }
+            return toReturn;
+        }
     }
 }
