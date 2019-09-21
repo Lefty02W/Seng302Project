@@ -235,6 +235,10 @@ public class EventRepository {
                 "LEFT OUTER JOIN event_genres ON events.event_id = event_genres.event_id " +
                 "LEFT OUTER JOIN event_type ON events.event_id = event_type.event_id " +
                 "LEFT OUTER JOIN event_artists ON events.event_id = event_artists.event_id ";
+
+        if(eventFormData.getAttending().equals("on")) {
+            query += "JOIN attend_event ON events.event_id = attend_event.event_id";
+        }
         boolean whereAdded = false;
         boolean likeAdded = false;
         List<String> args = new ArrayList<>();

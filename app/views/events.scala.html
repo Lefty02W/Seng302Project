@@ -134,7 +134,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col type-drop">
-                                                    <small id="label" for="eventType">Event type</small>
+                                                    <small id="label" for="eventType">Event Type</small>
                                                     <select class="selectpicker overlay-dropdown" id="eventType" name="eventType" title="Event Type">
                                                         @if(searchData != null) {
 
@@ -248,6 +248,10 @@
                                                         }
                                                     }
                                                     </select>
+                                                </div>
+                                                <div class="col padded">
+                                                    <input type="checkbox" id="attending" name="attending">
+                                                    <label for="toggle">Attending Events </label>
                                                 </div>
                                                 <div class="col padded">
                                                     <small id="label" class="dateLabel overlay-dropdown" for="startDate">Date</small>
@@ -365,6 +369,7 @@
                                 <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
                                 <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
                                 <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getAttending" id="attending" name="attending" title="Attending">
                                 <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
                                 <li class="page-item"><button class="page-link" href="/events/all/search/0">Start</button></li>
                             }

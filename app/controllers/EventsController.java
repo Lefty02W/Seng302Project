@@ -378,7 +378,7 @@ public class EventsController extends Controller {
                 EventFormData eventFormData = searchEventForm.get();
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
-                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("")) {
+                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("") && !eventFormData.getAttending().equals("on")) {
                     return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
                 }
 

@@ -13,7 +13,10 @@ public class EventFormData {
     private String destinationId = "";
     private String ageRestriction = "";
     private String genre = "";
+    private String attending = "";
     private String startDate = "";
+
+    public void setAttending(String attending) {this.attending = attending;}
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
@@ -42,6 +45,8 @@ public class EventFormData {
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
+
+    public String getAttending(){return attending;}
 
     public String getEventName() {
         return eventName;
