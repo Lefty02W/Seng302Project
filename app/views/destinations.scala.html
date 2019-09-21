@@ -734,6 +734,9 @@
                         $('#destTable').DataTable({
                             "sDom": 't'
                         });
+                        if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(setLocation, defualtLocation)
+                }
 
 
                 $('#startSearchHidden').hide();
@@ -769,7 +772,9 @@
             var createMap;
             var editMap;
             var editMarker;
+            var center;
             var createMarker;
+            var createCenter;
             var markers = [];
             var markersMap = new Map();
             var destinationID;
@@ -1164,6 +1169,21 @@
                 }
             ];
 
+
+            /**
+            * Callback for succes on geolocation to get users location
+            */
+            function setLocation(pos) {
+                center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
+            }
+
+            /**
+            * Callback for failure of geolocation
+            */
+            function defualtLocation(err) {
+                center = {lat: -43.5321, lng: 172.6362};
+            }
+
             /**
              * Initialises the map view
              */
@@ -1176,7 +1196,8 @@
                 } else {
                     styles = dayStyle;
                 }
-                var center = {lat: -43.5321, lng: 172.6362};
+
+
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
                     center: center,
                     streetViewControl: false,
@@ -1184,6 +1205,7 @@
                     zoom: 8,
                     styles: styles
                 });
+
                 createMap = new google.maps.Map(document.getElementById('createMap'), {
                     center: center,
                     streetViewControl: false,
@@ -1191,6 +1213,8 @@
                     zoom: 8,
                     styles: styles
                 });
+                currentPos = new google.maps.LatLng(center.lat, center.lng);
+                addCreateMarker(currentPos);
 
 
                 @if(destination.isEdit && destination.getObject != null) {
@@ -1319,7 +1343,7 @@
              * Adds all current destinations to the map as markers
              */
             function addMarkers() {
-                var centerSet = false;
+
 
                 @for(destination <- destinationsList) {
                 var icon;
@@ -1438,16 +1462,6 @@
 
                 markers.push(marker);
                 markersMap.set(@destination.getDestinationId, marker);
-                if (!centerSet) {
-                    centerSet = true;
-                    map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
-                }
-                markers.push(marker);
-                markersMap.set(@destination.getDestinationId, marker);
-                if (!centerSet) {
-                    centerSet = true;
-                    map.setCenter(new google.maps.LatLng(@destination.getLatitude, @destination.getLongitude))
-                }
                 }
                 var legend = document.getElementById('legend');
                 var publicDiv = document.createElement('div');
