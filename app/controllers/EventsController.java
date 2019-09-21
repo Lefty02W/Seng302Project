@@ -434,9 +434,25 @@ public class EventsController extends Controller {
         return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + eventURL));
     }
 
+    /**
+     * Endpoint method to attend an event with the given eventID
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to event page
+     */
     public Result attendEvent(Http.Request request, Integer eventId) {
         attendEventRepository.insert(new AttendEvent(eventId, SessionController.getCurrentUserId(request)));
         return redirect(eventURL).flashing("info", "Attending event");
     }
 
+    /**
+     * Endpoint method to withdraw from an event with the given eventID
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to event page
+     */
+    public Result leaveEvent(Http.Request request, Integer eventId) {
+        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
+        return redirect(eventURL).flashing("info", "No longer going to event");
+    }
 }

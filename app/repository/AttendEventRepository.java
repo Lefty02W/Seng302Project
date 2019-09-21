@@ -46,7 +46,9 @@ public class AttendEventRepository {
      */
     public CompletionStage<Void> delete(int attendEventId) {
         return supplyAsync(() -> {
-            ebeanServer.find(AttendEvent.class).where().eq("attend_event_id", Integer.toString(attendEventId)).delete();
+            ebeanServer.find(AttendEvent.class).where()
+                    .eq("attend_event_id", Integer.toString(attendEventId))
+                    .delete();
             return null;
         });
     }
@@ -59,7 +61,8 @@ public class AttendEventRepository {
      * @return List if ids found
      */
     public List<Integer> getAttendingUsers(int eventId) {
-        return ebeanServer.find(AttendEvent.class).select("profileId").where().eq("event_id", eventId).findSingleAttributeList();
+        return ebeanServer.find(AttendEvent.class).select("profileId").where().eq("event_id", eventId)
+                .findSingleAttributeList();
     }
 
 
@@ -70,7 +73,19 @@ public class AttendEventRepository {
      * @return List of event ids
      */
     public List<Integer> getAttendingEvents(int profileId) {
-        return ebeanServer.find(AttendEvent.class).select("eventId").where().eq("profile_id", profileId).findSingleAttributeList();
+        return ebeanServer.find(AttendEvent.class).select("eventId").where().eq("profile_id", profileId)
+                .findSingleAttributeList();
 
+    }
+
+    /**
+     * Gets the attend event linking table ID.
+     * @param eventId Event id
+     * @param currentUserId Currently logged-in user
+     * @return attendEventId Integer - Id of the attended event
+     */
+    public int getAttendEventId(Integer eventId, Integer currentUserId) {
+        return ebeanServer.find(AttendEvent.class).select("attendEventId").where().eq("event_id", eventId)
+                .eq("profile_id", currentUserId).findOne().getAttendEventId();
     }
 }
