@@ -29,7 +29,7 @@
 
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | Admin</title>
+        <title>SoundBound | Admin</title>
     </head>
 
     <body>
@@ -37,7 +37,7 @@
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h2 class="sidebar-heading">Soundbound </h2>
+                <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
                     <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
                         Profile</a>
@@ -362,50 +362,51 @@
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            @if(pagination.getActiveTab == 0) {
-                                <div class="tab-pane active" id="admins" role="tabpanel">
-                                }else {
-                                <div class="tab-pane" id="admins" role="tabpanel">
-                                }
-                            <div class="col">
-                                <div class="row">
-                                    <table id="adminsTable" class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>AdminID</th>
-                                                <th>Email</th>
-                                                <th>Name</th>
-                                                <th>Permissions</th>
-                                            </tr>
-                                        </thead>
-                                        @for(profile <- adminProfiles) {
-                                            <tr>
-                                                <td>@profile.getProfileId</td>
-                                                <td>@profile.getEmail</td>
-                                                <td>@profile.getFirstName</td>
-                                                <td>@profile.getRoles</td>
-                                            </tr>
-                                        }
-                                    </table>
-                                    <div class="col">
-                                        <a>@pagination.getInfoString</a>
-                                        <ul class="pagination">
-                                            <li class="page-item"><a class="page-link" href="/admin/admins/0">Start</a></li>
-                                            @if(pagination.isPreviousEnabled) {
-                                                <li class="page-item"><a class="page-link" href="/admin/admins/@pagination.getPrevious">Previous</a></li>
-                                            } else {
-                                                <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/admins/@pagination.getPrevious">Previous</a></li>
+                        @if(pagination.getActiveTab == 0) {
+                            <div class="tab-pane active" id="admins" role="tabpanel">
+                        }else {
+                            <div class="tab-pane" id="admins" role="tabpanel">
+                        }
+                                <div class="col">
+                                    <div class="row">
+                                        <table id="adminsTable" class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>AdminID</th>
+                                                    <th>Email</th>
+                                                    <th>Name</th>
+                                                    <th>Permissions</th>
+                                                </tr>
+                                            </thead>
+                                            @for(profile <- adminProfiles) {
+                                                <tr>
+                                                    <td>@profile.getProfileId</td>
+                                                    <td>@profile.getEmail</td>
+                                                    <td>@profile.getFirstName</td>
+                                                    <td>@profile.getRoles</td>
+                                                </tr>
                                             }
-                                            @if(pagination.isNextEnabled) {
-                                                <li class="page-item"><a class="page-link" href="/admin/admins/@pagination.getNext">Next</a></li>
-                                            } else {
-                                                <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/admins/@pagination.getNext">Next</a></li>
-                                            }
-                                        </ul>
+                                        </table>
+                                        <div class="col">
+                                            <a>@pagination.getInfoString</a>
+                                            <ul class="pagination">
+                                                @if(pagination.isPreviousEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/admin/admins/0">Start</a></li>
+                                                    <li class="page-item"><a class="page-link" href="/admin/admins/@pagination.getPrevious">Previous</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabled" href="/admin/admins/0">Start</a></li>
+                                                    <li class="page-item disabled"><a class="page-link disabled" href="/admin/admins/@pagination.getPrevious">Previous</a></li>
+                                                }
+                                                @if(pagination.isNextEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/admin/admins/@pagination.getNext">Next</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabled" href="/admin/admins/@pagination.getNext">Next</a></li>
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
                             @if(pagination.getActiveTab == 1) {
                                 <div class="tab-pane active" id="userProfiles" role="tabpanel" aria-labelledby="history-tab">
@@ -457,42 +458,43 @@
 
                                             <td>@profile.getRoles</td>
 
-                                            @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
+                                                @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
+                                                    <td>
+                                                        <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
+                                                            <button class="btn btn-info">Remove Admin</button>
+                                                        </a>
+                                                    </td>
+                                                } else if(profile.hasRole("global_admin")){
+                                                <td> global admin </td>
+                                                } else {
                                                 <td>
-                                                    <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
-                                                        <button class="btn btn-info">Remove Admin</button>
+                                                    <a href="@routes.AdminController.makeAdmin(profile.getProfileId())">
+                                                        <button class="btn btn-info">Make Admin</button>
                                                     </a>
                                                 </td>
-                                            } else if(profile.hasRole("global_admin")){
-                                            <td> global admin </td>
+                                                }
+                                            </tr>
+                                        }
+                                    </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/profiles/0">Start</a></li>
+                                                <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
                                             } else {
-                                            <td>
-                                                <a href="@routes.AdminController.makeAdmin(profile.getProfileId())">
-                                                    <button class="btn btn-info">Make Admin</button>
-                                                </a>
-                                            </td>
+                                                <li class="page-item disabled"><a class="page-link disabled disabledPagination" href="/admin/profiles/0">Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled disabledPagination" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
                                             }
-                                        </tr>
-                                    }
-                                </table>
-                                <div class="col">
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/admin/profiles/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
-                                        }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/profiles/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled disabledPagination" href="/admin/profiles/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
                             @if(pagination.getActiveTab == 2) {
                                 <div class="tab-pane active" id="userTrips" role="tabpanel" aria-labelledby="deals-tab">
@@ -535,106 +537,108 @@
                                             </td>
                                         </tr>
 
-                                    }
-                                </table>
-                                <div class="col">
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/admin/trips/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/trips/@pagination.getPrevious">Previous</a></li>
                                         }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/trips/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
+                                    </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/trips/0">Start</a></li>
+                                                <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/trips/0">Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/trips/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/trips/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/trips/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                            @if(pagination.getActiveTab == 3) {
-                                <div class="tab-pane active" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
-                                }else {
-                                <div class="tab-pane" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
-                                }
-                            <div class="row">
-                                <div class="col text-center">
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
-                                        Add Destination</button>
-                                </div>
-                                <table id="destinationsTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>DestinationID</th>
-                                            <th>ProfileID</th>
-                                            <th>Name</th>
-                                            <th>Edit</th>
-                                            <th>Delete</th>
-                                            <th>View</th>
-                                        </tr>
-                                    </thead>
-                                    @for(destination <- destinations) {
-                                        <tr>
-                                            <td>@destination.getDestinationId</td>
-                                            <td>@destination.getProfileId</td>
-                                            <td>@destination.getName</td>
-                                            <td>
-                                                <a href="@routes.AdminController.showDestination(destination.getDestinationId, true)">
-                                                    <button class="btn btn-primary">Edit</button>
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
-                                            </td>
-                                            <td>
-                                                <a href="@routes.AdminController.showDestination(destination.getDestinationId, false)">
-                                                    <button class="btn btn-info" >View</button>
-                                                </a>
-                                            </td>
-                                        </tr>
+                        @if(pagination.getActiveTab == 3) {
+                            <div class="tab-pane active" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
+                            <div class="tab-pane" id="userDestinations" role="tabpanel" aria-labelledby="deals-tab">
+                        }
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#createDestModal">
+                                            Add Destination</button>
+                                    </div>
+                                    <table id="destinationsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>DestinationID</th>
+                                                <th>ProfileID</th>
+                                                <th>Name</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        @for(destination <- destinations) {
+                                            <tr>
+                                                <td>@destination.getDestinationId</td>
+                                                <td>@destination.getProfileId</td>
+                                                <td>@destination.getName</td>
+                                                <td>
+                                                    <a href="@routes.AdminController.showDestination(destination.getDestinationId, true)">
+                                                        <button class="btn btn-primary">Edit</button>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destination.getDestinationId/delete')">Delete</button>
+                                                </td>
+                                                <td>
+                                                    <a href="@routes.AdminController.showDestination(destination.getDestinationId, false)">
+                                                        <button class="btn btn-info" >View</button>
+                                                    </a>
+                                                </td>
+                                            </tr>
 
-                                    }
-                                </table>
-                                <div class="col">
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/admin/destinations/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/destinations/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/destinations/@pagination.getPrevious">Previous</a></li>
                                         }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/destinations/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/destinations/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
+                                    </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/destinations/0">Start</a></li>
+                                                <li class="page-item"><a class="page-link" href="/admin/destinations/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/destinations/0">Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/destinations/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/destinations/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/destinations/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                            @if(pagination.getActiveTab == 4) {
-                                <div class="tab-pane active" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
-                                }else {
-                                <div class="tab-pane" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
-                                }
-                            <div class="row">
-                                <table id="requestsTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ProfileID</th>
-                                            <th>Destination</th>
-                                            <th>Traveller Type</th>
-                                            <th>Action</th>
-                                            <th>Approve</th>
-                                            <th>Decline</th>
-                                        </tr>
-                                    </thead>
-                                    @for(destinationChange <- destinationChangeList) {
-                                        <tr>
+                        @if(pagination.getActiveTab == 4) {
+                            <div class="tab-pane active" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
+                            <div class="tab-pane" id="destinationEditRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }
+                                <div class="row">
+                                    <table id="requestsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ProfileID</th>
+                                                <th>Destination</th>
+                                                <th>Traveller Type</th>
+                                                <th>Action</th>
+                                                <th>Approve</th>
+                                                <th>Decline</th>
+                                            </tr>
+                                        </thead>
+                                        @for(destinationChange <- destinationChangeList) {
+                                            <tr>
 
                                             <td>@destinationChange.getEmail</td>
                                             <td>@destinationChange.getDestination.getName</td>
@@ -656,12 +660,12 @@
                                         @if(pagination.isPreviousEnabled) {
                                             <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
                                         } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
+                                            <li class="page-item disabled"><a class="page-link" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
                                         }
                                         @if(pagination.isNextEnabled) {
                                             <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
                                         } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
+                                            <li class="page-item disabled"><a class="page-link" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
                                         }
                                     </ul>
                                 </div>
@@ -678,224 +682,198 @@
                                         Create Treasure Hunt</button>
                                 </div>
 
-                                <table id="huntsTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Riddle</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Destination</th>
-                                            <th>Edit</th>
-                                            <th>Delete</th>
-                                        </tr>
-                                    </thead>
-                                    @for(hunt <- hunts) {
-                                        <tr>
-                                            <td>@hunt.getRiddle</td>
-                                            <td>@hunt.getStartDateString</td>
-                                            <td>@hunt.getEndDateString</td>
-                                            <td>@hunt.getTreasureHuntDestinationId</td>
-                                            <td>
-                                                <a href="@routes.AdminController.showEditHunt(hunt.getTreasureHuntId)">
-                                                    <button class="btn btn-primary">Edit</button>
-                                                </a>
-                                            </td>
-                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/hunts/@hunt.getTreasureHuntId/delete')">Delete</button></td>
-                                        </tr>
-                                    }
-                                </table>
-                                <div class="col">
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/admin/hunts/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/hunts/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/hunts/@pagination.getPrevious">Previous</a></li>
+                                    <table id="huntsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Riddle</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>Destination</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                            </tr>
+                                        </thead>
+                                        @for(hunt <- hunts) {
+                                            <tr>
+                                                <td>@hunt.getRiddle</td>
+                                                <td>@hunt.getStartDateString</td>
+                                                <td>@hunt.getEndDateString</td>
+                                                <td>@hunt.getTreasureHuntDestinationId</td>
+                                                <td>
+                                                    <a href="@routes.AdminController.showEditHunt(hunt.getTreasureHuntId)">
+                                                        <button class="btn btn-primary">Edit</button>
+                                                    </a>
+                                                </td>
+                                                <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/hunts/@hunt.getTreasureHuntId/delete')">Delete</button></td>
+                                            </tr>
                                         }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/hunts/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/hunts/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
+                                    </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/hunts/0">Start</a></li>
+                                                <li class="page-item"><a class="page-link" href="/admin/hunts/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/hunts/0">Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/hunts/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/hunts/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/hunts/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                            @if(pagination.getActiveTab == 6) {
-                                <div class="tab-pane active" id="artists" role="tabpanel" aria-labelledby="deals-tab">
-                                }else {
-                                <div class="tab-pane" id="artists" role="tabpanel" aria-labelledby="deals-tab">
-                                }
-                            <div class="row">
-                                <div class="col text-center">
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#createArtistModal">
-                                        Create Artist</button>
-                                </div>
+                        @if(pagination.getActiveTab == 6) {
+                            <div class="tab-pane active" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
+                            <div class="tab-pane" id="artists" role="tabpanel" aria-labelledby="deals-tab">
+                        }
+                                <div class="row">
+                                    <div class="col text-center">
+                                        <button class="btn btn-primary" data-toggle="modal" data-target="#createArtistModal">
+                                            Create Artist</button>
+                                    </div>
 
-                                <table id="artistsTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ArtistId</th>
-                                            <th>Name</th>
-                                            <th>Countries</th>
-                                            <th>Members</th>
-                                            <th>Genres</th>
-                                            <th>Artist Admins</th>
-                                            <th>Edit</th>
-                                            <th>Delete</th>
-                                            <th>View</th>
-                                        </tr>
-                                    </thead>
-                                    @for(artist <- artists) {
-                                        <tr>
-                                            <td>@artist.getArtistId</td>
-                                            <td>@artist.getArtistName</td>
-                                            <td>
-                                                <ul>
-                                                @for(country <- artist.getCountryList) {
-                                                    <li>@country</li>
-                                                }
-                                                </ul>
-                                            </td>
-                                            <td>@artist.getMembers</td>
-                                            <td>
-                                                <ul>
-                                                @for(genre <- artist.getGenreList) {
-                                                    <li>@genre.getGenre</li>
-                                                }
-                                                </ul>
-                                            </td>
-                                            <td>
-                                                <ul>
-                                                @for(profile <- artist.getAdminsList) {
-                                                    <li>@profile.getProfileId: @profile.getFirstName @profile.getLastName</li>
-                                                }
-                                                </ul>
-                                            </td>
-                                            <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
-                                            <td><a onclick="fillDeleteValues('/admin/artists/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
-                                            <td><a href="/artists/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
-                                        </tr>
-                                    }
-                                </table>
-                                <div class="col">
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/admin/artists/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/artists/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/artists/@pagination.getPrevious">Previous</a></li>
+                                    <table id="artistsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ArtistId</th>
+                                                <th>Name</th>
+                                                <th>Countries</th>
+                                                <th>Members</th>
+                                                <th>Genres</th>
+                                                <th>Artist Admins</th>
+                                                <th>Edit</th>
+                                                <th>Delete</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        @for(artist <- artists) {
+                                            <tr>
+                                                <td>@artist.getArtistId</td>
+                                                <td>@artist.getArtistName</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(country <- artist.getCountryList) {
+                                                        <li>@country</li>
+                                                    }
+                                                    </ul>
+                                                </td>
+                                                <td>@artist.getMembers</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(genre <- artist.getGenreList) {
+                                                        <li>@genre.getGenre</li>
+                                                    }
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul>
+                                                        @for(profile <- artist.getAdminsList) {
+                                                            <li>@profile.getProfileId: @profile.getFirstName @profile.getLastName</li>
+                                                        }
+                                                    </ul>
+                                                </td>
+                                                <td><a href="@routes.AdminController.showEditArtist(artist.getArtistId)"><button class="btn btn-primary">Edit</button></a></td>
+                                                <td><a onclick="fillDeleteValues('/admin/artists/@artist.getArtistId/delete')"><button class="btn btn-danger">Delete</button></a></td>
+                                                <td><a href="/artists/@artist.getArtistId"><button class="btn btn-primary">View</button></a></td>
+                                            </tr>
                                         }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/artists/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/artists/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
+                                    </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/0">Start</a></li>
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/artists/0">Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/artists/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/artists/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                            @if(pagination.getActiveTab == 7) {
-                                <div class="tab-pane active" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
-                                }else {
-                                <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
-                                }
-                            <div class="row">
-                                <table id="artistRequestsTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>ArtistId</th>
-                                            <th>Name</th>
-                                            <th>Members</th>
-                                            <th>Verify</th>
-                                            <th>Decline</th>
-                                        </tr>
-                                    </thead>
-                                    @for(artist <- artists) {
-                                        <tr>
-                                            <td>@artist.getArtistId</td>
-                                            <td>@artist.getArtistName</td>
-                                            <td>@artist.getMembers</td>
-                                            <td><a href="/admin/artists/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>
-                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/artists/decline/@artist.getArtistId')">Decline</button></td>
-                                        </tr>
-                                    }
-                                </table>
-                                <div class="col">
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/admin/artists/requests/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/artists/requests/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/artists/requests/@pagination.getPrevious">Previous</a></li>
+                        @if(pagination.getActiveTab == 7) {
+                            <div class="tab-pane active" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }else {
+                            <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
+                        }
+                                <div class="row">
+                                    <table id="artistRequestsTable" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>ArtistId</th>
+                                                <th>Name</th>
+                                                <th>Countries</th>
+                                                <th>Members</th>
+                                                <th>Genres</th>
+                                                <th>Artist Admins</th>
+                                                <th>Verify</th>
+                                                <th>Decline</th>
+                                            </tr>
+                                        </thead>
+                                        @for(artist <- artists) {
+                                            <tr>
+                                                <td>@artist.getArtistId</td>
+                                                <td>@artist.getArtistName</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(country <- artist.getCountryList) {
+                                                        <li>@country</li>
+                                                    }
+                                                    </ul>
+                                                </td>
+                                                <td>@artist.getMembers</td>
+                                                <td>
+                                                    <ul>
+                                                    @for(genre <- artist.getGenreList) {
+                                                        <li>@genre.getGenre</li>
+                                                    }
+                                                    </ul>
+                                                </td>
+                                                <td>
+                                                    <ul>
+                                                    @for(profile <- artist.getAdminsList) {
+                                                        <li>@profile.getProfileId: @profile.getFirstName @profile.getLastName</li>
+                                                    }
+                                                    </ul>
+                                                </td>
+                                                <td><a href="/admin/artists/verify/@artist.getArtistId"><button class="btn btn-primary">Verify</button></a></td>
+                                                <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/artists/decline/@artist.getArtistId')">Decline</button></td>
+                                            </tr>
                                         }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/artists/requests/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/artists/requests/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
+                                    </table>
+                                    <div class="col">
+                                        <a>@pagination.getInfoString</a>
+                                        <ul class="pagination">
+
+                                            @if(pagination.isPreviousEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/requests/0">Start</a></li>
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/requests/@pagination.getPrevious">Previous</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/artists/requests/0">Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/artists/requests/@pagination.getPrevious">Previous</a></li>
+                                            }
+                                            @if(pagination.isNextEnabled) {
+                                                <li class="page-item"><a class="page-link" href="/admin/artists/requests/@pagination.getNext">Next</a></li>
+                                            } else {
+                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/artists/requests/@pagination.getNext">Next</a></li>
+                                            }
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                            @if(pagination.getActiveTab == 8) {
-                                <div class="tab-pane active" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
-                                }else {
-                                <div class="tab-pane" id="artistRequests" role="tabpanel" aria-labelledby="deals-tab">
-                                }
-                            <div class="row">
-                                <div class="col text-center">
-                                    <button class="btn btn-primary" data-toggle="modal" data-target="#createEventModal">
-                                        Create Event
-                                    </button>
-                                </div>
-                                <table id="artistRequestsTable" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>EventId</th>
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <th>Destination</th>
-                                            <th>Start Date</th>
-                                            <th>End Date</th>
-                                            <th>Age Restriction</th>
-                                            <th>Delete</th>
-                                        </tr>
-                                    </thead>
-                                    @for(event <- events) {
-                                        <tr>
-                                            <td>@event.getEventId</td>
-                                            <td>@event.getEventName</td>
-                                            <td>@event.getDescription</td>
-                                            <td>@event.getDestinationId</td>
-                                            <td>@event.getStartDateString</td>
-                                            <td>@event.getEndDateString</td>
-                                            <td>@event.getAgeRestrictionString</td>
-                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/events/@pagination.getOffset/delete/@event.getEventId')">Delete</button></td>
-                                        </tr>
-                                    }
-                                </table>
-                                <div class="col">
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/admin/events/0">Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/events/@pagination.getPrevious">Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/events/@pagination.getPrevious">Previous</a></li>
-                                        }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/admin/events/@pagination.getNext">Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/admin/events/@pagination.getNext">Next</a></li>
-                                        }
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                         </div>
                         </div>
                         </div>

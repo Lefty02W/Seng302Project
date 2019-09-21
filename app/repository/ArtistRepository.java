@@ -248,6 +248,7 @@ public class ArtistRepository {
         List<Artist> artistList = ebeanServer.find(Artist.class).where()
                 .setFirstRow(page * PAGE_SIZE)
                 .setMaxRows(PAGE_SIZE)
+                .orderBy("artist_name asc")
                 .findPagedList().getList();
         for(Artist artist : artistList) {
             returnArtistList.add(populateArtist(artist));

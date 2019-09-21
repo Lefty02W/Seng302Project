@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
 
-@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], destinationList: List[Destination], currentUser: Profile, id: Integer, toEdit: TripDestination, userId: Integer)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(tripForm: Form[Trip], tripDestinationForm: Form[TripDestination], currentTripDestinationsList: List[TripDestination], destinationList: List[Destination], currentUser: Profile, id: Integer, toEdit: TripDestination, userId: Integer, tripName: String)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 
@@ -25,19 +25,24 @@
     <link rel="stylesheet" href="@routes.Assets.at("stylesheets/trips.css")">
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>TravelEA | Trips</title>
+        <title>SoundBound | Trips</title>
     </head>
     <body>
         <div class="d-flex toggled" id="wrapper">
 
                 <!-- Sidebar -->
             <div id="sidebar-wrapper">
-                <h2 class="sidebar-heading">Soundbound </h2>
+                <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/> Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/> Destinations</a>
-                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.TripsController.show(0)"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/> Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/> Travellers</a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
+                        Profile</a>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
+                        Destinations</a>
+                    <a style="color: #d74961;
+                        background-color: #ede1d1 !important" href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
+                        Trips</a>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
+                        Travellers</a>
                     <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
                         Artists</a>
                     <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/> Treasure Hunt</a>
@@ -48,7 +53,8 @@
                     @if( currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/> Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/> Logout</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
+                        Logout</a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -66,7 +72,7 @@
                     @CSRF.formField
                     <div class="row">
                         <div class="tripNameInput">
-                            <input type="text" id="name" name="name" required placeholder="Trip Name">
+                            <input type="text" id="tripNameEntry" name="name" required placeholder="Trip Name">
                         </div>
                         <button type="submit" class="saveTripButton btn btn-primary" id="save saveAndBackButton">
                             Save Trip</button>
@@ -80,45 +86,45 @@
                             </div>
                         }
                         <div id = "viewCard" class="card-large upper-card">
-                            @helper.form(routes.TripsController.addDestinationEditTrip(id, userId)) {
-                                @CSRF.formField
-                                <div class="container">
-                                    <div class="row">
-                                        <div class="col">
-                                            <h3>Add Destination</h3>
+                        @helper.form(routes.TripsController.addDestinationEditTrip(id, userId)) {
+                            @CSRF.formField
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col">
+                                        <h3>Add Destination</h3>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <h5>Destination</h5>
+                                        <div class="container">
+                                            <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
+                                            @for(destination <- destinationList) {
+                                                <option value="@destination.getDestinationId">@destination.getName</option>
+                                            }
+                                            </select>
                                         </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <h5>Arrival Time</h5>
+                                        <input type="datetime-local" id="arrival" name="arrival">
                                     </div>
 
                                     <div class="row">
                                         <div class="col">
-                                            <h5>Destination</h5>
-                                            <div class="container">
-                                                <select class="selectpicker" data-live-search="true" name="destinationId" id="destinationId" title="Select Destination" required>
-                                                @for(destination <- destinationList) {
-                                                    <option value="@destination.getDestinationId">@destination.getName</option>
-                                                }
-                                                </select>
-                                            </div>
+                                            <h5>Departure Time</h5>
+                                            <input type="datetime-local" id="departure" name="departure">
                                         </div>
-
                                         <div class="col">
-                                            <h5>Arrival Time</h5>
-                                            <input type="datetime-local" id="arrival" name="arrival">
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col">
-                                                <h5>Departure Time</h5>
-                                                <input type="datetime-local" id="departure" name="departure">
-                                            </div>
-                                            <div class="col">
-                                                <button type="submit" class="button-add btn btn-primary" id="addDest">
-                                                    Add</button>
-                                            </div>
+                                            <button type="submit" class="button-add btn btn-primary" id="addDest">
+                                                Add</button>
                                         </div>
                                     </div>
                                 </div>
-                            }
+                            </div>
+                        }
                         </div>
                     </div>
                     <div class="col">
@@ -159,9 +165,26 @@
                 </div>
                 <div class="row justify-content-end">
                     <div class="row" id="backSaveButtonsRow">
-                        <a href="@routes.TripsController.show(0)">
-                            <button id="backButtonEdit" class="btn btn-secondary backButton" type="button">Back</button>
-                        </a>
+                            <button id="backButtonEdit" data-toggle="modal" data-target="#confirmBack" class="btn btn-secondary backButton" type="button">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="confirmBack">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="confirmBackTitle">Are you sure you want to go back?</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 id="confirmBackBody">All your changes will be lost if you leave</h6>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                            <button id="confirmBackBtn" class="btn btn-danger"  onclick="goBack()">
+                                Yes, go back</button>
                     </div>
                 </div>
             </div>
@@ -194,6 +217,8 @@
                     "scrollY": "20vh",
                     "scrollCollapse": true
                 });
+
+                document.getElementById('tripNameEntry').value = "@tripName";
             });
 
 
@@ -253,8 +278,12 @@
                 });
 
             });
+
             // ---------------------------------------------
 
+            function goBack() {
+                window.location.replace(document.referrer);
+            }
 
     </script>
     @if(toEdit != null) {
