@@ -50,10 +50,14 @@ html {
     position: fixed;
     width: inherit;
 }
+#cookieText{
+    padding: 1.5rem;
+}
+
 
 #cookieUseNotice {
     position: fixed;
-    opacity: 0.6;
+    opacity: 0.9;
     border-radius: 5%;
     color: #FFFFFF;
     bottom: 1vh; !important;
