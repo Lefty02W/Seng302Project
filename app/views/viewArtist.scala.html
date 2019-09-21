@@ -8,7 +8,7 @@
 <html lang="en">
     <head>
         <link rel="shortcut icon" type="image/*" href="@routes.Assets.at("images/logo.ico")"/>
-        <title>SoundBound | View Artist</title>
+        <title>SoundBound | @artist.getArtistName</title>
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap-select.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
@@ -85,18 +85,18 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="viewArtistTabs">
                             @if(activeTab == 0) {
-                                <li class="active"><a href="/artists/@artist.getArtistId" id="aboutTabLink">About</a></li>
+                                <li class="active"><a class="selectedTab" href="/artists/@artist.getArtistId" id="aboutTabLink">About</a></li>
                             } else {
                                 <li><a href="/artists/@artist.getArtistId" id="aboutTabLink">About</a></li>
                             }
                             @if(activeTab == 1) {
-                                <li class="active"><a href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">
+                                <li class="active"><a class="selectedTab" href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">
                                     Events</a></li>
                             } else {
                                 <li><a href="/artists/@artist.getArtistId/events/0" id="eventsTabLink">Events</a></li>
                             }
                             @if(activeTab == 2) {
-                                <li class="active" ><a href="/artists/@artist.getArtistId/members" id="membersTabLink">
+                                <li class="active" ><a class="selectedTab" href="/artists/@artist.getArtistId/members" id="membersTabLink">
                                     Members</a></li>
                             } else {
                                 <li><a href="/artists/@artist.getArtistId/members" id="membersTabLink">Members</a></li>
@@ -116,6 +116,16 @@
                         <div class="container">
                             <div id="about" class="row justify-content-center">
                                 <a>@artist.getBiography</a>
+                            </div>
+                            <hr class="divider">
+                            <div class="row justify-content-center spotify-row">
+                            @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
+                                @if(artist.getSpotifyLink.contains("embed")) {
+                                    <iframe class="spotify" src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                } else if(artist.getSpotifyLink.contains("spotify.com/")) {
+                                <iframe class="spotify" src="@artist.getSpotifyLink.replace("spotify.com/", "spotify.com/embed/")" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                }
+                            }
                             </div>
                         </div>
                     </div>
@@ -244,15 +254,25 @@
                 <div class="col social-col">
                     <div class="mb-5 flex-center" id="socialMediaIcons">
                             <!-- Facebook -->
-                        <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
+                        @if(artist.getFacebookLink != null && !artist.getFacebookLink.isEmpty) {
+                            <a class="fa fa-facebook fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getFacebookLink" id="fbIcon"></a>
+                        }
                             <!-- Twitter -->
-                        <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
+                        @if(artist.getTwitterLink != null && !artist.getTwitterLink.isEmpty) {
+                            <a class="fa fa-twitter fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getTwitterLink" id="twIcon"></a>
+                        }
                             <!--Instagram-->
-                        <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
+                        @if(artist.getInstagramLink != null && !artist.getInstagramLink.isEmpty) {
+                            <a class="fa fa-instagram fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getInstagramLink" id="instaIcon"></a>
+                        }
                             <!--Spotify-->
-                        <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
+                        @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
+                            <a class="fa fa-spotify fa-lg mr-md-5 mr-3 fa-2x" href="@artist.getSpotifyLink" id="spotifyIcon"></a>
+                        }
                             <!--Website link-->
-                        <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
+                        @if(artist.getWebsiteLink != null && !artist.getWebsiteLink.isEmpty) {
+                            <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
+                        }
                     </div>
                 </div>
             </div>
@@ -774,6 +794,10 @@
 
     <script>
             // ------------- SIDEBAR TOGGLE JS -------------
+
+
+
+
             $(function () {
                 $(".toggleButton").on('click', function (e) {
                     $("#wrapper").toggleClass('toggled');

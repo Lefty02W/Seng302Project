@@ -166,6 +166,15 @@ public class EditArtistSteps {
 
     @Then("^the artist link changes are saved in the database$")
     public void theArtistLinkChangesAreSavedInTheDatabase() throws Throwable {
+        checkLinks();
+    }
+
+    @Then("^the artist link changes are not saved in the database$")
+    public void theArtistLinkChangesAreNotSavedInTheDatabase() throws Throwable {
+        checkLinks();
+    }
+
+    private void checkLinks() {
         Artist artist = TestApplication.getArtistRepository().getArtistById(7);
         assertEquals("https://www.facebook.com/kingsofamazon", artist.getFacebookLink());
         assertEquals("https://www.instagram.com/kingsofamazon", artist.getInstagramLink());

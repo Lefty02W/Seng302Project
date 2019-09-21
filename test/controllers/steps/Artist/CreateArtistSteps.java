@@ -13,6 +13,8 @@ import models.Profile;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.util.*;
 
@@ -69,6 +71,31 @@ public class CreateArtistSteps {
         artistForm.put("countries", arg0);
     }
 
+    @And("^user enters facebook link as \"([^\"]*)\"$")
+    public void userEntersFacebookLinkAs(String arg0) throws Throwable {
+        artistForm.put("facebookLink", arg0);
+    }
+
+    @And("^user enters instagram link as \"([^\"]*)\"$")
+    public void userEntersInstagramLinkAs(String arg0) throws Throwable {
+        artistForm.put("instagramLink", arg0);
+    }
+
+    @And("^user enters spotify link as \"([^\"]*)\"$")
+    public void userEntersSpotifyLinkAs(String arg0) throws Throwable {
+        artistForm.put("spotifyLink", arg0);
+    }
+
+    @And("^user enters twitter link as \"([^\"]*)\"$")
+    public void userEntersTwitterLinkAs(String arg0) throws Throwable {
+        artistForm.put("twitterLink", arg0);
+    }
+
+    @And("^user enters website link as \"([^\"]*)\"$")
+    public void userEntersWebsiteLinkAs(String arg0) throws Throwable {
+        artistForm.put("websiteLink", arg0);
+    }
+
     @And("^user presses save artist$")
     public void userPressesSaveArtist() throws Throwable {
         Http.RequestBuilder request = Helpers.fakeRequest()
@@ -88,9 +115,23 @@ public class CreateArtistSteps {
 
             Artist newArtist = userArtists.get(userArtists.size() - 1);
             assertEquals(newArtist.getArtistName(), "King Crimson");
-
         } else {
             fail();
+        }
+
+
+    }
+
+    @Then("^the artist is not saved in the database$")
+    public void theArtistIsNotSavedInTheDatabase() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        List<Artist> userArtists = TestApplication.getArtistRepository().getAllUserArtists(1);
+        artistForm = new HashMap<>();
+        if (userArtists.size() > 0) {
+            Artist newArtist = userArtists.get(userArtists.size() - 1);
+            assertThat(newArtist.getArtistName(), not(equalTo("Autechre")));
+        } else {
+            assertTrue(true);
         }
 
 
