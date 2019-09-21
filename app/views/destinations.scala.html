@@ -408,13 +408,13 @@
                                                 <div class="row entry-row">
                                                     <div class="form-group" id="holder">
                                                         <small id="label">Latitude</small>
-                                                        <input type="number" step="0.000000000000001" id="latitude" class="createLat" value=0.0 name="latitude" onkeyup="moveCreateMarker()">
+                                                        <input type="number" step="0.0000000001" id="latitude" class="createLat" value=0.0 name="latitude" onkeyup="moveCreateMarker()">
                                                     </div>
                                                 </div>
                                                 <div class="row entry-row">
                                                     <div class="form-group" id="holder">
                                                         <small id="label">Longitude</small>
-                                                        <input type="number" step="0.000000000000001" id="longitude" class=createLng value=0.0 name="longitude" onkeyup="moveCreateMarker()">
+                                                        <input type="number" step="0.0000000001" id="longitude" class=createLng value=0.0 name="longitude" onkeyup="moveCreateMarker()">
                                                     </div>
                                                 </div>
                                                 <div class="row entry-row">
@@ -1198,7 +1198,7 @@
                 }
 
 
-                if (!center) {
+                if (center === undefined) {
                     center = {lat: -43.5321, lng: 172.6362};
                 }
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
