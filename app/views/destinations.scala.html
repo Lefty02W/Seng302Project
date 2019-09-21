@@ -735,7 +735,7 @@
                             "sDom": 't'
                         });
                         if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(setLocation, defualtLocation)
+                    navigator.geolocation.getCurrentPosition(setLocation, defaultLocation);
                 }
 
 
@@ -1180,7 +1180,7 @@
             /**
             * Callback for failure of geolocation
             */
-            function defualtLocation(err) {
+            function defaultLocation(err) {
                 center = {lat: -43.5321, lng: 172.6362};
             }
 
@@ -1198,6 +1198,9 @@
                 }
 
 
+                if (!center) {
+                    center = {lat: -43.5321, lng: 172.6362};
+                }
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
                     center: center,
                     streetViewControl: false,
