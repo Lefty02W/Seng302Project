@@ -291,28 +291,27 @@
                                         </div>
 
                                     </div>
-                                    <div class="row">
                                     @for(artist <- event.getEventArtists) {
-                                        <i class="fa fa-user">&nbsp;</i>
-                                        <p>@artist.getArtistName</p>&nbsp;
-
+                                        <div class="row">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user">&nbsp;</i>
+                                            <p>@artist.getArtistName</p>
+                                        </div>
                                     }
+                                    <div class="row">
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-music">&nbsp;</i>@event.getEventTypes.get(0)</p>
                                     </div>
                                     <div class="row">
-                                        <i class="fa fa-music">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
-                                    </div>
-                                    <div class="row">
-                                        <i class="fa fa-globe">&nbsp;</i>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-globe">&nbsp;</i>
                                         <p>@event.getDestination.getName</p>
                                     </div>
                                     <div class="row">
-                                        <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
                                     </div>
                                     <div class="row">
-                                        <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
                                     </div>
                                     <div class="row">
-                                        <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-exclamation-triangle">&nbsp;</i>
                                         <p>@event.getAgeRestrictionString</p>
                                     </div>
                                     <div class="row">

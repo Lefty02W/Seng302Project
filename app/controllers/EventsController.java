@@ -361,7 +361,6 @@ public class EventsController extends Controller {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
                 EventFormData eventFormData = searchEventForm.get();
-                System.out.println("Search Here: " + searchEventForm);
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
                 eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("")) {
