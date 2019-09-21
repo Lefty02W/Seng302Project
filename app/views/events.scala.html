@@ -250,8 +250,18 @@
                                                     </select>
                                                 </div>
                                                 <div class="col padded">
+                                                @if(searchData != null) {
+                                                    @if(searchData.getAttending.equals("on")) {
+                                                        <input type="checkbox" id="attending" name="attending" checked>
+                                                        <label for="toggle">Attending Events </label>
+                                                    } else {
+                                                        <input type="checkbox" id="attending" name="attending">
+                                                        <label for="toggle">Attending Events </label>
+                                                    }
+                                                } else {
                                                     <input type="checkbox" id="attending" name="attending">
                                                     <label for="toggle">Attending Events </label>
+                                                }
                                                 </div>
                                                 <div class="col padded">
                                                     <small id="label" class="dateLabel overlay-dropdown" for="startDate">Date</small>
