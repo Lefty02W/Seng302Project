@@ -228,7 +228,11 @@ public class EventsController extends Controller {
     }
 
 
-
+    /**
+     * Endpoint method to create an event as an artist admin.
+     * @param request Http Request
+     * @return Redirect to the admin event URL
+     */
     @RestrictAnnotation()
     public CompletionStage<Result> createAdminEvent(Http.Request request) {
         return supplyAsync(() -> {
@@ -251,6 +255,12 @@ public class EventsController extends Controller {
         });
     }
 
+    /**
+     * Endpoint method to create an event as an artist
+     * @param request Http Request
+     * @param id Id of the artist that is creating an event
+     * @return Redirect to artists page
+     */
     public CompletionStage<Result> createArtistEvent(Http.Request request, int id){
         return supplyAsync(() -> {
             Integer profId = SessionController.getCurrentUserId(request);
@@ -279,6 +289,11 @@ public class EventsController extends Controller {
         });
     }
 
+    /**
+     * End point to create an event as a user.
+     * @param request Http request.
+     * @return Redirect to the event page.
+     */
     @RestrictAnnotation()
     public CompletionStage<Result> createUserEvent(Http.Request request) {
 
