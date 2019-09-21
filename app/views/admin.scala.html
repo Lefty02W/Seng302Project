@@ -483,13 +483,13 @@
                                                 <li class="page-item"><a class="page-link" href="/admin/profiles/0">Start</a></li>
                                                 <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
                                             } else {
-                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/profiles/0">Start</a></li>
-                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled disabledPagination" href="/admin/profiles/0">Start</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled disabledPagination" href="/admin/profiles/@pagination.getPrevious">Previous</a></li>
                                             }
                                             @if(pagination.isNextEnabled) {
                                                 <li class="page-item"><a class="page-link" href="/admin/profiles/@pagination.getNext">Next</a></li>
                                             } else {
-                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/profiles/@pagination.getNext">Next</a></li>
+                                                <li class="page-item disabled"><a class="page-link disabled disabledPagination" href="/admin/profiles/@pagination.getNext">Next</a></li>
                                             }
                                         </ul>
                                     </div>
@@ -640,49 +640,47 @@
                                         @for(destinationChange <- destinationChangeList) {
                                             <tr>
 
-                                                <td>@destinationChange.getEmail</td>
-                                                <td>
-                                                    <a href='/destinations/@destinationChange.getDestination.getDestinationId/edit/show/@destinationChange.getDestination.getVisible'>@destinationChange.getDestination.getName</a></td>
-                                                <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
-                                                @if(destinationChange.getAction == 1) {
-                                                    <td>Add</td>
-                                                } else {
-                                                    <td>Remove</td>
-                                                }
-                                                <td><a href="/admin/destinations/@destinationChange.getId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
-                                                <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
-                                            </tr>
+                                            <td>@destinationChange.getEmail</td>
+                                            <td>@destinationChange.getDestination.getName</td>
+                                            <td>@destinationChange.getTravellerType.getTravellerTypeName</td>
+                                            @if(destinationChange.getAction == 1) {
+                                                <td>Add</td>
+                                            } else {
+                                                <td>Remove</td>
+                                            }
+                                            <td><a href="/admin/destinations/@destinationChange.getId/request/accept"><button class="btn btn-primary">Approve</button></a></td>
+                                            <td><button class="btn btn-danger" onclick="fillDeleteValues('/admin/destinations/@destinationChange.getId/request/reject')">Decline</button></td>
+                                        </tr>
+                                    }
+                                </table>
+                                <div class="col">
+                                    <a>@pagination.getInfoString</a>
+                                    <ul class="pagination">
+                                        <li class="page-item"><a class="page-link" href="/admin/destinations/requests/0">Start</a></li>
+                                        @if(pagination.isPreviousEnabled) {
+                                            <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
+                                        } else {
+                                            <li class="page-item disabled"><a class="page-link" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
                                         }
-                                    </table>
-                                    <div class="col">
-                                        <a>@pagination.getInfoString</a>
-                                        <ul class="pagination">
-                                            @if(pagination.isPreviousEnabled) {
-                                                <li class="page-item"><a class="page-link" href="/admin/destinations/requests/0">Start</a></li>
-                                                <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
-                                            } else {
-                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/destinations/requests/0">Start</a></li>
-                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/destinations/requests/@pagination.getPrevious">Previous</a></li>
-                                            }
-                                            @if(pagination.isNextEnabled) {
-                                                <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
-                                            } else {
-                                                <li class="page-item disabled"><a class="page-link disabled" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
-                                            }
-                                        </ul>
-                                    </div>
+                                        @if(pagination.isNextEnabled) {
+                                            <li class="page-item"><a class="page-link" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
+                                        } else {
+                                            <li class="page-item disabled"><a class="page-link" href="/admin/destinations/requests/@pagination.getNext">Next</a></li>
+                                        }
+                                    </ul>
                                 </div>
                             </div>
-                        @if(pagination.getActiveTab == 5) {
-                            <div class="tab-pane active" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
-                        }else {
-                            <div class="tab-pane" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
-                        }
-                                <div class="row">
-                                    <div class="col text-center">
-                                        <button class="btn btn-primary" data-toggle="modal" data-target="#createHuntModal">
-                                            Create Treasure Hunt</button>
-                                    </div>
+                        </div>
+                            @if(pagination.getActiveTab == 5) {
+                                <div class="tab-pane active" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
+                                }else {
+                                <div class="tab-pane" id="treasureHunts" role="tabpanel" aria-labelledby="deals-tab">
+                                }
+                            <div class="row">
+                                <div class="col text-center">
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#createHuntModal">
+                                        Create Treasure Hunt</button>
+                                </div>
 
                                     <table id="huntsTable" class="table table-striped">
                                         <thead>

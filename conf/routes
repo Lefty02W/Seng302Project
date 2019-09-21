@@ -147,7 +147,7 @@ GET     /events/:offset                         controllers.EventsController.sho
 POST    /events/create                          controllers.EventsController.createUserEvent(request : Request)
 GET     /events/:id/showEdit/:offset            controllers.EventsController.showEventEdit(request : Request, offset : Integer, id : Integer)
 POST    /events/:id/edit                        controllers.EventsController.editEvent(request : Request, id : Integer)
-GET     /events/all/search                          controllers.EventsController.search(request : Request)
+GET     /events/all/search/:offset              controllers.EventsController.search(request : Request, offset : Integer)
 GET     /artists/:artistId/events/:eventId/delete   controllers.EventsController.deleteEvent(request : Request, artistId : Integer, eventId : Integer)
 GET     /artists/:artistId/events/edit/:eventId     controllers.EventsController.editArtistEvent(request : Request, artistId : Integer, eventId : Integer)
 POST    /artists/:artistId/events/edit/:eventId     controllers.EventsController.editEventFromArtist(request : Request, artistId : Integer, eventId : Integer)

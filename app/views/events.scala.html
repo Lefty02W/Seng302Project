@@ -3,7 +3,7 @@
 @import views.html.helper.{CSRF, form}
 @(currentUser : Profile, countries: List[String], genres: List[MusicGenre], artists: List[Artist],
         destinations: List[Destination], events: List[Events], eventForm : Form[Events], editEvent: RoutedObject[Events],
-        eventFormDataForm : Form[EventFormData], isVerifiedArtist: Boolean, paginationHelper : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
+        eventFormDataForm : Form[EventFormData], isVerifiedArtist: Boolean, paginationHelper : PaginationHelper, searchData : EventFormData)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -27,6 +27,8 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/events.css")">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 
     </head>
@@ -93,7 +95,7 @@
 
         <div class="row justify-content-center" id="eventsContainer">
             <div class="col-lg-9 col-sm-11">
-                @form(routes.EventsController.search()){
+                @form(routes.EventsController.search(0)){
                         @CSRF.formField
                         <div class="accordion" id="filterAccordion">
                             <div class="card">
@@ -116,36 +118,114 @@
                                                 <div class="col">
                                                     <small id="label" for="artistName">Artist</small>
                                                     <select class="selectpicker overlay-dropdown" id="artistName" name="artistName" title="Artist Name">
-                                                    @for(artist <- artists) {
-                                                        <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                    @if(searchData != null) {
+                                                        @for(artist <- artists) {
+                                                            @if(artist.getArtistId.equals(searchData.getArtistID)) {
+                                                                <option selected value="@artist.getArtistId">@artist.getArtistName</option>
+                                                            } else {
+                                                                <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                            }
+                                                        }
+                                                    } else {
+                                                        @for(artist <- artists) {
+                                                            <option value="@artist.getArtistId">@artist.getArtistName</option>
+                                                        }
                                                     }
                                                     </select>
                                                 </div>
                                                 <div class="col type-drop">
                                                     <small id="label" for="eventType">Event type</small>
                                                     <select class="selectpicker overlay-dropdown" id="eventType" name="eventType" title="Event Type">
-                                                        <option value="1">Gig</option>
-                                                        <option value="2">Meetup</option>
-                                                        <option value="3">Competition</option>
-                                                        <option value="4">Party</option>
-                                                        <option value="5">Charity</option>
-                                                        <option value="6">Festival</option>
+                                                        @if(searchData != null) {
+
+                                                            @if(searchData.getEventTypeId.equals(1)) {
+                                                                <option selected value="1">Gig</option>
+                                                            } else {
+                                                                <option value="1">Gig</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(2)) {
+                                                                <option selected value="2">Meetup</option>
+                                                            } else {
+                                                                <option value="2">Meetup</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(3)) {
+                                                                <option selected value="3">Competition</option>
+                                                            } else {
+                                                                <option value="3">Competition</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(4)) {
+                                                                <option selected value="4">Party</option>
+                                                            } else {
+                                                                <option value="4">Party</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(5)) {
+                                                                <option selected value="5">Charity</option>
+                                                            } else {
+                                                                <option value="5">Charity</option>
+                                                            }
+                                                            @if(searchData.getEventTypeId.equals(6)) {
+                                                                <option selected value="6">Festival</option>
+                                                            } else {
+                                                                <option value="6">Festival</option>
+                                                            }
+                                                        } else {
+                                                            <option value="1">Gig</option>
+                                                            <option value="2">Meetup</option>
+                                                            <option value="3">Competition</option>
+                                                            <option value="4">Party</option>
+                                                            <option value="5">Charity</option>
+                                                            <option value="6">Festival</option>
+                                                        }
                                                     </select>
                                                 </div>
                                                 <div class="col dest-drop">
                                                     <small id="label" for="country">Destination</small>
                                                     <select class="selectpicker overlay-dropdown" title="Destination"  name="destinationId" id="destinationId">
-                                                    @for(destination <- destinations) {
-                                                        <option value="@destination.getDestinationId">@destination.getName</option>
+                                                    @if(searchData != null) {
+                                                        @for(destination <- destinations) {
+                                                            @if(destination.getDestinationId.equals(searchData.getIntegerDestinationId)) {
+                                                                <option selected value="@destination.getDestinationId">@destination.getName</option>
+                                                            } else {
+                                                                <option value="@destination.getDestinationId">@destination.getName</option>
+                                                            }
+                                                        }
+                                                    } else {
+                                                        @for(destination <- destinations) {
+                                                            <option value="@destination.getDestinationId">@destination.getName</option>
+                                                        }
                                                     }
                                                     </select>
                                                 </div>
                                                 <div class="col age-drop">
                                                     <small id="label" for="ageRestriction">Age Restriction</small>
                                                     <select class="selectpicker overlay-dropdown" id="ageRestriction" name="ageRestriction" title="Age Restriction">
-                                                        <option value="0">All ages</option>
-                                                        <option value="18">18+</option>
-                                                        <option value="21">21+</option>
+                                                        @if(searchData != null) {
+                                                            @if(searchData.getAgeRestriction.equals("0")) {
+                                                                <option selected value="0">All ages</option>
+                                                            } else {
+                                                                <option value="0">All ages</option>
+                                                            }
+                                                            @if(searchData.getAgeRestriction.equals("16")) {
+                                                                <option selected value="16">16+</option>
+                                                            } else {
+                                                                <option value="16">16+</option>
+                                                            }
+                                                            @if(searchData.getAgeRestriction.equals("18")) {
+                                                                <option selected value="18">18+</option>
+                                                            } else {
+                                                                <option value="18">18+</option>
+                                                            }
+                                                            @if(searchData.getAgeRestriction.equals("21")) {
+                                                                <option selected value="21">21+</option>
+                                                            } else {
+                                                                <option value="21">21+</option>
+                                                            }
+                                                        } else {
+                                                            <option value="0">All ages</option>
+                                                            <option value="16">16+</option>
+                                                            <option value="18">18+</option>
+                                                            <option value="21">21+</option>
+                                                        }
                                                     </select>
                                                 </div>
                                             </div>
@@ -154,16 +234,29 @@
                                                 <div class="col padded">
                                                     <small id="label" for="genre">Genre</small>
                                                     <select class="selectpicker overlay-dropdown" id="genre" name="genre" title="Genres">
-                                                    @for(genre <- genres) {
-                                                        <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                    @if(searchData != null) {
+                                                        @for(genre <- genres) {
+                                                            @if(genre.getGenreId.equals(searchData.getGenreId)) {
+                                                                <option selected value="@genre.getGenreId">@genre.getGenre</option>
+                                                            } else {
+                                                                <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                            }
+                                                        }
+                                                    } else {
+                                                        @for(genre <- genres) {
+                                                            <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                        }
                                                     }
                                                     </select>
                                                 </div>
                                                 <div class="col padded">
                                                     <small id="label" class="dateLabel overlay-dropdown" for="startDate">Date</small>
-                                                    <input type="datetime-local" id="startDate" name="startDate">
+                                                    @if(searchData != null) {
+                                                        <input value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                                    } else {
+                                                        <input type="datetime-local" id="startDate" name="startDate">
                                                     }
-
+                                                    }
                                                 </div>
                                                 <div class="col padded">
                                                     <a href="@routes.EventsController.show(0)">
@@ -178,78 +271,132 @@
                             </div>
                         </div>
 
-                <div class="viewEvents">
-                    <div class="row" id="allEventCards">
-                        @for(event <- events){
-                            <div class="card-body col col-md-12 col-xl-6" id="eventCard">
-                                <div class="card-header">@event.getEventName</div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        <p id="eventStats">
-                                            <ul>
-                                                @for(artist <- event.getEventArtists){
-                                                    <li>@artist.getArtistName</li>
-                                                    }
-                                            </ul>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        Date & Time: @event.getStartDate -> @event.getEndDate
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        @*todo change this to destination name*@
-                                        Destination: @event.getDestinationId
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        @if(!event.getEventTypes.isEmpty) {
-                                            <p id="eventType">Event Type: @event.getEventTypes.get(0)</p>
-                                        }
+                    <div class="row" id="EventRow">
+                        <div class="viewEvents">
+                        <div class="col" id="allEventCards">
+                            @if(events.isEmpty) {
+                                <label>There are no more events in this search</label>
+                            }
+                            @for(event <- events){
+                                <div class="card-body col col-md-12" id="eventCard">
+                                    <div class="card-header event-link toggled eventTitle" id='eventName@event.getEventId' onclick="showEvent(@event.getEventId, this)">
+                                        @event.getEventName
 
-                                        <p id="eventRestriction">Age Restriction: @event.getAgeRestrictionString</p>
+                                        <div id="editEventLink">
+                                            @if(isVerifiedArtist) {
+                                                <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
+                                                    <i class="fa fa-edit">Edit</i>
+                                                </a>
+                                            }
+                                        </div>
 
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        <p id="eventDescription">Description: @event.getDescription</p>
+                                    @for(artist <- event.getEventArtists) {
+                                        <div class="row">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user">&nbsp;</i>
+                                            <p>@artist.getArtistName</p>
+                                        </div>
+                                    }
+                                    <div class="row">
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-music">&nbsp;</i>@event.getEventTypes.get(0)</p>
                                     </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col col-10">
-                                        @if(isVerifiedArtist) {
-                                            <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
-                                                <button class="btn btn-primary">Edit</button>
-                                            </a>
-                                        }
+                                    <div class="row">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-globe">&nbsp;</i>
+                                        <p>@event.getDestination.getName</p>
                                     </div>
+                                    <div class="row">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
+                                    </div>
+                                    <div class="row">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
+                                    </div>
+                                    <div class="row">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                        <p>@event.getAgeRestrictionString</p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h4 class="primary-color">Description</h4>
+                                            <p>@event.getDescription</p>
+                                        </div>
+                                        <div class="col">
+                                            <h4 class="primary-color">Genres</h4>
+                                            @for(genre <- event.getEventGenres) {
+                                                <p>@genre.getGenre</p>
+                                            }
+                                        </div>
+                                    </div>
+
                                 </div>
-                            </div>
-                        }
+                            }
+                        </div></div>
+                        <div id="map-table-card" class="card-large">
+                            <div id="legend"></div>
+                            <div id="eventsMap"></div>
+
+                        </div>
                     </div>
+                <ul class="pagination" id="pagination-section">
+                    @if(paginationHelper.isPreviousEnabled) {
+                        @if(searchData != null) {
+                            @helper.form(routes.EventsController.search(0)) {
+                                @CSRF.formField
+                                <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
+                                <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
+                                <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
+                                <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <li class="page-item"><button class="page-link" href="/events/all/search/0">Start</button></li>
+                            }
+                            @helper.form(routes.EventsController.search(paginationHelper.getPrevious)) {
+                                @CSRF.formField
+                                <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
+                                <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
+                                <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
+                                <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <li class="page-item"><button class="page-link" href="/events/all/search/@paginationHelper.getPrevious">Previous</button></li>
+                            }
+                        } else {
+                            <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
+                            <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
+                        }
+                    } else {
+                        <li class="page-item disabled"><a class="page-link disabledPagination" href="/events/0">Start</a></li>
+                        <li class="page-item disabled"><a class="page-link disabledPagination" href="/events/@paginationHelper.getPrevious">Previous</a></li>
+                    }
+                    @if(paginationHelper.isNextEnabled) {
+                        @if(searchData != null) {
+                            @helper.form(routes.EventsController.search(paginationHelper.getNext)) {
+                                @CSRF.formField
+                                <input type="hidden" value="@searchData.getArtistName" id="artistName" name="artistName" title="Artist Name">
+                                <input type="hidden" value="@searchData.getEventName" id="eventName" name="eventName" title="Event Name">
+                                <input type="hidden" value="@searchData.getEventType" id="eventType" name="eventType" title="Event Type">
+                                <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
+                                <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
+                                <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                @if(events.isEmpty) {
+                                    <li class="page-item disabled"><button class="page-link disabledPagination" id="nextLinkSearch">Next</button></li>
+                                } else {
+                                    <li class="page-item"><button class="page-link" id="nextLinkSearch">Next</button></li>
+                                }
+                            }
+                        } else {
+                            <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
+                        }
+                    } else {
+                        <li class="page-item disabled"><a class="page-link disabledPagination" href="/events/@paginationHelper.getNext">Next</a></li>
+                    }
+                </ul>
+
                 </div>
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="/events/0">Start</a></li>
-                @if(paginationHelper.isPreviousEnabled) {
-                    <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
-                } else {
-                    <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getPrevious">Previous</a></li>
-                }
-                @if(paginationHelper.isNextEnabled) {
-                    <li class="page-item"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
-                } else {
-                    <li class="page-item disabled"><a class="page-link" href="/events/@paginationHelper.getNext">Next</a></li>
-                }
-            </ul>
+
             </div>
-        </div>
-
-
 
 
     </body>
@@ -556,6 +703,396 @@
 
 
     <script>
+            var map;
+            var nightStyle = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#242f3e"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#746855"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#242f3e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.locality",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#263c3f"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#6b9a76"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#38414e"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#212a37"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#9ca5b3"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#746855"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#1f2835"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#f3d19c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#2f3948"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#d59563"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#17263c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "saturation": -10
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#515c6d"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#17263c"
+                        }
+                    ]
+                }
+            ];
+
+            var dayStyle = [
+                {
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#ebe3cd"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#523735"
+                        }
+                    ]
+                },
+                {
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#f5f1e6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#c9b2a6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#dcd2be"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#ae9e90"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "landscape.natural",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#93817c"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#a5b076"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi.park",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#447530"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f5f1e6"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.arterial",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#fdfcf8"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#f8c967"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#e9bc62"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway.controlled_access",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#e98d58"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.highway.controlled_access",
+                    "elementType": "geometry.stroke",
+                    "stylers": [
+                        {
+                            "color": "#db8555"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#806b63"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#8f7d77"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.line",
+                    "elementType": "labels.text.stroke",
+                    "stylers": [
+                        {
+                            "color": "#ebe3cd"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit.station",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "color": "#dfd2ae"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "geometry.fill",
+                    "stylers": [
+                        {
+                            "color": "#b9d3c2"
+                        },
+                        {
+                            "saturation": -10
+                        }
+                    ]
+                },
+                {
+                    "featureType": "water",
+                    "elementType": "labels.text.fill",
+                    "stylers": [
+                        {
+                            "color": "#92998d"
+                        }
+                    ]
+                }
+            ];
 
             $(function () {
                 $('[data-toggle="tooltip"]').tooltip()
@@ -590,8 +1127,186 @@
                 });
 
             });
+
+            /**
+             * Initialises the map view
+             */
+            function initMap() {
+                var styles;
+                var today = new Date();
+                var hours = today.getHours();
+                if (hours <= 6 || hours >= 21) {
+                    styles = nightStyle;
+                } else {
+                    styles = dayStyle;
+                }
+                var center = {lat: -43.5321, lng: 172.6362};
+                map = new google.maps.Map(document.getElementById('eventsMap'), {
+                    center: center,
+                    streetViewControl: false,
+                    fullscreenControl: false,
+                    zoom: 8
+                });
+                addMarkers();
+
+                var legend = document.getElementById('legend');
+                var gigDiv = document.createElement('div');
+                gigDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.svg")"> Gig';
+                var meetupDiv = document.createElement('div');
+                meetupDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Meetup/users-solid-all.svg")"> Meetup';
+                var competitionDiv = document.createElement('div');
+                competitionDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Competition/bolt-solid-16.svg")"> Competition';
+                var partyDiv = document.createElement('div');
+                partyDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-all.svg")"> Party';
+                var charityDiv = document.createElement('div');
+                charityDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-16.svg")"> Charity';
+                var festivalDiv = document.createElement('div');
+                festivalDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Festival/music-solid-16.svg")"> Festival';
+                var allAgeDiv = document.createElement('div');
+                allAgeDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-all.png")"> Any';
+                var age16Div = document.createElement('div');
+                age16Div.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-16.png")"> 16+';
+                var age18Div = document.createElement('div');
+                age18Div.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-18.png")"> 18+';
+                var age21Div = document.createElement('div');
+                age21Div.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-21.png")"> 21+';
+
+                var iconLegend = document.createElement('div');
+                iconLegend.innerHTML = '<h6>Event Icons</h6>';
+                var colourLegend = document.createElement('div');
+                colourLegend.innerHTML = '<h6>Age Restrictions</h6>';
+
+                legend.appendChild(iconLegend);
+                legend.appendChild(gigDiv);
+                legend.appendChild(meetupDiv);
+                legend.appendChild(partyDiv);
+                legend.appendChild(competitionDiv);
+                legend.appendChild(charityDiv);
+                legend.appendChild(festivalDiv);
+                legend.appendChild(colourLegend);
+                legend.appendChild(allAgeDiv);
+                legend.appendChild(age16Div);
+                legend.appendChild(age18Div);
+                legend.appendChild(age21Div);
+                map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
+            }
+
+            var markersMap = new Map();
+            var markers = [];
+            function addMarkers() {
+                @for(event <- events) {
+                    var icon;
+
+                    if(@event.getAgeRestriction == 0) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        }
+                    }
+
+                    if(@event.getAgeRestriction == 16) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        }
+                    }
+
+                    if(@event.getAgeRestriction == 18) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        }
+                    }
+
+                    if(@event.getAgeRestriction == 21) {
+                        if (@event.getEventTypes.get(0).equals("Gig")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Party")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
+                        }
+                    }
+
+                    var marker = new google.maps.Marker({
+                        position: {
+                            lat: @event.getDestination.getLatitude,
+                            lng: @event.getDestination.getLongitude
+                        },
+                        animation: google.maps.Animation.DROP,
+                        map: map,
+                        icon: icon
+                    });
+                    marker.content = "Name:  @event.getEventName" +
+                            "<br> Type: @event.getEventTypeString" +
+                            "<br> Destination: @event.getDestination.getName";
+                    var infoWindow = new google.maps.InfoWindow();
+                    google.maps.event.addListener(marker, 'click', function() {
+                        infoWindow.setContent(this.content);
+                        infoWindow.open(this.getMap(), this);
+                        map.setCenter(marker.getPosition());
+                        clearSelected();
+                        document.getElementById("eventName@event.getEventId").style.color = '#009779';
+                    });
+
+                    markers.push(marker);
+                    markersMap.set(@event.getEventId, marker);
+                }
+            }
+
+            function clearSelected(){
+                var elements = document.getElementsByClassName("eventTitle");
+                for (var i = 0; i < elements.length; i++) {
+                    elements[i].style.color = "#d74961";
+                }
+            }
+
+            function showEvent(eventId, event) {
+                var marker = markersMap.get(eventId);
+                new google.maps.event.trigger(marker, 'click');
+                map.setCenter(marker.getPosition());
+                clearSelected();
+                event.style.color = '#009779';
+            }
             // ---------------------------------------------
 
     </script>
+    @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"*@
+    @*async defer></script>*@
+    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    async defer></script>
 
 </html>

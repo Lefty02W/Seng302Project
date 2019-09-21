@@ -1,6 +1,6 @@
 .viewEvents {
-    width: 100%;
-    height: 70%;
+    height: 70vh;
+    width: 30%;
     overflow-y: scroll;
     overflow-x: hidden;
     border-width: 1px;
@@ -41,7 +41,58 @@
     z-index: 1;
 }
 
+#EventRow {
+    padding-left: 15px;
+    padding-right: 15px;
+}
 
+#map-table-card {
+    height: 70vh;
+    width: 70%;
+    margin-top: 0;
+    padding: 0;
+}
 
+#eventsMap {
+    width:100%;
+    height:100%;
+}
 
+#eventCard {
+    padding: 0;
+}
 
+#allEventCards {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+    width: 10%;
+}
+
+#legend img {
+    height: 24px;
+    width: 24px;
+}
+
+#legend h4 {
+    color: black;
+}
+
+.event-link {
+    color: #d74961;
+    text-decoration: underline;
+}
+
+.event-link:hover {
+    color: #009779;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#editEventLink {
+    float: right;
+}
