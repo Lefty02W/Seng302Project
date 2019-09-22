@@ -175,12 +175,6 @@
 
                                         </div>
                                         <div class="card-footer">
-                                        @if(artist.getAdminsList.contains(currentUser)) {
-                                            <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
-                                                <button class="btn btn-primary">Edit</button>
-                                            </a>
-                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
-                                        }
                                         @if(true) { @* todo: change to add logic to display if not currently attending *@
                                             @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
                                                     || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
@@ -200,6 +194,21 @@
                                             <button class="btn btn-secondary">
                                                 <i class="fa fa-remove"></i>
                                                 Don't attend
+                                            </button>
+                                        }
+
+                                        @if(artist.getAdminsList.contains(currentUser)) {
+                                            <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
+                                                <button class="btn btn-primary">
+                                                    <i class="fa fa-edit"></i>
+                                                    Edit
+                                                </button>
+                                            </a>
+
+
+                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">
+                                                <i class="fa fa-trash"></i>
+                                                Delete
                                             </button>
                                         }
                                         </div>

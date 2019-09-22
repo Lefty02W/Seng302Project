@@ -156,3 +156,4 @@ GET     /artists/:artistId/events/edit/:eventId     controllers.EventsController
 POST    /artists/:artistId/events/edit/:eventId     controllers.EventsController.editEventFromArtist(request : Request, artistId : Integer, eventId : Integer)
 GET     /events/:eventId/attend                     controllers.EventsController.attendEvent(request : Request, eventId : Integer)
 GET     /events/:eventId/leave                      controllers.EventsController.leaveEvent(request : Request, eventId : Integer)
+GET     /events/profile/:eventId/leave              controllers.EventsController.leaveEventFromProfile(request : Request, eventId : Integer)

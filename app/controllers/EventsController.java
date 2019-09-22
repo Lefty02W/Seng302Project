@@ -456,4 +456,16 @@ public class EventsController extends Controller {
         attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
         return redirect(eventURL).flashing("info", "No longer going to event");
     }
+
+    /**
+     * Endpoint method to withdraw from an event with the given eventID and to redirect to the profile page
+     * Used for the "Don't attend" functionality from the profile page "Upcoming Events" tab
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to the users profile page
+     */
+    public Result leaveEventFromProfile(Http.Request request, Integer eventId) {
+        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
+        return redirect("/profile").flashing("success", "No longer going to event: " + eventRepository.lookup(eventId).getEventName());
+    }
 }

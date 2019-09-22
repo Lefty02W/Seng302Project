@@ -351,13 +351,14 @@ public class ProfileController extends Controller implements TypesInterface {
 
                 List<Artist> followedArtistsList = artistRepository.getFollowedArtists(toSend.getProfileId());
                 List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
+                List<Events> upcomingEvents = eventRepository.getNextTenUpComingEvents(profId);
 
                 if (!outdatedCountries.isEmpty() && countryFlag) {
                     countryFlag = false;
                     return redirect("/profile").flashing("changeCountry", profileRec.get().getFirstName() + " you have an outdated country");
                 }
                 countryFlag = true;
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), artistRepository.getAllUserArtists(profId), upcomingEvents, request, messagesApi.preferred(request)));
             }
             return redirect("/");
         });
