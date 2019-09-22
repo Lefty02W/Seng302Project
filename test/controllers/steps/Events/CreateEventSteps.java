@@ -49,6 +49,4 @@ public class CreateEventSteps {
 
         assertTrue(eventCreateResult.flash().getOptional(arg0).isPresent());
     }
-
-
 }
