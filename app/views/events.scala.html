@@ -294,47 +294,40 @@
                                 <label>There are no more events in this search</label>
                             }
                             @for(event <- events){
+                                <div class="card border-primary" id="eventCardBorder">
                                 <div class="card-body col col-md-12" id="eventCard">
-                                    <div class="card-header event-link toggled eventTitle" id='eventName@event.getEventId' onclick="showEvent(@event.getEventId, this)">
-                                        @event.getEventName
-
-                                        <div id="editEventLink">
-                                        @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                                                <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
-                                                    <i class="fa fa-edit">Edit</i>
-                                                </a>
-                                            }
-                                        </div>
-
+                                    <div class="card-header">
+                                        <h4 class="primary-color event-link toggled eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
                                     </div>
+
                                     @for(artist <- event.getEventArtists) {
-                                        <div class="row">
+                                        <div class="row" id="cardInfo">
                                                 &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user">&nbsp;</i>
                                             <p>@artist.getArtistName</p>
                                         </div>
                                     }
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                         <p>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-music">&nbsp;</i>@event.getEventTypes.get(0)</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-globe">&nbsp;</i>
                                         <p>@event.getDestination.getName</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-exclamation-triangle">&nbsp;</i>
                                         <p>@event.getAgeRestrictionString</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus">&nbsp;</i>
                                         <p>@event.getEventAttendees.size() attending</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="bigInfo">
                                         <div class="col">
                                             <h4 class="primary-color">Description</h4>
                                             <p>@event.getDescription</p>
@@ -347,22 +340,50 @@
                                         </div>
                                     </div>
 
-                                    <div class="row justify-content-center">
-                                        @if(true) { @* todo: change to add logic to display if not currently attending *@
-                                            @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
-                                            || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
-                                            || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
-                                                <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>Attend</button>
-                                            } else {
-                                                <a href="@routes.EventsController.attendEvent(event.getEventId)"><button class="btn btn-primary">Attend</button> </a>
-                                            }
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col">
+                                            @if(true) { @* todo: change to add logic to display if not currently attending *@
+                                                @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
+                                                        || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
+                                                        || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
+                                                    <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
+                                                        <i class="fa fa-check"></i>
+                                                        Attend
+                                                    </button>
+                                                } else {
+                                                    <a href="@routes.EventsController.attendEvent(event.getEventId)">
+                                                        <button class="btn btn-primary">
+                                                            <i class="fa fa-check"></i>
+                                                            Attend
+                                                        </button>
+                                                    </a>
+                                                }
 
-                                        } else {
-                                            <button class="btn btn-secondary">Don't attend</button>
-                                        }
+                                            } else {
+                                                <button class="btn btn-secondary">
+                                                    <i class="fa fa-remove"></i>
+                                                    Don't attend
+                                                </button>
+                                            }
+                                            </div>
+
+                                            <div class="col-sm">
+                                            @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                                                <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
+                                                    <button type="button" class="btn btn-secondary" id="editEventButton" data-toggle="modal" data-target="#editEventModal">
+                                                        <i class="fa fa-edit" id="editEventButton"></i>
+                                                        Edit
+                                                    </button>
+                                                </a>
+                                            }
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                 </div>
+                            </div>
                             }
                         </div></div>
                         <div id="map-table-card" class="card-large">

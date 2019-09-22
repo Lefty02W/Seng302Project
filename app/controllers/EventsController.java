@@ -441,8 +441,9 @@ public class EventsController extends Controller {
      * @return redirects back to event page
      */
     public Result attendEvent(Http.Request request, Integer eventId) {
-        attendEventRepository.insert(new AttendEvent(eventId, SessionController.getCurrentUserId(request)));
-        return redirect(eventURL).flashing("info", "Attending event");
+        AttendEvent attendEvent = new AttendEvent(eventId, SessionController.getCurrentUserId(request));
+        attendEventRepository.insert(attendEvent);
+        return redirect(eventURL).flashing("info", "Attending event: " + eventRepository.lookup(attendEvent.getEventId()).getEventName());
     }
 
     /**

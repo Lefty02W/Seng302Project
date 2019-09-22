@@ -130,7 +130,7 @@
                                 @for(event <- events) {
                                     <div class="card" id="eventsCard">
                                         <div class="card-header">
-                                            <h4 class="primary-color eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                            <h4 class="primary-color event-link toggled eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
                                         </div>
                                         <div class="card-body" id="eventCardBody">
                                             <div class="row">
@@ -185,13 +185,22 @@
                                             @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
                                                     || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
                                                     || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
-                                                <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>Attend</button>
+                                                <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
+                                                    <i class="fa fa-check"></i>
+                                                    Attend
+                                                </button>
                                             } else {
-                                                <button class="btn btn-primary">Attend</button>
+                                                <button class="btn btn-primary">
+                                                    <i class="fa fa-check"></i>
+                                                    Attend
+                                                </button>
                                             }
 
                                         } else {
-                                            <button class="btn btn-secondary">Don't attend</button>
+                                            <button class="btn btn-secondary">
+                                                <i class="fa fa-remove"></i>
+                                                Don't attend
+                                            </button>
                                         }
                                         </div>
                                     </div>
