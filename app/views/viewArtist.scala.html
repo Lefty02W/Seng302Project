@@ -1266,7 +1266,8 @@
                     });
                     marker.content = "Name:  @event.getEventName" +
                             "<br> Type: @event.getEventTypeString" +
-                            "<br> Destination: @event.getDestination.getName";
+                            "<br> Destination: @event.getDestination.getName" +
+                            "<br> Attendees: @event.getEventAttendees.size";
                     var infoWindow = new google.maps.InfoWindow();
                     google.maps.event.addListener(marker, 'click', function() {
                         infoWindow.setContent(this.content);
