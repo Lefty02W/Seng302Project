@@ -61,7 +61,6 @@ public class AttendEventRepository {
      * @return List if ids found
      */
     public List<Integer> getAttendingUsers(int eventId) {
-        System.out.println(eventId);
         return ebeanServer.find(AttendEvent.class).select("profileId").where().eq("event_id", eventId)
                 .findSingleAttributeList();
     }
@@ -86,8 +85,6 @@ public class AttendEventRepository {
      * @return attendEventId Integer - Id of the attended event
      */
     public int getAttendEventId(Integer eventId, Integer currentUserId) {
-        System.out.println(eventId);
-        System.out.println(currentUserId);
         return ebeanServer.find(AttendEvent.class).select("attendEventId").where().eq("event_id", eventId)
                 .eq("profile_id", currentUserId).findOne().getAttendEventId();
     }

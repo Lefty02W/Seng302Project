@@ -31,16 +31,18 @@ public class EventRepositoryTest {
 
     @Test
     public void getNextTenUpComingEventsUserHasMoreThanTen() {
-        //System.out.println(TestApplication.getEventRepository().getNextTenUpComingEvents(PROFILE_WITH_MORE_THAN_TEN));
+        assertEquals(10, TestApplication.getEventRepository().getNextTenUpComingEvents(PROFILE_WITH_MORE_THAN_TEN).size());
     }
 
     @Test
     public void getNextTenUpComingEventsUserHasMoreLessTen() {
+        assertEquals(4, TestApplication.getEventRepository().getNextTenUpComingEvents(PROFILE_WITH_LESS_THAN_TEN).size());
 
     }
 
     @Test
     public void getNextTenUpComingEventsUserHasExpiredEvents() {
+        assertEquals(1, TestApplication.getEventRepository().getNextTenUpComingEvents(PROFILE_WITH_EXPIRED).size());
 
     }
 

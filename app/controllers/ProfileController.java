@@ -331,8 +331,6 @@ public class ProfileController extends Controller implements TypesInterface {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request){
         Integer profId = SessionController.getCurrentUserId(request);
-        System.out.println(eventRepository.getNextTenUpComingEvents(profId));
-
         return profileRepository.findById(profId).thenApplyAsync(profileRec -> {
 
             if (profileRec.isPresent()) {

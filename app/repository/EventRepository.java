@@ -137,7 +137,6 @@ public class EventRepository {
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
         event.setDestination(destinationRepository.lookup(event.getDestinationId()));
         event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
-        System.out.println(event.getEventAttendees());
         return event;
     }
 
@@ -408,7 +407,7 @@ public class EventRepository {
         if (eventIds.isEmpty()) {
             return new ArrayList<>();
         } else {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             List<Events> events = ebeanServer.find(Events.class).order("startDate").setMaxRows(10).where().gt("start_date", dateFormat.format(new Date())).idIn(eventIds).findList();
             List<Events> toReturn = new ArrayList<>();
             for (Events event : events) {
