@@ -25,14 +25,6 @@ public class SearchEventSteps {
     private Result eventSearchResult;
     private EventRepository eventRepository = TestApplication.getEventRepository();
 
-    @Given("^I am on the events page$")
-    public void iAmOnTheArtistCreatePage() throws Throwable {
-        Http.RequestBuilder requestDest = Helpers.fakeRequest()
-                .method("GET")
-                .uri("/events")
-                .session("connected", "2");
-        Helpers.route(TestApplication.getApplication(), requestDest);
-    }
 
     @And("^I select attending from the advance search field$")
     public void iSelectAttendingFromTheAdvanceSearchField() throws Throwable {
