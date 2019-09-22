@@ -185,7 +185,7 @@
 
                                         </div>
                                         <div class="card-footer">
-                                        @if(true) { @* todo: change to add logic to display if not currently attending *@
+                                        @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
                                             @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
                                                     || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
                                                     || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
@@ -194,17 +194,21 @@
                                                     Attend
                                                 </button>
                                             } else {
-                                                <button class="btn btn-primary">
-                                                    <i class="fa fa-check"></i>
-                                                    Attend
-                                                </button>
+                                                <a href="/artists/@artist.getArtistId/events/@event.getEventId/attend">
+                                                    <button class="btn btn-primary">
+                                                        <i class="fa fa-check"></i>
+                                                        Attend
+                                                    </button>
+                                                </a>
                                             }
 
                                         } else {
-                                            <button class="btn btn-secondary">
-                                                <i class="fa fa-remove"></i>
-                                                Don't attend
-                                            </button>
+                                            <a href="/artists/@artist.getArtistId/events/@event.getEventId/leave">
+                                                <button class="btn btn-secondary">
+                                                    <i class="fa fa-remove"></i>
+                                                    Don't attend
+                                                </button>
+                                            </a>
                                         }
 
                                         @if(artist.getAdminsList.contains(currentUser)) {

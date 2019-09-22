@@ -137,6 +137,7 @@ public class EventRepository {
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
         event.setDestination(destinationRepository.lookup(event.getDestinationId()));
         event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
+        System.out.println(event.getEventAttendees());
         return event;
     }
 
