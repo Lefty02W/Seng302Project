@@ -22,6 +22,7 @@ public class AttendEventRepositoryTest {
 
     @Test
     public void getAttendingUsersHasUsers() {
+        assertEquals(new ArrayList<>(), TestApplication.getAttendEventRepository().getAttendingUsers(EVENT_WITH_NO_ATTENDEES));
     }
 
 }

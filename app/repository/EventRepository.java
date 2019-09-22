@@ -193,6 +193,7 @@ public class EventRepository {
                 saveLinkingTables(event);
             }
             txn.end();
+
         return eventId;
     });
     }
