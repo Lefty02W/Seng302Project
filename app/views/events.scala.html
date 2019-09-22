@@ -242,7 +242,7 @@
                                                                 <option value="@genre.getGenreId">@genre.getGenre</option>
                                                             }
                                                         }
-                                                    } else {
+                                                    } else {isVerifiedArtist
                                                         @for(genre <- genres) {
                                                             <option value="@genre.getGenreId">@genre.getGenre</option>
                                                         }
@@ -299,7 +299,7 @@
                                         @event.getEventName
 
                                         <div id="editEventLink">
-                                            @if(isVerifiedArtist) {
+                                        @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                                                 <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
                                                     <i class="fa fa-edit">Edit</i>
                                                 </a>
