@@ -205,7 +205,7 @@ public class EventsController extends Controller {
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect(eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
-        return eventRepository.update(id, event).thenApplyAsync(x -> redirect(eventURL).flashing("success", "Event has been updated."));
+        return eventRepository.update(id, event).thenApplyAsync(x -> redirect(eventURL).flashing("info",  event.getEventName() + " has been updated."));
     }
 
 
@@ -294,7 +294,6 @@ public class EventsController extends Controller {
      * @param request Http request.
      * @return Redirect to the event page.
      */
-    @RestrictAnnotation()
     public CompletionStage<Result> createUserEvent(Http.Request request) {
 
         return supplyAsync(() -> {
@@ -355,7 +354,7 @@ public class EventsController extends Controller {
                 }
                 genreForm.ifPresent(s -> event.get().setGenreForm(s));
                 genreFormEvent.ifPresent(s -> event.get().setGenreForm(s));
-                ageForm.ifPresent(s -> event.get().setAgeForm(s));
+                ageForm.ifPresent(s -> event.get().setAgeRestriction(Integer.parseInt(s)));
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
 
             }
