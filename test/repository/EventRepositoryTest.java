@@ -20,7 +20,7 @@ public class EventRepositoryTest {
     @Test
     public void getArtistEventsArtistHasEvents() {
         List<Events> events = TestApplication.getEventRepository().getArtistEventsPage(ARTIST_WITH_EVENTS, 0);
-        assertEquals(6, events.size());
+        assertEquals(7, events.size());
     }
 
     @Test

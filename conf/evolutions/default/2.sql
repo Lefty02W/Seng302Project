@@ -323,8 +323,14 @@ INSERT INTO events (event_id, event_name, description, destination_id, start_dat
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
   (13, 'BigEvent', 'description', 9, '2018-11-02', CURRENT_DATE, 0);
 
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (14, 'BigEvent', 'description', 9, '2018-11-02', CURRENT_DATE, 0);
+
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (1, 2);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 14);
 
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (1, 5);
@@ -398,6 +404,8 @@ INSERT INTO event_type (event_id, type_id) VALUES
 INSERT INTO event_type (event_id, type_id) VALUES
   (13, 1);
 
+INSERT INTO event_type (event_id, type_id) VALUES
+  (14, 1);
 
 INSERT INTO event_genres (event_id, genre_id) VALUES
   (4, 1);

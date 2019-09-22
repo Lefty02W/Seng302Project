@@ -44,7 +44,7 @@ public class SearchEventSteps {
         EventFormData eventForm = new EventFormData();
         eventForm.setAttending("on");
         List<Events>  result = eventRepository.searchEvent(eventForm, 0);
-        assertEquals("Mono", result.get(0).getEventName());
+        assertEquals("Burning Man", result.get(0).getEventName());
     }
 
 }
