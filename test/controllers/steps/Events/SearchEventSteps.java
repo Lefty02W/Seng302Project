@@ -1,9 +1,7 @@
 package controllers.steps.Events;
 
 import controllers.TestApplication;
-import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import models.EventFormData;
 import models.Events;
@@ -17,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class SearchEventSteps {
 
@@ -47,7 +44,7 @@ public class SearchEventSteps {
         EventFormData eventForm = new EventFormData();
         eventForm.setAttending("on");
         List<Events>  result = eventRepository.searchEvent(eventForm, 0);
-        assertEquals("BigEvent", result.get(0).getEventName());
+        assertEquals("Mono", result.get(0).getEventName());
     }
 
 }
