@@ -107,3 +107,17 @@
 #eventCardBody {
     padding-left: 30px;
 }
+
+.selectedTab {
+    color: #41B49D;
+}
+
+.divider {
+    width: 40vw;
+}
+
+
+.spotify {
+    width: 40vw;
+    height: 40vh;
+}
