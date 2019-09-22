@@ -250,6 +250,7 @@ public class DestinationsController extends Controller {
      * @return CompletionStage holding result rendering the admin  page with the desired destination
      * @apiNote GET /admin/destinations/:destId?isEdit
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showDestinationEdit(Http.Request request, Integer destId, boolean isPublic) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
@@ -535,6 +536,7 @@ public class DestinationsController extends Controller {
      * @param destinationId Id of the destination that needs to be linked to a photo
      * @return completion stage result redirected to destination
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> linkPhotoToDestination(Http.Request request, Integer photoId, Integer destinationId) {
         Integer userId = SessionController.getCurrentUserId(request);
         DestinationPhoto destinationPhoto = new DestinationPhoto(userId, photoId, destinationId);
@@ -553,6 +555,7 @@ public class DestinationsController extends Controller {
      * @param destinationId Id of the destination that needs to be un-linked to a photo
      * @return completion stage result redirected to destination
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unlinkPhotoFromDestination(Http.Request request, Integer photoId, Integer destinationId) {
         Integer userId = SessionController.getCurrentUserId(request);
         Optional<DestinationPhoto> destinationPhoto = destinationPhotoRepository.findByProfileIdPhotoIdDestId(userId, photoId, destinationId);
@@ -595,6 +598,7 @@ public class DestinationsController extends Controller {
      * @return CompletionStage redirecting to the destinations page
      * @apiNote POST /destinations/type/request
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createEditRequest(Http.Request request) {
         return supplyAsync(() -> {
             int profileId = SessionController.getCurrentUserId(request);
