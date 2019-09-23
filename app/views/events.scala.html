@@ -343,7 +343,7 @@
                                     <div class="card-footer">
                                         <div class="row">
                                             <div class="col">
-                                            @if(true) { @* todo: change to add logic to display if not currently attending *@
+                                            @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
                                                 @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
                                                         || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
                                                         || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
@@ -361,10 +361,12 @@
                                                 }
 
                                             } else {
-                                                <button class="btn btn-secondary">
-                                                    <i class="fa fa-remove"></i>
-                                                    Don't attend
-                                                </button>
+                                                <a href="@routes.EventsController.leaveEvent(event.getEventId)">
+                                                    <button class="btn btn-secondary">
+                                                        <i class="fa fa-remove"></i>
+                                                        Don't attend
+                                                    </button>
+                                                </a>
                                             }
                                             </div>
 
