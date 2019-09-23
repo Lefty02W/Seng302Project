@@ -262,6 +262,9 @@
                         <button class="btn btn-secondary" id="changeArtistPicButton" type="button" data-toggle="modal"
                         data-target="#changeArtistPicButtonModal">Change Photo</button>
 
+                        <button class="btn btn-secondary" id="removeArtistPicButton" type="button" data-toggle="modal"
+                        data-target="#removeArtistPicButtonModal">Remove Photo</button>
+
                         <button type="button" class="btn btn-secondary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
                             <i class="fa fa-edit" id="editProfileButton"></i>
                             Edit Artist
@@ -322,6 +325,26 @@
                                 <div class="modal-footer">
                                     <button class="btn btn-danger" data-dismiss="modal" type="button">Cancel</button>
                                     <button class="btn btn-primary" type="submit">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="removeArtistPicButtonModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h2 class="modal-title">Remove @artist.getArtistName Photo</h2>
+                                </div>
+                                    <div class="modal-body">
+                                        <a>Are you sure you want to remove your photo?</a>
+                                    </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-danger" data-dismiss="modal" type="button">Cancel</button>
+                                    <a href="#">
+                                        <button class="btn btn-primary" type="submit">Confirm</button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
