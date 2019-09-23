@@ -2,7 +2,8 @@
 @import views.html.helper.{CSRF, form}
 @(currentUser: Profile, artist: Artist, events: List[Events], countries: List[String], genres: List[MusicGenre],
         activeTab: Integer, pagination: PaginationHelper, profiles : List[Profile], destinations : List[Destination],
-        verifiedArtists : List[Artist], editEvent: RoutedObject[Events], editEventForm : Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
+        verifiedArtists : List[Artist], editEvent: RoutedObject[Events], editEventForm : Form[Events],
+        artistProfilePicture: Photo)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,6 +82,16 @@
                     @request.flash.getOptional("error").get()
                     </div>
                 }
+
+                <div class ="container" id="artistProfilePhotoContainer">
+                    @if(artistProfilePicture != null) {
+                        @*todo add src, alt and name*@
+                        <img onclick="newArtistPhoto()" id="artistProfilePhoto">
+                    } else {
+                        <img id="artistProfilePhoto" src="@routes.Assets.at("images/profile-icon.png")">
+                    }
+                </div>
+
                 <div class="container-fluid">
                     <div class="row">
                         <ul class="nav nav-tabs" id="viewArtistTabs">
@@ -284,7 +295,7 @@
                             <div class="modal-content">
                                     <!-- header -->
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Edit Artist</h4>
+                                    <h4 class="modal-title">Edit Artist: @artist.getArtistName</h4>
                                     <button type="button" class="close" data-dismiss="modal"></button>
                                 </div>
 
@@ -840,6 +851,11 @@
                 $('#confirmationDeleteModal').modal('show');
             }
 
+            function newArtistPhoto() {
+                //todo change modal id to cange photo modal
+                //$('changeMe').modal(show);
+            }
+
             function fillLeaveValues(route) {
                 var a = document.getElementById("confirmLeaveHrf");
                 a.href = route;
@@ -1261,6 +1277,7 @@
 
             var markersMap = new Map();
             var markers = [];
+
             function addMarkers() {
                 @for(event <- events) {
                     var marker = new google.maps.Marker({

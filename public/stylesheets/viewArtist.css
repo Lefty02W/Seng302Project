@@ -1,3 +1,11 @@
+#artistProfilePhotoContainer {
+    display: block;
+    width: 10vh;
+    height: 10vh;
+    margin-top: -95px;
+
+}
+
 #viewArtistTabs {
     width: fit-content;
     margin-left: auto;
@@ -7,7 +15,6 @@
 #viewArtistTabs, #aboutTabLink, #eventsTabLink, #membersTabLink{
     padding: 10px;
 }
-
 
 #aboutTab {
     padding-left: 10%;
@@ -120,7 +127,6 @@
 .divider {
     width: 40vw;
 }
-
 
 .spotify {
     width: 40vw;

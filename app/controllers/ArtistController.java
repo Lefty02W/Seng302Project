@@ -142,7 +142,8 @@ public class ArtistController extends Controller {
                         ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
+                                null, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -169,7 +170,8 @@ public class ArtistController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
+                                null, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -192,7 +194,8 @@ public class ArtistController extends Controller {
                         ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllArtists(), new RoutedObject<Events>(null, false, false),
+                                null, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -314,7 +317,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId){
         return artistRepository.unfollowArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist unfollowed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Unfollowed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
@@ -326,7 +329,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> followArtist(Http.Request request, Integer artistId){
         return artistRepository.followArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist followed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Followed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
