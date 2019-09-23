@@ -460,9 +460,8 @@
 
                                                 @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
                                                     <td>
-                                                        <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
-                                                            <button class="btn btn-info">Remove Admin</button>
-                                                        </a>
+                                                        <button class="btn btn-info" onclick="fillRemoveAdminValues('@routes.AdminController.removeAdmin(profile.getProfileId())')">Remove Admin</button>
+
                                                     </td>
                                                 } else if(profile.hasRole("global_admin")){
                                                 <td> global admin </td>
@@ -1040,12 +1039,24 @@
                 $('#confirmationDeleteModal').modal('show');
             }
 
+            function fillRemoveAdminValues(route) {
+
+                var a = document.getElementById("confirmRemoveHrf");
+                a.href = route;
+                $('#confirmationRemoveAdminModal').modal('show');
+            }
+
+
             function fillCreateTripValues(select) {
                 var a = document.getElementById("selectUserButton");
                 a.href = "/trips/" + select.value + "/create";
             }
 
             function runDelete() {
+                email = this.email;
+            }
+
+            function runRemove() {
                 email = this.email;
             }
 
@@ -1091,6 +1102,30 @@
         </div>
     </div>
 
+    <div class="modal" id="confirmationRemoveAdminModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- body -->
+                <div class="modal-body">
+                    <h5>Are you sure you want to remove admin from this user?</h5>
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmRemoveHrf">
+                        <button type="submit" id="confirmRemoveBtn" class="btn btn-danger" onclick="runRemove()">
+                            Remove</button>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     @if(tripToView != null) {
         <script type="text/javascript">
