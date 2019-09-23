@@ -6,6 +6,7 @@ import models.ArtistProfilePhoto;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -51,11 +52,22 @@ public class ArtistProfilePictureRepository {
      * @param artistId database id of picture to remove
      * @return Void CompletionStage
      */
-    public CompletionStage<Void> removeArtistProfilePicture(int artistId) {
+    public CompletionStage<Integer> removeArtistProfilePicture(int artistId) {
         return supplyAsync(() -> {
             ebeanServer.find(ArtistProfilePhoto.class).where().eq("artist_id", artistId).delete();
-            return null;
+            return artistId;
         }, executionContext);
+    }
+
+
+    /**
+     * Method to retrieve an ArtistProfilePhoto object from teh database using an artist id
+     *
+     * @param artistId the artist id
+     * @return CompletionStage holding Optional ArtistProfilePhoto object
+     */
+    public CompletionStage<Optional<ArtistProfilePhoto>> getArtistProfilePicture(int artistId) {
+        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(ArtistProfilePhoto.class).where().eq("artist_id", artistId).findOne()), executionContext);
     }
 
 }

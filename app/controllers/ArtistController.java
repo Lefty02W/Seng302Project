@@ -38,6 +38,7 @@ public class ArtistController extends Controller {
     private final EventRepository eventRepository;
     private final Form<ArtistFormData> searchForm;
     private final DestinationRepository destinationRepository;
+    private final ArtistProfilePictureRepository artistProfilePictureRepository;
 
 
     @Inject
@@ -45,7 +46,8 @@ public class ArtistController extends Controller {
                             ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
                             GenreRepository genreRepository, EventRepository eventRepository,
-                            DestinationRepository destinationRepository){
+                            DestinationRepository destinationRepository,
+                            ArtistProfilePictureRepository artistProfilePictureRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -55,7 +57,10 @@ public class ArtistController extends Controller {
         this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
         this.eventRepository = eventRepository;
         this.destinationRepository = destinationRepository;
+        this.artistProfilePictureRepository = artistProfilePictureRepository;
     }
+
+
 
     /**
      * Endpoint for landing page for artists
@@ -408,5 +413,18 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Integer> getFollowerCount(int artistId) {
         return supplyAsync(() -> artistRepository.getNumFollowers(artistId));
+    }
+
+
+    /**
+     * Endpoint method for an artist admin to rmeove the artist profile photo
+     *
+     * @param request request to remove photo
+     * @param id id of artist to remove photo for
+     * @return Redirect back to the artists detailed page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> removePhoto(Http.Request request, Integer id) {
+        return artistProfilePictureRepository.removeArtistProfilePicture(id).thenApplyAsync(artist -> redirect("/artists/" + artist));
     }
 }

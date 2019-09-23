@@ -142,6 +142,9 @@ POST    /artists/:id/events/create              controllers.EventsController.cre
 GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
 GET     /artists/:id/leave                      controllers.ArtistController.leaveArtist(request : Request, id : Integer)
 
+## Artist Photos
+GET     /artists/:id/remove/photo               controllers.ArtistController.removePhoto(request : Request, id : Integer)
+
 #Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)
 POST    /events/create                          controllers.EventsController.createUserEvent(request : Request)
