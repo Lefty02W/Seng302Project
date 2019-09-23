@@ -118,7 +118,8 @@ public class EventsController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId),
+                                        true, false), eventEditForm, null,request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/artists/" + artistId + eventURL)));
     }
 
