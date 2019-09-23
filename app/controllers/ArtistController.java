@@ -317,7 +317,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId){
         return artistRepository.unfollowArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist unfollowed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Unfollowed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
@@ -329,7 +329,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> followArtist(Http.Request request, Integer artistId){
         return artistRepository.followArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist followed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Followed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
