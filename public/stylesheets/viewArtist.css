@@ -68,11 +68,11 @@
 
 .social-col {
     padding-left: 8vw;
+    position: center;
 }
 
 #leaveArtistButton {
-    position: fixed;
-    left: 92.5vw;
+    float: right;
     background-color: #41B49D;
     z-index: 2;
 }

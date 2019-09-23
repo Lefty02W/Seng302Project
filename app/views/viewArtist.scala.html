@@ -248,20 +248,27 @@
         <div class="container" id="artistsFooter">
             <div class="row justify-content-center">
                 <div class="col button-col">
-                    <button class="btn btn-secondary" onclick="goBack()">Back</button>
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fa fa-toggle-left"></i>
+                        Back
+                    </button>
 
                     @if(artist.getAdminsList.contains(currentUser)) {
+
+                        <button class="btn btn-secondary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
+                            <i class="fa fa-plus-circle"></i>
+                            Create Event
+                        </button>
+
                         <button type="button" class="btn btn-secondary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
                             <i class="fa fa-edit" id="editProfileButton"></i>
                             Edit Artist
                         </button>
-                        <button class="btn btn-secondary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
-                            Create Event
-                        </button>
-
-                        <button class="btn btn-primary" id="leaveArtistButton" onclick="fillDeleteValues('/artists/@artist.getArtistId/leave')">Leave Artist</button>
                     }
                 </div>
+
+
+
                 <div class="col social-col">
                     <div class="mb-5 flex-center" id="socialMediaIcons">
                             <!-- Facebook -->
@@ -285,6 +292,13 @@
                             <a class="fa fa-external-link fa-lg mr-md 5 mr-3 fa-2x" href="@artist.getWebsiteLink" id="websiteIcon"></a>
                         }
                     </div>
+                </div>
+
+                <div class="col">
+                    <button class="btn btn-primary" id="leaveArtistButton" onclick="fillLeaveValues('/artists/@artist.getArtistId/leave')">
+                        <i class="fa fa-user-times"></i>
+                        Withdraw Ownership
+                    </button>
                 </div>
             </div>
         </div>
@@ -483,18 +497,20 @@
             <div class="modal-content">
                     <!-- header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Leave Artist Confirmation</h4>
+                    <h4 class="modal-title">Withdraw Ownership</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                     <!-- body -->
                 <div class="modal-body">
-                    <h5>Are you sure you want to leave? This cannot be undone</h5>
+                    <p>Are you sure you want to withdraw your ownership of this artist?</p>
+                    <p>This will remove your access to modify this artist.</p>
+                    <p>This cannot be undone.</p>
 
                 </div>
                     <!-- footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                    <a href="#" id="confirmDeleteHrf">
+                    <a href="#" id="confirmLeaveHrf">
                         <button type="submit" id="confirmDeleteBtn" class="btn btn-danger" onclick="runDelete()">
                             Confirm</button>
                     </a>
@@ -1320,6 +1336,11 @@
                 clearSelected();
                 event.style.color = '#009779';
             }
+
+            function runDelete(){
+                email = this.email;
+            }
+
 
 
     </script>
