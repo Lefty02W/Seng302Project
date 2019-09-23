@@ -1294,6 +1294,15 @@
             ];
 
             /**
+             * Callback for success on geolocation to get users location
+             */
+            function setLocation(pos) {
+                var center = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(center);
+            }
+
+
+            /**
              * Initialises the map view
              */
             function initMap() {
@@ -1312,6 +1321,10 @@
                     fullscreenControl: false,
                     zoom: 8
                 });
+                if (navigator.geolocation) {
+
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                }
                 addMarkers();
             }
 

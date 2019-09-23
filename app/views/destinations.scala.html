@@ -734,9 +734,7 @@
                         $('#destTable').DataTable({
                             "sDom": 't'
                         });
-                        if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(setLocation, defaultLocation);
-                }
+
 
 
                 $('#startSearchHidden').hide();
@@ -1169,19 +1167,16 @@
                 }
             ];
 
-
             /**
-            * Callback for succes on geolocation to get users location
-            */
+             * Callback for success on geolocation to get users location
+             */
             function setLocation(pos) {
-                center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
-            }
+                var centerPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(centerPos);
+                createMap.setCenter(centerPos);
+                var currentPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                addCreateMarker(currentPos);
 
-            /**
-            * Callback for failure of geolocation
-            */
-            function defaultLocation(err) {
-                center = {lat: -43.5321, lng: 172.6362};
             }
 
             /**
@@ -1199,7 +1194,7 @@
 
 
                 if (center === undefined) {
-                    center = {lat: -43.5321, lng: 172.6362};
+                    center = {lat: 0, lng: 0};
                 }
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
                     center: center,
@@ -1216,9 +1211,6 @@
                     zoom: 8,
                     styles: styles
                 });
-                currentPos = new google.maps.LatLng(center.lat, center.lng);
-                addCreateMarker(currentPos);
-
 
                 @if(destination.isEdit && destination.getObject != null) {
 
@@ -1245,7 +1237,13 @@
                     addEditMarker(e.latLng);
                 });
 
+
             }
+
+                if (navigator.geolocation) {
+
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                }
 
 
                 createMap.addListener('click', function(e) {
