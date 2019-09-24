@@ -555,6 +555,22 @@
                                                 <input type="datetime-local" id="endDate"  name="endDate" class="inputField" value="@editEvent.getObject.formatLocalDate(editEvent.getObject.getEndDate)" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
                                             </div>
                                         </div>
+                                        <div class="row justify-content-center">
+                                            <label>Ticket Price</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="number" id="ticketPrice" step="0.01" name="ticketPrice" class="inputField" value="@editEvent.getObject.getTicketPrice">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Ticket Link</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="url" id="ticketLink"  name="ticketLink" class="inputField" value="@editEvent.getObject.getTicketLink">
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -674,6 +690,22 @@
                                     <div class="row justify-content-center">
                                         <div class="form-group" id="holder">
                                             <input type="datetime-local" id="endDate"  name="endDate" class="inputField" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Ticket Price</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder">
+                                            <input type="number" id="ticketPrice" step="0.01" name="ticketPrice" class="inputField">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Ticket Link</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder">
+                                            <input type="url" id="ticketLink"  name="ticketLink" class="inputField">
                                         </div>
                                     </div>
                                 </div>

@@ -178,7 +178,6 @@ public class EventRepository {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();
-
             if (targetEvent != null) {
                 targetEvent.setAgeRestriction(event.getAgeRestriction());
                 targetEvent.setDescription(event.getDescription());
@@ -186,6 +185,8 @@ public class EventRepository {
                 targetEvent.setEndDate(event.getEndDate());
                 targetEvent.setStartDate(event.getStartDate());
                 targetEvent.setEventName(event.getEventName());
+                targetEvent.setTicketLink(event.getTicketLink());
+                targetEvent.setTicketPrice(event.getTicketPrice());
                 targetEvent.update();
                 txn.commit();
                 event.setEventId(targetEvent.getEventId());

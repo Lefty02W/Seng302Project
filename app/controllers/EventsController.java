@@ -351,6 +351,8 @@ public class EventsController extends Controller {
                 Optional<String> genreFormEvent = form.field("genreFormEvent").value();
                 Optional<String> ageForm = form.field("ageForm").value();
                 Optional<String> artistForm = form.field("artistForm").value();
+                Optional<String> ticketPrice = form.field("ticketPrice").value();
+                Optional<String> ticketLink = form.field("ticketLink").value();
 
                 if (startDate.isPresent()) {
                     try {
@@ -370,7 +372,9 @@ public class EventsController extends Controller {
                 genreFormEvent.ifPresent(s -> event.get().setGenreForm(s));
                 ageForm.ifPresent(s -> event.get().setAgeRestriction(Integer.parseInt(s)));
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
-
+                event.get().setTicketPrice(-1.0);
+                ticketPrice.ifPresent(price -> event.get().setTicketPrice(Double.parseDouble(price)));
+                ticketLink.ifPresent(link -> event.get().setTicketLink(link));
             }
             return event;
     }
