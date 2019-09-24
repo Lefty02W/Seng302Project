@@ -57,6 +57,7 @@ public class AdminController {
     private RolesRepository rolesRepository;
     private final Form<EventFormData> eventCreateForm;
     private final Form<EventFormData> eventFormDataForm;
+    private final Form<UpdatePasswordForm> updatePasswordForm;
 
     @Inject
     public AdminController(FormFactory formFactory, HttpExecutionContext httpExecutionContext,
@@ -87,6 +88,7 @@ public class AdminController {
         this.eventCreateForm = eventFormFactory.form(EventFormData.class);
         this.eventForm = formFactory.form(Events.class);
         this.eventFormDataForm = formFactory.form(EventFormData.class);
+        this.updatePasswordForm = formFactory.form(UpdatePasswordForm.class);
     }
 
 
@@ -391,6 +393,24 @@ public class AdminController {
                 .thenApplyAsync(x -> redirect("/admin/profiles/0")
                         , httpExecutionContext.current());
     }
+
+
+    /**
+     * Updates a profile's password via data form the form via the admin
+     *
+     * @param request Http requestRequest
+     * @param request Http request
+     * @return a redirect to the profile page
+     * @apiNote
+     */
+    public CompletionStage<Result> updatePassword(Http.Request request, Integer id) {
+        Form<UpdatePasswordForm> passwordFormForm = updatePasswordForm.bindFromRequest(request);
+        UpdatePasswordForm updatePasswordForm = passwordFormForm.get();
+        return profileRepository.updatePassword(id, updatePasswordForm.password)
+                .thenApplyAsync(x -> redirect("/admin/profiles/0")
+                        , httpExecutionContext.current());
+    }
+
 
 
     /**

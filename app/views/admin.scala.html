@@ -427,6 +427,7 @@
                                             <th>ProfileID</th>
                                             <th>Email</th>
                                             <th>Edit</th>
+                                            <th>Change Password</th>
                                             <th>Delete</th>
                                             <th>View</th>
                                             <th>Permissions</th>
@@ -441,6 +442,12 @@
                                                 <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
                                                     <button type="button" class="btn btn-primary" id="editProfileButton">Edit</button>
                                                 </a> </td>
+                                            <td>
+                                                <a href="">
+                                                    <button type="button" class="btn btn-primary" id="editPasswordButton">Change Password</button>
+                                                </a>
+                                            </td>
+
                                             @if(profile.hasRole("global_admin")) {
 
                                                 <td><button type="button" disabled class="btn btn-secondary">
@@ -2154,6 +2161,44 @@
                         </div>
                     }
                 </div>
+            </div>
+        </div>
+    }
+
+    @if(false) {
+        <script type="text/javascript">
+                $(window).on('load', function () {
+                    $('#editPasswordModal').modal('show');
+                });
+        </script>
+
+        <div class="modal fade" id="editPasswordModal">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title ">Edit Password</h2>
+                    </div>
+                    @form(routes.AdminController.updatePassword(profile.getObject.getProfileId())) {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="form-group" id="holder"> <small id="label" for="password">
+                                        Password*</small>
+                                        <input type="text" id="firstName" placeholder="Password" name="Password" class="inputField" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')" value="@profile.getObject.getPassword">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                Cancel</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillPasswordVal()">Save</button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     }

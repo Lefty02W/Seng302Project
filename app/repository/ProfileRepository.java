@@ -479,6 +479,30 @@ public class ProfileRepository {
                 executionContext);
     }
 
+    public CompletionStage<Optional<Integer>> updatePassword(Integer profileId, String newPassword) {
+        return supplyAsync(
+                () -> {
+                    Transaction txn = ebeanServer.beginTransaction();
+                    String updateQuery =
+                            "UPDATE profile SET password = ? WHERE profile_id = ?";
+                    Optional<Integer> value = Optional.empty();
+                    try {
+                        if (ebeanServer.find(Profile.class).setId(profileId).findOne() != null) {
+                            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+                            query.setParameter(1, newPassword);
+                            query.setParameter(2, profileId);
+                            query.execute();
+                            txn.commit();
+                            value = Optional.of(profileId);
+                        }
+                    } finally {
+                        txn.end();
+                    }
+                    return value;
+                },
+                executionContext);
+    }
+
 
     /**
      * Deletes a profile from the database that matches the given email
