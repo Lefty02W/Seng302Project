@@ -12,6 +12,21 @@
     width: 50%;
 }
 
+.radioFollow{
+    float: left;
+    width: 120px;
+    margin-left: 30px;
+    margin-top: 15px;
+}
+
+.radioInput{
+    float: left !important;
+}
+
+.radioButtons{
+    margin-top: 15px !important;
+}
+
 #label{
     padding-top: 0 !important;
     margin-top: -20px;

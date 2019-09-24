@@ -100,9 +100,23 @@
                         <div class="accordion" id="filterAccordion">
                             <div class="card">
                                 <div class="card-header" id="searchHeader">
-                                    <input type="search" id="eventName" name =eventName placeholder="Search..">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                    <button class="btn btn-secondary" type="button" data-toggle="collapse"
+                                    <input type="search" id="eventName" class="radioInput" name="eventName" placeholder="Search..">
+                                    <div class="radioFollow">
+                                        @if(searchData != null) {
+                                            @if(searchData.getFollowedArtists.equals("1")) {
+                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="">&nbsp;All Events</div>
+                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="1" checked>&nbsp;Followed Artists</div>
+                                            } else {
+                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="" checked>&nbsp;All Events</div>
+                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="1">&nbsp;Followed Artists</div>
+                                            }
+                                        } else {
+                                            <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="" checked>&nbsp;All Events</div>
+                                            <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="1">&nbsp;Followed Artists</div>
+                                        }
+                                    </div>
+                                    <button type="submit" class="btn btn-primary radioButtons">Search</button>
+                                    <button class="btn btn-secondary radioButtons" type="button" data-toggle="collapse"
                                             data-target="#eventFilters" aria-expanded="false"
                                             aria-controls="eventFilters">Advanced Search
                                     </button>
