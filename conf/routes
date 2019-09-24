@@ -77,7 +77,7 @@ GET     /admin/profile/:id/edit                 controllers.AdminController.show
 POST    /admin/profile/:id/edit                 controllers.AdminController.updateProfile(request: Request, id: Integer)
 GET     /admin/:profileId/delete                controllers.AdminController.deleteProfile(request: Request, profileId: Integer)
 GET     /admin/profile/:id/view                 controllers.AdminController.viewProfile(request: Request, id: Integer)
-POST     /admin/profile/:id/changePassword       controllers.AdminController.updatePassword(request: Request, id: Integer)
+POST     /admin/profile/changePassword       controllers.AdminController.updatePassword(request: Request)
 
 POST    /admin/profile/create                   controllers.AdminController.createProfile(request: Request)
 GET     /admin/:userId/admin                    controllers.AdminController.makeAdmin(userId: Integer)

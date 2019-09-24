@@ -482,6 +482,7 @@ public class ProfileRepository {
     public CompletionStage<Optional<Integer>> updatePassword(Integer profileId, String newPassword) {
         return supplyAsync(
                 () -> {
+                    String password = BCrypt.hashpw(newPassword, "$2a$12$nODuNzk9U7Hrq6DgspSp4.");
                     Transaction txn = ebeanServer.beginTransaction();
                     String updateQuery =
                             "UPDATE profile SET password = ? WHERE profile_id = ?";
@@ -489,7 +490,7 @@ public class ProfileRepository {
                     try {
                         if (ebeanServer.find(Profile.class).setId(profileId).findOne() != null) {
                             SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
-                            query.setParameter(1, newPassword);
+                            query.setParameter(1, password);
                             query.setParameter(2, profileId);
                             query.execute();
                             txn.commit();
