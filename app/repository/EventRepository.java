@@ -235,7 +235,7 @@ public class EventRepository {
      * @param eventFormData eventForm data required to generate the search query
      * @return query string for the events search
      */
-    private SqlQuery formSearchQuery(EventFormData eventFormData, int offset) {
+    private SqlQuery formSearchQuery(EventFormData eventFormData, int offset, int profId) {
         String query = "SELECT DISTINCT events.event_id, events.event_name, events.description, events.destination_id, " +
                 "events.start_date, events.end_date, events.age_restriction FROM events " +
                 "LEFT OUTER JOIN event_genres ON events.event_id = event_genres.event_id " +
@@ -304,6 +304,17 @@ public class EventRepository {
             args.add(eventFormData.getStartDate());
             args.add(eventFormData.getStartDate());
         }
+        if (eventFormData.getFollowedArtists().equals("1")) {
+            if (whereAdded){
+                query += " AND EXISTS (SELECT follow_artist.artist_id from follow_artist where follow_artist.profile_id = ? and follow_artist.artist_id IN " +
+                        "(SELECT event_artists.artist_id from event_artists where event_artists.event_id = events.event_id AND event_artists.event_id))";
+            } else {
+                query += " WHERE EXISTS (SELECT follow_artist.artist_id from follow_artist where follow_artist.profile_id = ? and follow_artist.artist_id " +
+                        "IN (SELECT event_artists.artist_id from event_artists where event_artists.event_id = events.event_id AND event_artists.event_id))";
+            }
+            args.add(Integer.toString(profId));
+        }
+
         query += " ORDER BY DATE(events.start_date) LIMIT 8 OFFSET "+offset;
         return createSqlQuery(query, args, likeAdded);
     }
@@ -334,8 +345,8 @@ public class EventRepository {
      * @param eventFormData data used in search
      * @return List holding resulting events from search
      */
-    public List<Events> searchEvent(EventFormData eventFormData, int offset) {
-        SqlQuery query = formSearchQuery(eventFormData, offset);
+    public List<Events> searchEvent(EventFormData eventFormData, int offset, int profId) {
+        SqlQuery query = formSearchQuery(eventFormData, offset, profId);
         List<SqlRow> sqlRows = query.findList();
         List<Events> events = new ArrayList<>();
         if (!sqlRows.isEmpty()){

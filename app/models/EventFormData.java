@@ -14,6 +14,7 @@ public class EventFormData {
     private String ageRestriction = "";
     private String genre = "";
     private String startDate = "";
+    private String followedArtists = "";
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
@@ -42,6 +43,10 @@ public class EventFormData {
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
+
+    public String getFollowedArtists() { return followedArtists; }
+
+    public void setFollowedArtists(String followedArtists) { this.followedArtists = followedArtists; }
 
     public String getEventName() {
         return eventName;

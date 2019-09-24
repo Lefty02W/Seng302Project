@@ -384,7 +384,7 @@ public class EventsController extends Controller {
                     return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
                 }
 
-                List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset);
+                List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset, profId);
                 if(!eventsList.isEmpty() || offset > 0){
                     PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
                     paginationHelper.alterNext(8);

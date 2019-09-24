@@ -348,6 +348,7 @@
                                 <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
                                 <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
                                 <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <input type="hidden" value="@searchData.getFollowedArtists" id="getFollowedArtists" name="getFollowedArtists" title="Followed Artists">
                                 <li class="page-item"><button class="page-link" href="/events/all/search/0">Start</button></li>
                             }
                             @helper.form(routes.EventsController.search(paginationHelper.getPrevious)) {
@@ -359,6 +360,7 @@
                                 <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
                                 <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
                                 <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <input type="hidden" value="@searchData.getFollowedArtists" id="getFollowedArtists" name="getFollowedArtists" title="Followed Artists">
                                 <li class="page-item"><button class="page-link" href="/events/all/search/@paginationHelper.getPrevious">Previous</button></li>
                             }
                         } else {
@@ -380,6 +382,7 @@
                                 <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
                                 <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
                                 <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
+                                <input type="hidden" value="@searchData.getFollowedArtists" id="getFollowedArtists" name="getFollowedArtists" title="Followed Artists">
                                 @if(events.isEmpty) {
                                     <li class="page-item disabled"><button class="page-link disabledPagination" id="nextLinkSearch">Next</button></li>
                                 } else {
