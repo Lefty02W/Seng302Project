@@ -46,7 +46,6 @@
 
 #map-card {
     height: 70vh;
-    width: 70%;
     margin-top: 0;
     padding: 0;
 }
@@ -54,4 +53,11 @@
 #destinationMap {
     width:100%;
     height:100%;
+}
+
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+    width: 10%;
+    opacity: 0.5;
 }
