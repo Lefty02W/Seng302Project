@@ -11,6 +11,7 @@ import play.mvc.Security;
 import repository.*;
 import roles.RestrictAnnotation;
 import utility.Country;
+import views.html.event;
 import views.html.events;
 import views.html.viewArtist;
 
@@ -59,6 +60,8 @@ public class EventsController extends Controller {
         this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
     }
+
+
 
     /**
      * Helper function to set up pagination object
@@ -432,6 +435,28 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deleteEvent(Http.Request request, Integer artistId, Integer eventId) {
         return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + eventURL));
+    }
+
+
+    /**
+     * Endpoint to view a specific event
+     *
+     * @param request client request to view event
+     * @param id the id of the event to view
+     * @return rendered event page for selected event
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> viewEvent(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return eventRepository.getEvent(id)
+                .thenApplyAsync(optEvent -> {
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    if (profileOpt.isPresent() && optEvent.isPresent()) {
+                        return ok(event.render(profileOpt.get(), optEvent.get(), request, messagesApi.preferred(request)));
+                    } else {
+                        return redirect("/events/0").flashing("info", "Error retrieving event or profile");
+                    }
+                });
     }
 
 }

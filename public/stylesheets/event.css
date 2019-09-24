@@ -1,0 +1,45 @@
+#eventTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tabLink {
+    padding: 10px;
+    font-size: 20pt;
+}
+
+
+.tab-pane {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+
+#viewArtistTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#eventFooter {
+    position: fixed;
+    bottom: 0;
+    max-height: 10%;
+    max-width: unset;
+    background: #009779;
+    z-index: 1;
+}
+
+
+#wrapper {
+    padding-bottom: 10%;
+}
+
+
+.selectedTab {
+    color: #41B49D;
+}
+
+#eventJumbo {
+    height: 35vh;
+}

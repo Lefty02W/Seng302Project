@@ -20,7 +20,7 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/sidebar.css")">
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/general.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/viewArtist.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/event.css")">
 
             <!--Font Awesome Icons-->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -61,10 +61,10 @@
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                     <div id="pageTitle">
-                        <h2 class="text-center">Artist</h2>
+                        <h2 class="text-center">@event.getEventName</h2>
                     </div>
                 </nav>
-                <div class="jumbotron text-center" id="artistNameJumbo">
+                <div class="jumbotron text-center" id="eventJumbo">
 
                 </div>
                 @if(request.flash.getOptional("success").isPresent) {
@@ -81,13 +81,13 @@
                 <div class="container-fluid">
                     <div class="row">
                         <ul class="nav nav-tabs" id="eventTabs">
-                            <li class="active"><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
+                            <li class="active"><a data-toggle="tab" href="#detailsTab" class="tabLink selectedTab" id="detailsTabLink">
                                 Event Details</a></li>
-                            <li class="active"><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
+                            <li ><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
                                 Event Destination</a></li>
-                            <li class="active"><a data-toggle="tab" href="#artistsTab" class="tabLink" id="artistsTabLink">
+                            <li ><a data-toggle="tab" href="#artistsTab" class="tabLink" id="artistsTabLink">
                                 Event Artists</a></li>
-                            <li class="active"><a data-toggle="tab" href="#attendeesTab" class="tabLink" id="attendeesTabLink">
+                            <li ><a data-toggle="tab" href="#attendeesTab" class="tabLink" id="attendeesTabLink">
                                 Event Attendees</a></li>
                         </ul>
                     </div>
@@ -103,17 +103,15 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <div class="container" id="eventFooter">
+                    <div class="row justify-content-center">
+                        <div class="col button-col">
+                            <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
-
-            <div class="container" id="eventFooter">
-                <div class="row justify-content-center">
-                    <div class="col button-col">
-                        <button class="btn btn-secondary" onclick="goBack()">Back</button>
+                        </div>
 
                     </div>
-
                 </div>
             </div>
         </div>
