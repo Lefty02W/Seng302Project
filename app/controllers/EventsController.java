@@ -93,7 +93,7 @@ public class EventsController extends Controller {
                     RoutedObject<Events> toSend = new RoutedObject<>(editEvent, true, false);
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, toSend,
+                            destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, toSend,
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), initPagination(offset, eventRepository.getNumEvents(), 8), null,
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
@@ -117,7 +117,7 @@ public class EventsController extends Controller {
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
-                                initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                 artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/artists/" + artistId + eventURL)));
     }
@@ -141,7 +141,7 @@ public class EventsController extends Controller {
                     paginationHelper.checkButtonsEnabled();
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
+                            destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, null,
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
@@ -393,7 +393,7 @@ public class EventsController extends Controller {
 
                     return ok(events.render(profile.get(),
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
+                            destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormData,
                             request, messagesApi.preferred(request)));
                 } else {
