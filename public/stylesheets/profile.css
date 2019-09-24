@@ -237,8 +237,9 @@ img.thumbnail {
 #profileTabsContent {
     margin-left: auto;
     margin-right: auto;
-    /*width: 50%;*/
+    padding-bottom: 3%;
 }
+
 
 .nav .nav-tabs, #followedArtistsLink, #yourArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink, #upcomingEventsLink {
     font-size: 18pt;
