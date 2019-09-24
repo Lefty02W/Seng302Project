@@ -228,9 +228,15 @@ img.thumbnail {
 
 }
 
-#destsTab, #tripsTab, #followedArtistsTab, #photosTab, #yourArtistsTab {
+#destsTab, #tripsTab, #followedArtistsTab, #photosTab {
     padding-left: 10%;
     padding-right: 10%;
+    padding-bottom: 5%;
+}
+
+#yourArtistsTab {
+    padding-left: 20%;
+    padding-right: 20%;
     padding-bottom: 5%;
 }
 
@@ -354,11 +360,6 @@ img.thumbnail {
     padding-right: 0px !important;
 }
 
-#yourArtistsCard {
-    margin-left: 15vw;
-}
-
 #yourArtistsList {
-    width: 50vw;
     text-align: center;
 }
