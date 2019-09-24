@@ -311,6 +311,25 @@ public class EventRepository {
     }
 
     /**
+     * A function to find out is a user is an admin of a particular event. A user is an admin of an event if they are an admin of one
+     * of the artists going to that event.
+     *
+     * @param profId The profile ID of the user.
+     * @param eventId The Id of the event to check
+     * @return True if the profile is an admin, false if they aren't
+     */
+    public boolean isOwner(int profId, int eventId) {
+        List<ArtistProfile> artistProfile = ebeanServer.find(ArtistProfile.class).where().eq("profile_id", profId).findList();
+        for (int i=0;i<artistProfile.size();i++) {
+            Optional<EventArtists> eventArtists = Optional.ofNullable(ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).eq("artist_id", artistProfile.get(i).getAPArtistId()).findOne());
+            if (eventArtists.isPresent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * method to turn the given string into an SQL query adding a list of parameters as wildcards
      * @param query base string query with wild cards
      * @param args parameters to be added to the wildcards

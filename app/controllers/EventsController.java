@@ -37,6 +37,8 @@ public class EventsController extends Controller {
     private final EventRepository eventRepository;
     private final Form<Events> eventForm;
     private final Form<Events> eventEditForm;
+    private List<Photo> photoList = new ArrayList<>();
+    private PersonalPhotoRepository personalPhotoRepository;
     private final Form<EventFormData> eventFormDataForm;
     private final AttendEventRepository attendEventRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
@@ -51,7 +53,7 @@ public class EventsController extends Controller {
     @Inject
     public EventsController(ProfileRepository profileRepository, MessagesApi messagesApi, GenreRepository genreRepository,
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
-                            FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository) {
+                            FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository, PersonalPhotoRepository personalPhotoRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -62,6 +64,7 @@ public class EventsController extends Controller {
         this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
         this.attendEventRepository = attendEventRepository;
+        this.personalPhotoRepository = personalPhotoRepository;
     }
 
 
@@ -503,13 +506,27 @@ public class EventsController extends Controller {
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (profileOpt.isPresent() && optEvent.isPresent()) {
-                        return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, request, messagesApi.preferred(request)));
+                        return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
                 });
     }
 
+
+    /**
+    * Method to query the image repository to retrieve all images uploaded for a
+     * logged in user.
+     *
+     * @param request Https request
+     * @return a list of image objects
+     */
+    @Security.Authenticated(SecureSession.class)
+    private List<Photo> getUserPhotos(Http.Request request, int profileId){
+        Optional<List<Photo>> imageListTemp = personalPhotoRepository.getAllProfilePhotos(profileId);
+        imageListTemp.ifPresent(photos -> photoList = photos);
+        return photoList;
+    }
 
     /**
      * Method to convert a list of profile ids into a list of profile names to display on the detailed event page
