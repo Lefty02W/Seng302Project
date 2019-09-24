@@ -96,7 +96,7 @@ public class ArtistRepository {
         for (EventArtists eventArtist : eventArtists) {
             artist = Optional.ofNullable(ebeanServer.find(Artist.class).where().eq("artist_id", eventArtist.getArtistId()).findOne());
             if(artist.isPresent()) {
-                artists.add(artist.get());
+                artists.add(populateArtistAdmin(artist.get()));
             }
         }
         return (artists);
