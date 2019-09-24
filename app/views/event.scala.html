@@ -96,9 +96,9 @@
 
                     <div class="tab-content" id="eventsTabsContent">
                         <div id="detailsTab" class="tab-pane fade in active show">
-                            @ */ /@ event.getTicketPrice #TODO Add ticket price*@
-                            @ */ /Button*@
-                            @ */ /@ event.getTicketLink #TODO Add ticket link ? maybe on bottom*@
+                            @*/ /@ event.getTicketPrice #TODO Add ticket price*@
+                            @*/ /Button*@
+                            @*/ /@ event.getTicketLink #TODO Add ticket link ? maybe on bottom*@
                             <div id="eventDescription" class="card center-col overflow-auto">
                                 <i class="fa fa-info-circle">&nbsp;</i>
                                 @event.getDescription
@@ -116,7 +116,7 @@
 
                         </div>
 
-                        @ */ /Attend / Not going button*@
+                        @*/ /Attend / Not going button*@
 
 
                         <div id="destinationTab" class="tab-pane fade in">
@@ -198,14 +198,15 @@
                             <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
                         </div>
-
-                        <div class="col button-col">
-                            <button class="btn btn-secondary" type="button" id="changeEventPhotoButton" data-toggle="modal"
-                            data-target="#changeEventPhotoModal">
-                                Change Cover Photo
-                            </button>
-                        </div>
-                        @ */ / @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
+                        @if(event.getEventArtists.contains(currentUser)) {
+                            <div class="col button-col">
+                                <button class="btn btn-secondary" type="button" id="changeEventPhotoButton" data-toggle="modal"
+                                data-target="#changeEventPhotoModal">
+                                    Change Cover Photo
+                                </button>
+                            </div>
+                        }
+                        @*/ / @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
                         <div class="col button-col">
                             <button class="btn btn-secondary" style="float: right">
                                 <i class="fa fa-credit-card">&nbsp;</i>Buy Tickets
