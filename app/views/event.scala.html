@@ -94,7 +94,30 @@
 
                     <div class="tab-content" id="eventsTabsContent">
                         <div id="detailsTab" class="tab-pane fade in active show">
+                            @*//@ event.getTicketPrice #TODO Add ticket price*@
+                            @*//Button*@
+                            @*//@ event.getTicketLink #TODO Add ticket link ? maybe on bottom*@
+                            <div id="eventDescription" class="card center-col overflow-auto">
+                                <i class="fa fa-info-circle">&nbsp;</i>
+                                @event.getDescription
+                                <hr>
+                                <i class="fa fa-calendar">&nbsp;</i>
+                                @event.getStartDateString to @event.getEndDateString
+                                <hr>
+                                <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                @event.getAgeRestrictionString
+                                <hr>
+                                <i class="fa fa-globe">&nbsp;</i>
+                                    @event.getDestination.getName
+                            </div>
+
+
                         </div>
+
+                            @*//Attend / Not going button*@
+
+
+
                         <div id="destinationTab" class="tab-pane fade in">
                             <div class="col" id="destinationDetails">
                                 Details here
@@ -146,6 +169,13 @@
                             <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
                         </div>
+@*//                        @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
+                        <div class="col button-col">
+                            <button class="btn btn-secondary" style="float: right">
+                                <i class="fa fa-credit-card">&nbsp;</i>Buy Tickets
+                            </button>
+
+                            </div>
 
                     </div>
                 </div>
