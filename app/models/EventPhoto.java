@@ -1,13 +1,15 @@
 package models;
-
+import io.ebean.Model;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
  * Model class to hold link between and event and an event photo
  */
 @Entity
-public class EventPhoto {
+public class EventPhoto extends Model {
 
+    @Id
     private int eventId;
     private int photoId;
 

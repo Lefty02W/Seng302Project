@@ -2,6 +2,7 @@ package repository;
 
 import io.ebean.Ebean;
 import io.ebean.EbeanServer;
+import io.ebean.Transaction;
 import models.EventPhoto;
 import play.db.ebean.EbeanConfig;
 
@@ -49,6 +50,29 @@ public class EventPhotoRepository {
      */
     public Optional<Integer> getEventPhotoId(int eventId) {
         return Optional.ofNullable(ebeanServer.find(EventPhoto.class).select("photoId").where().eq("event_id", eventId).findSingleAttribute());
+    }
+
+
+    /**
+     * Database access method to update the photo link for an event cover photo
+     * @param eventId id of the event to update the photo
+     * @param photoId id of the photo to be added to the event
+     * @return CompletionStage
+     */
+
+    public CompletionStage<Integer> update(int eventId, int photoId){
+        return supplyAsync(() -> {
+            Transaction txn = ebeanServer.beginTransaction();
+            EventPhoto targetPhoto = ebeanServer.find(EventPhoto.class).setId(eventId).findOne();
+            if (targetPhoto != null) {
+                targetPhoto.setPhotoId(photoId);
+                targetPhoto.update();
+                txn.commit();
+            }
+            txn.end();
+
+            return eventId;
+        });
     }
 
 }
