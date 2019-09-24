@@ -98,9 +98,12 @@ public class LoginController extends Controller {
             if (profOpt.isPresent()) {
                 Profile profile = profOpt.get();
                 profile.initProfile();
-
-                if (profileRepository.isEmailTakenSignup(profile.getEmail())) {
+                String email = profile.getEmail();
+                if (profileRepository.isEmailTakenSignup(email)) {
                     return supplyAsync(()-> redirect("/").flashing("warning", "Error: Email already taken"));
+                }
+                if (!isEmailValid(email)) {
+                    return supplyAsync(()-> redirect("/").flashing("warning", "Error: Please enter a valid email"));
                 }
 
                 return profileRepository.insert(profile).thenApplyAsync(profileIdOptional ->
@@ -112,6 +115,11 @@ public class LoginController extends Controller {
         }
         return supplyAsync(()-> redirect("/").flashing("info", "Profile save failed"));
 
+    }
+
+    public static boolean isEmailValid(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
     }
 
     /**
