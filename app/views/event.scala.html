@@ -97,13 +97,43 @@
                         </div>
                         <div id="destinationTab" class="tab-pane fade in">
                             <div class="col" id="destinationDetails">
-
+                                Details here
                             </div>
                             <div id="map-card" class="card-large">
                                 <div id="destinationMap"></div>
                             </div>
                         </div>
                         <div id="artistsTab" class="tab-pane fade in">
+                            <div class="row">
+
+                                    @for(artist <- event.getEventArtists) {
+                                        <div class="col">
+                                            <div class="card" id="eventsCard">
+                                                <div class="row">
+                                                    <div class="col">
+                                                        PUT PICTURE HERE
+                                                        <a href="/artists/@artist.getArtistId">
+                                                            <h3>@artist.getArtistName</h3>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div class="row">
+                                                            Bio: @artist.getBiography
+                                                        </div>
+                                                        <div class="row">
+                                                            Members: @artist.getMembers
+                                                        </div>
+                                                        <div class="row">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                            </div>
+
                         </div>
                         <div id="attendeesTab" class="tab-pane fade in">
                         </div>
