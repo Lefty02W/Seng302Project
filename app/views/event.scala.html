@@ -1,4 +1,5 @@
 @import play.mvc.Http
+@import views.html.helper.CSRF
 @(currentUser: Profile, event : Events, attendees : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -195,6 +196,18 @@
                         <div class="col button-col">
                             <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
+                        </div>
+
+                        <div class="col button-col">
+                            @* @helper.form(routes.EventsController.uploadPhoto(event.getEventId)) {
+                                @CSRF.formField
+                                <div class="modal-body">
+                                    <input type="file" id="image" name="image">
+                                    <input type="hidden" id="visible" name="visible" value="Public" hidden>
+
+                                </div>
+
+                            }*@
                         </div>
 @*//                        @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
                         <div class="col button-col">
