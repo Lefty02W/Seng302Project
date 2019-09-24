@@ -403,14 +403,13 @@ public class AdminController {
      * @return a redirect to the profile page
      * @apiNote
      */
-    public CompletionStage<Result> updatePassword(Http.Request request, Integer id) {
+    public CompletionStage<Result> updatePassword(Http.Request request) {
         Form<UpdatePasswordForm> passwordFormForm = updatePasswordForm.bindFromRequest(request);
         UpdatePasswordForm updatePasswordForm = passwordFormForm.get();
-        return profileRepository.updatePassword(id, updatePasswordForm.password)
+        return profileRepository.updatePassword(updatePasswordForm.userId, updatePasswordForm.password)
                 .thenApplyAsync(x -> redirect("/admin/profiles/0")
                         , httpExecutionContext.current());
     }
-
 
 
     /**
