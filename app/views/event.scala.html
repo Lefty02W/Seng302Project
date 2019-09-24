@@ -96,26 +96,22 @@
                         <div id="detailsTab" class="tab-pane fade in active show">
                         </div>
                         <div id="destinationTab" class="tab-pane fade in">
-                            <div class="col">
-                                <div class="row card" id="destinationDetails">
+                            <div class="row">
+                                <div class="col-4 card" id="destinationDetails">
                                     <div class="row justify-content-center">
-                                        <h3 class="secondary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
+                                        <h3 class="primary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
                                     </div>
-                                    <div class="row justify-content-center">
-                                        <div>
-                                            <div class="col">
-                                                Type: @event.getDestination.getType
-                                            </div>
-                                            <div class="col">
-                                                Country: @event.getDestination.getCountry
-                                            </div>
-                                            <div class="col">
-                                                District: @event.getDestination.getDistrict
-                                            </div>
-                                        </div>
+                                    <div class="row">
+                                        Type: @event.getDestination.getType
+                                    </div>
+                                    <div class="row">
+                                        Country: @event.getDestination.getCountry
+                                    </div>
+                                    <div class="row">
+                                        District: @event.getDestination.getDistrict
                                     </div>
                                 </div>
-                                <div class="row card" id="map-card">
+                                <div id="map-card" class="col card-large">
                                     <div id="destinationMap"></div>
                                 </div>
                             </div>
