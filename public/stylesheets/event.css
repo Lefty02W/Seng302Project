@@ -52,7 +52,10 @@
 
 #eventJumbo {
     height: 35vh;
+    background: url("https://images.unsplash.com/photo-1483101974978-cf266fdf1139?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80") no-repeat center center;
+    background-size: cover;
 }
+
 
 #map-card {
     height: 70vh;
