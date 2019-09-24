@@ -314,18 +314,22 @@
                                 <div class="modal-header">
                                     <h2 class="modal-title">New Artist Picture</h2>
                                 </div>
-@*//                                @form(routes.ArtistController.uploadPhoto(), 'enctype -> "multipart/form-data") {*@
-@*//                                    @CSRF.formField*@
+                                @form(routes.ArtistController.uploadProfilePhoto(artist.getArtistId), 'enctype -> "multipart/form-data") {
+                                    @CSRF.formField
                                     <div class="modal-body">
                                         <input type="file" id="image" name="image">
                                         <input type="hidden" id="visible" name="visible" value="Public" hidden>
+                                        <input type="hidden" id="artistId" name="artistId" value="@artist.getArtistId" hidde>
                                         <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
                                     </div>
-                                @*}*@
+
                                 <div class="modal-footer">
                                     <button class="btn btn-danger" data-dismiss="modal" type="button">Cancel</button>
-                                    <button class="btn btn-primary" type="submit">Save</button>
+                                    @*<a href="/artists/@artist.getArtistId/upload/photo">*@
+                                        <button class="btn btn-primary" type="submit">Save</button>
+                                    @*</a>*@
                                 </div>
+                                }
                             </div>
                         </div>
                     </div>

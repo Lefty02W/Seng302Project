@@ -32,6 +32,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 public class ArtistController extends Controller {
 
     private final Form<Artist> artistForm;
+    private final Form<ArtistPhotoFormData> artistPhotoForm;
     private MessagesApi messagesApi;
     private final ArtistRepository artistRepository;
     private final ProfileRepository profileRepository;
@@ -66,6 +67,7 @@ public class ArtistController extends Controller {
         this.artistProfilePictureRepository = artistProfilePictureRepository;
         this.personalPhotoRepository = personalPhotoRepository;
         this.photoRepository = photoRepository;
+        this.artistPhotoForm = artistProfileFormFactory.form(ArtistPhotoFormData.class);
     }
 
 
@@ -444,33 +446,36 @@ public class ArtistController extends Controller {
      * create an instance of ArtistProfilePhoto and pass that to the repo to save
      *
      * @param request - The HTTP Request for uploading a profile photo
-     * @param artistId - ID of the artist to set profile photo for
+     * @param id - ID of the artist to set profile photo for
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> uploadProfilePhoto(Http.Request request, Integer artistId) {
+    public CompletionStage<Result> uploadProfilePhoto(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
-                Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
-                Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
+        Integer artistId = id;
 
-                String fileName = picture.getFilename();
-                String contentType = picture.getContentType();
-                long fileSize = picture.getFileSize();
-                if (fileSize >= MAX_PHOTO_SIZE) {
-                    return supplyAsync(() -> redirect("artists/"+artistId).flashing("error",
-                            "File size must not exceed 8MB!"));
-                }
-                Files.TemporaryFile tempFile = picture.getRef();
-                String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
-                tempFile.copyTo(Paths.get(filepath), true);
+        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
 
-                int personalPhotoId = 0;
-                Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 0, fileName);
-                photoRepository.insert(photo).thenApplyAsync(photoId ->
-                        personalPhotoRepository.insert(new PersonalPhoto(profId, photoId)))
-                        .thenApplyAsync(id->personalPhotoId);
+        ArtistPhotoFormData artistPhotoFormData = artistPhotoForm.bindFromRequest(request).get();
 
-                ArtistProfilePhoto artistProfilePhoto = new ArtistProfilePhoto(artistId, personalPhotoId);
-                return artistProfilePictureRepository.updateArtistProfilePicture(artistProfilePhoto)
-                        .thenApplyAsync(artist -> redirect("/artists/" + artist));
+        String fileName = picture.getFilename();
+        String contentType = picture.getContentType();
+        long fileSize = picture.getFileSize();
+        if (fileSize >= MAX_PHOTO_SIZE) {
+            return supplyAsync(() -> redirect("artists/"+artistId).flashing("error",
+                    "File size must not exceed 8MB!"));
+        }
+        Files.TemporaryFile tempFile = picture.getRef();
+        String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
+        tempFile.copyTo(Paths.get(filepath), true);
+
+        Integer personalPhotoId = null;
+        ArtistProfilePhoto artistProfilePhoto;
+        Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 0, fileName);
+        return photoRepository.insert(photo).thenApplyAsync(photoId ->
+                personalPhotoRepository.insert(new PersonalPhoto(profId, photoId)))
+                .thenApplyAsync(resultId->personalPhotoId)
+                .thenApplyAsync(unused -> artistProfilePictureRepository.addArtistProfilePicture(new ArtistProfilePhoto(artistId, personalPhotoId)))
+                .thenApplyAsync(artist -> redirect("/artists/"+artistId));
     }
 }

@@ -38,7 +38,7 @@ public class ArtistProfilePictureRepository {
      */
     public CompletionStage<Void> addArtistProfilePicture(ArtistProfilePhoto artistProfilePhoto) {
         return supplyAsync(() -> {
-            ebeanServer.insert(ArtistProfilePhoto.class);
+            ebeanServer.insert(artistProfilePhoto);
             return null;
         }, executionContext);
     }
