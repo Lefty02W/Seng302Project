@@ -34,6 +34,10 @@ public class Events extends Model {
 
     private int softDelete;
 
+    private double ticketPrice;
+
+    private String ticketLink;
+
     @Transient
     private List<MusicGenre> eventGenres;
 
@@ -248,5 +252,21 @@ public class Events extends Model {
 
     public void setAgeForm(String ageForm) {
         this.ageForm = ageForm;
+    }
+
+    public double getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(Double ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public String getTicketLink() {
+        return ticketLink;
+    }
+
+    public void setTicketLink(String ticketLink) {
+        this.ticketLink = ticketLink;
     }
 }

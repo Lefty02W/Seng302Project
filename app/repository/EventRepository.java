@@ -5,10 +5,6 @@ import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -190,6 +186,8 @@ public class EventRepository {
                 targetEvent.setEndDate(event.getEndDate());
                 targetEvent.setStartDate(event.getStartDate());
                 targetEvent.setEventName(event.getEventName());
+                targetEvent.setTicketLink(event.getTicketLink());
+                targetEvent.setTicketPrice(event.getTicketPrice());
                 targetEvent.update();
                 txn.commit();
                 event.setEventId(targetEvent.getEventId());
