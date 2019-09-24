@@ -71,8 +71,14 @@
                                 <button type="submit" id="loginButton" class="btn btn-primary">Login</button>
                             </div>
                         </div>
+                        <div class="row justify-content-center">
+                            <a href="" data-toggle="modal" data-target="#passwordModal">
+                                Forgot Password?
+                            </a>
+                        </div>
                     </div>
                 }
+
             </div>
 
             <div class="row" align="center" id="cookieUseNotice">
@@ -113,6 +119,25 @@
                         <br>
                         If you do not consent to this, please cease using SoundBound and its related services.
                         Continuing to use SoundBound and/or its services is a confirmation of your consent.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade modal" id="passwordModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Password Reset</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        To reset your password please email an admin at: admin@@soundbound.com
+                        <br>
+                        Please include your full name and date of birth in your email
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
