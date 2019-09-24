@@ -279,15 +279,13 @@
                             }
                             @for(event <- events){
                                 <div class="card-body col col-md-12" id="eventCard">
-                                    <div class="card-header event-link toggled eventTitle" id='eventName@event.getEventId' onclick="showEvent(@event.getEventId, this)">
-                                        @event.getEventName
+                                    <div class="card-header toggled eventTitle" id='eventName@event.getEventId'>
+                                        <a class="event-link" href="/events/view/@event.getEventId">
+                                            @event.getEventName
+                                        </a>
 
-                                        <div id="editEventLink">
-                                            @if(isVerifiedArtist) {
-                                                <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
-                                                    <i class="fa fa-edit">Edit</i>
-                                                </a>
-                                            }
+                                        <div class="event-link" id="mapLink" onclick="showEvent(@event.getEventId, this)">
+                                            <i class="fa fa-map-marker">View on Map</i>
                                         </div>
 
                                     </div>
