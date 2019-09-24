@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -53,7 +55,7 @@ public class EventRepository {
      */
     public Optional<List<Events>> getAll() {
         List<Events> eventsList = new ArrayList<>();
-        List<Events> events = ebeanServer.find(Events.class).where().eq("soft_delete", 0).findList();
+        List<Events> events = ebeanServer.find(Events.class).where().eq("soft_delete", 0).orderBy().asc("start_date").findList();
         for (Events event : events){
             eventsList.add(populateEvent(event));
         }
@@ -69,7 +71,7 @@ public class EventRepository {
      */
     public List<Events> getPage(int offset) {
         List<Events> toReturn = new ArrayList<>();
-        List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).findList();
+        List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).orderBy().asc("start_date").findList();
         for (Events event : events) {
             toReturn.add(populateEvent(event));
         }
@@ -89,7 +91,14 @@ public class EventRepository {
             for (Events event : ebeanServer.find(Events.class).where().idIn(ids).findList()) {
                 events.add(populateEvent(event));
             }
+            Collections.sort(events, new Comparator<Events>() {
+                @Override
+                public int compare(Events o1, Events o2) {
+                    return o1.getStartDate().compareTo(o2.getStartDate());
+                }
+            });
         }
+
         return events;
     }
 
@@ -295,7 +304,7 @@ public class EventRepository {
             args.add(eventFormData.getStartDate());
             args.add(eventFormData.getStartDate());
         }
-        query += " LIMIT 8 OFFSET "+offset;
+        query += " ORDER BY DATE(events.start_date) LIMIT 8 OFFSET "+offset;
         return createSqlQuery(query, args, likeAdded);
     }
 
