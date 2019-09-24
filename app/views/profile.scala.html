@@ -322,13 +322,12 @@
                                 <div>Follow an <a href="/artists"> artist</a> for them to appear here!</div>
                             } else {
                             <div id="card-large lower-card">
-                                <div class="card center-col overflow-auto" id="followedArtistsCard">
-
+                                <div id="followedArtistsCard">
                                     <table id="followedArtistsTable" class="table">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Un-follow</th>
+                                            <th><i class="fa fa-user">&nbsp;</i>Name</th>
+                                            <th><i class="fa fa-reorder">&nbsp;</i>Options</th>
                                         </tr>
                                     </thead>
                                     @for(artist <- followedArtistList) {
@@ -340,7 +339,7 @@
                                             </td>
                                             <td>
                                                 <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
-                                                    <button type="button" class="btn btn-outline-secondary">Unfollow</button>
+                                                    <button type="button" class="btn btn-outline-secondary"><i class="fa fa-remove">&nbsp;</i>Unfollow</button>
                                                 </a>
                                                 </td>
                                         </tr>
