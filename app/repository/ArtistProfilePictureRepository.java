@@ -37,10 +37,22 @@ public class ArtistProfilePictureRepository {
      * @param artistProfilePhoto - Profile photo object to add to artist
      */
     public CompletionStage<Void> addArtistProfilePicture(ArtistProfilePhoto artistProfilePhoto) {
-        return supplyAsync(() -> {
-            ebeanServer.insert(artistProfilePhoto);
-            return null;
-        }, executionContext);
+        if(!checkArtistHasProfilePicture(artistProfilePhoto.getArtistId())) {
+            return supplyAsync(() -> {
+                try {
+                    ebeanServer.insert(artistProfilePhoto);
+                } catch (Exception e) {
+                    System.out.println(artistProfilePhoto.getPersonalPhotoId());
+                    System.out.println(e);
+                }
+                return null;
+            }, executionContext);
+        } else {
+            return supplyAsync(() -> {
+                updateArtistProfilePicture(artistProfilePhoto);
+                return null;
+                }, executionContext);
+        }
     }
 
 
@@ -48,12 +60,10 @@ public class ArtistProfilePictureRepository {
      * Check if an artist has a profile picture already
      * @param artistId - ID of the artist to check if they have a profile picture
      */
-    public CompletionStage<Boolean> checkArtistHasProfilePicture(Integer artistId) {
-        return supplyAsync(() -> {
-            ArtistProfilePhoto artistProfilePhoto = ebeanServer.find(ArtistProfilePhoto.class)
-                    .where().eq("artist_id", artistId).findOne();
-            return (artistProfilePhoto != null);
-        }, executionContext);
+    private Boolean checkArtistHasProfilePicture(Integer artistId) {
+            return ebeanServer.find(ArtistProfilePhoto.class)
+                    .where().eq("artist_id", artistId).exists();
+//            return (artistProfilePhoto != null);
     }
 
     /**
