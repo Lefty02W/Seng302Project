@@ -174,6 +174,10 @@
                                                 <p>@event.getAgeRestrictionString</p>
                                             </div>
                                             <div class="row">
+                                                    <i class="fa fa-user-plus">&nbsp;</i>
+                                                <p>@event.getEventAttendees.size() attending</p>
+                                            </div>
+                                            <div class="row">
                                                 <div class="col">
                                                     <h4 class="primary-color">Description</h4>
                                                     <p>@event.getDescription</p>
@@ -185,13 +189,48 @@
                                                     }
                                                 </div>
                                             </div>
+
                                         </div>
                                         <div class="card-footer">
+                                        @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
+                                            @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
+                                                    || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
+                                                    || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
+                                                <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
+                                                    <i class="fa fa-check"></i>
+                                                    Attend
+                                                </button>
+                                            } else {
+                                                <a href="/artists/@artist.getArtistId/events/@event.getEventId/attend">
+                                                    <button class="btn btn-primary">
+                                                        <i class="fa fa-check"></i>
+                                                        Attend
+                                                    </button>
+                                                </a>
+                                            }
+
+                                        } else {
+                                            <a href="/artists/@artist.getArtistId/events/@event.getEventId/leave">
+                                                <button class="btn btn-secondary">
+                                                    <i class="fa fa-remove"></i>
+                                                    Don't attend
+                                                </button>
+                                            </a>
+                                        }
+
                                         @if(artist.getAdminsList.contains(currentUser)) {
                                             <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
-                                                <button class="btn btn-primary">Edit</button>
+                                                <button class="btn btn-primary">
+                                                    <i class="fa fa-edit"></i>
+                                                    Edit
+                                                </button>
                                             </a>
-                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">Delete</button>
+
+
+                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">
+                                                <i class="fa fa-trash"></i>
+                                                Delete
+                                            </button>
                                         }
                                         </div>
                                     </div>
@@ -1261,7 +1300,7 @@
                     center: center,
                     streetViewControl: false,
                     fullscreenControl: false,
-                    zoom: 8
+                    zoom: 2
                 });
                 addMarkers();
             }
@@ -1280,7 +1319,8 @@
                     });
                     marker.content = "Name:  @event.getEventName" +
                             "<br> Type: @event.getEventTypeString" +
-                            "<br> Destination: @event.getDestination.getName";
+                            "<br> Destination: @event.getDestination.getName" +
+                            "<br> Attendees: @event.getEventAttendees.size";
                     var infoWindow = new google.maps.InfoWindow();
                     google.maps.event.addListener(marker, 'click', function() {
                         infoWindow.setContent(this.content);

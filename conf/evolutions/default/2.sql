@@ -36,6 +36,12 @@ INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,ge
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
   (12, 'Has', 'Artist', 'hasAnArtist@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (13, 'Tim', 'Yes', 'tim.yes@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
+
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (14, 'Tim', 'No', 'tim.no@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
+
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
@@ -279,22 +285,52 @@ INSERT INTO artist_country (artist_id, country_id) VALUES
   (3,1);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (1, 'Event', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+  (1, 'Event', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (2, 'Woodstock', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+  (2, 'Woodstock', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (3, 'Burning Man', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+  (3, 'Burning Man', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (4, 'Burning Person', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+  (4, 'Burning Person', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (5, 'Burning Yes', 'description', 9, CURRENT_DATE, CURRENT_DATE, 0);
+  (5, 'Burning Yes', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (6, 'BigEvent', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (7, 'Event', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (8, 'Woodstock', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (9, 'Burning Man', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (10, 'Burning Person', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (11, 'Burning Yes', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (12, 'BigEvent', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (13, 'BigEvent', 'description', 9, '2018-11-02', CURRENT_DATE, 0);
+
+INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
+  (14, 'BigEvent', 'description', 9, '2018-11-02', CURRENT_DATE, 0);
 
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (1, 2);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 14);
 
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (1, 5);
@@ -307,6 +343,30 @@ INSERT INTO event_artists (artist_id, event_id) VALUES
 
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (2, 4);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (2, 6);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 7);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 8);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 9);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (1, 10);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (2, 11);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (2, 12);
+
+INSERT INTO event_artists (artist_id, event_id) VALUES
+  (2, 13);
 
 INSERT INTO type_of_events (type_id, type_name) VALUES
   (1, 'Gig');
@@ -323,6 +383,30 @@ INSERT INTO event_type (event_id, type_id) VALUES
 INSERT INTO event_type (event_id, type_id) VALUES
   (4, 1);
 
+INSERT INTO event_type (event_id, type_id) VALUES
+  (7, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (8, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (9, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (10, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (11, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (12, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (13, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (14, 1);
+
 INSERT INTO event_genres (event_id, genre_id) VALUES
   (4, 1);
 
@@ -331,3 +415,72 @@ INSERT INTO event_type (event_id, type_id) VALUES
 
 INSERT INTO event_genres (event_id, genre_id) VALUES
   (5, 1);
+
+INSERT INTO event_type (event_id, type_id) VALUES
+  (6, 1);
+
+INSERT INTO event_genres (event_id, genre_id) VALUES
+  (6, 1);
+
+INSERT INTO attend_event(attend_event_id, event_id, profile_id) VALUES
+  (1, 6, 2);
+
+
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (1, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (2, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (3, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (4, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (5, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (6, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (7, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (8, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (9, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (10, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (11, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (12, 2);
+
+
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (6, 13);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (10, 13);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (11, 13);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (12, 13);
+
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (12, 14);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (13, 14);
+

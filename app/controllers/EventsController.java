@@ -37,6 +37,7 @@ public class EventsController extends Controller {
     private final Form<Events> eventForm;
     private final Form<Events> eventEditForm;
     private final Form<EventFormData> eventFormDataForm;
+    private final AttendEventRepository attendEventRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
     private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
@@ -49,7 +50,7 @@ public class EventsController extends Controller {
     @Inject
     public EventsController(ProfileRepository profileRepository, MessagesApi messagesApi, GenreRepository genreRepository,
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
-                            FormFactory formFactory, EventRepository eventRepository) {
+                            FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -59,7 +60,9 @@ public class EventsController extends Controller {
         this.eventEditForm = formFactory.form(Events.class);
         this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
+        this.attendEventRepository = attendEventRepository;
     }
+
 
 
 
@@ -204,7 +207,9 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEvent(Http.Request request, Integer id) {
         Form<Events> form = eventForm.bindFromRequest(request);
+        System.out.println(form);
         Events event = setValues(SessionController.getCurrentUserId(request), form);
+        System.out.println("something is going wrong here");
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect(eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
@@ -222,7 +227,10 @@ public class EventsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEventFromArtist(Http.Request request, Integer artistId, Integer eventId) {
+        System.out.println("in editEventFromArtist");
         Form<Events> form = eventEditForm.bindFromRequest(request);
+        System.out.println(form);
+        System.out.println("test");
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect("/artists/" + artistId + eventURL).flashing("error", "Error: Start date cannot be after end date."));
@@ -383,7 +391,7 @@ public class EventsController extends Controller {
                 EventFormData eventFormData = searchEventForm.get();
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
-                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("")) {
+                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("") && !eventFormData.getAttending().equals("on")) {
                     return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
                 }
 
@@ -437,6 +445,43 @@ public class EventsController extends Controller {
         return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + eventURL));
     }
 
+    /**
+     * Endpoint method to attend an event with the given eventID
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result attendEvent(Http.Request request, Integer eventId) {
+        AttendEvent attendEvent = new AttendEvent(eventId, SessionController.getCurrentUserId(request));
+        attendEventRepository.insert(attendEvent);
+        return redirect(eventURL).flashing("info", "Attending event: " + eventRepository.lookup(attendEvent.getEventId()).getEventName());
+    }
+
+    /**
+     * Endpoint method to withdraw from an event with the given eventID
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result leaveEvent(Http.Request request, Integer eventId) {
+        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
+        return redirect(eventURL).flashing("info", "No longer going to event");
+    }
+
+    /**
+     * Endpoint method to withdraw from an event with the given eventID and to redirect to the profile page
+     * Used for the "Don't attend" functionality from the profile page "Upcoming Events" tab
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to the users profile page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result leaveEventFromProfile(Http.Request request, Integer eventId) {
+        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
+        return redirect("/profile").flashing("success", "No longer going to event: " + eventRepository.lookup(eventId).getEventName());
+    }
 
     /**
      * Endpoint to view a specific event
