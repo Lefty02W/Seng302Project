@@ -142,7 +142,7 @@ public class ArtistController extends Controller {
                         ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -169,7 +169,7 @@ public class ArtistController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -192,7 +192,7 @@ public class ArtistController extends Controller {
                         ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
