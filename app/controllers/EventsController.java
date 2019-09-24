@@ -18,6 +18,7 @@ import views.html.viewArtist;
 import javax.inject.Inject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -493,15 +494,35 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> viewEvent(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
+        List<String> listProfileAttendees = getAllAttendeesNames(eventRepository.lookup(id).getEventAttendees());
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (profileOpt.isPresent() && optEvent.isPresent()) {
-                        return ok(event.render(profileOpt.get(), optEvent.get(), request, messagesApi.preferred(request)));
+                        return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
                 });
+    }
+
+
+    /**
+     * Method to convert a list of profile ids into a list of profile names to display on the detailed event page
+     * @param eventAttendees a list of integers containing the ids of the profiles attending an event
+     *
+     * @return a list of strings containing the names of profiles attending an event
+     */
+    public List<String> getAllAttendeesNames(List<Integer> eventAttendees) {
+        List <String> listProfileNames = new ArrayList<>();
+        String fullNameString;
+        for(Integer id: eventAttendees) {
+            fullNameString = profileRepository.getExistingProfileByProfileId(id).getFirstName() + " " +
+                    profileRepository.getExistingProfileByProfileId(id).getLastName();
+            listProfileNames.add(fullNameString);
+        }
+
+        return listProfileNames;
     }
 
 }
