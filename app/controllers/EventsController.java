@@ -95,7 +95,7 @@ public class EventsController extends Controller {
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, toSend,
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), initPagination(offset, eventRepository.getNumEvents(), 8), null,
-                            request, messagesApi.preferred(request)));
+                            artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
 
@@ -143,7 +143,7 @@ public class EventsController extends Controller {
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, null,
-                            request, messagesApi.preferred(request)));
+                            artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
 
@@ -395,7 +395,7 @@ public class EventsController extends Controller {
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormData,
-                            request, messagesApi.preferred(request)));
+                            artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
                 } else {
                     return redirect(eventURL).flashing("error", "No results found.");
                 }
