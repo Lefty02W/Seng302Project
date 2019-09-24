@@ -511,22 +511,4 @@ public class EventsController extends Controller {
     }
 
 
-    /**
-     * Method to convert a list of profile ids into a list of profile names to display on the detailed event page
-     * @param eventAttendees a list of integers containing the ids of the profiles attending an event
-     *
-     * @return a list of strings containing the names of profiles attending an event
-     */
-    public List<String> getAllAttendeesNames(List<Integer> eventAttendees) {
-        List <String> listProfileNames = new ArrayList<>();
-        String fullNameString;
-        for(Integer id: eventAttendees) {
-            fullNameString = profileRepository.getExistingProfileByProfileId(id).getFirstName() + " " +
-                    profileRepository.getExistingProfileByProfileId(id).getLastName();
-            listProfileNames.add(fullNameString);
-        }
-
-        return listProfileNames;
-    }
-
 }
