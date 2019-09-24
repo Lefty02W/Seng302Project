@@ -64,3 +64,7 @@ html {
     left: 60vw;
     width: 50vw;
 }
+
+#forgotPasswordLabel{
+    margin: 10px;
+}
