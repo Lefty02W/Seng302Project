@@ -192,7 +192,7 @@ public class ArtistController extends Controller {
                         ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
