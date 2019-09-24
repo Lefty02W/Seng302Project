@@ -91,16 +91,27 @@ public class LoginController extends Controller {
      * @param request users request to create a profile
      * @return redirect to login
      */
-    public Result save(Http.Request request){
+    public CompletionStage<Result> save(Http.Request request){
         Form<Profile> userForm = profileForm.bindFromRequest(request);
         Optional<Profile> profOpt = userForm.value();
-        if (profOpt.isPresent()) {
-            Profile profile = profOpt.get();
-            profile.initProfile();
-            profileRepository.insert(profile);
-            return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
+        try{
+            if (profOpt.isPresent()) {
+                Profile profile = profOpt.get();
+                profile.initProfile();
+
+                if (profileRepository.isEmailTakenSignup(profile.getEmail())) {
+                    return supplyAsync(()-> redirect("/").flashing("warning", "Error: Email already taken"));
+                }
+
+                return profileRepository.insert(profile).thenApplyAsync(profileIdOptional ->
+                        redirect(routes.ProfileController.show()).addingToSession(request, "connected", profileIdOptional.get().toString()));
+
+            }
+        }catch (Exception e){
+            return supplyAsync(()-> redirect("/").flashing("info", "Profile save failed"));
         }
-        return redirect("/").flashing("info", "Profile save failed");
+        return supplyAsync(()-> redirect("/").flashing("info", "Profile save failed"));
+
     }
 
     /**
