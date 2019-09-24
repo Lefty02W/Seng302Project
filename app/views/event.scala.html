@@ -119,11 +119,24 @@
 
 
                         <div id="destinationTab" class="tab-pane fade in">
-                            <div class="col" id="destinationDetails">
-                                Details here
-                            </div>
-                            <div id="map-card" class="card-large">
-                                <div id="destinationMap"></div>
+                            <div class="row">
+                                <div class="col-4 card" id="destinationDetails">
+                                    <div class="row justify-content-center">
+                                        <h3 class="primary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
+                                    </div>
+                                    <div class="row">
+                                        Type: @event.getDestination.getType
+                                    </div>
+                                    <div class="row">
+                                        Country: @event.getDestination.getCountry
+                                    </div>
+                                    <div class="row">
+                                        District: @event.getDestination.getDistrict
+                                    </div>
+                                </div>
+                                <div id="map-card" class="col card-large">
+                                    <div id="destinationMap"></div>
+                                </div>
                             </div>
                         </div>
                         <div id="artistsTab" class="tab-pane fade in">
