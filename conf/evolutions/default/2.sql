@@ -36,6 +36,9 @@ INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,ge
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
   (12, 'Has', 'Artist', 'hasAnArtist@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (13, 'Reset', 'Password', 'resetPassword@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
+
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
