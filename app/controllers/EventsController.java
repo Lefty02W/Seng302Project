@@ -498,12 +498,12 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> viewEvent(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
-        List<String> listProfileAttendees = getAllAttendeesNames(eventRepository.lookup(id).getEventAttendees());
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
-                    if (profileOpt.isPresent() && optEvent.isPresent()) {
-                        return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, request, messagesApi.preferred(request)));
+                    if (optEvent.isPresent()) {
+
+                        return ok(event.render(profileOpt.get(), optEvent.get(), profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }

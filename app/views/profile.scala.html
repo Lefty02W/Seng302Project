@@ -138,7 +138,7 @@
 
                 <div class="row">
                     <ul class="nav nav-tabs" id="profileTabs">
-                        <li class="active"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
+                        <li class="activated"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
                             Information</a></li>
                         <li><a data-toggle="tab" href="#photosTab" class="tabLink" id="photosTabLink">Photos</a></li>
                         <li><a data-toggle="tab" href="#destsTab" class="tabLink" id="destsTabLink">Destinations</a></li>
@@ -893,7 +893,14 @@
 
         <!-- Menu Toggle Script -->
     <script>
-            function fillVals() {
+
+        $(document).on("click", 'ul li', function(){
+            $('ul li').removeClass('activated');
+            $(this).addClass('activated');
+        });
+
+
+        function fillVals() {
                 $('#travellerTypesForm').val($('#typeDropdown').val());
                 $('#nationalitiesForm').val($('#nationDropdown').val());
                 $('#passportsForm').val($('#passportDropdown').val());

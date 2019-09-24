@@ -357,3 +357,7 @@ img.thumbnail {
     width: 50vw;
     text-align: center;
 }
+
+.activated {
+    font-weight:bold;
+}

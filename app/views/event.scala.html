@@ -1,5 +1,5 @@
 @import play.mvc.Http
-@(currentUser: Profile, event : Events, attendees : List[String])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, event : Events, attendees : List[Profile])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,7 +81,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <ul class="nav nav-tabs" id="eventTabs">
-                            <li class="active"><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
+                            <li class="activated"><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
                                 Details</a></li>
                             <li ><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
                                 Destination</a></li>
@@ -181,7 +181,11 @@
                                     </thead>
                                     @for(attendee <- attendees) {
                                         <tr>
-                                            <td>@attendee</td>
+                                            <td>
+                                                <a href="@routes.TravellersController.displayTravellersPhotos(attendee.getProfileId)">
+                                                    @attendee.getFirstName @attendee.getLastName
+                                                </a>
+                                            </td>
                                         </tr>
                                     }
                                 </table>
@@ -218,6 +222,12 @@
 
 
     <script>
+
+            $(document).on("click", 'ul li', function(){
+                $('ul li').removeClass('activated');
+                $(this).addClass('activated');
+            });
+
 
             $(function () {
                 $(".toggleButton").on('click', function (e) {
