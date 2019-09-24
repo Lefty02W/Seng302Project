@@ -75,6 +75,22 @@
     height:100%;
 }
 
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+    width: 10%;
+    opacity: 0.5;
+}
+
+#legend img {
+    height: 24px;
+    width: 24px;
+}
+
+#legend h4 {
+    color: black;
+}
+
 .map-events {
     height: 70vh;
     width: 70%;
