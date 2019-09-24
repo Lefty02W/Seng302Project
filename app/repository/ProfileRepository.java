@@ -637,7 +637,7 @@ public class ProfileRepository {
      * @param profileId int of the porfileid of the user
      * @return boolean true if email is taken, false if it is a change that will be allowed
      */
-    private boolean isEmailTaken(String email, int profileId) {
+    public boolean isEmailTaken(String email, int profileId) {
         boolean isTaken = false;
         String selectQuery = "Select * from profile WHERE email = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();
@@ -647,6 +647,18 @@ public class ProfileRepository {
             }
         }
         return isTaken;
+    }
+
+    /**
+     * Method for create profile to check if there is a traveller account under the supplied email that already
+     * exists (not the same user)
+     *
+     * @param email String The email the user has proposed to use
+     * @return boolean true if email is taken, false if it is a change that will be allowed
+     */
+    public boolean isEmailTakenSignup(String email) {
+        boolean isTaken = false;
+        return ebeanServer.find(Profile.class).where().eq("email", email).exists();
     }
 
 
