@@ -31,6 +31,30 @@ public class ArtistProfilePictureRepository {
         this.executionContext = executionContext;
     }
 
+    /**
+     * Database access method to attach a picture to an artist's profile picture
+     *
+     * @param artistProfilePhoto - Profile photo object to add to artist
+     */
+    public CompletionStage<Void> addArtistProfilePicture(ArtistProfilePhoto artistProfilePhoto) {
+        return supplyAsync(() -> {
+            ebeanServer.insert(ArtistProfilePhoto.class);
+            return null;
+        }, executionContext);
+    }
+
+
+    /**
+     * Check if an artist has a profile picture already
+     * @param artistId - ID of the artist to check if they have a profile picture
+     */
+    public CompletionStage<Boolean> checkArtistHasProfilePicture(Integer artistId) {
+        return supplyAsync(() -> {
+            ArtistProfilePhoto artistProfilePhoto = ebeanServer.find(ArtistProfilePhoto.class)
+                    .where().eq("artist_id", artistId).findOne();
+            return (artistProfilePhoto != null);
+        }, executionContext);
+    }
 
     /**
      * Database access method to update the profile picture attached to an artist
