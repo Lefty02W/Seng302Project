@@ -198,13 +198,15 @@
                             <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
                         </div>
-                        @if(event.getEventArtists.contains(currentUser)) {
+                        @for(artist <- event.getEventArtists) {
+                            @if(artist.getAdminsList != null && artist.getAdminsList.contains(currentUser)) {
                             <div class="col button-col">
                                 <button class="btn btn-secondary" type="button" id="changeEventPhotoButton" data-toggle="modal"
                                 data-target="#changeEventPhotoModal">
                                     Change Cover Photo
                                 </button>
                             </div>
+                            }
                         }
                         @*/ / @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
                         <div class="col button-col">
