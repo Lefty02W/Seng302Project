@@ -43,3 +43,15 @@
 #eventJumbo {
     height: 35vh;
 }
+
+#map-card {
+    height: 70vh;
+    width: 70%;
+    margin-top: 0;
+    padding: 0;
+}
+
+#destinationMap {
+    width:100%;
+    height:100%;
+}

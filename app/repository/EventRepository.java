@@ -348,7 +348,10 @@ public class EventRepository {
      * @return Optional event found
      */
     public CompletionStage<Optional<Events>> getEvent(int id) {
-        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Events.class).where().eq("event_id", id).findOne()));
+        return supplyAsync(() -> {
+            Optional<Events> event = Optional.ofNullable(ebeanServer.find(Events.class).where().eq("event_id", id).findOne());
+            return event.map(this::populateEvent);
+        });
     }
 
     /**
