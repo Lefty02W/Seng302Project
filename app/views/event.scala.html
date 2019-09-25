@@ -248,9 +248,8 @@
                                         src="@routes.ProfileController.photoAt(photo.getPhotoId)" alt="@photo.getName"
                                         name="@photo.getPhotoId">
                                         <div class="card-body">
-                                            <input type="hidden" id="photoId" name="photoId" value="@photo.getPhotoId">
                                             @* TODO: Link to backend when backend is complete *@
-                                            @* <a href="@routes.EventsController.setCoverPicture(photo.getPhotoId)"> *@
+                                            <a href="@routes.EventsController.setCoverPhoto(event.getEventId, photo.getPhotoId)">
                                             <button class="btn btn-outline-primary" type="submit">Select</button></a>
                                         </div>
                                     </div>

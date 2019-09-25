@@ -589,4 +589,15 @@ public class EventsController extends Controller {
         return eventPhotoRepository.removeEventCoverPhoto(id).thenApplyAsync(eventId -> redirect("/events/view/"+eventId));
     }
 
+    /**
+     * Endpoint method for an artist admin to change an event cover photo
+     * @param request client request
+     * @param eventId the id of the event
+     * @param photoId the id of the photo that is chosen to be the new event cover photo
+     * @return a redirect to the event page
+     */
+    public CompletionStage<Result> setCoverPhoto(Http.Request request, Integer eventId, Integer photoId) {
+        return eventPhotoRepository.update(eventId, photoId).thenApplyAsync(theEventId -> redirect("/events/view/"+theEventId));
+    }
+
 }
