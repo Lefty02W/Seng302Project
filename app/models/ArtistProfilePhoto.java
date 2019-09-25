@@ -9,11 +9,11 @@ import javax.persistence.Entity;
 public class ArtistProfilePhoto {
 
     private int artistId;
-    private int personalPhotoId;
+    private int photoId;
 
-    public ArtistProfilePhoto(int artistId, int personalPhotoId) {
+    public ArtistProfilePhoto(int artistId, int photoId) {
         this.artistId = artistId;
-        this.personalPhotoId = personalPhotoId;
+        this.photoId = photoId;
     }
 
     public int getArtistId() {
@@ -24,11 +24,11 @@ public class ArtistProfilePhoto {
         this.artistId = artistId;
     }
 
-    public int getPersonalPhotoId() {
-        return personalPhotoId;
+    public int getPhotoId() {
+        return photoId;
     }
 
-    public void setPersonalPhotoId(int personalPhotoId) {
-        this.personalPhotoId = personalPhotoId;
+    public void setPhotoId(int photoId) {
+        this.photoId = photoId;
     }
 }
