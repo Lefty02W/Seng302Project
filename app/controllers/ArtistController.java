@@ -139,6 +139,23 @@ public class ArtistController extends Controller {
         });
     }
 
+
+    /**
+     * Method to determine if an artist has a profile picture linked to it
+     * - returns the profile photo if it exists
+     * - returns null if there is none (this is handled on the frontend)
+     * @param artistId id of the artist
+     * @return an optional photo object of the artist picture or null
+     */
+    private Photo getCurrentArtistProfilePhoto(Integer artistId) {
+        ArtistProfilePhoto artistPictureLink = artistProfilePictureRepository.lookup(artistId);
+        if (artistPictureLink != null) {
+            Optional<Photo> optionalPhoto = photoRepository.getImage(artistPictureLink.getPhotoId());
+            return optionalPhoto.orElse(null);
+        } else { return null; }
+    }
+
+
     /**
      * Endpoint for landing page for viewing details of artists
      *
@@ -150,13 +167,7 @@ public class ArtistController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(artistId);
 
-        ArtistProfilePhoto artistPictureLink = artistProfilePictureRepository.lookup(artistId);
-
-        Photo artistPicture;
-        if (artistPictureLink != null) {
-            Optional<Photo> optionalPhoto = photoRepository.getImage(artistPictureLink.getPhotoId());
-            artistPicture = optionalPhoto.orElse(null);
-        } else { artistPicture = null; }
+        Photo artistPicture = getCurrentArtistProfilePhoto(artistId);
 
         if (artist == null) {
             return profileRepository.findById (profId).thenApplyAsync(profile -> redirect("/artists"));
@@ -183,6 +194,7 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> showArtistEvents(Http.Request request, Integer id, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(id);
+        Photo artistPicture = getCurrentArtistProfilePhoto(id);
         if (artist == null) {
             return supplyAsync(() -> redirect("/artists"));
         }
@@ -195,7 +207,7 @@ public class ArtistController extends Controller {
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                 artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
-                                null, null, request, messagesApi.preferred(request))))
+                                null, artistPicture, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -210,6 +222,7 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> showArtistMembers(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(id);
+        Photo artistPicture = getCurrentArtistProfilePhoto(id);
         if (artist == null) {
             return supplyAsync(() -> redirect("/artists"));
         }
@@ -219,7 +232,7 @@ public class ArtistController extends Controller {
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                 artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
-                                null, null, request, messagesApi.preferred(request))))
+                                null, artistPicture, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
