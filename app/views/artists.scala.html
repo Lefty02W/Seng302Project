@@ -189,8 +189,8 @@
                     <div class="row" id="all-artist-cards">
                 @for(artist <- artists) {
                     <div class="card-body col col-md-12 col-xl-6" id="artist-card">
-                        <div class="card-header"> <a class="event-link" href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)" title="View artist"> @artist.getArtistName </a> &nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
-                            <i class="fa fa-user"></i>
+                        <div class="card-header"> <a class="event-link" href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)" title="View artist"> @artist.getArtistName </a> &nbsp;&nbsp;&nbsp;&nbsp; <a id="followerCount"> Followers: @artist.getFollowerCount
+                            <i class="fa fa-user"></i> </a>
                         </div>
                         <div class="row">
                             <div class="col col-10">
