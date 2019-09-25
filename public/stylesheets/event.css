@@ -83,6 +83,7 @@ img.thumbnail {
     height: 35vh;
     background: url("https://images.unsplash.com/photo-1483101974978-cf266fdf1139?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80") no-repeat center center;
     background-size: cover;
+    border-radius: 0px !important;
 }
 
 #eventJumbo {
@@ -90,12 +91,22 @@ img.thumbnail {
     background-size: cover;
     margin: 0px;
     padding: 0px;
+    position: relative;
     overflow: hidden;
+    border-radius: 0px !important;
 }
 
 #eventCoverPhoto {
-    margin: 0px;
-    overflow: hidden;
+    max-width: 100%;
+    max-height: 500%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
 }
 
 
