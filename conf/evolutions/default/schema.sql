@@ -206,14 +206,18 @@ create table if not exists undo_stack
   foreign key (profile_id) references profile (profile_id)
 );
 
+
 create table if not exists artist_profile_photo
 (
-  artist_profile_photo_id int AUTO_INCREMENT PRIMARY KEY,
-  personal_photo_id int not null,
-  photo_id int not null,
-  artist_id int not null,
-  constraint personal_photo_id_fk
-    foreign key (personal_photo_id) references personal_photo (personal_photo_id),
-  constraint artist_id_fk
-    foreign key (artist_id) references artist (artist_id)
-);
+	artist_id int not null,
+	photo_id int not null,
+	constraint artist_profile_photo_artist_id_uindex
+		unique (artist_id),
+	constraint artist_profile_photo_artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_profile_photo_photo_fk
+		foreign key (photo_id) references photo (photo_id)
+			on update cascade on delete cascade
+)
+;

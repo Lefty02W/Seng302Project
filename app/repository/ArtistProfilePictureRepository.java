@@ -42,7 +42,7 @@ public class ArtistProfilePictureRepository {
                 try {
                     ebeanServer.insert(artistProfilePhoto);
                 } catch (Exception e) {
-                    System.out.println(artistProfilePhoto.getPersonalPhotoId());
+                    System.out.println(artistProfilePhoto.getPhotoId());
                     System.out.println(e);
                 }
                 return null;
@@ -61,9 +61,10 @@ public class ArtistProfilePictureRepository {
      * @param artistId - ID of the artist to check if they have a profile picture
      */
     private Boolean checkArtistHasProfilePicture(Integer artistId) {
-            return ebeanServer.find(ArtistProfilePhoto.class)
-                    .where().eq("artist_id", artistId).exists();
-//            return (artistProfilePhoto != null);
+        return ebeanServer.find(ArtistProfilePhoto.class)
+                .where()
+                .eq("artist_id", artistId)
+                .exists();
     }
 
     /**
@@ -74,7 +75,11 @@ public class ArtistProfilePictureRepository {
      */
     public CompletionStage<ArtistProfilePhoto> updateArtistProfilePicture(ArtistProfilePhoto newProfilePicture) {
         return supplyAsync(() -> {
-            ebeanServer.update(ArtistProfilePhoto.class).set("personal_photo_id", newProfilePicture.getPersonalPhotoId()).where().eq("artist_id", newProfilePicture.getArtistId()).update();
+            ebeanServer.update(ArtistProfilePhoto.class)
+                    .set("personal_photo_id", newProfilePicture.getPhotoId())
+                    .where()
+                    .eq("artist_id", newProfilePicture.getArtistId())
+                    .update();
             return newProfilePicture;
         }, executionContext);
     }
@@ -101,7 +106,10 @@ public class ArtistProfilePictureRepository {
      * @return CompletionStage holding Optional ArtistProfilePhoto object
      */
     public CompletionStage<Optional<ArtistProfilePhoto>> getArtistProfilePicture(int artistId) {
-        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(ArtistProfilePhoto.class).where().eq("artist_id", artistId).findOne()), executionContext);
+        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(ArtistProfilePhoto.class)
+                .where()
+                .eq("artist_id", artistId)
+                .findOne()), executionContext);
     }
 
 }

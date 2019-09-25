@@ -450,27 +450,27 @@ public class ArtistController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> uploadProfilePhoto(Http.Request request, Integer id) {
-        Integer profId = SessionController.getCurrentUserId(request);
-
         Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
 
         String fileName = picture.getFilename();
         String contentType = picture.getContentType();
+        if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
+            return supplyAsync(() -> redirect("/artists/"+id).flashing("invalid", "Invalid file type!"));
+        }
         long fileSize = picture.getFileSize();
         if (fileSize >= MAX_PHOTO_SIZE) {
-            return supplyAsync(() -> redirect("artists/"+ id).flashing("error",
+            return supplyAsync(() -> redirect("artists/"+ id).flashing("invalid",
                     "File size must not exceed 8MB!"));
         }
+
         Files.TemporaryFile tempFile = picture.getRef();
         String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
         tempFile.copyTo(Paths.get(filepath), true);
-
         Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 0, fileName);
-        return photoRepository.insert(photo).thenApplyAsync(photoId ->
-                personalPhotoRepository.insert(new PersonalPhoto(profId, photoId))
-                        .thenApplyAsync(resultId -> artistProfilePictureRepository.addArtistProfilePicture(
-                                new ArtistProfilePhoto(id, resultId.get()))
-                        )).thenApplyAsync(a -> redirect("/artists/"+ id));
+        photoRepository.insert(photo).thenApplyAsync(photoId ->
+                artistProfilePictureRepository.addArtistProfilePicture(new ArtistProfilePhoto(id, photoId)));
+
+        return supplyAsync(() -> redirect("/artists/"+ id));
     }
 }
