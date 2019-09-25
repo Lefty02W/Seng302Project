@@ -1,0 +1,77 @@
+#eventTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tabLink {
+    padding: 10px;
+    font-size: 20pt;
+}
+
+
+.tab-pane {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+
+#viewArtistTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#eventFooter {
+    position: fixed;
+    bottom: 0;
+    max-height: 10%;
+    max-width: unset;
+    background: #009779;
+    z-index: 1;
+}
+
+#eventDescription{
+    width: 50%;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    display: block;
+}
+
+
+#wrapper {
+    padding-bottom: 10%;
+}
+
+
+.selectedTab {
+    color: #41B49D;
+}
+
+#eventJumbo {
+    height: 35vh;
+}
+
+#map-card {
+    height: 70vh;
+    margin-top: 0;
+    padding: 0;
+}
+
+#destinationMap {
+    width:100%;
+    height:100%;
+}
+
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+    width: 10%;
+    opacity: 0.5;
+}
+
+.activated {
+    font-weight:bold;
+}

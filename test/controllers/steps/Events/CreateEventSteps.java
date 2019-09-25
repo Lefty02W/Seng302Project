@@ -21,10 +21,10 @@ public class CreateEventSteps {
     private Result eventCreateResult;
 
     @Given("^I am on the events page$")
-    public void iAmOnTheArtistCreatePage() throws Throwable {
+    public void iAmOnTheEventsPage() throws Throwable {
         Http.RequestBuilder requestDest = Helpers.fakeRequest()
                 .method("GET")
-                .uri("/events")
+                .uri("/events/0")
                 .session("connected", "2");
         Helpers.route(TestApplication.getApplication(), requestDest);
     }
@@ -49,6 +49,4 @@ public class CreateEventSteps {
 
         assertTrue(eventCreateResult.flash().getOptional(arg0).isPresent());
     }
-
-
 }

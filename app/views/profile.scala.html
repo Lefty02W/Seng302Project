@@ -1,10 +1,9 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@import java.util.Base64
 @(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer],
         profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist],
-        countries: List[String], userArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+        countries: List[String], userArtists : List[Artist], userUpcomingEvents : List[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -139,7 +138,7 @@
 
                 <div class="row">
                     <ul class="nav nav-tabs" id="profileTabs">
-                        <li class="active"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
+                        <li class="activated"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
                             Information</a></li>
                         <li><a data-toggle="tab" href="#photosTab" class="tabLink" id="photosTabLink">Photos</a></li>
                         <li><a data-toggle="tab" href="#destsTab" class="tabLink" id="destsTabLink">Destinations</a></li>
@@ -148,6 +147,7 @@
                         @if(userArtists.length > 0) {
                             <li><a data-toggle="tab" href="#yourArtistsTab" class="tabLink" id="yourArtistsLink">Your Artists</a></li>
                         }
+                        <li><a data-toggle="tab" href="#upcomingEventsTab" class="tabLink" id="upcomingEventsLink">Upcoming Events</a></li>
                     </ul>
 
                 </div>
@@ -156,21 +156,17 @@
                         <div class="container">
                             <div class="card center-col overflow-auto" id="informationCard">
 
-                                <div id="emailRow" class="row">
-                                    <div class="col-md-2">
-                                        <b>Email:</b>
+                                <div id="emailRow"  class="row">
+                                    <div class="col-md-6" style="font-size: 20px;">
+                                        <b>@currentUser.getEmail</b>
                                     </div>
-                                    <div class="col-md-6">
-                                        <a>@currentUser.getEmail</a>
-                                    </div>
-                                </div>
 
-                                <div id="dobRow" class="row">
-                                    <div class="col-md-2">
-                                        <b>DOB:</b>
-                                    </div>
+
+
+                                </div>
+                                <div  class="row">
                                     <div class="col-md-6">
-                                        <a>@currentUser.getBirthString</a>
+                                        <a><i>Born: </i><b> @currentUser.getBirthString</b></a>
                                     </div>
                                 </div>
 
@@ -238,6 +234,7 @@
                                     </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -423,6 +420,67 @@
                         </div>
                     }
                     </div>
+
+                    <div id="upcomingEventsTab" class="tab-pane fade">
+                        <div class="col text-center">
+                        @if(userUpcomingEvents.isEmpty) {
+                            <div>Find an <a href="/events/0"> event</a> you can attend for them to appear here!</div>
+                        } else {
+                            <div id="card-large lower-card">
+                                <div class="card center-col overflow-auto" id="followedArtistsCard">
+
+                                    <table id="followedArtistsTable" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th><i class="fa fa-user">&nbsp;</i>Name</th>
+                                                <th><i class="fa fa-music">&nbsp;</i>Type</th>
+                                                <th><i class="fa fa-globe">&nbsp;</i>Destination</th>
+                                                <th><i class="fa fa-calendar">&nbsp;</i>Start Date</th>
+                                                <th><i class="fa fa-calendar">&nbsp;</i>End Date</th>
+                                                <th><i class="fa fa-user-plus">&nbsp;</i>Attendance</th>
+                                                <th><i class="fa fa-reorder">&nbsp;</i>Options</th>
+                                            </tr>
+                                        </thead>
+                                        @for(event <- userUpcomingEvents) {
+                                            <tr>
+                                                <td>
+                                                    <a href="/events/view/@event.getEventId" id="artistNameLink">
+                                                    @event.getEventName
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getEventTypes.get(0) </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getDestination.getName </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getStartDateString </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getEndDateString </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getEventAttendees.size() </a>
+                                                </td>
+                                                <td>
+                                                    <a href="@routes.EventsController.leaveEventFromProfile(event.getEventId)">
+                                                        <button class="btn btn-secondary">
+                                                            <i class="fa fa-remove"></i>
+                                                            Don't attend
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        }
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -835,7 +893,14 @@
 
         <!-- Menu Toggle Script -->
     <script>
-            function fillVals() {
+
+        $(document).on("click", 'ul li', function(){
+            $('ul li').removeClass('activated');
+            $(this).addClass('activated');
+        });
+
+
+        function fillVals() {
                 $('#travellerTypesForm').val($('#typeDropdown').val());
                 $('#nationalitiesForm').val($('#nationDropdown').val());
                 $('#passportsForm').val($('#passportDropdown').val());

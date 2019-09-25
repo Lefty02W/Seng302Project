@@ -11,12 +11,14 @@ import play.mvc.Security;
 import repository.*;
 import roles.RestrictAnnotation;
 import utility.Country;
+import views.html.event;
 import views.html.events;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +38,7 @@ public class EventsController extends Controller {
     private final Form<Events> eventForm;
     private final Form<Events> eventEditForm;
     private final Form<EventFormData> eventFormDataForm;
+    private final AttendEventRepository attendEventRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
     private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
@@ -48,7 +51,7 @@ public class EventsController extends Controller {
     @Inject
     public EventsController(ProfileRepository profileRepository, MessagesApi messagesApi, GenreRepository genreRepository,
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
-                            FormFactory formFactory, EventRepository eventRepository) {
+                            FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -58,7 +61,11 @@ public class EventsController extends Controller {
         this.eventEditForm = formFactory.form(Events.class);
         this.eventFormDataForm = formFactory.form(EventFormData.class);
         this.eventRepository = eventRepository;
+        this.attendEventRepository = attendEventRepository;
     }
+
+
+
 
     /**
      * Helper function to set up pagination object
@@ -201,7 +208,9 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEvent(Http.Request request, Integer id) {
         Form<Events> form = eventForm.bindFromRequest(request);
+        System.out.println(form);
         Events event = setValues(SessionController.getCurrentUserId(request), form);
+        System.out.println("something is going wrong here");
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect(eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
@@ -219,7 +228,10 @@ public class EventsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEventFromArtist(Http.Request request, Integer artistId, Integer eventId) {
+        System.out.println("in editEventFromArtist");
         Form<Events> form = eventEditForm.bindFromRequest(request);
+        System.out.println(form);
+        System.out.println("test");
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect("/artists/" + artistId + eventURL).flashing("error", "Error: Start date cannot be after end date."));
@@ -339,6 +351,8 @@ public class EventsController extends Controller {
                 Optional<String> genreFormEvent = form.field("genreFormEvent").value();
                 Optional<String> ageForm = form.field("ageForm").value();
                 Optional<String> artistForm = form.field("artistForm").value();
+                Optional<String> ticketPrice = form.field("ticketPrice").value();
+                Optional<String> ticketLink = form.field("ticketLink").value();
 
                 if (startDate.isPresent()) {
                     try {
@@ -358,7 +372,9 @@ public class EventsController extends Controller {
                 genreFormEvent.ifPresent(s -> event.get().setGenreForm(s));
                 ageForm.ifPresent(s -> event.get().setAgeRestriction(Integer.parseInt(s)));
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
-
+                event.get().setTicketPrice(-1.0);
+                ticketPrice.ifPresent(price -> event.get().setTicketPrice(Double.parseDouble(price)));
+                ticketLink.ifPresent(link -> event.get().setTicketLink(link));
             }
             return event;
     }
@@ -380,7 +396,7 @@ public class EventsController extends Controller {
                 EventFormData eventFormData = searchEventForm.get();
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
-                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("") && eventFormData.getFollowedArtists().equals("")) {
+                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("") && !eventFormData.getAttending().equals("on")) {
                     return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
                 }
 
@@ -432,6 +448,85 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deleteEvent(Http.Request request, Integer artistId, Integer eventId) {
         return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + eventURL));
+    }
+
+    /**
+     * Endpoint method to attend an event with the given eventID
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result attendEvent(Http.Request request, Integer eventId) {
+        AttendEvent attendEvent = new AttendEvent(eventId, SessionController.getCurrentUserId(request));
+        attendEventRepository.insert(attendEvent);
+        return redirect(eventURL).flashing("info", "Attending event: " + eventRepository.lookup(attendEvent.getEventId()).getEventName());
+    }
+
+    /**
+     * Endpoint method to withdraw from an event with the given eventID
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result leaveEvent(Http.Request request, Integer eventId) {
+        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
+        return redirect(eventURL).flashing("info", "No longer going to event");
+    }
+
+    /**
+     * Endpoint method to withdraw from an event with the given eventID and to redirect to the profile page
+     * Used for the "Don't attend" functionality from the profile page "Upcoming Events" tab
+     * @param request http request
+     * @param eventId event id
+     * @return redirects back to the users profile page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result leaveEventFromProfile(Http.Request request, Integer eventId) {
+        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
+        return redirect("/profile").flashing("success", "No longer going to event: " + eventRepository.lookup(eventId).getEventName());
+    }
+
+    /**
+     * Endpoint to view a specific event
+     *
+     * @param request client request to view event
+     * @param id the id of the event to view
+     * @return rendered event page for selected event
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> viewEvent(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return eventRepository.getEvent(id)
+                .thenApplyAsync(optEvent -> {
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    if (optEvent.isPresent()) {
+
+                        return ok(event.render(profileOpt.get(), optEvent.get(), profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), request, messagesApi.preferred(request)));
+                    } else {
+                        return redirect("/events/0").flashing("info", "Error retrieving event or profile");
+                    }
+                });
+    }
+
+
+    /**
+     * Method to convert a list of profile ids into a list of profile names to display on the detailed event page
+     * @param eventAttendees a list of integers containing the ids of the profiles attending an event
+     *
+     * @return a list of strings containing the names of profiles attending an event
+     */
+    public List<String> getAllAttendeesNames(List<Integer> eventAttendees) {
+        List <String> listProfileNames = new ArrayList<>();
+        String fullNameString;
+        for(Integer id: eventAttendees) {
+            fullNameString = profileRepository.getExistingProfileByProfileId(id).getFirstName() + " " +
+                    profileRepository.getExistingProfileByProfileId(id).getLastName();
+            listProfileNames.add(fullNameString);
+        }
+
+        return listProfileNames;
     }
 
 }

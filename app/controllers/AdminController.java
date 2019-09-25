@@ -992,7 +992,7 @@ public class AdminController {
                 undoStackRepository.addToStack(new UndoStack("event", event.getEventId(), SessionController.getCurrentUserId(request)));
                 eventRepository.setSoftDelete(event, 1);
             });
-            return redirect("/admin/events/" + offset);
+            return redirect("/admin/events/" + offset).flashing("info", "Deleted Event: " + eventRepository.lookup(id).getEventName());
         });
     }
 }

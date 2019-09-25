@@ -149,7 +149,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col type-drop">
-                                                    <small id="label" for="eventType">Event type</small>
+                                                    <small id="label" for="eventType">Event Type</small>
                                                     <select class="selectpicker overlay-dropdown" id="eventType" name="eventType" title="Event Type">
                                                         @if(searchData != null) {
 
@@ -257,12 +257,26 @@
                                                                 <option value="@genre.getGenreId">@genre.getGenre</option>
                                                             }
                                                         }
-                                                    } else {
+                                                    } else {isVerifiedArtist
                                                         @for(genre <- genres) {
                                                             <option value="@genre.getGenreId">@genre.getGenre</option>
                                                         }
                                                     }
                                                     </select>
+                                                </div>
+                                                <div class="col padded">
+                                                @if(searchData != null) {
+                                                    @if(searchData.getAttending.equals("on")) {
+                                                        <input type="checkbox" id="attending" name="attending" checked>
+                                                        <label for="toggle">Attending Events </label>
+                                                    } else {
+                                                        <input type="checkbox" id="attending" name="attending">
+                                                        <label for="toggle">Attending Events </label>
+                                                    }
+                                                } else {
+                                                    <input type="checkbox" id="attending" name="attending">
+                                                    <label for="toggle">Attending Events </label>
+                                                }
                                                 </div>
                                                 <div class="col padded">
                                                     <small id="label" class="dateLabel overlay-dropdown" for="startDate">Date</small>
@@ -274,8 +288,10 @@
                                                     }
                                                 </div>
                                                 <div class="col padded">
+
+
                                                     <a href="@routes.EventsController.show(0)">
-                                                        <button class="btn btn-secondary overlay-dropdown" id="clearButton">Clear Search</button>
+                                                        <p class="btn btn-secondary overlay-dropdown" id="clearButton">Clear Search</p>
                                                     </a>
                                                 </div>
                                             </div>
@@ -293,43 +309,47 @@
                                 <label>There are no more events in this search</label>
                             }
                             @for(event <- events){
+                                <div class="card border-primary" id="eventCardBorder">
                                 <div class="card-body col col-md-12" id="eventCard">
-                                    <div class="card-header event-link toggled eventTitle" id='eventName@event.getEventId' onclick="showEvent(@event.getEventId, this)">
-                                        @event.getEventName
+                                    <div class="card-header toggled eventTitle" id='eventName@event.getEventId'>
+                                        <a class="event-link" href="/events/view/@event.getEventId">
+                                            @event.getEventName
+                                        </a>
 
-                                        <div id="editEventLink">
-                                            @if(isVerifiedArtist) {
-                                                <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
-                                                    <i class="fa fa-edit">Edit</i>
-                                                </a>
-                                            }
+                                        <div class="event-link" id="mapLink" onclick="showEvent(@event.getEventId, this)">
+                                            <i class="fa fa-map-marker">View on Map</i>
                                         </div>
 
                                     </div>
+
                                     @for(artist <- event.getEventArtists) {
-                                        <div class="row">
+                                        <div class="row" id="cardInfo">
                                                 &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user">&nbsp;</i>
                                             <p>@artist.getArtistName</p>
                                         </div>
                                     }
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                         <p>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-music">&nbsp;</i>@event.getEventTypes.get(0)</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-globe">&nbsp;</i>
                                         <p>@event.getDestination.getName</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-exclamation-triangle">&nbsp;</i>
                                         <p>@event.getAgeRestrictionString</p>
                                     </div>
-                                    <div class="row">
+                                    <div class="row" id="cardInfo">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus">&nbsp;</i>
+                                        <p>@event.getEventAttendees.size() attending</p>
+                                    </div>
+                                    <div class="row" id="bigInfo">
                                         <div class="col">
                                             <h4 class="primary-color">Description</h4>
                                             <p>@event.getDescription</p>
@@ -342,7 +362,52 @@
                                         </div>
                                     </div>
 
+                                    <div class="card-footer">
+                                        <div class="row">
+                                            <div class="col">
+                                            @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
+                                                @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
+                                                        || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
+                                                        || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
+                                                    <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
+                                                        <i class="fa fa-check"></i>
+                                                        Attend
+                                                    </button>
+                                                } else {
+                                                    <a href="@routes.EventsController.attendEvent(event.getEventId)">
+                                                        <button class="btn btn-primary">
+                                                            <i class="fa fa-check"></i>
+                                                            Attend
+                                                        </button>
+                                                    </a>
+                                                }
+
+                                            } else {
+                                                <a href="@routes.EventsController.leaveEvent(event.getEventId)">
+                                                    <button class="btn btn-secondary">
+                                                        <i class="fa fa-remove"></i>
+                                                        Don't attend
+                                                    </button>
+                                                </a>
+                                            }
+                                            </div>
+
+                                            <div class="col-sm">
+                                            @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                                                <a href="@routes.EventsController.showEventEdit(event.getEventId, 0)">
+                                                    <button type="button" class="btn btn-secondary" id="editEventButton" data-toggle="modal" data-target="#editEventModal">
+                                                        <i class="fa fa-edit" id="editEventButton"></i>
+                                                        Edit
+                                                    </button>
+                                                </a>
+                                            }
+                                            </div>
+
+                                        </div>
+                                    </div>
+
                                 </div>
+                            </div>
                             }
                         </div></div>
                         <div id="map-table-card" class="card-large">
@@ -362,6 +427,7 @@
                                 <input type="hidden" value="@searchData.getDestinationId" title="Destination"  name="destinationId" id="destinationId">
                                 <input type="hidden" value="@searchData.getAgeRestriction" id="ageRestriction" name="ageRestriction" title="Age Restriction">
                                 <input type="hidden" value="@searchData.getGenre" id="genre" name="genre" title="Genres">
+                                <input type="hidden" value="@searchData.getAttending" id="attending" name="attending" title="Attending">
                                 <input type="hidden" value="@searchData.getStartDate" type="datetime-local" id="startDate" name="startDate">
                                 <input type="hidden" value="@searchData.getFollowedArtists" id="getFollowedArtists" name="getFollowedArtists" title="Followed Artists">
                                 <li class="page-item"><button class="page-link" href="/events/all/search/0">Start</button></li>
@@ -515,6 +581,22 @@
                                 <div class="row justify-content-center">
                                     <div class="form-group" id="holder">
                                         <input type="datetime-local" id="endDate"  name="endDate" class="inputField" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <label>Ticket Price</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="form-group" id="holder">
+                                        <input type="number" id="ticketPrice" step="0.01" name="ticketPrice" class="inputField">
+                                    </div>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <label>Ticket Link</label>
+                                </div>
+                                <div class="row justify-content-center">
+                                    <div class="form-group" id="holder">
+                                        <input type="url" id="ticketLink"  name="ticketLink" class="inputField">
                                     </div>
                                 </div>
                             </div>
@@ -692,6 +774,22 @@
                                     <div class="row justify-content-center">
                                         <div class="form-group" id="holder">
                                             <input type="datetime-local" id="endDate"  name="endDate" class="inputField" value="@editEvent.getObject.formatLocalDate(editEvent.getObject.getEndDate)" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Ticket Price</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder">
+                                            <input type="number" id="ticketPrice" step="0.01" name="ticketPrice" class="inputField" value="@editEvent.getObject.getTicketPrice">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Ticket Link</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder">
+                                            <input type="url" id="ticketLink"  name="ticketLink" class="inputField" value="@editEvent.getObject.getTicketLink">
                                         </div>
                                     </div>
                                 </div>
@@ -1171,28 +1269,18 @@
                 var gigDiv = document.createElement('div');
                 gigDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.svg")"> Gig';
                 var meetupDiv = document.createElement('div');
-                meetupDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Meetup/users-solid-all.svg")"> Meetup';
+                meetupDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Meetup/users-solid-16.svg")"> Meetup';
                 var competitionDiv = document.createElement('div');
-                competitionDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Competition/bolt-solid-16.svg")"> Competition';
+                competitionDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Competition/bolt-solid-18.svg")"> Competition';
                 var partyDiv = document.createElement('div');
-                partyDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-all.svg")"> Party';
+                partyDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-21.svg")"> Party';
                 var charityDiv = document.createElement('div');
-                charityDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-16.svg")"> Charity';
+                charityDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-charity.svg")"> Charity';
                 var festivalDiv = document.createElement('div');
-                festivalDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Festival/music-solid-16.svg")"> Festival';
-                var allAgeDiv = document.createElement('div');
-                allAgeDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-all.png")"> Any';
-                var age16Div = document.createElement('div');
-                age16Div.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-16.png")"> 16+';
-                var age18Div = document.createElement('div');
-                age18Div.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-18.png")"> 18+';
-                var age21Div = document.createElement('div');
-                age21Div.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Colour/square-21.png")"> 21+';
+                festivalDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Festival/music-solid-festival.svg")"> Festival';
 
                 var iconLegend = document.createElement('div');
                 iconLegend.innerHTML = '<h6>Event Icons</h6>';
-                var colourLegend = document.createElement('div');
-                colourLegend.innerHTML = '<h6>Age Restrictions</h6>';
 
                 legend.appendChild(iconLegend);
                 legend.appendChild(gigDiv);
@@ -1201,11 +1289,6 @@
                 legend.appendChild(competitionDiv);
                 legend.appendChild(charityDiv);
                 legend.appendChild(festivalDiv);
-                legend.appendChild(colourLegend);
-                legend.appendChild(allAgeDiv);
-                legend.appendChild(age16Div);
-                legend.appendChild(age18Div);
-                legend.appendChild(age21Div);
                 map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
             }
 
@@ -1215,68 +1298,18 @@
                 @for(event <- events) {
                     var icon;
 
-                    if(@event.getAgeRestriction == 0) {
-                        if (@event.getEventTypes.get(0).equals("Gig")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Party")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-all.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        }
-                    }
-
-                    if(@event.getAgeRestriction == 16) {
-                        if (@event.getEventTypes.get(0).equals("Gig")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Party")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-16.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        }
-                    }
-
-                    if(@event.getAgeRestriction == 18) {
-                        if (@event.getEventTypes.get(0).equals("Gig")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Party")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-18.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        }
-                    }
-
-                    if(@event.getAgeRestriction == 21) {
-                        if (@event.getEventTypes.get(0).equals("Gig")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Meetup")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Charity")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Competition")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Party")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        } else if (@event.getEventTypes.get(0).equals("Festival")) {
-                            icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-21.svg")', scaledSize: new google.maps.Size(24, 24)};
-                        }
+                    if (@event.getEventTypes.get(0).equals("Gig")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-16.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-18.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Party")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-21.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-charity.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-festival.svg")', scaledSize: new google.maps.Size(36, 36)};
                     }
 
                     var marker = new google.maps.Marker({
@@ -1290,7 +1323,8 @@
                     });
                     marker.content = "Name:  @event.getEventName" +
                             "<br> Type: @event.getEventTypeString" +
-                            "<br> Destination: @event.getDestination.getName";
+                            "<br> Destination: @event.getDestination.getName" +
+                            "<br> Attendees: @event.getEventAttendees.size";
                     var infoWindow = new google.maps.InfoWindow();
                     google.maps.event.addListener(marker, 'click', function() {
                         infoWindow.setContent(this.content);
@@ -1306,7 +1340,7 @@
             }
 
             function clearSelected(){
-                var elements = document.getElementsByClassName("eventTitle");
+                var elements = document.getElementsByClassName("event-link");
                 for (var i = 0; i < elements.length; i++) {
                     elements[i].style.color = "#d74961";
                 }

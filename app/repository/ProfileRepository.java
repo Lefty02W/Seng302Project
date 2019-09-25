@@ -172,6 +172,18 @@ public class ProfileRepository {
 
 
     /**
+     * Method for taking in a list of profile Ids and returning a list of profiles
+     *
+     * @param userIdList List of the user Ids
+     * @return profileList List of profiles
+     */
+    public List<Profile> getAllProfileByIdList(List<Integer> userIdList) {
+        return ebeanServer.find(Profile.class).where().idIn(userIdList).findList();
+    }
+
+
+
+    /**
      * Database access method to query the database for profiles that match the given search parameters
      *
      * @param travellerType Traveller type to search for
