@@ -559,6 +559,11 @@ public class DestinationRepository {
         return result;
     }
 
+    /**
+     * Get traveller types for the destination
+     * @param destinationId Destination id to get the traveller types for
+     * @return List of traveller types
+     */
     public List<TravellerType> getDestinationsTravellerTypes(int destinationId) {
         String sql = "select traveller_type_id from destination_traveller_type where destination_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, destinationId).findList();
