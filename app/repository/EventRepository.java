@@ -293,19 +293,25 @@ public class EventRepository {
      * @param eventFormData eventForm data required to generate the search query
      * @return query string for the events search
      */
-    private SqlQuery formSearchQuery(EventFormData eventFormData, int offset) {
+    private SqlQuery formSearchQuery(EventFormData eventFormData, int offset, int profileId) {
         String query = "SELECT DISTINCT events.event_id, events.event_name, events.description, events.destination_id, " +
                 "events.start_date, events.end_date, events.age_restriction FROM events " +
                 "LEFT OUTER JOIN event_genres ON events.event_id = event_genres.event_id " +
                 "LEFT OUTER JOIN event_type ON events.event_id = event_type.event_id " +
                 "LEFT OUTER JOIN event_artists ON events.event_id = event_artists.event_id ";
 
-        if(eventFormData.getAttending().equals("on")) {
-            query += "JOIN attend_event ON events.event_id = attend_event.event_id ";
-        }
+
         boolean whereAdded = false;
         boolean likeAdded = false;
         List<String> args = new ArrayList<>();
+        if(eventFormData.getAttending().equals("on")) {
+            query += "JOIN attend_event ON events.event_id = attend_event.event_id ";
+            query+= "WHERE attend_event.profile_id = ? ";
+            whereAdded = true;
+            args.add(Integer.toString(profileId));
+
+        }
+
         if (!eventFormData.getEventName().equals("")){
             query += "WHERE events.event_name LIKE ? ";
             likeAdded = true;
@@ -396,8 +402,8 @@ public class EventRepository {
      * @param eventFormData data used in search
      * @return List holding resulting events from search
      */
-    public List<Events> searchEvent(EventFormData eventFormData, int offset) {
-        SqlQuery query = formSearchQuery(eventFormData, offset);
+    public List<Events> searchEvent(EventFormData eventFormData, int offset, int profileId) {
+        SqlQuery query = formSearchQuery(eventFormData, offset, profileId);
         List<SqlRow> sqlRows = query.findList();
         List<Events> events = new ArrayList<>();
         if (!sqlRows.isEmpty()){

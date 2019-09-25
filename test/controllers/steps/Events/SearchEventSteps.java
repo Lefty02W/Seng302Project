@@ -34,7 +34,7 @@ public class SearchEventSteps {
                 .method("GET")
                 .uri("/events/all/search/0")
                 .bodyForm(searchForm)
-                .session("connected", "1");
+                .session("connected", "2");
         eventSearchResult = Helpers.route(TestApplication.getApplication(), request);
         assertEquals(200, eventSearchResult.status());
     }
@@ -43,7 +43,7 @@ public class SearchEventSteps {
     public void aEventIsDisplayedThatIAmAttending() throws Throwable {
         EventFormData eventForm = new EventFormData();
         eventForm.setAttending("on");
-        List<Events>  result = eventRepository.searchEvent(eventForm, 0);
+        List<Events>  result = eventRepository.searchEvent(eventForm, 0, 2);
         assertEquals("Burning Man", result.get(0).getEventName());
     }
 
