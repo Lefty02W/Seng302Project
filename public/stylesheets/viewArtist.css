@@ -63,7 +63,7 @@
 }
 
 .button-col {
-    max-width: 30vw;
+    max-width: 40vw;
 }
 
 .social-col {
@@ -161,4 +161,9 @@
     left: 0;
     right: 0;
     margin: auto;
+}
+
+#removeArtistPicButton {
+    float: right;
+    margin-right: 1%;
 }
