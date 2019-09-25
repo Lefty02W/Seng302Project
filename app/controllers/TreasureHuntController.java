@@ -9,6 +9,7 @@ import play.data.FormFactory;
 import play.i18n.MessagesApi;
 import play.mvc.Http;
 import play.mvc.Result;
+import play.mvc.Security;
 import repository.DestinationRepository;
 import repository.ProfileRepository;
 import repository.TreasureHuntRepository;
@@ -58,6 +59,7 @@ public class TreasureHuntController {
      * @param request the users request
      * @return a redirect to the treasure hunt page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, treasureHuntRepository.getNumHunts());
@@ -82,6 +84,7 @@ public class TreasureHuntController {
      * @param request the get end datesers request holding the treasure hunt form
      * @return CompletionStage redirecting back to the treasure hunts page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createHunt(Http.Request request) {
         Form<TreasureHunt> filledForm = huntForm.bindFromRequest(request);
         TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), filledForm);
@@ -97,6 +100,7 @@ public class TreasureHuntController {
      * Called treasure hunt delete method in the treasureHuntRepository to delete the treasureHunt from the database
      * @param id int Id of the treasureHunt the user wishes to delete
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deleteHunt(Http.Request request, Integer id){
         return treasureHuntRepository.deleteTreasureHunt(id)
                 .thenApplyAsync(x -> redirect(huntShowRoute).flashing("success", "Hunt: " + id + " was deleted"));
@@ -141,6 +145,7 @@ public class TreasureHuntController {
      * @param id Id of the treasure hunt to be edited
      * @return CompletionStage redirecting back to the treasure hunts page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editTreasureHunt(Http.Request request, Integer id) {
         Form<TreasureHunt> treasureHuntForm = huntForm.bindFromRequest(request);
         TreasureHunt treasureHunt = setValues(SessionController.getCurrentUserId(request), treasureHuntForm);
@@ -159,6 +164,7 @@ public class TreasureHuntController {
      * @param id unique treasure hunt id
      * @return a redirect to the treasure hunt page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showEditTreasureHunt(Http.Request request , Integer id) {
         TreasureHunt hunt = treasureHuntRepository.lookup(id);
         huntForm.fill(hunt);

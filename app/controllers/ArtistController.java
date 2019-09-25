@@ -130,6 +130,7 @@ public class ArtistController extends Controller {
      * @param request client request
      * @return CompletionStage rendering artist page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistId) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(artistId);
@@ -153,6 +154,7 @@ public class ArtistController extends Controller {
      * @param offset offset of page of events to view
      * @return rendered artist page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showArtistEvents(Http.Request request, Integer id, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(id);
@@ -178,6 +180,7 @@ public class ArtistController extends Controller {
      * @param id id of artist to view
      * @return rendered artist page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> showArtistMembers(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(id);
@@ -200,6 +203,7 @@ public class ArtistController extends Controller {
      * @param request client request
      * @return returns completion stage with the result of the redirect
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createArtist(Http.Request request){
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
         Optional<Artist> artistOpt = artistProfileForm.value();
@@ -294,6 +298,7 @@ public class ArtistController extends Controller {
      * @param artistId id of the artist profile that will be deleted
      * @return redirect to artist page with success flash
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deleteArtist(Http.Request request, Integer artistId){
         return artistRepository.deleteArtist(artistId)
                 .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist was successfully deleted"));
@@ -306,6 +311,7 @@ public class ArtistController extends Controller {
      * @param artistId id of the artist profile that will be unfollowed
      * @return redirect to artist page with success flash
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId){
         return artistRepository.unfollowArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist unfollowed"));
@@ -317,6 +323,7 @@ public class ArtistController extends Controller {
      * @param artistId id of the artist profile that will be followed
      * @return redirect to artist page with success flash
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> followArtist(Http.Request request, Integer artistId){
         return artistRepository.followArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist followed"));
@@ -328,6 +335,7 @@ public class ArtistController extends Controller {
      * @param request client request to leave artist
      * @return CompletionStage holding redirect to artist page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> leaveArtist(Http.Request request, int artistId) {
         return artistRepository.removeProfileFromArtist(artistId, SessionController.getCurrentUserId(request))
                 .thenApplyAsync(x -> redirect("/artists"));
@@ -340,6 +348,7 @@ public class ArtistController extends Controller {
      * @param id artist id that is going to be edited
      * @return redirect to the artist page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editArtist(Http.Request request, Integer id) {
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);
         Integer artistId = SessionController.getCurrentUserId(request);
@@ -393,6 +402,7 @@ public class ArtistController extends Controller {
     /**
      * Get follower count for the artist
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Integer> getFollowerCount(int artistId) {
         return supplyAsync(() -> artistRepository.getNumFollowers(artistId));
     }
