@@ -2,7 +2,6 @@ package controllers;
 
 
 import com.google.common.collect.TreeMultimap;
-
 import interfaces.TypesInterface;
 import models.*;
 import play.data.Form;
@@ -21,18 +20,16 @@ import views.html.profile;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -430,6 +427,7 @@ public class ProfileController extends Controller implements TypesInterface {
      * Implement the undo delete method from interface
      * @param profileID - ID of the profile to undo deletion of
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Void> undo(int profileID) {
         return supplyAsync(() -> {
             profileRepository.setSoftDelete(profileID, 0);

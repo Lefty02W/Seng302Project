@@ -14,21 +14,3 @@ Feature: Public Destinations
     And he does not fill out a traveller type
     And he presses save
     Then he is redirected to the create destination page and destination is not saved
-
-  Scenario: Create a public destination which is the same as another users private destination
-    Given user is logged in to the application
-    And user is at the destinations page
-    And user with id "3" has a private destination with name "Waiau", type "town", and country "New Zealand"
-    When user clicks on the add new destination button
-    And user creates a public destination with name "Waiau", type "town", and country NewZealand
-    Then user with id "4" private destination with name "Waiau", type "town", and country "New Zealand" doesnt exist
-    And user with id "4" is following the new public destination with name "Waiau", type "town", and country "New Zealand"
-
-  Scenario: 2 users have the same private destinations, one user makes their destination public
-    Given user is logged into the application
-    And user is at the destinations page
-    And user with id "3" has a private destination with name "UC", type "uni", and country "New Zealand"
-    And user with id "4" has a private destination with name "UC", type "uni", and country "New Zealand"
-    When user with id "3" updates his private destination with name "UC", type "uni", and country "New Zealand" to be public
-    Then user with id "4" private destination with name "UC", type "uni", and country "New Zealand" doesnt exist
-    And user with id "4" is following the new public destination with name "UC", type "uni", and country "New Zealand"
