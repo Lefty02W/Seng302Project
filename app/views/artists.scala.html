@@ -27,6 +27,7 @@
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/artist.css")">
 
         <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     </head>
@@ -156,6 +157,7 @@
                                                             <option value="@nation">@nation</option>
                                                         }
                                                     }
+
                                                 } else {
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
@@ -175,9 +177,7 @@
                                             </div>
                                             }
                 <div class="col">
-                    <a href="@routes.ArtistController.show()">
-                        <p id="clearButton" class="btn btn-secondary">Clear Search</p>
-                    </a>
+                        <a href="@routes.ArtistController.show()" id="clearButton" class="btn btn-secondary">Clear Search</a>
                 </div>
 
             </div>
@@ -220,12 +220,18 @@
                                     @if(followedArtists contains artist) {
                                         @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
                                             @CSRF.formField
-                                            <button type="submit" class="btn btn-secondary">Unfollow</button>
+                                            <button type="submit" class="btn btn-secondary">
+                                                <i class="fa fa-heart"></i>
+                                                Unfollow
+                                            </button>
                                         }
                                     } else {
                                         @helper.form(routes.ArtistController.followArtist(artist.getArtistId)) {
                                             @CSRF.formField
-                                            <button type="submit" class="btn btn-primary">Follow</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="fa fa-heart-o"></i>
+                                                Follow
+                                            </button>
                                         }
                                     }
                                     </div>
@@ -510,7 +516,7 @@
 
                 html += "<div class='card-body col col-md-12 col-xl-6' id='artist-card'> " +
                             "<div class='card-header'>" + artist.artistName + "&nbsp;&nbsp;&nbsp;&nbsp; Followers: " + artist.followerCount
-                                + "<i class='fa fa-user'></i>" +
+                                + " <i class='fa fa-user'></i>" +
                             "</div> " +
                                 "<div class='row'>" +
                                     "<div class='col col-10'>" +
@@ -537,10 +543,16 @@
                             "<div class='row'>";
                     if (followed_artists_ids.includes(id)) {
                         html += "<a href='artist/" + id + "/unfollow'>" +
-                                "<button class='btn btn-primary'>Unfollow</button>";
+                                "<button class='btn btn-primary'>" +
+                                "<i class='fa fa-heart'></i>" +
+                                " Unfollow" +
+                                "</button></a>";
                     } else {
                         html += "<a href='artist/" + id + "/follow'>" +
-                                "<button class='btn btn-primary'>Follow</button></a>";
+                                "<button class='btn btn-primary'>" +
+                                "<i class='fa fa-heart-o'></i>" +
+                                " Follow" +
+                                "</button></a>";
 
                     }
                     html += "</div>" +

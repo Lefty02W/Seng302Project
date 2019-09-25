@@ -249,7 +249,7 @@ img.thumbnail {
 #profileTabsContent {
     margin-left: auto;
     margin-right: auto;
-    padding-bottom: 3%;
+    /*width: 50%;*/
 }
 
 

@@ -209,13 +209,15 @@ public class ArtistRepository {
      * @return Artists, an ArrayList of all artists that user is a part of.
      */
     public List<Artist> getAllUserArtists(int userId) {
-        List<Integer> artistIds = new ArrayList<>(ebeanServer.find(ArtistProfile.class)
+        List<Integer> artistIds = ebeanServer.find(ArtistProfile.class)
+                .select("artistId")
                 .where()
                 .eq("profile_id", userId)
-                .findIds());
-        if (artistIds.size() == 0) {
-            return new ArrayList<Artist>();
+                .findSingleAttributeList();
+        if (artistIds.isEmpty()) {
+            return new ArrayList<>();
         }
+
         return ebeanServer.find(Artist.class)
                 .where()
                 .eq("soft_delete", 0)
@@ -302,8 +304,22 @@ public class ArtistRepository {
                     .eq("artist_id", artistId)
                     .eq("profile_id", profileId)
                     .delete();
+            checkToDeleteArtist(artistId);
             return null;
         });
+    }
+
+
+    /**
+     * Method to delete an artist if the last admin has left
+     *
+     * @param artistId artist id to check
+     */
+    private void checkToDeleteArtist(int artistId) {
+        List<Integer> admins = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artistId).findSingleAttributeList();
+        if (admins.isEmpty() || admins == null) {
+            ebeanServer.find(Artist.class).where().eq("artist_id", artistId).delete();
+        }
     }
 
     /**

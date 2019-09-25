@@ -29,7 +29,7 @@ import java.util.concurrent.CompletionStage;
  */
 public class TripsController extends Controller {
 
-    private final ArrayList<Destination> destinationsList;
+    private ArrayList<Destination> destinationsList;
     private final TreeMap<Integer, TripDestination> orderedCurrentDestinations;
 
     private MessagesApi messagesApi;
@@ -46,7 +46,6 @@ public class TripsController extends Controller {
     private static final String tripsEndPoint = "/trips/0";
     private static final String editUrl = "/edit";
     private static final String dupDestFlashing = "The same destination cannot be after itself in a trip";
-    private final int DEFAULT_FOLLOWED_DESTINATION_LIMIT = 7;
 
     @Inject
     public TripsController(FormFactory formFactory, TripRepository tripRepository, MessagesApi messagesApi,
@@ -132,7 +131,6 @@ public class TripsController extends Controller {
             profId = userId;
         }
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
-            ArrayList<Destination> destinationsList = new ArrayList<>();
             if (profile.isPresent()) {
                 destinationsList = destinationRepository.getAllFollowedOrOwnedDestinations(profile.get().getProfileId());
                 return ok(tripsCreate.render(form, formTrip, getCurrentDestinations(), destinationsList, profile.get(), null, userId, tripName, request, messagesApi.preferred(request)));            }

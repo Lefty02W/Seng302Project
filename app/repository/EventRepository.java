@@ -57,7 +57,7 @@ public class EventRepository {
      */
     public Optional<List<Events>> getAll() {
         List<Events> eventsList = new ArrayList<>();
-        List<Events> events = ebeanServer.find(Events.class).where().eq("soft_delete", 0).findList();
+        List<Events> events = ebeanServer.find(Events.class).where().eq("soft_delete", 0).orderBy().asc("start_date").findList();
         for (Events event : events){
             eventsList.add(populateEvent(event));
         }
@@ -73,7 +73,7 @@ public class EventRepository {
      */
     public List<Events> getPage(int offset) {
         List<Events> toReturn = new ArrayList<>();
-        List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).findList();
+        List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).gt("start_date", new Date()).orderBy().asc("start_date").findList();
         for (Events event : events) {
             toReturn.add(populateEvent(event));
         }
@@ -90,10 +90,17 @@ public class EventRepository {
         List<Integer> ids = ebeanServer.find(EventArtists.class).setMaxRows(8).setFirstRow(offset).where().eq("artist_id", artistId).findIds();
         List<Events> events = new ArrayList<>();
         if (!ids.isEmpty()) {
-            for (Events event : ebeanServer.find(Events.class).where().idIn(ids).findList()) {
+            for (Events event : ebeanServer.find(Events.class).where().idIn(ids).gt("start_date", new Date()).orderBy().asc("start_date").findList()) {
                 events.add(populateEvent(event));
             }
+            Collections.sort(events, new Comparator<Events>() {
+                @Override
+                public int compare(Events o1, Events o2) {
+                    return o1.getStartDate().compareTo(o2.getStartDate());
+                }
+            });
         }
+
         return events;
     }
 
@@ -132,11 +139,13 @@ public class EventRepository {
      * @return event Event object that has been populated
      */
     private Events populateEvent(Events event) {
-        event.setEventGenres(genreRepository.getEventGenres(event.getEventId()));
-        event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
-        event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
-        event.setDestination(destinationRepository.lookup(event.getDestinationId()));
-        event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
+        if (event != null) {
+            event.setEventGenres(genreRepository.getEventGenres(event.getEventId()));
+            event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
+            event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
+            event.setDestination(destinationRepository.lookup(event.getDestinationId()));
+            event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
+        }
         return event;
     }
 
@@ -179,6 +188,7 @@ public class EventRepository {
             Transaction txn = ebeanServer.beginTransaction();
 
             Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();
+
             if (targetEvent != null) {
 
                 targetEvent.setAgeRestriction(event.getAgeRestriction());
@@ -196,7 +206,6 @@ public class EventRepository {
                 updateLinkingTables(event);
             }
             txn.end();
-
         return eventId;
     });
     }
@@ -261,10 +270,6 @@ public class EventRepository {
         }
     }
 
-
-    private void removeEventGenres(int eventId, Set<Integer> ids) {
-        ebeanServer.find(EventGenres.class).where().idIn(ids).delete();
-    }
 
     /**
      * helper function to remove links from a given event
@@ -379,7 +384,32 @@ public class EventRepository {
             args.add(eventFormData.getStartDate());
             args.add(eventFormData.getStartDate());
         }
-        query += " LIMIT 8 OFFSET "+offset;
+        if (eventFormData.getFollowedArtists().equals("1")) {
+            if (whereAdded){
+                query += " AND EXISTS (SELECT follow_artist.artist_id from follow_artist where follow_artist.profile_id = ? and follow_artist.artist_id IN " +
+                        "(SELECT event_artists.artist_id from event_artists where event_artists.event_id = events.event_id AND event_artists.event_id))";
+            } else {
+                query += " WHERE EXISTS (SELECT follow_artist.artist_id from follow_artist where follow_artist.profile_id = ? and follow_artist.artist_id " +
+                        "IN (SELECT event_artists.artist_id from event_artists where event_artists.event_id = events.event_id AND event_artists.event_id))";
+            }
+            args.add(Integer.toString(profileId));
+        }
+        if (eventFormData.getHistoric().equals("1")) {
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            if (whereAdded){
+                query += " AND events.start_date > " + date;
+            } else {
+                query += " WHERE events.start_date > " + date;
+            }
+        } else {
+            if (whereAdded){
+                query += " AND DATE(events.end_date) < DATE(NOW())";
+            } else {
+                query += " WHERE DATE(events.end_date) < DATE(NOW())";
+            }
+        }
+
+        query += " ORDER BY events.start_date LIMIT 8 OFFSET "+offset;
         return createSqlQuery(query, args, likeAdded);
     }
 
@@ -451,10 +481,7 @@ public class EventRepository {
      * @return Optional event found
      */
     public CompletionStage<Optional<Events>> getEvent(int id) {
-        return supplyAsync(() -> {
-            Optional<Events> event = Optional.ofNullable(ebeanServer.find(Events.class).where().eq("event_id", id).findOne());
-            return event.map(this::populateEvent);
-        });
+        return supplyAsync(() -> Optional.ofNullable(populateEvent(ebeanServer.find(Events.class).where().eq("event_id", id).findOne())));
     }
 
     /**

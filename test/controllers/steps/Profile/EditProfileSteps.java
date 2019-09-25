@@ -41,12 +41,11 @@ public class EditProfileSteps {
                 .bodyForm(loginForm);
 
         loginResult = Helpers.route(TestApplication.getApplication(), request);
-
         Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
                 .method("GET")
                 .uri("/profile")
                 .session("connected", "1");
-        profileResult = Helpers.route(TestApplication.getApplication(), requestBuilder);
+        profileResult = Helpers.route(TestApplication.getApplication(), request);
 
     }
 
@@ -62,6 +61,7 @@ public class EditProfileSteps {
         editForm.put("gender", "Male");
         editForm.put("nationalitiesForm", "New Zealand");
         editForm.put("travellerTypesForm", "Backpacker,Gap Year");
+
     }
 
     @When("I change my first name to {string}")

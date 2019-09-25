@@ -141,20 +141,20 @@ public class Events extends Model {
         return "";
     }
 
-    public Destination getDestination() {
-        return destination;
-    }
-
-    public void setDestination(Destination destination) {
-        this.destination = destination;
-    }
-
     public List<Integer> getEventAttendees() {
         return eventAttendees;
     }
 
     public void setEventAttendees(List<Integer> eventAttendees) {
         this.eventAttendees = eventAttendees;
+    }
+
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
     }
 
     public int getEventId() {
@@ -280,5 +280,4 @@ public class Events extends Model {
     public void setTicketLink(String ticketLink) {
         this.ticketLink = ticketLink;
     }
-
 }

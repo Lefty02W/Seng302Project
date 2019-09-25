@@ -499,6 +499,31 @@ public class ProfileRepository {
                 executionContext);
     }
 
+    public CompletionStage<Optional<Integer>> updatePassword(Integer profileId, String newPassword) {
+        return supplyAsync(
+                () -> {
+                    String password = BCrypt.hashpw(newPassword, "$2a$12$nODuNzk9U7Hrq6DgspSp4.");
+                    Transaction txn = ebeanServer.beginTransaction();
+                    String updateQuery =
+                            "UPDATE profile SET password = ? WHERE profile_id = ?";
+                    Optional<Integer> value = Optional.empty();
+                    try {
+                        if (ebeanServer.find(Profile.class).setId(profileId).findOne() != null) {
+                            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+                            query.setParameter(1, password);
+                            query.setParameter(2, profileId);
+                            query.execute();
+                            txn.commit();
+                            value = Optional.of(profileId);
+                        }
+                    } finally {
+                        txn.end();
+                    }
+                    return value;
+                },
+                executionContext);
+    }
+
 
     /**
      * Deletes a profile from the database that matches the given email
@@ -657,7 +682,7 @@ public class ProfileRepository {
      * @param profileId int of the porfileid of the user
      * @return boolean true if email is taken, false if it is a change that will be allowed
      */
-    private boolean isEmailTaken(String email, int profileId) {
+    public boolean isEmailTaken(String email, int profileId) {
         boolean isTaken = false;
         String selectQuery = "Select * from profile WHERE email = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();
@@ -667,6 +692,18 @@ public class ProfileRepository {
             }
         }
         return isTaken;
+    }
+
+    /**
+     * Method for create profile to check if there is a traveller account under the supplied email that already
+     * exists (not the same user)
+     *
+     * @param email String The email the user has proposed to use
+     * @return boolean true if email is taken, false if it is a change that will be allowed
+     */
+    public boolean isEmailTakenSignup(String email) {
+        boolean isTaken = false;
+        return ebeanServer.find(Profile.class).where().eq("email", email).exists();
     }
 
 

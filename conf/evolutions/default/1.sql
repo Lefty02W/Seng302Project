@@ -504,6 +504,22 @@ create table if not exists event_artists
 )
 ;
 
+
+create table if not exists artist_profile_photo
+(
+	artist_id int not null,
+	photo_id int not null,
+	constraint artist_profile_photo_artist_id_uindex
+		unique (artist_id),
+	constraint artist_profile_photo_artist_fk
+		foreign key (artist_id) references artist (artist_id)
+			on update cascade on delete cascade,
+	constraint artist_profile_photo_photo_fk
+		foreign key (photo_id) references photo (photo_id)
+			on update cascade on delete cascade
+)
+;
+
 create table if not exists attend_event
 (
 	attend_event_id int auto_increment
@@ -532,8 +548,6 @@ create table if not exists event_photo
 			on update cascade on delete cascade
 )
 ;
-
-
 
 
 
@@ -609,3 +623,5 @@ drop table if exists event_type;
 drop table if exists attend_event;
 
 drop table if exists event_photo;
+
+drop table if exists artist_profile_photo;

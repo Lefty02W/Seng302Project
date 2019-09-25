@@ -42,6 +42,10 @@ INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,ge
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
   (14, 'Tim', 'No', 'tim.no@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (15, 'Reset', 'Password', 'resetPassword@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
+
+
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
@@ -132,6 +136,12 @@ INSERT INTO photo (visible, content_type, name, path) values
 
 INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
   (2, 2, 0);
+
+INSERT INTO photo (visible, content_type, name, path) values
+  (0, 'image/jpg', 'testPic3.jpg', 'photos/personalPhotos/testPic2.jpg');
+
+INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
+  (2, 3, 0);
 
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
 (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
@@ -260,6 +270,9 @@ INSERT INTO artist_genre (artist_id, genre_id) VALUES
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (2, 2);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (1, 2);
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (6, 2);
@@ -424,10 +437,11 @@ INSERT INTO event_type (event_id, type_id) VALUES
 INSERT INTO event_genres (event_id, genre_id) VALUES
   (6, 1);
 
+INSERT INTO artist_profile_photo (artist_id, photo_id) VALUES
+  (1, 3);
+
 INSERT INTO attend_event(attend_event_id, event_id, profile_id) VALUES
   (1, 6, 2);
-
-
 
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (1, 2);
@@ -465,8 +479,6 @@ INSERT INTO attend_event(event_id, profile_id) VALUES
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (12, 2);
 
-
-
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (6, 13);
 
@@ -479,10 +491,8 @@ INSERT INTO attend_event(event_id, profile_id) VALUES
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (12, 13);
 
-
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (12, 14);
 
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (13, 14);
-

@@ -98,7 +98,7 @@ public class EventsController extends Controller {
                     return ok(events.render(profile,
                         Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                         destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
-                        eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormSent,
+                        eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormSent, artistRepository.getAllUserArtists(profId),
                         request, messagesApi.preferred(request)));
                     }).orElseGet(() -> redirect("/")));
     }
@@ -139,7 +139,7 @@ public class EventsController extends Controller {
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, toSend,
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), initPagination(offset, eventRepository.getNumEvents(), 8), null,
-                            request, messagesApi.preferred(request)));
+                            artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
 
@@ -162,7 +162,7 @@ public class EventsController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/artists/" + artistId + eventURL)));
     }
 
@@ -175,7 +175,7 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request, Integer offset){
         Integer profId = SessionController.getCurrentUserId(request);
-
+        eventFormDataForm.fill(new EventFormData());
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> {
                     undoStackRepository.clearStackOnAllowed(profileRec.get());
@@ -188,7 +188,7 @@ public class EventsController extends Controller {
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, null,
-                            request, messagesApi.preferred(request)));
+                            artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
     }
 
@@ -457,7 +457,6 @@ public class EventsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
-                System.out.println(searchEventForm);
                 EventFormData eventFormData = searchEventForm.get();
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
@@ -475,7 +474,7 @@ public class EventsController extends Controller {
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                             destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormData,
-                            request, messagesApi.preferred(request)));
+                            artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
                 } else {
                     return redirect(eventURL).flashing("error", "No results found.");
                 }
@@ -520,7 +519,6 @@ public class EventsController extends Controller {
      * @param eventId event id
      * @return redirects back to event page
      */
-    @Security.Authenticated(SecureSession.class)
     public Result attendEvent(Http.Request request, Integer eventId) {
         AttendEvent attendEvent = new AttendEvent(eventId, SessionController.getCurrentUserId(request));
         attendEventRepository.insert(attendEvent);
@@ -533,7 +531,6 @@ public class EventsController extends Controller {
      * @param eventId event id
      * @return redirects back to event page
      */
-    @Security.Authenticated(SecureSession.class)
     public Result leaveEvent(Http.Request request, Integer eventId) {
         attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
         return redirect("/events/details/"+eventId).flashing("info", "No longer going to event");
@@ -546,7 +543,6 @@ public class EventsController extends Controller {
      * @param eventId event id
      * @return redirects back to the users profile page
      */
-    @Security.Authenticated(SecureSession.class)
     public Result leaveEventFromProfile(Http.Request request, Integer eventId) {
         attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
         return redirect("/profile").flashing("success", "No longer going to event: " + eventRepository.lookup(eventId).getEventName());

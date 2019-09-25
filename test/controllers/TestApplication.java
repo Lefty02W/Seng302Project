@@ -25,7 +25,7 @@ public class TestApplication {
     private static ArtistRepository artistRepository;
     private static GenreRepository genreRepository;
     private static EventRepository eventRepository;
-    private static AttendEventRepository attendEventRepository;
+    private static ArtistProfilePictureRepository artistProfilePictureRepository;
 
     /**
      * Static method to get an instance of the test application
@@ -194,15 +194,15 @@ public class TestApplication {
     }
 
     /**
-     * Creates an instance of the AttendEventRepository
-     * @return AttendEventRepository instance
+     * Creates an instance of the ArtistProfilePictureRepository
+     * @return ArtistProfilePictureRepository instance
      */
-    public static AttendEventRepository getAttendEventRepository() {
+    public static ArtistProfilePictureRepository getArtistProfilePictureRepository() {
         checkApplication();
-        if (attendEventRepository == null) {
-            attendEventRepository = application.injector().instanceOf(AttendEventRepository.class);
+        if (artistProfilePictureRepository == null) {
+            artistProfilePictureRepository = application.injector().instanceOf(ArtistProfilePictureRepository.class);
         }
-        return attendEventRepository;
+        return artistProfilePictureRepository;
     }
 
-    }
+}

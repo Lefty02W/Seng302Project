@@ -14,6 +14,7 @@
     padding-left: 10px;
 }
 
+
 #label {
     z-index: 2;
 }
@@ -308,10 +309,6 @@ div.dataTables_filter {
 
 .primary-color {
     color: #d74961;
-}
-
-.secondary-color {
-    color: #009779;
 }
 
 a, a:hover {

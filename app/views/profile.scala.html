@@ -1,6 +1,7 @@
 @import controllers.ProfileController.ImageData
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
+@import java.util.Base64
 @(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer],
         profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist],
         countries: List[String], userArtists : List[Artist], userUpcomingEvents : List[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
@@ -146,7 +147,7 @@
 
                 <div class="row">
                     <ul class="nav nav-tabs" id="profileTabs">
-                        <li class="activated"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
+                        <li class="active"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
                             Information</a></li>
                         <li><a data-toggle="tab" href="#photosTab" class="tabLink" id="photosTabLink">Photos</a></li>
                         <li><a data-toggle="tab" href="#destsTab" class="tabLink" id="destsTabLink">Destinations</a></li>
@@ -164,17 +165,21 @@
                         <div class="container">
                             <div class="card center-col overflow-auto" id="informationCard">
 
-                                <div id="emailRow"  class="row">
-                                    <div class="col-md-6" style="font-size: 20px;">
-                                        <b>@currentUser.getEmail</b>
+                                <div id="emailRow" class="row">
+                                    <div class="col-md-2">
+                                        <b>Email:</b>
                                     </div>
-
-
-
-                                </div>
-                                <div  class="row">
                                     <div class="col-md-6">
-                                        <a><i>Born: </i><b> @currentUser.getBirthString</b></a>
+                                        <a>@currentUser.getEmail</a>
+                                    </div>
+                                </div>
+
+                                <div id="dobRow" class="row">
+                                    <div class="col-md-2">
+                                        <b>DOB:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a>@currentUser.getBirthString</a>
                                     </div>
                                 </div>
 
@@ -242,7 +247,6 @@
                                     </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -486,7 +490,6 @@
 
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>

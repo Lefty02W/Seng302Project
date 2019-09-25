@@ -48,7 +48,7 @@ GET     /trips/:id/create/delete                controllers.TripsController.dele
 # Travellers
 GET     /travellers/:offset                     controllers.TravellersController.show(request: Request, offset : Integer)
 GET     /travellers/profile/search/:offset      controllers.TravellersController.search(request: Request, offset : Integer)
-GET     /travellers/profile/:profileId/photos              controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
+GET     /travellers/profile/photos              controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
 
 # Profile
 GET     /profile                                controllers.ProfileController.show(request: Request)
@@ -77,6 +77,7 @@ GET     /admin/profile/:id/edit                 controllers.AdminController.show
 POST    /admin/profile/:id/edit                 controllers.AdminController.updateProfile(request: Request, id: Integer)
 GET     /admin/:profileId/delete                controllers.AdminController.deleteProfile(request: Request, profileId: Integer)
 GET     /admin/profile/:id/view                 controllers.AdminController.viewProfile(request: Request, id: Integer)
+POST     /admin/profile/changePassword       controllers.AdminController.updatePassword(request: Request)
 
 POST    /admin/profile/create                   controllers.AdminController.createProfile(request: Request)
 GET     /admin/:userId/admin                    controllers.AdminController.makeAdmin(userId: Integer)
@@ -140,10 +141,12 @@ GET     /artists/:id/events/:offset             controllers.ArtistController.sho
 POST    /artists/:id/events/create              controllers.EventsController.createArtistEvent(request : Request, id: Integer)
 GET    /artists/:artistId/events/:eventId/leave       controllers.ArtistController.leaveEvent(request : Request, artistId : Integer, eventId : Integer)
 GET    /artists/:artistId/events/:eventId/attend      controllers.ArtistController.attendEvent(request : Request, artistId : Integer, eventId : Integer)
-
-
 GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
 GET     /artists/:id/leave                      controllers.ArtistController.leaveArtist(request : Request, id : Integer)
+
+## Artist Photos
+GET     /artists/:id/remove/photo               controllers.ArtistController.removePhoto(request : Request, id : Integer)
+POST    /artists/:id/upload/photo               controllers.ArtistController.uploadProfilePhoto(request : Request, id : Integer)
 
 # Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)

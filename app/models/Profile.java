@@ -192,15 +192,6 @@ public class Profile extends Model {
     }
 
 
-    /**
-     * Method to get a users age
-     * @return the users age as an int
-     */
-    public int getAge() {
-        return Period.between(birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
-    }
-
-
     public Integer getProfileId() {
         return profileId;
     }
@@ -301,6 +292,15 @@ public class Profile extends Model {
     public void setTravellerTypes(Map<Integer, TravellerType> travellerTypes) {
         this.travellerTypes = travellerTypes;
     }
+
+    /**
+     * Method to get a users age
+     * @return the users age as an int
+     */
+    public int getAge() {
+        return Period.between(birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
+    }
+
 
     /**
      * Return the passports as a readable list

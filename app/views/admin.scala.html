@@ -434,6 +434,7 @@
                                             <th>ProfileID</th>
                                             <th>Email</th>
                                             <th>Edit</th>
+                                            <th>Change Password</th>
                                             <th>Delete</th>
                                             <th>View</th>
                                             <th>Permissions</th>
@@ -448,6 +449,12 @@
                                                 <a href="@routes.AdminController.showEditProfile(profile.getProfileId())">
                                                     <button type="button" class="btn btn-primary" id="editProfileButton">Edit</button>
                                                 </a> </td>
+                                            <td>
+                                                    <button type="button" class="btn btn-primary editPasswordButton" id="editPasswordButton"
+                                                    data-toggle="modal" data-target="#editPasswordModal" onclick="setPasswordVal()"
+                                                    value="@profile.getProfileId">Change Password</button>
+                                            </td>
+
                                             @if(profile.hasRole("global_admin")) {
 
                                                 <td><button type="button" disabled class="btn btn-secondary">
@@ -467,9 +474,8 @@
 
                                                 @if(profile.hasRole("admin") && !profile.hasRole("global_admin")) {
                                                     <td>
-                                                        <a href="@routes.AdminController.removeAdmin(profile.getProfileId())">
-                                                            <button class="btn btn-info">Remove Admin</button>
-                                                        </a>
+                                                        <button class="btn btn-info" onclick="fillRemoveAdminValues('@routes.AdminController.removeAdmin(profile.getProfileId())')">Remove Admin</button>
+
                                                     </td>
                                                 } else if(profile.hasRole("global_admin")){
                                                 <td> global admin </td>
@@ -1047,12 +1053,24 @@
                 $('#confirmationDeleteModal').modal('show');
             }
 
+            function fillRemoveAdminValues(route) {
+
+                var a = document.getElementById("confirmRemoveHrf");
+                a.href = route;
+                $('#confirmationRemoveAdminModal').modal('show');
+            }
+
+
             function fillCreateTripValues(select) {
                 var a = document.getElementById("selectUserButton");
                 a.href = "/trips/" + select.value + "/create";
             }
 
             function runDelete() {
+                email = this.email;
+            }
+
+            function runRemove() {
                 email = this.email;
             }
 
@@ -1098,6 +1116,30 @@
         </div>
     </div>
 
+    <div class="modal" id="confirmationRemoveAdminModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                    <!-- header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirmation</h4>
+                    <button type="button" class="close" data-dismiss="modal"></button>
+                </div>
+                    <!-- body -->
+                <div class="modal-body">
+                    <h5>Are you sure you want to remove admin from this user?</h5>
+                </div>
+                    <!-- footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <a href="#" id="confirmRemoveHrf">
+                        <button type="submit" id="confirmRemoveBtn" class="btn btn-danger" onclick="runRemove()">
+                            Remove</button>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
 
     @if(tripToView != null) {
         <script type="text/javascript">
@@ -2166,5 +2208,45 @@
     }
 
 
+        <div class="modal fade" id="editPasswordModal">
+
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h2 class="modal-title ">Edit Password</h2>
+                    </div>
+                    @form(routes.AdminController.updatePassword()) {
+                        @CSRF.formField
+                        <div class="modal-body">
+                            <div class="col">
+                                <div class="row">
+                                    <div class="form-group" id="holder">
+                                        <input type="hidden" id="userId" name="userId" value="">
+                                        <small id="label" for="password">Password*</small>
+                                        <input type="text" id="thepassword" placeholder="Password" name="Password"
+                                        class="inputField" required oninvalid="this.setCustomValidity('Password required')" oninput="setCustomValidity('')" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">
+                                Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+
 </html>
+
+    <script>
+            function setPasswordVal(e) {
+                var userId = $('#editPasswordButton').val()
+                $("#userId").val(userId);
+            };
+    </script>
 

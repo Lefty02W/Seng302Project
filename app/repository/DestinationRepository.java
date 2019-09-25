@@ -345,6 +345,25 @@ public class DestinationRepository {
         return Optional.of(destList);
     }
 
+    /**
+     * Method to get a users owned + followed destinations
+     * @param profileId user Id to search for their owned destinations
+     * @return Optional array list of destinations either owned or followed by the user
+     */
+    public ArrayList<Destination> getAllFollowedOrOwnedDestinations(int profileId) {
+        ArrayList<Destination> destinationList = new ArrayList<>(ebeanServer.find(Destination.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("profile_id", profileId)
+                .findList());
+
+        String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
+                "where follow_destination.profile_id = ? and D.soft_delete = 0";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
+        destinationList.addAll(getDestinationsFromSqlRow(rowList));
+        return destinationList;
+    }
 
     /**
      * Method returns all followed destinations ids from a user
@@ -394,26 +413,6 @@ public class DestinationRepository {
         }
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();
-    }
-
-    /**
-     * Method to get a users owned + followed destinations
-     * @param profileId user Id to search for their owned destinations
-     * @return Optional array list of destinations either owned or followed by the user
-     */
-    public ArrayList<Destination> getAllFollowedOrOwnedDestinations(int profileId) {
-        ArrayList<Destination> destinationList = new ArrayList<>(ebeanServer.find(Destination.class)
-                .where()
-                .eq("soft_delete", 0)
-                .eq("profile_id", profileId)
-                .findList());
-
-        String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
-                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0";
-        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
-        destinationList.addAll(getDestinationsFromSqlRow(rowList));
-        return destinationList;
     }
 
 
@@ -723,9 +722,9 @@ public class DestinationRepository {
 
 
     /**
-     * Private method get destinations from an sql row
-     * @param rowList List of sqlrows
-     * @return List of destinations
+     * Function to take in a list of SqlRow and convert to destinations
+     * @param rowList List of SqlRow to be converted
+     * @return List of destinations that has been converted from sql row
      */
     private List<Destination> getDestinationsFromSqlRow(List<SqlRow> rowList) {
         List<Destination> destinations = new ArrayList<>();
