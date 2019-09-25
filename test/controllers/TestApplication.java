@@ -25,6 +25,7 @@ public class TestApplication {
     private static ArtistRepository artistRepository;
     private static GenreRepository genreRepository;
     private static EventRepository eventRepository;
+    private static AttendEventRepository attendEventRepository;
 
     /**
      * Static method to get an instance of the test application
@@ -192,4 +193,16 @@ public class TestApplication {
         return eventRepository;
     }
 
-}
+    /**
+     * Creates an instance of the AttendEventRepository
+     * @return AttendEventRepository instance
+     */
+    public static AttendEventRepository getAttendEventRepository() {
+        checkApplication();
+        if (attendEventRepository == null) {
+            attendEventRepository = application.injector().instanceOf(AttendEventRepository.class);
+        }
+        return attendEventRepository;
+    }
+
+    }

@@ -1,14 +1,16 @@
 package repository;
 
+import com.google.common.collect.Sets;
 import io.ebean.*;
 import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -25,6 +27,7 @@ public class EventRepository {
     private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
     private final DestinationRepository destinationRepository;
+    private final AttendEventRepository attendEventRepository;
 
     /**
      * Constructor for the events repository class
@@ -33,7 +36,8 @@ public class EventRepository {
     public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                            EventTypeRepository eventTypeRepository, EventArtistRepository eventArtistRepository,
                            EventGenreRepository eventGenreRepository, ArtistRepository artistRepository,
-                           GenreRepository genreRepository, DestinationRepository destinationRepository) {
+                           GenreRepository genreRepository, DestinationRepository destinationRepository,
+                           AttendEventRepository attendEventRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.eventTypeRepository = eventTypeRepository;
@@ -42,7 +46,7 @@ public class EventRepository {
         this.artistRepository = artistRepository;
         this.genreRepository = genreRepository;
         this.destinationRepository = destinationRepository;
-
+        this.attendEventRepository = attendEventRepository;
     }
 
     /**
@@ -132,6 +136,7 @@ public class EventRepository {
         event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
         event.setDestination(destinationRepository.lookup(event.getDestinationId()));
+        event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
         return event;
     }
 
@@ -184,12 +189,73 @@ public class EventRepository {
                 targetEvent.update();
                 txn.commit();
                 event.setEventId(targetEvent.getEventId());
-                removeLinkingTables(event);
-                saveLinkingTables(event);
+                updateLinkingTables(event);
             }
             txn.end();
+
         return eventId;
     });
+    }
+
+    /**
+     * Function that handles the update for the linking tables
+     * converts objects into sets
+     * performs operations to find the intersection and difference to work out what to delete and insert
+     * @param event Event to be updated
+     */
+    private void updateLinkingTables(Events event) {
+        EventType eventType = eventTypeRepository.getEventType(event.getEventId());
+        Set<Integer> eventGenreSet = eventGenreRepository.getEventGenreList(event.getEventId()).stream().collect(Collectors.toSet());
+        Set<Integer> eventArtistsSet = eventArtistRepository.getEventArtistList(event.getEventId()).stream().collect(Collectors.toSet());
+        Integer eventTypeId = eventTypeRepository.getTypeOfEventsIdByName(event.getTypeForm());
+        if(eventType.getTypeId() != eventTypeId) {
+            eventTypeRepository.updateEventType(event.getEventId(), eventTypeId);
+        }
+        Set<Integer> newGenreIds = Stream.of(event.getGenreForm().split(","))
+                .map(Integer::parseInt).collect(Collectors.toSet());
+
+        updateGenre(event, eventGenreSet, newGenreIds);
+
+        Set<Integer> newArtistIds = Stream.of(event.getArtistForm().split(","))
+                .map(Integer::parseInt).collect(Collectors.toSet());
+
+        updateArtist(event, eventArtistsSet, newArtistIds);
+
+
+
+    }
+
+    /**
+     * Update artist links to an event either removes or inserts when needed
+     * @param event Event object to be updated
+     * @param eventArtistsSet Set of event artist ids that is already existing
+     * @param newArtistIds Set of event artists ids that has the changes
+     */
+    private void updateArtist(Events event, Set<Integer> eventArtistsSet, Set<Integer> newArtistIds) {
+        ebeanServer.find(EventArtists.class).where().in("artist_id", Sets.difference(eventArtistsSet, newArtistIds)).eq("event_id", event.getEventId()).delete();
+
+        for (Integer i : Sets.difference(newArtistIds, eventArtistsSet)) {
+            ebeanServer.insert(new EventArtists(event.getEventId(), i));
+        }
+    }
+
+
+    /**
+     * Update genre links to an event either removes or inserts when needed
+     * @param event Event object to be updated
+     * @param eventGenreSet Set of event genres ids that is already existing
+     * @param newGenreIds Set of event genres ids that has the changes
+     */
+    private void updateGenre(Events event, Set<Integer> eventGenreSet, Set<Integer> newGenreIds) {
+        ebeanServer.find(EventGenres.class).where().in("genre_id", Sets.difference(eventGenreSet, newGenreIds)).eq("event_id", event.getEventId()).delete();
+        for (Integer i : Sets.difference(newGenreIds, eventGenreSet)) {
+            ebeanServer.insert(new EventGenres(event.getEventId(), i));
+        }
+    }
+
+
+    private void removeEventGenres(int eventId, Set<Integer> ids) {
+        ebeanServer.find(EventGenres.class).where().idIn(ids).delete();
     }
 
     /**
@@ -207,6 +273,7 @@ public class EventRepository {
      * @param event Event holding forms with updated values
      */
     private void saveLinkingTables(Events event) {
+
         for (String genreId : event.getGenreForm().split(",")) {
             if(!genreId.equals("")) {  //Genre is not required, so could pass empty string here.
                 eventGenreRepository.insert(new EventGenres(event.getEventId(), Integer.parseInt(genreId)));
@@ -226,15 +293,25 @@ public class EventRepository {
      * @param eventFormData eventForm data required to generate the search query
      * @return query string for the events search
      */
-    private SqlQuery formSearchQuery(EventFormData eventFormData, int offset) {
+    private SqlQuery formSearchQuery(EventFormData eventFormData, int offset, int profileId) {
         String query = "SELECT DISTINCT events.event_id, events.event_name, events.description, events.destination_id, " +
                 "events.start_date, events.end_date, events.age_restriction FROM events " +
                 "LEFT OUTER JOIN event_genres ON events.event_id = event_genres.event_id " +
                 "LEFT OUTER JOIN event_type ON events.event_id = event_type.event_id " +
                 "LEFT OUTER JOIN event_artists ON events.event_id = event_artists.event_id ";
+
+
         boolean whereAdded = false;
         boolean likeAdded = false;
         List<String> args = new ArrayList<>();
+        if(eventFormData.getAttending().equals("on")) {
+            query += "JOIN attend_event ON events.event_id = attend_event.event_id ";
+            query+= "WHERE attend_event.profile_id = ? ";
+            whereAdded = true;
+            args.add(Integer.toString(profileId));
+
+        }
+
         if (!eventFormData.getEventName().equals("")){
             query += "WHERE events.event_name LIKE ? ";
             likeAdded = true;
@@ -325,8 +402,8 @@ public class EventRepository {
      * @param eventFormData data used in search
      * @return List holding resulting events from search
      */
-    public List<Events> searchEvent(EventFormData eventFormData, int offset) {
-        SqlQuery query = formSearchQuery(eventFormData, offset);
+    public List<Events> searchEvent(EventFormData eventFormData, int offset, int profileId) {
+        SqlQuery query = formSearchQuery(eventFormData, offset, profileId);
         List<SqlRow> sqlRows = query.findList();
         List<Events> events = new ArrayList<>();
         if (!sqlRows.isEmpty()){
@@ -385,5 +462,26 @@ public class EventRepository {
             ebeanServer.find(Events.class).where().eq("event_id", Integer.toString(eventId)).delete();
             return null;
         });
+    }
+
+    /**
+     * Method to get the next 10 upcoming events that a user is attending
+     *
+     * @param profileId id of the profile
+     * @return List of events found
+     */
+    public List<Events> getNextTenUpComingEvents(int profileId) {
+        List<Integer> eventIds = attendEventRepository.getAttendingEvents(profileId);
+        if (eventIds.isEmpty()) {
+            return new ArrayList<>();
+        } else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            List<Events> events = ebeanServer.find(Events.class).order("startDate").setMaxRows(10).where().gt("start_date", dateFormat.format(new Date())).idIn(eventIds).findList();
+            List<Events> toReturn = new ArrayList<>();
+            for (Events event : events) {
+                toReturn.add(populateEvent(event));
+            }
+            return toReturn;
+        }
     }
 }
