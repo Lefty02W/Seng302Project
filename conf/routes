@@ -154,7 +154,6 @@ GET     /events/all/search/:offset              controllers.EventsController.sea
 GET     /artists/:artistId/events/:eventId/delete   controllers.EventsController.deleteEvent(request : Request, artistId : Integer, eventId : Integer)
 GET     /artists/:artistId/events/edit/:eventId     controllers.EventsController.editArtistEvent(request : Request, artistId : Integer, eventId : Integer)
 POST    /artists/:artistId/events/edit/:eventId     controllers.EventsController.editEventFromArtist(request : Request, artistId : Integer, eventId : Integer)
-
 GET     /events/:eventId/attend                     controllers.EventsController.attendEvent(request : Request, eventId : Integer)
 GET     /events/:eventId/leave                      controllers.EventsController.leaveEvent(request : Request, eventId : Integer)
 GET     /events/profile/:eventId/leave              controllers.EventsController.leaveEventFromProfile(request : Request, eventId : Integer)
@@ -162,3 +161,4 @@ GET     /events/profile/:eventId/leave              controllers.EventsController
 ## View Event
 GET     /events/view/:id                        controllers.EventsController.viewEvent(request : Request, id : Integer)
 POST    /events/view/:id/edit                   controllers.EventsController.editEventFromEvent(request : Request, id : Integer)
+GET     /events/:id/remove/photo                controllers.EventsController.removePhoto(request : Request, id : Integer)
