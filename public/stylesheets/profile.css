@@ -360,6 +360,11 @@ img.thumbnail {
     padding-right: 0px !important;
 }
 
+#yourArtistsCard {
+    margin-left: 27vw;
+}
+
 #yourArtistsList {
+    width: 50vw;
     text-align: center;
 }

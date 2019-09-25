@@ -431,6 +431,7 @@ public class ProfileController extends Controller implements TypesInterface {
      * Implement the undo delete method from interface
      * @param profileID - ID of the profile to undo deletion of
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Void> undo(int profileID) {
         return supplyAsync(() -> {
             profileRepository.setSoftDelete(profileID, 0);
