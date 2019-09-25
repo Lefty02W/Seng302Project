@@ -440,6 +440,8 @@ create table events
 	end_date datetime null,
 	age_restriction int null,
 	soft_delete int default '0' null,
+	ticket_price    double default '-1' null,
+  ticket_link     varchar(500)        null,
 	constraint events_event_id_uindex
 		unique (event_id),
 	constraint destination_id_____destination_fk
