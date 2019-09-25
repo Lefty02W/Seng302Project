@@ -718,7 +718,9 @@ public class DestinationRepository {
 
 
     /**
-     *
+     * Private method get destinations from an sql row
+     * @param rowList List of sqlrows
+     * @return List of destinations
      */
     private List<Destination> getDestinationsFromSqlRow(List<SqlRow> rowList) {
         List<Destination> destinations = new ArrayList<>();
