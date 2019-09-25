@@ -109,6 +109,13 @@
                                 <hr>
                                 <i class="fa fa-globe">&nbsp;</i>
                                     @event.getDestination.getName
+
+                                @if(event.getTicketLink != null) {
+                                    <hr>
+                                    <i class="fa fa-money">&nbsp;</i>
+                                    $ @event.getTicketPrice
+                                }
+
                             </div>
 
 
@@ -200,14 +207,16 @@
                             <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
                         </div>
-@*//                        @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
-                        <div class="col button-col">
-                            <button class="btn btn-secondary" style="float: right">
-                                <i class="fa fa-credit-card">&nbsp;</i>Buy Tickets
-                            </button>
 
-                            </div>
-
+                          @if(event.getTicketLink != null) {
+                              <div class="col button-col">
+                                  <a href="@event.getTicketLink" >
+                                      <button class="btn btn-secondary" style="float: right">
+                                          <i class="fa fa-credit-card">&nbsp;</i>Buy Tickets
+                                      </button>
+                                </a>
+                              </div>
+                          }
                     </div>
                 </div>
             </div>
