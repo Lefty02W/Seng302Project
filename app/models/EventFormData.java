@@ -15,6 +15,11 @@ public class EventFormData {
     private String genre = "";
     private String startDate = "";
     private String followedArtists = "";
+    private String historic = "";
+
+    public String getHistoric() { return historic; }
+
+    public void setHistoric(String historic) { this.historic = historic; }
 
     public void setEventName(String eventName) {
         this.eventName = eventName;

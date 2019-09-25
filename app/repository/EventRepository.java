@@ -67,7 +67,7 @@ public class EventRepository {
      */
     public List<Events> getPage(int offset) {
         List<Events> toReturn = new ArrayList<>();
-        List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).orderBy().asc("start_date").findList();
+        List<Events> events = ebeanServer.find(Events.class).setMaxRows(8).setFirstRow(offset).where().eq("soft_delete", 0).gt("start_date", new Date()).orderBy().asc("start_date").findList();
         for (Events event : events) {
             toReturn.add(populateEvent(event));
         }
@@ -84,7 +84,7 @@ public class EventRepository {
         List<Integer> ids = ebeanServer.find(EventArtists.class).setMaxRows(8).setFirstRow(offset).where().eq("artist_id", artistId).findIds();
         List<Events> events = new ArrayList<>();
         if (!ids.isEmpty()) {
-            for (Events event : ebeanServer.find(Events.class).where().idIn(ids).findList()) {
+            for (Events event : ebeanServer.find(Events.class).where().idIn(ids).gt("start_date", new Date()).orderBy().asc("start_date").findList()) {
                 events.add(populateEvent(event));
             }
             Collections.sort(events, new Comparator<Events>() {
@@ -311,6 +311,13 @@ public class EventRepository {
                         "IN (SELECT event_artists.artist_id from event_artists where event_artists.event_id = events.event_id AND event_artists.event_id))";
             }
             args.add(Integer.toString(profId));
+        }
+        if (!eventFormData.getHistoric().equals("1")) {
+            if (whereAdded){
+                query += " AND DATE(events.start_date) > DATE(NOW())";
+            } else {
+                query += " WHERE DATE(events.start_date) > DATE(NOW())";
+            }
         }
 
         query += " ORDER BY DATE(events.start_date) LIMIT 8 OFFSET "+offset;
