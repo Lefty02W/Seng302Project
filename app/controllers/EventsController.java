@@ -4,6 +4,7 @@ import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
+import play.libs.Files;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -16,6 +17,7 @@ import views.html.events;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ public class EventsController extends Controller {
     private String errorEventUnknown = "Error creating event: Unknown error";
     private String adminEventURL = "/admin/events/0";
     private String eventURL = "/events/0";
+    private final long MAX_PHOTO_SIZE = 8000000;
 
 
     @Inject
@@ -544,7 +547,6 @@ public class EventsController extends Controller {
                 });
     }
 
-
     /**
     * Method to query the image repository to retrieve all images uploaded for a
      * logged in user.
@@ -577,7 +579,6 @@ public class EventsController extends Controller {
         return listProfileNames;
     }
 
-
     /**
      * Endpoint method for an artist admin to remove a photo from an event
      *
@@ -598,6 +599,42 @@ public class EventsController extends Controller {
      */
     public CompletionStage<Result> setCoverPhoto(Http.Request request, Integer eventId, Integer photoId) {
         return eventPhotoRepository.update(eventId, photoId).thenApplyAsync(theEventId -> redirect("/events/view/"+theEventId));
+    }
+
+    /**
+     * Method to add a new event photo to an event, removing any existing event photo
+     * @param request http request
+     * @param eventId id of the event the new cover photo will be added to
+     * @return completion stage holding the result of the photo upload
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> addEventPhoto(Http.Request request, Integer eventId) {
+        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
+
+        if(eventPhotoRepository.lookup(eventId).isPresent()) {
+            eventPhotoRepository.removeEventCoverPhoto(eventId);
+        }
+
+        String fileName = picture.getFilename();
+        String contentType = picture.getContentType();
+        if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
+            return supplyAsync(() -> redirect("/events/view/"+eventId).flashing("error", "Invalid file type!"));
+        }
+        long fileSize = picture.getFileSize();
+        if (fileSize >= MAX_PHOTO_SIZE) {
+            return supplyAsync(() -> redirect("/events/view/"+eventId).flashing("error",
+                    "File size must not exceed 8MB!"));
+        }
+
+        Files.TemporaryFile tempFile = picture.getRef();
+        String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
+        tempFile.copyTo(Paths.get(filepath), true);
+        Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 0, fileName);
+        photoRepository.insert(photo).thenApplyAsync(photoId ->
+                eventPhotoRepository.insert(new EventPhoto(eventId, photoId)));
+
+        return supplyAsync(() -> redirect("/events/view/"+eventId));
     }
 
 }

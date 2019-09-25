@@ -162,4 +162,5 @@ GET     /events/profile/:eventId/leave              controllers.EventsController
 GET     /events/view/:id                        controllers.EventsController.viewEvent(request : Request, id : Integer)
 POST    /events/view/:id/edit                   controllers.EventsController.editEventFromEvent(request : Request, id : Integer)
 GET     /events/:id/remove/photo                controllers.EventsController.removePhoto(request : Request, id : Integer)
-GET     /events/:eventId/:photoId      controllers.EventsController.setCoverPhoto(request : Request, eventId : Integer, photoId : Integer)
+GET     /events/:eventId/:photoId           controllers.EventsController.setCoverPhoto(request : Request, eventId : Integer, photoId : Integer)
+POST     /events/:eventId/add                controllers.EventsController.addEventPhoto(request : Request, eventId : Integer)

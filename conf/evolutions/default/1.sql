@@ -520,6 +520,18 @@ create table if not exists attend_event
 ;
 
 
+create table if not exists event_photo
+(
+	event_id int auto_increment,
+	photo_id int not null,
+	constraint event_photo_event_fk
+		foreign key (event_id) references events (event_id)
+			on update cascade on delete cascade,
+	constraint event_photo_photo_fk
+		foreign key (photo_id) references photo (photo_id)
+			on update cascade on delete cascade
+)
+;
 
 
 
@@ -595,3 +607,5 @@ drop table if exists event_genres;
 drop table if exists event_type;
 
 drop table if exists attend_event;
+
+drop table if exists event_photo;

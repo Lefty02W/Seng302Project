@@ -4,7 +4,6 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
 import models.EventPhoto;
-import models.Photo;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
@@ -55,6 +54,31 @@ public class EventPhotoRepository {
 
 
     /**
+     * Method to insert a new event photo link
+     *
+     * @param eventPhoto EventPhoto object
+     * @return Void CompletionStage
+     */
+    public CompletionStage<Integer> insert(EventPhoto eventPhoto) {
+        return supplyAsync(() -> {
+           ebeanServer.insert(eventPhoto);
+           return 1;
+        });
+    }
+
+
+    /**
+     * Method to get an eventPhoto object using an event id
+     *
+     * @param eventId event id to find photo
+     * @return Optional EventPhoto
+     */
+    public Optional<EventPhoto> lookup(int eventId) {
+        return Optional.ofNullable(ebeanServer.find(EventPhoto.class).where().eq("event_id", eventId).findOne());
+    }
+
+
+    /**
      * Database access method to update the photo link for an event cover photo
      * @param eventId id of the event to update the photo
      * @param photoId id of the photo to be added to the event
@@ -69,11 +93,14 @@ public class EventPhotoRepository {
                 targetPhoto.setPhotoId(photoId);
                 targetPhoto.update();
                 txn.commit();
+                txn.end();
+            } else {
+                txn.end();
+                ebeanServer.insert(new EventPhoto(eventId, photoId));
             }
-            txn.end();
 
             return eventId;
-        });
+        }, executionContext);
     }
 
 }

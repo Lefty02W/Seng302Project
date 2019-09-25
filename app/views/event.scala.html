@@ -274,26 +274,9 @@
                     <div class="modal-header">
                         <h2 class="modal-title center-col">Remove this cover photo?</h2>
                     </div>
-                    <div class="modal-body">
-                        <div class="container">
-                            <div class="upload-demo-wrap">
-                                <div id="upload-demo"></div>
-                            </div>
-                            @* TODO: Link to backend when backend is complete *@
-                            @* @if(coverPhoto != null) {
-                                <img id="coverImage" class="thumbnail" src="@routes.EventsController.photoAt(coverPhoto.getPhotoId)"
-                                alt="Cover picture">
-                            } else {
-                                <img id="coverImage" class="thumbnail" src="@routes.Assets.at("images/cover-icon.png")"
-                                alt="Cover picture">
-                            } *@
-                        </div>
-
-                    </div>
                     <div class="modal-footer">
-                        @* TODO: Link to backend when backend is complete *@
-                        @* <a href="@routes.EventsController.removeCoverPhoto()"> *@
-                            <button type="submit" class="btn btn-danger">Confirm Delete</button>@*</a>*@
+                        <a href="@routes.EventsController.removePhoto(event.getEventId())">
+                            <button type="submit" class="btn btn-danger">Confirm Delete</button></a>
                         <button type="button" data-dismiss="modal" class="btn btn-outline-primary">Cancel</button>
                     </div>
                 </div>
@@ -306,9 +289,8 @@
                     <div class="modal-header">
                         <h2 class="modal-title center-col">Upload Picture</h2>
                     </div>
-                    @* TODO: Link to backend when backend is complete *@
-                    @* @helper.form(routes.EventsController.uploadPhoto(event.getEventId), 'enctype -> "multipart/form-data") {
-                    @CSRF.formField *@
+                    @helper.form(routes.EventsController.addEventPhoto(event.getEventId), 'enctype -> "multipart/form-data") {
+                    @CSRF.formField
                         <div class="modal-body">
                             <input type="file" id="image" name="image" accept="image/*" value="Choose an Image"/>
                         </div>
@@ -317,7 +299,7 @@
                                 Save</button>
                             <button type="button" data-dismiss="modal" class="btn btn-outline-danger">Cancel</button>
                         </div>
-                    @*}*@
+                    }
                 </div>
             </div>
         </div>
