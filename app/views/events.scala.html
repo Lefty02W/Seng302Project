@@ -265,6 +265,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col padded">
+                                                    <row>
                                                     @if(searchData != null) {
                                                         @if(searchData.getHistoric.equals("1")) {
                                                             <input type="checkbox" name="historic" value="1" checked> Search Old Events
@@ -274,7 +275,8 @@
                                                     } else {
                                                         <input type="checkbox" name="historic" value="1"> Search Old Events
                                                     }
-
+                                                    </row>
+                                                    <br>
                                                     <row>
                                                     @if(searchData != null) {
                                                         @if(searchData.getAttending.equals("on")) {
