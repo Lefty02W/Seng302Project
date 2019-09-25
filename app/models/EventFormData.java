@@ -13,11 +13,8 @@ public class EventFormData {
     private String destinationId = "";
     private String ageRestriction = "";
     private String genre = "";
-    private String attending = "";
     private String startDate = "";
     private String followedArtists = "";
-
-    public void setAttending(String attending) {this.attending = attending;}
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
@@ -47,12 +44,9 @@ public class EventFormData {
         this.startDate = startDate;
     }
 
-    public String getAttending(){return attending;}
-
     public String getFollowedArtists() { return followedArtists; }
 
     public void setFollowedArtists(String followedArtists) { this.followedArtists = followedArtists; }
-
 
     public String getEventName() {
         return eventName;

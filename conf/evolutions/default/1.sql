@@ -502,22 +502,6 @@ create table if not exists event_artists
 )
 ;
 
-create table if not exists attend_event
-(
-	attend_event_id int auto_increment
-		primary key,
-	event_id int not null,
-	profile_id int not null,
-	constraint attend_event_event_id___fk
-		foreign key (event_id) references events (event_id)
-			on update cascade on delete cascade,
-	constraint attend_event_profile_id___fk
-		foreign key (profile_id) references profile (profile_id)
-			on update cascade on delete cascade
-)
-;
-
-
 
 
 
@@ -591,5 +575,3 @@ drop table if exists event_artists;
 drop table if exists event_genres;
 
 drop table if exists event_type;
-
-drop table if exists attend_event;

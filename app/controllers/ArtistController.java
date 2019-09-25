@@ -38,7 +38,6 @@ public class ArtistController extends Controller {
     private final EventRepository eventRepository;
     private final Form<ArtistFormData> searchForm;
     private final DestinationRepository destinationRepository;
-    private final AttendEventRepository attendEventRepository;
 
 
     @Inject
@@ -46,7 +45,7 @@ public class ArtistController extends Controller {
                             ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
                             GenreRepository genreRepository, EventRepository eventRepository,
-                            DestinationRepository destinationRepository, AttendEventRepository attendEventRepository){
+                            DestinationRepository destinationRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -56,7 +55,6 @@ public class ArtistController extends Controller {
         this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
         this.eventRepository = eventRepository;
         this.destinationRepository = destinationRepository;
-        this.attendEventRepository = attendEventRepository;
     }
 
     /**
@@ -408,30 +406,4 @@ public class ArtistController extends Controller {
     public CompletionStage<Integer> getFollowerCount(int artistId) {
         return supplyAsync(() -> artistRepository.getNumFollowers(artistId));
     }
-
-    /**
-     * Endpoint method to withdraw from an event with the given eventID from the artist page
-     * @param request http request
-     * @param eventId event id
-     * @param artistId artist id
-     * @return redirects back to event page
-     */
-    public Result leaveEvent(Http.Request request, Integer artistId, Integer eventId) {
-        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
-        return redirect("/artists/"+artistId+"/events/0").flashing("info", "No longer going to event");
-    }
-
-    /**
-     * Endpoint method to attend an event with the given eventID from the artist page
-     * @param request http request
-     * @param eventId event id
-     * @param artistId artist Id
-     * @return redirects back to event page
-     */
-    public Result attendEvent(Http.Request request, Integer artistId, Integer eventId) {
-
-        attendEventRepository.insert(new AttendEvent(eventId, SessionController.getCurrentUserId(request)));
-        return redirect("/artists/"+artistId+"/events/0").flashing("info", "No longer going to event");
-    }
-
 }

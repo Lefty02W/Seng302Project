@@ -237,11 +237,10 @@ img.thumbnail {
 #profileTabsContent {
     margin-left: auto;
     margin-right: auto;
-    padding-bottom: 3%;
+    /*width: 50%;*/
 }
 
-
-.nav .nav-tabs, #followedArtistsLink, #yourArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink, #upcomingEventsLink {
+.nav .nav-tabs, #followedArtistsLink, #yourArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
     font-size: 18pt;
 }
 
@@ -356,8 +355,4 @@ img.thumbnail {
 #yourArtistsList {
     width: 50vw;
     text-align: center;
-}
-
-.activated {
-    font-weight:bold;
 }

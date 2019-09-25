@@ -159,30 +159,10 @@
                     </div>
                 </div>
                 <div class="row justify-content-end">
-                    <div class="row" id="backSaveButtonsRow">
-                        <button id="backButtonEdit" data-toggle="modal" data-target="#confirmBack" class="btn btn-secondary backButton" type="button">Back</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="modal" id="confirmBack">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title" id="confirmBackTitle">Are you sure you want to go back?</h4>
-                        <button type="button" class="close" data-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <h6 id="confirmBackBody">All your changes will be lost if you leave</h6>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-
+                    <div>
                         <a href="@routes.TripsController.show(0)">
-                            <button id="confirmBackBtn" class="btn btn-danger" type="button">
-                                Yes, go back</button>
+                            <button id="backButtonCreate" class="button-back btn btn-secondary backButton" type="button">
+                                Back</button>
                         </a>
                     </div>
                 </div>

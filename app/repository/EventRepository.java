@@ -5,11 +5,6 @@ import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
@@ -28,7 +23,6 @@ public class EventRepository {
     private final ArtistRepository artistRepository;
     private final GenreRepository genreRepository;
     private final DestinationRepository destinationRepository;
-    private final AttendEventRepository attendEventRepository;
 
     /**
      * Constructor for the events repository class
@@ -37,8 +31,7 @@ public class EventRepository {
     public EventRepository(EbeanConfig ebeanConfig, DatabaseExecutionContext executionContext,
                            EventTypeRepository eventTypeRepository, EventArtistRepository eventArtistRepository,
                            EventGenreRepository eventGenreRepository, ArtistRepository artistRepository,
-                           GenreRepository genreRepository, DestinationRepository destinationRepository,
-                           AttendEventRepository attendEventRepository) {
+                           GenreRepository genreRepository, DestinationRepository destinationRepository) {
         this.ebeanServer = Ebean.getServer(ebeanConfig.defaultServer());
         this.executionContext = executionContext;
         this.eventTypeRepository = eventTypeRepository;
@@ -47,7 +40,7 @@ public class EventRepository {
         this.artistRepository = artistRepository;
         this.genreRepository = genreRepository;
         this.destinationRepository = destinationRepository;
-        this.attendEventRepository = attendEventRepository;
+
     }
 
     /**
@@ -144,7 +137,6 @@ public class EventRepository {
         event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
         event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
         event.setDestination(destinationRepository.lookup(event.getDestinationId()));
-        event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
         return event;
     }
 
@@ -186,6 +178,7 @@ public class EventRepository {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();
+
             if (targetEvent != null) {
                 targetEvent.setAgeRestriction(event.getAgeRestriction());
                 targetEvent.setDescription(event.getDescription());
@@ -202,7 +195,6 @@ public class EventRepository {
                 saveLinkingTables(event);
             }
             txn.end();
-
         return eventId;
     });
     }
@@ -247,10 +239,6 @@ public class EventRepository {
                 "LEFT OUTER JOIN event_genres ON events.event_id = event_genres.event_id " +
                 "LEFT OUTER JOIN event_type ON events.event_id = event_type.event_id " +
                 "LEFT OUTER JOIN event_artists ON events.event_id = event_artists.event_id ";
-
-        if(eventFormData.getAttending().equals("on")) {
-            query += "JOIN attend_event ON events.event_id = attend_event.event_id ";
-        }
         boolean whereAdded = false;
         boolean likeAdded = false;
         List<String> args = new ArrayList<>();
@@ -378,10 +366,7 @@ public class EventRepository {
      * @return Optional event found
      */
     public CompletionStage<Optional<Events>> getEvent(int id) {
-        return supplyAsync(() -> {
-            Optional<Events> event = Optional.ofNullable(ebeanServer.find(Events.class).where().eq("event_id", id).findOne());
-            return event.map(this::populateEvent);
-        });
+        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Events.class).where().eq("event_id", id).findOne()));
     }
 
     /**
@@ -418,26 +403,5 @@ public class EventRepository {
             ebeanServer.find(Events.class).where().eq("event_id", Integer.toString(eventId)).delete();
             return null;
         });
-    }
-
-    /**
-     * Method to get the next 10 upcoming events that a user is attending
-     *
-     * @param profileId id of the profile
-     * @return List of events found
-     */
-    public List<Events> getNextTenUpComingEvents(int profileId) {
-        List<Integer> eventIds = attendEventRepository.getAttendingEvents(profileId);
-        if (eventIds.isEmpty()) {
-            return new ArrayList<>();
-        } else {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            List<Events> events = ebeanServer.find(Events.class).order("startDate").setMaxRows(10).where().gt("start_date", dateFormat.format(new Date())).idIn(eventIds).findList();
-            List<Events> toReturn = new ArrayList<>();
-            for (Events event : events) {
-                toReturn.add(populateEvent(event));
-            }
-            return toReturn;
-        }
     }
 }
