@@ -45,6 +45,7 @@ public class EventsController extends Controller {
     private final AttendEventRepository attendEventRepository;
     private final EventPhotoRepository eventPhotoRepository;
     private final PhotoRepository photoRepository;
+    private final UndoStackRepository undoStackRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
     private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
@@ -60,7 +61,7 @@ public class EventsController extends Controller {
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
                             FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository,
                             PersonalPhotoRepository personalPhotoRepository, EventPhotoRepository eventPhotoRepository,
-                            PhotoRepository photoRepository) {
+                            PhotoRepository photoRepository, UndoStackRepository undoStackRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -74,6 +75,7 @@ public class EventsController extends Controller {
         this.personalPhotoRepository = personalPhotoRepository;
         this.eventPhotoRepository = eventPhotoRepository;
         this.photoRepository = photoRepository;
+        this.undoStackRepository = undoStackRepository;
     }
 
     /**
@@ -176,6 +178,7 @@ public class EventsController extends Controller {
 
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> {
+                    undoStackRepository.clearStackOnAllowed(profileRec.get());
                     List<Events> eventsList = eventRepository.getPage(offset);
                     PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
                     paginationHelper.alterNext(8);
@@ -562,6 +565,7 @@ public class EventsController extends Controller {
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    undoStackRepository.clearStackOnAllowed(profileOpt.get());
                     Photo coverPhoto = null;
                     Optional<Integer> optionalEventPhotoId = eventPhotoRepository.getEventPhotoId(id);
                     if (optionalEventPhotoId.isPresent()) {

@@ -39,6 +39,7 @@ public class ArtistController extends Controller {
     private final Form<ArtistFormData> searchForm;
     private final DestinationRepository destinationRepository;
     private final AttendEventRepository attendEventRepository;
+    private final UndoStackRepository undoStackRepository;
 
 
     @Inject
@@ -46,7 +47,8 @@ public class ArtistController extends Controller {
                             ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
                             GenreRepository genreRepository, EventRepository eventRepository,
-                            DestinationRepository destinationRepository, AttendEventRepository attendEventRepository){
+                            DestinationRepository destinationRepository, AttendEventRepository attendEventRepository,
+                            UndoStackRepository undoStackRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -57,6 +59,7 @@ public class ArtistController extends Controller {
         this.eventRepository = eventRepository;
         this.destinationRepository = destinationRepository;
         this.attendEventRepository = attendEventRepository;
+        this.undoStackRepository = undoStackRepository;
     }
 
     /**
@@ -69,11 +72,15 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile,
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> {
+                    undoStackRepository.clearStackOnAllowed(profileRec.get());
+
+                    return ok(artists.render(searchForm, profile,
                         genreRepository.getAllGenres(), profileRepository.getAllEbeans(),
                         Country.getInstance().getAllCountries(),  artistRepository.getPagedArtists(0),
                         artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), null,
-                        request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+                        request, messagesApi.preferred(request)));
+                    }).orElseGet(() -> redirect("/profile")));
 
     }
 
@@ -143,6 +150,7 @@ public class ArtistController extends Controller {
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
                 {
                     List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    undoStackRepository.clearStackOnAllowed(profileRec.get());
                     if (userArtists.contains(artist)) {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
