@@ -41,6 +41,12 @@
 }
 
 
+#eventsCard{
+    width: 18rem;
+    margin:0.5em;
+}
+
+
 #wrapper {
     padding-bottom: 10%;
 }
