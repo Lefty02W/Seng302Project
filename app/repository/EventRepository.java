@@ -281,7 +281,6 @@ public class EventRepository {
      * @param event Event holding forms with updated values
      */
     private void saveLinkingTables(Events event) {
-
         for (String genreId : event.getGenreForm().split(",")) {
             if(!genreId.equals("")) {  //Genre is not required, so could pass empty string here.
                 eventGenreRepository.insert(new EventGenres(event.getEventId(), Integer.parseInt(genreId)));
