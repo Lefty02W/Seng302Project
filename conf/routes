@@ -163,4 +163,7 @@ GET     /events/details/:id                      controllers.EventsController.sh
 GET     /events/destination/:id                  controllers.EventsController.showEventDestination(request : Request, id : Integer)
 GET     /events/artists/:id                      controllers.EventsController.showEventArtists(request : Request, id : Integer)
 GET     /events/attendees/:id/:offset            controllers.EventsController.showEventAttendees(request : Request, id : Integer, offset : Integer)
+POST    /events/view/:id/edit                   controllers.EventsController.editEventFromEvent(request : Request, id : Integer)
+GET     /events/:id/remove/photo                controllers.EventsController.removePhoto(request : Request, id : Integer)
+GET     /events/:eventId/:photoId           controllers.EventsController.setCoverPhoto(request : Request, eventId : Integer, photoId : Integer)
 POST     /events/:eventId/add                controllers.EventsController.addEventPhoto(request : Request, eventId : Integer)

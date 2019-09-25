@@ -524,10 +524,20 @@ public class EventsController extends Controller {
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    Photo coverPhoto = null;
+                    Optional<Integer> optionalEventPhotoId = eventPhotoRepository.getEventPhotoId(id);
+                    if (optionalEventPhotoId.isPresent()) {
+                        Optional<Photo> optionalCoverPhoto = photoRepository.getImage(optionalEventPhotoId.get());
+                        if (optionalCoverPhoto.isPresent()) {
+                            coverPhoto = optionalCoverPhoto.get();
+                        }
+                    }
                     if (optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(),
                                 null, 1,
-                                null, request, messagesApi.preferred(request)));
+                                null, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
@@ -591,11 +601,20 @@ public class EventsController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
-                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
-                    if (optEvent.isPresent()) {
+                    Photo coverPhoto = null;
+                    Optional<Integer> optionalEventPhotoId = eventPhotoRepository.getEventPhotoId(id);
+                    if (optionalEventPhotoId.isPresent()) {
+                        Optional<Photo> optionalCoverPhoto = photoRepository.getImage(optionalEventPhotoId.get());
+                        if (optionalCoverPhoto.isPresent()) {
+                            coverPhoto = optionalCoverPhoto.get();
+                        }
+                    }
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));                    if (optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(),
                                 null, 3,
-                                null, request, messagesApi.preferred(request)));
+                                null, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
@@ -614,8 +633,15 @@ public class EventsController extends Controller {
         Integer profId = SessionController.getCurrentUserId(request);
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
-                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
-                    if (optEvent.isPresent() || profileOpt.isPresent()) {
+                    Photo coverPhoto = null;
+                    Optional<Integer> optionalEventPhotoId = eventPhotoRepository.getEventPhotoId(id);
+                    if (optionalEventPhotoId.isPresent()) {
+                        Optional<Photo> optionalCoverPhoto = photoRepository.getImage(optionalEventPhotoId.get());
+                        if (optionalCoverPhoto.isPresent()) {
+                            coverPhoto = optionalCoverPhoto.get();
+                        }
+                    }
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));                    if (optEvent.isPresent() || profileOpt.isPresent()) {
                         Optional<List<Profile>> attendees = profileRepository.getAllProfileByIdListPage(optEvent.get().getEventAttendees(), offset);
                         if (attendees.isPresent()){
                             PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, optEvent.get().getEventAttendees().size());
@@ -624,10 +650,14 @@ public class EventsController extends Controller {
                             paginationHelper.checkButtonsEnabled();
 
                             return ok(event.render(profileOpt.get(), optEvent.get(),
-                                    attendees.get(), 4, paginationHelper, request, messagesApi.preferred(request)));
+                                    attendees.get(), 4, paginationHelper, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                    request, messagesApi.preferred(request)));
                         } else {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
-                                    new ArrayList<>(), 4, new PaginationHelper(), request, messagesApi.preferred(request)));
+                                    new ArrayList<>(), 4, new PaginationHelper(), eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                    request, messagesApi.preferred(request)));
                         }
 
                     } else {

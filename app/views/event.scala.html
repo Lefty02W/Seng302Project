@@ -273,59 +273,60 @@
                 <div class="container" id="eventFooter">
                     <div class="row justify-content-center">
                         <div class="col button-col">
-                            <button class="btn btn-secondary" onclick="goBack()">Back</button>
+                            <div class="col">
+                                <button class="btn btn-secondary" onclick="goBack()">Back</button>
 
-                        </div>
-                        @if(isAdmin) {
-                            <div class="col button-col">
-                                <button class="btn btn-secondary" type="button" id="changeEventPhotoButton" data-toggle="modal"
-                                data-target="#changeEventPhotoModal">
-                                    Change Cover Photo
-                                </button>
-                            </div>
-                            <div class="col button-col">
-                                <button class="btn btn-secondary" type="button" id="editEventModalButton" data-toggle="modal"
-                                data-target="#editEventModal">
-                                    Edit Event
-                                </button>
-                            </div>
-                        }
+                            @if(isAdmin) {
 
-                        @if(event.getTicketLink != null) {
-                            <div class="col button-col">
-                                <a href="@event.getTicketLink" >
-                                    <button class="btn btn-secondary" style="float: right">
-                                        <i class="fa fa-credit-card">&nbsp;</i>Buy Tickets
+                                    <button class="btn btn-secondary" type="button" id="changeEventPhotoButton" data-toggle="modal"
+                                    data-target="#changeEventPhotoModal">
+                                        Change Cover Photo
                                     </button>
-                                </a>
-                            </div>
-                        }
+                                    <button class="btn btn-secondary" type="button" id="editEventModalButton" data-toggle="modal"
+                                    data-target="#editEventModal">
+                                        Edit Event
+                                    </button>
+                                </div>
+                            }
+                        </div>
 
-                        @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
-                            @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
-                                    || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
-                                    || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
-                                <button class="btn btn-secondary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
-                                    <i class="fa fa-check"></i>
-                                    Attend
-                                </button>
-                            } else {
-                                <a href="@routes.EventsController.attendEvent(event.getEventId)">
-                                    <button class="btn btn-secondary">
+                        <div class="col" id="rightButtons">
+                            @if(event.getTicketLink != null) {
+                                <div class="col button-col">
+                                    <a href="@event.getTicketLink" >
+                                        <button class="btn btn-secondary" id="rightButtons">
+                                            <i class="fa fa-credit-card">&nbsp;</i>Buy Tickets
+                                        </button>
+                                    </a>
+                                </div>
+                            }
+
+                            @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
+                                @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
+                                        || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
+                                        || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
+                                    <button class="btn btn-secondary" id="rightButtons" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
                                         <i class="fa fa-check"></i>
                                         Attend
                                     </button>
+                                } else {
+                                    <a href="@routes.EventsController.attendEvent(event.getEventId)">
+                                        <button class="btn btn-secondary" id="rightButtons">
+                                            <i class="fa fa-check"></i>
+                                            Attend
+                                        </button>
+                                    </a>
+                                }
+
+                            } else {
+                                <a href="@routes.EventsController.leaveEvent(event.getEventId)">
+                                    <button class="btn btn-primary" id="rightButtons">
+                                        <i class="fa fa-remove"></i>
+                                        Don't attend
+                                    </button>
                                 </a>
                             }
-
-                        } else {
-                            <a href="@routes.EventsController.leaveEvent(event.getEventId)">
-                                <button class="btn btn-primary">
-                                    <i class="fa fa-remove"></i>
-                                    Don't attend
-                                </button>
-                            </a>
-                        }
+                        </div>
                     </div>
                 </div>
             </div>
