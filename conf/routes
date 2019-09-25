@@ -160,3 +160,4 @@ GET     /events/profile/:eventId/leave              controllers.EventsController
 
 ## View Event
 GET     /events/view/:id                        controllers.EventsController.viewEvent(request : Request, id : Integer)
+GET     /events/:id/remove/photo                controllers.EventsController.removePhoto(request : Request, id : Integer)

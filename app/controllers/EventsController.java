@@ -41,6 +41,7 @@ public class EventsController extends Controller {
     private PersonalPhotoRepository personalPhotoRepository;
     private final Form<EventFormData> eventFormDataForm;
     private final AttendEventRepository attendEventRepository;
+    private final EventPhotoRepository eventPhotoRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
     private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
@@ -53,7 +54,8 @@ public class EventsController extends Controller {
     @Inject
     public EventsController(ProfileRepository profileRepository, MessagesApi messagesApi, GenreRepository genreRepository,
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
-                            FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository, PersonalPhotoRepository personalPhotoRepository) {
+                            FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository,
+                            PersonalPhotoRepository personalPhotoRepository, EventPhotoRepository eventPhotoRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -65,9 +67,8 @@ public class EventsController extends Controller {
         this.eventRepository = eventRepository;
         this.attendEventRepository = attendEventRepository;
         this.personalPhotoRepository = personalPhotoRepository;
+        this.eventPhotoRepository = eventPhotoRepository;
     }
-
-
 
 
     /**
@@ -544,6 +545,18 @@ public class EventsController extends Controller {
         }
 
         return listProfileNames;
+    }
+
+
+    /**
+     * Endpoint method for an artist admin to remove a photo from an event
+     *
+     * @param request client request
+     * @param id event id
+     * @return redirect to event page
+     */
+    public CompletionStage<Result> removePhoto(Http.Request request, Integer id) {
+        return eventPhotoRepository.removeEventCoverPhoto(id).thenApplyAsync(eventId -> redirect("/events/view/"+eventId));
     }
 
 }

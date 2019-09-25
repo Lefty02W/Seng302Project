@@ -1,5 +1,4 @@
 @import play.mvc.Http
-@import views.html.helper.CSRF
 @(currentUser: Profile, event: Events, attendees: List[String],  isAdmin: Boolean, photoList: List[Photo])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -329,10 +328,9 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-danger" data-dismiss="modal" type="button">Cancel</button>
-                        @* TODO: Add the correct route for removing photo when it exiss
-                        @*<a href="/events/@event.getEventId/remove/photo">*@
+                        <a href="/events/@event.getEventId/remove/photo">
                            <button class="btn btn-primary" type="button">Save</button>
-                        @*</a>*@
+                        </a>
                     </div>
                 </div>
             </div>
