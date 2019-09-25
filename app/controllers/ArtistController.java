@@ -393,7 +393,9 @@ public class ArtistController extends Controller {
     }
 
     /**
-     * Get follower count for the artist
+     * Method to return the follower count of an artist
+     * @param artistId Id of the artist to find follower count
+     * @return CompletionStage of the artist Id
      */
     public CompletionStage<Integer> getFollowerCount(int artistId) {
         return supplyAsync(() -> artistRepository.getNumFollowers(artistId));
