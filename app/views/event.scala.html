@@ -82,31 +82,31 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="eventTabs">
                             @if(activeTab == 1){
-                                <li class="activated"><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showDetailedEvent(event.getEventId)" class="tabLink" id="detailsTabLink">
                                 Details</a></li>
                             } else {
-                                <li><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
+                                <li><a href="@routes.EventsController.showDetailedEvent(event.getEventId)" class="tabLink" id="detailsTabLink">
                                     Details</a></li>
                             }
                             @if(activeTab == 2){
-                                <li class="activated"><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventDestination(event.getEventId)" class="tabLink" id="destinationTabLink">
                                     Destination</a></li>
                             } else {
-                                <li><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
+                                <li><a href="@routes.EventsController.showEventDestination(event.getEventId)" class="tabLink" id="destinationTabLink">
                                     Destination</a></li>
                             }
                             @if(activeTab == 3){
-                                <li class="activated"><a data-toggle="tab" href="#artistsTab" class="tabLink" id="artistsTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventArtists(event.getEventId)" class="tabLink" id="artistsTabLink">
                                     Artists</a></li>
                             } else {
-                                <li><a data-toggle="tab" href="#artistsTab" class="tabLink" id="artistsTabLink">
+                                <li><a href="@routes.EventsController.showEventArtists(event.getEventId)" class="tabLink" id="artistsTabLink">
                                     Artists</a></li>
                             }
                             @if(activeTab == 4){
-                                <li class="activated"><a data-toggle="tab" href="#attendeesTab" class="tabLink" id="attendeesTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventAttendees(event.getEventId)" class="tabLink" id="attendeesTabLink">
                                     Attendees</a></li>
                             } else {
-                                <li><a data-toggle="tab" href="#attendeesTab" class="tabLink" id="attendeesTabLink">
+                                <li><a href="@routes.EventsController.showEventAttendees(event.getEventId)" class="tabLink" id="attendeesTabLink">
                                     Attendees</a></li>
                             }
 
@@ -256,15 +256,7 @@
     </body>
 
 
-
-
     <script>
-
-            $(document).on("click", 'ul li', function(){
-                $('ul li').removeClass('activated');
-                $(this).addClass('activated');
-            });
-
 
             $(function () {
                 $(".toggleButton").on('click', function (e) {
