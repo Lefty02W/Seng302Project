@@ -135,7 +135,7 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> show(Http.Request request, Integer offset){
         Integer profId = SessionController.getCurrentUserId(request);
-
+        eventFormDataForm.fill(new EventFormData());
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> {
                     List<Events> eventsList = eventRepository.getPage(offset);

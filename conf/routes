@@ -139,7 +139,8 @@ GET     /artists/:id                            controllers.ArtistController.sho
 POST     /artists/:id/edit                      controllers.ArtistController.editArtist(request : Request, id: Integer)
 GET     /artists/:id/events/:offset             controllers.ArtistController.showArtistEvents(request : Request, id: Integer, offset : Integer)
 POST    /artists/:id/events/create              controllers.EventsController.createArtistEvent(request : Request, id: Integer)
-
+GET    /artists/:artistId/events/:eventId/leave       controllers.ArtistController.leaveEvent(request : Request, artistId : Integer, eventId : Integer)
+GET    /artists/:artistId/events/:eventId/attend      controllers.ArtistController.attendEvent(request : Request, artistId : Integer, eventId : Integer)
 GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
 GET     /artists/:id/leave                      controllers.ArtistController.leaveArtist(request : Request, id : Integer)
 

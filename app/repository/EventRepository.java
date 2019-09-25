@@ -6,7 +6,6 @@ import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
-import java.util.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
@@ -387,15 +386,16 @@ public class EventRepository {
             }
             args.add(Integer.toString(profileId));
         }
-        if (!eventFormData.getHistoric().equals("1")) {
+        if (eventFormData.getHistoric().equals("1")) {
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             if (whereAdded){
-                query += " AND DATE(events.start_date) > DATE(NOW())";
+                query += " AND events.start_date > " + date;
             } else {
-                query += " WHERE DATE(events.start_date) > DATE(NOW())";
+                query += " WHERE events.start_date > " + date;
             }
         }
 
-        query += " ORDER BY DATE(events.start_date) LIMIT 8 OFFSET "+offset;
+        query += " ORDER BY events.start_date LIMIT 8 OFFSET "+offset;
         return createSqlQuery(query, args, likeAdded);
     }
 

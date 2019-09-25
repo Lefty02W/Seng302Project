@@ -131,7 +131,7 @@ public class ArtistController extends Controller {
                             created = 1;
                         }
                         if(formData.name.equals("") && formData.country.equals("") && formData.genre.equals("") && followed == 0 && created == 0) {
-                            return redirect("/artists").flashing("error", "Please enter at least one search filter.");
+                            return redirect("/artists");
                         }
 
                         searchForm.fill(formData);
