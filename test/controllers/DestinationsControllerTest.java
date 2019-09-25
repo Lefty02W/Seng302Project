@@ -2,7 +2,6 @@ package controllers;
 
 import models.Destination;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -109,23 +108,5 @@ public class DestinationsControllerTest {
         assertEquals(200, result.status());
     }
 
-    /**
-     * Testing searching public destinations page loads fine
-     */
-    @Test
-    @Ignore
-    public void searchPublicDestinations() {
-        Map<String, String> formData = new HashMap<>();
-        formData.put("isPublic", "true");
-        formData.put("name", "yeet");
 
-        Http.RequestBuilder request = Helpers.fakeRequest()
-                .method("GET")
-                .uri("/destinations/search/0")
-                .session("connected", "1");
-
-        Result result = Helpers.route(TestApplication.getApplication(), request);
-
-        assertEquals(200, result.status());
-    }
 }
