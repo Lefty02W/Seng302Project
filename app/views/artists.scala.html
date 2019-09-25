@@ -189,7 +189,7 @@
                     <div class="row" id="all-artist-cards">
                 @for(artist <- artists) {
                     <div class="card-body col col-md-12 col-xl-6" id="artist-card">
-                        <div class="card-header"> @artist.getArtistName &nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
+                        <div class="card-header"> <a class="event-link" href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)" title="View artist"> @artist.getArtistName </a> &nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="row">
@@ -214,11 +214,6 @@
                             </ul>
                             </div>
                             <div class="col col-2">
-                                <div class="row">
-                                    <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)">
-                                        <button class="btn btn-outline-primary" id="view" style="margin-bottom: 5px;">View</button>
-                                    </a>
-                                </div>
                                 <div class="row">
                                     @if(followedArtists contains artist) {
                                         @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
