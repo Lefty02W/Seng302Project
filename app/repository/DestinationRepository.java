@@ -397,6 +397,27 @@ public class DestinationRepository {
     }
 
     /**
+     * Method to get a users owned + followed destinations
+     * @param profileId user Id to search for their owned destinations
+     * @return Optional array list of destinations either owned or followed by the user
+     */
+    public ArrayList<Destination> getAllFollowedOrOwnedDestinations(int profileId) {
+        ArrayList<Destination> destinationList = new ArrayList<>(ebeanServer.find(Destination.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("profile_id", profileId)
+                .findList());
+
+        String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
+                "where follow_destination.profile_id = ? and D.soft_delete = 0";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
+        destinationList.addAll(getDestinationsFromSqlRow(rowList));
+        return destinationList;
+    }
+
+
+    /**
      * Method called from addRequest method to add the changes made in a request to the actions table
      *
      * @param destinationChange Object that holds the following attributes to be inserted into the database:
