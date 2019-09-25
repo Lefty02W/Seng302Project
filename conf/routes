@@ -157,6 +157,7 @@ POST    /artists/:artistId/events/edit/:eventId     controllers.EventsController
 GET     /events/:eventId/attend                     controllers.EventsController.attendEvent(request : Request, eventId : Integer)
 GET     /events/:eventId/leave                      controllers.EventsController.leaveEvent(request : Request, eventId : Integer)
 GET     /events/profile/:eventId/leave              controllers.EventsController.leaveEventFromProfile(request : Request, eventId : Integer)
+GET    /events/genre/:genreId/show                          controllers.EventsController.searchGenre(request : Request, genreId : Integer)
 
 ## View Event
 GET     /events/details/:id                      controllers.EventsController.showDetailedEvent(request : Request, id : Integer)

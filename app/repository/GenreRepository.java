@@ -124,4 +124,13 @@ public class GenreRepository {
         return (genres);
     }
 
+
+    /**
+     * Method to return a genre by giving it the id of the genre
+     * @param genreId Id of the genre
+     * @return Genre String of the genre
+     */
+    public String getGenre(Integer genreId) {
+        return (ebeanServer.find(MusicGenre.class).where().eq("genre_id", genreId).findOne().getGenre());
+    }
 }

@@ -76,6 +76,31 @@ public class EventsController extends Controller {
         this.photoRepository = photoRepository;
     }
 
+    /**
+     * Endpoint method to search for only a genre used by the hash tags
+     * @param request Http Request
+     * @param genreId Id of the genre to search
+     * @return CompletionStage that redirects to the events page displaying only events with the given genre
+     */
+    public CompletionStage<Result> searchGenre(Http.Request request, Integer genreId) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        EventFormData eventFormSent = new EventFormData();
+        eventFormSent.setGenre(Integer.toString(genreId));
+        List<Events> eventsList = eventRepository.searchEvent(eventFormSent, 0, profId);
+        return profileRepository.findById(profId)
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> {
+                    PaginationHelper paginationHelper = new PaginationHelper(0, 0, 0, 0, true, true, eventRepository.getNumEvents());
+                    paginationHelper.alterNext(8);
+                    paginationHelper.alterPrevious(8);
+                    paginationHelper.checkButtonsEnabled();
+                    return ok(events.render(profile,
+                        Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
+                        destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
+                        eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormSent,
+                        request, messagesApi.preferred(request)));
+                    }).orElseGet(() -> redirect("/")));
+    }
+
 
     /**
      * Helper function to set up pagination object
@@ -110,7 +135,7 @@ public class EventsController extends Controller {
                     RoutedObject<Events> toSend = new RoutedObject<>(editEvent, true, false);
                     return ok(events.render(profile,
                             Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
-                            destinationRepository.getAllDestinations(), eventsList, eventForm, toSend,
+                            destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, toSend,
                             eventFormDataForm, artistRepository.isArtistAdmin(profId), initPagination(offset, eventRepository.getNumEvents(), 8), null,
                             request, messagesApi.preferred(request)));
                 }).orElseGet(() -> redirect("/")));
@@ -425,6 +450,7 @@ public class EventsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
+                System.out.println(searchEventForm);
                 EventFormData eventFormData = searchEventForm.get();
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
