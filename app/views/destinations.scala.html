@@ -181,7 +181,7 @@
                                                         <li class="page-item"><a class="page-link" id="startLinkSearch">
                                                             Start</a></li>
                                                 }
-                                                @helper.form(routes.DestinationsController.search(0)) {
+                                                @helper.form(routes.DestinationsController.search(pagination.getNext)) {
                                                     <input type="hidden" id="is3Public" value="@isPublic">
                                                     <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
                                                     <button type="hidden" id="prevSearchHidden">Search</button>

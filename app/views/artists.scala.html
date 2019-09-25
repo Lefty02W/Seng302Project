@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 
-@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist], ownedArtists: List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist], ownedArtists: List[Artist], searchData : ArtistFormData)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -100,7 +100,11 @@
                     <div class="accordion" id="filterAccordion">
                         <div class="card">
                             <div class="card-header" id="headingOne">
+                            @if(searchData != null) {
+                                <input type="search" value=@searchData.getName id="name" name="name" placeholder="Search..">
+                            } else {
                                 <input type="search" id="name" name="name" placeholder="Search..">
+                            }
                                 <button type="submit" class="btn btn-primary">Search</button>
                                 <button class="btn btn-secondary" type="button" data-toggle="collapse"
                                 data-target="#collapseFilters" aria-expanded="false"
@@ -115,21 +119,49 @@
                                         <div class="row">
                                             <div class="col">
                                                 <select class="selectpicker overlay-dropdown genre-drop" data-size="3" id="genre" name="genre" title="Genres">
-                                                @for(genre <- genres) {
-                                                    <option value="@genre.getGenre">@genre.getGenre</option>
+                                                @if(searchData != null) {
+                                                    @for(genre <- genres) {
+                                                        @if(genre.getGenre.equals(searchData.getGenre)) {
+                                                                <option selected value="@genre.getGenre">@genre.getGenre</option>
+                                                            } else {
+                                                                <option value="@genre.getGenre">@genre.getGenre</option>
+                                                            }
+                                                        }
+                                                } else {
+                                                    @for(genre <- genres) {
+                                                        <option value="@genre.getGenre">@genre.getGenre</option>
+                                                    }
                                                 }
 
                                                 </select>
                                             </div>
                                             <div class="col">
                                                 <select class="selectpicker overlay-dropdown country-drop" data-size="3" id="country" name="country" title="Countries">
+                                                @if(searchData != null) {
+                                                    @for(nation <- countries) {
+                                                        @if(nation.equals(searchData.getCountry)) {
+                                                            <option selected value="@nation">@nation</option>
+                                                        } else {
+                                                            <option value="@nation">@nation</option>
+                                                        }
+                                                    }
+                                                    </select>
+                                                } else {
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }
-                                                </select>
+                                            }
                                             </div>
                                             <div class="col">
-                                                <input type="checkbox" id="followed" name="followed">
+                                                @if(searchData != null) {
+                                                    @if(searchData.followed.equals("on")) {
+                                                        <input type="checkbox" id="followed" name="followed" checked>
+                                                    } else {
+                                                        <input type="checkbox" id="followed" name="followed">
+                                                    }
+                                                } else {
+                                                    <input type="checkbox" id="followed" name="followed">
+                                                }
                                                 <label for="toggle">Followed Artists</label>
                                             </div>
                                             }
