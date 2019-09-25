@@ -153,29 +153,24 @@
                             <div class="row">
 
                             @for(artist <- event.getEventArtists) {
-                                <div class="col">
-                                    <div class="card" id="eventsCard">
-                                        <div class="row">
-                                            <div class="col">
-                                                        PUT PICTURE HERE
-                                                <a href="/artists/@artist.getArtistId">
-                                                    <h3>@artist.getArtistName</h3>
-                                                </a>
-                                            </div>
-                                            <div class="col">
-                                                <div class="row">
-                                                            Bio: @artist.getBiography
-                                                        </div>
-                                                <div class="row">
-                                                            Members: @artist.getMembers
-                                                        </div>
-                                                <div class="row">
 
-                                                        </div>
-                                            </div>
+                                <div class="card-body col col-md-12 col-xl-6" id="artist-card">
+                                    <div class="card-header"> <a href="/artists/@artist.getArtistId"> @artist.getArtistName </a>&nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
+                                    <i class="fa fa-user"></i>
+                                    </div>
+                                    <div class="col">
+                                        <div class="col col-10">
+                                            <p id="artist-stats">
+                                        <h6>
+                                            Genres:
+                                        </h6>
+                                            <ul>
+                                            @for(genre <- artist.getGenreList) {
+                                                <li>@genre.getGenre</li>
+                                            }
+                                            </ul>
                                         </div>
                                     </div>
-                                </div>
                             }
 
                             </div>
