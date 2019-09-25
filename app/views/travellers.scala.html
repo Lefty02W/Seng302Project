@@ -242,13 +242,13 @@
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>Picture</th><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Photos</th>
+                                    <tr><th>Picture</th><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
                                 </thead>
                                     @for(user <- users) {
                                         <tr>
                                             <td><img id="profileImage" class="smallThumbnail" src="@routes.Assets.at("images/profile-icon.png")"
                                             alt="Profile picture"></td>
-                                            <td>@user.getFirstName</td>
+                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">@user.getFirstName</a></td>
                                             <td>@user.getMiddleName</td>
                                             <td>@user.getLastName</td>
                                             <td>@user.getGender</td>
@@ -256,10 +256,6 @@
                                             <td>@user.getNationalityString</td>
                                             <td>@user.getPassportsString</td>
                                             <td><div>@user.getTravellerTypesString</div></td>
-                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">
-                                                <button type="submit" class="btn btn-primary viewPicButton">View</button>
-                                            </a>
-                                            </td>
                                         </tr>
                                     }
                             </table>
