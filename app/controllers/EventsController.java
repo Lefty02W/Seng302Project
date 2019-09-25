@@ -521,7 +521,7 @@ public class EventsController extends Controller {
     public Result attendEvent(Http.Request request, Integer eventId) {
         AttendEvent attendEvent = new AttendEvent(eventId, SessionController.getCurrentUserId(request));
         attendEventRepository.insert(attendEvent);
-        return redirect(eventURL).flashing("info", "Attending event: " + eventRepository.lookup(attendEvent.getEventId()).getEventName());
+        return redirect("/events/details/"+eventId).flashing("info", "Attending event: " + eventRepository.lookup(attendEvent.getEventId()).getEventName());
     }
 
     /**
@@ -533,7 +533,7 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public Result leaveEvent(Http.Request request, Integer eventId) {
         attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
-        return redirect(eventURL).flashing("info", "No longer going to event");
+        return redirect("/events/details/"+eventId).flashing("info", "No longer going to event");
     }
 
     /**
