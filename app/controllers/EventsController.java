@@ -42,6 +42,7 @@ public class EventsController extends Controller {
     private final Form<EventFormData> eventFormDataForm;
     private final AttendEventRepository attendEventRepository;
     private final EventPhotoRepository eventPhotoRepository;
+    private final PhotoRepository photoRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
     private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
@@ -55,7 +56,8 @@ public class EventsController extends Controller {
     public EventsController(ProfileRepository profileRepository, MessagesApi messagesApi, GenreRepository genreRepository,
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
                             FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository,
-                            PersonalPhotoRepository personalPhotoRepository, EventPhotoRepository eventPhotoRepository) {
+                            PersonalPhotoRepository personalPhotoRepository, EventPhotoRepository eventPhotoRepository,
+                            PhotoRepository photoRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -68,6 +70,7 @@ public class EventsController extends Controller {
         this.attendEventRepository = attendEventRepository;
         this.personalPhotoRepository = personalPhotoRepository;
         this.eventPhotoRepository = eventPhotoRepository;
+        this.photoRepository = photoRepository;
     }
 
 
@@ -523,10 +526,18 @@ public class EventsController extends Controller {
         List<String> listProfileAttendees = getAllAttendeesNames(eventRepository.lookup(id).getEventAttendees());
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
+                    Photo coverPhoto = null;
+                    Optional<Integer> optionalEventPhotoId = eventPhotoRepository.getEventPhotoId(id);
+                    if (optionalEventPhotoId.isPresent()) {
+                        Optional<Photo> optionalCoverPhoto = photoRepository.getImage(optionalEventPhotoId.get());
+                        if (optionalCoverPhoto.isPresent()) {
+                            coverPhoto = optionalCoverPhoto.get();
+                        }
+                    }
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (profileOpt.isPresent() && optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), null, request, messagesApi.preferred(request)));
+                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }

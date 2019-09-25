@@ -62,17 +62,21 @@
 
             <div id="page-content-wrapper">
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    @if(coverPhoto != null) {
-                        <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@coverPhoto.getPath" alt="@coverPhoto.getName"/></h3>
-                    } else {
-                        <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
-                    }
+
+                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
+
                     <div id="pageTitle"><h2 class="text-center">@event.getEventName</h2>
                     </div>
                 </nav>
-                <div class="jumbotron text-center" id="eventJumbo">
+                @if(coverPhoto != null) {
+                    <div class="jumbotron text-center" id="eventJumbo">
+                        <img id="eventCoverPhoto" src="@routes.ProfileController.photoAt((coverPhoto.getPhotoId))" alt="@coverPhoto.getName"/>
+                    </div>
+                } else {
+                    <div class="jumbotron text-center" id="eventJumboNoPicture"></div>
+                }
 
-                </div>
+
                 @if(request.flash.getOptional("success").isPresent) {
                     <div class="alert alert-success" id="successAlert">
                     @request.flash.getOptional("success").get()

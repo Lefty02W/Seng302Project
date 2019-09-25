@@ -4,6 +4,7 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import io.ebean.Transaction;
 import models.EventPhoto;
+import models.Photo;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
