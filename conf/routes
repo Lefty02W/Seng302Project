@@ -48,7 +48,7 @@ GET     /trips/:id/create/delete                controllers.TripsController.dele
 # Travellers
 GET     /travellers/:offset                     controllers.TravellersController.show(request: Request, offset : Integer)
 GET     /travellers/profile/search/:offset      controllers.TravellersController.search(request: Request, offset : Integer)
-GET     /travellers/profile/photos              controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
+GET     /travellers/profile/:profileId/photos              controllers.TravellersController.displayTravellersPhotos(request: Request, profileId: Integer)
 
 # Profile
 GET     /profile                                controllers.ProfileController.show(request: Request)
@@ -145,7 +145,7 @@ GET    /artists/:artistId/events/:eventId/attend      controllers.ArtistControll
 GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
 GET     /artists/:id/leave                      controllers.ArtistController.leaveArtist(request : Request, id : Integer)
 
-#Events
+# Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)
 POST    /events/create                          controllers.EventsController.createUserEvent(request : Request)
 GET     /events/:id/showEdit/:offset            controllers.EventsController.showEventEdit(request : Request, offset : Integer, id : Integer)
@@ -157,3 +157,13 @@ POST    /artists/:artistId/events/edit/:eventId     controllers.EventsController
 GET     /events/:eventId/attend                     controllers.EventsController.attendEvent(request : Request, eventId : Integer)
 GET     /events/:eventId/leave                      controllers.EventsController.leaveEvent(request : Request, eventId : Integer)
 GET     /events/profile/:eventId/leave              controllers.EventsController.leaveEventFromProfile(request : Request, eventId : Integer)
+
+## View Event
+GET     /events/details/:id                      controllers.EventsController.showDetailedEvent(request : Request, id : Integer)
+GET     /events/destination/:id                  controllers.EventsController.showEventDestination(request : Request, id : Integer)
+GET     /events/artists/:id                      controllers.EventsController.showEventArtists(request : Request, id : Integer)
+GET     /events/attendees/:id/:offset            controllers.EventsController.showEventAttendees(request : Request, id : Integer, offset : Integer)
+POST    /events/view/:id/edit                   controllers.EventsController.editEventFromEvent(request : Request, id : Integer)
+GET     /events/:id/remove/photo                controllers.EventsController.removePhoto(request : Request, id : Integer)
+GET     /events/:eventId/:photoId           controllers.EventsController.setCoverPhoto(request : Request, eventId : Integer, photoId : Integer)
+POST     /events/:eventId/add                controllers.EventsController.addEventPhoto(request : Request, eventId : Integer)

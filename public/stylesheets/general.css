@@ -310,6 +310,10 @@ div.dataTables_filter {
     color: #d74961;
 }
 
+.secondary-color {
+    color: #009779;
+}
+
 a, a:hover {
     color: #d74961;
 }

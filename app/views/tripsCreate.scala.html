@@ -66,13 +66,23 @@
 
                 <!-- Page Content -->
             <div id="page-content-wrapper">
-
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                     <div id="pageTitle">
                         <h2 class="text-center" id="topBarTitle">Create Trip</h2>
                     </div>
                 </nav>
+                @if(request.flash.getOptional("info").isPresent) {
+                    <div class="alert alert-info">
+                    @request.flash.getOptional("info").get()
+                    </div>
+                }
+                @if(request.flash.getOptional("error").isPresent) {
+                    <div class="alert alert-danger">
+                    @request.flash.getOptional("error").get()
+                    </div>
+                }
+
                 @helper.form(routes.TripsController.save(userId)) {
                     @CSRF.formField
                     <div class="row justify-content-center">
@@ -86,11 +96,7 @@
 
                 <div class="container-fluid">
                     <div class="col">
-                        @if(request.flash.getOptional("info").isPresent) {
-                            <div class="alert alert-info">
-                            @request.flash.getOptional("info").get()
-                            </div>
-                        }
+
                         <div id = "viewCard" class="card-large upper-card">
                             @helper.form(routes.TripsController.addDestination(userId)) {
                                 @CSRF.formField
@@ -168,10 +174,30 @@
                     </div>
                 </div>
                 <div class="row justify-content-end">
-                    <div>
+                    <div class="row" id="backSaveButtonsRow">
+                        <button id="backButtonEdit" data-toggle="modal" data-target="#confirmBack" class="btn btn-secondary backButton" type="button">Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal" id="confirmBack">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="confirmBackTitle">Are you sure you want to go back?</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 id="confirmBackBody">All your changes will be lost if you leave</h6>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+
                         <a href="@routes.TripsController.show(0)">
-                            <button id="backButtonCreate" class="button-back btn btn-secondary backButton" type="button">
-                                Back</button>
+                            <button id="confirmBackBtn" class="btn btn-danger" type="button">
+                                Yes, go back</button>
                         </a>
                     </div>
                 </div>

@@ -144,8 +144,15 @@
                                     <div class="col display-events">
                                         @for(event <- events) {
                                             <div class="card" id="eventsCard">
-                                                <div class="card-header">
-                                                    <h4 class="primary-color event-link toggled eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                                <div class="card-header toggled eventTitle" id='eventName@event.getEventId'>
+                                                    <a class="event-link" href="/events/details/@event.getEventId">
+                                                    @event.getEventName
+                                                    </a>
+
+                                                    <div class="event-link" id="mapLink" onclick="showEvent(@event.getEventId, this)">
+                                                        <i class="fa fa-map-marker">View on Map</i>
+                                                    </div>
+
                                                 </div>
                                                 <div class="card-body" id="eventCardBody">
                                                     <div class="row">
@@ -627,6 +634,22 @@
                                             <input type="datetime-local" id="endDate"  name="endDate" class="inputField" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
                                         </div>
                                     </div>
+                                    <div class="row justify-content-center">
+                                        <label>Ticket Price</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder">
+                                            <input type="number" id="ticketPrice" step="0.01" name="ticketPrice" class="inputField">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <label>Ticket Link</label>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="form-group" id="holder">
+                                            <input type="url" id="ticketLink"  name="ticketLink" class="inputField">
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
@@ -802,6 +825,22 @@
                                         <div class="row justify-content-center">
                                             <div class="form-group" id="holder">
                                                 <input type="datetime-local" id="endDate"  name="endDate" class="inputField" value="@editEvent.getObject.formatLocalDate(editEvent.getObject.getEndDate)" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Ticket Price</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="number" id="ticketPrice" step="0.01" name="ticketPrice" class="inputField" value="@editEvent.getObject.getTicketPrice">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Ticket Link</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="url" id="ticketLink"  name="ticketLink" class="inputField" value="@editEvent.getObject.getTicketLink">
                                             </div>
                                         </div>
                                     </div>
@@ -1394,7 +1433,7 @@
             }
 
             function clearSelected() {
-                var elements = document.getElementsByClassName("eventTitle");
+                var elements = document.getElementsByClassName("event-link");
                 for (var i = 0; i < elements.length; i++) {
                     elements[i].style.color = "#d74961";
                 }

@@ -177,6 +177,19 @@ public class ProfileRepository {
         return ebeanServer.find(Profile.class).setId(userId).findOne();
     }
 
+    /**
+     * Method for getting a page of profiles linked to an event from a given offset
+     * @param userIdList List of profile ids to get profile subset
+     * @param offset start index of page
+     * @return list of profiles to be displayed in current page
+     */
+    public Optional<List<Profile>> getAllProfileByIdListPage(List<Integer> userIdList, int offset) {
+        if (userIdList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(ebeanServer.find(Profile.class).setMaxRows(5).setFirstRow(offset).where().idIn(userIdList).findList());
+        }
+    }
 
     /**
      * Database access method to query the database for profiles that match the given search parameters

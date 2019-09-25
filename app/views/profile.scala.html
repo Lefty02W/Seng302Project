@@ -146,7 +146,7 @@
 
                 <div class="row">
                     <ul class="nav nav-tabs" id="profileTabs">
-                        <li class="active"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
+                        <li class="activated"><a data-toggle="tab" href="#informationTab" class="tabLink" id="informationTabLink">
                             Information</a></li>
                         <li><a data-toggle="tab" href="#photosTab" class="tabLink" id="photosTabLink">Photos</a></li>
                         <li><a data-toggle="tab" href="#destsTab" class="tabLink" id="destsTabLink">Destinations</a></li>
@@ -164,21 +164,17 @@
                         <div class="container">
                             <div class="card center-col overflow-auto" id="informationCard">
 
-                                <div id="emailRow" class="row">
-                                    <div class="col-md-2">
-                                        <b>Email:</b>
+                                <div id="emailRow"  class="row">
+                                    <div class="col-md-6" style="font-size: 20px;">
+                                        <b>@currentUser.getEmail</b>
                                     </div>
-                                    <div class="col-md-6">
-                                        <a>@currentUser.getEmail</a>
-                                    </div>
-                                </div>
 
-                                <div id="dobRow" class="row">
-                                    <div class="col-md-2">
-                                        <b>DOB:</b>
-                                    </div>
+
+
+                                </div>
+                                <div  class="row">
                                     <div class="col-md-6">
-                                        <a>@currentUser.getBirthString</a>
+                                        <a><i>Born: </i><b> @currentUser.getBirthString</b></a>
                                     </div>
                                 </div>
 
@@ -246,6 +242,7 @@
                                     </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -453,7 +450,7 @@
                                         @for(event <- userUpcomingEvents) {
                                             <tr>
                                                 <td>
-                                                    <a id="artistNameLink">
+                                                    <a href="/events/details/@event.getEventId" id="artistNameLink">
                                                     @event.getEventName
                                                     </a>
                                                 </td>
@@ -902,7 +899,16 @@
 
         <!-- Menu Toggle Script -->
     <script>
-            function fillVals() {
+
+        $(document).on("click", 'ul li', function(){
+            $('ul li').removeClass('activated');
+            $('ul li').removeClass('selectedTab');
+            $(this).addClass('activated');
+            $(this).addClass('selectedTab');
+        });
+
+
+        function fillVals() {
                 $('#travellerTypesForm').val($('#typeDropdown').val());
                 $('#nationalitiesForm').val($('#nationDropdown').val());
                 $('#passportsForm').val($('#passportDropdown').val());

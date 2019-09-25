@@ -1,0 +1,155 @@
+#eventTabs {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tabLink {
+    padding: 10px;
+    font-size: 20pt;
+}
+
+
+.tab-pane {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+#photosCard {
+    height: 40vh;
+    max-width: 55vw;
+}
+
+.lower-card {
+    width: 80%;
+}
+
+#selectPhotoModal .lower-card {
+    width: auto;
+}
+
+#changeProfilePicture .lower-card {
+    width: auto;
+}
+
+#imageCard{
+    margin-top:10px;
+    margin-right:1px;
+    margin-left:1px;
+    padding-bottom: 2px;
+}
+
+
+img.thumbnail {
+    display: block;
+    width: auto;
+    height: auto;
+    max-height: 220px;
+    max-width: 220px;
+    margin: auto;
+
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#changeEventPhotoModal .lower-card {
+    width: auto;
+}
+
+#viewArtistTabsContent {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#eventFooter {
+    position: fixed;
+    bottom: 0;
+    max-height: 10%;
+    max-width: unset;
+    background: #009779;
+    z-index: 1;
+}
+
+#eventDescription{
+    width: 50%;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    display: block;
+}
+
+
+#eventsCard{
+    width: 18rem;
+    margin:0.5em;
+}
+
+
+#wrapper {
+    padding-bottom: 10%;
+}
+
+
+.selectedTab {
+    color: #41B49D;
+}
+
+#eventJumboNoPicture {
+    height: 35vh;
+    background: url("https://images.unsplash.com/photo-1483101974978-cf266fdf1139?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80") no-repeat center center;
+    background-size: cover;
+    border-radius: 0px !important;
+}
+
+#eventJumbo {
+    height: 35vh;
+    background-size: cover;
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0px !important;
+}
+
+#eventCoverPhoto {
+    max-width: 100%;
+    max-height: 500%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#map-card {
+    height: 70vh;
+    margin-top: 0;
+    padding: 0;
+}
+
+#destinationMap {
+    width:100%;
+    height:100%;
+}
+
+#legend {
+    background: #fff;
+    border: 0.1rem solid #000;
+    width: 10%;
+    opacity: 0.5;
+}
+
+.selectedTab {
+    color: #41B49D;
+}
+
+#rightButtons {
+    float: right;
+    margin-bottom: 10px;
+}
