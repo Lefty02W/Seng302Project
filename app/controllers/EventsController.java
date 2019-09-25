@@ -533,11 +533,19 @@ public class EventsController extends Controller {
                         }
                     }
                     if (optEvent.isPresent()) {
-                        return ok(event.render(profileOpt.get(), optEvent.get(),
-                                null, 1,
-                                null, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
-                                request, messagesApi.preferred(request)));
+                        if (eventRepository.isOwner(profId, id)){
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    null, 1,
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto,
+                                    request, messagesApi.preferred(request)));
+                        } else {
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    null, 1,
+                                    null, false, new ArrayList<>(), new ArrayList<>(),
+                                    new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                    request, messagesApi.preferred(request)));
+                        }
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
@@ -566,10 +574,18 @@ public class EventsController extends Controller {
                     }
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent()) {
-                        return ok(event.render(profileOpt.get(), optEvent.get(),
-                                null, 2,
-                                null, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, request, messagesApi.preferred(request)));
+                        if (eventRepository.isOwner(profId, id)){
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    null, 2,
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto, request, messagesApi.preferred(request)));
+                        } else {
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    null, 2,
+                                    null,false, new ArrayList<>(), new ArrayList<>(),
+                                    new ArrayList<>(), new ArrayList<>(), coverPhoto, request, messagesApi.preferred(request)));
+                        }
+
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
@@ -609,12 +625,22 @@ public class EventsController extends Controller {
                             coverPhoto = optionalCoverPhoto.get();
                         }
                     }
-                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));                    if (optEvent.isPresent()) {
-                        return ok(event.render(profileOpt.get(), optEvent.get(),
-                                null, 3,
-                                null, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
-                                request, messagesApi.preferred(request)));
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    if (optEvent.isPresent()) {
+                        if (eventRepository.isOwner(profId, id)) {
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    null, 3,
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                    request, messagesApi.preferred(request)));
+                        } else {
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    null, 3,
+                                    null, false, new ArrayList<>(), new ArrayList<>(),
+                                    new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                    request, messagesApi.preferred(request)));
+                        }
+
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
@@ -641,7 +667,8 @@ public class EventsController extends Controller {
                             coverPhoto = optionalCoverPhoto.get();
                         }
                     }
-                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));                    if (optEvent.isPresent() || profileOpt.isPresent()) {
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    if (optEvent.isPresent() || profileOpt.isPresent()) {
                         Optional<List<Profile>> attendees = profileRepository.getAllProfileByIdListPage(optEvent.get().getEventAttendees(), offset);
                         if (attendees.isPresent()){
                             PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, optEvent.get().getEventAttendees().size());
@@ -649,15 +676,29 @@ public class EventsController extends Controller {
                             paginationHelper.alterPrevious(5);
                             paginationHelper.checkButtonsEnabled();
 
-                            return ok(event.render(profileOpt.get(), optEvent.get(),
-                                    attendees.get(), 4, paginationHelper, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                    artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
-                                    request, messagesApi.preferred(request)));
+                            if (eventRepository.isOwner(profId, id)) {
+                                return ok(event.render(profileOpt.get(), optEvent.get(),
+                                        attendees.get(), 4, paginationHelper, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                        artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                        request, messagesApi.preferred(request)));
+                            } else {
+                                return ok(event.render(profileOpt.get(), optEvent.get(),
+                                        attendees.get(), 4, paginationHelper, false, new ArrayList<>(), new ArrayList<>(),
+                                        new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                        request, messagesApi.preferred(request)));
+                            }
                         } else {
-                            return ok(event.render(profileOpt.get(), optEvent.get(),
-                                    new ArrayList<>(), 4, new PaginationHelper(), eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                    artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
-                                    request, messagesApi.preferred(request)));
+                            if (eventRepository.isOwner(profId, id)) {
+                                return ok(event.render(profileOpt.get(), optEvent.get(),
+                                        new ArrayList<>(), 4, new PaginationHelper(), true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                        artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                        request, messagesApi.preferred(request)));
+                            } else {
+                                return ok(event.render(profileOpt.get(), optEvent.get(),
+                                        new ArrayList<>(), 4, new PaginationHelper(), false, new ArrayList<>(), new ArrayList<>(),
+                                        new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                        request, messagesApi.preferred(request)));
+                            }
                         }
 
                     } else {
