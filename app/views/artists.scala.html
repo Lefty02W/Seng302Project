@@ -109,7 +109,11 @@
                         <div class="card">
                             <div class="card-header" id="headingOne">
                             @if(searchData != null) {
-                                <input type="search" value=@searchData.getName id="name" name="name" placeholder="Search..">
+                                @if(searchData.getName != "") {
+                                    <input type="search" value=@searchData.getName id="name" name="name" placeholder="Search..">
+                                } else {
+                                    <input type="search" id="name" name="name" placeholder="Search..">
+                                }
                             } else {
                                 <input type="search" id="name" name="name" placeholder="Search..">
                             }
@@ -153,12 +157,13 @@
                                                             <option value="@nation">@nation</option>
                                                         }
                                                     }
-                                                    </select>
+
                                                 } else {
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }
                                             }
+                                                </select>
                                             </div>
                                             <div class="col">
                                                 @if(searchData != null) {
@@ -174,9 +179,7 @@
                                             </div>
                                             }
                 <div class="col">
-                    <a href="@routes.ArtistController.show()">
-                        <button id="clearButton" class="btn btn-secondary">Clear Search</button>
-                    </a>
+                        <a href="@routes.ArtistController.show()" id="clearButton" class="btn btn-secondary">Clear Search</a>
                 </div>
 
             </div>
