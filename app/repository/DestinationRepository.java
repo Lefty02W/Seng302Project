@@ -772,7 +772,7 @@ public class DestinationRepository {
         Integer limit = abs(7 - privateList.size());
         String query = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0 and D.name = ? LIMIT ? OFFSET ?";
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 and D.name LIKE ? LIMIT ? OFFSET ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(query)
                 .setParameter(1, profileId)
                 .setParameter(2, name)
