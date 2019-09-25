@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
 @(currentUser: Profile, event: Events, attendees: List[String],  isAdmin: Boolean, photoList: List[Photo], destinations : List[Destination],
-        verifiedArtists : List[Artist], genres: List[MusicGenre])(implicit request: Http.Request, messages: play.i18n.Messages)
+        verifiedArtists : List[Artist], genres: List[MusicGenre], coverPhoto : Photo)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -62,9 +62,12 @@
 
             <div id="page-content-wrapper">
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
-                    <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
-                    <div id="pageTitle">
-                        <h2 class="text-center">@event.getEventName</h2>
+                    @if(coverPhoto != null) {
+                        <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@coverPhoto.getPath" alt="@coverPhoto.getName"/></h3>
+                    } else {
+                        <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
+                    }
+                    <div id="pageTitle"><h2 class="text-center">@event.getEventName</h2>
                     </div>
                 </nav>
                 <div class="jumbotron text-center" id="eventJumbo">

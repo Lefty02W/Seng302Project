@@ -526,7 +526,7 @@ public class EventsController extends Controller {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (profileOpt.isPresent() && optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), request, messagesApi.preferred(request)));
+                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), null, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
