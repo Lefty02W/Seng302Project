@@ -204,6 +204,10 @@
                                 data-target="#changeEventPhotoModal">
                                     Change Cover Photo
                                 </button>
+                                <button class="btn btn-secondary" type="button" id="removeEventPhotoButton" data-toggle="modal"
+                                    data-target="#removeEventPhotoModal">
+                                    Remove Cover Photo
+                                </button>
                             </div>
                         }
                         @*/ / @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
@@ -313,6 +317,27 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal" id="removeEventPhotoModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="modal-title">Confirm Remove</h2>
+                    </div>
+                    <div class="modal-body">
+                        <h5>Are you sure you want to remove the event's current cover photo?</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" data-dismiss="modal" type="button">Cancel</button>
+                        @* TODO: Add the correct route for removing photo when it exiss
+                        @*<a href="/events/@event.getEventId/remove/photo">*@
+                           <button class="btn btn-primary" type="button">Save</button>
+                        @*</a>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
     </body>
