@@ -462,6 +462,10 @@ public class ArtistController extends Controller {
         Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
 
+        if(artistProfilePictureRepository.lookup(id) != null) {
+            artistProfilePictureRepository.removeArtistProfilePicture(id);
+        }
+
         String fileName = picture.getFilename();
         String contentType = picture.getContentType();
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
