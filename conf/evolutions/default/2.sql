@@ -196,8 +196,7 @@ INSERT INTO destination_change (id, traveller_type_id, action, request_id) value
 INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
   (3, 'destination', 3, 5, CURRENT_DATE);
 
-  INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
-  (4, 'destination', 7, 11, CURRENT_DATE - 5);
+
 
 INSERT INTO music_genre (genre_Id, genre) VALUES
   (1, 'Rock');

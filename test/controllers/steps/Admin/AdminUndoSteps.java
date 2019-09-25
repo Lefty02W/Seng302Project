@@ -7,12 +7,13 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import models.Destination;
 import models.UndoStack;
-import org.joda.time.DateTime;
 import org.junit.Assert;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.Helpers;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,8 +177,10 @@ public class AdminUndoSteps {
 
     @And("^command stack item (\\d+) is more than one day old$")
     public void commandStackItemIsMoreThanOneDayOld(int arg0) throws Throwable {
-        UndoStack undoStack = TestApplication.getUndoStackRepository().getStackItem(arg0);
-        assertTrue(new DateTime().minusDays(1).toDate().getTime() > undoStack.getTimeCreated().getTime());
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2018-09-04");
+
+        TestApplication.getUndoStackRepository().addToStack(new UndoStack(4, "destination", 7, 11, date));
+
     }
 
     @When("^the admin leaves the admin page$")
