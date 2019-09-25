@@ -456,11 +456,11 @@ public class ArtistController extends Controller {
         String fileName = picture.getFilename();
         String contentType = picture.getContentType();
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
-            return supplyAsync(() -> redirect("/artists/"+id).flashing("invalid", "Invalid file type!"));
+            return supplyAsync(() -> redirect("/artists/"+id).flashing("error", "Invalid file type!"));
         }
         long fileSize = picture.getFileSize();
         if (fileSize >= MAX_PHOTO_SIZE) {
-            return supplyAsync(() -> redirect("artists/"+ id).flashing("invalid",
+            return supplyAsync(() -> redirect("artists/"+ id).flashing("error",
                     "File size must not exceed 8MB!"));
         }
 
