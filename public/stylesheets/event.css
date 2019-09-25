@@ -20,13 +20,46 @@
     max-width: 55vw;
 }
 
+.card-large {
+    max-height: 90vh;
+}
+
+.lower-card {
+    width: 80%;
+}
+
+#selectPhotoModal .lower-card {
+    width: auto;
+}
+
+#changeProfilePicture .lower-card {
+    width: auto;
+}
+
 #imageCard{
     margin-top:10px;
     margin-right:1px;
     margin-left:1px;
     padding-bottom: 2px;
-
 }
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: none;
+    padding: 1.25rem;
+}
+
+.card {
+    height: 320px;
+    width: 240px;
+}
+
+.card-body button {
+    padding: 0;
+    margin: 0;
+    width: 100%
+}
+
 
 img.thumbnail {
     display: block;
