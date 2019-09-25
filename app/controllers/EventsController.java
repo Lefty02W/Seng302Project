@@ -565,33 +565,25 @@ public class EventsController extends Controller {
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
-                    if (optEvent.isPresent()) {
-                        List<Profile> attendees = profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees());
-                        PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, attendees.size());
-                        paginationHelper.alterNext(6);
-                        paginationHelper.alterPrevious(6);
-                        paginationHelper.checkButtonsEnabled();
+                    if (optEvent.isPresent() || profileOpt.isPresent()) {
+                        Optional<List<Profile>> attendees = profileRepository.getAllProfileByIdListPage(optEvent.get().getEventAttendees(), offset);
+                        if (attendees.isPresent()){
+                            PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, optEvent.get().getEventAttendees().size());
+                            paginationHelper.alterNext(5);
+                            paginationHelper.alterPrevious(5);
+                            paginationHelper.checkButtonsEnabled();
 
-                        return ok(event.render(profileOpt.get(), optEvent.get(),
-                                getPaginatedAttendees(attendees,offset), 4, paginationHelper, request, messagesApi.preferred(request)));
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    attendees.get(), 4, paginationHelper, request, messagesApi.preferred(request)));
+                        } else {
+                            return ok(event.render(profileOpt.get(), optEvent.get(),
+                                    new ArrayList<>(), 4, new PaginationHelper(), request, messagesApi.preferred(request)));
+                        }
+
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
                 });
-    }
-
-    /**
-     * Helper function to get a list of the next 5 event attendees from the given offset
-     * @param attendees list of all event attendees
-     * @param offset index of the first attendee of the group to be displayed
-     * @return List of profiles within the pagination range
-     */
-    private List<Profile> getPaginatedAttendees(List<Profile> attendees, int offset){
-        if (offset + 5 < attendees.size()){
-            return attendees.subList(offset, offset + 5);
-        } else {
-            return attendees.subList(offset, attendees.size());
-        }
     }
 
 }

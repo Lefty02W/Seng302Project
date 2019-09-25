@@ -213,11 +213,19 @@
                                     </table>
 
                                     <ul class="pagination">
-                                        <li class="page-item">
-                                            <a class="page-link" href="@routes.EventsController.showEventAttendees(event.getEventId, 0)">
-                                                Start
-                                            </a>
-                                        </li>
+                                        @if(pagination.isPreviousEnabled) {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@routes.EventsController.showEventAttendees(event.getEventId, 0)">
+                                                    Start
+                                                </a>
+                                            </li>
+                                        } else {
+                                            <li class="page-item disabled">
+                                                <a class="page-link disabledPagination" href="@routes.EventsController.showEventAttendees(event.getEventId, 0)">
+                                                    Start
+                                                </a>
+                                            </li>
+                                        }
                                         @if(pagination.isPreviousEnabled) {
                                             <li class="page-item">
                                                 <a class="page-link" href="@routes.EventsController.showEventAttendees(event.getEventId, pagination.getPrevious)">
