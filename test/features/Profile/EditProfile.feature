@@ -4,12 +4,6 @@ Feature: Edit User Profile
   I want to be able to edit my user profile
   So that my details are always up to date
 
- # Scenario: Edit profile modal is opened on click of Edit Profile
-   # Given I am logged in
-   # And I am on the profile page
-   # When I press the edit profile button
-   # Then The edit profile dialog is shown
-
   Scenario: I can perform an edit of my profile
     Given I am logged into the application
     And I am on the edit profile page

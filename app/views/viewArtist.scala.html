@@ -108,171 +108,177 @@
                     <div class="tab-content" id="viewArtistTabsContent">
                         @if(activeTab == 0) {
                             <div id="aboutTab" class="tab-pane fade in active show">
+                                <div class="container">
+                                    <div id="about" class="row justify-content-center">
+                                        <a>@artist.getBiography</a>
+                                    </div>
+                                    <hr class="divider">
+                                    <div class="row justify-content-center spotify-row">
+                                    @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
+                                        @if(artist.getSpotifyLink.contains("embed")) {
+                                            <iframe class="spotify" src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                        } else if(artist.getSpotifyLink.contains("spotify.com/")) {
+                                        <iframe class="spotify" src="@artist.getSpotifyLink.replace("spotify.com/", "spotify.com/embed/")" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                        }
+                                    }
+                                    </div>
+                                </div>
+                            </div>
 
                             } else {
                             <div id="aboutTab" class="tab-pane fade in">
-
-                            }
-                        <div class="container">
-                            <div id="about" class="row justify-content-center">
-                                <a>@artist.getBiography</a>
                             </div>
-                            <hr class="divider">
-                            <div class="row justify-content-center spotify-row">
-                            @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
-                                @if(artist.getSpotifyLink.contains("embed")) {
-                                    <iframe class="spotify" src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                                } else if(artist.getSpotifyLink.contains("spotify.com/")) {
-                                <iframe class="spotify" src="@artist.getSpotifyLink.replace("spotify.com/", "spotify.com/embed/")" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                                }
                             }
-                            </div>
-                        </div>
                     </div>
 
                         @if(activeTab == 1) {
                             <div id="eventsTab" class="tab-pane fade active show">
-                            } else {
-                            <div id="eventsTab" class="tab-pane fade">
-                            }
-                        <div class="row">
-                            <div class="col display-events">
-                                @for(event <- events) {
-                                    <div class="card" id="eventsCard">
-                                        <div class="card-header">
-                                            <h4 class="primary-color event-link toggled eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
-                                        </div>
-                                        <div class="card-body" id="eventCardBody">
-                                            <div class="row">
-                                                @for(artist <- event.getEventArtists) {
-                                                    <i class="fa fa-user">&nbsp;</i>
-                                                    <p>@artist.getArtistName</p>&nbsp;
-                                                }
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-calendar">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-map-marker">&nbsp;</i>
-                                                <p>@event.getDestination.getName</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-exclamation-triangle">&nbsp;</i>
-                                                <p>@event.getAgeRestrictionString</p>
-                                            </div>
-                                            <div class="row">
-                                                    <i class="fa fa-user-plus">&nbsp;</i>
-                                                <p>@event.getEventAttendees.size() attending</p>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h4 class="primary-color">Description</h4>
-                                                    <p>@event.getDescription</p>
+                                <div class="row">
+                                    <div class="col display-events">
+                                        @for(event <- events) {
+                                            <div class="card" id="eventsCard">
+                                                <div class="card-header">
+                                                    <h4 class="primary-color event-link toggled eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
                                                 </div>
-                                                <div class="col">
-                                                    <h4 class="primary-color">Genres</h4>
-                                                    @for(genre <- event.getEventGenres) {
-                                                        <p>@genre.getGenre</p>
+                                                <div class="card-body" id="eventCardBody">
+                                                    <div class="row">
+                                                    @for(artist <- event.getEventArtists) {
+                                                        <i class="fa fa-user">&nbsp;</i>
+                                                        <p>@artist.getArtistName</p>&nbsp;
+                                                    }
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-calendar">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-map-marker">&nbsp;</i>
+                                                        <p>@event.getDestination.getName</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                                        <p>@event.getAgeRestrictionString</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-user-plus">&nbsp;</i>
+                                                        <p>@event.getEventAttendees.size() attending</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <h4 class="primary-color">Description</h4>
+                                                            <p>@event.getDescription</p>
+                                                        </div>
+                                                        <div class="col">
+                                                            <h4 class="primary-color">Genres</h4>
+                                                            @for(genre <- event.getEventGenres) {
+                                                                <p>@genre.getGenre</p>
+                                                            }
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="card-footer">
+                                                    @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
+                                                        @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
+                                                                || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
+                                                                || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
+                                                            <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
+                                                                <i class="fa fa-check"></i>
+                                                                Attend
+                                                            </button>
+                                                        } else {
+                                                            <a href="/artists/@artist.getArtistId/events/@event.getEventId/attend">
+                                                                <button class="btn btn-primary">
+                                                                    <i class="fa fa-check"></i>
+                                                                    Attend
+                                                                </button>
+                                                            </a>
+                                                        }
+
+                                                    } else {
+                                                        <a href="/artists/@artist.getArtistId/events/@event.getEventId/leave">
+                                                            <button class="btn btn-secondary">
+                                                                <i class="fa fa-remove"></i>
+                                                                Don't attend
+                                                            </button>
+                                                        </a>
+                                                    }
+
+                                                    @if(artist.getAdminsList.contains(currentUser)) {
+                                                        <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
+                                                            <button class="btn btn-primary">
+                                                                <i class="fa fa-edit"></i>
+                                                                Edit
+                                                            </button>
+                                                        </a>
+
+
+                                                        <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')"
+                                                        <i class="fa fa-trash"></i>
+                                                        Delete
+                                                        </button>
                                                     }
                                                 </div>
                                             </div>
-
-                                        </div>
-                                        <div class="card-footer">
-                                        @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
-                                            @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
-                                                    || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
-                                                    || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
-                                                <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
-                                                    <i class="fa fa-check"></i>
-                                                    Attend
-                                                </button>
-                                            } else {
-                                                <a href="/artists/@artist.getArtistId/events/@event.getEventId/attend">
-                                                    <button class="btn btn-primary">
-                                                        <i class="fa fa-check"></i>
-                                                        Attend
-                                                    </button>
-                                                </a>
-                                            }
-
-                                        } else {
-                                            <a href="/artists/@artist.getArtistId/events/@event.getEventId/leave">
-                                                <button class="btn btn-secondary">
-                                                    <i class="fa fa-remove"></i>
-                                                    Don't attend
-                                                </button>
-                                            </a>
                                         }
-
-                                        @if(artist.getAdminsList.contains(currentUser)) {
-                                            <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
-                                                <button class="btn btn-primary">
-                                                    <i class="fa fa-edit"></i>
-                                                    Edit
-                                                </button>
-                                            </a>
-
-
-                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">
-                                                <i class="fa fa-trash"></i>
-                                                Delete
-                                            </button>
+                                        @if(activeTab == 1) {
+                                            <a>@pagination.getInfoString</a>
+                                            <ul class="pagination">
+                                                <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
+                                                    Start</a></li>
+                                                @if(pagination.isPreviousEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                                        Previous</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                                        Previous</a></li>
+                                                }
+                                                @if(pagination.isNextEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                                        Next</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                                        Next</a></li>
+                                                }
+                                            </ul>
                                         }
-                                        </div>
                                     </div>
-                                }
-                                @if(activeTab == 1) {
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
-                                            Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
-                                                Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
-                                                Previous</a></li>
-                                        }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
-                                                Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getNext">
-                                                Next</a></li>
-                                        }
-                                    </ul>
-                                }
+                                    <div class="card-large map-events">
+                                        <div id="legend"></div>
+                                        <div id="eventsMap"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-large map-events">
-                                <div id="legend"></div>
-                                <div id="eventsMap"></div>
+                            } else {
+                            <div id="eventsTab" class="tab-pane fade">
                             </div>
-                        </div>
+                            }
+
                     </div>
                         @if(activeTab == 2) {
                             <div id="membersTab" class="tab-pane fade active show">
+                                @for(member <- artist.getMembers().split(",")) {
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <p class="card-text">@member</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                             } else {
                             <div id="membersTab" class="tab-pane fade">
-                            }
-                        @for(member <- artist.getMembers().split(",")) {
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="card-text">@member</p>
-                                </div>
                             </div>
-                        }
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
+                            }
+            </div>
+        </div>
+
+
+
 
         <div class="container" id="artistsFooter">
             <div class="row justify-content-center">
@@ -1278,6 +1284,26 @@
             ];
 
             /**
+             * Callback for succes on geolocation to get users location
+             */
+            function setLocation(pos) {
+                center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
+                var centerPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(centerPos);
+                var youMarker = new google.maps.Marker({
+                    map: map,
+                    position: centerPos,
+                    draggable: true
+                });
+                youMarker.content = "You Are Here";
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(youMarker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(map, this);
+                });
+            }
+
+            /**
              * Initialises the map view
              */
             function initMap() {
@@ -1296,6 +1322,9 @@
                     fullscreenControl: false,
                     zoom: 2
                 });
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                }
                 addMarkers();
 
                 var legend = document.getElementById('legend');
