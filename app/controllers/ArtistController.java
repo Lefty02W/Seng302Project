@@ -57,9 +57,8 @@ public class ArtistController extends Controller {
                             DestinationRepository destinationRepository,
                             ArtistProfilePictureRepository artistProfilePictureRepository,
                             PersonalPhotoRepository personalPhotoRepository, PhotoRepository photoRepository,
-                            AttendEventRepository attendEventRepository,                             UndoStackRepository undoStackRepository){
+                            AttendEventRepository attendEventRepository, UndoStackRepository undoStackRepository){
 
-    }){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
