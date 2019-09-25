@@ -454,7 +454,6 @@ public class EventsController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if(profile.isPresent()){
                 Form<EventFormData> searchEventForm = eventFormDataForm.bindFromRequest(request);
-                System.out.println(searchEventForm);
                 EventFormData eventFormData = searchEventForm.get();
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
@@ -575,7 +574,6 @@ public class EventsController extends Controller {
                                     artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto,
                                     request, messagesApi.preferred(request)));
                         } else {
-                            System.out.println(optEvent.get().getDestination());
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 1,
                                     null, false, new ArrayList<>(), new ArrayList<>(),

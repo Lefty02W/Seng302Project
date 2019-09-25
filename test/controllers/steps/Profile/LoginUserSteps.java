@@ -55,10 +55,10 @@ public class LoginUserSteps {
     }
 
 
-    @Then("the profile page should be shown")
-    public void theProfilePageShouldBeShown() {
+    @Then("the landing page should be shown")
+    public void theLandingPageShouldBeShown() {
         assertEquals(303, loginResult.status());
-        assertEquals("/profile", loginResult.redirectLocation().get());
+        assertEquals("/events/0", loginResult.redirectLocation().get());
     }
 
     @Then("he is not redirected to the profile page")

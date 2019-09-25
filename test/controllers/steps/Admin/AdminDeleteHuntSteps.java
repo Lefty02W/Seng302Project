@@ -35,6 +35,5 @@ public class AdminDeleteHuntSteps {
 
     @And("^The treasure hunt is deleted from the database$")
     public void theTreasureHuntIsDeletedFromTheDatabase() throws Throwable {
-        //System.out.println(TestApplication.getTreasureHuntRepository.lookup(4));
     }
 }
