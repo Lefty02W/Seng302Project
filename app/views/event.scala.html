@@ -120,17 +120,30 @@
                                 @*//Button*@
                                 @*//@ event.getTicketLink #TODO Add ticket link ? maybe on bottom*@
                                 <div id="eventDescription" class="card center-col overflow-auto">
-                                    <i class="fa fa-info-circle">&nbsp;</i>
-                                    @event.getDescription
-                                    <hr>
-                                    <i class="fa fa-calendar">&nbsp;</i>
-                                    @event.getStartDateString to @event.getEndDateString
-                                    <hr>
-                                    <i class="fa fa-exclamation-triangle">&nbsp;</i>
-                                    @event.getAgeRestrictionString
-                                    <hr>
-                                    <i class="fa fa-globe">&nbsp;</i>
-                                    @event.getDestination.getName
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <i class="fa fa-info-circle">&nbsp;</i>
+                                            @event.getDescription
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <i class="fa fa-calendar">&nbsp;</i>
+                                            @event.getStartDateString to @event.getEndDateString
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                            @event.getAgeRestrictionString
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <i class="fa fa-globe">&nbsp;</i>
+                                            @event.getDestination.getName
+                                        </div>
+                                    </div>
 
                                     @if(event.getTicketLink != null) {
                                         <hr>
@@ -148,8 +161,10 @@
                             <div id="destinationTab" class="tab-pane fade in active show">
                                 <div class="row">
                                     <div class="col-4 card" id="destinationDetails">
-                                        <div class="row justify-content-center">
-                                            <h3 class="primary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
+                                        <div class="card-header">
+                                            <div class="row justify-content-center">
+                                                <h3 class="primary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             Type: @event.getDestination.getType
