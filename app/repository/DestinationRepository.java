@@ -741,7 +741,7 @@ public class DestinationRepository {
     }
 
     /**
-     * Database method to serch for a destination of a given name
+     * Database method to search for a destination of a given name
      *
      * @param name   - The destination name
      * @param offset - The offset from which to start returning results
@@ -754,6 +754,7 @@ public class DestinationRepository {
                     .setMaxRows(7)
                     .where()
                     .like("name", name)
+                    .eq("soft_delete", 0)
                     .eq("visible", 1)
                     .findList());
         }
@@ -766,17 +767,17 @@ public class DestinationRepository {
                 .eq("soft_delete", 0)
                 .eq("profile_id", profileId)
                 .like("name", name)
-                .eq("visible", 0)
                 .findList());
 
         Integer limit = abs(7 - privateList.size());
         String query = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT ? OFFSET ?";
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 and D.name = ? LIMIT ? OFFSET ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(query)
                 .setParameter(1, profileId)
-                .setParameter(2, limit)
-                .setParameter(3, offset)
+                .setParameter(2, name)
+                .setParameter(3, limit)
+                .setParameter(4, offset)
                 .findList();
 
         privateList.addAll(getDestinationsFromSqlRow(rowList));
