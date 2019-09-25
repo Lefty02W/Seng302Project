@@ -177,9 +177,12 @@ public class EventRepository {
 
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
+
             Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();
             if (targetEvent != null) {
+
                 targetEvent.setAgeRestriction(event.getAgeRestriction());
+
                 targetEvent.setDescription(event.getDescription());
                 targetEvent.setDestinationId(event.getDestinationId());
                 targetEvent.setEndDate(event.getEndDate());
@@ -207,22 +210,26 @@ public class EventRepository {
     private void updateLinkingTables(Events event) {
         EventType eventType = eventTypeRepository.getEventType(event.getEventId());
         Set<Integer> eventGenreSet = eventGenreRepository.getEventGenreList(event.getEventId()).stream().collect(Collectors.toSet());
+
         Set<Integer> eventArtistsSet = eventArtistRepository.getEventArtistList(event.getEventId()).stream().collect(Collectors.toSet());
+
         Integer eventTypeId = eventTypeRepository.getTypeOfEventsIdByName(event.getTypeForm());
+
         if(eventType.getTypeId() != eventTypeId) {
             eventTypeRepository.updateEventType(event.getEventId(), eventTypeId);
         }
-        Set<Integer> newGenreIds = Stream.of(event.getGenreForm().split(","))
-                .map(Integer::parseInt).collect(Collectors.toSet());
 
-        updateGenre(event, eventGenreSet, newGenreIds);
+        if (!event.getGenreForm().equals("")) {
+            Set<Integer> newGenreIds = Stream.of(event.getGenreForm().split(","))
+                    .map(Integer::parseInt).collect(Collectors.toSet());
+            updateGenre(event, eventGenreSet, newGenreIds);
+        }
 
-        Set<Integer> newArtistIds = Stream.of(event.getArtistForm().split(","))
-                .map(Integer::parseInt).collect(Collectors.toSet());
-
-        updateArtist(event, eventArtistsSet, newArtistIds);
-
-
+        if (!event.getArtistForm().equals("")) {
+            Set<Integer> newArtistIds = Stream.of(event.getArtistForm().split(","))
+                    .map(Integer::parseInt).collect(Collectors.toSet());
+            updateArtist(event, eventArtistsSet, newArtistIds);
+        }
 
     }
 

@@ -172,6 +172,7 @@ public class EventsController extends Controller {
      * @return event object with all values inside
      */
     protected static Events setValues(Integer userId, Form<Events> values){
+
         Events event = values.get();
         Integer destinationId = null;
         String startDate = null;
@@ -190,10 +191,12 @@ public class EventsController extends Controller {
         if (destinationIdString.isPresent()) {
             destinationId = parseInt(destinationIdString.get());
         }
+
         Optional<String> ageSring = values.field("ageForm").value();
         if (ageSring.isPresent()) {
             ageRestriction = Integer.parseInt(ageSring.get());
         }
+
         event.setDestinationId(destinationId);
         event.setAgeRestriction(ageRestriction);
         try {
@@ -217,11 +220,16 @@ public class EventsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEvent(Http.Request request, Integer id) {
+        System.out.println("yeet");
+
         Form<Events> form = eventForm.bindFromRequest(request);
+        System.out.println("yeet");
+
         Events event = setValues(SessionController.getCurrentUserId(request), form);
-        if (event.getStartDate().after(event.getEndDate())){
+        if (event.getStartDate().after(event.getEndDate())) {
             return supplyAsync(() -> redirect(eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
+        System.out.println("dashjhkjasdkjkjsa");
         return eventRepository.update(id, event).thenApplyAsync(x -> redirect(eventURL).flashing("info",  event.getEventName() + " has been updated."));
     }
 
@@ -254,11 +262,14 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEventFromEvent(Http.Request request, Integer eventId) {
         Form<Events> form = eventEditForm.bindFromRequest(request);
+
+
         Events event = setValues(SessionController.getCurrentUserId(request), form);
+
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect("/events/view/" + eventId).flashing("error", "Error: Start date cannot be after end date."));
         }
-        return eventRepository.update(eventId, event).thenApplyAsync(x -> redirect("/events/view/" + eventId).flashing("success", "Event has been updated."));
+        return eventRepository.update(eventId, event).thenApplyAsync(x -> redirect("/events/details/" + eventId).flashing("success", "Event has been updated."));
     }
 
 
