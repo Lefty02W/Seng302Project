@@ -1507,7 +1507,7 @@
                 selectedDestID = destinationId;
                 var markerToSet = markersMap.get(destinationId);
 
-                new google.maps.event.trigger(maoSet, 'click');rkerT
+                new google.maps.event.trigger(markerToSet, 'click');
                 map.setCenter(markerToSet.getPosition());
                 clearAnimations();
                 markerToSet.setAnimation(google.maps.Animation.BOUNCE);

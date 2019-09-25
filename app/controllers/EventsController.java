@@ -674,7 +674,7 @@ public class EventsController extends Controller {
      * @return redirect to event page
      */
     public CompletionStage<Result> removePhoto(Http.Request request, Integer id) {
-        return eventPhotoRepository.removeEventCoverPhoto(id).thenApplyAsync(eventId -> redirect("/events/view/"+eventId));
+        return eventPhotoRepository.removeEventCoverPhoto(id).thenApplyAsync(eventId -> redirect("/events/details/"+eventId));
     }
 
     /**
@@ -685,7 +685,7 @@ public class EventsController extends Controller {
      * @return a redirect to the event page
      */
     public CompletionStage<Result> setCoverPhoto(Http.Request request, Integer eventId, Integer photoId) {
-        return eventPhotoRepository.update(eventId, photoId).thenApplyAsync(theEventId -> redirect("/events/view/"+theEventId));
+        return eventPhotoRepository.update(eventId, photoId).thenApplyAsync(theEventId -> redirect("/events/details/"+theEventId));
     }
 
     /**
@@ -706,11 +706,11 @@ public class EventsController extends Controller {
         String fileName = picture.getFilename();
         String contentType = picture.getContentType();
         if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
-            return supplyAsync(() -> redirect("/events/view/"+eventId).flashing("error", "Invalid file type!"));
+            return supplyAsync(() -> redirect("/events/details/"+eventId).flashing("error", "Invalid file type!"));
         }
         long fileSize = picture.getFileSize();
         if (fileSize >= MAX_PHOTO_SIZE) {
-            return supplyAsync(() -> redirect("/events/view/"+eventId).flashing("error",
+            return supplyAsync(() -> redirect("/events/details/"+eventId).flashing("error",
                     "File size must not exceed 8MB!"));
         }
 
@@ -721,7 +721,7 @@ public class EventsController extends Controller {
         photoRepository.insert(photo).thenApplyAsync(photoId ->
                 eventPhotoRepository.insert(new EventPhoto(eventId, photoId)));
 
-        return supplyAsync(() -> redirect("/events/view/"+eventId));
+        return supplyAsync(() -> redirect("/events/details/"+eventId));
     }
 
 }
