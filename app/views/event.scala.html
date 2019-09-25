@@ -124,9 +124,6 @@
                     <div class="tab-content" id="eventsTabsContent">
                         @if(activeTab == 1){
                             <div id="detailsTab" class="tab-pane fade in active show">
-                                @*//@ event.getTicketPrice #TODO Add ticket price*@
-                                @*//Button*@
-                                @*//@ event.getTicketLink #TODO Add ticket link ? maybe on bottom*@
                                 <div id="eventDescription" class="card center-col overflow-auto">
                                     <div class="card">
                                         <div class="card-body">
@@ -160,6 +157,13 @@
                                             </div>
                                         </div>
                                         }
+                                    <div class="card">
+                                        <div class="card-body">
+                                        @for(genre <- event.getEventGenres){
+                                            #@genre.getGenre
+                                        }
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>
