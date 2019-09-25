@@ -100,7 +100,11 @@
                         <div class="accordion" id="filterAccordion">
                             <div class="card">
                                 <div class="card-header" id="searchHeader">
+                                @if(searchData != null) {
+                                    <input type="search" id="eventName" value=@searchData.getEventName name =eventName placeholder="Search..">
+                                } else {
                                     <input type="search" id="eventName" name =eventName placeholder="Search..">
+                                }
                                     <button type="submit" class="btn btn-primary">Search</button>
                                     <button class="btn btn-secondary" type="button" data-toggle="collapse"
                                             data-target="#eventFilters" aria-expanded="false"
