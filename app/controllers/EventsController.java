@@ -220,16 +220,14 @@ public class EventsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEvent(Http.Request request, Integer id) {
-        System.out.println("yeet");
 
         Form<Events> form = eventForm.bindFromRequest(request);
-        System.out.println("yeet");
 
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())) {
             return supplyAsync(() -> redirect(eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
-        System.out.println("dashjhkjasdkjkjsa");
+
         return eventRepository.update(id, event).thenApplyAsync(x -> redirect(eventURL).flashing("info",  event.getEventName() + " has been updated."));
     }
 
