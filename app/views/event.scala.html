@@ -81,118 +81,155 @@
                 <div class="container-fluid">
                     <div class="row">
                         <ul class="nav nav-tabs" id="eventTabs">
-                            <li class="activated"><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
+                            @if(activeTab == 1){
+                                <li class="activated"><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
                                 Details</a></li>
-                            <li ><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
-                                Destination</a></li>
-                            <li ><a data-toggle="tab" href="#artistsTab" class="tabLink" id="artistsTabLink">
-                                Artists</a></li>
-                            <li ><a data-toggle="tab" href="#attendeesTab" class="tabLink" id="attendeesTabLink">
-                                Attendees</a></li>
+                            } else {
+                                <li><a data-toggle="tab" href="#detailsTab" class="tabLink" id="detailsTabLink">
+                                    Details</a></li>
+                            }
+                            @if(activeTab == 2){
+                                <li class="activated"><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
+                                    Destination</a></li>
+                            } else {
+                                <li><a data-toggle="tab" href="#destinationTab" class="tabLink" id="destinationTabLink">
+                                    Destination</a></li>
+                            }
+                            @if(activeTab == 3){
+                                <li class="activated"><a data-toggle="tab" href="#artistsTab" class="tabLink" id="artistsTabLink">
+                                    Artists</a></li>
+                            } else {
+                                <li><a data-toggle="tab" href="#artistsTab" class="tabLink" id="artistsTabLink">
+                                    Artists</a></li>
+                            }
+                            @if(activeTab == 4){
+                                <li class="activated"><a data-toggle="tab" href="#attendeesTab" class="tabLink" id="attendeesTabLink">
+                                    Attendees</a></li>
+                            } else {
+                                <li><a data-toggle="tab" href="#attendeesTab" class="tabLink" id="attendeesTabLink">
+                                    Attendees</a></li>
+                            }
+
                         </ul>
                     </div>
 
                     <div class="tab-content" id="eventsTabsContent">
-                        <div id="detailsTab" class="tab-pane fade in active show">
-                            @*//@ event.getTicketPrice #TODO Add ticket price*@
-                            @*//Button*@
-                            @*//@ event.getTicketLink #TODO Add ticket link ? maybe on bottom*@
-                            <div id="eventDescription" class="card center-col overflow-auto">
-                                <i class="fa fa-info-circle">&nbsp;</i>
-                                @event.getDescription
-                                <hr>
-                                <i class="fa fa-calendar">&nbsp;</i>
-                                @event.getStartDateString to @event.getEndDateString
-                                <hr>
-                                <i class="fa fa-exclamation-triangle">&nbsp;</i>
-                                @event.getAgeRestrictionString
-                                <hr>
-                                <i class="fa fa-globe">&nbsp;</i>
+                        @if(activeTab == 1){
+                            <div id="detailsTab" class="tab-pane fade in active show">
+                                @*//@ event.getTicketPrice #TODO Add ticket price*@
+                                @*//Button*@
+                                @*//@ event.getTicketLink #TODO Add ticket link ? maybe on bottom*@
+                                <div id="eventDescription" class="card center-col overflow-auto">
+                                    <i class="fa fa-info-circle">&nbsp;</i>
+                                    @event.getDescription
+                                    <hr>
+                                    <i class="fa fa-calendar">&nbsp;</i>
+                                    @event.getStartDateString to @event.getEndDateString
+                                    <hr>
+                                    <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                    @event.getAgeRestrictionString
+                                    <hr>
+                                    <i class="fa fa-globe">&nbsp;</i>
                                     @event.getDestination.getName
 
-                                @if(event.getTicketLink != null) {
-                                    <hr>
-                                    <i class="fa fa-money">&nbsp;</i>
-                                    $ @event.getTicketPrice
-                                }
+                                    @if(event.getTicketLink != null) {
+                                        <hr>
+                                        <i class="fa fa-money">&nbsp;</i>
+                                        $ @event.getTicketPrice
+                                    }
 
-                            </div>
-                        </div>
-
-
-                        <div id="destinationTab" class="tab-pane fade in">
-                            <div class="row">
-                                <div class="col-4 card" id="destinationDetails">
-                                    <div class="row justify-content-center">
-                                        <h3 class="primary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
-                                    </div>
-                                    <div class="row">
-                                        Type: @event.getDestination.getType
-                                    </div>
-                                    <div class="row">
-                                        Country: @event.getDestination.getCountry
-                                    </div>
-                                    <div class="row">
-                                        District: @event.getDestination.getDistrict
-                                    </div>
-                                </div>
-                                <div id="map-card" class="col card-large">
-                                    <div id="destinationMap"></div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="artistsTab" class="tab-pane fade in">
-                            <div class="row">
+                        } else {
+                            <div id="detailsTab" class="tab-pane fade in"></div>
+                        }
 
-                                    @for(artist <- event.getEventArtists) {
-                                        <div class="col">
-                                            <div class="card" id="eventsCard">
-                                                <div class="row">
-                                                    <div class="col">
+                        @if(activeTab == 2){
+                            <div id="destinationTab" class="tab-pane fade in active show">
+                                <div class="row">
+                                    <div class="col-4 card" id="destinationDetails">
+                                        <div class="row justify-content-center">
+                                            <h3 class="primary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
+                                        </div>
+                                        <div class="row">
+                                            Type: @event.getDestination.getType
+                                        </div>
+                                        <div class="row">
+                                            Country: @event.getDestination.getCountry
+                                        </div>
+                                        <div class="row">
+                                            District: @event.getDestination.getDistrict
+                                        </div>
+                                    </div>
+                                    <div id="map-card" class="col card-large">
+                                        <div id="destinationMap"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        } else {
+                            <div id="destinationTab" class="tab-pane fade in"></div>
+
+                            }
+                        @if(activeTab == 3) {
+                            <div id="artistsTab" class="tab-pane fade in active show">
+                                <div class="row">
+
+                                @for(artist <- event.getEventArtists) {
+                                    <div class="col">
+                                        <div class="card" id="eventsCard">
+                                            <div class="row">
+                                                <div class="col">
                                                         PUT PICTURE HERE
-                                                        <a href="/artists/@artist.getArtistId">
-                                                            <h3>@artist.getArtistName</h3>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col">
-                                                        <div class="row">
+                                                    <a href="/artists/@artist.getArtistId">
+                                                        <h3>@artist.getArtistName</h3>
+                                                    </a>
+                                                </div>
+                                                <div class="col">
+                                                    <div class="row">
                                                             Bio: @artist.getBiography
                                                         </div>
-                                                        <div class="row">
+                                                    <div class="row">
                                                             Members: @artist.getMembers
                                                         </div>
-                                                        <div class="row">
+                                                    <div class="row">
 
                                                         </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    }
-
+                                    </div>
+                                }
+                                </div>
                             </div>
+                        } else {
+                            <div id="artistsTab" class="tab-pane fade in"></div>
 
-                        </div>
-                        <div id="attendeesTab" class="tab-pane fade in">
-                            <div class="row">
-                                <table id="shownAttendees" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Attendees</th>
-                                        </tr>
-                                    </thead>
-                                    @for(attendee <- attendees) {
-                                        <tr>
-                                            <td>
-                                                <a href="@routes.TravellersController.displayTravellersPhotos(attendee.getProfileId)">
-                                                    @attendee.getFirstName @attendee.getLastName
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    }
-                                </table>
+                            }
+                        @if(activeTab == 4){
+                            <div id="attendeesTab" class="tab-pane fade in active show">
+                                <div class="row">
+                                    <table id="shownAttendees" class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Attendees</th>
+                                            </tr>
+                                        </thead>
+                                        @for(attendee <- attendees) {
+                                            <tr>
+                                                <td>
+                                                    <a href="@routes.TravellersController.displayTravellersPhotos(attendee.getProfileId)">
+                                                        @attendee.getFirstName @attendee.getLastName
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
                             </div>
-                        </div>
+                        } else {
+                            <div id="attendeesTab" class="tab-pane fade in"></div>
+
+                            }
                     </div>
                 </div>
 
@@ -216,10 +253,6 @@
                 </div>
             </div>
         </div>
-
-
-
-
     </body>
 
 

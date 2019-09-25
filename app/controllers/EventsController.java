@@ -503,8 +503,8 @@ public class EventsController extends Controller {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(),
-                                profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), 1,
-                                new PaginationHelper(), request, messagesApi.preferred(request)));
+                                null, 1,
+                                null, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
