@@ -29,7 +29,7 @@ import java.util.concurrent.CompletionStage;
  */
 public class TripsController extends Controller {
 
-    private final ArrayList<Destination> destinationsList;
+    private ArrayList<Destination> destinationsList;
     private final TreeMap<Integer, TripDestination> orderedCurrentDestinations;
 
     private MessagesApi messagesApi;

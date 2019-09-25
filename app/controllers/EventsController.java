@@ -12,6 +12,7 @@ import play.mvc.Security;
 import repository.*;
 import roles.RestrictAnnotation;
 import utility.Country;
+import views.html.event;
 import views.html.events;
 import views.html.viewArtist;
 
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -94,12 +96,11 @@ public class EventsController extends Controller {
                     return ok(events.render(profile,
                         Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), artistRepository.getAllVerfiedArtists(),
                         destinationRepository.getAllFollowedOrOwnedDestinations(profId), eventsList, eventForm, new RoutedObject<Events>(null, false, false),
-                        eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormSent,
+                        eventFormDataForm, artistRepository.isArtistAdmin(profId), paginationHelper, eventFormSent, artistRepository.getAllUserArtists(profId),
                         request, messagesApi.preferred(request)));
                     }).orElseGet(() -> redirect("/")));
     }
 
-    }
 
     /**
      * Helper function to set up pagination object
@@ -159,7 +160,7 @@ public class EventsController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/artists/" + artistId + eventURL)));
     }
 
@@ -407,6 +408,8 @@ public class EventsController extends Controller {
                 Optional<String> genreFormEvent = form.field("genreFormEvent").value();
                 Optional<String> ageForm = form.field("ageForm").value();
                 Optional<String> artistForm = form.field("artistForm").value();
+                Optional<String> ticketPrice = form.field("ticketPrice").value();
+                Optional<String> ticketLink = form.field("ticketLink").value();
 
                 if (startDate.isPresent()) {
                     try {
