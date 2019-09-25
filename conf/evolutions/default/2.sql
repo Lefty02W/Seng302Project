@@ -285,46 +285,46 @@ INSERT INTO artist_country (artist_id, country_id) VALUES
   (3,1);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (1, 'Event', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (1, 'Event', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (2, 'Woodstock', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (2, 'Woodstock', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (3, 'Burning Man', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (3, 'Burning Man', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (4, 'Burning Person', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (4, 'Burning Person', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (5, 'Burning Yes', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (5, 'Burning Yes', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (6, 'BigEvent', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (6, 'BigEvent', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (7, 'Event', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (7, 'Event', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (8, 'Woodstock', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (8, 'Woodstock', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (9, 'Burning Man', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (9, 'Burning Man', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (10, 'Burning Person', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (10, 'Burning Person', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (11, 'Burning Yes', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (11, 'Burning Yes', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (12, 'BigEvent', 'description', 9, '2019-11-02', CURRENT_DATE, 0);
+  (12, 'BigEvent', 'description', 9, '2019-11-02', '2019-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (13, 'BigEvent', 'description', 9, '2018-11-02', CURRENT_DATE, 0);
+  (13, 'BigEvent', 'description', 9, '2018-11-02', '2018-11-05', 0);
 
 INSERT INTO events (event_id, event_name, description, destination_id, start_date, end_date, age_restriction) VALUES
-  (14, 'BigEvent', 'description', 9, '2018-11-02', CURRENT_DATE, 0);
+  (14, 'BigEvent', 'description', 9, '2018-11-02', '2018-11-05', 0);
 
 INSERT INTO event_artists (artist_id, event_id) VALUES
   (1, 2);

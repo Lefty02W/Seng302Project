@@ -74,7 +74,7 @@
     width: 100%;
 }
 
-#destsTable span, #tripTable span, followedArtistsTable span {
+#destsTable span, #tripTable span, followedArtistsTable span, upcomingEventsTable span {
     display: none;
 }
 
@@ -85,8 +85,8 @@
 
 }
 
-#followedArtistsCard {
-    width: 50%;
+#followedArtistsCard, #upcomingArtistsCard {
+    width: 70%;
 }
 
 .trip-icon {
@@ -222,15 +222,27 @@ img.thumbnail {
     padding: 15px;
 }
 
-#profileTabs, #photosCaption, #photosTabCard, #followedArtistsCard {
+#profileTabs, #photosCaption, #photosTabCard, #followedArtistsCard, #upcomingArtistsCard {
     margin-left: auto;
     margin-right: auto;
 
 }
 
-#destsTab, #tripsTab, #followedArtistsTab, #photosTab, #yourArtistsTab {
+#destsTab, #tripsTab, #followedArtistsTab, #photosTab {
     padding-left: 10%;
     padding-right: 10%;
+    padding-bottom: 5%;
+}
+
+#yourArtistsTab {
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-bottom: 5%;
+}
+
+#upcomingEventsTab {
+    padding-left: 0;
+    padding-right: 0;
     padding-bottom: 5%;
 }
 
@@ -349,12 +361,7 @@ img.thumbnail {
     padding-right: 0px !important;
 }
 
-#yourArtistsCard {
-    margin-left: 27vw;
-}
-
 #yourArtistsList {
-    width: 50vw;
     text-align: center;
 }
 

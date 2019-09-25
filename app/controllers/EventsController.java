@@ -208,9 +208,7 @@ public class EventsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEvent(Http.Request request, Integer id) {
         Form<Events> form = eventForm.bindFromRequest(request);
-        System.out.println(form);
         Events event = setValues(SessionController.getCurrentUserId(request), form);
-        System.out.println("something is going wrong here");
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect(eventURL).flashing("error", "Error: Start date cannot be after end date."));
         }
@@ -228,10 +226,7 @@ public class EventsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> editEventFromArtist(Http.Request request, Integer artistId, Integer eventId) {
-        System.out.println("in editEventFromArtist");
         Form<Events> form = eventEditForm.bindFromRequest(request);
-        System.out.println(form);
-        System.out.println("test");
         Events event = setValues(SessionController.getCurrentUserId(request), form);
         if (event.getStartDate().after(event.getEndDate())){
             return supplyAsync(() -> redirect("/artists/" + artistId + eventURL).flashing("error", "Error: Start date cannot be after end date."));
@@ -400,7 +395,7 @@ public class EventsController extends Controller {
                     return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
                 }
 
-                List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset);
+                List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset, profId);
                 if(!eventsList.isEmpty() || offset > 0){
                     PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
                     paginationHelper.alterNext(8);

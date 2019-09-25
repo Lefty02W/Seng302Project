@@ -402,7 +402,9 @@ public class ArtistController extends Controller {
     }
 
     /**
-     * Get follower count for the artist
+     * Method to return the follower count of an artist
+     * @param artistId Id of the artist to find follower count
+     * @return CompletionStage of the artist Id
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Integer> getFollowerCount(int artistId) {

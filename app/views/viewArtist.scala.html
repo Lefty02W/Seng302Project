@@ -258,6 +258,7 @@
                                 }
                             </div>
                             <div class="card-large map-events">
+                                <div id="legend"></div>
                                 <div id="eventsMap"></div>
                             </div>
                         </div>
@@ -1335,19 +1336,63 @@
                     zoom: 2
                 });
                 addMarkers();
+
+                var legend = document.getElementById('legend');
+                var gigDiv = document.createElement('div');
+                gigDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.svg")"> Gig';
+                var meetupDiv = document.createElement('div');
+                meetupDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Meetup/users-solid-16.svg")"> Meetup';
+                var competitionDiv = document.createElement('div');
+                competitionDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Competition/bolt-solid-18.svg")"> Competition';
+                var partyDiv = document.createElement('div');
+                partyDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-21.svg")"> Party';
+                var charityDiv = document.createElement('div');
+                charityDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-charity.svg")"> Charity';
+                var festivalDiv = document.createElement('div');
+                festivalDiv.innerHTML = '<img src="@routes.Assets.at("images/eventIcons/Festival/music-solid-festival.svg")"> Festival';
+
+                var iconLegend = document.createElement('div');
+                iconLegend.innerHTML = '<h6>Event Icons</h6>';
+
+                legend.appendChild(iconLegend);
+                legend.appendChild(gigDiv);
+                legend.appendChild(meetupDiv);
+                legend.appendChild(partyDiv);
+                legend.appendChild(competitionDiv);
+                legend.appendChild(charityDiv);
+                legend.appendChild(festivalDiv);
+                map.controls[google.maps.ControlPosition.RIGHT_TOP].push(legend);
             }
 
             var markersMap = new Map();
             var markers = [];
             function addMarkers() {
                 @for(event <- events) {
+                    var icon;
+
+                    if (@event.getEventTypes.get(0).equals("Gig")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Gig/guitar-solid-all.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Meetup")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Meetup/users-solid-16.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Competition")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Competition/bolt-solid-18.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Party")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Party/glass-cheers-solid-21.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Charity")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Charity/hand-holding-heart-solid-charity.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    } else if (@event.getEventTypes.get(0).equals("Festival")) {
+                        icon = {url:'@routes.Assets.at("images/eventIcons/Festival/music-solid-festival.svg")', scaledSize: new google.maps.Size(36, 36)};
+                    }
+
+
                     var marker = new google.maps.Marker({
                         position: {
                             lat: @event.getDestination.getLatitude,
                             lng: @event.getDestination.getLongitude
                         },
                         animation: google.maps.Animation.DROP,
-                        map: map
+                        map: map,
+                        icon: icon
                     });
                     marker.content = "Name:  @event.getEventName" +
                             "<br> Type: @event.getEventTypeString" +
