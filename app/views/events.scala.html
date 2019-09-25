@@ -1226,6 +1226,23 @@
 
             });
 
+            // --------------- HIDE FILTERS JS ---------------
+
+            window.onscroll = function() {
+                hideFilters()
+            };
+
+            $('.viewEvents').on( 'scroll', function(){
+                hideFilters()
+            });
+
+            function hideFilters() {
+
+                $("#eventFilters").removeClass('show');
+            };
+
+            //-------------------------------------------------
+
             /**
              * Initialises the map view
              */
