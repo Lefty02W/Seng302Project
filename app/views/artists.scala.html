@@ -108,7 +108,11 @@
                         <div class="card">
                             <div class="card-header" id="headingOne">
                             @if(searchData != null) {
-                                <input type="search" value=@searchData.getName id="name" name="name" placeholder="Search..">
+                                @if(searchData.getName != "") {
+                                    <input type="search" value=@searchData.getName id="name" name="name" placeholder="Search..">
+                                } else {
+                                    <input type="search" id="name" name="name" placeholder="Search..">
+                                }
                             } else {
                                 <input type="search" id="name" name="name" placeholder="Search..">
                             }
@@ -152,24 +156,22 @@
                                                             <option value="@nation">@nation</option>
                                                         }
                                                     }
-                                                    </select>
                                                 } else {
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }
                                             }
+                                                </select>
                                             </div>
                                             <div class="col">
+                                                <label for="toggle">Followed Artists</label>
                                                 @if(searchData != null) {
                                                     @if(searchData.followed.equals("on")) {
                                                         <input type="checkbox" id="followed" name="followed" checked>
-                                                    } else {
-                                                        <input type="checkbox" id="followed" name="followed">
                                                     }
                                                 } else {
                                                     <input type="checkbox" id="followed" name="followed">
                                                 }
-                                                <label for="toggle">Followed Artists</label>
                                             </div>
                                             }
                 <div class="col">

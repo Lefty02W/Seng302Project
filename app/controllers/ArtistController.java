@@ -126,6 +126,7 @@ public class ArtistController extends Controller {
                         }
 
                         searchForm.fill(formData);
+                        System.out.println(formData);
                         return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, created, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), formData, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
