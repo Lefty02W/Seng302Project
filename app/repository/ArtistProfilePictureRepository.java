@@ -39,12 +39,7 @@ public class ArtistProfilePictureRepository {
     public CompletionStage<Void> addArtistProfilePicture(ArtistProfilePhoto artistProfilePhoto) {
         if(!checkArtistHasProfilePicture(artistProfilePhoto.getArtistId())) {
             return supplyAsync(() -> {
-                try {
-                    ebeanServer.insert(artistProfilePhoto);
-                } catch (Exception e) {
-                    System.out.println(artistProfilePhoto.getPhotoId());
-                    System.out.println(e);
-                }
+                ebeanServer.insert(artistProfilePhoto);
                 return null;
             }, executionContext);
         } else {
