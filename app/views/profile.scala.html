@@ -894,7 +894,9 @@
 
         $(document).on("click", 'ul li', function(){
             $('ul li').removeClass('activated');
+            $('ul li').removeClass('selectedTab');
             $(this).addClass('activated');
+            $(this).addClass('selectedTab');
         });
 
 

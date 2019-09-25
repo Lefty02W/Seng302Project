@@ -82,28 +82,28 @@
                     <div class="row">
                         <ul class="nav nav-tabs" id="eventTabs">
                             @if(activeTab == 1){
-                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showDetailedEvent(event.getEventId)" class="tabLink" id="detailsTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showDetailedEvent(event.getEventId)" class="tabLink selectedTab" id="detailsTabLink">
                                 Details</a></li>
                             } else {
                                 <li><a href="@routes.EventsController.showDetailedEvent(event.getEventId)" class="tabLink" id="detailsTabLink">
                                     Details</a></li>
                             }
                             @if(activeTab == 2){
-                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventDestination(event.getEventId)" class="tabLink" id="destinationTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventDestination(event.getEventId)" class="tabLink selectedTab" id="destinationTabLink">
                                     Destination</a></li>
                             } else {
                                 <li><a href="@routes.EventsController.showEventDestination(event.getEventId)" class="tabLink" id="destinationTabLink">
                                     Destination</a></li>
                             }
                             @if(activeTab == 3){
-                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventArtists(event.getEventId)" class="tabLink" id="artistsTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventArtists(event.getEventId)" class="tabLink selectedTab" id="artistsTabLink">
                                     Artists</a></li>
                             } else {
                                 <li><a href="@routes.EventsController.showEventArtists(event.getEventId)" class="tabLink" id="artistsTabLink">
                                     Artists</a></li>
                             }
                             @if(activeTab == 4){
-                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventAttendees(event.getEventId, 0)" class="tabLink" id="attendeesTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventAttendees(event.getEventId, 0)" class="tabLink selectedTab" id="attendeesTabLink">
                                     Attendees</a></li>
                             } else {
                                 <li><a href="@routes.EventsController.showEventAttendees(event.getEventId, 0)" class="tabLink" id="attendeesTabLink">

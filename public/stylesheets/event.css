@@ -78,6 +78,6 @@
     opacity: 0.5;
 }
 
-.activated {
-    font-weight:bold;
+.selectedTab {
+    color: #41B49D;
 }
