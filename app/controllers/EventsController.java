@@ -488,27 +488,6 @@ public class EventsController extends Controller {
         return redirect("/profile").flashing("success", "No longer going to event: " + eventRepository.lookup(eventId).getEventName());
     }
 
-//    /**
-//     * Endpoint to view a specific event
-//     *
-//     * @param request client request to view event
-//     * @param id the id of the event to view
-//     * @return rendered event page for selected event
-//     */
-//    @Security.Authenticated(SecureSession.class)
-//    public CompletionStage<Result> viewEvent(Http.Request request, Integer id) {
-//        Integer profId = SessionController.getCurrentUserId(request);
-//        return eventRepository.getEvent(id)
-//                .thenApplyAsync(optEvent -> {
-//                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
-//                    if (optEvent.isPresent()) {
-//                        return ok(event.render(profileOpt.get(), optEvent.get(), profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), new PaginationHelper(), request, messagesApi.preferred(request)));
-//                    } else {
-//                        return redirect("/events/0").flashing("info", "Error retrieving event or profile");
-//                    }
-//                });
-//    }
-
     /**
      * Endpoint for landing page for viewing details of an event
      *
@@ -524,7 +503,7 @@ public class EventsController extends Controller {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(),
-                                profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()),
+                                profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), 1,
                                 new PaginationHelper(), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
@@ -532,5 +511,73 @@ public class EventsController extends Controller {
                 });
     }
 
+    /**
+     * Endpoint for viewing destination details of the given event
+     *
+     * @param request client request
+     * @param id id of the event
+     * @return CompletionStage rendering the event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> showEventDestination(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return eventRepository.getEvent(id)
+                .thenApplyAsync(optEvent -> {
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    if (optEvent.isPresent()) {
+                        return ok(event.render(profileOpt.get(), optEvent.get(),
+                                null, 2,
+                                new PaginationHelper(), request, messagesApi.preferred(request)));
+                    } else {
+                        return redirect("/events/0").flashing("info", "Error retrieving event or profile");
+                    }
+                });
+    }
+
+    /**
+     * Endpoint for landing page for viewing artist details for the given event
+     *
+     * @param request client request
+     * @param id id of the event
+     * @return CompletionStage rendering the event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> showEventArtists(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return eventRepository.getEvent(id)
+                .thenApplyAsync(optEvent -> {
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    if (optEvent.isPresent()) {
+                        return ok(event.render(profileOpt.get(), optEvent.get(),
+                                null, 3,
+                                new PaginationHelper(), request, messagesApi.preferred(request)));
+                    } else {
+                        return redirect("/events/0").flashing("info", "Error retrieving event or profile");
+                    }
+                });
+    }
+
+    /**
+     * Endpoint for landing page for viewing attendee details of a given event
+     *
+     * @param request client request
+     * @param id id of the event
+     * @return CompletionStage rendering the event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> showEventAttendees(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        return eventRepository.getEvent(id)
+                .thenApplyAsync(optEvent -> {
+                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    if (optEvent.isPresent()) {
+                        return ok(event.render(profileOpt.get(), optEvent.get(),
+                                profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), 4,
+                                new PaginationHelper(), request, messagesApi.preferred(request)));
+                    } else {
+                        return redirect("/events/0").flashing("info", "Error retrieving event or profile");
+                    }
+                });
+    }
 
 }

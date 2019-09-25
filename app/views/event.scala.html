@@ -1,5 +1,5 @@
 @import play.mvc.Http
-@(currentUser: Profile, event : Events, attendees : List[Profile], pagination: PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, event : Events, attendees : List[Profile], activeTab: Integer, pagination: PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
