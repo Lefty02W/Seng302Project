@@ -527,7 +527,7 @@ public class EventsController extends Controller {
                     if (optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(),
                                 null, 2,
-                                new PaginationHelper(), request, messagesApi.preferred(request)));
+                                null, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
@@ -550,7 +550,7 @@ public class EventsController extends Controller {
                     if (optEvent.isPresent()) {
                         return ok(event.render(profileOpt.get(), optEvent.get(),
                                 null, 3,
-                                new PaginationHelper(), request, messagesApi.preferred(request)));
+                                null, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }
@@ -565,7 +565,7 @@ public class EventsController extends Controller {
      * @return CompletionStage rendering the event page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> showEventAttendees(Http.Request request, Integer id) {
+    public CompletionStage<Result> showEventAttendees(Http.Request request, Integer id, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {

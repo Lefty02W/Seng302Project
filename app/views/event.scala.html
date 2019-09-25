@@ -103,10 +103,10 @@
                                     Artists</a></li>
                             }
                             @if(activeTab == 4){
-                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventAttendees(event.getEventId)" class="tabLink" id="attendeesTabLink">
+                                <li class="activated"><a data-toggle="tab" href="@routes.EventsController.showEventAttendees(event.getEventId, 0)" class="tabLink" id="attendeesTabLink">
                                     Attendees</a></li>
                             } else {
-                                <li><a href="@routes.EventsController.showEventAttendees(event.getEventId)" class="tabLink" id="attendeesTabLink">
+                                <li><a href="@routes.EventsController.showEventAttendees(event.getEventId, 0)" class="tabLink" id="attendeesTabLink">
                                     Attendees</a></li>
                             }
 
@@ -224,11 +224,45 @@
                                             </tr>
                                         }
                                     </table>
+
+                                    <ul class="pagination">
+                                        <li class="page-item">
+                                            <a class="page-link" href="@routes.EventsController.showEventAttendees(event.getEventId, 0)">
+                                                Start
+                                            </a>
+                                        </li>
+                                        @if(pagination.isPreviousEnabled) {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@routes.EventsController.showEventAttendees(event.getEventId, pagination.getPrevious)">
+                                                    Previous
+                                                </a>
+                                            </li>
+                                        } else {
+                                            <li class="page-item disabled">
+                                                <a class="page-link disabledPagination">
+                                                    Previous
+                                                </a>
+                                            </li>
+                                        }
+                                        @if(pagination.isNextEnabled) {
+                                            <li class="page-item">
+                                                <a class="page-link" href="@routes.EventsController.showEventAttendees(event.getEventId, pagination.getNext)">
+                                                    Next
+                                                </a>
+                                            </li>
+                                        } else {
+                                            <li class="page-item disabled">
+                                                <a class="page-link disabledPagination">
+                                                    Next
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+
                                 </div>
                             </div>
                         } else {
                             <div id="attendeesTab" class="tab-pane fade in"></div>
-
                             }
                     </div>
                 </div>

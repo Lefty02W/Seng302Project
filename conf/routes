@@ -162,4 +162,4 @@ GET     /events/profile/:eventId/leave              controllers.EventsController
 GET     /events/details/:id                      controllers.EventsController.showDetailedEvent(request : Request, id : Integer)
 GET     /events/destination/:id                  controllers.EventsController.showEventDestination(request : Request, id : Integer)
 GET     /events/artists/:id                      controllers.EventsController.showEventArtists(request : Request, id : Integer)
-GET     /events/attendees/:id                    controllers.EventsController.showEventAttendees(request : Request, id : Integer)
+GET     /events/attendees/:id/:offset            controllers.EventsController.showEventAttendees(request : Request, id : Integer, offset : Integer)
