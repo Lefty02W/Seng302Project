@@ -160,22 +160,6 @@
                         @if(activeTab == 2){
                             <div id="destinationTab" class="tab-pane fade in active show">
                                 <div class="row">
-                                    <div class="col-4 card" id="destinationDetails">
-                                        <div class="card-header">
-                                            <div class="row justify-content-center">
-                                                <h3 class="primary-color">@event.getEventName is happening at @event.getDestination.getName</h3>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            Type: @event.getDestination.getType
-                                        </div>
-                                        <div class="row">
-                                            Country: @event.getDestination.getCountry
-                                        </div>
-                                        <div class="row">
-                                            District: @event.getDestination.getDistrict
-                                        </div>
-                                    </div>
                                     <div id="map-card" class="col card-large">
                                         <div id="destinationMap"></div>
                                     </div>
@@ -758,6 +742,18 @@
                     animation: google.maps.Animation.DROP,
                     map: map
                 });
+
+                marker.content = "<b>@event.getEventName" +
+                        "</b><br> Type: @event.getDestination.getType" +
+                        "<br> Country: @event.getDestination.getCountry" +
+                        "<br> District: @event.getDestination.getDistrict";
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(marker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(this.getMap(), this);
+
+                });
+
 
             }
 
