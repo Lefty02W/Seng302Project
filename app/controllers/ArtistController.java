@@ -141,10 +141,21 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                new ArrayList<String>(), new ArrayList<MusicGenre>(), 0,
+                                new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request)));
+                    }
+
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -169,9 +180,18 @@ public class ArtistController extends Controller {
         paginationHelper.checkButtonsEnabled();
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), new ArrayList<String>(), new ArrayList<MusicGenre>(), 1,
+                                paginationHelper, new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request)));
+                    }
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -191,10 +211,20 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                new ArrayList<String>(), new ArrayList<MusicGenre>(), 2,
+                                new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request)));
+                    }
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
