@@ -44,6 +44,7 @@ public class ArtistController extends Controller {
     private final ArtistProfilePictureRepository artistProfilePictureRepository;
     private final PersonalPhotoRepository personalPhotoRepository;
     private final PhotoRepository photoRepository;
+    private final AttendEventRepository attendEventRepository;
     private final long MAX_PHOTO_SIZE = 8000000;
 
 
@@ -187,7 +188,7 @@ public class ArtistController extends Controller {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 new ArrayList<String>(), new ArrayList<MusicGenre>(), 0,
                                 new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
-                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, request, artistPicture, messagesApi.preferred(request)));
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
                     }
 
                 })

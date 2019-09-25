@@ -11,6 +11,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.*;
 
 /**
@@ -289,6 +292,15 @@ public class Profile extends Model {
     public void setTravellerTypes(Map<Integer, TravellerType> travellerTypes) {
         this.travellerTypes = travellerTypes;
     }
+
+    /**
+     * Method to get a users age
+     * @return the users age as an int
+     */
+    public int getAge() {
+        return Period.between(birthDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
+    }
+
 
     /**
      * Return the passports as a readable list

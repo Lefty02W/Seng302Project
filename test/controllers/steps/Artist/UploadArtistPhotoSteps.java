@@ -32,9 +32,9 @@ public class UploadArtistPhotoSteps {
     public void theUserUploadsAPhoto(int artistId) {
         Http.MultipartFormData.FilePart<Source<ByteString, ?>> part = new Http.MultipartFormData.FilePart<>(
                 "image",
-                "artist-icon.png",
-                "image/png",
-                FileIO.fromPath(Paths.get("photos/personalPhotos/artist-icon.png")),
+                "defaultPic.jpg",
+                "image/jpg",
+                FileIO.fromPath(Paths.get("photos/personalPhotos/defaultPic.jpg")),
                 40000);
 
         Http.RequestBuilder request = Helpers.fakeRequest()

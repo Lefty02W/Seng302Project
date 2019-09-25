@@ -263,10 +263,6 @@ public class EventRepository {
     }
 
 
-    private void removeEventGenres(int eventId, Set<Integer> ids) {
-        ebeanServer.find(EventGenres.class).where().idIn(ids).delete();
-    }
-
     /**
      * helper function to remove links from a given event
      * @param event Event to have links removed
@@ -389,7 +385,7 @@ public class EventRepository {
                 query += " WHERE EXISTS (SELECT follow_artist.artist_id from follow_artist where follow_artist.profile_id = ? and follow_artist.artist_id " +
                         "IN (SELECT event_artists.artist_id from event_artists where event_artists.event_id = events.event_id AND event_artists.event_id))";
             }
-            args.add(Integer.toString(profId));
+            args.add(Integer.toString(profileId));
         }
         if (!eventFormData.getHistoric().equals("1")) {
             if (whereAdded){

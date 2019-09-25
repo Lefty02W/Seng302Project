@@ -429,5 +429,68 @@ INSERT INTO event_type (event_id, type_id) VALUES
 INSERT INTO event_genres (event_id, genre_id) VALUES
   (5, 1);
 
+INSERT INTO event_type (event_id, type_id) VALUES
+  (6, 1);
+
+INSERT INTO event_genres (event_id, genre_id) VALUES
+  (6, 1);
+
 INSERT INTO artist_profile_photo (artist_id, photo_id) VALUES
   (1, 3);
+
+INSERT INTO attend_event(attend_event_id, event_id, profile_id) VALUES
+  (1, 6, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (1, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (2, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (3, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (4, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (5, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (6, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (7, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (8, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (9, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (10, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (11, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (12, 2);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (6, 13);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (10, 13);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (11, 13);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (12, 13);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (12, 14);
+
+INSERT INTO attend_event(event_id, profile_id) VALUES
+  (13, 14);

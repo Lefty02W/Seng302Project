@@ -187,7 +187,6 @@
                                                             }
                                                         </div>
                                                     </div>
-
                                                 </div>
                                                 <div class="card-footer">
                                                     @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
@@ -1376,10 +1375,21 @@
              * Callback for success on geolocation to get users location
              */
             function setLocation(pos) {
-                var center = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
-                map.setCenter(center);
+                center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
+                var centerPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(centerPos);
+                var youMarker = new google.maps.Marker({
+                    map: map,
+                    position: centerPos,
+                    draggable: true
+                });
+                youMarker.content = "You Are Here";
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(youMarker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(map, this);
+                });
             }
-
 
             /**
              * Initialises the map view
@@ -1401,7 +1411,6 @@
                     zoom: 2
                 });
                 if (navigator.geolocation) {
-
                     navigator.geolocation.getCurrentPosition(setLocation);
                 }
                 addMarkers();

@@ -61,6 +61,11 @@
     padding-right: 15px;
 }
 
+#bigInfo.row, #cardInfo.row {
+    /*margin-right: 0 !important;*/
+    margin-left: 0 !important;
+}
+
 #map-table-card {
     height: 70vh;
     width: 70%;
@@ -75,17 +80,23 @@
 
 #eventCard {
     padding: 0;
+    border: 2px;
+}
+
+.border-primary {
+    border-color: #009779 !important;
 }
 
 #allEventCards {
-    margin-left: 10px;
-    margin-right: 10px;
+    /*margin-left: 10px;*/
+    /*margin-right: 10px;*/
 }
 
 #legend {
     background: #fff;
     border: 0.1rem solid #000;
     width: 10%;
+    opacity: 0.5;
 }
 
 #legend img {

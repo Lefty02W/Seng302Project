@@ -520,6 +520,21 @@ create table if not exists artist_profile_photo
 )
 ;
 
+create table if not exists attend_event
+(
+	attend_event_id int auto_increment
+		primary key,
+	event_id int not null,
+	profile_id int not null,
+	constraint attend_event_event_id___fk
+		foreign key (event_id) references events (event_id)
+			on update cascade on delete cascade,
+	constraint attend_event_profile_id___fk
+		foreign key (profile_id) references profile (profile_id)
+			on update cascade on delete cascade
+)
+;
+
 
 
 

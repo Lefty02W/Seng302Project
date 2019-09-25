@@ -16,8 +16,11 @@ public class EventFormData {
     private String startDate = "";
     private String followedArtists = "";
     private String historic = "";
+    private String attending = "";
 
     public String getHistoric() { return historic; }
+
+    public void setAttending(String attending) {this.attending = attending;}
 
     public void setHistoric(String historic) { this.historic = historic; }
 
@@ -50,6 +53,8 @@ public class EventFormData {
     }
 
     public String getFollowedArtists() { return followedArtists; }
+
+    public String getAttending(){return attending;}
 
     public void setFollowedArtists(String followedArtists) { this.followedArtists = followedArtists; }
 

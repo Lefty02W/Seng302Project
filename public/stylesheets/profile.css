@@ -252,7 +252,7 @@ img.thumbnail {
     /*width: 50%;*/
 }
 
-.nav .nav-tabs, #followedArtistsLink, #yourArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink {
+.nav .nav-tabs, #followedArtistsLink, #yourArtistsLink, #informationTabLink, #photosTabLink, #destsTabLink, #tripsTabLink, #upcomingEventsLink {
     font-size: 18pt;
 }
 

@@ -57,6 +57,8 @@ public class ProfileController extends Controller implements TypesInterface {
     private Boolean countryFlag = true;
     private final UndoStackRepository undoStackRepository;
     private final ArtistRepository artistRepository;
+    private final EventRepository eventRepository;
+
 
 
 
@@ -74,7 +76,8 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ArtistRepository artistRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository,
+                             ArtistRepository artistRepository, EventRepository eventRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -86,6 +89,8 @@ public class ProfileController extends Controller implements TypesInterface {
             this.tripRepository = tripRepository;
             this.undoStackRepository = undoStackRepository;
             this.artistRepository = artistRepository;
+            this.eventRepository = eventRepository;
+
         }
 
 
@@ -346,13 +351,16 @@ public class ProfileController extends Controller implements TypesInterface {
 
                 List<Artist> followedArtistsList = artistRepository.getFollowedArtists(toSend.getProfileId());
                 List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
+                List<Events> upcomingEvents = eventRepository.getNextTenUpComingEvents(profId);
+
+
 
                 if (!outdatedCountries.isEmpty() && countryFlag) {
                     countryFlag = false;
                     return redirect("/profile").flashing("changeCountry", profileRec.get().getFirstName() + " you have an outdated country");
                 }
                 countryFlag = true;
-                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
+                return ok(profile.render(toSend, imageForm, displayImageList, show, tripValues, profilePicture, destinationsList, followedArtistsList, Country.getInstance().getAllCountries(), artistRepository.getAllUserArtists(profId), upcomingEvents, request, messagesApi.preferred(request)));
             }
             return redirect("/");
         });

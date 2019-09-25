@@ -48,6 +48,9 @@ public class Events extends Model {
     private List<Artist> eventArtists;
 
     @Transient
+    private List<Integer> eventAttendees;
+
+    @Transient
     private String artistForm;
 
     @Transient
@@ -136,6 +139,14 @@ public class Events extends Model {
             return eventTypes.get(0);
         }
         return "";
+    }
+
+    public List<Integer> getEventAttendees() {
+        return eventAttendees;
+    }
+
+    public void setEventAttendees(List<Integer> eventAttendees) {
+        this.eventAttendees = eventAttendees;
     }
 
     public Destination getDestination() {
