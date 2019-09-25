@@ -114,18 +114,7 @@
                                     } else {
                                         <input type="search" id="eventName" name =eventName placeholder="Search..">
                                     }                                    <div class="radioFollow">
-                                        @if(searchData != null) {
-                                            @if(searchData.getFollowedArtists.equals("1")) {
-                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="">&nbsp;All Events</div>
-                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="1" checked>&nbsp;Followed Artists</div>
-                                            } else {
-                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="" checked>&nbsp;All Events</div>
-                                                <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="1">&nbsp;Followed Artists</div>
-                                            }
-                                        } else {
-                                            <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="" checked>&nbsp;All Events</div>
-                                            <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="1">&nbsp;Followed Artists</div>
-                                        }
+
                                     </div>
                                     <button type="submit" class="btn btn-primary radioButtons">Search</button>
                                     <button class="btn btn-secondary radioButtons" type="button" data-toggle="collapse"
@@ -412,6 +401,7 @@
                         </div>
                     </div>
                 <ul class="pagination" id="pagination-section">
+                @paginationHelper.getInfoString
                     @if(paginationHelper.isPreviousEnabled) {
                         @if(searchData != null) {
                             @helper.form(routes.EventsController.search(0)) {

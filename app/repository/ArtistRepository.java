@@ -304,8 +304,22 @@ public class ArtistRepository {
                     .eq("artist_id", artistId)
                     .eq("profile_id", profileId)
                     .delete();
+            checkToDeleteArtist(artistId);
             return null;
         });
+    }
+
+
+    /**
+     * Method to delete an artist if the last admin has left
+     *
+     * @param artistId artist id to check
+     */
+    private void checkToDeleteArtist(int artistId) {
+        List<Integer> admins = ebeanServer.find(ArtistProfile.class).select("profileId").where().eq("artist_id", artistId).findSingleAttributeList();
+        if (admins.isEmpty() || admins == null) {
+            ebeanServer.find(Artist.class).where().eq("artist_id", artistId).delete();
+        }
     }
 
     /**
