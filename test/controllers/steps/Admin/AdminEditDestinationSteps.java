@@ -36,7 +36,7 @@ public class AdminEditDestinationSteps {
                 .session("connected", "2");
 
         loginResult = Helpers.route(TestApplication.getApplication(), request);
-        assertEquals("/profile", loginResult.redirectLocation().get());
+        assertEquals("/events/0", loginResult.redirectLocation().get());
 
     }
 

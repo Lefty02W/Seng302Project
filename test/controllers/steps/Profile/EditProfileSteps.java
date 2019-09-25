@@ -26,6 +26,7 @@ public class EditProfileSteps {
 
     private Result redirectResultEdit;
     private Result loginResult;
+    private Result profileResult;
 
 
     // Scenario: I can perform an editDestinations of my profile - start
@@ -41,6 +42,12 @@ public class EditProfileSteps {
 
         loginResult = Helpers.route(TestApplication.getApplication(), request);
 
+        Http.RequestBuilder requestBuilder = Helpers.fakeRequest()
+                .method("GET")
+                .uri("/profile")
+                .session("connected", "1");
+        profileResult = Helpers.route(TestApplication.getApplication(), requestBuilder);
+
     }
 
     @Given("I am on the edit profile page")
@@ -55,11 +62,6 @@ public class EditProfileSteps {
         editForm.put("gender", "Male");
         editForm.put("nationalitiesForm", "New Zealand");
         editForm.put("travellerTypesForm", "Backpacker,Gap Year");
-        if (loginResult.redirectLocation().isPresent()) {
-            assertEquals("/profile", loginResult.redirectLocation().get());
-        } else {
-            fail();
-        }
     }
 
     @When("I change my first name to {string}")
