@@ -424,7 +424,7 @@ public class EventsController extends Controller {
      * @return a redirect to the events page, displaying the refined list of events
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> search(Http.Request request, Integer offset){
+    public CompletionStage<Result> search(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if(profile.isPresent()){
@@ -433,9 +433,8 @@ public class EventsController extends Controller {
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
                 eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("") && !eventFormData.getAttending().equals("on")) {
-                    return redirect(eventURL).flashing("error", "Please enter at least one search filter.");
+                    return redirect(eventURL);
                 }
-
                 List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset, profId);
                 if(!eventsList.isEmpty() || offset > 0){
                     PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, 0, true, true, eventRepository.getNumEvents());
