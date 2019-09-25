@@ -575,6 +575,7 @@ public class EventsController extends Controller {
                                     artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto,
                                     request, messagesApi.preferred(request)));
                         } else {
+                            System.out.println(optEvent.get().getDestination());
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 1,
                                     null, false, new ArrayList<>(), new ArrayList<>(),

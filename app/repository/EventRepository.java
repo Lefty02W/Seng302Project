@@ -139,11 +139,13 @@ public class EventRepository {
      * @return event Event object that has been populated
      */
     private Events populateEvent(Events event) {
-        event.setEventGenres(genreRepository.getEventGenres(event.getEventId()));
-        event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
-        event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
-        event.setDestination(destinationRepository.lookup(event.getDestinationId()));
-        event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
+        if (event != null) {
+            event.setEventGenres(genreRepository.getEventGenres(event.getEventId()));
+            event.setEventTypes(eventTypeRepository.getEventTypeOfEvents(event.getEventId()));
+            event.setEventArtists(artistRepository.getEventArtists(event.getEventId()));
+            event.setDestination(destinationRepository.lookup(event.getDestinationId()));
+            event.setEventAttendees(attendEventRepository.getAttendingUsers(event.getEventId()));
+        }
         return event;
     }
 
@@ -473,7 +475,7 @@ public class EventRepository {
      * @return Optional event found
      */
     public CompletionStage<Optional<Events>> getEvent(int id) {
-        return supplyAsync(() -> Optional.ofNullable(ebeanServer.find(Events.class).where().eq("event_id", id).findOne()));
+        return supplyAsync(() -> Optional.ofNullable(populateEvent(ebeanServer.find(Events.class).where().eq("event_id", id).findOne())));
     }
 
     /**
