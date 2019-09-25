@@ -1284,6 +1284,26 @@
             ];
 
             /**
+             * Callback for succes on geolocation to get users location
+             */
+            function setLocation(pos) {
+                center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
+                var centerPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(centerPos);
+                var youMarker = new google.maps.Marker({
+                    map: map,
+                    position: centerPos,
+                    draggable: true
+                });
+                youMarker.content = "You Are Here";
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(youMarker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(map, this);
+                });
+            }
+
+            /**
              * Initialises the map view
              */
             function initMap() {
@@ -1302,6 +1322,9 @@
                     fullscreenControl: false,
                     zoom: 2
                 });
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                }
                 addMarkers();
 
                 var legend = document.getElementById('legend');
