@@ -242,6 +242,24 @@ public class EventsController extends Controller {
         return eventRepository.update(eventId, event).thenApplyAsync(x -> redirect("/artists/" + artistId +eventURL).flashing("success", "Event has been updated."));
     }
 
+    /**
+     * Endpoint to allow a user to edit an event from its page.
+     *
+     * @param request http request
+     * @param eventId id of event to edit
+     * @return redirect to the event page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> editEventFromEvent(Http.Request request, Integer eventId) {
+        Form<Events> form = eventEditForm.bindFromRequest(request);
+        Events event = setValues(SessionController.getCurrentUserId(request), form);
+        if (event.getStartDate().after(event.getEndDate())){
+            return supplyAsync(() -> redirect("/events/view/" + eventId).flashing("error", "Error: Start date cannot be after end date."));
+        }
+        return eventRepository.update(eventId, event).thenApplyAsync(x -> redirect("/events/view/" + eventId).flashing("success", "Event has been updated."));
+    }
+
+
 
     /**
      * Endpoint method to create an event as an artist admin.
@@ -506,7 +524,8 @@ public class EventsController extends Controller {
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (profileOpt.isPresent() && optEvent.isPresent()) {
-                        return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), request, messagesApi.preferred(request)));
+                        return ok(event.render(profileOpt.get(), optEvent.get(), listProfileAttendees, eventRepository.isOwner(profId, id), getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }

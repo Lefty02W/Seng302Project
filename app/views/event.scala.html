@@ -1,6 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
-@(currentUser: Profile, event: Events, attendees: List[String],  isAdmin: Boolean, photoList: List[Photo])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(currentUser: Profile, event: Events, attendees: List[String],  isAdmin: Boolean, photoList: List[Photo], destinations : List[Destination],
+        verifiedArtists : List[Artist], genres: List[MusicGenre])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -205,6 +206,12 @@
                                     Change Cover Photo
                                 </button>
                             </div>
+                            <div class="col button-col">
+                                <button class="btn btn-secondary" type="button" id="editEventModalButton" data-toggle="modal"
+                                data-target="#editEventModal">
+                                    Edit Event
+                                </button>
+                            </div>
                         }
                         @*/ / @ if(event.getTicketLink) #TODO Set this when ticket booking is adedd*@
                         <div class="col button-col">
@@ -315,10 +322,203 @@
         </div>
 
 
+        <div class="modal" id="editEventModal">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                        <!-- header -->
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Event</h4>
+                        <button type="button" class="close" data-dismiss="modal"></button>
+                    </div>
+                    @helper.form(routes.EventsController.editEventFromEvent(event.getEventId)) {
+                        @CSRF.formField
+                            <!-- body -->
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder"> <small id="label">Event Name*</small>
+                                                <input type="text" id="eventName" placeholder="Event Name" value="@event.getEventName" name="eventName" class="inputField" required oninvalid="this.setCustomValidity('Event name is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Event Type*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <select class="selectpicker" title="Type" id="typeForm" name="typeForm" data-width="50%" required>
+                                                @if(event.getEventTypes.contains("Gig")) {
+                                                    <option value="Gig" selected>Gig</option>
+                                                } else {
+                                                    <option value="Gig">Gig</option>
+                                                }
+                                                @if(event.getEventTypes.contains("Meetup")) {
+                                                    <option value="Meetup" selected>Meetup</option>
+                                                } else {
+                                                    <option value="Meetup">Meetup</option>
+                                                }
+                                                @if(event.getEventTypes.contains("Competition")) {
+                                                    <option value="Competition" selected>Competition</option>
+                                                } else {
+                                                    <option value="Competition">Competition</option>
+                                                }
+                                                @if(event.getEventTypes.contains("Party")) {
+                                                    <option value="Party" selected>Party</option>
+                                                } else {
+                                                    <option value="Party">Party</option>
+                                                }
+                                                @if(event.getEventTypes.contains("Charity")) {
+                                                    <option value="Charity" selected>Charity</option>
+                                                } else {
+                                                    <option value="Charity">Charity</option>
+                                                }
+                                                @if(event.getEventTypes.contains("Festival")) {
+                                                    <option value="Festival" selected>Festival</option>
+                                                } else {
+                                                    <option value="Festival">Festival</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div class="row justify-content-center">
+                                            <label>Age Restriction*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <select class="selectpicker" title="Age Restriction" id="ageForm" name ="ageForm" data-width="50%" required>
+                                                @if(event.getAgeRestriction == 16) {
+                                                    <option selected value=16>16+</option>
+                                                } else {
+                                                    <option value=16>16+</option>
+                                                }
+                                                @if(event.getAgeRestriction == 18) {
+                                                    <option selected value=18>18+</option>
+                                                } else {
+                                                    <option value=18>18+</option>
+                                                }
+                                                @if(event.getAgeRestriction == 21) {
+                                                    <option selected value=21>21+</option>
+                                                } else {
+                                                    <option value=21>21+</option>
+                                                }
+                                                @if(event.getAgeRestriction == 0) {
+                                                    <option selected value=0>All Ages</option>
+                                                } else {
+                                                    <option value=0>All Ages</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <div class="row justify-content-center">
+                                            <label>Event Destination*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <select class="selectpicker" data-live-search="true" title="Destination"  name="destinationId" id="destinationId" data-width="50%" required>
+                                            @for(destination <- destinations) {
+                                                @if(event.getDestinationId == destination.getDestinationId) {
+                                                    <option selected value="@destination.getDestinationId">@destination.getName</option>
+                                                } else {
+                                                    <option value="@destination.getDestinationId">@destination.getName</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Genres</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="genreFormEdit" name="genreForm" class="hidden-field">
+                                            </div>
+                                            <select class="selectpicker" data-live-search="true" multiple title="Genres" id="genreDropdownEdit" data-width="50%">
+                                            @for(genre <- genres) {
+                                                @if(event.getEventGenres.contains(genre)) {
+                                                    <option selected value="@genre.getGenreId">@genre.getGenre</option>
+                                                } else {
+                                                    <option value="@genre.getGenreId">@genre.getGenre</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Event Artists*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="hidden-div-edit">
+                                                <input type="text" id="artistFormEdit" name="artistForm" class="hidden-field" required>
+                                            </div>
+                                            <select class="selectpicker" data-live-search="true" multiple title="Event Artists" id="artistDropdownEdit" data-width="50%">
+                                            @for(art <- verifiedArtists) {
+                                                @if(event.getEventArtists.contains(art)) {
+                                                    <option selected value="@art.getArtistId">@art.getArtistName</option>
+                                                } else {
+                                                    <option value="@art.getArtistId">@art.getArtistName</option>
+                                                }
+                                            }
+                                            </select>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Start Date*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="datetime-local" id="startDate"  name="startDate" class="inputField" value="@event.formatLocalDate(event.getStartDate)" required oninvalid="this.setCustomValidity('Event start date is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>End Date*</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="datetime-local" id="endDate"  name="endDate" class="inputField" value="@event.formatLocalDate(event.getEndDate)" required oninvalid="this.setCustomValidity('Event end date is required')" oninput="setCustomValidity('')">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Ticket Price</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="number" id="ticketPrice" step="0.01" name="ticketPrice" class="inputField" value="@event.getTicketPrice">
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <label>Ticket Link</label>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <div class="form-group" id="holder">
+                                                <input type="url" id="ticketLink"  name="ticketLink" class="inputField" value="@event.getTicketLink">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row justify-content-center">
+                                    <small id="label">Event Description*</small>
+                                    <input type="text" id="description" placeholder="Description*" value="@event.getDescription" name="description">
+                                </div>
+                                <div class="row justify-content-center">
+                                    <small>Fields with a * are required</small>
+                                </div>
+                            </div>
+                        </div>
+                            <!-- footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" onclick="fillValsEdit()">Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
     </body>
 
 
     <script>
+
+            function fillValsEdit() {
+                $('#genreFormEdit').val($('#genreDropdownEdit').val());
+                $('#artistFormEdit').val($('#artistDropdownEdit').val());
+            }
 
             $(function () {
                 $(".toggleButton").on('click', function (e) {
