@@ -1,16 +1,16 @@
 package repository;
 
+import com.google.common.collect.Sets;
 import io.ebean.*;
 import models.*;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -189,13 +189,73 @@ public class EventRepository {
                 targetEvent.update();
                 txn.commit();
                 event.setEventId(targetEvent.getEventId());
-                removeLinkingTables(event);
-                saveLinkingTables(event);
+                updateLinkingTables(event);
             }
             txn.end();
 
         return eventId;
     });
+    }
+
+    /**
+     * Function that handles the update for the linking tables
+     * converts objects into sets
+     * performs operations to find the intersection and difference to work out what to delete and insert
+     * @param event Event to be updated
+     */
+    private void updateLinkingTables(Events event) {
+        EventType eventType = eventTypeRepository.getEventType(event.getEventId());
+        Set<Integer> eventGenreSet = eventGenreRepository.getEventGenreList(event.getEventId()).stream().collect(Collectors.toSet());
+        Set<Integer> eventArtistsSet = eventArtistRepository.getEventArtistList(event.getEventId()).stream().collect(Collectors.toSet());
+        Integer eventTypeId = eventTypeRepository.getTypeOfEventsIdByName(event.getTypeForm());
+        if(eventType.getTypeId() != eventTypeId) {
+            eventTypeRepository.updateEventType(event.getEventId(), eventTypeId);
+        }
+        Set<Integer> newGenreIds = Stream.of(event.getGenreForm().split(","))
+                .map(Integer::parseInt).collect(Collectors.toSet());
+
+        updateGenre(event, eventGenreSet, newGenreIds);
+
+        Set<Integer> newArtistIds = Stream.of(event.getArtistForm().split(","))
+                .map(Integer::parseInt).collect(Collectors.toSet());
+
+        updateArtist(event, eventArtistsSet, newArtistIds);
+
+
+
+    }
+
+    /**
+     * Update artist links to an event either removes or inserts when needed
+     * @param event Event object to be updated
+     * @param eventArtistsSet Set of event artist ids that is already existing
+     * @param newArtistIds Set of event artists ids that has the changes
+     */
+    private void updateArtist(Events event, Set<Integer> eventArtistsSet, Set<Integer> newArtistIds) {
+        ebeanServer.find(EventArtists.class).where().in("artist_id", Sets.difference(eventArtistsSet, newArtistIds)).eq("event_id", event.getEventId()).delete();
+
+        for (Integer i : Sets.difference(newArtistIds, eventArtistsSet)) {
+            ebeanServer.insert(new EventArtists(event.getEventId(), i));
+        }
+    }
+
+
+    /**
+     * Update genre links to an event either removes or inserts when needed
+     * @param event Event object to be updated
+     * @param eventGenreSet Set of event genres ids that is already existing
+     * @param newGenreIds Set of event genres ids that has the changes
+     */
+    private void updateGenre(Events event, Set<Integer> eventGenreSet, Set<Integer> newGenreIds) {
+        ebeanServer.find(EventGenres.class).where().in("genre_id", Sets.difference(eventGenreSet, newGenreIds)).eq("event_id", event.getEventId()).delete();
+        for (Integer i : Sets.difference(newGenreIds, eventGenreSet)) {
+            ebeanServer.insert(new EventGenres(event.getEventId(), i));
+        }
+    }
+
+
+    private void removeEventGenres(int eventId, Set<Integer> ids) {
+        ebeanServer.find(EventGenres.class).where().idIn(ids).delete();
     }
 
     /**
@@ -213,6 +273,7 @@ public class EventRepository {
      * @param event Event holding forms with updated values
      */
     private void saveLinkingTables(Events event) {
+
         for (String genreId : event.getGenreForm().split(",")) {
             if(!genreId.equals("")) {  //Genre is not required, so could pass empty string here.
                 eventGenreRepository.insert(new EventGenres(event.getEventId(), Integer.parseInt(genreId)));
