@@ -401,6 +401,12 @@ public class EventRepository {
             } else {
                 query += " WHERE events.start_date > " + date;
             }
+        } else {
+            if (whereAdded){
+                query += " AND DATE(events.end_date) < DATE(NOW())";
+            } else {
+                query += " WHERE DATE(events.end_date) < DATE(NOW())";
+            }
         }
 
         query += " ORDER BY events.start_date LIMIT 8 OFFSET "+offset;
