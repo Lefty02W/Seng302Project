@@ -1,5 +1,5 @@
 @import play.mvc.Http
-@(photoList: List[Photo], currentProfile : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
+@(photoList: List[Photo], currentProfile : Profile, profile : Profile)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html>
@@ -61,6 +61,93 @@
 
                 <div class="col">
                     <div id="photosCard" class="card-large lower-card">
+                        <div class="container">
+                            <div class="card center-col overflow-auto" id="informationCard">
+
+                                <div id="emailRow" class="row">
+                                    <div class="col-md-2">
+                                        <b>Email:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a>@profile.getEmail</a>
+                                    </div>
+                                </div>
+
+                                <div id="dobRow" class="row">
+                                    <div class="col-md-2">
+                                        <b>DOB:</b>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a>@profile.getBirthString</a>
+                                    </div>
+                                </div>
+
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col align-items-start">
+                                        @if(profile.getTravellerTypesList.isEmpty) {
+                                            <div class="alert alert-info" role="alert">
+                                                You have no traveller types associated with your profile
+                                            </div>
+                                        } else {
+                                            <div class="row">
+                                                <div class="col">
+                                                    <a><b>Traveller Types:</b>
+                                                        @for(index <- 0 until profile.getTravellerTypesList.size) {
+                                                            <li style="padding: 0px;
+                                                                margin-left: 20px;">
+                                                            @profile.getTravellerTypesList.get(index)
+                                                            </li>
+                                                        }
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        }
+                                        </div>
+                                        <div class="col align-items-center">
+                                        @if(profile.getNationalityList.isEmpty) {
+                                            <div class="alert alert-info" role="alert">
+                                                You have no nationalities associated with your profile
+                                            </div>
+                                        } else {
+                                            <div class="row justify-content-center">
+                                                <div class="col">
+                                                    <a><b>Nationalities:</b>
+                                                        @for(index <- 0 until profile.getNationalityList.size) {
+                                                            <li style="padding: 0px;
+                                                                margin-left: 20px;">
+                                                            @profile.getNationalityList.get(index)
+                                                            </li>
+                                                        }
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        }
+                                        </div>
+                                        <div class="col align-items-end">
+                                        @if(profile.getPassportsList.isEmpty) {
+                                            <div class="alert alert-info" role="alert">
+                                                You have no passports associated with your profile
+                                            </div>
+                                        } else {
+                                            <div class="row justify-content-center">
+                                                <div class="col">
+                                                    <a><b>Passports:</b>
+                                                        @for(index <- 0 until profile.getPassportsList.size) {
+                                                            <li style="padding: 0px;
+                                                                margin-left: 20px;">
+                                                            @profile.getPassportsList.get(index)
+                                                            </li>
+                                                        }
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div id="photoHeading">
                             <h3 class="primaryText">Traveller Photos</h3>
                             <a href="@routes.TravellersController.show(0)"><button class="btn btn-primary">

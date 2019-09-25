@@ -149,12 +149,6 @@
                                                 </div>
                                                 <div class="card-body" id="eventCardBody">
                                                     <div class="row">
-                                                    @for(artist <- event.getEventArtists) {
-                                                        <i class="fa fa-user">&nbsp;</i>
-                                                        <p>@artist.getArtistName</p>&nbsp;
-                                                    }
-                                                    </div>
-                                                    <div class="row">
                                                         <i class="fa fa-calendar">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
                                                     </div>
                                                     <div class="row">
@@ -175,18 +169,7 @@
                                                         <i class="fa fa-user-plus">&nbsp;</i>
                                                         <p>@event.getEventAttendees.size() attending</p>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <h4 class="primary-color">Description</h4>
-                                                            <p>@event.getDescription</p>
-                                                        </div>
-                                                        <div class="col">
-                                                            <h4 class="primary-color">Genres</h4>
-                                                            @for(genre <- event.getEventGenres) {
-                                                                <p>@genre.getGenre</p>
-                                                            }
-                                                        </div>
-                                                    </div>
+
 
                                                 </div>
                                                 <div class="card-footer">

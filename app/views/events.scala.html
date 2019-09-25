@@ -311,12 +311,6 @@
 
                                     </div>
 
-                                    @for(artist <- event.getEventArtists) {
-                                        <div class="row" id="cardInfo">
-                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user">&nbsp;</i>
-                                            <p>@artist.getArtistName</p>
-                                        </div>
-                                    }
                                     <div class="row" id="cardInfo">
                                         <p>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-music">&nbsp;</i>@event.getEventTypes.get(0)</p>
                                     </div>
@@ -337,18 +331,6 @@
                                     <div class="row" id="cardInfo">
                                             &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus">&nbsp;</i>
                                         <p>@event.getEventAttendees.size() attending</p>
-                                    </div>
-                                    <div class="row" id="bigInfo">
-                                        <div class="col">
-                                            <h4 class="primary-color">Description</h4>
-                                            <p>@event.getDescription</p>
-                                        </div>
-                                        <div class="col">
-                                            <h4 class="primary-color">Genres</h4>
-                                            @for(genre <- event.getEventGenres) {
-                                                <p>@genre.getGenre</p>
-                                            }
-                                        </div>
                                     </div>
 
                                     <div class="card-footer">

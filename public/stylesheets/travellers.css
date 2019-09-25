@@ -132,3 +132,16 @@ img.thumbnail {
     height: 50px;
     overflow-y: auto;
 }
+
+.center-col {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+#informationCard {
+    overflow-x: hidden !important;
+    width: 80%;
+    padding-top: 10px;
+    padding-left: 10px;
+}
