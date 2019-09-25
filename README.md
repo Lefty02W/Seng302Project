@@ -33,7 +33,7 @@ With the repository cloned, it can be imported using the following steps.
 Follow the instructions on this page
 https://eng-git.canterbury.ac.nz/seng302-2019/team-700/wikis/log-in-details
 * Master admin details:
-* Email: admin@travelea.com
+* Email: admin@soundbound.com
 * Password: boeing700
 
 
