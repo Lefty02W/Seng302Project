@@ -264,6 +264,7 @@ public class EventsController extends Controller {
      * @param id Id of the artist that is creating an event
      * @return Redirect to artists page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createArtistEvent(Http.Request request, int id){
         return supplyAsync(() -> {
             Integer profId = SessionController.getCurrentUserId(request);
@@ -297,6 +298,7 @@ public class EventsController extends Controller {
      * @param request Http request.
      * @return Redirect to the event page.
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> createUserEvent(Http.Request request) {
 
         return supplyAsync(() -> {
@@ -372,6 +374,7 @@ public class EventsController extends Controller {
      * @param request request to search that contains SearchFormData
      * @return a redirect to the events page, displaying the refined list of events
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> search(Http.Request request, Integer offset){
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
@@ -429,6 +432,7 @@ public class EventsController extends Controller {
      * @param eventId id of event to delete
      * @return redirect back to artist page
      */
+    @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> deleteEvent(Http.Request request, Integer artistId, Integer eventId) {
         return eventRepository.deleteEvent(eventId).thenApplyAsync(code -> redirect("/artists/" + artistId + eventURL));
     }

@@ -98,6 +98,11 @@
     padding: 0;
 }
 
+.display-events {
+    height: 70vh;
+    overflow-y: scroll;
+}
+
 .event-link {
     color: #d74961;
     text-decoration: underline;
