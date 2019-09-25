@@ -296,17 +296,19 @@
 
                 <div class="col">
 
-                    <button class="btn btn-primary" id="leaveArtistButton" onclick="fillLeaveValues('/artists/@artist.getArtistId/leave')">
-                        <i class="fa fa-user-times"></i>
-                        Withdraw Ownership
-                    </button>
-
-                    @if(artistCoverPicture != null) {
-                        <button class="btn btn-secondary" id="removeArtistPicButton" type="button" data-toggle="modal"
-                        data-target="#removeArtistPicButtonModal">
-                            <i class="fa fa-trash"></i>
-                            Remove Photo
+                    @if(artist.getAdminsList.contains(currentUser)) {
+                        <button class="btn btn-primary" id="leaveArtistButton" onclick="fillLeaveValues('/artists/@artist.getArtistId/leave')">
+                            <i class="fa fa-user-times"></i>
+                            Withdraw Ownership
                         </button>
+
+                        @if(artistCoverPicture != null) {
+                            <button class="btn btn-secondary" id="removeArtistPicButton" type="button" data-toggle="modal"
+                            data-target="#removeArtistPicButtonModal">
+                                <i class="fa fa-trash"></i>
+                                Remove Photo
+                            </button>
+                        }
                     }
                 </div>
             </div>
