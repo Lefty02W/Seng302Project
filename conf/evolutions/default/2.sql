@@ -201,8 +201,8 @@ INSERT INTO music_genre (genre_Id, genre) VALUES
 INSERT INTO music_genre (genre_Id, genre) VALUES
   (4, 'Indie');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (1, 'Mr Walsh', 'Mr Walsh', 'walsh');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (1, 'Mr Walsh', 'Mr Walsh', 'walsh', 0);
 
 INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
   (2, 'James', 'James', 'james', 1);
@@ -210,23 +210,25 @@ INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
 INSERT INTO artist_profile(artist_id, profile_id) VALUES
   (2, 2);
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (3, 'Jerry', 'Jerry', 'jerry');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (3, 'Jerry', 'Jerry', 'jerry', 1);
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (4, 'Yes', 'Jerry', 'jerry');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (5, 'Steve', 'Big boi steve', 'jerry');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (6, 'STIFI', 'Big boi steve', 'jerry');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (4, 'Yes', 'Jerry', 'jerry', 0);
+
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (5, 'Steve', 'Big boi steve', 'jerry', 1);
+
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (6, 'STIFI', 'Big boi steve', 'jerry', 1);
 
 INSERT INTO artist (artist_id, artist_name, biography, members,
-  facebook_link, instagram_link, spotify_link, twitter_link, website_link) VALUES
+  facebook_link, instagram_link, spotify_link, twitter_link, website_link, verified) VALUES
   (7, 'There are no Trees', 'Indie Rock band from the Amazon Rainforest', 'Buck, Cherry, River',
   'https://www.facebook.com/', 'https://www.instagram.com/', 'https://www.spotify.com/', 'https://www.twitter.com/',
-  'https://www.amazon.com/kingsofamazon');
+  'https://www.amazon.com/kingsofamazon', 1);
 
 INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
   (9, 'The Sloths', 'Sloths', 'SlothBoi', 1);
