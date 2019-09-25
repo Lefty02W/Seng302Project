@@ -99,7 +99,7 @@ img.thumbnail {
 
 #eventJumboNoPicture {
     height: 35vh;
-    background: url("https://images.unsplash.com/photo-1483101974978-cf266fdf1139?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80") no-repeat center center;
+    background: url("https://cdn.pixabay.com/photo/2016/11/22/18/56/audience-1850022_960_720.jpg") no-repeat center center;
     background-size: cover;
     border-radius: 0px !important;
 }
