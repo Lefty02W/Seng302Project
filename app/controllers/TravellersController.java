@@ -159,7 +159,7 @@ public class TravellersController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 List<Photo> displayPhotoList = getTravellersPhotos(profileId);
-                return ok(travellersPhotos.render(displayPhotoList, profile.get(),request, messagesApi.preferred(request)));
+                return ok(travellersPhotos.render(displayPhotoList, profile.get(), profileRepository.getExistingProfileByProfileId(profileId), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");
             }

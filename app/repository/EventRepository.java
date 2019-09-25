@@ -184,10 +184,13 @@ public class EventRepository {
 
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
+
             Events targetEvent = ebeanServer.find(Events.class).setId(eventId).findOne();
 
             if (targetEvent != null) {
+
                 targetEvent.setAgeRestriction(event.getAgeRestriction());
+
                 targetEvent.setDescription(event.getDescription());
                 targetEvent.setDestinationId(event.getDestinationId());
                 targetEvent.setEndDate(event.getEndDate());
@@ -214,22 +217,26 @@ public class EventRepository {
     private void updateLinkingTables(Events event) {
         EventType eventType = eventTypeRepository.getEventType(event.getEventId());
         Set<Integer> eventGenreSet = eventGenreRepository.getEventGenreList(event.getEventId()).stream().collect(Collectors.toSet());
+
         Set<Integer> eventArtistsSet = eventArtistRepository.getEventArtistList(event.getEventId()).stream().collect(Collectors.toSet());
+
         Integer eventTypeId = eventTypeRepository.getTypeOfEventsIdByName(event.getTypeForm());
+
         if(eventType.getTypeId() != eventTypeId) {
             eventTypeRepository.updateEventType(event.getEventId(), eventTypeId);
         }
-        Set<Integer> newGenreIds = Stream.of(event.getGenreForm().split(","))
-                .map(Integer::parseInt).collect(Collectors.toSet());
 
-        updateGenre(event, eventGenreSet, newGenreIds);
+        if (!event.getGenreForm().equals("")) {
+            Set<Integer> newGenreIds = Stream.of(event.getGenreForm().split(","))
+                    .map(Integer::parseInt).collect(Collectors.toSet());
+            updateGenre(event, eventGenreSet, newGenreIds);
+        }
 
-        Set<Integer> newArtistIds = Stream.of(event.getArtistForm().split(","))
-                .map(Integer::parseInt).collect(Collectors.toSet());
-
-        updateArtist(event, eventArtistsSet, newArtistIds);
-
-
+        if (!event.getArtistForm().equals("")) {
+            Set<Integer> newArtistIds = Stream.of(event.getArtistForm().split(","))
+                    .map(Integer::parseInt).collect(Collectors.toSet());
+            updateArtist(event, eventArtistsSet, newArtistIds);
+        }
 
     }
 
@@ -277,7 +284,6 @@ public class EventRepository {
      * @param event Event holding forms with updated values
      */
     private void saveLinkingTables(Events event) {
-
         for (String genreId : event.getGenreForm().split(",")) {
             if(!genreId.equals("")) {  //Genre is not required, so could pass empty string here.
                 eventGenreRepository.insert(new EventGenres(event.getEventId(), Integer.parseInt(genreId)));
@@ -397,6 +403,25 @@ public class EventRepository {
 
         query += " ORDER BY events.start_date LIMIT 8 OFFSET "+offset;
         return createSqlQuery(query, args, likeAdded);
+    }
+
+    /**
+     * A function to find out is a user is an admin of a particular event. A user is an admin of an event if they are an admin of one
+     * of the artists going to that event.
+     *
+     * @param profId The profile ID of the user.
+     * @param eventId The Id of the event to check
+     * @return True if the profile is an admin, false if they aren't
+     */
+    public boolean isOwner(int profId, int eventId) {
+        List<ArtistProfile> artistProfile = ebeanServer.find(ArtistProfile.class).where().eq("profile_id", profId).findList();
+        for (int i=0;i<artistProfile.size();i++) {
+            Optional<EventArtists> eventArtists = Optional.ofNullable(ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).eq("artist_id", artistProfile.get(i).getAPArtistId()).findOne());
+            if (eventArtists.isPresent()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

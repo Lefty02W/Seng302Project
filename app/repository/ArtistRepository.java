@@ -96,7 +96,7 @@ public class ArtistRepository {
         for (EventArtists eventArtist : eventArtists) {
             artist = Optional.ofNullable(ebeanServer.find(Artist.class).where().eq("artist_id", eventArtist.getArtistId()).findOne());
             if(artist.isPresent()) {
-                artists.add(artist.get());
+                artists.add(populateArtistAdmin(artist.get()));
             }
         }
         return (artists);
@@ -446,47 +446,29 @@ public class ArtistRepository {
                 "LEFT OUTER JOIN artist_country ON artist_country.artist_id = artist.artist_id " +
                 "LEFT OUTER JOIN passport_country ON passport_country.passport_country_id = artist_country.country_id " +
                 "LEFT OUTER JOIN artist_profile ON artist.artist_id = artist_profile.artist_id " +
-                "LEFT OUTER JOIN follow_artist ON artist.artist_id = follow_artist.artist_id ";
-        boolean namePresent = false;
+                "LEFT OUTER JOIN follow_artist ON artist.artist_id = follow_artist.artist_id " +
+                "WHERE artist.verified = 1 ";
+        boolean namePresent = true;
         boolean genrePresent = false;
         boolean countryPresent = false;
         if (!name.equals("")){
-            queryString += "WHERE artist_name LIKE ? ";
+            queryString += "AND artist_name LIKE ? ";
             namePresent = true;
         }
         if (!genre.equals("")){
-            if (namePresent){
-                queryString += "AND genre = ? ";
-                genrePresent = true;
-            } else {
-                queryString += "WHERE genre = ? ";
-                genrePresent = true;
-            }
+            queryString += "AND genre = ? ";
         }
         if (!country.equals("")){
-            if(namePresent || genrePresent){
-                queryString += "AND passport_name = ? ";
-                countryPresent = true;
-            } else {
-                queryString += "WHERE passport_name = ? ";
-                countryPresent = true;
-            }
+            queryString += "AND passport_name = ? ";
+
         }
 
         if (followed == 1){
-            if(namePresent || genrePresent || countryPresent){
-                queryString += "AND follow_artist.profile_id = ? ";
-            } else {
-                queryString += "WHERE follow_artist.profile_id = ? ";
-            }
+            queryString += "AND follow_artist.profile_id = ? ";
         }
 
         if (created == 1){
-            if(namePresent || genrePresent || countryPresent || followed == 1){
-                queryString += "AND artist_profile.profile_id = ? ";
-            } else {
-                queryString += "WHERE artist_profile.profile_id = ? ";
-            }
+            queryString += "AND artist_profile.profile_id = ? ";
         }
         queryString += "LIMIT 100";
 

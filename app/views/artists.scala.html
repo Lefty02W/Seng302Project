@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
 
-@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist], ownedArtists: List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+@(searchForm: Form[ArtistFormData],currentUser : Profile, genres: List[MusicGenre], profiles : List[Profile], countries : List[String], artists : List[Artist], followedArtists : List[Artist], ownedArtists: List[Artist], searchData : ArtistFormData)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -40,28 +40,35 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
-                        Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
-                        Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
-                        Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
-                        Travellers</a>
-                    <a style="color: #d74961;
-                        background-color: #ede1d1 !important" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
-                        Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
-                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
+                    </a>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
+                        Artists
+                    </a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
+                        Profile
+                    </a>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
+                        Destinations
+                    </a>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
+                        Trips
+                    </a>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
+                        Travellers
+                    </a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
+                        Treasure Hunt
                     </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
                     }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
-                        Logout</a>
+                        Logout
+                    </a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -101,7 +108,11 @@
                     <div class="accordion" id="filterAccordion">
                         <div class="card">
                             <div class="card-header" id="headingOne">
+                            @if(searchData != null) {
+                                <input type="search" value=@searchData.getName id="name" name="name" placeholder="Search..">
+                            } else {
                                 <input type="search" id="name" name="name" placeholder="Search..">
+                            }
                                 <button type="submit" class="btn btn-primary">Search</button>
                                 <button class="btn btn-secondary" type="button" data-toggle="collapse"
                                 data-target="#collapseFilters" aria-expanded="false"
@@ -116,21 +127,49 @@
                                         <div class="row">
                                             <div class="col">
                                                 <select class="selectpicker overlay-dropdown genre-drop" data-size="3" id="genre" name="genre" title="Genres">
-                                                @for(genre <- genres) {
-                                                    <option value="@genre.getGenre">@genre.getGenre</option>
+                                                @if(searchData != null) {
+                                                    @for(genre <- genres) {
+                                                        @if(genre.getGenre.equals(searchData.getGenre)) {
+                                                                <option selected value="@genre.getGenre">@genre.getGenre</option>
+                                                            } else {
+                                                                <option value="@genre.getGenre">@genre.getGenre</option>
+                                                            }
+                                                        }
+                                                } else {
+                                                    @for(genre <- genres) {
+                                                        <option value="@genre.getGenre">@genre.getGenre</option>
+                                                    }
                                                 }
 
                                                 </select>
                                             </div>
                                             <div class="col">
                                                 <select class="selectpicker overlay-dropdown country-drop" data-size="3" id="country" name="country" title="Countries">
+                                                @if(searchData != null) {
+                                                    @for(nation <- countries) {
+                                                        @if(nation.equals(searchData.getCountry)) {
+                                                            <option selected value="@nation">@nation</option>
+                                                        } else {
+                                                            <option value="@nation">@nation</option>
+                                                        }
+                                                    }
+                                                    </select>
+                                                } else {
                                                 @for(nation <- countries) {
                                                     <option value="@nation">@nation</option>
                                                 }
-                                                </select>
+                                            }
                                             </div>
                                             <div class="col">
-                                                <input type="checkbox" id="followed" name="followed">
+                                                @if(searchData != null) {
+                                                    @if(searchData.followed.equals("on")) {
+                                                        <input type="checkbox" id="followed" name="followed" checked>
+                                                    } else {
+                                                        <input type="checkbox" id="followed" name="followed">
+                                                    }
+                                                } else {
+                                                    <input type="checkbox" id="followed" name="followed">
+                                                }
                                                 <label for="toggle">Followed Artists</label>
                                             </div>
                                             }
@@ -151,7 +190,7 @@
                     <div class="row" id="all-artist-cards">
                 @for(artist <- artists) {
                     <div class="card-body col col-md-12 col-xl-6" id="artist-card">
-                        <div class="card-header"> @artist.getArtistName &nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
+                        <div class="card-header"> <a class="event-link" href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)" title="View artist"> @artist.getArtistName </a> &nbsp;&nbsp;&nbsp;&nbsp; Followers: @artist.getFollowerCount
                             <i class="fa fa-user"></i>
                         </div>
                         <div class="row">
@@ -176,11 +215,6 @@
                             </ul>
                             </div>
                             <div class="col col-2">
-                                <div class="row">
-                                    <a href="@routes.ArtistController.showDetailedArtists(artist.getArtistId)">
-                                        <button class="btn btn-outline-primary" id="view" style="margin-bottom: 5px;">View</button>
-                                    </a>
-                                </div>
                                 <div class="row">
                                     @if(followedArtists contains artist) {
                                         @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {

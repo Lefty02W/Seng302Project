@@ -83,6 +83,7 @@ public class DestinationsController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> search(Http.Request request, Integer rowOffset){
         Integer profId = SessionController.getCurrentUserId(request);
+        searchVal = "";
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 Form<DestinationSearchFormData> searchDestinationForm = searchForm.bindFromRequest(request);

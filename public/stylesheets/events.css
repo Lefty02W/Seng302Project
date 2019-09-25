@@ -122,3 +122,12 @@
 #editEventLink {
     float: right;
 }
+
+#eventCardBorder {
+    margin-top: 12px;
+}
+
+
+#mapLink {
+    float: right;
+}

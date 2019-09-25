@@ -28,4 +28,23 @@ public class ArtistFormData {
 
     public void setCreatedArtist(String createdArtist) { this.createdArtist = createdArtist; }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getFollowed() {
+        return followed;
+    }
+
+    public String getCreatedArtist() {
+        return createdArtist;
+    }
 }

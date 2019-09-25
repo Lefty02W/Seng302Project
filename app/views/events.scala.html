@@ -42,27 +42,35 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">SoundBound</h2>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")"/>
-                        Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")"/>
-                        Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")"/>
-                        Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")"/>
-                        Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")"/>
-                        Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
-                    <a style="color: #d74961; background-color: #ede1d1 !important" class="list-group-item list-group-item-action bg-transparent">
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
                     </a>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
+                        Artists
+                    </a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
+                        Profile
+                    </a>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
+                        Destinations
+                    </a>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
+                        Trips
+                    </a>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
+                        Travellers
+                    </a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
+                        Treasure Hunt
+                    </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")"/>
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")"/>
-                        Logout</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
+                        Logout
+                    </a>
                 </div>
             </div>
         </div>
@@ -101,8 +109,11 @@
                         <div class="accordion" id="filterAccordion">
                             <div class="card">
                                 <div class="card-header" id="searchHeader">
-                                    <input type="search" id="eventName" class="radioInput" name="eventName" placeholder="Search..">
-                                    <div class="radioFollow">
+                                    @if(searchData != null) {
+                                        <input type="search" id="eventName" value="@searchData.getEventName" name="eventName" placeholder="Search..">
+                                    } else {
+                                        <input type="search" id="eventName" name =eventName placeholder="Search..">
+                                    }                                    <div class="radioFollow">
                                         @if(searchData != null) {
                                             @if(searchData.getFollowedArtists.equals("1")) {
                                                 <div class="row"><input type="radio" name="followedArtists" id="followedArtists" value="">&nbsp;All Events</div>
@@ -322,50 +333,39 @@
                             }
                             @for(event <- events){
                                 <div class="card border-primary" id="eventCardBorder">
-                                    <div class="card-body col col-md-12" id="eventCard">
-                                        <div class="card-header">
-                                            <h4 class="primary-color event-link toggled eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
+                                <div class="card-body col col-md-12" id="eventCard">
+                                    <div class="card-header toggled eventTitle" id='eventName@event.getEventId'>
+                                        <a class="event-link" href="/events/details/@event.getEventId">
+                                            @event.getEventName
+                                        </a>
+
+                                        <div class="event-link" id="mapLink" onclick="showEvent(@event.getEventId, this)">
+                                            <i class="fa fa-map-marker">View on Map</i>
                                         </div>
 
-                                        @for(artist <- event.getEventArtists) {
-                                            <div class="row" id="cardInfo">
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user">&nbsp;</i>
-                                                <p>@artist.getArtistName</p>
-                                            </div>
-                                        }
-                                        <div class="row" id="cardInfo">
-                                            <p>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-music">&nbsp;</i>@event.getEventTypes.get(0)</p>
-                                        </div>
-                                        <div class="row" id="cardInfo">
-                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-globe">&nbsp;</i>
-                                            <p>@event.getDestination.getName</p>
-                                        </div>
-                                        <div class="row" id="cardInfo">
-                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
-                                        </div>
-                                        <div class="row" id="cardInfo">
-                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
-                                        </div>
-                                        <div class="row" id="cardInfo">
-                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-exclamation-triangle">&nbsp;</i>
-                                            <p>@event.getAgeRestrictionString</p>
-                                        </div>
-                                        <div class="row" id="cardInfo">
-                                                &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus">&nbsp;</i>
-                                            <p>@event.getEventAttendees.size() attending</p>
-                                        </div>
-                                        <div class="row" id="bigInfo">
-                                            <div class="col">
-                                                <h4 class="primary-color">Description</h4>
-                                                <p>@event.getDescription</p>
-                                            </div>
-                                            <div class="col">
-                                                <h4 class="primary-color">Genres</h4>
-                                                @for(genre <- event.getEventGenres) {
-                                                    <p>@genre.getGenre</p>
-                                                }
-                                            </div>
-                                        </div>
+                                    </div>
+
+                                    <div class="row" id="cardInfo">
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-music">&nbsp;</i>@event.getEventTypes.get(0)</p>
+                                    </div>
+                                    <div class="row" id="cardInfo">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-globe">&nbsp;</i>
+                                        <p>@event.getDestination.getName</p>
+                                    </div>
+                                    <div class="row" id="cardInfo">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
+                                    </div>
+                                    <div class="row" id="cardInfo">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
+                                    </div>
+                                    <div class="row" id="cardInfo">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                        <p>@event.getAgeRestrictionString</p>
+                                    </div>
+                                    <div class="row" id="cardInfo">
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-user-plus">&nbsp;</i>
+                                        <p>@event.getEventAttendees.size() attending</p>
+                                    </div>
 
                                         <div class="card-footer">
                                             <div class="row">
@@ -480,7 +480,6 @@
                 </div>
 
             </div>
-
 
     </body>
 
@@ -1211,8 +1210,25 @@
 
             });
 
+            // --------------- HIDE FILTERS JS ---------------
+
+            window.onscroll = function() {
+                hideFilters()
+            };
+
+            $('.viewEvents').on( 'scroll', function(){
+                hideFilters()
+            });
+
+            function hideFilters() {
+
+                $("#eventFilters").removeClass('show');
+            };
+
+            //-------------------------------------------------
+
             /**
-             * Callback for success on geolocation to get users location
+             * Callback for succes on geolocation to get users location
              */
             function setLocation(pos) {
                 center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
@@ -1230,7 +1246,6 @@
                     infoWindow.open(map, this);
                 });
             }
-
 
             /**
              * Initialises the map view

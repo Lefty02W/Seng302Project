@@ -88,7 +88,7 @@ public class ArtistController extends Controller {
                 .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile,
                         genreRepository.getAllGenres(), profileRepository.getAllEbeans(),
                         Country.getInstance().getAllCountries(),  artistRepository.getPagedArtists(0),
-                        artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId),
+                        artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), null,
                         request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
 
     }
@@ -135,7 +135,7 @@ public class ArtistController extends Controller {
                         }
 
                         searchForm.fill(formData);
-                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, created, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, created, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), formData, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
                     }

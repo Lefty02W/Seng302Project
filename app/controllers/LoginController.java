@@ -60,7 +60,7 @@ public class LoginController extends Controller {
             return profileRepository.lookupEmail(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
-                    return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getProfileId().toString());
+                    return redirect(routes.EventsController.show(0)).addingToSession(request, "connected", currentUser.getProfileId().toString());
                 }
                 return redirect("/").flashing("warning", "Profile has been deleted!");
             }, httpExecutionContext.current());
