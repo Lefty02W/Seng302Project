@@ -286,19 +286,14 @@
                                     data-target="#editEventModal">
                                         Edit Event
                                     </button>
-                                </div>
                             }
-                        </div>
 
-                        <div class="col" id="rightButtons">
                             @if(event.getTicketLink != null) {
-                                <div class="col button-col">
                                     <a href="@event.getTicketLink" >
                                         <button class="btn btn-secondary" id="rightButtons">
                                             <i class="fa fa-credit-card">&nbsp;</i>Buy Tickets
                                         </button>
                                     </a>
-                                </div>
                             }
 
                             @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
@@ -326,6 +321,7 @@
                                     </button>
                                 </a>
                             }
+                            </div>
                         </div>
                     </div>
                 </div>

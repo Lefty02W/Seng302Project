@@ -150,5 +150,6 @@ img.thumbnail {
 }
 
 #rightButtons {
-    float: right !important;
+    float: right;
+    margin-bottom: 10px;
 }
