@@ -488,22 +488,44 @@ public class EventsController extends Controller {
         return redirect("/profile").flashing("success", "No longer going to event: " + eventRepository.lookup(eventId).getEventName());
     }
 
+//    /**
+//     * Endpoint to view a specific event
+//     *
+//     * @param request client request to view event
+//     * @param id the id of the event to view
+//     * @return rendered event page for selected event
+//     */
+//    @Security.Authenticated(SecureSession.class)
+//    public CompletionStage<Result> viewEvent(Http.Request request, Integer id) {
+//        Integer profId = SessionController.getCurrentUserId(request);
+//        return eventRepository.getEvent(id)
+//                .thenApplyAsync(optEvent -> {
+//                    Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+//                    if (optEvent.isPresent()) {
+//                        return ok(event.render(profileOpt.get(), optEvent.get(), profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), new PaginationHelper(), request, messagesApi.preferred(request)));
+//                    } else {
+//                        return redirect("/events/0").flashing("info", "Error retrieving event or profile");
+//                    }
+//                });
+//    }
+
     /**
-     * Endpoint to view a specific event
+     * Endpoint for landing page for viewing details of an event
      *
-     * @param request client request to view event
-     * @param id the id of the event to view
-     * @return rendered event page for selected event
+     * @param request client request
+     * @param id id of the event
+     * @return CompletionStage rendering the event page
      */
     @Security.Authenticated(SecureSession.class)
-    public CompletionStage<Result> viewEvent(Http.Request request, Integer id) {
+    public CompletionStage<Result> showDetailedEvent(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
         return eventRepository.getEvent(id)
                 .thenApplyAsync(optEvent -> {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent()) {
-
-                        return ok(event.render(profileOpt.get(), optEvent.get(), profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()), request, messagesApi.preferred(request)));
+                        return ok(event.render(profileOpt.get(), optEvent.get(),
+                                profileRepository.getAllProfileByIdList(optEvent.get().getEventAttendees()),
+                                new PaginationHelper(), request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/events/0").flashing("info", "Error retrieving event or profile");
                     }

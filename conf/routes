@@ -159,4 +159,4 @@ GET     /events/:eventId/leave                      controllers.EventsController
 GET     /events/profile/:eventId/leave              controllers.EventsController.leaveEventFromProfile(request : Request, eventId : Integer)
 
 ## View Event
-GET     /events/view/:id                        controllers.EventsController.viewEvent(request : Request, id : Integer)
+GET     /events/details/:id                        controllers.EventsController.showDetailedEvent(request : Request, id : Integer)
