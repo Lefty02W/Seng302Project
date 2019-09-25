@@ -344,5 +344,5 @@ INSERT INTO event_type (event_id, type_id) VALUES
 INSERT INTO event_genres (event_id, genre_id) VALUES
   (5, 1);
 
-INSERT INTO artist_profile_photo (artist_id, personal_photo_id) VALUES
+INSERT INTO artist_profile_photo (artist_id, photo_id) VALUES
   (1, 3);
