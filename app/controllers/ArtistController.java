@@ -149,6 +149,15 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistId) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(artistId);
+
+        ArtistProfilePhoto artistPictureLink = artistProfilePictureRepository.lookup(artistId);
+
+        Photo artistPicture;
+        if (artistPictureLink != null) {
+            Optional<Photo> optionalPhoto = photoRepository.getImage(artistPictureLink.getPhotoId());
+            artistPicture = optionalPhoto.orElse(null);
+        } else { artistPicture = null; }
+
         if (artist == null) {
             return profileRepository.findById (profId).thenApplyAsync(profile -> redirect("/artists"));
         }
@@ -158,7 +167,7 @@ public class ArtistController extends Controller {
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
                                 new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
                                 artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
-                                null, null, request, messagesApi.preferred(request))))
+                                null, artistPicture, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 

@@ -112,4 +112,14 @@ public class ArtistProfilePictureRepository {
                 .findOne()), executionContext);
     }
 
+
+    /**
+     * Lookup an artist profile picture using the id to find the object in the database
+     * @param artistId Id of the artist
+     * @return artistProfilePhoto ArtistProfilePhoto object that has been found
+     */
+    public ArtistProfilePhoto lookup(Integer artistId) {
+        return ebeanServer.find(ArtistProfilePhoto.class).where().eq("artist_id", artistId).findOne();
+    }
+
 }
