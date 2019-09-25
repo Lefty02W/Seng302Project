@@ -197,22 +197,26 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result addDestination(Http.Request request, Integer userId) {
-        Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
-        TripDestination tripDestination = tripDestForm.get();
-        if (tripName == null || tripName.equals("")) {
-            setTripName(tripDestForm.rawData().get("name"));
+        try{
+            Form<TripDestination> tripDestForm = formTrip.bindFromRequest(request);
+            TripDestination tripDestination = tripDestForm.get();
+            if (tripName == null || tripName.equals("")) {
+                setTripName(tripDestForm.rawData().get("name"));
+            }
+            setDates(tripDestination, tripDestForm);
+            tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
+            tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
+            if(!checkDates(tripDestination)) {
+                return redirect("/trips/" + userId + "/create").flashing("info", dateFlashingMessage);
+            }
+            if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
+                return redirect("/trips/" + userId + "/create").flashing("info", dupDestFlashing);
+            }
+            insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
+            return redirect("/trips/" + userId + "/create");
+        }catch (Exception e){
+            return redirect("/trips/" + userId + "/create").flashing("error", "Error saving trip: Invalid date");
         }
-        setDates(tripDestination, tripDestForm);
-        tripDestination.setDestination(Destination.find.byId(Integer.toString(tripDestination.getDestinationId())));
-        tripDestination.setDestOrder(orderedCurrentDestinations.size() + 1);
-        if(!checkDates(tripDestination)) {
-            return redirect("/trips/" + userId + "/create").flashing("info", dateFlashingMessage);
-        }
-        if (orderedCurrentDestinations.size() >= 1 && orderInvalidInsert(tripDestination)) {
-            return redirect("/trips/" + userId + "/create").flashing("info", dupDestFlashing);
-        }
-        insertTripDestination(tripDestination, orderedCurrentDestinations.size() + 1);
-        return redirect("/trips/" + userId + "/create");
     }
 
 
@@ -310,20 +314,25 @@ public class TripsController extends Controller {
      */
     @Security.Authenticated(SecureSession.class)
     public Result save(Http.Request request, Integer userId) {
-        Form<Trip> tripForm = form.bindFromRequest(request);
-        Trip trip = tripForm.get();
-        trip.setProfileId(userId);
-        setTripName(trip.getName());
-        if (orderedCurrentDestinations.size() < 2) {
-            return redirect("/trips/" + userId + "/create").flashing("info", "A trip must have at least two destinations");
-        } else {
-            ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
-            tripRepository.insert(trip, tripDestinations);
-            if(userId != SessionController.getCurrentUserId(request)) {
+        try{
+            Form<Trip> tripForm = form.bindFromRequest(request);
+            Trip trip = tripForm.get();
+            trip.setProfileId(userId);
+            setTripName(trip.getName());
+            if (orderedCurrentDestinations.size() < 2) {
+                return redirect("/trips/" + userId + "/create").flashing("info", "A trip must have at least two destinations");
+            } else {
+                ArrayList<TripDestination> tripDestinations = new ArrayList<>(orderedCurrentDestinations.values());
+                tripRepository.insert(trip, tripDestinations);
+                if(userId != SessionController.getCurrentUserId(request)) {
+                    return redirect(tripsEndPoint);
+                }
                 return redirect(tripsEndPoint);
             }
-            return redirect(tripsEndPoint);
+        }catch (Exception e){
+            return redirect("/trips/" + userId + "/create").flashing("error", "Error saving trip: Invalid date");
         }
+
     }
 
 
