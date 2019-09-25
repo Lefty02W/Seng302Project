@@ -5,6 +5,7 @@ import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
+import play.libs.Files;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -16,6 +17,7 @@ import views.html.artists;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 public class ArtistController extends Controller {
 
     private final Form<Artist> artistForm;
+    private final Form<ArtistPhotoFormData> artistPhotoForm;
     private MessagesApi messagesApi;
     private final ArtistRepository artistRepository;
     private final ProfileRepository profileRepository;
@@ -38,6 +41,10 @@ public class ArtistController extends Controller {
     private final EventRepository eventRepository;
     private final Form<ArtistFormData> searchForm;
     private final DestinationRepository destinationRepository;
+    private final ArtistProfilePictureRepository artistProfilePictureRepository;
+    private final PersonalPhotoRepository personalPhotoRepository;
+    private final PhotoRepository photoRepository;
+    private final long MAX_PHOTO_SIZE = 8000000;
 
 
     @Inject
@@ -45,7 +52,9 @@ public class ArtistController extends Controller {
                             ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
                             GenreRepository genreRepository, EventRepository eventRepository,
-                            DestinationRepository destinationRepository){
+                            DestinationRepository destinationRepository,
+                            ArtistProfilePictureRepository artistProfilePictureRepository,
+                            PersonalPhotoRepository personalPhotoRepository, PhotoRepository photoRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -55,7 +64,13 @@ public class ArtistController extends Controller {
         this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
         this.eventRepository = eventRepository;
         this.destinationRepository = destinationRepository;
+        this.artistProfilePictureRepository = artistProfilePictureRepository;
+        this.personalPhotoRepository = personalPhotoRepository;
+        this.photoRepository = photoRepository;
+        this.artistPhotoForm = artistProfileFormFactory.form(ArtistPhotoFormData.class);
     }
+
+
 
     /**
      * Endpoint for landing page for artists
@@ -141,8 +156,9 @@ public class ArtistController extends Controller {
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
                         ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
+                                null, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -168,8 +184,9 @@ public class ArtistController extends Controller {
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
-                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
+                                null, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -191,8 +208,9 @@ public class ArtistController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllArtists(), new RoutedObject<Events>(null, false, false),
+                                null, null, request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -314,7 +332,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId){
         return artistRepository.unfollowArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist unfollowed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Unfollowed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
@@ -326,7 +344,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> followArtist(Http.Request request, Integer artistId){
         return artistRepository.followArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist followed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Followed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
@@ -405,5 +423,54 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Integer> getFollowerCount(int artistId) {
         return supplyAsync(() -> artistRepository.getNumFollowers(artistId));
+    }
+
+
+    /**
+     * Endpoint method for an artist admin to rmeove the artist profile photo
+     *
+     * @param request request to remove photo
+     * @param id id of artist to remove photo for
+     * @return Redirect back to the artists detailed page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> removePhoto(Http.Request request, Integer id) {
+        return artistProfilePictureRepository.removeArtistProfilePicture(id).thenApplyAsync(artist -> redirect("/artists/" + artist));
+    }
+
+
+    /**
+     * Endpoint to upload a profile photo for an artist
+     * The method will extract the photo from the request,
+     * save it to the user's photos, use the created personal photo id,
+     * create an instance of ArtistProfilePhoto and pass that to the repo to save
+     *
+     * @param request - The HTTP Request for uploading a profile photo
+     * @param id - ID of the artist to set profile photo for
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> uploadProfilePhoto(Http.Request request, Integer id) {
+        Integer profId = SessionController.getCurrentUserId(request);
+
+        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
+
+        String fileName = picture.getFilename();
+        String contentType = picture.getContentType();
+        long fileSize = picture.getFileSize();
+        if (fileSize >= MAX_PHOTO_SIZE) {
+            return supplyAsync(() -> redirect("artists/"+ id).flashing("error",
+                    "File size must not exceed 8MB!"));
+        }
+        Files.TemporaryFile tempFile = picture.getRef();
+        String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
+        tempFile.copyTo(Paths.get(filepath), true);
+
+        Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 0, fileName);
+        return photoRepository.insert(photo).thenApplyAsync(photoId ->
+                personalPhotoRepository.insert(new PersonalPhoto(profId, photoId))
+                        .thenApplyAsync(resultId -> artistProfilePictureRepository.addArtistProfilePicture(
+                                new ArtistProfilePhoto(id, resultId.get()))
+                        )).thenApplyAsync(a -> redirect("/artists/"+ id));
     }
 }

@@ -143,6 +143,10 @@ POST    /artists/:id/events/create              controllers.EventsController.cre
 GET     /artists/:id/members                    controllers.ArtistController.showArtistMembers(request : Request, id: Integer)
 GET     /artists/:id/leave                      controllers.ArtistController.leaveArtist(request : Request, id : Integer)
 
+## Artist Photos
+GET     /artists/:id/remove/photo               controllers.ArtistController.removePhoto(request : Request, id : Integer)
+POST    /artists/:id/upload/photo               controllers.ArtistController.uploadProfilePhoto(request : Request, id : Integer)
+
 #Events
 GET     /events/:offset                         controllers.EventsController.show(request : Request, offset : Integer)
 POST    /events/create                          controllers.EventsController.createUserEvent(request : Request)
@@ -152,3 +156,4 @@ GET     /events/all/search/:offset              controllers.EventsController.sea
 GET     /artists/:artistId/events/:eventId/delete   controllers.EventsController.deleteEvent(request : Request, artistId : Integer, eventId : Integer)
 GET     /artists/:artistId/events/edit/:eventId     controllers.EventsController.editArtistEvent(request : Request, artistId : Integer, eventId : Integer)
 POST    /artists/:artistId/events/edit/:eventId     controllers.EventsController.editEventFromArtist(request : Request, artistId : Integer, eventId : Integer)
+

@@ -25,6 +25,7 @@ public class TestApplication {
     private static ArtistRepository artistRepository;
     private static GenreRepository genreRepository;
     private static EventRepository eventRepository;
+    private static ArtistProfilePictureRepository artistProfilePictureRepository;
 
     /**
      * Static method to get an instance of the test application
@@ -190,6 +191,18 @@ public class TestApplication {
             eventRepository = application.injector().instanceOf(EventRepository.class);
         }
         return eventRepository;
+    }
+
+    /**
+     * Creates an instance of the ArtistProfilePictureRepository
+     * @return ArtistProfilePictureRepository instance
+     */
+    public static ArtistProfilePictureRepository getArtistProfilePictureRepository() {
+        checkApplication();
+        if (artistProfilePictureRepository == null) {
+            artistProfilePictureRepository = application.injector().instanceOf(ArtistProfilePictureRepository.class);
+        }
+        return artistProfilePictureRepository;
     }
 
 }

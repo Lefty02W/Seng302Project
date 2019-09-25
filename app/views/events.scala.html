@@ -1147,6 +1147,15 @@
             });
 
             /**
+             * Callback for success on geolocation to get users location
+             */
+            function setLocation(pos) {
+                var center = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(center);
+            }
+
+
+            /**
              * Initialises the map view
              */
             function initMap() {
@@ -1158,13 +1167,17 @@
                 } else {
                     styles = dayStyle;
                 }
-                var center = {lat: -43.5321, lng: 172.6362};
+                var center = {lat: 0, lng: 0};
                 map = new google.maps.Map(document.getElementById('eventsMap'), {
                     center: center,
                     streetViewControl: false,
                     fullscreenControl: false,
                     zoom: 8
                 });
+                if (navigator.geolocation) {
+
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                }
                 addMarkers();
 
                 var legend = document.getElementById('legend');
