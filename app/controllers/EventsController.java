@@ -405,7 +405,11 @@ public class EventsController extends Controller {
                 ageForm.ifPresent(s -> event.get().setAgeRestriction(Integer.parseInt(s)));
                 artistForm.ifPresent(s -> event.get().setArtistForm(s));
                 event.get().setTicketPrice(-1.0);
-                ticketPrice.ifPresent(price -> event.get().setTicketPrice(Double.parseDouble(price)));
+                if (ticketPrice.isPresent()) {
+                    if (!ticketPrice.get().equals("")) {
+                        ticketPrice.ifPresent(price -> event.get().setTicketPrice(Double.parseDouble(price)));
+                    }
+                }
                 ticketLink.ifPresent(link -> event.get().setTicketLink(link));
             }
             return event;
