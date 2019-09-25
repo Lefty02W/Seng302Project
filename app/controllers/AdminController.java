@@ -751,6 +751,12 @@ public class AdminController {
     }
 
 
+    /**
+     * Endpoint method to show an edit of an event
+     * @param request Http Request
+     * @param id Id of the event to be edited
+     * @return Renders admin page with edit modal showing
+     */
     public CompletionStage<Result> showEditEvent(Http.Request request, Integer id){
         return supplyAsync(() ->  {
                 Events event = eventRepository.lookup(id);
@@ -828,8 +834,8 @@ public class AdminController {
     /**
      * Method to call repository to save an artist profile to the database
      *
-     * @param request
-     * @return redirect to the
+     * @param request Http request
+     * @return redirect to the admin page
      */
     public CompletionStage<Result> createArtist(Http.Request request) {
         Form<Artist> artistProfileForm = artistForm.bindFromRequest(request);

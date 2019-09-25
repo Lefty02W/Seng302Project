@@ -4,8 +4,10 @@ import io.ebean.Ebean;
 import io.ebean.EbeanServer;
 import models.EventGenres;
 import play.db.ebean.EbeanConfig;
+import scala.Int;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -46,18 +48,29 @@ public class EventGenreRepository {
 
 
     /**
+     * EventGenres Read List
+     * Method to retrieve an EventGenres List object from the database using a past event id
+     * @param eventId id of the event that will be retrieved
+     * @return EventGenres List object that was retrieved from the database
+     */
+    public List<Integer> getEventGenreList(int eventId){
+        return ebeanServer.find(EventGenres.class).select("genreId").where().eq("event_id", eventId).findSingleAttributeList();
+    }
+
+
+    /**
      * EventGenres Delete
      * Method to delete an EventGenres object from the database by a given id
      * @param eventId int: id of the eventGenre that will be removed
      * @return null
      */
-    public CompletionStage<Void> remove(int eventId){
+    public CompletionStage<Integer> remove(int eventId){
         return supplyAsync(() -> {
             ebeanServer.find(EventGenres.class)
                     .where()
                     .eq("event_id", eventId)
                     .delete();
-            return null;
+            return eventId;
         });
     }
 

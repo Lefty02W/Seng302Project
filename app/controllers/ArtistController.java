@@ -54,7 +54,8 @@ public class ArtistController extends Controller {
                             GenreRepository genreRepository, EventRepository eventRepository,
                             DestinationRepository destinationRepository,
                             ArtistProfilePictureRepository artistProfilePictureRepository,
-                            PersonalPhotoRepository personalPhotoRepository, PhotoRepository photoRepository){
+                            PersonalPhotoRepository personalPhotoRepository, PhotoRepository photoRepository,
+                            AttendEventRepository attendEventRepository){
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -68,6 +69,7 @@ public class ArtistController extends Controller {
         this.personalPhotoRepository = personalPhotoRepository;
         this.photoRepository = photoRepository;
         this.artistPhotoForm = artistProfileFormFactory.form(ArtistPhotoFormData.class);
+        this.attendEventRepository = attendEventRepository;
     }
 
 
@@ -174,11 +176,21 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
-                                null, artistPicture, request, messagesApi.preferred(request))))
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                new ArrayList<String>(), new ArrayList<MusicGenre>(), 0,
+                                new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, request, artistPicture, messagesApi.preferred(request)));
+                    }
+
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -204,10 +216,18 @@ public class ArtistController extends Controller {
         paginationHelper.checkButtonsEnabled();
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
-                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
-                                null, artistPicture, request, messagesApi.preferred(request))))
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
+                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), new ArrayList<String>(), new ArrayList<MusicGenre>(), 1,
+                                paginationHelper, new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                    }
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -228,11 +248,20 @@ public class ArtistController extends Controller {
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false),
-                                null, artistPicture, request, messagesApi.preferred(request))))
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                new ArrayList<String>(), new ArrayList<MusicGenre>(), 2,
+                                new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                    }
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -440,13 +469,41 @@ public class ArtistController extends Controller {
     }
 
     /**
-     * Get follower count for the artist
+     * Method to return the follower count of an artist
+     * @param artistId Id of the artist to find follower count
+     * @return CompletionStage of the artist Id
      */
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Integer> getFollowerCount(int artistId) {
         return supplyAsync(() -> artistRepository.getNumFollowers(artistId));
     }
 
+
+    /**
+     * Endpoint method to withdraw from an event with the given eventID from the artist page
+     * @param request http request
+     * @param eventId event id
+     * @param artistId artist id
+     * @return redirects back to event page
+     */
+    public Result leaveEvent(Http.Request request, Integer artistId, Integer eventId) {
+        attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
+        return redirect("/artists/"+artistId+"/events/0").flashing("info", "No longer going to event");
+    }
+
+
+    /**
+     * Endpoint method to attend an event with the given eventID from the artist page
+     * @param request http request
+     * @param eventId event id
+     * @param artistId artist Id
+     * @return redirects back to event page
+     */
+    public Result attendEvent(Http.Request request, Integer artistId, Integer eventId) {
+
+        attendEventRepository.insert(new AttendEvent(eventId, SessionController.getCurrentUserId(request)));
+        return redirect("/artists/"+artistId+"/events/0").flashing("info", "No longer going to event");
+    }
 
     /**
      * Endpoint method for an artist admin to rmeove the artist profile photo

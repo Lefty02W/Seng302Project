@@ -4,7 +4,7 @@
 @import java.util.Base64
 @(currentUser: Profile, imageForm: Form[ImageData], photoList: List[Photo], showPhotoModal: Boolean, trips: List[Integer],
         profilePicture: Photo, destinationsList: List[Destination], followedArtistList: List[Artist],
-        countries: List[String], userArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
+        countries: List[String], userArtists : List[Artist], userUpcomingEvents : List[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 
 <!DOCTYPE html>
@@ -148,6 +148,7 @@
                         @if(userArtists.length > 0) {
                             <li><a data-toggle="tab" href="#yourArtistsTab" class="tabLink" id="yourArtistsLink">Your Artists</a></li>
                         }
+                        <li><a data-toggle="tab" href="#upcomingEventsTab" class="tabLink" id="upcomingEventsLink">Upcoming Events</a></li>
                     </ul>
 
                 </div>
@@ -321,13 +322,12 @@
                                 <div>Follow an <a href="/artists"> artist</a> for them to appear here!</div>
                             } else {
                             <div id="card-large lower-card">
-                                <div class="card center-col overflow-auto" id="followedArtistsCard">
-
+                                <div id="followedArtistsCard">
                                     <table id="followedArtistsTable" class="table">
                                     <thead>
                                         <tr>
-                                            <th>Name</th>
-                                            <th>Un-follow</th>
+                                            <th><i class="fa fa-user">&nbsp;</i>Name</th>
+                                            <th><i class="fa fa-reorder">&nbsp;</i>Options</th>
                                         </tr>
                                     </thead>
                                     @for(artist <- followedArtistList) {
@@ -339,7 +339,7 @@
                                             </td>
                                             <td>
                                                 <a href="@routes.ArtistController.unfollowArtist(artist.getArtistId())">
-                                                    <button type="button" class="btn btn-outline-secondary">Unfollow</button>
+                                                    <button type="button" class="btn btn-outline-secondary"><i class="fa fa-remove">&nbsp;</i>Unfollow</button>
                                                 </a>
                                                 </td>
                                         </tr>
@@ -353,7 +353,7 @@
                     </div>
                     @if(userArtists.length > 0) {
                         <div id="yourArtistsTab" class="tab-pane fade">
-                            <div class="card" id="yourArtistsCard">
+                            <div class="col text-center" id="yourArtistsCard">
                                 <ul class="list-group list-group-flush" id="yourArtistsList">
                                     @for(artist <- userArtists) {
                                         <li class="list-group-item ">
@@ -422,6 +422,65 @@
                             </div>
                         </div>
                     }
+                    </div>
+
+                    <div id="upcomingEventsTab" class="tab-pane fade">
+                        <div class="col text-center">
+                        @if(userUpcomingEvents.isEmpty) {
+                            <div>Find an <a href="/events/0"> event</a> you can attend for them to appear here!</div>
+                        } else {
+                            <div id="card-large lower-card">
+                                <div id="upcomingArtistsCard">
+                                    <table id="upcomingEventsTable" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th><i class="fa fa-user">&nbsp;</i>Name</th>
+                                                <th><i class="fa fa-music">&nbsp;</i>Type</th>
+                                                <th><i class="fa fa-globe">&nbsp;</i>Destination</th>
+                                                <th><i class="fa fa-calendar">&nbsp;</i>Start Date</th>
+                                                <th><i class="fa fa-calendar">&nbsp;</i>End Date</th>
+                                                <th><i class="fa fa-user-plus">&nbsp;</i>Attendance</th>
+                                                <th><i class="fa fa-reorder">&nbsp;</i>Options</th>
+                                            </tr>
+                                        </thead>
+                                        @for(event <- userUpcomingEvents) {
+                                            <tr>
+                                                <td>
+                                                    <a id="artistNameLink">
+                                                    @event.getEventName
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getEventTypes.get(0) </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getDestination.getName </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getStartDateString </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getEndDateString </a>
+                                                </td>
+                                                <td>
+                                                    <a> @event.getEventAttendees.size() </a>
+                                                </td>
+                                                <td>
+                                                    <a href="@routes.EventsController.leaveEventFromProfile(event.getEventId)">
+                                                        <button class="btn btn-secondary">
+                                                            <i class="fa fa-remove"></i>
+                                                            Don't attend
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+                        }
+
+                        </div>
                     </div>
                 </div>
             </div>

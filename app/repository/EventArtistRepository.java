@@ -6,6 +6,7 @@ import models.EventArtists;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -42,6 +43,17 @@ public class EventArtistRepository {
      */
     public EventArtists getEventArtist(int eventId){
         return ebeanServer.find(EventArtists.class).where().eq("event_id", eventId).findOne();
+    }
+
+
+    /**
+     * EventArtists Read to return a list
+     * Method to retrieve an EventArtists object from the database using a past event id
+     * @param eventId id of the event that will be retrieved
+     * @return EventArtists List object that was retrieved from the database
+     */
+    public List<Integer> getEventArtistList(int eventId){
+        return ebeanServer.find(EventArtists.class).select("artistId").where().eq("event_id", eventId).findSingleAttributeList();
     }
 
 
