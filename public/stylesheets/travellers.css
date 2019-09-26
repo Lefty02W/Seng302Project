@@ -9,6 +9,10 @@
     width: 100%;
 }
 
+#travellers {
+    height: 40px;
+}
+
 h1{
     font-size: 1.5em;
 }
