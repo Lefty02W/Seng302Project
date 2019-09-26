@@ -114,7 +114,7 @@ public class ProfileRepository {
                 "FROM profile " +
                 "WHERE soft_delete = 0 " +
                 "ORDER BY profile_id ASC " +
-                "LIMIT 10 OFFSET ?";
+                "LIMIT 12 OFFSET ?";
 
         List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery)
                 .setParameter(1, offset)
@@ -250,7 +250,7 @@ public class ProfileRepository {
                     .contains("gender", gender)
                     .gt("birth_date", dateFormat.format(upperAge))
                     .lt("birth_date", dateFormat.format(lowerAge))
-                    .setMaxRows(50)
+                    .setMaxRows(12)
                     .setFirstRow(offset)
                     .findList();
             for (Profile profile : foundProfiles) {

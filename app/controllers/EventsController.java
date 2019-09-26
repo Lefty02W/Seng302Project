@@ -167,7 +167,8 @@ public class EventsController extends Controller {
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
                         ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(artistId, 0), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
                                 initPagination(0, eventRepository.getNumArtistEvents(artistId), 8), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false), eventEditForm, null, request, messagesApi.preferred(request))))
+                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(eventRepository.lookup(eventId), true, false),
+                                eventEditForm, null, artistRepository.getFollowedArtists(profId),request, messagesApi.preferred(request))))
                         .orElseGet(() -> redirect("/artists/" + artistId + eventURL)));
     }
 
@@ -581,7 +582,7 @@ public class EventsController extends Controller {
                         if (eventRepository.isOwner(profId, id)){
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 1,
-                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                     artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         } else {
@@ -623,7 +624,7 @@ public class EventsController extends Controller {
                         if (eventRepository.isOwner(profId, id)){
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 2,
-                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                     artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto,artistProfilePhotoMap, request, messagesApi.preferred(request)));
                         } else {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
@@ -674,11 +675,10 @@ public class EventsController extends Controller {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent()) {
                         Map<Integer, Integer> artistProfilePhotoMap = artistProfilePictureRepository.getArtistPhotoMap(eventArtistRepository.getEventArtistList(id));
-                        System.out.println(artistProfilePhotoMap);
                         if (eventRepository.isOwner(profId, id)) {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 3,
-                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                     artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         } else {
@@ -727,7 +727,7 @@ public class EventsController extends Controller {
 
                             if (eventRepository.isOwner(profId, id)) {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
-                                        attendees.get(), 4, paginationHelper, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                        attendees.get(), 4, paginationHelper, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                         artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             } else {
@@ -739,7 +739,7 @@ public class EventsController extends Controller {
                         } else {
                             if (eventRepository.isOwner(profId, id)) {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
-                                        new ArrayList<>(), 4, new PaginationHelper(), true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                        new ArrayList<>(), 4, new PaginationHelper(), true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                         artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             } else {

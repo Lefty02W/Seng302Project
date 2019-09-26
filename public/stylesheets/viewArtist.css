@@ -112,7 +112,6 @@
 
 .event-link {
     color: #d74961;
-    text-decoration: underline;
 }
 
 .event-link:hover {
@@ -182,4 +181,12 @@
 #removeArtistPicButton {
     float: right;
     margin-right: 1%;
+}
+
+#rightButtons {
+    float: right;
+}
+
+#description {
+    width: 25vw;
 }

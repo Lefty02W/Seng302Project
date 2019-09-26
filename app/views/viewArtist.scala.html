@@ -3,7 +3,7 @@
 @(currentUser: Profile, artist: Artist, events: List[Events], countries: List[String], genres: List[MusicGenre],
         activeTab: Integer, pagination: PaginationHelper, profiles : List[Profile], destinations : List[Destination],
         verifiedArtists : List[Artist], editEvent: RoutedObject[Events], editEventForm : Form[Events],
-        artistCoverPicture: Photo)(implicit request: Http.Request, messages: play.i18n.Messages)
+        artistCoverPicture: Photo, followedArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -136,7 +136,22 @@
                                         }
                                     }
                                     </div>
-                                </div>
+                                    @if(artist.getGenreList.size() > 0) {
+                                        <hr class="divider">
+                                        <div class="row justify-content-center">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                @for(genre <- artist.getGenreList) {
+                                                    <a class="event-link" href="@routes.ArtistController.searchGenre(genre.getGenreId)" title="Show similar bands">
+                                                #@genre.getGenre
+                                                </a>
+                                                }
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
                             </div>
 
                             } else {
@@ -231,10 +246,14 @@
                                             </div>
                                         }
                                         @if(activeTab == 1) {
-                                            <a>@pagination.getInfoString</a>
                                             <ul class="pagination">
-                                                <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
-                                                    Start</a></li>
+                                                @if(pagination.isPreviousEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
+                                                        Start</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/0">
+                                                        Start</a></li>
+                                                }
                                                 @if(pagination.isPreviousEnabled) {
                                                     <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
                                                         Previous</a></li>
@@ -338,6 +357,24 @@
                 </div>
 
                 <div class="col">
+                    <div class="row" id="rightButtons">
+                    @if(followedArtists contains artist) {
+                        @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
+                            @CSRF.formField
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fa fa-heart"></i>
+                                Unfollow
+                            </button>
+                        }
+                    } else {
+                        @helper.form(routes.ArtistController.followArtist(artist.getArtistId)) {
+                            @CSRF.formField
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-heart-o"></i>
+                                Follow
+                            </button>
+                        }
+                    }
 
                     @if(artist.getAdminsList.contains(currentUser)) {
                         <button class="btn btn-primary" id="leaveArtistButton" onclick="fillLeaveValues('/artists/@artist.getArtistId/leave')">
@@ -353,6 +390,7 @@
                             </button>
                         }
                     }
+                    </div>
                 </div>
             </div>
         </div>
@@ -722,7 +760,8 @@
 
                             </div>
                             <div class="row justify-content-center">
-                                <input type="text" id="description" placeholder="Description*" name="description">
+                                <textarea id="description" rows="4" placeholder="Description*" name="description"
+                                required></textarea>
                             </div>
                             <div class="row justify-content-center">
                                 <small>Fields with a * are required</small>

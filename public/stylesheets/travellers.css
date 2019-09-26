@@ -1,12 +1,18 @@
 #table-card {
     padding-top: 10px;
-    height: 80vh;
+    height: fit-content;
+    min-height: 40vh;
+    padding-bottom: 20px;
 }
 
 #userTable {
     padding-top: 30px;
     height: 10vh;
     width: 100%;
+}
+
+#travellers {
+    height: 40px;
 }
 
 h1{

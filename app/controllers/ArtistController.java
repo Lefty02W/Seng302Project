@@ -14,6 +14,7 @@ import play.mvc.Security;
 import repository.*;
 import utility.Country;
 import views.html.artists;
+import views.html.events;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
@@ -79,6 +80,28 @@ public class ArtistController extends Controller {
 
 
     /**
+     * Endpoint method to search for only a genre used by the hash tags
+     * @param request Http Request
+     * @param genreId Id of the genre to search
+     * @return CompletionStage that redirects to the artists page displaying only artists with the given genre
+     */
+    public CompletionStage<Result> searchGenre(Http.Request request, Integer genreId) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        EventFormData eventFormSent = new EventFormData();
+        String genreName = genreRepository.getGenre(genreId);
+        ArtistFormData formData = new ArtistFormData();
+        List<Artist> artistsList = artistRepository.searchArtist("", genreName, "", 0, 0, profId);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if(profile.isPresent()) {
+                    formData.setGenre(genreName);
+                    return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistsList, artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), formData, request, messagesApi.preferred(request)));
+            } else {
+            return redirect("/artists");
+            }
+        });
+    }
+
+    /**
      * Endpoint for landing page for artists
      *
      * @param request client request
@@ -142,7 +165,6 @@ public class ArtistController extends Controller {
                         }
 
                         searchForm.fill(formData);
-                        System.out.println(formData);
                         return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, created, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), formData, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
@@ -191,13 +213,13 @@ public class ArtistController extends Controller {
                     if (userArtists.contains(artist)) {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 new ArrayList<String>(), new ArrayList<MusicGenre>(), 0,
                                 new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
-                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     }
 
                 })
@@ -230,12 +252,15 @@ public class ArtistController extends Controller {
                     List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
                     if (userArtists.contains(artist)) {
                         return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
-                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
-                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), new ArrayList<String>(), new ArrayList<MusicGenre>(), 1,
+                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), new ArrayList<String>(),
+                                new ArrayList<MusicGenre>(), 1,
                                 paginationHelper, new ArrayList<Profile>(), new ArrayList<Destination>(),
-                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     }
                 })
                         .orElseGet(() -> redirect("/profile")));
@@ -263,13 +288,15 @@ public class ArtistController extends Controller {
                     if (userArtists.contains(artist)) {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId),request, messagesApi.preferred(request)));
                     } else {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 new ArrayList<String>(), new ArrayList<MusicGenre>(), 2,
                                 new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
-                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, request, messagesApi.preferred(request)));
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     }
                 })
                         .orElseGet(() -> redirect("/profile")));
