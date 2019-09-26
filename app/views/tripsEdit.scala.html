@@ -191,9 +191,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                        <a href="@routes.TripsController.show(0)">
-                            <button id="confirmBackBtn" class="btn btn-danger"  onclick="">
-                                Yes, go back</button></a>
+                            <button id="confirmBackBtn" class="btn btn-danger"  onclick="goBack()">
+                                Yes, go back</button>
                     </div>
                 </div>
             </div>
@@ -287,6 +286,12 @@
                 });
 
             });
+
+            // ---------------------------------------------
+
+            function goBack() {
+                window.history.back();
+            }
 
     </script>
     @if(toEdit != null) {
