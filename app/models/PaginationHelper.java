@@ -127,7 +127,7 @@ public class PaginationHelper {
     public String getInfoStringTravellers() {
         if (maxSize <= 0) { return "No results found."; }
         if (maxSize < 10) { return "Profiles: 1 - " + maxSize + " Total results: " + maxSize; }
-        return "Profiles: " + (1 + next - 10) + " - " + (next) + " Total results: " + maxSize;
+        return "Profiles: " + (1 + next - 12) + " - " + (next) + " Total results: " + maxSize;
     }
 
     /**

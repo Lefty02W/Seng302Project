@@ -1,6 +1,8 @@
 #table-card {
     padding-top: 10px;
-    height: 80vh;
+    height: fit-content;
+    min-height: 40vh;
+    padding-bottom: 20px;
 }
 
 #userTable {
