@@ -87,6 +87,9 @@ img.thumbnail {
     margin:0.5em;
 }
 
+#displayImage {
+    min-width: 35%;
+}
 
 #wrapper {
     padding-bottom: 10%;
@@ -152,4 +155,13 @@ img.thumbnail {
 #rightButtons {
     float: right;
     margin-bottom: 10px;
+}
+
+#imageCard.card {
+    height: 320px;
+    width: 240px;
+}
+
+#changeProfilePicture .lower-card {
+    width: auto;
 }
