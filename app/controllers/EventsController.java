@@ -466,7 +466,8 @@ public class EventsController extends Controller {
                 EventFormData eventFormData = searchEventForm.get();
                 if(eventFormData.getAgeRestriction().equals("") && eventFormData.getArtistName().equals("") &&
                 eventFormData.getDestinationId().equals("") && eventFormData.getEventName().equals("") && eventFormData.getEventType().equals("") &&
-                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("") && !eventFormData.getAttending().equals("on")) {
+                eventFormData.getGenre().equals("") && eventFormData.getStartDate().equals("") && !eventFormData.getAttending().equals("on") &&
+                eventFormData.getHistoric().equals("")) {
                     return redirect(eventURL);
                 }
                 List<Events> eventsList = eventRepository.searchEvent(eventFormData, offset, profId);

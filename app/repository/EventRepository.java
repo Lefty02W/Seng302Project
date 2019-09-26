@@ -394,18 +394,11 @@ public class EventRepository {
             }
             args.add(Integer.toString(profileId));
         }
-        if (eventFormData.getHistoric().equals("1")) {
-            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        if (!eventFormData.getHistoric().equals("1")) {
             if (whereAdded){
-                query += " AND events.start_date > " + date;
+                query += " AND DATE(events.end_date) > DATE(NOW())";
             } else {
-                query += " WHERE events.start_date > " + date;
-            }
-        } else {
-            if (whereAdded){
-                query += " AND DATE(events.end_date) < DATE(NOW())";
-            } else {
-                query += " WHERE DATE(events.end_date) < DATE(NOW())";
+                query += " WHERE DATE(events.end_date) > DATE(NOW())";
             }
         }
 
