@@ -133,6 +133,8 @@ GET     /artists/search                         controllers.ArtistController.sea
 GET     /artist/:id/follow                      controllers.ArtistController.followArtist(request : Request, id : Integer)
 GET     /artist/:id/unfollow                    controllers.ArtistController.unfollowArtist(request : Request, id : Integer)
 GET     /artists/page/:page_number              controllers.ArtistController.pageArtist(page_number : Integer)
+GET    /artist/genre/:genreId/show              controllers.ArtistController.searchGenre(request : Request, genreId : Integer)
+
 
 # Detailed Artist's page
 GET     /artists/:id                            controllers.ArtistController.showDetailedArtists(request : Request, id: Integer)

@@ -14,6 +14,7 @@ import play.mvc.Security;
 import repository.*;
 import utility.Country;
 import views.html.artists;
+import views.html.events;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
@@ -77,6 +78,28 @@ public class ArtistController extends Controller {
     }
 
 
+
+    /**
+     * Endpoint method to search for only a genre used by the hash tags
+     * @param request Http Request
+     * @param genreId Id of the genre to search
+     * @return CompletionStage that redirects to the artists page displaying only artists with the given genre
+     */
+    public CompletionStage<Result> searchGenre(Http.Request request, Integer genreId) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        EventFormData eventFormSent = new EventFormData();
+        String genreName = genreRepository.getGenre(genreId);
+        ArtistFormData formData = new ArtistFormData();
+        List<Artist> artistsList = artistRepository.searchArtist("", genreName, "", 0, 0, profId);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if(profile.isPresent()) {
+                    formData.setGenre(genreName);
+                    return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistsList, artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), formData, request, messagesApi.preferred(request)));
+            } else {
+            return redirect("/artists");
+            }
+        });
+    }
 
     /**
      * Endpoint for landing page for artists
