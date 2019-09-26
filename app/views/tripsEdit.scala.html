@@ -189,10 +189,13 @@
                     <div class="modal-body">
                         <h6 id="confirmBackBody">All your changes will be lost if you leave</h6>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                            <button id="confirmBackBtn" class="btn btn-danger"  onclick="goBack()">
+                        <a href="@routes.TripsController.show(0)">
+                            <button id="confirmBackBtn" class="btn btn-danger">
                                 Yes, go back</button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -288,10 +291,6 @@
             });
 
             // ---------------------------------------------
-
-            function goBack() {
-                window.history.back();
-            }
 
     </script>
     @if(toEdit != null) {
