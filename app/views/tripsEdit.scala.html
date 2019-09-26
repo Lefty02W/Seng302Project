@@ -147,15 +147,15 @@
                                 <thead>
                                     <tr>
                                         <th>Destination Name</th>
-                                        <th>Departure Time</th>
                                         <th>Arrival Time</th>
+                                        <th>Departure Time</th>
                                         <th>Actions</th>
                                 </thead>
                                 @for(tripDestination <- currentTripDestinationsList) {
                                     <tr>
                                         <td>@tripDestination.getDestinationName</td>
-                                        <td>@tripDestination.getDepartureString</td>
                                         <td>@tripDestination.getArrivalString</td>
+                                        <td>@tripDestination.getDepartureString</td>
                                         <td> <!--onclick="fillModal(this)-->
                                             <a href="@routes.TripsController.editTripDestinationCreate(tripDestination.getDestOrder, id, userId)">
                                                 <button class="btn btn-primary" data-toggle="modal" data-target="#editModal_@tripDestination.getDestOrder" type="submit">Edit </button>
