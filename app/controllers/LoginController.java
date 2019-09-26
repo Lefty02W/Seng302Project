@@ -107,7 +107,7 @@ public class LoginController extends Controller {
                 }
 
                 return profileRepository.insert(profile).thenApplyAsync(profileIdOptional ->
-                        redirect(routes.ProfileController.show()).addingToSession(request, "connected", profileIdOptional.get().toString()));
+                        redirect(routes.EventsController.show(0)).addingToSession(request, "connected", profileIdOptional.get().toString()));
 
             }
         }catch (Exception e){
