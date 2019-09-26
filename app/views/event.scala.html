@@ -169,7 +169,7 @@
                                             <div class="card-body">
                                             @for(genre <- event.getEventGenres){
 
-                                                <a class="event-link" href="@routes.ArtistController.searchGenre(genre.getGenreId)" title="Show similar events">
+                                                <a class="event-link" href="@routes.EventsController.searchGenre(genre.getGenreId)" title="Show similar events">
                                                 #@genre.getGenre
                                                 </a>
                                             }
