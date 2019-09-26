@@ -213,7 +213,7 @@ public class ArtistController extends Controller {
                     if (userArtists.contains(artist)) {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                 artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
@@ -252,7 +252,7 @@ public class ArtistController extends Controller {
                     List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
                     if (userArtists.contains(artist)) {
                         return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
-                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                 artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false),
                                 null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
                     } else {
@@ -288,7 +288,7 @@ public class ArtistController extends Controller {
                     if (userArtists.contains(artist)) {
                         return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                 artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false),
                                 null, artistPicture, artistRepository.getFollowedArtists(profId),request, messagesApi.preferred(request)));
                     } else {

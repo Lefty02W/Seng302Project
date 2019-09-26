@@ -582,7 +582,7 @@ public class EventsController extends Controller {
                         if (eventRepository.isOwner(profId, id)){
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 1,
-                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                     artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         } else {
@@ -624,7 +624,7 @@ public class EventsController extends Controller {
                         if (eventRepository.isOwner(profId, id)){
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 2,
-                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                     artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto,artistProfilePhotoMap, request, messagesApi.preferred(request)));
                         } else {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
@@ -678,7 +678,7 @@ public class EventsController extends Controller {
                         if (eventRepository.isOwner(profId, id)) {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 3,
-                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                    null, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                     artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         } else {
@@ -727,7 +727,7 @@ public class EventsController extends Controller {
 
                             if (eventRepository.isOwner(profId, id)) {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
-                                        attendees.get(), 4, paginationHelper, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                        attendees.get(), 4, paginationHelper, true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                         artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             } else {
@@ -739,7 +739,7 @@ public class EventsController extends Controller {
                         } else {
                             if (eventRepository.isOwner(profId, id)) {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
-                                        new ArrayList<>(), 4, new PaginationHelper(), true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
+                                        new ArrayList<>(), 4, new PaginationHelper(), true, getUserPhotos(request, profId), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
                                         artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             } else {
