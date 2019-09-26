@@ -298,16 +298,21 @@
                     <div class="row justify-content-center">
                         <div class="col button-col">
                             <div class="col">
-                                <button class="btn btn-secondary" onclick="goBack()">Back</button>
+                                <button class="btn btn-secondary" onclick="goBack()">
+                                    <i class="fa fa-toggle-left"></i>
+                                    Back
+                                </button>
 
                             @if(isAdmin) {
 
                                     <button class="btn btn-secondary" type="button" id="changeEventPhotoButton" data-toggle="modal"
                                     data-target="#changeEventPhotoModal">
+                                        <i class="fa fa-user-circle"></i>
                                         Change Cover Photo
                                     </button>
                                     <button class="btn btn-secondary" type="button" id="editEventModalButton" data-toggle="modal"
                                     data-target="#editEventModal">
+                                        <i class="fa fa-edit"></i>
                                         Edit Event
                                     </button>
                             }
