@@ -174,7 +174,9 @@ public class ProfileRepository {
      * @return Profile class of the user
      */
     public Profile getProfileByProfileId(Integer userId) {
-        return ebeanServer.find(Profile.class).setId(userId).findOne();
+        Profile profile = ebeanServer.find(Profile.class).setId(userId).findOne();
+        profile.setRoles(rolesRepository.getProfileRoles(profile.getProfileId()).get());
+        return profile;
     }
 
     /**
