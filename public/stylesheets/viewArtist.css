@@ -186,3 +186,7 @@
 #rightButtons {
     float: right;
 }
+
+#description {
+    width: 25vw;
+}
