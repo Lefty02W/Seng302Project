@@ -17,13 +17,13 @@ import views.html.events;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import static java.lang.Integer.parseInt;
@@ -44,8 +44,10 @@ public class EventsController extends Controller {
     private final Form<EventFormData> eventFormDataForm;
     private final AttendEventRepository attendEventRepository;
     private final EventPhotoRepository eventPhotoRepository;
+    private final EventArtistRepository eventArtistRepository;
     private final PhotoRepository photoRepository;
     private final UndoStackRepository undoStackRepository;
+    private final ArtistProfilePictureRepository artistProfilePictureRepository;
     private static SimpleDateFormat dateTimeEntry = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
     private String successEvent = "Successfully added your new event";
     private String errorEventDate = "Error creating event: Start date must be before end date and the start date must not be in the past.";
@@ -61,7 +63,8 @@ public class EventsController extends Controller {
                             ArtistRepository artistRepository, DestinationRepository destinationRepository,
                             FormFactory formFactory, EventRepository eventRepository, AttendEventRepository attendEventRepository,
                             PersonalPhotoRepository personalPhotoRepository, EventPhotoRepository eventPhotoRepository,
-                            PhotoRepository photoRepository, UndoStackRepository undoStackRepository) {
+                            PhotoRepository photoRepository, UndoStackRepository undoStackRepository,
+                            ArtistProfilePictureRepository artistProfilePictureRepository, EventArtistRepository eventArtistRepository) {
         this.profileRepository = profileRepository;
         this.messagesApi = messagesApi;
         this.genreRepository = genreRepository;
@@ -76,6 +79,8 @@ public class EventsController extends Controller {
         this.eventPhotoRepository = eventPhotoRepository;
         this.photoRepository = photoRepository;
         this.undoStackRepository = undoStackRepository;
+        this.artistProfilePictureRepository = artistProfilePictureRepository;
+        this.eventArtistRepository = eventArtistRepository;
     }
 
     /**
@@ -570,18 +575,20 @@ public class EventsController extends Controller {
                             coverPhoto = optionalCoverPhoto.get();
                         }
                     }
+                    Map<Integer, Integer> artistProfilePhotoMap = new HashMap<>();
+
                     if (optEvent.isPresent()) {
                         if (eventRepository.isOwner(profId, id)){
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 1,
                                     null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                    artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto,
+                                    artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         } else {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 1,
                                     null, false, new ArrayList<>(), new ArrayList<>(),
-                                    new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                    new ArrayList<>(), new ArrayList<>(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         }
                     } else {
@@ -611,17 +618,18 @@ public class EventsController extends Controller {
                         }
                     }
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
+                    Map<Integer, Integer> artistProfilePhotoMap = new HashMap<>();
                     if (optEvent.isPresent()) {
                         if (eventRepository.isOwner(profId, id)){
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 2,
                                     null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                    artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto, request, messagesApi.preferred(request)));
+                                    artistRepository.getAllUserArtists(profId), genreRepository.getAllGenres(), coverPhoto,artistProfilePhotoMap, request, messagesApi.preferred(request)));
                         } else {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 2,
                                     null,false, new ArrayList<>(), new ArrayList<>(),
-                                    new ArrayList<>(), new ArrayList<>(), coverPhoto, request, messagesApi.preferred(request)));
+                                    new ArrayList<>(), new ArrayList<>(), coverPhoto, artistProfilePhotoMap ,request, messagesApi.preferred(request)));
                         }
 
                     } else {
@@ -665,17 +673,19 @@ public class EventsController extends Controller {
                     }
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent()) {
+                        Map<Integer, Integer> artistProfilePhotoMap = artistProfilePictureRepository.getArtistPhotoMap(eventArtistRepository.getEventArtistList(id));
+                        System.out.println(artistProfilePhotoMap);
                         if (eventRepository.isOwner(profId, id)) {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 3,
                                     null, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                    artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                    artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         } else {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 3,
                                     null, false, new ArrayList<>(), new ArrayList<>(),
-                                    new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                    new ArrayList<>(), new ArrayList<>(), coverPhoto, artistProfilePhotoMap,
                                     request, messagesApi.preferred(request)));
                         }
 
@@ -707,6 +717,7 @@ public class EventsController extends Controller {
                     }
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent() || profileOpt.isPresent()) {
+                        Map<Integer, Integer> artistProfilePhotoMap = new HashMap<Integer, Integer>();
                         Optional<List<Profile>> attendees = profileRepository.getAllProfileByIdListPage(optEvent.get().getEventAttendees(), offset);
                         if (attendees.isPresent()){
                             PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, optEvent.get().getEventAttendees().size());
@@ -717,24 +728,24 @@ public class EventsController extends Controller {
                             if (eventRepository.isOwner(profId, id)) {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
                                         attendees.get(), 4, paginationHelper, true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                        artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                        artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             } else {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
                                         attendees.get(), 4, paginationHelper, false, new ArrayList<>(), new ArrayList<>(),
-                                        new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                        new ArrayList<>(), new ArrayList<>(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             }
                         } else {
                             if (eventRepository.isOwner(profId, id)) {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
                                         new ArrayList<>(), 4, new PaginationHelper(), true, getUserPhotos(request, profId), destinationRepository.getAllDestinations(),
-                                        artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto,
+                                        artistRepository.getAllVerfiedArtists(), genreRepository.getAllGenres(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             } else {
                                 return ok(event.render(profileOpt.get(), optEvent.get(),
                                         new ArrayList<>(), 4, new PaginationHelper(), false, new ArrayList<>(), new ArrayList<>(),
-                                        new ArrayList<>(), new ArrayList<>(), coverPhoto,
+                                        new ArrayList<>(), new ArrayList<>(), coverPhoto, artistProfilePhotoMap,
                                         request, messagesApi.preferred(request)));
                             }
                         }
@@ -802,5 +813,27 @@ public class EventsController extends Controller {
 
         return supplyAsync(() -> redirect("/events/details/"+eventId));
     }
+
+
+    /**
+     * Method to serve an image to the frontend. Uses the image path url
+     * @param artistId artist id of the image that is to be rendered
+     * @return rendered image file to be displayed
+     */
+    @Security.Authenticated(SecureSession.class)
+    public Result getPhoto(Integer artistId){
+        Photo image = Photo.find.byId(artistProfilePictureRepository.lookup(artistId).getPhotoId());
+        try {
+            File imageFilePath = new File(Objects.requireNonNull(image).getPath());
+            if (imageFilePath.exists()) {
+                return ok(new FileInputStream(imageFilePath)).as(image.getType());
+            }
+            return notFound(imageFilePath.getAbsoluteFile());
+        } catch(NullPointerException | IOException e) {
+            return redirect(eventURL); //  When there an id of a photo does not exist
+        }
+    }
+
+
 
 }

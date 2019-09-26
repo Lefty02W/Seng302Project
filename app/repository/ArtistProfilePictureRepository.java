@@ -6,6 +6,9 @@ import models.ArtistProfilePhoto;
 import play.db.ebean.EbeanConfig;
 
 import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
@@ -115,6 +118,14 @@ public class ArtistProfilePictureRepository {
      */
     public ArtistProfilePhoto lookup(Integer artistId) {
         return ebeanServer.find(ArtistProfilePhoto.class).where().eq("artist_id", artistId).findOne();
+    }
+
+    public Map<Integer, Integer> getArtistPhotoMap(List<Integer> artistIds) {
+        Map<Integer, Integer> idMap = new HashMap<>();
+        for (int artistId : artistIds) {
+            idMap.put(artistId, ebeanServer.find(ArtistProfilePhoto.class).select("photoId").where().eq("artist_id", artistId).findSingleAttribute());
+        }
+        return idMap;
     }
 
 }

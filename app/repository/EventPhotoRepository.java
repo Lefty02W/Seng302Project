@@ -85,7 +85,7 @@ public class EventPhotoRepository {
      * @return CompletionStage
      */
 
-    public CompletionStage<Integer> update(int eventId, int photoId){
+    public CompletionStage<Integer> update(int eventId, int photoId) {
         return supplyAsync(() -> {
             Transaction txn = ebeanServer.beginTransaction();
             EventPhoto targetPhoto = ebeanServer.find(EventPhoto.class).setId(eventId).findOne();
@@ -102,5 +102,7 @@ public class EventPhotoRepository {
             return eventId;
         }, executionContext);
     }
+
+
 
 }

@@ -1,7 +1,7 @@
 @import play.mvc.Http
 @import views.html.helper.CSRF
 @(currentUser: Profile, event: Events, attendees: List[Profile], activeTab: Integer, pagination: PaginationHelper, isAdmin: Boolean, photoList: List[Photo], destinations : List[Destination],
-        verifiedArtists : List[Artist], genres: List[MusicGenre], coverPhoto : Photo)(implicit request: Http.Request, messages: play.i18n.Messages)
+        verifiedArtists : List[Artist], genres: List[MusicGenre], coverPhoto : Photo, artistPhoto: Map[Integer, Integer])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -204,7 +204,11 @@
 
                                 @for(artist <- event.getEventArtists) {
                                     <div class="card" id="eventsCard">
-                                        <img src="..." class="card-img-top" alt="...">
+                                        @if(artistPhoto.get(artist.getArtistId) != null) {
+                                            <img src="@routes.ProfileController.photoAt(artistPhoto.get(artist.getArtistId))" class="card-img-top" alt="Image not found ">
+                                        } else {
+                                            <img src="https://cdn.pixabay.com/photo/2016/11/22/18/56/audience-1850022_960_720.jpg" class="card-img-top" alt="Image not found">
+                                        }
                                         <div class="card-body">
                                             <h5 class="card-title">
                                                 <a href="/artists/@artist.getArtistId">
