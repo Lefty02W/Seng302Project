@@ -675,7 +675,6 @@ public class EventsController extends Controller {
                     Optional<Profile> profileOpt = Optional.ofNullable(profileRepository.getProfileByProfileId(profId));
                     if (optEvent.isPresent()) {
                         Map<Integer, Integer> artistProfilePhotoMap = artistProfilePictureRepository.getArtistPhotoMap(eventArtistRepository.getEventArtistList(id));
-                        System.out.println(artistProfilePhotoMap);
                         if (eventRepository.isOwner(profId, id)) {
                             return ok(event.render(profileOpt.get(), optEvent.get(),
                                     null, 3,
