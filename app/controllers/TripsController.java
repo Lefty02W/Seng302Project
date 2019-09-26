@@ -369,7 +369,7 @@ public class TripsController extends Controller {
         int order = tripDestination.getDestOrder();
         setDates(tripDestination, tripDestForm);
         if(!checkDates(tripDestination)) {
-            return redirect("/trips/" + tripId + editUrl).flashing("info", dateFlashingMessage);
+            return redirect("/trips/"+userId+"/"+tripId+editUrl).flashing("info", dateFlashingMessage);
         }
         TreeMap<Integer, TripDestination> tempCurrentDestMap = new TreeMap<>(orderedCurrentDestinations);
         removeTripDestination(oldLocation);
