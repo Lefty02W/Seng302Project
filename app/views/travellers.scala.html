@@ -1,6 +1,6 @@
 @import play.mvc.Http
 @import views.html.helper.{CSRF, form}
-@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], current : Profile, countries : List[String],
+@(searchForm: Form[PartnerFormData], users: List[Profile], photoList: List[Photo], currentUser : Profile, countries : List[String],
         formData : PartnerFormData, pagination : PaginationHelper)(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
@@ -35,21 +35,35 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/> Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/> Destinations</a>
-                    <a href="@routes.TripsController.show(0)"class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/> Trips</a>
-                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/> Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
-                        Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")"/> Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
-                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")" alt="Not Found"/>
+                        <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
                     </a>
-                    @if( current.hasRole("global_admin") || current.hasRole("admin")) {
-                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/> Admin</a>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
+                        Artists
+                    </a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
+                        Profile
+                    </a>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
+                        Destinations
+                    </a>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
+                        Trips
+                    </a>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
+                        Travellers
+                    </a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
+                        Treasure Hunt
+                    </a>
+                    @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
+                        <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
+                            Admin</a>
                     }
-                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/> Logout</a>
+                    <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
+                        Logout
+                    </a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -228,13 +242,13 @@
                                 <!-- Table of users -->
                             <table id="userTable">
                                 <thead>
-                                    <tr><th>Picture</th><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th><th>Photos</th>
+                                    <tr><th>Picture</th><th>First Name</th><th>Middle Name</th><th>Last Name</th><th>Gender</th><th>Date Of Birth</th><th>Nationality</th><th>Passports</th><th>Traveller Types</th>
                                 </thead>
                                     @for(user <- users) {
-                                        <tr>
+                                        <tr id="travellers">
                                             <td><img id="profileImage" class="smallThumbnail" src="@routes.Assets.at("images/profile-icon.png")"
                                             alt="Profile picture"></td>
-                                            <td>@user.getFirstName</td>
+                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">@user.getFirstName</a></td>
                                             <td>@user.getMiddleName</td>
                                             <td>@user.getLastName</td>
                                             <td>@user.getGender</td>
@@ -242,10 +256,6 @@
                                             <td>@user.getNationalityString</td>
                                             <td>@user.getPassportsString</td>
                                             <td><div>@user.getTravellerTypesString</div></td>
-                                            <td><a href="@routes.TravellersController.displayTravellersPhotos(user.getProfileId)">
-                                                <button type="submit" class="btn btn-primary viewPicButton">View</button>
-                                            </a>
-                                            </td>
                                         </tr>
                                     }
                             </table>
@@ -259,13 +269,13 @@
                                 <li class="page-item"><a class="page-link" href="/travellers/0">Start</a></li>
                                 <li class="page-item"><a class="page-link" href="/travellers/@pagination.getPrevious">Previous</a></li>
                             } else {
-                                <li class="page-item disabled"><a class="page-link disabled" href="/travellers/0">Start</a></li>
-                                <li class="page-item disabled"><a class="page-link disabled" href="/travellers/@pagination.getPrevious">Previous</a></li>
+                                <li class="page-item disabled"><a class="page-link disabledPagination" href="/travellers/0">Start</a></li>
+                                <li class="page-item disabled"><a class="page-link disabledPagination" href="/travellers/@pagination.getPrevious">Previous</a></li>
                             }
                             @if(pagination.isNextEnabled) {
                                 <li class="page-item"><a class="page-link" href="/travellers/@pagination.getNext">Next</a></li>
                             } else {
-                                <li class="page-item disabled"><a class="page-link disabled" href="/travellers/@pagination.getNext">Next</a></li>
+                                <li class="page-item disabled"><a class="page-link disabledPagination" href="/travellers/@pagination.getNext">Next</a></li>
                             }
                         </ul>
                     </div>

@@ -5,6 +5,7 @@ import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
+import play.libs.Files;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -13,9 +14,11 @@ import play.mvc.Security;
 import repository.*;
 import utility.Country;
 import views.html.artists;
+import views.html.events;
 import views.html.viewArtist;
 
 import javax.inject.Inject;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,7 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 public class ArtistController extends Controller {
 
     private final Form<Artist> artistForm;
+    private final Form<ArtistPhotoFormData> artistPhotoForm;
     private MessagesApi messagesApi;
     private final ArtistRepository artistRepository;
     private final ProfileRepository profileRepository;
@@ -38,7 +42,12 @@ public class ArtistController extends Controller {
     private final EventRepository eventRepository;
     private final Form<ArtistFormData> searchForm;
     private final DestinationRepository destinationRepository;
+    private final ArtistProfilePictureRepository artistProfilePictureRepository;
+    private final PersonalPhotoRepository personalPhotoRepository;
+    private final PhotoRepository photoRepository;
     private final AttendEventRepository attendEventRepository;
+    private final UndoStackRepository undoStackRepository;
+    private final long MAX_PHOTO_SIZE = 8000000;
 
 
     @Inject
@@ -46,7 +55,11 @@ public class ArtistController extends Controller {
                             ArtistRepository artistRepository, ProfileRepository profileRepository,
                             PassportCountryRepository passportCountryRepository,
                             GenreRepository genreRepository, EventRepository eventRepository,
-                            DestinationRepository destinationRepository, AttendEventRepository attendEventRepository){
+                            DestinationRepository destinationRepository,
+                            ArtistProfilePictureRepository artistProfilePictureRepository,
+                            PersonalPhotoRepository personalPhotoRepository, PhotoRepository photoRepository,
+                            AttendEventRepository attendEventRepository, UndoStackRepository undoStackRepository){
+
         this.artistForm = artistProfileFormFactory.form(Artist.class);
         this.messagesApi = messagesApi;
         this.artistRepository = artistRepository;
@@ -56,7 +69,36 @@ public class ArtistController extends Controller {
         this.searchForm = artistProfileFormFactory.form(ArtistFormData.class);
         this.eventRepository = eventRepository;
         this.destinationRepository = destinationRepository;
+        this.artistProfilePictureRepository = artistProfilePictureRepository;
+        this.personalPhotoRepository = personalPhotoRepository;
+        this.photoRepository = photoRepository;
+        this.artistPhotoForm = artistProfileFormFactory.form(ArtistPhotoFormData.class);
         this.attendEventRepository = attendEventRepository;
+        this.undoStackRepository = undoStackRepository;
+    }
+
+
+
+    /**
+     * Endpoint method to search for only a genre used by the hash tags
+     * @param request Http Request
+     * @param genreId Id of the genre to search
+     * @return CompletionStage that redirects to the artists page displaying only artists with the given genre
+     */
+    public CompletionStage<Result> searchGenre(Http.Request request, Integer genreId) {
+        Integer profId = SessionController.getCurrentUserId(request);
+        EventFormData eventFormSent = new EventFormData();
+        String genreName = genreRepository.getGenre(genreId);
+        ArtistFormData formData = new ArtistFormData();
+        List<Artist> artistsList = artistRepository.searchArtist("", genreName, "", 0, 0, profId);
+        return profileRepository.findById(profId).thenApplyAsync(profile -> {
+            if(profile.isPresent()) {
+                    formData.setGenre(genreName);
+                    return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistsList, artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), formData, request, messagesApi.preferred(request)));
+            } else {
+            return redirect("/artists");
+            }
+        });
     }
 
     /**
@@ -69,11 +111,15 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> show(Http.Request request) {
         Integer profId = SessionController.getCurrentUserId(request);
         return profileRepository.findById(profId)
-                .thenApplyAsync(profileRec -> profileRec.map(profile -> ok(artists.render(searchForm, profile,
+                .thenApplyAsync(profileRec -> profileRec.map(profile -> {
+                    undoStackRepository.clearStackOnAllowed(profileRec.get());
+
+                    return ok(artists.render(searchForm, profile,
                         genreRepository.getAllGenres(), profileRepository.getAllEbeans(),
                         Country.getInstance().getAllCountries(),  artistRepository.getPagedArtists(0),
-                        artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId),
-                        request, messagesApi.preferred(request)))).orElseGet(() -> redirect("/profile")));
+                        artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), null,
+                        request, messagesApi.preferred(request)));
+                    }).orElseGet(() -> redirect("/profile")));
 
     }
 
@@ -115,16 +161,33 @@ public class ArtistController extends Controller {
                             created = 1;
                         }
                         if(formData.name.equals("") && formData.country.equals("") && formData.genre.equals("") && followed == 0 && created == 0) {
-                            return redirect("/artists").flashing("error", "Please enter at least one search filter.");
+                            return redirect("/artists");
                         }
 
                         searchForm.fill(formData);
-                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, created, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), request, messagesApi.preferred(request)));
+                        return ok(artists.render(searchForm, profile.get(), genreRepository.getAllGenres(), profileRepository.getAllEbeans(), Country.getInstance().getAllCountries(), artistRepository.searchArtist(formData.name, formData.genre, formData.country, followed, created, profId), artistRepository.getFollowedArtists(profId), artistRepository.getAllUserArtists(profId), formData, request, messagesApi.preferred(request)));
                     } else {
                         return redirect("/artists");
                     }
         });
     }
+
+
+    /**
+     * Method to determine if an artist has a profile picture linked to it
+     * - returns the profile photo if it exists
+     * - returns null if there is none (this is handled on the frontend)
+     * @param artistId id of the artist
+     * @return an optional photo object of the artist picture or null
+     */
+    private Photo getCurrentArtistProfilePhoto(Integer artistId) {
+        ArtistProfilePhoto artistPictureLink = artistProfilePictureRepository.lookup(artistId);
+        if (artistPictureLink != null) {
+            Optional<Photo> optionalPhoto = photoRepository.getImage(artistPictureLink.getPhotoId());
+            return optionalPhoto.orElse(null);
+        } else { return null; }
+    }
+
 
     /**
      * Endpoint for landing page for viewing details of artists
@@ -136,15 +199,30 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> showDetailedArtists(Http.Request request, Integer artistId) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(artistId);
+
+        Photo artistPicture = getCurrentArtistProfilePhoto(artistId);
+
         if (artist == null) {
             return profileRepository.findById (profId).thenApplyAsync(profile -> redirect("/artists"));
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileRec -> profileRec.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    undoStackRepository.clearStackOnAllowed(profileRec.get());
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 0,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false), null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                new ArrayList<String>(), new ArrayList<MusicGenre>(), 0,
+                                new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false), null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
+                    }
+
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -160,6 +238,7 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> showArtistEvents(Http.Request request, Integer id, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(id);
+        Photo artistPicture = getCurrentArtistProfilePhoto(id);
         if (artist == null) {
             return supplyAsync(() -> redirect("/artists"));
         }
@@ -169,9 +248,21 @@ public class ArtistController extends Controller {
         paginationHelper.checkButtonsEnabled();
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
-                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllVerfiedArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 1,
+                                paginationHelper, profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, eventRepository.getArtistEventsPage(id, offset), new ArrayList<String>(),
+                                new ArrayList<MusicGenre>(), 1,
+                                paginationHelper, new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
+                    }
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -186,15 +277,28 @@ public class ArtistController extends Controller {
     public CompletionStage<Result> showArtistMembers(Http.Request request, Integer id) {
         Integer profId = SessionController.getCurrentUserId(request);
         Artist artist = artistRepository.getArtistById(id);
+        Photo artistPicture = getCurrentArtistProfilePhoto(id);
         if (artist == null) {
             return supplyAsync(() -> redirect("/artists"));
         }
         return profileRepository.findById(profId)
                 .thenApplyAsync(profileOpt -> profileOpt.map(profile ->
-                        ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                {
+                    List<Artist> userArtists = artistRepository.getAllUserArtists(profId);
+                    if (userArtists.contains(artist)) {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
                                 Country.getInstance().getAllCountries(), genreRepository.getAllGenres(), 2,
-                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllDestinations(),
-                                artistRepository.getAllArtists(), new RoutedObject<Events>(null, false, false), null, request, messagesApi.preferred(request))))
+                                new PaginationHelper(), profileRepository.getAllEbeans(), destinationRepository.getAllFollowedOrOwnedDestinations(profId),
+                                artistRepository.getAllUserArtists(profId), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId),request, messagesApi.preferred(request)));
+                    } else {
+                        return ok(viewArtist.render(profile, artist, new ArrayList<Events>(),
+                                new ArrayList<String>(), new ArrayList<MusicGenre>(), 2,
+                                new PaginationHelper(), new ArrayList<Profile>(), new ArrayList<Destination>(),
+                                new ArrayList<Artist>(), new RoutedObject<Events>(null, false, false),
+                                null, artistPicture, artistRepository.getFollowedArtists(profId), request, messagesApi.preferred(request)));
+                    }
+                })
                         .orElseGet(() -> redirect("/profile")));
     }
 
@@ -316,7 +420,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> unfollowArtist(Http.Request request, Integer artistId){
         return artistRepository.unfollowArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist unfollowed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Unfollowed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
@@ -328,7 +432,7 @@ public class ArtistController extends Controller {
     @Security.Authenticated(SecureSession.class)
     public CompletionStage<Result> followArtist(Http.Request request, Integer artistId){
         return artistRepository.followArtist(artistId, SessionController.getCurrentUserId(request))
-                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Artist followed"));
+                .thenApplyAsync(x -> redirect("/artists").flashing("info", "Followed artist: " + artistRepository.getArtistById(artistId).getArtistName()));
     }
 
     /**
@@ -411,6 +515,7 @@ public class ArtistController extends Controller {
         return supplyAsync(() -> artistRepository.getNumFollowers(artistId));
     }
 
+
     /**
      * Endpoint method to withdraw from an event with the given eventID from the artist page
      * @param request http request
@@ -420,8 +525,9 @@ public class ArtistController extends Controller {
      */
     public Result leaveEvent(Http.Request request, Integer artistId, Integer eventId) {
         attendEventRepository.delete(attendEventRepository.getAttendEventId(eventId, SessionController.getCurrentUserId(request)));
-        return redirect("/artists/"+artistId+"/events/0").flashing("info", "No longer going to event");
+        return redirect("/events/details/"+eventId).flashing("info", "No longer going to event");
     }
+
 
     /**
      * Endpoint method to attend an event with the given eventID from the artist page
@@ -433,7 +539,58 @@ public class ArtistController extends Controller {
     public Result attendEvent(Http.Request request, Integer artistId, Integer eventId) {
 
         attendEventRepository.insert(new AttendEvent(eventId, SessionController.getCurrentUserId(request)));
-        return redirect("/artists/"+artistId+"/events/0").flashing("info", "No longer going to event");
+        return redirect("/events/details/"+eventId).flashing("info", "No longer going to event");
     }
 
+    /**
+     * Endpoint method for an artist admin to rmeove the artist profile photo
+     *
+     * @param request request to remove photo
+     * @param id id of artist to remove photo for
+     * @return Redirect back to the artists detailed page
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> removePhoto(Http.Request request, Integer id) {
+        return artistProfilePictureRepository.removeArtistProfilePicture(id).thenApplyAsync(artist -> redirect("/artists/" + artist));
+    }
+
+
+    /**
+     * Endpoint to upload a profile photo for an artist
+     * The method will extract the photo from the request,
+     * save it to the user's photos, use the created personal photo id,
+     * create an instance of ArtistProfilePhoto and pass that to the repo to save
+     *
+     * @param request - The HTTP Request for uploading a profile photo
+     * @param id - ID of the artist to set profile photo for
+     */
+    @Security.Authenticated(SecureSession.class)
+    public CompletionStage<Result> uploadProfilePhoto(Http.Request request, Integer id) {
+        Http.MultipartFormData<Files.TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<Files.TemporaryFile> picture = body.getFile("image");
+
+        if(artistProfilePictureRepository.lookup(id) != null) {
+            artistProfilePictureRepository.removeArtistProfilePicture(id);
+        }
+
+        String fileName = picture.getFilename();
+        String contentType = picture.getContentType();
+        if (!contentType.equals("image/jpeg") && !contentType.equals("image/png") && !contentType.equals("image/gif")) {
+            return supplyAsync(() -> redirect("/artists/"+id).flashing("error", "Invalid file type!"));
+        }
+        long fileSize = picture.getFileSize();
+        if (fileSize >= MAX_PHOTO_SIZE) {
+            return supplyAsync(() -> redirect("artists/"+ id).flashing("error",
+                    "File size must not exceed 8MB!"));
+        }
+
+        Files.TemporaryFile tempFile = picture.getRef();
+        String filepath = System.getProperty("user.dir") + "/photos/personalPhotos/" + fileName;
+        tempFile.copyTo(Paths.get(filepath), true);
+        Photo photo = new Photo("photos/personalPhotos/" + fileName, contentType, 0, fileName);
+        photoRepository.insert(photo).thenApplyAsync(photoId ->
+                artistProfilePictureRepository.addArtistProfilePicture(new ArtistProfilePhoto(id, photoId)));
+
+        return supplyAsync(() -> redirect("/artists/"+ id));
+    }
 }

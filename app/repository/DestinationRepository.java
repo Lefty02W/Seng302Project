@@ -345,6 +345,25 @@ public class DestinationRepository {
         return Optional.of(destList);
     }
 
+    /**
+     * Method to get a users owned + followed destinations
+     * @param profileId user Id to search for their owned destinations
+     * @return Optional array list of destinations either owned or followed by the user
+     */
+    public ArrayList<Destination> getAllFollowedOrOwnedDestinations(int profileId) {
+        ArrayList<Destination> destinationList = new ArrayList<>(ebeanServer.find(Destination.class)
+                .where()
+                .eq("soft_delete", 0)
+                .eq("profile_id", profileId)
+                .findList());
+
+        String updateQuery = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
+                "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
+                "where follow_destination.profile_id = ? and D.soft_delete = 0";
+        List<SqlRow> rowList = ebeanServer.createSqlQuery(updateQuery).setParameter(1, profileId).findList();
+        destinationList.addAll(getDestinationsFromSqlRow(rowList));
+        return destinationList;
+    }
 
     /**
      * Method returns all followed destinations ids from a user
@@ -395,6 +414,7 @@ public class DestinationRepository {
 
         return !destinations.isEmpty() || !publicDestinations.isEmpty();
     }
+
 
     /**
      * Method called from addRequest method to add the changes made in a request to the actions table
@@ -559,6 +579,11 @@ public class DestinationRepository {
         return result;
     }
 
+    /**
+     * Get traveller types for the destination
+     * @param destinationId Destination id to get the traveller types for
+     * @return List of traveller types
+     */
     public List<TravellerType> getDestinationsTravellerTypes(int destinationId) {
         String sql = "select traveller_type_id from destination_traveller_type where destination_id = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(sql).setParameter(1, destinationId).findList();
@@ -697,7 +722,9 @@ public class DestinationRepository {
 
 
     /**
-     *
+     * Function to take in a list of SqlRow and convert to destinations
+     * @param rowList List of SqlRow to be converted
+     * @return List of destinations that has been converted from sql row
      */
     private List<Destination> getDestinationsFromSqlRow(List<SqlRow> rowList) {
         List<Destination> destinations = new ArrayList<>();
@@ -720,7 +747,7 @@ public class DestinationRepository {
     }
 
     /**
-     * Database method to serch for a destination of a given name
+     * Database method to search for a destination of a given name
      *
      * @param name   - The destination name
      * @param offset - The offset from which to start returning results
@@ -733,6 +760,7 @@ public class DestinationRepository {
                     .setMaxRows(7)
                     .where()
                     .like("name", name)
+                    .eq("soft_delete", 0)
                     .eq("visible", 1)
                     .findList());
         }
@@ -745,17 +773,17 @@ public class DestinationRepository {
                 .eq("soft_delete", 0)
                 .eq("profile_id", profileId)
                 .like("name", name)
-                .eq("visible", 0)
                 .findList());
 
         Integer limit = abs(7 - privateList.size());
         String query = "Select D.destination_id, D.profile_id, D.name, D.type, D.country, D.district, D.latitude, D.longitude, D.visible " +
                 "from follow_destination JOIN destination D on follow_destination.destination_id = D.destination_id " +
-                "where follow_destination.profile_id = ? and D.soft_delete = 0 LIMIT ? OFFSET ?";
+                "where follow_destination.profile_id = ? and D.soft_delete = 0 and D.name LIKE ? LIMIT ? OFFSET ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(query)
                 .setParameter(1, profileId)
-                .setParameter(2, limit)
-                .setParameter(3, offset)
+                .setParameter(2, name)
+                .setParameter(3, limit)
+                .setParameter(4, offset)
                 .findList();
 
         privateList.addAll(getDestinationsFromSqlRow(rowList));

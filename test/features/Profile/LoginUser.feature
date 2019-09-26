@@ -9,7 +9,7 @@ Feature: Login
     When he fills in his email with "john@gmail.com"
     And he fills in his password with "password"
     And he presses Login
-    Then the profile page should be shown
+    Then the landing page should be shown
 
   Scenario: Log in with incorrect Password
     Given John is at the login page

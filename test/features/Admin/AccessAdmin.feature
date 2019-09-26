@@ -2,6 +2,9 @@ Feature: Access admin page
   As a user
   I want to access the admin page
 
+  Background:
+    Given I am logged into the application as an admin
+
   Scenario: Access the admin page as a non admin
     Given I am logged into the application as a non admin
     When he fills "/admin/admins/0" into the URL

@@ -57,6 +57,7 @@ public class AdminController {
     private RolesRepository rolesRepository;
     private final Form<EventFormData> eventCreateForm;
     private final Form<EventFormData> eventFormDataForm;
+    private final Form<UpdatePasswordForm> updatePasswordForm;
 
     @Inject
     public AdminController(FormFactory formFactory, HttpExecutionContext httpExecutionContext,
@@ -87,6 +88,7 @@ public class AdminController {
         this.eventCreateForm = eventFormFactory.form(EventFormData.class);
         this.eventForm = formFactory.form(Events.class);
         this.eventFormDataForm = formFactory.form(EventFormData.class);
+        this.updatePasswordForm = formFactory.form(UpdatePasswordForm.class);
     }
 
 
@@ -388,6 +390,23 @@ public class AdminController {
         profile.setPassports(profile.getPassports());
 
         return profileRepository.update(profile, id)
+                .thenApplyAsync(x -> redirect("/admin/profiles/0")
+                        , httpExecutionContext.current());
+    }
+
+
+    /**
+     * Updates a profile's password via data form the form via the admin
+     *
+     * @param request Http requestRequest
+     * @param request Http request
+     * @return a redirect to the profile page
+     * @apiNote
+     */
+    public CompletionStage<Result> updatePassword(Http.Request request) {
+        Form<UpdatePasswordForm> passwordFormForm = updatePasswordForm.bindFromRequest(request);
+        UpdatePasswordForm updatePasswordForm = passwordFormForm.get();
+        return profileRepository.updatePassword(updatePasswordForm.userId, updatePasswordForm.password)
                 .thenApplyAsync(x -> redirect("/admin/profiles/0")
                         , httpExecutionContext.current());
     }
@@ -979,7 +998,7 @@ public class AdminController {
                 undoStackRepository.addToStack(new UndoStack("event", event.getEventId(), SessionController.getCurrentUserId(request)));
                 eventRepository.setSoftDelete(event, 1);
             });
-            return redirect("/admin/events/" + offset).flashing("info", "Deleted Event: " + eventRepository.lookup(id).getEventName());
+            return redirect("/admin/events/" + offset);
         });
     }
 }

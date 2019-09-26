@@ -1,3 +1,11 @@
+#artistProfilePhotoContainer {
+    display: block;
+    width: 10vh;
+    height: 10vh;
+    margin-top: -95px;
+
+}
+
 #viewArtistTabs {
     width: fit-content;
     margin-left: auto;
@@ -7,7 +15,6 @@
 #viewArtistTabs, #aboutTabLink, #eventsTabLink, #membersTabLink{
     padding: 10px;
 }
-
 
 #aboutTab {
     padding-left: 10%;
@@ -56,16 +63,16 @@
 }
 
 .button-col {
-    max-width: 30vw;
+    max-width: 40vw;
 }
 
 .social-col {
     padding-left: 8vw;
+    position: center;
 }
 
 #leaveArtistButton {
-    position: fixed;
-    left: 92.5vw;
+    float: right;
     background-color: #41B49D;
     z-index: 2;
 }
@@ -105,7 +112,6 @@
 
 .event-link {
     color: #d74961;
-    text-decoration: underline;
 }
 
 .event-link:hover {
@@ -137,8 +143,50 @@
     width: 40vw;
 }
 
-
 .spotify {
     width: 40vw;
     height: 40vh;
+}
+
+#eventJumboNoPicture {
+    height: 35vh;
+    background: url("https://images.unsplash.com/photo-1483101974978-cf266fdf1139?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80") no-repeat center center;
+    background-size: cover;
+    border-radius: 0px !important;
+}
+
+#eventJumbo {
+    height: 35vh;
+    background-size: cover;
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0px !important;
+}
+
+#eventCoverPhoto {
+    max-width: 100%;
+    max-height: 500%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#removeArtistPicButton {
+    float: right;
+    margin-right: 1%;
+}
+
+#rightButtons {
+    float: right;
+}
+
+#description {
+    width: 25vw;
 }

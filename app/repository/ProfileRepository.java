@@ -114,7 +114,7 @@ public class ProfileRepository {
                 "FROM profile " +
                 "WHERE soft_delete = 0 " +
                 "ORDER BY profile_id ASC " +
-                "LIMIT 10 OFFSET ?";
+                "LIMIT 12 OFFSET ?";
 
         List<SqlRow> rows = ebeanServer.createSqlQuery(selectQuery)
                 .setParameter(1, offset)
@@ -155,9 +155,16 @@ public class ProfileRepository {
      * @return Profile class of the user
      */
     public Profile getExistingProfileByProfileId(Integer userId) {
-        return ebeanServer.find(Profile.class)
+        Profile profile =  ebeanServer.find(Profile.class)
                 .where().eq("soft_delete", "0").and()
                 .like("profile_id", userId.toString()).findOne();
+
+        profile.setNationalities(profileNationalityRepository.getList(profile.getProfileId()).get());
+        profile.setPassports(profilePassportCountryRepository.getList(profile.getProfileId()).get());
+        profile.setTravellerTypes(profileTravellerTypeRepository.getList(profile.getProfileId()).get());
+        profile.setRoles(rolesRepository.getProfileRoles(profile.getProfileId()).get());
+
+        return profile;
     }
 
     /**
@@ -167,9 +174,24 @@ public class ProfileRepository {
      * @return Profile class of the user
      */
     public Profile getProfileByProfileId(Integer userId) {
-        return ebeanServer.find(Profile.class).setId(userId).findOne();
+        Profile profile = ebeanServer.find(Profile.class).setId(userId).findOne();
+        profile.setRoles(rolesRepository.getProfileRoles(userId).get());
+        return profile;
     }
 
+    /**
+     * Method for getting a page of profiles linked to an event from a given offset
+     * @param userIdList List of profile ids to get profile subset
+     * @param offset start index of page
+     * @return list of profiles to be displayed in current page
+     */
+    public Optional<List<Profile>> getAllProfileByIdListPage(List<Integer> userIdList, int offset) {
+        if (userIdList.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(ebeanServer.find(Profile.class).setMaxRows(5).setFirstRow(offset).where().idIn(userIdList).findList());
+        }
+    }
 
     /**
      * Database access method to query the database for profiles that match the given search parameters
@@ -228,7 +250,7 @@ public class ProfileRepository {
                     .contains("gender", gender)
                     .gt("birth_date", dateFormat.format(upperAge))
                     .lt("birth_date", dateFormat.format(lowerAge))
-                    .setMaxRows(50)
+                    .setMaxRows(12)
                     .setFirstRow(offset)
                     .findList();
             for (Profile profile : foundProfiles) {
@@ -479,6 +501,31 @@ public class ProfileRepository {
                 executionContext);
     }
 
+    public CompletionStage<Optional<Integer>> updatePassword(Integer profileId, String newPassword) {
+        return supplyAsync(
+                () -> {
+                    String password = BCrypt.hashpw(newPassword, "$2a$12$nODuNzk9U7Hrq6DgspSp4.");
+                    Transaction txn = ebeanServer.beginTransaction();
+                    String updateQuery =
+                            "UPDATE profile SET password = ? WHERE profile_id = ?";
+                    Optional<Integer> value = Optional.empty();
+                    try {
+                        if (ebeanServer.find(Profile.class).setId(profileId).findOne() != null) {
+                            SqlUpdate query = Ebean.createSqlUpdate(updateQuery);
+                            query.setParameter(1, password);
+                            query.setParameter(2, profileId);
+                            query.execute();
+                            txn.commit();
+                            value = Optional.of(profileId);
+                        }
+                    } finally {
+                        txn.end();
+                    }
+                    return value;
+                },
+                executionContext);
+    }
+
 
     /**
      * Deletes a profile from the database that matches the given email
@@ -637,7 +684,7 @@ public class ProfileRepository {
      * @param profileId int of the porfileid of the user
      * @return boolean true if email is taken, false if it is a change that will be allowed
      */
-    private boolean isEmailTaken(String email, int profileId) {
+    public boolean isEmailTaken(String email, int profileId) {
         boolean isTaken = false;
         String selectQuery = "Select * from profile WHERE email = ?";
         List<SqlRow> rowList = ebeanServer.createSqlQuery(selectQuery).setParameter(1, email).findList();
@@ -647,6 +694,18 @@ public class ProfileRepository {
             }
         }
         return isTaken;
+    }
+
+    /**
+     * Method for create profile to check if there is a traveller account under the supplied email that already
+     * exists (not the same user)
+     *
+     * @param email String The email the user has proposed to use
+     * @return boolean true if email is taken, false if it is a change that will be allowed
+     */
+    public boolean isEmailTakenSignup(String email) {
+        boolean isTaken = false;
+        return ebeanServer.find(Profile.class).where().eq("email", email).exists();
     }
 
 

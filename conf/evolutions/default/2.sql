@@ -42,6 +42,10 @@ INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,ge
 INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
   (14, 'Tim', 'No', 'tim.no@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
 
+INSERT INTO profile(profile_id,first_name,last_name,email,password,birth_date,gender) values
+  (15, 'Reset', 'Password', 'resetPassword@gmail.com', '$2a$12$nODuNzk9U7Hrq6DgspSp4.uMJbF9bZ/qCRJEx0jE8u8q5QiMZgUrm', CURRENT_DATE, 'Male');
+
+
 INSERT into roles (role_id, role_name) values
   (1, 'admin');
 
@@ -133,6 +137,12 @@ INSERT INTO photo (visible, content_type, name, path) values
 INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
   (2, 2, 0);
 
+INSERT INTO photo (visible, content_type, name, path) values
+  (0, 'image/jpg', 'testPic3.jpg', 'photos/personalPhotos/testPic2.jpg');
+
+INSERT INTO personal_photo (profile_id, photo_id, is_profile_photo) values
+  (2, 3, 0);
+
 INSERT INTO destination (profile_id, name, type, country, district, latitude, longitude, visible) values
 (1, 'Matakana', 'Town', 'New Zealand', 'Rodney', 67.45, -67.98, 1);
 
@@ -186,8 +196,7 @@ INSERT INTO destination_change (id, traveller_type_id, action, request_id) value
 INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
   (3, 'destination', 3, 5, CURRENT_DATE);
 
-  INSERT INTO undo_stack (entry_id, item_type, object_id, profile_id, time_created) VALUES
-  (4, 'destination', 7, 11, CURRENT_DATE - 5);
+
 
 INSERT INTO music_genre (genre_Id, genre) VALUES
   (1, 'Rock');
@@ -201,8 +210,8 @@ INSERT INTO music_genre (genre_Id, genre) VALUES
 INSERT INTO music_genre (genre_Id, genre) VALUES
   (4, 'Indie');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (1, 'Mr Walsh', 'Mr Walsh', 'walsh');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (1, 'Mr Walsh', 'Mr Walsh', 'walsh', 0);
 
 INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
   (2, 'James', 'James', 'james', 1);
@@ -210,23 +219,25 @@ INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
 INSERT INTO artist_profile(artist_id, profile_id) VALUES
   (2, 2);
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (3, 'Jerry', 'Jerry', 'jerry');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (3, 'Jerry', 'Jerry', 'jerry', 1);
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (4, 'Yes', 'Jerry', 'jerry');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (5, 'Steve', 'Big boi steve', 'jerry');
 
-INSERT INTO artist (artist_id, artist_name, biography, members) VALUES
-  (6, 'STIFI', 'Big boi steve', 'jerry');
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (4, 'Yes', 'Jerry', 'jerry', 0);
+
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (5, 'Steve', 'Big boi steve', 'jerry', 1);
+
+INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
+  (6, 'STIFI', 'Big boi steve', 'jerry', 1);
 
 INSERT INTO artist (artist_id, artist_name, biography, members,
-  facebook_link, instagram_link, spotify_link, twitter_link, website_link) VALUES
+  facebook_link, instagram_link, spotify_link, twitter_link, website_link, verified) VALUES
   (7, 'There are no Trees', 'Indie Rock band from the Amazon Rainforest', 'Buck, Cherry, River',
   'https://www.facebook.com/', 'https://www.instagram.com/', 'https://www.spotify.com/', 'https://www.twitter.com/',
-  'https://www.amazon.com/kingsofamazon');
+  'https://www.amazon.com/kingsofamazon', 1);
 
 INSERT INTO artist (artist_id, artist_name, biography, members, verified) VALUES
   (9, 'The Sloths', 'Sloths', 'SlothBoi', 1);
@@ -258,6 +269,9 @@ INSERT INTO artist_genre (artist_id, genre_id) VALUES
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (2, 2);
+
+INSERT INTO artist_profile (artist_id, profile_id) VALUES
+  (1, 2);
 
 INSERT INTO artist_profile (artist_id, profile_id) VALUES
   (6, 2);
@@ -422,10 +436,11 @@ INSERT INTO event_type (event_id, type_id) VALUES
 INSERT INTO event_genres (event_id, genre_id) VALUES
   (6, 1);
 
+INSERT INTO artist_profile_photo (artist_id, photo_id) VALUES
+  (1, 3);
+
 INSERT INTO attend_event(attend_event_id, event_id, profile_id) VALUES
   (1, 6, 2);
-
-
 
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (1, 2);
@@ -463,8 +478,6 @@ INSERT INTO attend_event(event_id, profile_id) VALUES
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (12, 2);
 
-
-
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (6, 13);
 
@@ -477,10 +490,8 @@ INSERT INTO attend_event(event_id, profile_id) VALUES
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (12, 13);
 
-
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (12, 14);
 
 INSERT INTO attend_event(event_id, profile_id) VALUES
   (13, 14);
-

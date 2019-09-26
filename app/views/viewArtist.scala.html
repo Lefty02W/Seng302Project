@@ -2,7 +2,8 @@
 @import views.html.helper.{CSRF, form}
 @(currentUser: Profile, artist: Artist, events: List[Events], countries: List[String], genres: List[MusicGenre],
         activeTab: Integer, pagination: PaginationHelper, profiles : List[Profile], destinations : List[Destination],
-        verifiedArtists : List[Artist], editEvent: RoutedObject[Events], editEventForm : Form[Events])(implicit request: Http.Request, messages: play.i18n.Messages)
+        verifiedArtists : List[Artist], editEvent: RoutedObject[Events], editEventForm : Form[Events],
+        artistCoverPicture: Photo, followedArtists : List[Artist])(implicit request: Http.Request, messages: play.i18n.Messages)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -34,28 +35,35 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
-                        Profile</a>
-                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
-                        Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
-                        Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
-                        Travellers</a>
-                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
-                        Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
-                        Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
+                    </a>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
+                        Artists
+                    </a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
+                        Profile
+                    </a>
+                    <a href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
+                        Destinations
+                    </a>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
+                        Trips
+                    </a>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
+                        Travellers
+                    </a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
+                        Treasure Hunt
                     </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
                     }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
-                        Logout</a>
+                        Logout
+                    </a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -64,12 +72,9 @@
                 <nav class="navbar navbar-expand-lg navbar-light topbar-dark">
                     <h3 class="expand-icon toggleButton" id="menu-toggle" ><img class="toggleButton" id="menuIcon" src="@routes.Assets.at("images/burger-menu.png")" alt="Not Found"/></h3>
                     <div id="pageTitle">
-                        <h2 class="text-center">Artist</h2>
+                        <h2 class="text-center">@artist.getArtistName</h2>
                     </div>
                 </nav>
-                <div class="jumbotron text-center" id="artistNameJumbo">
-                    <h1>@artist.getArtistName</h1>
-                </div>
                 @if(request.flash.getOptional("success").isPresent) {
                     <div class="alert alert-success" id="successAlert">
                     @request.flash.getOptional("success").get()
@@ -81,6 +86,15 @@
                     @request.flash.getOptional("error").get()
                     </div>
                 }
+
+                @if(artistCoverPicture != null) {
+                    <div class="jumbotron text-center" id="eventJumbo">
+                        <img id="eventCoverPhoto" src="@routes.ProfileController.photoAt(artistCoverPicture.getPhotoId)" alt="@artistCoverPicture.getName"/>
+                    </div>
+                } else {
+                    <div class="jumbotron text-center" id="eventJumboNoPicture"></div>
+                }
+
                 <div class="container-fluid">
                     <div class="row">
                         <ul class="nav nav-tabs" id="viewArtistTabs">
@@ -108,189 +122,215 @@
                     <div class="tab-content" id="viewArtistTabsContent">
                         @if(activeTab == 0) {
                             <div id="aboutTab" class="tab-pane fade in active show">
+                                <div class="container">
+                                    <div id="about" class="row justify-content-center">
+                                        <a>@artist.getBiography</a>
+                                    </div>
+                                    <hr class="divider">
+                                    <div class="row justify-content-center spotify-row">
+                                    @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
+                                        @if(artist.getSpotifyLink.contains("embed")) {
+                                            <iframe class="spotify" src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                        } else if(artist.getSpotifyLink.contains("spotify.com/")) {
+                                        <iframe class="spotify" src="@artist.getSpotifyLink.replace("spotify.com/", "spotify.com/embed/")" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                        }
+                                    }
+                                    </div>
+                                    @if(artist.getGenreList.size() > 0) {
+                                        <hr class="divider">
+                                        <div class="row justify-content-center">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                @for(genre <- artist.getGenreList) {
+                                                    <a class="event-link" href="@routes.ArtistController.searchGenre(genre.getGenreId)" title="Show similar bands">
+                                                #@genre.getGenre
+                                                </a>
+                                                }
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                }
+                            </div>
 
                             } else {
                             <div id="aboutTab" class="tab-pane fade in">
-
-                            }
-                        <div class="container">
-                            <div id="about" class="row justify-content-center">
-                                <a>@artist.getBiography</a>
                             </div>
-                            <hr class="divider">
-                            <div class="row justify-content-center spotify-row">
-                            @if(artist.getSpotifyLink != null && !artist.getSpotifyLink.isEmpty) {
-                                @if(artist.getSpotifyLink.contains("embed")) {
-                                    <iframe class="spotify" src="@artist.getSpotifyLink" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                                } else if(artist.getSpotifyLink.contains("spotify.com/")) {
-                                <iframe class="spotify" src="@artist.getSpotifyLink.replace("spotify.com/", "spotify.com/embed/")" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                                }
                             }
-                            </div>
-                        </div>
                     </div>
 
                         @if(activeTab == 1) {
                             <div id="eventsTab" class="tab-pane fade active show">
-                            } else {
-                            <div id="eventsTab" class="tab-pane fade">
-                            }
-                        <div class="row">
-                            <div class="col display-events">
-                                @for(event <- events) {
-                                    <div class="card" id="eventsCard">
-                                        <div class="card-header">
-                                            <h4 class="primary-color event-link toggled eventTitle" id="eventName@event.getEventId" onclick="showEvent(@event.getEventId, this)">@event.getEventName</h4>
-                                        </div>
-                                        <div class="card-body" id="eventCardBody">
-                                            <div class="row">
-                                                @for(artist <- event.getEventArtists) {
-                                                    <i class="fa fa-user">&nbsp;</i>
-                                                    <p>@artist.getArtistName</p>&nbsp;
-                                                }
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-calendar">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-map-marker">&nbsp;</i>
-                                                <p>@event.getDestination.getName</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
-                                            </div>
-                                            <div class="row">
-                                                <i class="fa fa-exclamation-triangle">&nbsp;</i>
-                                                <p>@event.getAgeRestrictionString</p>
-                                            </div>
-                                            <div class="row">
-                                                    <i class="fa fa-user-plus">&nbsp;</i>
-                                                <p>@event.getEventAttendees.size() attending</p>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col">
-                                                    <h4 class="primary-color">Description</h4>
-                                                    <p>@event.getDescription</p>
+                                <div class="row">
+                                    <div class="col display-events">
+                                        @for(event <- events) {
+                                            <div class="card" id="eventsCard">
+                                                <div class="card-header toggled eventTitle" id='eventName@event.getEventId'>
+                                                    <a class="event-link" href="/events/details/@event.getEventId">
+                                                    @event.getEventName
+                                                    </a>
+
+                                                    <div class="event-link" id="mapLink" onclick="showEvent(@event.getEventId, this)">
+                                                        <i class="fa fa-map-marker">View on Map</i>
+                                                    </div>
+
                                                 </div>
-                                                <div class="col">
-                                                    <h4 class="primary-color">Genres</h4>
-                                                    @for(genre <- event.getEventGenres) {
-                                                        <p>@genre.getGenre</p>
+                                                <div class="card-body" id="eventCardBody">
+                                                    <div class="row">
+                                                        <i class="fa fa-calendar">&nbsp;</i><p>@event.getEventTypes.get(0)</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-map-marker">&nbsp;</i>
+                                                        <p>@event.getDestination.getName</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-calendar">&nbsp;</i><p>Start: @event.getStartDateString</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-calendar">&nbsp;</i><p>End: @event.getEndDateString</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-exclamation-triangle">&nbsp;</i>
+                                                        <p>@event.getAgeRestrictionString</p>
+                                                    </div>
+                                                    <div class="row">
+                                                        <i class="fa fa-user-plus">&nbsp;</i>
+                                                        <p>@event.getEventAttendees.size() attending</p>
+                                                    </div>
+
+
+                                                </div>
+                                                <div class="card-footer">
+                                                    @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
+                                                        @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
+                                                                || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
+                                                                || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
+                                                            <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
+                                                                <i class="fa fa-check"></i>
+                                                                Attend
+                                                            </button>
+                                                        } else {
+                                                            <a href="/artists/@artist.getArtistId/events/@event.getEventId/attend">
+                                                                <button class="btn btn-primary">
+                                                                    <i class="fa fa-check"></i>
+                                                                    Attend
+                                                                </button>
+                                                            </a>
+                                                        }
+
+                                                    } else {
+                                                        <a href="/artists/@artist.getArtistId/events/@event.getEventId/leave">
+                                                            <button class="btn btn-secondary">
+                                                                <i class="fa fa-remove"></i>
+                                                                Don't attend
+                                                            </button>
+                                                        </a>
+                                                    }
+
+                                                    @if(artist.getAdminsList.contains(currentUser)) {
+                                                        <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
+                                                            <button class="btn btn-primary">
+                                                                <i class="fa fa-edit"></i>
+                                                                Edit
+                                                            </button>
+                                                        </a>
+
+
+                                                        <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')"
+                                                        <i class="fa fa-trash"></i>
+                                                        Delete
+                                                        </button>
                                                     }
                                                 </div>
                                             </div>
-
-                                        </div>
-                                        <div class="card-footer">
-                                        @if(!event.getEventAttendees.contains(currentUser.getProfileId)) {
-                                            @if((currentUser.getAge < 16 && event.getAgeRestriction == 16)
-                                                    || (currentUser.getAge < 18 && event.getAgeRestriction == 18)
-                                                    || (currentUser.getAge < 21 && event.getAgeRestriction == 21)) {
-                                                <button class="btn btn-primary" title="You cannot attend this event because you do not meet age restriction requirements" disabled>
-                                                    <i class="fa fa-check"></i>
-                                                    Attend
-                                                </button>
-                                            } else {
-                                                <a href="/artists/@artist.getArtistId/events/@event.getEventId/attend">
-                                                    <button class="btn btn-primary">
-                                                        <i class="fa fa-check"></i>
-                                                        Attend
-                                                    </button>
-                                                </a>
-                                            }
-
-                                        } else {
-                                            <a href="/artists/@artist.getArtistId/events/@event.getEventId/leave">
-                                                <button class="btn btn-secondary">
-                                                    <i class="fa fa-remove"></i>
-                                                    Don't attend
-                                                </button>
-                                            </a>
                                         }
-
-                                        @if(artist.getAdminsList.contains(currentUser)) {
-                                            <a href="/artists/@artist.getArtistId/events/edit/@event.getEventId">
-                                                <button class="btn btn-primary">
-                                                    <i class="fa fa-edit"></i>
-                                                    Edit
-                                                </button>
-                                            </a>
-
-
-                                            <button class="btn btn-danger" onclick="fillDeleteValues('/artists/@artist.getArtistId/events/@event.getEventId/delete')">
-                                                <i class="fa fa-trash"></i>
-                                                Delete
-                                            </button>
+                                        @if(activeTab == 1) {
+                                            <ul class="pagination">
+                                                @if(pagination.isPreviousEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
+                                                        Start</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/0">
+                                                        Start</a></li>
+                                                }
+                                                @if(pagination.isPreviousEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                                        Previous</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
+                                                        Previous</a></li>
+                                                }
+                                                @if(pagination.isNextEnabled) {
+                                                    <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                                        Next</a></li>
+                                                } else {
+                                                    <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getNext">
+                                                        Next</a></li>
+                                                }
+                                            </ul>
                                         }
-                                        </div>
                                     </div>
-                                }
-                                @if(activeTab == 1) {
-                                    <a>@pagination.getInfoString</a>
-                                    <ul class="pagination">
-                                        <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/0">
-                                            Start</a></li>
-                                        @if(pagination.isPreviousEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
-                                                Previous</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getPrevious">
-                                                Previous</a></li>
-                                        }
-                                        @if(pagination.isNextEnabled) {
-                                            <li class="page-item"><a class="page-link" href="/artists/@artist.getArtistId/events/@pagination.getNext">
-                                                Next</a></li>
-                                        } else {
-                                            <li class="page-item disabled"><a class="page-link disabledPagination" href="/artists/@artist.getArtistId/events/@pagination.getNext">
-                                                Next</a></li>
-                                        }
-                                    </ul>
-                                }
+                                    <div class="card-large map-events">
+                                        <div id="legend"></div>
+                                        <div id="eventsMap"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-large map-events">
-                                <div id="legend"></div>
-                                <div id="eventsMap"></div>
+                            } else {
+                            <div id="eventsTab" class="tab-pane fade">
                             </div>
-                        </div>
+                            }
+
                     </div>
                         @if(activeTab == 2) {
                             <div id="membersTab" class="tab-pane fade active show">
+                                @for(member <- artist.getMembers().split(",")) {
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <p class="card-text">@member</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
                             } else {
                             <div id="membersTab" class="tab-pane fade">
-                            }
-                        @for(member <- artist.getMembers().split(",")) {
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="card-text">@member</p>
-                                </div>
                             </div>
-                        }
-                    </div>
-                    </div>
-                    </div>
-                    </div>
-                    </div>
+                            }
+            </div>
+        </div>
+
+
+
 
         <div class="container" id="artistsFooter">
             <div class="row justify-content-center">
                 <div class="col button-col">
-                    <button class="btn btn-secondary" onclick="goBack()">Back</button>
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fa fa-toggle-left"></i>
+                        Back
+                    </button>
 
                     @if(artist.getAdminsList.contains(currentUser)) {
+
+                        <button class="btn btn-secondary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
+                            <i class="fa fa-plus-circle"></i>
+                            Create Event
+                        </button>
+
                         <button type="button" class="btn btn-secondary" id="editArtistButton" data-toggle="modal" data-target="#editArtistModal">
                             <i class="fa fa-edit" id="editProfileButton"></i>
                             Edit Artist
                         </button>
-                        <button class="btn btn-secondary" id="createEventButton" type="button" data-toggle="modal" data-target="#createEventModal">
-                            Create Event
-                        </button>
 
-                        <button class="btn btn-primary" id="leaveArtistButton" onclick="fillDeleteValues('/artists/@artist.getArtistId/leave')">Leave Artist</button>
+                        <button class="btn btn-secondary" id="changeArtistPicButton" type="button" data-toggle="modal"
+                        data-target="#changeArtistPicButtonModal">
+                            <i class="fa fa-upload"></i>
+                            Change Photo
+                        </button>
                     }
                 </div>
+
                 <div class="col social-col">
                     <div class="mb-5 flex-center" id="socialMediaIcons">
                             <!-- Facebook -->
@@ -315,8 +355,91 @@
                         }
                     </div>
                 </div>
+
+                <div class="col">
+                    <div class="row" id="rightButtons">
+                    @if(followedArtists contains artist) {
+                        @helper.form(routes.ArtistController.unfollowArtist(artist.getArtistId)) {
+                            @CSRF.formField
+                            <button type="submit" class="btn btn-secondary">
+                                <i class="fa fa-heart"></i>
+                                Unfollow
+                            </button>
+                        }
+                    } else {
+                        @helper.form(routes.ArtistController.followArtist(artist.getArtistId)) {
+                            @CSRF.formField
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-heart-o"></i>
+                                Follow
+                            </button>
+                        }
+                    }
+
+                    @if(artist.getAdminsList.contains(currentUser)) {
+                        <button class="btn btn-primary" id="leaveArtistButton" onclick="fillLeaveValues('/artists/@artist.getArtistId/leave')">
+                            <i class="fa fa-user-times"></i>
+                            Withdraw Ownership
+                        </button>
+
+                        @if(artistCoverPicture != null) {
+                            <button class="btn btn-secondary" id="removeArtistPicButton" type="button" data-toggle="modal"
+                            data-target="#removeArtistPicButtonModal">
+                                <i class="fa fa-trash"></i>
+                                Remove Photo
+                            </button>
+                        }
+                    }
+                    </div>
+                </div>
             </div>
         </div>
+                    <div class="modal" id="changeArtistPicButtonModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h2 class="modal-title">New Artist Picture</h2>
+                                </div>
+                                @form(routes.ArtistController.uploadProfilePhoto(artist.getArtistId), 'enctype -> "multipart/form-data") {
+                                    @CSRF.formField
+                                    <div class="modal-body">
+                                        <input type="file" id="image" name="image">
+                                        <input type="hidden" id="visible" name="visible" value="Public" hidden>
+                                        <input type="hidden" id="artistId" name="artistId" value="@artist.getArtistId" hidde>
+                                        <input type="hidden" id="isNewProfilePicture" name="isNewProfilePicture" value="true" hidden>
+                                    </div>
+
+                                <div class="modal-footer">
+                                    <button class="btn btn-danger" data-dismiss="modal" type="button">Cancel</button>
+                                    @*<a href="/artists/@artist.getArtistId/upload/photo">*@
+                                        <button class="btn btn-primary" type="submit">Save</button>
+                                    @*</a>*@
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal" id="removeArtistPicButtonModal">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h2 class="modal-title">Remove @artist.getArtistName Photo</h2>
+                                </div>
+                                    <div class="modal-body">
+                                        <a>Are you sure you want to remove your photo?</a>
+                                    </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-danger" data-dismiss="modal" type="button">Cancel</button>
+                                    <a href="/artists/@artist.getArtistId/remove/photo">
+                                        <button class="btn btn-primary" type="submit">Confirm</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
 
                     <div class="modal" id="editArtistModal">
@@ -324,7 +447,7 @@
                             <div class="modal-content">
                                     <!-- header -->
                                 <div class="modal-header">
-                                    <h4 class="modal-title">Edit Artist</h4>
+                                    <h4 class="modal-title">Edit Artist: @artist.getArtistName</h4>
                                     <button type="button" class="close" data-dismiss="modal"></button>
                                 </div>
 
@@ -512,18 +635,20 @@
             <div class="modal-content">
                     <!-- header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">Leave Artist Confirmation</h4>
+                    <h4 class="modal-title">Withdraw Ownership</h4>
                     <button type="button" class="close" data-dismiss="modal"></button>
                 </div>
                     <!-- body -->
                 <div class="modal-body">
-                    <h5>Are you sure you want to leave? This cannot be undone</h5>
+                    <p>Are you sure you want to withdraw your ownership of this artist?</p>
+                    <p>This will remove your access to modify this artist.</p>
+                    <p>This cannot be undone.</p>
 
                 </div>
                     <!-- footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
-                    <a href="#" id="confirmDeleteHrf">
+                    <a href="#" id="confirmLeaveHrf">
                         <button type="submit" id="confirmDeleteBtn" class="btn btn-danger" onclick="runDelete()">
                             Confirm</button>
                     </a>
@@ -635,7 +760,8 @@
 
                             </div>
                             <div class="row justify-content-center">
-                                <input type="text" id="description" placeholder="Description*" name="description">
+                                <textarea id="description" rows="4" placeholder="Description*" name="description"
+                                required></textarea>
                             </div>
                             <div class="row justify-content-center">
                                 <small>Fields with a * are required</small>
@@ -878,6 +1004,11 @@
                 var a = document.getElementById("confirmDeleteHrf");
                 a.href = route;
                 $('#confirmationDeleteModal').modal('show');
+            }
+
+            function newArtistPhoto() {
+                //todo change modal id to cange photo modal
+                //$('changeMe').modal(show);
             }
 
             function fillLeaveValues(route) {
@@ -1278,6 +1409,26 @@
             ];
 
             /**
+             * Callback for success on geolocation to get users location
+             */
+            function setLocation(pos) {
+                center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
+                var centerPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(centerPos);
+                var youMarker = new google.maps.Marker({
+                    map: map,
+                    position: centerPos,
+                    draggable: true
+                });
+                youMarker.content = "You Are Here";
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(youMarker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(map, this);
+                });
+            }
+
+            /**
              * Initialises the map view
              */
             function initMap() {
@@ -1296,6 +1447,9 @@
                     fullscreenControl: false,
                     zoom: 2
                 });
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                }
                 addMarkers();
 
                 var legend = document.getElementById('legend');
@@ -1327,6 +1481,7 @@
 
             var markersMap = new Map();
             var markers = [];
+
             function addMarkers() {
                 @for(event <- events) {
                     var icon;
@@ -1375,7 +1530,7 @@
             }
 
             function clearSelected() {
-                var elements = document.getElementsByClassName("eventTitle");
+                var elements = document.getElementsByClassName("event-link");
                 for (var i = 0; i < elements.length; i++) {
                     elements[i].style.color = "#d74961";
                 }
@@ -1389,13 +1544,26 @@
                 event.style.color = '#009779';
             }
 
+            function runDelete(){
+                email = this.email;
+            }
+
+            var uploadField = document.getElementById("image");
+
+
+            uploadField.onchange = function() {
+                if(this.files[0].size > 2097152){
+                    alert("File is too big!");
+                    this.value = "";
+                };
+            };
+
+
 
     </script>
-
-    @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"*@
-    @*async defer></script>*@
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"
     async defer></script>
+
 
 
 </html>

@@ -62,6 +62,7 @@ public class ProfileController extends Controller implements TypesInterface {
 
 
 
+
     /**
      * A class used to receive information from a form for uploading an image
      */
@@ -75,8 +76,8 @@ public class ProfileController extends Controller implements TypesInterface {
     public ProfileController(FormFactory profileFormFactory, FormFactory imageFormFactory, MessagesApi messagesApi,
                              PersonalPhotoRepository personalPhotoRepository, HttpExecutionContext httpExecutionContext,
                              ProfileRepository profileRepository, PhotoRepository photoRepository,
-                             TripRepository tripRepository, UndoStackRepository undoStackRepository, ArtistRepository artistRepository,
-                             EventRepository eventRepository)
+                             TripRepository tripRepository, UndoStackRepository undoStackRepository,
+                             ArtistRepository artistRepository, EventRepository eventRepository)
         {
             this.profileForm = profileFormFactory.form(Profile.class);
             this.imageForm = imageFormFactory.form(ImageData.class);
@@ -89,6 +90,7 @@ public class ProfileController extends Controller implements TypesInterface {
             this.undoStackRepository = undoStackRepository;
             this.artistRepository = artistRepository;
             this.eventRepository = eventRepository;
+
         }
 
 
@@ -350,6 +352,8 @@ public class ProfileController extends Controller implements TypesInterface {
                 List<Artist> followedArtistsList = artistRepository.getFollowedArtists(toSend.getProfileId());
                 List<String> outdatedCountries = Country.getInstance().getUserOutdatedCountries(profileRec.get());
                 List<Events> upcomingEvents = eventRepository.getNextTenUpComingEvents(profId);
+
+
 
                 if (!outdatedCountries.isEmpty() && countryFlag) {
                     countryFlag = false;

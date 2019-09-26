@@ -12,6 +12,18 @@
     width: 50%;
 }
 
+.radioFollow{
+    float: left;
+}
+
+.radioInput{
+    float: left !important;
+}
+
+.radioButtons{
+    margin-top: 15px !important;
+}
+
 #label{
     padding-top: 0 !important;
     margin-top: -20px;
@@ -87,7 +99,6 @@
 #legend img {
     height: 24px;
     width: 24px;
-
 }
 
 #legend h4 {
@@ -105,10 +116,15 @@
     cursor: pointer;
 }
 
-#eventCardBorder {
-    /*margin: 0 2px 0 0;*/
+#editEventLink {
+    float: right;
 }
 
-#editEventLink {
+#eventCardBorder {
+    margin-top: 12px;
+}
+
+
+#mapLink {
     float: right;
 }

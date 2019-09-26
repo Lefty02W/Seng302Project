@@ -56,6 +56,7 @@ public class TravellersController extends Controller {
      * Function to search travellers n gender nationality, age and traveller type fields, calls search functions for
      * each field
      * @param request http request
+     * @param offset, the index at which to get the first traveller (ie 0 = start of first page)
      * @return renders traveller view with queried list of travellers
      */
     @Security.Authenticated(SecureSession.class)
@@ -112,8 +113,8 @@ public class TravellersController extends Controller {
                 int sizeOfSearchResults = profileRepository.getNumSearchProfiles(formData.searchTravellerTypes, lowerDate, upperDate, formData.searchGender, formData.searchNationality);
 
                 PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, sizeOfSearchResults);
-                paginationHelper.alterNext(10);
-                paginationHelper.alterPrevious(10);
+                paginationHelper.alterNext(12);
+                paginationHelper.alterPrevious(12);
                 paginationHelper.checkButtonsEnabled();
 
                 return ok(travellers.render(form, searchedProfiles, photoList, profile.get(), Country.getInstance().getAllCountries(), formData, paginationHelper, request, messagesApi.preferred(request)));
@@ -159,7 +160,7 @@ public class TravellersController extends Controller {
         return profileRepository.findById(profId).thenApplyAsync(profile -> {
             if (profile.isPresent()) {
                 List<Photo> displayPhotoList = getTravellersPhotos(profileId);
-                return ok(travellersPhotos.render(displayPhotoList, profile.get(),request, messagesApi.preferred(request)));
+                return ok(travellersPhotos.render(displayPhotoList, profile.get(), profileRepository.getExistingProfileByProfileId(profileId), request, messagesApi.preferred(request)));
             } else {
                 return redirect("/travellers");
             }
@@ -175,8 +176,8 @@ public class TravellersController extends Controller {
     public CompletionStage<Result> show(Http.Request request, Integer offset) {
         Integer profId = SessionController.getCurrentUserId(request);
         PaginationHelper paginationHelper = new PaginationHelper(offset, offset, offset, true, true, profileRepository.getNumProfiles());
-        paginationHelper.alterNext(10);
-        paginationHelper.alterPrevious(10);
+        paginationHelper.alterNext(12);
+        paginationHelper.alterPrevious(12);
         paginationHelper.checkButtonsEnabled();
 
         return profileRepository.findById(profId).thenApplyAsync(profile -> {

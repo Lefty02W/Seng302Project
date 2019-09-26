@@ -24,6 +24,7 @@
 
 #artist-card {
     margin: 0px;
+    padding: 0.1em;
 }
 
 #artist-stats {
@@ -66,3 +67,35 @@
     z-index: 1;
 }
 
+#artist-footer{
+    width: 98%;
+
+}
+#followerCount {
+    float: right;
+}
+
+#followOrUnfollow{
+    width: 6vw;
+}
+
+#followCol{
+    float:right;
+
+}
+#followRow{
+    width:100%;
+}
+#titleRow{
+    width:100%;
+}
+
+.border-primary {
+    border-color: #009779 !important;
+    width: 48%;
+    border-radius: 0px;
+    border-width: 2px;
+    margin: 3px;
+    margin-left: 20px;
+    margin-right: -12px;
+}

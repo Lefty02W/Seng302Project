@@ -60,7 +60,7 @@ public class LoginController extends Controller {
             return profileRepository.lookupEmail(loginData.email).thenCombineAsync(profileOptional, (profiles, profile) -> {
                 if (profile.isPresent()) {
                     Profile currentUser = profile.get();
-                    return redirect(routes.ProfileController.show()).addingToSession(request, "connected", currentUser.getProfileId().toString());
+                    return redirect(routes.EventsController.show(0)).addingToSession(request, "connected", currentUser.getProfileId().toString());
                 }
                 return redirect("/").flashing("warning", "Profile has been deleted!");
             }, httpExecutionContext.current());
@@ -91,16 +91,35 @@ public class LoginController extends Controller {
      * @param request users request to create a profile
      * @return redirect to login
      */
-    public Result save(Http.Request request){
+    public CompletionStage<Result> save(Http.Request request){
         Form<Profile> userForm = profileForm.bindFromRequest(request);
         Optional<Profile> profOpt = userForm.value();
-        if (profOpt.isPresent()) {
-            Profile profile = profOpt.get();
-            profile.initProfile();
-            profileRepository.insert(profile);
-            return redirect("/").flashing("info", "Profile: " + profile.getFirstName() + " " + profile.getLastName() + " created");
+        try{
+            if (profOpt.isPresent()) {
+                Profile profile = profOpt.get();
+                profile.initProfile();
+                String email = profile.getEmail();
+                if (profileRepository.isEmailTakenSignup(email)) {
+                    return supplyAsync(()-> redirect("/").flashing("warning", "Error: Email already taken"));
+                }
+                if (!isEmailValid(email)) {
+                    return supplyAsync(()-> redirect("/").flashing("warning", "Error: Please enter a valid email"));
+                }
+
+                return profileRepository.insert(profile).thenApplyAsync(profileIdOptional ->
+                        redirect(routes.EventsController.show(0)).addingToSession(request, "connected", profileIdOptional.get().toString()));
+
+            }
+        }catch (Exception e){
+            return supplyAsync(()-> redirect("/").flashing("info", "Profile save failed"));
         }
-        return redirect("/").flashing("info", "Profile save failed");
+        return supplyAsync(()-> redirect("/").flashing("info", "Profile save failed"));
+
+    }
+
+    public static boolean isEmailValid(String email) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return email.matches(regex);
     }
 
     /**

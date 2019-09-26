@@ -36,29 +36,35 @@
             <div id="sidebar-wrapper">
                 <h2 class="sidebar-heading">SoundBound </h2>
                 <div class="list-group list-group-flush">
-                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
-                        Profile</a>
-                    <a style="color: #d74961;
-                        background-color: #ede1d1 !important" href="@routes.DestinationsController.show(isPublic, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
-                        Destinations</a>
-                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
-                        Trips</a>
-                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
-                        Travellers</a>
-                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
-                        Artists</a>
-                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
-                        Treasure Hunt</a>
                     <a href="@routes.EventsController.show(0)" class="list-group-item list-group-item-action bg-transparent">
                         <img class="sidebar-icon" src="@routes.Assets.at("images/event-icon.png")"/>
                         Events
+                    </a>
+                    <a href="@routes.ArtistController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/artist-icon.png")" alt="Not Found"/>
+                        Artists
+                    </a>
+                    <a href="@routes.ProfileController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/profile-icon.png")" alt="Not Found"/>
+                        Profile
+                    </a>
+                    <a style="color: #d74961; background-color: #ede1d1 !important" href="@routes.DestinationsController.show(false, 0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/destination-icon.png")" alt="Not Found"/>
+                        Destinations
+                    </a>
+                    <a href="@routes.TripsController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/trips-icon.png")" alt="Not Found"/>
+                        Trips
+                    </a>
+                    <a href="@routes.TravellersController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/traveller-icon.png")" alt="Not Found"/>
+                        Travellers
+                    </a>
+                    <a href="@routes.TreasureHuntController.show(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/treasure-hunt-icon.png")" alt="Not Found"/>
+                        Treasure Hunt
                     </a>
                     @if(currentUser.hasRole("global_admin") || currentUser.hasRole("admin")) {
                         <a href="@routes.AdminController.showAdmins(0)" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/admin-icon.png")" alt="Not Found"/>
                             Admin</a>
                     }
                     <a href="@routes.LoginController.show()" class="list-group-item list-group-item-action bg-transparent"><img class="sidebar-icon" src="@routes.Assets.at("images/logout-icon.png")" alt="Not Found"/>
-                        Logout</a>
+                        Logout
+                    </a>
                 </div>
             </div>
                 <!-- /#sidebar-wrapper -->
@@ -181,7 +187,7 @@
                                                         <li class="page-item"><a class="page-link" id="startLinkSearch">
                                                             Start</a></li>
                                                 }
-                                                @helper.form(routes.DestinationsController.search(0)) {
+                                                @helper.form(routes.DestinationsController.search(pagination.getNext)) {
                                                     <input type="hidden" id="is3Public" value="@isPublic">
                                                     <input type="hidden" id="searchName" placeholder="Search" name="name" value="@searchVal">
                                                     <button type="hidden" id="prevSearchHidden">Search</button>
@@ -524,7 +530,7 @@
                                                             <label>Latitude</label>
                                                         </div>
                                                         <div class="row">
-                                                            <input type="number" step="0.01" id="latitude" name="latitude" class="editLat" value="@destination.getObject.getLatitude" onkeyup="moveEditMarker()">
+                                                            <input type="number" step="0.0000000001" id="latitude" name="latitude" class="editLat" value="@destination.getObject.getLatitude" onkeyup="moveEditMarker()">
                                                         </div>
                                                     </div>
                                                     <div class="col">
@@ -532,7 +538,7 @@
                                                             <label>Longitude</label>
                                                         </div>
                                                         <div class="row">
-                                                            <input type="number" step="0.01" id="longitude" name="longitude" class="editLng" value="@destination.getObject.getLongitude" onkeyup="moveEditMarker()">
+                                                            <input type="number" step="0.0000000001" id="longitude" name="longitude" class="editLng" value="@destination.getObject.getLongitude" onkeyup="moveEditMarker()">
                                                         </div>
 
                                                     </div>
@@ -734,9 +740,7 @@
                         $('#destTable').DataTable({
                             "sDom": 't'
                         });
-                        if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(setLocation, defaultLocation);
-                }
+
 
 
                 $('#startSearchHidden').hide();
@@ -1169,20 +1173,29 @@
                 }
             ];
 
-
             /**
-            * Callback for succes on geolocation to get users location
-            */
+             * Callback for success on geolocation to get users location
+             */
             function setLocation(pos) {
                 center = {lat: pos.coords.latitude, lng: pos.coords.longitude}
+                var centerPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                map.setCenter(centerPos);
+                createMap.setCenter(centerPos);
+                var currentPos = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+                addCreateMarker(currentPos);
+                var youMarker = new google.maps.Marker({
+                    map: map,
+                    position: centerPos,
+                    draggable: true
+                });
+                youMarker.content = "You Are Here";
+                var infoWindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(youMarker, 'click', function () {
+                    infoWindow.setContent(this.content);
+                    infoWindow.open(map, this);
+                });
             }
 
-            /**
-            * Callback for failure of geolocation
-            */
-            function defaultLocation(err) {
-                center = {lat: -43.5321, lng: 172.6362};
-            }
 
             /**
              * Initialises the map view
@@ -1199,7 +1212,7 @@
 
 
                 if (center === undefined) {
-                    center = {lat: -43.5321, lng: 172.6362};
+                    center = {lat: 0, lng: 0};
                 }
                 map = new google.maps.Map(document.getElementById('destinationsMap'), {
                     center: center,
@@ -1216,8 +1229,13 @@
                     zoom: 8,
                     styles: styles
                 });
-                currentPos = new google.maps.LatLng(center.lat, center.lng);
-                addCreateMarker(currentPos);
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                } else {
+                    currentPos = new google.maps.LatLng(center.lat, center.lng);
+                    addCreateMarker(currentPos);
+                }
+
 
 
                 @if(destination.isEdit && destination.getObject != null) {
@@ -1245,7 +1263,15 @@
                     addEditMarker(e.latLng);
                 });
 
+
+
+
             }
+
+                if (navigator.geolocation) {
+
+                    navigator.geolocation.getCurrentPosition(setLocation);
+                }
 
 
                 createMap.addListener('click', function(e) {
@@ -1652,9 +1678,8 @@
             }
     </script>
 
-    @*<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"*@
-    @*async defer></script>*@
-    <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9Z1g5p2rQtS0nHgDudzCCXVl2HJl3NPI&callback=initMap"
     async defer></script>
+
 
 </html>

@@ -23,6 +23,7 @@ public class AdminEditDestinationSteps {
     Map<String, String> destForm = new HashMap<>();
     Result loginResult;
     private Result result;
+    private String landingPageRoute = "/events/0";
 
 
     @Given("Admin is logged in to the application")
@@ -36,7 +37,7 @@ public class AdminEditDestinationSteps {
                 .session("connected", "2");
 
         loginResult = Helpers.route(TestApplication.getApplication(), request);
-        assertEquals("/profile", loginResult.redirectLocation().get());
+        assertEquals(landingPageRoute, loginResult.redirectLocation().get());
 
     }
 
